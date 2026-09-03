@@ -14,7 +14,7 @@ namespace Bodu.IO.Pst.Internal;
 /// lookup, and rejection of malformed tree geometry.
 /// </summary>
 [TestClass]
-public class PstBTreeOnHeapTests
+public partial class PstBTreeOnHeapTests
 {
     /// <summary>The node identifier the fixtures use for the node under test.</summary>
     private const uint NodeId = 0x21;

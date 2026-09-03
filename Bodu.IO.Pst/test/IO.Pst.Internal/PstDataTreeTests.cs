@@ -20,7 +20,7 @@ namespace Bodu.IO.Pst.Internal;
 /// controls the exact shape it is asserting.
 /// </remarks>
 [TestClass]
-public class PstDataTreeTests
+public partial class PstDataTreeTests
 {
     /// <summary>The node identifier the fixtures use for the node under test.</summary>
     private const uint NodeId = 0x21;

@@ -37,6 +37,11 @@ namespace Bodu.Security.Cryptography;
 /// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example
 /// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
+/// <para>
+/// This implementation is constant-time in its control flow, but the four key-dependent S-boxes are read at
+/// data-dependent indices on every round. As such, this implementation is <b>not</b> hardened against timing or
+/// cache-based side-channel attacks.
+/// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Blowfish"/>

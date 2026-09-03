@@ -285,8 +285,9 @@ public sealed class GcmModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: verify-before-release.</strong> The GHASH-derived tag is compared in constant
     /// time before the CTR decryption stream is applied to <paramref name="output" />; no plaintext byte is ever
-    /// written when authentication fails. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide
-    /// failure contract.
+    /// written when authentication fails. If the underlying cipher throws mid-transform, the plaintext region of
+    /// <paramref name="output" /> is zeroed before the exception propagates. See
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -335,6 +336,13 @@ public sealed class GcmModeTransform
             {
                 CryptographyHelper.Clear(expectedTag);
             }
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so partially written plaintext or keystream bytes never leak.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
         }
         finally
         {

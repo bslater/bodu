@@ -52,6 +52,11 @@ namespace Bodu.Security.Cryptography;
 /// without a procurement constraint <see cref="System.Security.Cryptography.Aes" /> is the more widely accelerated
 /// default.
 /// </para>
+/// <para>
+/// The underlying block-cipher implementation is constant-time in its control flow, but the fixed S-box lookup tables
+/// are read at data-dependent indices. As such, it is <b>not</b> hardened against timing or cache-based side-channel
+/// attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

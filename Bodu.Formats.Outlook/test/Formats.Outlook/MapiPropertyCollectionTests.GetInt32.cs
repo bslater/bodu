@@ -38,4 +38,17 @@ public partial class MapiPropertyCollectionTests
 
         Assert.IsNull(collection.GetInt32(MapiPropertyIds.MessageCodepage));
     }
+
+    /// <summary>
+    /// Verifies that an integer a writer stored under the 16-bit type is widened by the 32-bit accessor: real-world
+    /// writers store <c>PidTagAttachMethod</c> and its peers as <c>PT_SHORT</c>, and the accessor documents probing
+    /// the plausible wire types.
+    /// </summary>
+    [TestMethod]
+    public void GetInt32_WhenStoredAsInt16_ShouldWiden()
+    {
+        MapiPropertyCollection collection = CreateSingle(MapiPropertyIds.AttachMethod, MapiPropertyType.Int16, (short)5);
+
+        Assert.AreEqual(5, collection.GetInt32(MapiPropertyIds.AttachMethod));
+    }
 }

@@ -19,6 +19,18 @@ namespace Bodu.Formats.Outlook;
 /// </remarks>
 public sealed class OutlookMessageReaderOptions
 {
+    /// <summary>The default embedded-message nesting limit.</summary>
+    internal const int DefaultMaxEmbeddedMessageDepth = 16;
+
+    /// <summary>The default decompressed-RTF ceiling: 64 MiB.</summary>
+    internal const int DefaultMaxDecompressedRtfBytes = 64 * 1024 * 1024;
+
+    /// <summary>The backing field for <see cref="MaxEmbeddedMessageDepth" />.</summary>
+    private readonly int _maxEmbeddedMessageDepth = DefaultMaxEmbeddedMessageDepth;
+
+    /// <summary>The backing field for <see cref="MaxDecompressedRtfBytes" />.</summary>
+    private readonly int _maxDecompressedRtfBytes = DefaultMaxDecompressedRtfBytes;
+
     /// <summary>
     /// Gets the shared default options instance.
     /// </summary>
@@ -46,6 +58,49 @@ public sealed class OutlookMessageReaderOptions
     /// available through the property collection.
     /// </value>
     public bool DecompressRtf { get; init; } = true;
+
+    /// <summary>
+    /// Gets the deepest embedded-message nesting the reader opens: the root message is depth zero, a message opened
+    /// from one of its attachments is depth one, and so on.
+    /// </summary>
+    /// <value>The nesting limit; <c>16</c> by default.</value>
+    /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>
+    /// <remarks>
+    /// Opening an embedded message past the limit throws <see cref="OutlookMsgFormatException" /> at every validation
+    /// level. The limit exists because a crafted container can nest attachments thousands of levels deep in a few
+    /// kilobytes, and a consumer walking the tree recursively would otherwise exhaust its stack.
+    /// </remarks>
+    public int MaxEmbeddedMessageDepth
+    {
+        get => _maxEmbeddedMessageDepth;
+        init
+        {
+            ThrowHelper.ThrowIfZeroOrNegative(value);
+
+            _maxEmbeddedMessageDepth = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the largest decompressed RTF body, in bytes, the reader produces.
+    /// </summary>
+    /// <value>The ceiling; 64 MiB by default.</value>
+    /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>
+    /// <remarks>
+    /// A compressed payload whose declared or produced size exceeds the ceiling is rejected with
+    /// <see cref="OutlookMsgFormatException" /> at every validation level: the declared size sits outside the payload's
+    /// checksum, so it must be bounded rather than trusted.
+    /// </remarks>
+    public int MaxDecompressedRtfBytes
+    {
+        get => _maxDecompressedRtfBytes;
+        init
+        {
+            ThrowHelper.ThrowIfZeroOrNegative(value);
+
+            _maxDecompressedRtfBytes = value;
+        }
+    }
 
     /// <summary>
     /// Converts the reader options to the underlying container options.

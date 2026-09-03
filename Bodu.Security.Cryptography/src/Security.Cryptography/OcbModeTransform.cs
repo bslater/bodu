@@ -311,9 +311,11 @@ public sealed class OcbModeTransform
 
     /// <inheritdoc />
     /// <remarks>
-    /// <strong>Authentication pattern: verify-before-release.</strong> The OCB3 tag is recomputed from the offsets,
-    /// checksum, and AAD hash, then compared in constant time before the per-block decryption is applied to
-    /// <paramref name="output" />; no plaintext byte is ever written when authentication fails. See
+    /// <strong>Authentication pattern: write-then-clear.</strong> OCB3 recomputes its checksum over the decrypted
+    /// plaintext, so the per-block decryption is written into <paramref name="output" /> first and the tag is compared
+    /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
+    /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
+    /// propagates, so unverified plaintext never escapes. See
     /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -422,6 +424,14 @@ public sealed class OcbModeTransform
             }
 
             return plaintextLength;
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // written never leaks.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
         }
         finally
         {
@@ -635,22 +645,15 @@ public sealed class OcbModeTransform
 
     /// <summary>
     /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1.
+    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived offset ladder does not
+    /// influence control flow.
     /// </summary>
     /// <param name="x">The 16-byte input block.</param>
     /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
     private static byte[] GfDouble(byte[] x)
     {
         byte[] result = new byte[x.Length];
-        bool msb = (x[0] & 0x80) != 0;
-
-        for (int i = 0; i < x.Length - 1; i++)
-            result[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
-
-        result[x.Length - 1] = (byte)(x[^1] << 1);
-
-        if (msb)
-            result[x.Length - 1] ^= 0x87;
+        GaloisField128.Double(x, result);
 
         return result;
     }

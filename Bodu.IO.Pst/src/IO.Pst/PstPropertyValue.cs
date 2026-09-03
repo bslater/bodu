@@ -168,7 +168,9 @@ public readonly struct PstPropertyValue
         if (WireType != expectedWireType || _data.Length < size)
             throw Mismatch(expectedWireType.ToString("X4", CultureInfo.InvariantCulture));
 
-        return _data.Span;
+        // Slice to the value's own width so a longer payload decodes its leading bytes rather than failing the
+        // fixed-width read.
+        return _data.Span.Slice(0, size);
     }
 
     /// <summary>

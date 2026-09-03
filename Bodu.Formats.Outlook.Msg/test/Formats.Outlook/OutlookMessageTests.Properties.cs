@@ -72,4 +72,20 @@ public partial class OutlookMessageTests
         Assert.AreEqual(2, message.Properties.Count);
         Assert.IsTrue(message.Properties.Contains(new MapiPropertyTag(MapiPropertyIds.Subject, MapiPropertyType.Unicode)));
     }
+
+    /// <summary>
+    /// Verifies that the message-class convenience surfaces <c>PidTagMessageClass</c>, matching the PST reader's
+    /// view.
+    /// </summary>
+    [TestMethod]
+    public void MessageClass_WhenPresent_ShouldReturnValue()
+    {
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddUnicode(MapiPropertyIds.MessageClass, "IPM.Note")
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("IPM.Note", message.MessageClass);
+    }
 }

@@ -31,20 +31,40 @@ public partial class MsgPropertyDecoderTests
     }
 
     /// <summary>
-    /// Verifies that a zero FILETIME is omitted under compatible validation and throws under strict validation.
+    /// Verifies that a zero FILETIME — the conventional "unset time stamp" — materializes as a present property with
+    /// a <see langword="null" /> value at every validation level, rather than being treated as corruption.
     /// </summary>
+    /// <param name="validationLevel">The validation level to decode under.</param>
     [TestMethod]
-    public void Decode_WhenFileTimeZero_ShouldOmitOrThrowByValidationLevel()
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    public void Decode_WhenFileTimeZero_ShouldMaterializeNullValue(CompoundValidationLevel validationLevel)
     {
-        var builder = new MsgFixtureBuilder().AddFixedEntry(0x12340040, 0);
+        MapiPropertyCollection properties = Decode(new MsgFixtureBuilder().AddFixedEntry(0x12340040, 0), validationLevel);
 
-        MapiPropertyCollection tolerant = Decode(builder);
-        Assert.IsFalse(tolerant.Contains(new MapiPropertyTag(0x12340040u)));
+        Assert.IsTrue(properties.TryGetValue(new MapiPropertyTag(0x12340040u), out MapiProperty? property));
+        Assert.IsNull(property.Value);
+        Assert.IsNull(properties.GetDateTime(0x1234));
+    }
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
-        {
-            _ = Decode(builder, CompoundValidationLevel.Strict);
-        });
+    /// <summary>
+    /// Verifies that the legal <c>PT_NULL</c> and <c>PT_UNSPECIFIED</c> types materialize as present properties with
+    /// a <see langword="null" /> value at every validation level, rather than being rejected as unknown types.
+    /// </summary>
+    /// <param name="validationLevel">The validation level to decode under.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    public void Decode_WhenNullOrUnspecifiedType_ShouldMaterializeNullValue(CompoundValidationLevel validationLevel)
+    {
+        MapiPropertyCollection properties = Decode(
+            new MsgFixtureBuilder().AddFixedEntry(0x12340001, 0).AddFixedEntry(0x12350000, 0),
+            validationLevel);
+
+        Assert.IsTrue(properties.TryGetValue(new MapiPropertyTag(0x12340001u), out MapiProperty? nullTyped));
+        Assert.IsNull(nullTyped.Value);
+        Assert.IsTrue(properties.TryGetValue(new MapiPropertyTag(0x12350000u), out MapiProperty? unspecified));
+        Assert.IsNull(unspecified.Value);
     }
 
     /// <summary>

@@ -222,19 +222,38 @@ public abstract class StreamAeadTransformContractTests<TAead>
     }
 
     /// <summary>
-    /// Verifies that a failed authentication leaves the output buffer untouched — no candidate plaintext is released.
+    /// Verifies that a failed authentication releases no candidate plaintext through the output buffer: a
+    /// sentinel-filled destination comes back either untouched (verify-before-release — the tag is checked over the
+    /// ciphertext before any output is written) or all-zero (write-then-clear), and in neither case contains the
+    /// plaintext.
     /// </summary>
+    /// <remarks>
+    /// The output buffer is pre-filled with a non-zero sentinel so the assertion actually proves the transform's
+    /// behaviour — a zero-initialised buffer would pass even if the transform wrote plaintext and then zeroed it, or
+    /// never touched it at all, without distinguishing the two acceptable contracts from a leak.
+    /// </remarks>
     [TestMethod]
     public void Decrypt_WhenAuthenticationFails_ShouldNotWriteOutput()
     {
-        byte[] sealed_ = Seal(Pattern(40));
+        byte[] plaintext = Pattern(40);
+        byte[] sealed_ = Seal(plaintext);
         sealed_[^1] ^= 0xff;
 
         byte[] output = new byte[sealed_.Length - 16];
+        Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
         using TAead dec = Create(Key(), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() => { _ = dec.Decrypt(sealed_, output); });
 
-        CollectionAssert.AreEqual(new byte[output.Length], output);
+        byte[] untouched = new byte[output.Length];
+        Array.Fill(untouched, (byte)0xCC);
+        bool isUntouched = output.AsSpan().SequenceEqual(untouched);
+        bool isZeroed = output.AsSpan().SequenceEqual(new byte[output.Length]);
+
+        Assert.IsTrue(isUntouched || isZeroed,
+            "On authentication failure the output must be either untouched (verify-before-release) or " +
+            "all-zero (write-then-clear); it contained other data.");
+        Assert.IsFalse(output.AsSpan().SequenceEqual(plaintext),
+            "On authentication failure the output must not contain the candidate plaintext.");
     }
 
     /// <summary>

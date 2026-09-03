@@ -59,6 +59,11 @@ namespace Bodu.Security.Cryptography;
 /// a SHA-2 family member or <see cref="Blake2b" />; for fast non-cryptographic fingerprinting the algorithms in
 /// <c>Bodu.IO.Hashing</c> are usually a better fit.
 /// </para>
+/// <para>
+/// This implementation is constant-time in its control flow, but the S-box lookup tables are read at
+/// message-dependent indices, so hashing secret data (for example inside a keyed construction) is <b>not</b> hardened
+/// against timing or cache-based side-channel attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

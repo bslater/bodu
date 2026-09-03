@@ -184,21 +184,35 @@ public sealed class CcmModeTransform
 
         EnsureAadProcessed();
 
-        byte[] mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
-        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
+        byte[]? mac = null;
+        byte[]? encTag = null;
 
-        EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
-        encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
-        _completed = true;
-        return required;
+        try
+        {
+            mac = ComputeCbcMac(_aad.AsSpan(), plaintext);
+            encTag = XorWithCtrBlock(mac, counterIndex: 0);
+
+            EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
+            encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
+
+            return required;
+        }
+        finally
+        {
+            CryptographyHelper.Clear(encTag);
+            CryptographyHelper.Clear(mac);
+            _completed = true;
+        }
     }
 
     /// <inheritdoc />
     /// <remarks>
-    /// <strong>Authentication pattern: verify-before-release.</strong> The CBC-MAC tag is recomputed and compared in
-    /// constant time before the CTR decryption stream is applied to <paramref name="output" />; no plaintext byte is
-    /// ever written when authentication fails. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the
-    /// library-wide failure contract.
+    /// <strong>Authentication pattern: write-then-clear.</strong> CCM recomputes its CBC-MAC over the decrypted
+    /// plaintext, so the CTR decryption stream is applied to <paramref name="output" /> first and the tag is compared
+    /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
+    /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
+    /// propagates, so unverified plaintext never escapes. See
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -216,20 +230,38 @@ public sealed class CcmModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
+        byte[]? mac = null;
+        byte[]? encTag = null;
 
-        byte[] mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
-        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
-
-        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
+        try
         {
-            CryptographicOperations.ZeroMemory(output[..plaintextLength]);
-            _completed = true;
-            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
-        }
+            EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
 
-        _completed = true;
-        return plaintextLength;
+            mac = ComputeCbcMac(_aad.AsSpan(), output[..plaintextLength]);
+            encTag = XorWithCtrBlock(mac, counterIndex: 0);
+
+            if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
+            {
+                CryptographicOperations.ZeroMemory(output[..plaintextLength]);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
+            }
+
+            return plaintextLength;
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // written never leaks.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
+        }
+        finally
+        {
+            CryptographyHelper.Clear(encTag);
+            CryptographyHelper.Clear(mac);
+            _completed = true;
+        }
     }
 
     /// <summary>
@@ -315,48 +347,69 @@ public sealed class CcmModeTransform
         int blockSize = _cipher.BlockSize / 8;
         byte[] mac = new byte[blockSize];
 
-        // Block B0.
-        bool hasAad = aad.Length > 0;
-        byte[] b0 = new byte[blockSize];
-        b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
-        _nonce.CopyTo(b0, 1);
+        byte[]? b0 = null;
+        byte[]? aadEncoded = null;
+        byte[]? block = null;
 
-        // Message length in last 3 bytes (big-endian, q=3).
-        uint len = (uint)plaintext.Length;
-        b0[15] = (byte)len;
-        b0[14] = (byte)(len >> 8);
-        b0[13] = (byte)(len >> 16);
-        CbcMacUpdate(mac, b0);
-
-        // AAD: 2-byte length prefix then AAD bytes, zero-padded to block boundary.
-        if (hasAad)
+        try
         {
-            if (aad.Length >= 0xFF00)
+            // Block B0.
+            bool hasAad = aad.Length > 0;
+            b0 = new byte[blockSize];
+            b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
+            _nonce.CopyTo(b0, 1);
+
+            // Message length in last 3 bytes (big-endian, q=3).
+            uint len = (uint)plaintext.Length;
+            b0[15] = (byte)len;
+            b0[14] = (byte)(len >> 8);
+            b0[13] = (byte)(len >> 16);
+            CbcMacUpdate(mac, b0);
+
+            // AAD: 2-byte length prefix then AAD bytes, zero-padded to block boundary.
+            if (hasAad)
             {
-                throw new NotSupportedException(
-                    string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
+                if (aad.Length >= 0xFF00)
+                {
+                    throw new NotSupportedException(
+                        string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
+                }
+
+                // Encode: 2-byte length + aad + zero-padding to block multiple.
+                int encodedLen = 2 + aad.Length;
+                int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
+                aadEncoded = new byte[padded];
+                aadEncoded[0] = (byte)(aad.Length >> 8);
+                aadEncoded[1] = (byte)aad.Length;
+                aad.CopyTo(aadEncoded.AsSpan(2));
+                for (int i = 0; i < aadEncoded.Length; i += blockSize)
+                    CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
             }
 
-            // Encode: 2-byte length + aad + zero-padding to block multiple.
-            int encodedLen = 2 + aad.Length;
-            int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
-            byte[] aadEncoded = new byte[padded];
-            aadEncoded[0] = (byte)(aad.Length >> 8);
-            aadEncoded[1] = (byte)aad.Length;
-            aad.CopyTo(aadEncoded.AsSpan(2));
-            for (int i = 0; i < aadEncoded.Length; i += blockSize)
-                CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
-        }
+            // Plaintext blocks (zero-padded last block).
+            block = new byte[blockSize];
+            for (int i = 0; i < plaintext.Length; i += blockSize)
+            {
+                CryptographyHelper.Clear(block);
+                plaintext.Slice(i, Math.Min(blockSize, plaintext.Length - i)).CopyTo(block);
+                CbcMacUpdate(mac, block);
+            }
 
-        // Plaintext blocks (zero-padded last block).
-        for (int i = 0; i < plaintext.Length; i += blockSize)
+            return mac;
+        }
+        catch
         {
-            byte[] block = new byte[blockSize];
-            plaintext.Slice(i, Math.Min(blockSize, plaintext.Length - i)).CopyTo(block);
-            CbcMacUpdate(mac, block);
+            // Zero the partially computed MAC accumulator when the underlying cipher faults mid-MAC,
+            // aligned with EaxModeTransform.ComputeCmac and SivModeTransform.ComputeCmac.
+            CryptographyHelper.Clear(mac);
+            throw;
         }
-
-        return mac;
+        finally
+        {
+            CryptographyHelper.Clear(block);
+            CryptographyHelper.Clear(aadEncoded);
+            CryptographyHelper.Clear(b0);
+        }
     }
 
     /// <summary>
@@ -368,8 +421,16 @@ public sealed class CcmModeTransform
     private void CbcMacUpdate(byte[] mac, ReadOnlySpan<byte> block)
     {
         Span<byte> xored = stackalloc byte[mac.Length];
-        for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
-        _cipher.Encrypt(xored, mac);
+
+        try
+        {
+            for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
+            _cipher.Encrypt(xored, mac);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(xored);
+        }
     }
 
     /// <summary>
@@ -383,21 +444,28 @@ public sealed class CcmModeTransform
         int blockSize = _cipher.BlockSize / 8;
         byte[] ctr = new byte[blockSize];
 
-        ctr[0] = CounterFlagByte;
+        try
+        {
+            ctr[0] = CounterFlagByte;
 
-        _nonce.CopyTo(ctr, 1);
+            _nonce.CopyTo(ctr, 1);
 
-        ctr[15] = (byte)counterIndex;
-        ctr[14] = (byte)(counterIndex >> 8);
-        ctr[13] = (byte)(counterIndex >> 16);
+            ctr[15] = (byte)counterIndex;
+            ctr[14] = (byte)(counterIndex >> 8);
+            ctr[13] = (byte)(counterIndex >> 16);
 
-        byte[] ks = new byte[blockSize];
-        _cipher.Encrypt(ctr, ks);
+            byte[] ks = new byte[blockSize];
+            _cipher.Encrypt(ctr, ks);
 
-        for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
-            ks[i] ^= input[i];
+            for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
+                ks[i] ^= input[i];
 
-        return ks;
+            return ks;
+        }
+        finally
+        {
+            CryptographyHelper.Clear(ctr);
+        }
     }
 
     /// <summary>
@@ -411,26 +479,35 @@ public sealed class CcmModeTransform
     {
         int blockSize = _cipher.BlockSize / 8;
         Span<byte> ks = stackalloc byte[blockSize];
+        Span<byte> ctr = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            int idx = startIndex + (offset / blockSize);
-            byte[] ctr = new byte[blockSize];
+            for (int offset = 0; offset < input.Length; offset += blockSize)
+            {
+                int idx = startIndex + (offset / blockSize);
 
-            ctr[0] = CounterFlagByte;
+                ctr.Clear();
+                ctr[0] = CounterFlagByte;
 
-            _nonce.CopyTo(ctr, 1);
+                _nonce.CopyTo(ctr[1..]);
 
-            ctr[15] = (byte)idx;
-            ctr[14] = (byte)(idx >> 8);
-            ctr[13] = (byte)(idx >> 16);
+                ctr[15] = (byte)idx;
+                ctr[14] = (byte)(idx >> 8);
+                ctr[13] = (byte)(idx >> 16);
 
-            _cipher.Encrypt(ctr, ks);
+                _cipher.Encrypt(ctr, ks);
 
-            int rem = Math.Min(blockSize, input.Length - offset);
+                int rem = Math.Min(blockSize, input.Length - offset);
 
-            for (int i = 0; i < rem; i++)
-                output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+                for (int i = 0; i < rem; i++)
+                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(ctr);
+            CryptographyHelper.Clear(ks);
         }
     }
 

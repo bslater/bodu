@@ -20,6 +20,12 @@ namespace Bodu.IO.Pst.Internal;
 /// </remarks>
 internal static class PstBTree
 {
+    /// <summary>
+    /// The deepest node or block B-tree the reader descends. Real stores are a handful of levels deep; the cap turns a
+    /// page that references itself or an ancestor into a format error instead of unbounded recursion.
+    /// </summary>
+    private const int MaxDepth = 16;
+
     /// <summary>The NBT page type.</summary>
     internal const byte NodePageType = 0x81;
 
@@ -79,10 +85,35 @@ internal static class PstBTree
         PstSource source,
         PstBref bref,
         byte pageType,
-        Func<byte[], int, TEntry> readEntry)
+        Func<byte[], int, TEntry> readEntry) =>
+        EnumerateLeaves(source, bref, pageType, readEntry, expectedLevel: -1, depth: 0);
+
+    /// <summary>
+    /// Enumerates the leaf entries beneath a page in key order, checking that every child sits exactly one level
+    /// below its parent and that the descent stays within <see cref="MaxDepth" />.
+    /// </summary>
+    /// <typeparam name="TEntry">The leaf entry type.</typeparam>
+    /// <param name="source">The open source.</param>
+    /// <param name="bref">The page reference.</param>
+    /// <param name="pageType">The expected page type.</param>
+    /// <param name="readEntry">Reads one leaf entry from its bytes.</param>
+    /// <param name="expectedLevel">The level the page must declare, or <c>-1</c> for the root.</param>
+    /// <param name="depth">The number of pages above this one.</param>
+    /// <returns>The leaf entries.</returns>
+    /// <exception cref="PstFileFormatException">
+    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows — a
+    /// crafted page referencing itself or an ancestor cannot recurse without bound.
+    /// </exception>
+    private static IEnumerable<TEntry> EnumerateLeaves<TEntry>(
+        PstSource source,
+        PstBref bref,
+        byte pageType,
+        Func<byte[], int, TEntry> readEntry,
+        int expectedLevel,
+        int depth)
     {
         byte[] page = source.ReadPage(bref, pageType);
-        (int count, int stride, int level) = ReadPageHeader(page, bref);
+        (int count, int stride, int level) = ReadPageHeader(page, bref, expectedLevel, depth);
 
         for (int i = 0; i < count; i++)
         {
@@ -90,7 +121,7 @@ internal static class PstBTree
             if (level > 0)
             {
                 PstBref child = ReadChildReference(page, offset);
-                foreach (TEntry entry in EnumerateLeaves(source, child, pageType, readEntry))
+                foreach (TEntry entry in EnumerateLeaves(source, child, pageType, readEntry, level - 1, depth + 1))
                     yield return entry;
             }
             else
@@ -101,7 +132,8 @@ internal static class PstBTree
     }
 
     /// <summary>
-    /// Searches beneath a page for a leaf entry with an exact key.
+    /// Searches beneath a page for a leaf entry with an exact key, descending iteratively with the same level and
+    /// depth checks as enumeration.
     /// </summary>
     /// <typeparam name="TEntry">The leaf entry type.</typeparam>
     /// <param name="source">The open source.</param>
@@ -112,6 +144,9 @@ internal static class PstBTree
     /// <param name="keyOf">Extracts the key of a leaf entry.</param>
     /// <param name="entry">When this method returns <see langword="true" />, the matching entry.</param>
     /// <returns><see langword="true" /> when the key exists.</returns>
+    /// <exception cref="PstFileFormatException">
+    /// A page's level is not the one its parent implies, or the tree is deeper than the format allows.
+    /// </exception>
     private static bool TryFindLeaf<TEntry>(
         PstSource source,
         PstBref bref,
@@ -122,11 +157,29 @@ internal static class PstBTree
         out TEntry entry)
         where TEntry : struct
     {
-        byte[] page = source.ReadPage(bref, pageType);
-        (int count, int stride, int level) = ReadPageHeader(page, bref);
-
-        if (level > 0)
+        PstBref current = bref;
+        int expectedLevel = -1;
+        for (int depth = 0; ; depth++)
         {
+            byte[] page = source.ReadPage(current, pageType);
+            (int count, int stride, int level) = ReadPageHeader(page, current, expectedLevel, depth);
+
+            if (level == 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    TEntry candidate = readEntry(page, i * stride);
+                    if (keyOf(candidate) == key)
+                    {
+                        entry = candidate;
+                        return true;
+                    }
+                }
+
+                entry = default;
+                return false;
+            }
+
             // Descend into the child whose key is the greatest at or below the target.
             PstBref child = default;
             bool found = false;
@@ -141,42 +194,38 @@ internal static class PstBTree
                 found = true;
             }
 
-            if (found)
-                return TryFindLeaf(source, child, pageType, key, readEntry, keyOf, out entry);
-        }
-        else
-        {
-            for (int i = 0; i < count; i++)
+            if (!found)
             {
-                TEntry candidate = readEntry(page, i * stride);
-                if (keyOf(candidate) == key)
-                {
-                    entry = candidate;
-                    return true;
-                }
+                entry = default;
+                return false;
             }
-        }
 
-        entry = default;
-        return false;
+            current = child;
+            expectedLevel = level - 1;
+        }
     }
 
     /// <summary>
-    /// Reads and validates a page's entry geometry.
+    /// Reads and validates a page's entry geometry and its place in the tree.
     /// </summary>
     /// <param name="page">The page bytes.</param>
     /// <param name="bref">The page reference, for diagnostics.</param>
+    /// <param name="expectedLevel">The level the page must declare, or <c>-1</c> when it is the root.</param>
+    /// <param name="depth">The number of pages above this one.</param>
     /// <returns>The entry count, entry stride, and tree level.</returns>
-    /// <exception cref="PstFileFormatException">The geometry escapes the entry area.</exception>
-    private static (int Count, int Stride, int Level) ReadPageHeader(byte[] page, PstBref bref)
+    /// <exception cref="PstFileFormatException">
+    /// The geometry escapes the entry area, the level differs from the one the parent implies, or the depth exceeds
+    /// <see cref="MaxDepth" />.
+    /// </exception>
+    private static (int Count, int Stride, int Level) ReadPageHeader(byte[] page, PstBref bref, int expectedLevel, int depth)
     {
         int count = page[488];
         int stride = page[490];
         int level = page[491];
-        if (stride < 16 || count * stride > 488)
+        if (stride < 16 || count * stride > 488 || depth > MaxDepth || (expectedLevel >= 0 && level != expectedLevel))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
         }
 
         return (count, stride, level);
@@ -199,12 +248,23 @@ internal static class PstBTree
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The node entry.</returns>
-    private static PstNbtEntry ReadNbtEntry(byte[] page, int offset) =>
-        new(
-            (uint)BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset)),
+    private static PstNbtEntry ReadNbtEntry(byte[] page, int offset)
+    {
+        // The nid field is eight bytes wide but a node identifier is 32 bits; a set high dword is not a truncation
+        // to tolerate but a page that does not hold what its type claims.
+        ulong nodeId = BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset));
+        if (nodeId > uint.MaxValue)
+        {
+            throw new PstFileFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstNodeIdentifier, nodeId), PstFileError.InvalidPage);
+        }
+
+        return new PstNbtEntry(
+            (uint)nodeId,
             BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 8)),
             BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 16)),
             BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(offset + 24)));
+    }
 
     /// <summary>
     /// Reads a leaf <c>BBTENTRY</c>.

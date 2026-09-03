@@ -65,6 +65,9 @@ public sealed partial class OutlookMessage
     /// <summary>The root session, or <see langword="null" /> when this instance is the root.</summary>
     private readonly OutlookMessage? _root;
 
+    /// <summary>The embedded-message nesting depth: zero for the root, one more per level opened from an attachment.</summary>
+    private readonly int _depth;
+
     /// <summary>Whether this message has been disposed.</summary>
     private bool _disposed;
 
@@ -81,6 +84,7 @@ public sealed partial class OutlookMessage
     /// <param name="root">
     /// The root session for a nested message, or <see langword="null" /> for the root itself.
     /// </param>
+    /// <param name="depth">The embedded-message nesting depth; zero for the root.</param>
     internal OutlookMessage(
         CompoundFile compound,
         CompoundStorage storage,
@@ -89,7 +93,8 @@ public sealed partial class OutlookMessage
         MsgPropertyStreamHeader header,
         bool ownsContainer,
         System.Text.Encoding stringEncoding,
-        OutlookMessage? root)
+        OutlookMessage? root,
+        int depth = 0)
     {
         _compound = compound;
         _storage = storage;
@@ -99,7 +104,16 @@ public sealed partial class OutlookMessage
         _ownsContainer = ownsContainer;
         _stringEncoding = stringEncoding;
         _root = root;
+        _depth = depth;
     }
+
+    /// <summary>
+    /// Gets the embedded-message nesting depth of this session: zero for a message opened from a file or stream, one
+    /// more for each level opened through <see cref="OutlookAttachment.OpenMessage" />.
+    /// </summary>
+    /// <value>The nesting depth.</value>
+    public int EmbeddedDepth =>
+        _depth;
 
     /// <summary>
     /// Gets every decoded MAPI property of the message.
@@ -110,18 +124,21 @@ public sealed partial class OutlookMessage
     {
         get
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
 
             return _properties;
         }
     }
 
     /// <summary>
-    /// Gets the message subject.
+    /// Gets the message subject, with the MAPI subject-prefix marker removed when a writer stored one.
     /// </summary>
-    /// <value>The <c>PidTagSubject</c> value, or <see langword="null" /> when absent.</value>
+    /// <value>
+    /// The normalized <c>PidTagSubject</c> value, or <see langword="null" /> when absent; the stored value remains
+    /// available through <see cref="Properties" />.
+    /// </value>
     public string? Subject =>
-        Properties.GetString(MapiPropertyIds.Subject);
+        MapiSubject.Normalize(Properties.GetString(MapiPropertyIds.Subject));
 
     /// <summary>
     /// Gets the sender display name.
@@ -136,6 +153,13 @@ public sealed partial class OutlookMessage
     /// <value>The <c>PidTagSenderEmailAddress</c> value, or <see langword="null" /> when absent.</value>
     public string? SenderEmailAddress =>
         Properties.GetString(MapiPropertyIds.SenderEmailAddress);
+
+    /// <summary>
+    /// Gets the message class (for example, <c>IPM.Note</c>).
+    /// </summary>
+    /// <value>The <c>PidTagMessageClass</c> value, or <see langword="null" /> when absent.</value>
+    public string? MessageClass =>
+        Properties.GetString(MapiPropertyIds.MessageClass);
 
     /// <summary>
     /// Gets the internet message identifier.
@@ -216,7 +240,7 @@ public sealed partial class OutlookMessage
     /// Thrown if <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// The stream is not a compound file or not a valid message.
+    /// The stream is not a compound file, the container is malformed, or the message is not valid.
     /// </exception>
     public static OutlookMessage Open(Stream stream, OutlookMessageReaderOptions options, bool leaveOpen = false)
     {
@@ -228,7 +252,7 @@ public sealed partial class OutlookMessage
         {
             compound = CompoundFile.Open(stream, options.ToCompoundFileOptions(), leaveOpen);
         }
-        catch (CompoundFileFormatException ex)
+        catch (CompoundFileException ex)
         {
             throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound, ex);
         }
@@ -238,7 +262,7 @@ public sealed partial class OutlookMessage
             MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
                 compound.RootStorage, MsgPropertyStreamKind.Root, options.ValidationLevel, inheritedEncoding: null, out MsgPropertyStreamHeader header);
 
-            System.Text.Encoding encoding = MsgEncodingResolver.Resolve(properties, inherited: null);
+            System.Text.Encoding encoding = MapiEncodingResolver.Resolve(properties, inherited: null);
             return new OutlookMessage(compound, compound.RootStorage, options, properties, header, ownsContainer: true, encoding, root: null);
         }
         catch
@@ -298,7 +322,8 @@ public sealed partial class OutlookMessage
     /// <summary>
     /// Releases the container and, unless it was left open, the source stream. Disposing a nested message obtained from
     /// an attachment is a no-op — the root session owns the container, and the nested session's decoded properties stay
-    /// readable until the root is disposed.
+    /// readable until the root is disposed, after which every nested session throws
+    /// <see cref="ObjectDisposedException" /> as well.
     /// </summary>
     public void Dispose()
     {
@@ -308,4 +333,11 @@ public sealed partial class OutlookMessage
         _disposed = true;
         _compound.Dispose();
     }
+
+    /// <summary>
+    /// Throws when this session, or the root session a nested message belongs to, has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    internal void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_root?._disposed ?? _disposed, this);
 }

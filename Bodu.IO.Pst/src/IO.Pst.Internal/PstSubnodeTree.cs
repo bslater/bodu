@@ -63,6 +63,8 @@ internal static class PstSubnodeTree
 
             for (int i = 0; i < count; i++)
             {
+                // The SLENTRY nid is an 8-byte field whose upper dword real writers leave uninitialized; unlike the
+                // node B-tree, only the low 32 bits identify the subnode.
                 ReadOnlySpan<byte> row = body.Slice(i * 24, 24);
                 entries.Add(new PstNbtEntry(
                     (uint)BinaryPrimitives.ReadUInt64LittleEndian(row),
@@ -92,5 +94,5 @@ internal static class PstSubnodeTree
     /// <param name="blockId">The offending block identifier.</param>
     /// <returns>The exception to throw.</returns>
     private static PstFileFormatException Malformed(ulong blockId) =>
-        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstSubnodeTree, blockId));
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstSubnodeBlock, blockId), PstFileError.InvalidSubnodeTree);
 }

@@ -30,7 +30,7 @@ public partial class OutlookMessageTests
     public void BodyHtml_WhenBinaryWithCodePage_ShouldDecodeThroughDeclaredEncoding()
     {
         const string Html = "<html><body>こんにちは</body></html>";
-        byte[] bytes = MsgEncodingResolver.GetEncoding(932, null).GetBytes(Html);
+        byte[] bytes = MapiEncodingResolver.GetEncoding(932, null).GetBytes(Html);
         using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
             .AddBinary(MapiPropertyIds.Html, bytes)
             .AddFixedEntry(0x3FDE0003, 932)
@@ -83,5 +83,46 @@ public partial class OutlookMessageTests
         Assert.IsNull(message.BodyText);
         Assert.IsNull(message.BodyHtml);
         Assert.IsNull(message.BodyRtf);
+    }
+
+    /// <summary>
+    /// Verifies that the decoded RTF and HTML bodies are computed once and cached: a second read returns the same
+    /// instance rather than re-running the decompression and code-page decode.
+    /// </summary>
+    [TestMethod]
+    public void BodyRtf_WhenReadTwice_ShouldReturnCachedInstance()
+    {
+        byte[] payload = Convert.FromHexString(CompressedRtfTests.SpecExample1Hex);
+        byte[] html = System.Text.Encoding.ASCII.GetBytes("<html><body>cached</body></html>");
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddBinary(MapiPropertyIds.RtfCompressed, payload)
+            .AddBinary(MapiPropertyIds.Html, html)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreSame(message.BodyRtf, message.BodyRtf, "The RTF body must decode once and be cached.");
+        Assert.AreSame(message.BodyHtml, message.BodyHtml, "The HTML body must decode once and be cached.");
+    }
+
+    /// <summary>
+    /// Verifies that a compressed RTF body whose decompressed size exceeds
+    /// <see cref="OutlookMessageReaderOptions.MaxDecompressedRtfBytes" /> is rejected with the reader's format
+    /// exception rather than decompressed.
+    /// </summary>
+    [TestMethod]
+    public void BodyRtf_WhenDecompressedSizeExceedsOption_ShouldThrowOutlookMsgFormatException()
+    {
+        byte[] payload = Convert.FromHexString(CompressedRtfTests.SpecExample1Hex);
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddBinary(MapiPropertyIds.RtfCompressed, payload)
+            .Build();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { MaxDecompressedRtfBytes = 16 });
+
+        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = message.BodyRtf;
+        });
     }
 }

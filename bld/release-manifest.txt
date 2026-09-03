@@ -29,3 +29,7 @@ Bodu.IO.Compound
 Bodu.Formats.Excel.Binary
 Bodu.Formats.Outlook
 Bodu.Formats.Outlook.Msg
+
+# Wave 3 — Outlook personal-folders (PST) readers
+Bodu.IO.Pst
+Bodu.Formats.Outlook.Pst

@@ -95,7 +95,7 @@ internal sealed class MsgFixtureBuilder
     /// <returns>This builder.</returns>
     internal MsgFixtureBuilder AddString8(ushort id, string value, int codePage)
     {
-        byte[] bytes = MsgEncodingResolver.GetEncoding(codePage, null).GetBytes(value);
+        byte[] bytes = MapiEncodingResolver.GetEncoding(codePage, null).GetBytes(value);
         uint tag = ComposeTag(id, MapiPropertyType.String8);
         _entries.Add(new MsgPropertyEntry(tag, DefaultFlags, (uint)(bytes.Length + 1)));
         _streams.Add((MsgStreamNames.GetSubstgStreamName(tag), bytes));

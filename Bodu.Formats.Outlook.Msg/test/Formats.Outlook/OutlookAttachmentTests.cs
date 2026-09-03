@@ -75,4 +75,20 @@ public partial class OutlookAttachmentTests
 
         Assert.AreEqual("REPORT~1.PDF", message.Attachments[0].FileName);
     }
+
+    /// <summary>
+    /// Verifies that the MIME tag convenience surfaces <c>PidTagAttachMimeTag</c>, matching the PST reader's view.
+    /// </summary>
+    [TestMethod]
+    public void MimeTag_WhenPresent_ShouldReturnValue()
+    {
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddAttachment(attachment => attachment
+                .AddUnicode(MapiPropertyIds.AttachMimeTag, "application/pdf"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("application/pdf", message.Attachments[0].MimeTag);
+    }
 }

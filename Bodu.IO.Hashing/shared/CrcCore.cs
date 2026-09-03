@@ -13,6 +13,8 @@ using Bodu.Extensions;
 namespace Bodu.IO.Pst.Internal;
 #elif MSG
 namespace Bodu.Formats.Outlook.Msg;
+#elif OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
 #else
 namespace Bodu.IO.Hashing.Checksums;
 #endif

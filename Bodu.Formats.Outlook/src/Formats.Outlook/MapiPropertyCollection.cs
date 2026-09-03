@@ -33,6 +33,9 @@ public sealed class MapiPropertyCollection
     /// <summary>Maps a raw tag value to its index in <see cref="_properties" />.</summary>
     private readonly Dictionary<uint, int> _indexByTag;
 
+    /// <summary>Maps a 16-bit identifier to the index of its first property in <see cref="_properties" />.</summary>
+    private readonly Dictionary<ushort, int> _firstIndexById;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MapiPropertyCollection" /> class.
     /// </summary>
@@ -46,6 +49,7 @@ public sealed class MapiPropertyCollection
 
         _properties = new List<MapiProperty>();
         _indexByTag = new Dictionary<uint, int>();
+        _firstIndexById = new Dictionary<ushort, int>();
         foreach (MapiProperty property in properties)
         {
             ThrowHelper.ThrowIfNull(property, nameof(properties));
@@ -57,6 +61,7 @@ public sealed class MapiPropertyCollection
             else
             {
                 _indexByTag.Add(property.Tag.Value, _properties.Count);
+                _firstIndexById.TryAdd(property.Tag.Id, _properties.Count);
                 _properties.Add(property);
             }
         }
@@ -102,6 +107,43 @@ public sealed class MapiPropertyCollection
     }
 
     /// <summary>
+    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type — the lookup for
+    /// callers that know which property they want but not which wire type the writer chose for it.
+    /// </summary>
+    /// <param name="id">The 16-bit property identifier.</param>
+    /// <param name="property">When this method returns, the first matching property when one is present.</param>
+    /// <returns><see langword="true" /> when a property with the identifier is present.</returns>
+    public bool TryGetValue(ushort id, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out MapiProperty property)
+    {
+        if (_firstIndexById.TryGetValue(id, out int index))
+        {
+            property = _properties[index];
+            return true;
+        }
+
+        property = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Enumerates every property carrying a 16-bit identifier, in first-occurrence order — one per distinct type the
+    /// writer stored it under.
+    /// </summary>
+    /// <param name="id">The 16-bit property identifier.</param>
+    /// <returns>The matching properties; empty when none is present.</returns>
+    public IEnumerable<MapiProperty> GetAll(ushort id)
+    {
+        if (!_firstIndexById.TryGetValue(id, out int first))
+            yield break;
+
+        for (int i = first; i < _properties.Count; i++)
+        {
+            if (_properties[i].Tag.Id == id)
+                yield return _properties[i];
+        }
+    }
+
+    /// <summary>
     /// Returns the string value of a property, probing the Unicode and then the code-page string type.
     /// </summary>
     /// <param name="id">The 16-bit property identifier.</param>
@@ -110,20 +152,35 @@ public sealed class MapiPropertyCollection
         GetValue(id, MapiPropertyType.Unicode) as string ?? GetValue(id, MapiPropertyType.String8) as string;
 
     /// <summary>
-    /// Returns the 32-bit integer value of a property.
+    /// Gets a 32-bit integer property value.
     /// </summary>
-    /// <param name="id">The 16-bit property identifier.</param>
-    /// <returns>The value, or <see langword="null" /> when absent or not a 32-bit integer.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>
+    /// The <see cref="MapiPropertyType.Int32" /> value, or the <see cref="MapiPropertyType.Int16" /> value widened
+    /// when the writer stored the property in the narrower type; <see langword="null" /> when neither is present.
+    /// </returns>
     public int? GetInt32(ushort id) =>
-        GetValue(id, MapiPropertyType.Int32) as int?;
+        GetValue(id, MapiPropertyType.Int32) is int i32
+            ? i32
+            : GetValue(id, MapiPropertyType.Int16) as short?;
+
 
     /// <summary>
-    /// Returns the 64-bit integer value of a property.
+    /// Gets a 64-bit integer property value.
     /// </summary>
-    /// <param name="id">The 16-bit property identifier.</param>
-    /// <returns>The value, or <see langword="null" /> when absent or not a 64-bit integer.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>
+    /// The <see cref="MapiPropertyType.Int64" /> value, or the <see cref="MapiPropertyType.Int32" /> or
+    /// <see cref="MapiPropertyType.Int16" /> value widened when the writer stored the property in a narrower type;
+    /// <see langword="null" /> when none is present.
+    /// </returns>
     public long? GetInt64(ushort id) =>
-        GetValue(id, MapiPropertyType.Int64) as long?;
+        GetValue(id, MapiPropertyType.Int64) is long i64
+            ? i64
+            : GetValue(id, MapiPropertyType.Int32) is int i32
+                ? i32
+                : GetValue(id, MapiPropertyType.Int16) as short?;
+
 
     /// <summary>
     /// Returns the Boolean value of a property.
@@ -207,5 +264,5 @@ public sealed class MapiPropertyCollection
     /// <param name="elementType">The base element type to probe; the multi-valued flag is applied to it.</param>
     /// <returns>The stored value, or <see langword="null" /> when the tag is absent.</returns>
     private object? GetMultiValue(ushort id, MapiPropertyType elementType) =>
-        TryGetValue(new MapiPropertyTag(((uint)id << 16) | (ushort)elementType | 0x1000u), out MapiProperty? property) ? property.Value : null;
+        TryGetValue(MapiPropertyTag.ForMultiValue(id, elementType), out MapiProperty? property) ? property.Value : null;
 }

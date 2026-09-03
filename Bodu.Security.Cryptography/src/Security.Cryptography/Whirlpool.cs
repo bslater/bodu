@@ -56,6 +56,11 @@ namespace Bodu.Security.Cryptography;
 /// e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash without an
 /// interop constraint use SHA-512 or <see cref="Blake2b" />; both are faster on contemporary hardware.
 /// </para>
+/// <para>
+/// This implementation is constant-time in its control flow, but the S-box lookup tables are read at
+/// message-dependent indices, so hashing secret data (for example inside a keyed construction) is <b>not</b> hardened
+/// against timing or cache-based side-channel attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

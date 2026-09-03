@@ -35,7 +35,7 @@ public sealed partial class OutlookMessage
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
     public bool TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         return NamedPropertyMap.TryGetId(name, out id);
     }
@@ -49,7 +49,7 @@ public sealed partial class OutlookMessage
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
     public bool TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         return NamedPropertyMap.TryGetName(tag.Id, out name);
     }

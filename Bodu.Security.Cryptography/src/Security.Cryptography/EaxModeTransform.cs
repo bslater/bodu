@@ -193,8 +193,9 @@ public sealed class EaxModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: verify-before-release.</strong> The OMAC-derived tag is recomputed and compared
     /// in constant time before the CTR decryption stream is applied to <paramref name="output" />; no plaintext byte is
-    /// ever written when authentication fails. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the
-    /// library-wide failure contract.
+    /// ever written when authentication fails. If the underlying cipher throws mid-transform, the plaintext region of
+    /// <paramref name="output" /> is zeroed before the exception propagates. See
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -238,6 +239,13 @@ public sealed class EaxModeTransform
             CtrEncrypt(ciphertext, output[..plaintextLength], nPrime);
 
             return plaintextLength;
+        }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so partially written plaintext or keystream bytes never leak.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
         }
         finally
         {
@@ -461,21 +469,12 @@ public sealed class EaxModeTransform
 
     /// <summary>
     /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
-    /// x + 1.
+    /// x + 1, via the shared branch-free <see cref="GaloisField128.Double" /> so the key-derived CMAC subkeys do not
+    /// influence control flow.
     /// </summary>
     /// <param name="x">The block doubled in place.</param>
-    private static void Dbl(byte[] x)
-    {
-        bool msb = (x[0] & 0x80) != 0;
-
-        for (int i = 0; i < x.Length - 1; i++)
-            x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
-
-        x[^1] <<= 1;
-
-        if (msb)
-            x[^1] ^= 0x87;
-    }
+    private static void Dbl(byte[] x) =>
+        GaloisField128.Double(x, x);
 
     /// <summary>
     /// XORs two equally-sized input spans into <paramref name="result" />.

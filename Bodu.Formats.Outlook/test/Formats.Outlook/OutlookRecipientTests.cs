@@ -33,6 +33,19 @@ public class OutlookRecipientTests
     }
 
     /// <summary>
+    /// Verifies that constructing a recipient with a <see langword="null" /> property collection throws
+    /// <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenPropertiesIsNull_ShouldThrowExactly()
+    {
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new OutlookRecipient(null!);
+        });
+    }
+
+    /// <summary>
     /// Verifies that absent properties surface as <see langword="null" />, and that an undefined recipient-type value
     /// is reported as <see langword="null" /> rather than an out-of-range enum.
     /// </summary>

@@ -36,6 +36,9 @@ internal sealed class PstHeapNode
     /// <summary>The node's ordered data-block segments.</summary>
     private readonly List<byte[]> _segments;
 
+    /// <summary>The total length of every segment, which bounds the number of distinct items the heap can hold.</summary>
+    private readonly int _totalLength;
+
     /// <summary>Each block's allocation table: entry <c>n</c> starts at <c>[n-1]</c> and ends at <c>[n]</c>.</summary>
     private readonly ushort[][] _allocations;
 
@@ -54,7 +57,16 @@ internal sealed class PstHeapNode
         UserRootHid = userRootHid;
         _segments = segments;
         _allocations = allocations;
+        foreach (byte[] segment in segments)
+            _totalLength += segment.Length;
     }
+
+    /// <summary>
+    /// Gets the total length of the heap's data blocks, in bytes.
+    /// </summary>
+    /// <value>The summed segment length — an upper bound on the bytes any structure on the heap can address.</value>
+    internal int TotalLength =>
+        _totalLength;
 
     /// <summary>
     /// Gets the owning node identifier, used in diagnostics.
@@ -144,7 +156,7 @@ internal sealed class PstHeapNode
         if (!TryGetItem(hid, out ReadOnlyMemory<byte> item))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapId, hid, new PstNodeId(NodeId)));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapId, hid, new PstNodeId(NodeId)), PstFileError.InvalidHeap);
         }
 
         return item;
@@ -193,5 +205,5 @@ internal sealed class PstHeapNode
     /// <param name="nodeId">The owning node identifier.</param>
     /// <returns>The exception to throw.</returns>
     private static PstFileFormatException MalformedHeap(uint nodeId) =>
-        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapNode, new PstNodeId(nodeId)));
+        new(string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstHeapNode, new PstNodeId(nodeId)), PstFileError.InvalidHeap);
 }

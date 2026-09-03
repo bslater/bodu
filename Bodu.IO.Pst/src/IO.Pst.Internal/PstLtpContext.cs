@@ -72,7 +72,7 @@ internal sealed class PstLtpContext
         if (!TryGetSubnodeEntry(hnid, out PstNbtEntry entry))
         {
             throw new PstFileFormatException(string.Format(
-                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstSubnodeTree, new PstNodeId(NodeId)));
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstSubnodeTree, new PstNodeId(NodeId)), PstFileError.InvalidSubnodeTree);
         }
 
         return PstDataTree.Resolve(_source, entry.DataBlockId);

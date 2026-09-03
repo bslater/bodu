@@ -167,10 +167,10 @@ public sealed class GcmSivModeTransform
     /// <remarks>
     /// <strong>Authentication pattern: write-then-clear.</strong> The candidate plaintext is decrypted into
     /// <paramref name="output" /> first because the synthetic IV used by AES-GCM-SIV is derived over the plaintext. The
-    /// tag is then compared in constant time; on mismatch <paramref name="output" /> is zeroed via
-    /// <see cref="CryptographyHelper.Clear" /> and <see cref="CryptographicException" /> is thrown — no plaintext is
-    /// observable to the caller. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure
-    /// contract.
+    /// tag is then compared in constant time; on any failure — an authentication mismatch or an exception from the
+    /// underlying cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed via
+    /// <see cref="CryptographyHelper.Clear" /> before the exception propagates — no plaintext is observable to the
+    /// caller. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
@@ -182,17 +182,22 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, plaintextLength);
         EnsureAadProcessed();
 
+        byte[]? receivedTagCopy = null;
+        byte[]? ctrIv = null;
+        byte[]? expectedTag = null;
+
         try
         {
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
             // Decrypt CTR.
-            byte[] ctrIv = BuildCtrIv(receivedTag.ToArray());
+            receivedTagCopy = receivedTag.ToArray();
+            ctrIv = BuildCtrIv(receivedTagCopy);
             CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
 
             // Recompute and verify tag.
-            byte[] expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
+            expectedTag = ComputeTag(_aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptographyHelper.Clear(output[..plaintextLength]);
@@ -202,8 +207,19 @@ public sealed class GcmSivModeTransform
 
             return plaintextLength;
         }
+        catch
+        {
+            // Zero the plaintext region on any failure — a tag mismatch or a fault from the underlying
+            // cipher mid-transform — so the unverified plaintext this write-then-clear mode has already
+            // written never leaks.
+            CryptographyHelper.Clear(output[..plaintextLength]);
+            throw;
+        }
         finally
         {
+            CryptographyHelper.Clear(expectedTag);
+            CryptographyHelper.Clear(ctrIv);
+            CryptographyHelper.Clear(receivedTagCopy);
             _completed = true;
         }
     }
@@ -232,19 +248,24 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, required);
         EnsureAadProcessed();
 
+        byte[]? tag = null;
+        byte[]? ctrIv = null;
+
         try
         {
             // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            byte[] tag = ComputeTag(_aad.AsSpan(), plaintext);
+            tag = ComputeTag(_aad.AsSpan(), plaintext);
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
-            byte[] ctrIv = BuildCtrIv(tag);
+            ctrIv = BuildCtrIv(tag);
             CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
             tag.CopyTo(output[plaintext.Length..]);
             return required;
         }
         finally
         {
+            CryptographyHelper.Clear(ctrIv);
+            CryptographyHelper.Clear(tag);
             _completed = true;
         }
     }
@@ -371,20 +392,31 @@ public sealed class GcmSivModeTransform
     /// <param name="result">The destination block (16 bytes); receives the POLYVAL product.</param>
     private static void PolyvalMultiply(Span<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        // Stack-allocate all three scratch blocks so reflected key material never reaches the managed heap.
+        // Stack-allocate all three scratch blocks so reflected key material never reaches the managed heap, and
+        // zero them before they go out of scope — hr in particular holds the reflected auth key.
         Span<byte> xr = stackalloc byte[16];
         Span<byte> hr = stackalloc byte[16];
-        ByteReverse(x, xr);
-        ByteReverse(h, hr);
-
-        // RFC 8452 §3: POLYVAL(H, X) = ByteReverse(GHASH(mulX_GHASH(reflect(H)), reflect(X))). The reflected hash key
-        // must be multiplied by x in the GHASH field; without this the tag is wrong for every non-zero POLYVAL input.
-        MulXGhash(hr);
-
         Span<byte> product = stackalloc byte[16];
-        GhashMultiply(xr, hr, product);
 
-        ByteReverse(product, result);
+        try
+        {
+            ByteReverse(x, xr);
+            ByteReverse(h, hr);
+
+            // RFC 8452 §3: POLYVAL(H, X) = ByteReverse(GHASH(mulX_GHASH(reflect(H)), reflect(X))). The reflected hash key
+            // must be multiplied by x in the GHASH field; without this the tag is wrong for every non-zero POLYVAL input.
+            MulXGhash(hr);
+
+            GhashMultiply(xr, hr, product);
+
+            ByteReverse(product, result);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(product);
+            CryptographyHelper.Clear(hr);
+            CryptographyHelper.Clear(xr);
+        }
     }
 
     /// <summary>
@@ -462,7 +494,17 @@ public sealed class GcmSivModeTransform
 
             // Encrypt with K_enc to produce the tag.
             byte[] tag = new byte[blockSize];
-            _encCipher.Encrypt(polyvalResult, tag);
+            try
+            {
+                _encCipher.Encrypt(polyvalResult, tag);
+            }
+            catch
+            {
+                // Zero the partially written tag when the derived cipher faults mid-encrypt.
+                CryptographyHelper.Clear(tag);
+                throw;
+            }
+
             return tag;
         }
         finally
@@ -482,26 +524,35 @@ public sealed class GcmSivModeTransform
     {
         int blockSize = _encCipher.BlockSize / 8;
 
-        // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap.
+        // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap, and zero both
+        // scratch blocks before they go out of scope — ks holds raw keystream.
         Span<byte> ctr = stackalloc byte[blockSize];
         counter.CopyTo(ctr);
         Span<byte> ks = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        try
         {
-            _encCipher.Encrypt(ctr, ks);
+            for (int offset = 0; offset < input.Length; offset += blockSize)
+            {
+                _encCipher.Encrypt(ctr, ks);
 
-            // GCM-SIV CTR increments the first 32 bits (little-endian), leaving the remaining 96 bits — including the
-            // block-tag bit set in the most significant bit of the last byte — unchanged, per RFC 8452 Section 4.
-            uint lo = (uint)(ctr[0] | (ctr[1] << 8) | (ctr[2] << 16) | (ctr[3] << 24));
-            lo++;
-            ctr[0] = (byte)lo;
-            ctr[1] = (byte)(lo >> 8);
-            ctr[2] = (byte)(lo >> 16);
-            ctr[3] = (byte)(lo >> 24);
-            int len = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < len; i++)
-                output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+                // GCM-SIV CTR increments the first 32 bits (little-endian), leaving the remaining 96 bits — including the
+                // block-tag bit set in the most significant bit of the last byte — unchanged, per RFC 8452 Section 4.
+                uint lo = (uint)(ctr[0] | (ctr[1] << 8) | (ctr[2] << 16) | (ctr[3] << 24));
+                lo++;
+                ctr[0] = (byte)lo;
+                ctr[1] = (byte)(lo >> 8);
+                ctr[2] = (byte)(lo >> 16);
+                ctr[3] = (byte)(lo >> 24);
+                int len = Math.Min(blockSize, input.Length - offset);
+                for (int i = 0; i < len; i++)
+                    output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
+            }
+        }
+        finally
+        {
+            CryptographyHelper.Clear(ks);
+            CryptographyHelper.Clear(ctr);
         }
     }
 

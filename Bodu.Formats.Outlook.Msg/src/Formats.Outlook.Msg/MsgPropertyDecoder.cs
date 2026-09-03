@@ -42,8 +42,9 @@ internal static class MsgPropertyDecoder
     /// <param name="header">When this method returns, the decoded property-stream header.</param>
     /// <returns>The decoded property collection.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The storage has no property stream, the stream is malformed, or — under
-    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid.
+    /// The storage has no property stream, the stream is malformed, the container is corrupt, or — under
+    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid (including a
+    /// declared size that disagrees with the value stream).
     /// </exception>
     internal static MapiPropertyCollection Decode(
         CompoundStorage storage,
@@ -52,12 +53,8 @@ internal static class MsgPropertyDecoder
         Encoding? inheritedEncoding,
         out MsgPropertyStreamHeader header)
     {
-        if (!storage.TryOpenStream(MsgStreamNames.PropertiesStreamName, out CompoundStream? propertiesStream))
+        if (!MsgContainer.TryReadStream(storage, MsgStreamNames.PropertiesStreamName, out byte[]? payload))
             throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgContainer);
-
-        byte[] payload;
-        using (propertiesStream)
-            payload = propertiesStream.ReadAllBytes();
 
         MsgPropertyEntry[] entries = MsgPropertyStreamReader.Read(payload, kind, out header);
         Encoding encoding = ResolveEncoding(entries, inheritedEncoding);
@@ -87,7 +84,7 @@ internal static class MsgPropertyDecoder
         if (messageCodePage is null && internetCodePage is null && inheritedEncoding is not null)
             return inheritedEncoding;
 
-        return MsgEncodingResolver.GetEncoding(messageCodePage, internetCodePage);
+        return MapiEncodingResolver.GetEncoding(messageCodePage, internetCodePage);
     }
 
     /// <summary>
@@ -141,8 +138,15 @@ internal static class MsgPropertyDecoder
         }
         else if (IsVariableLength(tag.Type))
         {
-            if (!TryReadSubstg(storage, tag.Value, strict, out byte[]? bytes)
-                || !TryDecodeVariableValue(tag, bytes, encoding, strict, out value))
+            if (!TryReadSubstg(storage, tag.Value, strict, out byte[]? bytes))
+                return false;
+
+            // The record's size field is the stream length (string sizes count their terminator, which the stream
+            // omits); a disagreement is a structural fault under strict validation and ignored otherwise.
+            if (strict && !DeclaredSizeMatches(tag.Type, entry.Size, bytes.Length))
+                throw MalformedEntry(tag);
+
+            if (!TryDecodeVariableValue(tag, bytes, encoding, strict, out value))
                 return false;
         }
         else
@@ -156,15 +160,31 @@ internal static class MsgPropertyDecoder
     }
 
     /// <summary>
+    /// Determines whether a variable-length record's declared size agrees with its value stream.
+    /// </summary>
+    /// <param name="type">The base property type.</param>
+    /// <param name="declared">The size the property record declares.</param>
+    /// <param name="actual">The value stream's length.</param>
+    /// <returns>
+    /// <see langword="true" /> when the sizes match exactly, or differ by the string terminator (two bytes for a
+    /// Unicode string, one for a code-page string) that the size counts and the stream omits.
+    /// </returns>
+    private static bool DeclaredSizeMatches(MapiPropertyType type, uint declared, int actual) =>
+        declared == (uint)actual
+            || (type == MapiPropertyType.Unicode && declared == (uint)actual + 2)
+            || (type == MapiPropertyType.String8 && declared == (uint)actual + 1);
+
+    /// <summary>
     /// Determines whether a base type stores its payload in a value stream.
     /// </summary>
     /// <param name="type">The base property type.</param>
     /// <returns><see langword="true" /> for the string, binary, and GUID types.</returns>
     private static bool IsVariableLength(MapiPropertyType type) =>
-        type is MapiPropertyType.Unicode or MapiPropertyType.String8 or MapiPropertyType.Binary or MapiPropertyType.Guid;
+        MapiValueDecoder.IsVariableLength(type);
 
     /// <summary>
-    /// Decodes a fixed-length value stored inline in the property record.
+    /// Decodes a fixed-length value stored inline in the property record, mapping a shared-decoder rejection onto this
+    /// format's skip-or-throw policy.
     /// </summary>
     /// <param name="tag">The property tag.</param>
     /// <param name="raw">The 8-byte inline value.</param>
@@ -175,52 +195,17 @@ internal static class MsgPropertyDecoder
     /// </returns>
     private static bool TryDecodeFixedValue(MapiPropertyTag tag, ulong raw, bool strict, out object? value)
     {
-        switch (tag.Type)
-        {
-            case MapiPropertyType.Int16:
-                value = (short)(ushort)raw;
-                return true;
-            case MapiPropertyType.Int32:
-            case MapiPropertyType.ErrorCode:
-                value = (int)(uint)raw;
-                return true;
-            case MapiPropertyType.Float:
-                value = BitConverter.Int32BitsToSingle((int)(uint)raw);
-                return true;
-            case MapiPropertyType.Double:
-            case MapiPropertyType.AppTime:
-                value = BitConverter.Int64BitsToDouble((long)raw);
-                return true;
-            case MapiPropertyType.Currency:
-                value = (long)raw / 10000m;
-                return true;
-            case MapiPropertyType.Boolean:
-                value = (raw & 0xFF) != 0;
-                return true;
-            case MapiPropertyType.Int64:
-                value = (long)raw;
-                return true;
-            case MapiPropertyType.SystemTime:
-                if (TryConvertFileTime(raw, out DateTimeOffset timestamp))
-                {
-                    value = timestamp;
-                    return true;
-                }
+        if (MapiValueDecoder.TryDecodeFixedValue(tag.Type, raw, out value))
+            return true;
 
-                value = null;
-                return !strict
-                    ? false
-                    : throw MalformedEntry(tag);
-            default:
-                value = null;
-                return !strict
-                    ? false
-                    : throw MalformedEntry(tag);
-        }
+        return !strict
+            ? false
+            : throw MalformedEntry(tag);
     }
 
     /// <summary>
-    /// Decodes a variable-length payload read from a value stream.
+    /// Decodes a variable-length payload read from a value stream, mapping a shared-decoder rejection onto this
+    /// format's skip-or-throw policy.
     /// </summary>
     /// <param name="tag">The property tag.</param>
     /// <param name="bytes">The value-stream payload.</param>
@@ -232,46 +217,20 @@ internal static class MsgPropertyDecoder
     /// </returns>
     private static bool TryDecodeVariableValue(MapiPropertyTag tag, byte[] bytes, Encoding encoding, bool strict, out object? value)
     {
-        switch (tag.Type)
+        // Preserve the distinct strict-mode diagnostic for a structurally odd Unicode payload before the shared
+        // decoder folds it into a generic rejection.
+        if (strict && tag.Type == MapiPropertyType.Unicode && (bytes.Length & 1) != 0)
         {
-            case MapiPropertyType.Unicode:
-                if ((bytes.Length & 1) != 0)
-                {
-                    if (strict)
-                    {
-                        throw new OutlookMsgFormatException(string.Format(
-                            CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Format_Invalid_MsgStringPayload, tag));
-                    }
-
-                    value = Encoding.Unicode.GetString(bytes, 0, bytes.Length - 1).TrimEnd('\0');
-                    return true;
-                }
-
-                value = Encoding.Unicode.GetString(bytes).TrimEnd('\0');
-                return true;
-            case MapiPropertyType.String8:
-                value = encoding.GetString(bytes).TrimEnd('\0');
-                return true;
-            case MapiPropertyType.Binary:
-                value = bytes;
-                return true;
-            case MapiPropertyType.Guid:
-                if (bytes.Length != 16)
-                {
-                    value = null;
-                    return !strict
-                        ? false
-                        : throw MalformedEntry(tag);
-                }
-
-                value = new Guid(bytes);
-                return true;
-            default:
-                value = null;
-                return !strict
-                    ? false
-                    : throw MalformedEntry(tag);
+            throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Format_Invalid_MsgStringPayload, tag));
         }
+
+        if (MapiValueDecoder.TryDecodeVariableValue(tag.Type, bytes, encoding, strict, out value))
+            return true;
+
+        return !strict
+            ? false
+            : throw MalformedEntry(tag);
     }
 
     /// <summary>
@@ -316,13 +275,35 @@ internal static class MsgPropertyDecoder
                     elements[i] = element;
                 }
 
-                value = tag.Type == MapiPropertyType.Binary
-                    ? elements.Cast<byte[]>().ToArray()
-                    : elements.Cast<string>().ToArray();
+                value = ToTypedArray(tag.Type, elements);
                 return true;
             default:
                 return TryDecodePackedMultiValue(tag, baseBytes, strict, out value);
         }
+    }
+
+    /// <summary>
+    /// Copies decoded multi-value elements into the typed array the property model documents.
+    /// </summary>
+    /// <param name="type">The base element type.</param>
+    /// <param name="elements">The decoded elements: strings, or byte arrays for the binary type.</param>
+    /// <returns>A <c>string[]</c> or <c>byte[][]</c>.</returns>
+    private static Array ToTypedArray(MapiPropertyType type, object[] elements)
+    {
+        if (type == MapiPropertyType.Binary)
+        {
+            var arrays = new byte[elements.Length][];
+            for (int i = 0; i < elements.Length; i++)
+                arrays[i] = (byte[])elements[i];
+
+            return arrays;
+        }
+
+        var strings = new string[elements.Length];
+        for (int i = 0; i < elements.Length; i++)
+            strings[i] = (string)elements[i];
+
+        return strings;
     }
 
     /// <summary>
@@ -337,80 +318,10 @@ internal static class MsgPropertyDecoder
     /// </returns>
     private static bool TryDecodePackedMultiValue(MapiPropertyTag tag, byte[] bytes, bool strict, out object? value)
     {
-        value = null;
-        int elementSize = tag.Type switch
-        {
-            MapiPropertyType.Int16 => 2,
-            MapiPropertyType.Int32 => 4,
-            MapiPropertyType.Float => 4,
-            MapiPropertyType.Double => 8,
-            MapiPropertyType.Currency => 8,
-            MapiPropertyType.Int64 => 8,
-            MapiPropertyType.SystemTime => 8,
-            MapiPropertyType.Guid => 16,
-            _ => 0,
-        };
+        if (MapiValueDecoder.TryDecodePackedMultiValue(tag.Type, bytes, out value))
+            return true;
 
-        if (elementSize == 0 || bytes.Length % elementSize != 0)
-            return SkipOrThrowMultiValue(tag, strict);
-
-        int count = bytes.Length / elementSize;
-        ReadOnlySpan<byte> span = bytes;
-        switch (tag.Type)
-        {
-            case MapiPropertyType.Int16:
-                var shorts = new short[count];
-                for (int i = 0; i < count; i++)
-                    shorts[i] = BinaryPrimitives.ReadInt16LittleEndian(span.Slice(i * 2));
-                value = shorts;
-                return true;
-            case MapiPropertyType.Int32:
-                var ints = new int[count];
-                for (int i = 0; i < count; i++)
-                    ints[i] = BinaryPrimitives.ReadInt32LittleEndian(span.Slice(i * 4));
-                value = ints;
-                return true;
-            case MapiPropertyType.Float:
-                var floats = new float[count];
-                for (int i = 0; i < count; i++)
-                    floats[i] = BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(span.Slice(i * 4)));
-                value = floats;
-                return true;
-            case MapiPropertyType.Double:
-                var doubles = new double[count];
-                for (int i = 0; i < count; i++)
-                    doubles[i] = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64LittleEndian(span.Slice(i * 8)));
-                value = doubles;
-                return true;
-            case MapiPropertyType.Currency:
-                var decimals = new decimal[count];
-                for (int i = 0; i < count; i++)
-                    decimals[i] = BinaryPrimitives.ReadInt64LittleEndian(span.Slice(i * 8)) / 10000m;
-                value = decimals;
-                return true;
-            case MapiPropertyType.Int64:
-                var longs = new long[count];
-                for (int i = 0; i < count; i++)
-                    longs[i] = BinaryPrimitives.ReadInt64LittleEndian(span.Slice(i * 8));
-                value = longs;
-                return true;
-            case MapiPropertyType.SystemTime:
-                var timestamps = new DateTimeOffset[count];
-                for (int i = 0; i < count; i++)
-                {
-                    if (!TryConvertFileTime(BinaryPrimitives.ReadUInt64LittleEndian(span.Slice(i * 8)), out timestamps[i]))
-                        return SkipOrThrowMultiValue(tag, strict);
-                }
-
-                value = timestamps;
-                return true;
-            default:
-                var guids = new Guid[count];
-                for (int i = 0; i < count; i++)
-                    guids[i] = new Guid(span.Slice(i * 16, 16));
-                value = guids;
-                return true;
-        }
+        return SkipOrThrowMultiValue(tag, strict);
     }
 
     /// <summary>
@@ -428,18 +339,13 @@ internal static class MsgPropertyDecoder
         [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out byte[] bytes)
     {
         string name = MsgStreamNames.GetSubstgStreamName(tagValue);
-        if (!storage.TryOpenStream(name, out CompoundStream? stream))
-        {
-            bytes = null;
-            return !strict
-                ? false
-                : throw new OutlookMsgFormatException(string.Format(
-                    CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
-        }
+        if (MsgContainer.TryReadStream(storage, name, out bytes))
+            return true;
 
-        using (stream)
-            bytes = stream.ReadAllBytes();
-        return true;
+        return !strict
+            ? false
+            : throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
     }
 
     /// <summary>
@@ -459,41 +365,13 @@ internal static class MsgPropertyDecoder
         [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out byte[] bytes)
     {
         string name = MsgStreamNames.GetMultiValueElementStreamName(tagValue, index);
-        if (!storage.TryOpenStream(name, out CompoundStream? stream))
-        {
-            bytes = null;
-            return !strict
-                ? false
-                : throw new OutlookMsgFormatException(string.Format(
-                    CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
-        }
-
-        using (stream)
-            bytes = stream.ReadAllBytes();
-        return true;
-    }
-
-    /// <summary>
-    /// Converts a FILETIME value, rejecting zero and out-of-range values.
-    /// </summary>
-    /// <param name="raw">The raw FILETIME.</param>
-    /// <param name="value">When this method returns <see langword="true" />, the converted time stamp.</param>
-    /// <returns><see langword="true" /> when the value is representable.</returns>
-    private static bool TryConvertFileTime(ulong raw, out DateTimeOffset value)
-    {
-        value = default;
-        if (raw == 0 || raw > long.MaxValue)
-            return false;
-
-        try
-        {
-            value = DateTimeOffset.FromFileTime((long)raw);
+        if (MsgContainer.TryReadStream(storage, name, out bytes))
             return true;
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            return false;
-        }
+
+        return !strict
+            ? false
+            : throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgSubstgStream, new MapiPropertyTag(tagValue), name));
     }
 
     /// <summary>

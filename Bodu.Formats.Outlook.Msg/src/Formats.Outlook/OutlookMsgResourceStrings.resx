@@ -103,6 +103,12 @@
   <data name="Format_Invalid_RtfCompressedData" xml:space="preserve">
     <value>The compressed RTF payload's declared sizes are inconsistent with its length.</value>
   </data>
+  <data name="Format_Invalid_RtfCompressedTooLarge" xml:space="preserve">
+    <value>The compressed RTF payload declares or produces a decompressed size above the configured limit.</value>
+  </data>
+  <data name="Format_Invalid_MsgEmbeddedMessageDepth" xml:space="preserve">
+    <value>Embedded messages nest deeper than the configured limit of {0}.</value>
+  </data>
   <data name="Format_Invalid_RtfCompressedCrc" xml:space="preserve">
     <value>The compressed RTF payload failed its checksum; the content is corrupt.</value>
   </data>

@@ -38,6 +38,9 @@ public sealed class PstTableContext
     /// <summary>The row count the row index records.</summary>
     private readonly int _rowCount;
 
+    /// <summary>Whether a row matrix holding more rows than the index declares is rejected.</summary>
+    private readonly bool _strict;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstTableContext" /> class.
     /// </summary>
@@ -58,6 +61,7 @@ public sealed class PstTableContext
             _columns[i] = new PstTableColumn(info.Columns[i].PropertyId, info.Columns[i].WireType, info.Columns[i].DataSize);
 
         _rowCount = PstBTreeOnHeap.EnumerateRecords(heap, rowIndex, validationLevel).Count();
+        _strict = validationLevel == PstValidationLevel.Strict;
     }
 
     /// <summary>
@@ -82,15 +86,58 @@ public sealed class PstTableContext
     public IEnumerable<PstTableRow> EnumerateRows()
     {
         int remaining = _rowCount;
-        foreach (byte[] block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        long available = 0;
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
         {
-            int available = block.Length / _info.RowWidth;
-            for (int i = 0; i < available && remaining > 0; i++, remaining--)
+            int rows = block.Length / _info.RowWidth;
+            available += rows;
+            for (int i = 0; i < rows && remaining > 0; i++, remaining--)
                 yield return CreateRow(block, i);
 
-            if (remaining == 0)
+            // The index is authoritative for the row count. Tolerant reads stop once it is satisfied; strict reads
+            // keep counting so a matrix carrying whole rows the index does not know about is rejected below.
+            if (remaining == 0 && !_strict)
                 yield break;
         }
+
+        if (_strict && available > _rowCount)
+            throw PstTableContextReader.Malformed(_context.NodeId);
+
+        if (remaining > 0)
+            throw PstTableContextReader.Malformed(_context.NodeId);
+    }
+
+    /// <summary>
+    /// Enumerates the identifiers of the table's rows in matrix order, without materializing the rows.
+    /// </summary>
+    /// <returns>The row identifiers.</returns>
+    /// <exception cref="PstFileFormatException">
+    /// The row matrix does not resolve or holds fewer rows than the row index records.
+    /// </exception>
+    /// <remarks>
+    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone — each names
+    /// the object node the row stands for — so this path reads the leading dword of each row in place and allocates
+    /// nothing per row.
+    /// </remarks>
+    public IEnumerable<uint> EnumerateRowIds()
+    {
+        // Mirrors EnumerateRows without materializing a row per identifier: the identifier is the first four bytes
+        // of each row slot, read in place from the row-matrix blocks.
+        int remaining = _rowCount;
+        long available = 0;
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        {
+            int rows = block.Length / _info.RowWidth;
+            available += rows;
+            for (int i = 0; i < rows && remaining > 0; i++, remaining--)
+                yield return BinaryPrimitives.ReadUInt32LittleEndian(block.Span.Slice(i * _info.RowWidth));
+
+            if (remaining == 0 && !_strict)
+                yield break;
+        }
+
+        if (_strict && available > _rowCount)
+            throw PstTableContextReader.Malformed(_context.NodeId);
 
         if (remaining > 0)
             throw PstTableContextReader.Malformed(_context.NodeId);
@@ -119,7 +166,7 @@ public sealed class PstTableContext
         int positionInBlock = rowNumber % rowsPerBlock;
 
         int blockIndex = 0;
-        foreach (byte[] block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
+        foreach (ReadOnlyMemory<byte> block in PstTableContextReader.EnumerateRowBlocks(_heap, _context, _info))
         {
             if (blockIndex == targetBlock)
             {
@@ -142,10 +189,10 @@ public sealed class PstTableContext
     /// <param name="block">The matrix block.</param>
     /// <param name="positionInBlock">The row's position within the block.</param>
     /// <returns>The row.</returns>
-    private PstTableRow CreateRow(byte[] block, int positionInBlock)
+    private PstTableRow CreateRow(ReadOnlyMemory<byte> block, int positionInBlock)
     {
         var bytes = new byte[_info.RowWidth];
-        block.AsSpan(positionInBlock * _info.RowWidth, _info.RowWidth).CopyTo(bytes);
+        block.Span.Slice(positionInBlock * _info.RowWidth, _info.RowWidth).CopyTo(bytes);
         return new PstTableRow(bytes, _heap, _context, _info);
     }
 }

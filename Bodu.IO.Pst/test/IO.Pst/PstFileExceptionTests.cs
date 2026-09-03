@@ -21,6 +21,22 @@ public class PstFileExceptionTests
     {
         Assert.IsInstanceOfType<PstFileException>(new PstFileFormatException());
         Assert.IsInstanceOfType<PstFileException>(new PstUnsupportedFormatException());
+        Assert.IsInstanceOfType<PstFileException>(new PstNodeNotFoundException());
+    }
+
+    /// <summary>
+    /// Verifies that the error category is preserved by the category constructors, defaults to
+    /// <see cref="PstFileError.None" /> on the plain constructors, and is fixed for the specialized types.
+    /// </summary>
+    [TestMethod]
+    public void Error_WhenConstructed_ShouldCarryCategory()
+    {
+        Assert.AreEqual(PstFileError.None, new PstFileException("boom").Error);
+        Assert.AreEqual(PstFileError.InvalidBlock, new PstFileException("boom", PstFileError.InvalidBlock).Error);
+        Assert.AreEqual(PstFileError.InvalidHeader, new PstFileFormatException("boom", PstFileError.InvalidHeader).Error);
+        Assert.AreEqual(PstFileError.UnsupportedFormat, new PstUnsupportedFormatException("boom").Error);
+        Assert.AreEqual(PstFileError.NodeNotFound, new PstNodeNotFoundException("boom").Error);
+        Assert.AreEqual(PstFileError.NodeNotFound, new PstNodeNotFoundException("boom", new InvalidOperationException()).Error);
     }
 
     /// <summary>

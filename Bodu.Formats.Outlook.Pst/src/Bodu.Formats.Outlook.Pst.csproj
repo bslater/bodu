@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — Outlook Pst</Title>
+    <Description>A read-only reader for the Outlook personal-folders format (.pst / MS-PST, Unicode format) over the Bodu.IO.Pst node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or store authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
+    <PackageTags>$(PackageTags);outlook;pst;mapi;email;mailbox;archive;reader</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Formats.Outlook.Pst.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Namespace selector for the shared CRC core and Outlook decode-layer source. -->
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);OUTLOOK_PST</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.IO.Pst\src\Bodu.IO.Pst.csproj" />
+    <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
+  </ItemGroup>
+
+  <!-- External package dependencies. -->
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+  </ItemGroup>
+
+  <!-- Strongly-typed resource strings. -->
+  <ItemGroup>
+    <EmbeddedResource Update="Formats.Outlook\OutlookPstResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OutlookPstResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Formats.Outlook\OutlookPstResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OutlookPstResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

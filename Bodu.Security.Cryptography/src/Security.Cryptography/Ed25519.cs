@@ -279,46 +279,53 @@ public sealed partial class Ed25519
         CryptographyThrowHelper.ThrowIfInvalidDestinationLength(destination, SignatureSizeInBytes);
         CryptographyThrowHelper.ThrowIfNoPrivateKey(TypedKeyMaterial?.HasPrivateKey ?? false);
 
-        // RFC 8032 §5.1.6: expand the seed into the clamped scalar s and the deterministic-nonce prefix.
+        // RFC 8032 §5.1.6: expand the seed into the clamped scalar s and the deterministic-nonce prefix. Every
+        // secret-bearing scratch span is cleared in the finally, so a fault mid-signing (in the point arithmetic or
+        // the incremental hash) cannot leave the expanded private scalar or nonce material live on the stack.
         Span<byte> expanded = stackalloc byte[64];
-        SHA512.HashData(TypedKeyMaterial!.PrivateKey!, expanded);
-
         Span<byte> s = stackalloc byte[32];
-        expanded[..32].CopyTo(s);
-        s[0] &= 248;
-        s[31] &= 127;
-        s[31] |= 64;
-
         Span<byte> digest = stackalloc byte[64];
         Span<byte> r = stackalloc byte[32];
+        Span<byte> k = stackalloc byte[32];
 
-        using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
+        try
         {
-            // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
-            hash.AppendData(expanded[32..]);
-            hash.AppendData(data);
-            hash.GetHashAndReset(digest);
-            Ed25519Scalar.Reduce(digest, r);
+            SHA512.HashData(TypedKeyMaterial!.PrivateKey!, expanded);
 
-            Span<byte> rEncoded = destination[..32];
-            Ed25519Point.ScalarMultBase(r).Encode(rEncoded);
+            expanded[..32].CopyTo(s);
+            s[0] &= 248;
+            s[31] &= 127;
+            s[31] |= 64;
 
-            // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
-            hash.AppendData(rEncoded);
-            hash.AppendData(TypedKeyMaterial!.PublicKey);
-            hash.AppendData(data);
-            hash.GetHashAndReset(digest);
+            using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
+            {
+                // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
+                hash.AppendData(expanded[32..]);
+                hash.AppendData(data);
+                hash.GetHashAndReset(digest);
+                Ed25519Scalar.Reduce(digest, r);
 
-            Span<byte> k = stackalloc byte[32];
-            Ed25519Scalar.Reduce(digest, k);
-            Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
-            CryptographyHelper.Clear(k);
+                Span<byte> rEncoded = destination[..32];
+                Ed25519Point.ScalarMultBase(r).Encode(rEncoded);
+
+                // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
+                hash.AppendData(rEncoded);
+                hash.AppendData(TypedKeyMaterial!.PublicKey);
+                hash.AppendData(data);
+                hash.GetHashAndReset(digest);
+
+                Ed25519Scalar.Reduce(digest, k);
+                Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
+            }
         }
-
-        CryptographyHelper.Clear(expanded);
-        CryptographyHelper.Clear(s);
-        CryptographyHelper.Clear(digest);
-        CryptographyHelper.Clear(r);
+        finally
+        {
+            CryptographyHelper.Clear(k);
+            CryptographyHelper.Clear(r);
+            CryptographyHelper.Clear(digest);
+            CryptographyHelper.Clear(s);
+            CryptographyHelper.Clear(expanded);
+        }
     }
 
     /// <summary>

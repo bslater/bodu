@@ -52,6 +52,15 @@ public readonly struct MapiPropertyTag
         Value = value;
 
     /// <summary>
+    /// Creates the tag of a multi-valued property from its identifier and element type.
+    /// </summary>
+    /// <param name="id">The 16-bit property identifier.</param>
+    /// <param name="elementType">The base type of each element.</param>
+    /// <returns>The tag whose type word carries <paramref name="elementType" /> and the multi-valued flag.</returns>
+    public static MapiPropertyTag ForMultiValue(ushort id, MapiPropertyType elementType) =>
+        new(((uint)id << 16) | (ushort)elementType | MultiValuedFlag);
+
+    /// <summary>
     /// Gets the raw 32-bit tag value.
     /// </summary>
     /// <value>

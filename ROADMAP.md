@@ -631,8 +631,21 @@ Forward-looking:
   Appendix D and RFC 6238 Appendix B vectors.
 - **A side-channel / fault-hardening review pass is in flight.** The first
   batches replaced the GCM-SIV GF(2^128) multiply with a constant-time
-  implementation and zero the EAX CMAC state on transform fault; further
-  review batches continue on the same cadence.
+  implementation and zero the EAX CMAC state on transform fault. Batch 3
+  (2026-08-28) removed the last branch-on-secret from the GF(2^128)
+  doubling paths (the EAX/SIV/OCB `dbl()` now routes through a shared
+  branch-free `GaloisField128.Double`), completed the zero-on-fault
+  contract across all six block-cipher AEADs (any exception escaping
+  `Decrypt` leaves the output's plaintext region zeroed — pinned by a
+  fault-injection sweep over a new `FaultingBlockCipher` test double —
+  with CCM retrofitted from no clearing at all), reset the Ascon sponge
+  state on authentication failure, fault-protected the
+  Twofish/HC-128/Serpent-128 key-schedule scratch and the
+  Ed25519/X25519/Scrypt/Argon2/HOTP secret clears, added the missing
+  `ConstantTimeDifference`/`ConstantTimeSelect` tests, and documented the
+  cache-timing stance on every table-driven cipher and hash (correcting
+  the CCM/OCB remarks that wrongly claimed verify-before-release).
+  Further review batches continue on the same cadence.
 
 ### `Bodu.IO.Hashing`
 
@@ -1117,9 +1130,12 @@ DocFX guide section and compile-guarded snippets.
 
 ### `Bodu.IO.Pst`
 
-Current state: new (P0 spike landed 2026-07-31; **P1 — the LTP layer —
-landed 2026-08-19** per
-[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md)).
+Current state: shipping (P0 spike landed 2026-07-31; **P1 — the LTP
+layer — landed 2026-08-19** per
+[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
+**P2 — the `Bodu.Formats.Outlook.Pst` messaging reader and the
+container hardening pass — landed 2026-08-31** per
+[`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)).
 The NDB (node database) read layer of MS-PST for the Unicode format —
 header parse with the §5.3 CRC, NBT/BBT B-tree walks, block reads with
 trailer validation and the permute/cyclic content encodings decoded,
@@ -1136,15 +1152,44 @@ names, subjects, senders, contents-table rows, and a no-dangling-HNID
 every-node sweep). Ships at **Preview**; ANSI and OST variants are
 recognized and rejected.
 
-- **P2 — `Bodu.Formats.Outlook.Pst`**: the messaging layer (folders,
-  messages, recipients, attachments, named properties) over the shared
-  `Bodu.Formats.Outlook` MAPI value model, plus the hardening pass
-  (decoded-block LRU, malformed-file sweeps, large-file streaming
-  Regression). P2 is also the shipping gate: `Bodu.IO.Pst` joins the
-  release manifest then — deliberately not at P1 — together with its
-  docs-site debut (a `docs/docs/io-pst/` section, the
-  `docs/apidoc/Bodu.IO.Pst.md` overview, and a `samples/IO.Pst/`
-  scenario project modeled on `samples/IO.Compound/`).
+- **P2 — `Bodu.Formats.Outlook.Pst` — landed** ✅ (2026-08-31, per
+  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)):
+  the messaging layer — `OutlookMailStore` / `OutlookMailFolder` /
+  `OutlookMailMessage` / `OutlookMailAttachment` over the shared
+  `Bodu.Formats.Outlook` MAPI value model (recipients via the shared
+  `OutlookRecipient`, embedded messages, store-wide named-property
+  resolution from the name-to-id map node, and the text/HTML/
+  compressed-RTF bodies via the new `Bodu.Formats.Outlook/shared/**`
+  decode layer) — plus the container hardening pass (`BlockCacheSize`
+  decoded-block LRU, streaming `OpenDataStream` with a memory-ceiling
+  Regression, `PstNode.DataLength`, the `PstFileError` /
+  `PstNodeNotFoundException` exception taxonomy, and bit-flip/truncation
+  malformed sweeps at both the container and messaging levels).
+  `Bodu.IO.Pst` and `Bodu.Formats.Outlook.Pst` joined the release
+  manifest as wave 3 at `BoduBaseVersion` 0.4.0, with the docs-site
+  debut and `samples/IO.Pst/` scenario project.
+- **Outlook hardening pass — landed** ✅ (2026-09-03, per
+  [`Bodu.Formats.Outlook/docs/outlook-hardening-plan.md`](Bodu.Formats.Outlook/docs/outlook-hardening-plan.md)):
+  a tests-first (68 red tests committed before any fix) security,
+  exception-contract, and performance sweep of `Bodu.IO.Pst`,
+  `Bodu.Formats.Outlook`, `.Msg`, and `.Pst`. Bounded every hostile-input
+  hole (NBT/BBT descent depth and level checks, BTH index-level cap and
+  descent-path check, data-tree materialization and fan-out limits via
+  the new `PstFileOptions.MaxNodeDataLength` / `MaxDataTreeLeaves`,
+  `CompressedRtf` expansion bounds, and `MaxEmbeddedMessageDepth` /
+  `MaxDecompressedRtfBytes` on both reader option types — a limit
+  violation is a format failure at every validation level, reported as
+  `PstFileError.LimitExceeded` at the container); closed the exception
+  leaks (`.msg` container faults translate to `OutlookMsgFormatException`
+  via `MsgContainer`, the shared `MapiNamedPropertyRecords` parser, the
+  page/block cache split, UTC-anchored FILETIME decoding, nested-session
+  and view disposal guards, strict size cross-checks); removed the
+  silent wrong answers (unordered property contexts, narrow inline cells,
+  1200/1201 code pages, `PT_NULL` / zero-FILETIME as present-with-null,
+  folder code-page inheritance, missing store object); and cut the
+  copies (`CompoundStorage` child index — the one `Bodu.IO.Compound`
+  change — cached bodies, zero-copy attachment streams, in-place row-id
+  enumeration, span-based variable-value decoding).
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
@@ -1421,9 +1466,12 @@ filter were added to *Non-goals* instead.
   **P0 executed same day** — `Bodu.IO.Pst` landed with the full NDB
   read layer at Preview; **P1 (the LTP layer) executed 2026-08-19** per
   [`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
-  both tracked in the per-project *`Bodu.IO.Pst`* section above. The
-  `Bodu.Formats.Outlook.Pst` messaging reader with the hardening pass
-  (P2) is the remaining stage.
+  **P2 (the `Bodu.Formats.Outlook.Pst` messaging reader plus the
+  container hardening pass) executed 2026-08-31** per
+  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)
+  — all tracked in the per-project *`Bodu.IO.Pst`* section above. Both
+  packages ship in release wave 3; the ANSI variant and OST deltas
+  remain the demand-driven follow-ons.
 - **`Bodu.Formats.Excel.OpenXml`** — a read-only `.xlsx` value reader over
   an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
   value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).

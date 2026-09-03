@@ -29,4 +29,15 @@ public partial class MapiPropertyCollectionTests
         Assert.IsNull(MapiPropertyCollection.Empty.GetInt64(0x0E08));
         Assert.IsNull(CreateSingle(0x0E08, MapiPropertyType.Int64, 42).GetInt64(0x0E08));
     }
+
+    /// <summary>
+    /// Verifies that integers stored under the 32-bit and 16-bit types are widened by the 64-bit accessor, so a size
+    /// a writer recorded as <c>PT_LONG</c> is not reported as absent.
+    /// </summary>
+    [TestMethod]
+    public void GetInt64_WhenStoredAsNarrowerIntegerType_ShouldWiden()
+    {
+        Assert.AreEqual(42L, CreateSingle(0x0E08, MapiPropertyType.Int32, 42).GetInt64(0x0E08));
+        Assert.AreEqual(7L, CreateSingle(0x0E08, MapiPropertyType.Int16, (short)7).GetInt64(0x0E08));
+    }
 }

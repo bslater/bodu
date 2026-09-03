@@ -16,7 +16,8 @@ namespace Bodu.Formats.Outlook.Msg;
 /// <remarks>
 /// Under <see cref="CompoundValidationLevel.Strict" /> the series must be dense (indexes <c>0..n-1</c> without gaps or
 /// duplicates) and its length must match the count the property-stream header declares; under the tolerant levels
-/// storages with unparsable suffixes are skipped and the found series is returned as-is.
+/// storages with unparsable suffixes are skipped, a repeated index keeps its first storage in directory order, and
+/// the found series is returned as-is.
 /// </remarks>
 internal static class MsgStorageWalker
 {
@@ -29,8 +30,8 @@ internal static class MsgStorageWalker
     /// <param name="validationLevel">The validation level governing malformed-structure handling.</param>
     /// <returns>The matching storages in ascending index order.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// Thrown under <see cref="CompoundValidationLevel.Strict" /> when a suffix is malformed, the series has gaps or
-    /// duplicates, or its length differs from <paramref name="declaredCount" />.
+    /// The container is malformed, or — under <see cref="CompoundValidationLevel.Strict" /> — a suffix is malformed,
+    /// the series has gaps or duplicates, or its length differs from <paramref name="declaredCount" />.
     /// </exception>
     internal static List<CompoundStorage> EnumerateIndexed(
         CompoundStorage parent,
@@ -41,7 +42,7 @@ internal static class MsgStorageWalker
         bool strict = validationLevel == CompoundValidationLevel.Strict;
         var found = new List<(uint Index, CompoundStorage Storage)>();
 
-        foreach (CompoundStorage child in parent.EnumerateStorages())
+        foreach (CompoundStorage child in MsgContainer.GetStorages(parent))
         {
             if (!child.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 continue;
@@ -61,7 +62,9 @@ internal static class MsgStorageWalker
             found.Add((index, child));
         }
 
-        found.Sort((left, right) => left.Index.CompareTo(right.Index));
+        // A stable ordering keeps directory order among equal indexes, so the tolerant de-duplication below is
+        // deterministic.
+        found = [.. found.OrderBy(static entry => entry.Index)];
 
         if (strict)
         {
@@ -82,8 +85,15 @@ internal static class MsgStorageWalker
         }
 
         var storages = new List<CompoundStorage>(found.Count);
-        foreach ((_, CompoundStorage storage) in found)
+        uint? previous = null;
+        foreach ((uint index, CompoundStorage storage) in found)
+        {
+            if (index == previous)
+                continue;
+
             storages.Add(storage);
+            previous = index;
+        }
 
         return storages;
     }

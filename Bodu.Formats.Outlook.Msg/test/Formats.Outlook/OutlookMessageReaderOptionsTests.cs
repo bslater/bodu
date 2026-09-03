@@ -44,4 +44,39 @@ public class OutlookMessageReaderOptionsTests
         Assert.AreEqual(CompoundReadStrategy.Streaming, options.ReadStrategy);
         Assert.IsFalse(options.DecompressRtf);
     }
+
+    /// <summary>
+    /// Verifies that the resource limits default to the documented values and preserve initialized values.
+    /// </summary>
+    [TestMethod]
+    public void Limits_WhenDefaultedOrInitialized_ShouldCarryDocumentedValues()
+    {
+        var defaults = new OutlookMessageReaderOptions();
+        Assert.AreEqual(16, defaults.MaxEmbeddedMessageDepth);
+        Assert.AreEqual(64 * 1024 * 1024, defaults.MaxDecompressedRtfBytes);
+
+        var options = new OutlookMessageReaderOptions { MaxEmbeddedMessageDepth = 2, MaxDecompressedRtfBytes = 1024 };
+        Assert.AreEqual(2, options.MaxEmbeddedMessageDepth);
+        Assert.AreEqual(1024, options.MaxDecompressedRtfBytes);
+    }
+
+    /// <summary>
+    /// Verifies that a zero or negative limit throws <see cref="ArgumentOutOfRangeException" /> for each limit.
+    /// </summary>
+    /// <param name="value">The rejected value.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void Limits_WhenNotPositive_ShouldThrowArgumentOutOfRangeException(int value)
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new OutlookMessageReaderOptions { MaxEmbeddedMessageDepth = value };
+        });
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new OutlookMessageReaderOptions { MaxDecompressedRtfBytes = value };
+        });
+    }
 }

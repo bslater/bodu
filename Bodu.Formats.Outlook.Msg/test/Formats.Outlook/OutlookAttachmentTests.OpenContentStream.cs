@@ -64,4 +64,29 @@ public partial class OutlookAttachmentTests
             _ = message.Attachments[0].OpenContentStream();
         });
     }
+
+    /// <summary>
+    /// Verifies that content access on a by-reference attachment throws <see cref="NotSupportedException" /> — the
+    /// method carries no by-value payload, so the absence of a content stream is not a format error.
+    /// </summary>
+    /// <param name="method">The declared <c>PidTagAttachMethod</c> value.</param>
+    [TestMethod]
+    [DataRow(2)]
+    [DataRow(3)]
+    [DataRow(4)]
+    public void OpenContentStream_WhenByReference_ShouldThrowNotSupportedException(int method)
+    {
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddAttachment(attachment => attachment
+                .AddFixedEntry(0x37050003, (ulong)method)
+                .AddUnicode(MapiPropertyIds.AttachLongFilename, "linked.docx"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = message.Attachments[0].OpenContentStream();
+        });
+    }
 }

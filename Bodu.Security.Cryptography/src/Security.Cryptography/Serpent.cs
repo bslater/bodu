@@ -27,6 +27,12 @@ namespace Bodu.Security.Cryptography;
 /// <note type="important"> The wide-block Serpent family is a **non-standard, experimental construction** and is not
 /// interoperable with any reference Serpent implementation. For standard, externally vetted Serpent, use
 /// <see cref="Serpent128" />. </note>
+/// <para>
+/// The underlying block-cipher implementation is constant-time in its control flow, and each 4-bit S-box substitution
+/// reads a 16-byte table at a data-dependent index. The table spans a single cache line, which limits — but does not
+/// formally eliminate — cache-timing exposure; it is <b>not</b> hardened against timing or cache-based side-channel
+/// attacks.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

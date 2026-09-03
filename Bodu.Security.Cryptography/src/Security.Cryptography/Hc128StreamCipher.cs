@@ -90,8 +90,8 @@ internal sealed class Hc128StreamCipher
         if (_disposed)
             return;
 
-        Array.Clear(_p, 0, _p.Length);
-        Array.Clear(_q, 0, _q.Length);
+        CryptographyHelper.Clear(_p);
+        CryptographyHelper.Clear(_q);
         _counter = 0;
         _disposed = true;
     }
@@ -163,30 +163,39 @@ internal sealed class Hc128StreamCipher
     /// <param name="nonce">The 16-byte IV.</param>
     private void Initialize(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
+        // The expansion buffer is seeded directly from the key and IV and holds the entire key-derived schedule;
+        // it is zeroed in the finally so a fault mid-initialization cannot leave it live on the stack.
         Span<uint> w = stackalloc uint[1280];
 
-        // W[0..7] = key (repeated), W[8..15] = IV (repeated).
-        for (int i = 0; i < 4; i++)
+        try
         {
-            uint k = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
-            w[i] = k;
-            w[i + 4] = k;
+            // W[0..7] = key (repeated), W[8..15] = IV (repeated).
+            for (int i = 0; i < 4; i++)
+            {
+                uint k = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(i * 4, 4));
+                w[i] = k;
+                w[i + 4] = k;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                uint v = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(i * 4, 4));
+                w[i + 8] = v;
+                w[i + 12] = v;
+            }
+
+            for (int i = 16; i < 1280; i++)
+                w[i] = unchecked(F2(w[i - 2]) + w[i - 7] + F1(w[i - 15]) + w[i - 16] + (uint)i);
+
+            for (int i = 0; i < TableSize; i++)
+            {
+                _p[i] = w[i + 256];
+                _q[i] = w[i + 768];
+            }
         }
-
-        for (int i = 0; i < 4; i++)
+        finally
         {
-            uint v = BinaryPrimitives.ReadUInt32LittleEndian(nonce.Slice(i * 4, 4));
-            w[i + 8] = v;
-            w[i + 12] = v;
-        }
-
-        for (int i = 16; i < 1280; i++)
-            w[i] = unchecked(F2(w[i - 2]) + w[i - 7] + F1(w[i - 15]) + w[i - 16] + (uint)i);
-
-        for (int i = 0; i < TableSize; i++)
-        {
-            _p[i] = w[i + 256];
-            _q[i] = w[i + 768];
+            CryptographyHelper.Clear(w);
         }
 
         // Run 1024 steps, feeding the output back into the tables instead of releasing it.

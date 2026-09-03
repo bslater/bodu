@@ -19,7 +19,7 @@ namespace Bodu.IO.Pst.Internal;
 /// none of the fixtures would notice.
 /// </remarks>
 [TestClass]
-public class PstBTreeTests
+public partial class PstBTreeTests
 {
     /// <summary>The number of nodes the multi-page fixtures declare.</summary>
     private const int NodeCount = 12;
@@ -103,7 +103,7 @@ public class PstBTreeTests
     {
         using PstFile file = PstFile.Open(new MemoryStream(BuildMultiPageTree(), writable: false), PstFileOptions.Default);
 
-        _ = Assert.ThrowsExactly<PstFileException>(() => _ = file.GetNode(new PstNodeId(0xFFFF)));
+        _ = Assert.ThrowsExactly<PstNodeNotFoundException>(() => _ = file.GetNode(new PstNodeId(0xFFFF)));
     }
 
     /// <summary>
