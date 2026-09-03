@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 using Bodu.Formats.Outlook.Pst;
 using Bodu.IO.Pst;
 
@@ -32,18 +33,29 @@ public sealed class OutlookMailFolder
     /// <summary>The folder node.</summary>
     private readonly PstNode _node;
 
+    /// <summary>The encoding inherited from the parent folder, or the store encoding for the root.</summary>
+    private readonly Encoding? _inheritedEncoding;
+
     /// <summary>The lazily decoded folder properties.</summary>
     private MapiPropertyCollection? _properties;
+
+    /// <summary>The encoding the folder's code-page strings decoded with; set when <see cref="Properties" /> decodes.</summary>
+    private Encoding? _encoding;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OutlookMailFolder" /> class.
     /// </summary>
     /// <param name="store">The owning session.</param>
     /// <param name="node">The folder node.</param>
-    internal OutlookMailFolder(OutlookMailStore store, PstNode node)
+    /// <param name="inheritedEncoding">
+    /// The encoding inherited from the parent folder; <see langword="null" /> for the root folder, which inherits the
+    /// store encoding.
+    /// </param>
+    internal OutlookMailFolder(OutlookMailStore store, PstNode node, Encoding? inheritedEncoding = null)
     {
         _store = store;
         _node = node;
+        _inheritedEncoding = inheritedEncoding;
     }
 
     /// <summary>
@@ -58,8 +70,14 @@ public sealed class OutlookMailFolder
         {
             _store.ThrowIfDisposed();
 
-            return _properties ??= PstMapiPropertyReader.Read(
-                _node.ReadPropertyContext(), _store.StoreEncoding, _store.Strict, out _);
+            if (_properties is null)
+            {
+                _properties = PstMapiPropertyReader.Read(
+                    _node.ReadPropertyContext(), _inheritedEncoding ?? _store.StoreEncoding, _store.Strict, out Encoding encoding);
+                _encoding = encoding;
+            }
+
+            return _properties;
         }
     }
 
@@ -116,7 +134,7 @@ public sealed class OutlookMailFolder
         foreach (PstNode node in EnumerateTableNodes(
             PstStoreLayout.HierarchyTableOf(_node.Id), PstNodeType.NormalFolder, silentlySkipped: PstNodeType.SearchFolder))
         {
-            yield return new OutlookMailFolder(_store, node);
+            yield return new OutlookMailFolder(_store, node, FolderEncoding);
         }
     }
 
@@ -132,7 +150,7 @@ public sealed class OutlookMailFolder
     public IEnumerable<OutlookMailMessage> EnumerateMessages()
     {
         foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.ContentsTableOf(_node.Id), PstNodeType.NormalMessage))
-            yield return new OutlookMailMessage(_store, node);
+            yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
     /// <summary>
@@ -147,7 +165,7 @@ public sealed class OutlookMailFolder
     public IEnumerable<OutlookMailMessage> EnumerateAssociatedMessages()
     {
         foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.AssociatedContentsTableOf(_node.Id), PstNodeType.AssociatedMessage))
-            yield return new OutlookMailMessage(_store, node);
+            yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
     /// <summary>
@@ -156,6 +174,20 @@ public sealed class OutlookMailFolder
     /// <returns>The display name, or the node identifier when unnamed.</returns>
     public override string ToString() =>
         DisplayName ?? _node.Id.ToString();
+
+    /// <summary>
+    /// Gets the encoding the folder's code-page strings decoded with, forcing the properties to decode first.
+    /// </summary>
+    /// <value>The folder-level encoding its subfolders and messages inherit when they declare no code page.</value>
+    internal Encoding FolderEncoding
+    {
+        get
+        {
+            _ = Properties;
+
+            return _encoding!;
+        }
+    }
 
     /// <summary>
     /// Streams the object nodes a table's rows reference: each row identifier is the referenced node's identifier.

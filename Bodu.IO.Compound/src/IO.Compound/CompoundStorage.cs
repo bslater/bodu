@@ -72,6 +72,12 @@ public sealed class CompoundStorage
     private readonly CompoundStorage? _parent;
 
     /// <summary>
+    /// The read-only storage's children indexed by name, built on the first lookup; <see langword="null" /> until then
+    /// and always for a writable storage, whose staging node keeps its own index.
+    /// </summary>
+    private Dictionary<string, CfbDirectoryEntry>? _childrenByName;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="CompoundStorage" /> class over a parsed directory entry.
     /// </summary>
     /// <param name="file">The owning compound file.</param>
@@ -774,12 +780,22 @@ public sealed class CompoundStorage
     /// <returns>The matching child entry, or <see langword="null" /> when none matches.</returns>
     private CfbDirectoryEntry? FindChild(string name, CompoundEntryType type)
     {
-        foreach (CfbDirectoryEntry child in Children())
+        // A storage with thousands of children (a message with thousands of property streams, say) is looked up once
+        // per child, so a linear scan per lookup is quadratic overall. The directory is immutable for a read-only
+        // file, so the first lookup indexes the children by name and every later lookup is a hash probe. Names are
+        // unique within a storage under the compound-file comparison; a corrupt directory that repeats one keeps the
+        // first entry in directory order, matching the scan it replaces.
+        if (_childrenByName is null)
         {
-            if (child.Type == type && CompoundNameComparer.Instance.Equals(child.Name, name))
-                return child;
+            var index = new Dictionary<string, CfbDirectoryEntry>(CompoundNameComparer.Instance);
+            foreach (CfbDirectoryEntry child in Children())
+                index.TryAdd(child.Name, child);
+
+            _childrenByName = index;
         }
 
-        return null;
+        return _childrenByName.TryGetValue(name, out CfbDirectoryEntry? entry) && entry.Type == type
+            ? entry
+            : null;
     }
 }

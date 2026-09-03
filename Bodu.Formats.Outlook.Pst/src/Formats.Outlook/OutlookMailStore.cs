@@ -90,12 +90,19 @@ public sealed partial class OutlookMailStore
 
             if (_properties is null)
             {
-                _properties = PstMapiPropertyReader.Read(
-                    _file.GetNode(PstNodeId.MessageStore).ReadPropertyContext(),
-                    inheritedEncoding: null,
-                    Strict,
-                    out Encoding encoding);
-                _storeEncoding = encoding;
+                // A store without its message-store object still has a readable folder tree; its strings decode
+                // under the default code page.
+                if (_file.TryGetNode(PstNodeId.MessageStore, out PstNode? storeNode))
+                {
+                    _properties = PstMapiPropertyReader.Read(
+                        storeNode.ReadPropertyContext(), inheritedEncoding: null, Strict, out Encoding encoding);
+                    _storeEncoding = encoding;
+                }
+                else
+                {
+                    _properties = MapiPropertyCollection.Empty;
+                    _storeEncoding = MapiEncodingResolver.GetEncoding(null, null);
+                }
             }
 
             return _properties;

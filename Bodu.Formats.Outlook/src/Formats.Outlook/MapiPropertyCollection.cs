@@ -152,20 +152,35 @@ public sealed class MapiPropertyCollection
         GetValue(id, MapiPropertyType.Unicode) as string ?? GetValue(id, MapiPropertyType.String8) as string;
 
     /// <summary>
-    /// Returns the 32-bit integer value of a property.
+    /// Gets a 32-bit integer property value.
     /// </summary>
-    /// <param name="id">The 16-bit property identifier.</param>
-    /// <returns>The value, or <see langword="null" /> when absent or not a 32-bit integer.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>
+    /// The <see cref="MapiPropertyType.Int32" /> value, or the <see cref="MapiPropertyType.Int16" /> value widened
+    /// when the writer stored the property in the narrower type; <see langword="null" /> when neither is present.
+    /// </returns>
     public int? GetInt32(ushort id) =>
-        GetValue(id, MapiPropertyType.Int32) as int?;
+        GetValue(id, MapiPropertyType.Int32) is int i32
+            ? i32
+            : GetValue(id, MapiPropertyType.Int16) as short?;
+
 
     /// <summary>
-    /// Returns the 64-bit integer value of a property.
+    /// Gets a 64-bit integer property value.
     /// </summary>
-    /// <param name="id">The 16-bit property identifier.</param>
-    /// <returns>The value, or <see langword="null" /> when absent or not a 64-bit integer.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>
+    /// The <see cref="MapiPropertyType.Int64" /> value, or the <see cref="MapiPropertyType.Int32" /> or
+    /// <see cref="MapiPropertyType.Int16" /> value widened when the writer stored the property in a narrower type;
+    /// <see langword="null" /> when none is present.
+    /// </returns>
     public long? GetInt64(ushort id) =>
-        GetValue(id, MapiPropertyType.Int64) as long?;
+        GetValue(id, MapiPropertyType.Int64) is long i64
+            ? i64
+            : GetValue(id, MapiPropertyType.Int32) is int i32
+                ? i32
+                : GetValue(id, MapiPropertyType.Int16) as short?;
+
 
     /// <summary>
     /// Returns the Boolean value of a property.
