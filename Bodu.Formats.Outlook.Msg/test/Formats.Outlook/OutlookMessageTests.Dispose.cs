@@ -41,4 +41,29 @@ public partial class OutlookMessageTests
             _ = message.Subject;
         });
     }
+
+    /// <summary>
+    /// Verifies that disposing the root session invalidates a nested message obtained from an attachment, even when
+    /// the nested session has already decoded its properties: the nested view shares the root's container and must
+    /// not keep answering from its cache once that container is gone.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenRootDisposed_ShouldInvalidateNestedMessage()
+    {
+        using MemoryStream container = Bodu.Formats.Outlook.Msg.MsgFixtureBuilder.CreateMinimal()
+            .AddAttachment(attachment => attachment
+                .AddEmbeddedMessage(embedded => embedded.AddUnicode(MapiPropertyIds.Subject, "Inner")))
+            .Build();
+
+        var message = OutlookMessage.OpenRead(container, leaveOpen: true);
+        OutlookMessage nested = message.Attachments[0].OpenMessage();
+        Assert.AreEqual("Inner", nested.Subject);
+
+        message.Dispose();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = nested.Subject;
+        });
+    }
 }

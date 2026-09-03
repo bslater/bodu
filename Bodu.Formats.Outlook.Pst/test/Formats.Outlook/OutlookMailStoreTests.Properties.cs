@@ -36,4 +36,20 @@ public partial class OutlookMailStoreTests
 
         Assert.IsTrue(store.Properties.Count > 0);
     }
+
+    /// <summary>
+    /// Verifies that a store whose message-store object node is absent still exposes its folder hierarchy — the
+    /// folders decode under the fallback encoding instead of failing on the missing node — and reports an empty
+    /// store property collection.
+    /// </summary>
+    [TestMethod]
+    public void RootFolder_WhenStoreObjectAbsent_ShouldStillDecodeFolders()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(static b => b.IncludeStoreObject = false);
+
+        Assert.AreEqual(0, store.Properties.Count);
+        Assert.IsNull(store.DisplayName);
+        Assert.AreEqual("Root Container", store.RootFolder.DisplayName);
+        Assert.AreEqual(Bodu.Formats.Outlook.Pst.PstMessagingFixtureBuilder.InboxDisplayName, store.RootFolder.EnumerateSubfolders().Single().DisplayName);
+    }
 }

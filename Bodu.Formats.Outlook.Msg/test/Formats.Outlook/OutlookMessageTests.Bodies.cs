@@ -84,4 +84,24 @@ public partial class OutlookMessageTests
         Assert.IsNull(message.BodyHtml);
         Assert.IsNull(message.BodyRtf);
     }
+
+    /// <summary>
+    /// Verifies that the decoded RTF and HTML bodies are computed once and cached: a second read returns the same
+    /// instance rather than re-running the decompression and code-page decode.
+    /// </summary>
+    [TestMethod]
+    public void BodyRtf_WhenReadTwice_ShouldReturnCachedInstance()
+    {
+        byte[] payload = Convert.FromHexString(CompressedRtfTests.SpecExample1Hex);
+        byte[] html = System.Text.Encoding.ASCII.GetBytes("<html><body>cached</body></html>");
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddBinary(MapiPropertyIds.RtfCompressed, payload)
+            .AddBinary(MapiPropertyIds.Html, html)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreSame(message.BodyRtf, message.BodyRtf, "The RTF body must decode once and be cached.");
+        Assert.AreSame(message.BodyHtml, message.BodyHtml, "The HTML body must decode once and be cached.");
+    }
 }

@@ -10,7 +10,7 @@ namespace Bodu.Formats.Outlook.Msg;
 /// Verifies the behavior of <see cref="MapiEncodingResolver" />, the code-page resolver.
 /// </summary>
 [TestClass]
-public class MapiEncodingResolverTests
+public partial class MapiEncodingResolverTests
 {
     /// <summary>
     /// Verifies that a declared Windows code page resolves — proving the code-pages provider registration — and that
@@ -48,5 +48,19 @@ public class MapiEncodingResolverTests
 
         Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
         Assert.AreEqual(932, MapiEncodingResolver.GetEncoding(messageCodePage, 932).CodePage);
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-16 code page (1200 or 1201) is not a usable encoding for code-page strings — a writer that
+    /// declares it means "this message is Unicode" — so resolution falls through to the next candidate.
+    /// </summary>
+    /// <param name="messageCodePage">The declared message code page.</param>
+    [TestMethod]
+    [DataRow(1200)]
+    [DataRow(1201)]
+    public void GetEncoding_WhenMessageCodePageIsUtf16_ShouldFallThroughToNextCandidate(int messageCodePage)
+    {
+        Assert.AreEqual(1251, MapiEncodingResolver.GetEncoding(messageCodePage, 1251).CodePage);
+        Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
     }
 }

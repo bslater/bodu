@@ -91,4 +91,19 @@ public partial class OutlookMailMessageTests
         Assert.IsNull(message.BodyHtml);
         Assert.IsNull(message.BodyRtf);
     }
+
+    /// <summary>
+    /// Verifies that the decoded RTF and HTML bodies are computed once and cached: a second read returns the same
+    /// instance rather than re-running the decompression and code-page decode.
+    /// </summary>
+    [TestMethod]
+    public void BodyRtf_WhenReadTwice_ShouldReturnCachedInstance()
+    {
+        using OutlookMailStore store = OpenSynthetic();
+
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.AreSame(message.BodyRtf, message.BodyRtf, "The RTF body must decode once and be cached.");
+        Assert.AreSame(message.BodyHtml, message.BodyHtml, "The HTML body must decode once and be cached.");
+    }
 }

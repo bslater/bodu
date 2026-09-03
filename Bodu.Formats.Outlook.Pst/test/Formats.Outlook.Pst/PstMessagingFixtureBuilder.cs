@@ -58,6 +58,9 @@ internal sealed class PstMessagingFixtureBuilder
     /// <summary>The embedded message's subnode identifier under the embedded attachment (a normal message).</summary>
     internal const uint EmbeddedMessageNodeId = 0xE04;
 
+    /// <summary>The subnode identifier carrying a large, subnode-resident by-value attachment payload.</summary>
+    internal const uint LargeAttachmentDataNodeId = 0x1025;
+
     /// <summary>The store object's display name.</summary>
     internal const string StoreDisplayName = "Synthetic Store";
 
@@ -224,6 +227,44 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool IncludeDanglingAttachmentRow { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the store carries the message-store object node (<c>0x21</c>).
+    /// </summary>
+    /// <value><see langword="true" /> by default.</value>
+    internal bool IncludeStoreObject { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the code page the user folder declares through <c>PidTagMessageCodepage</c>.
+    /// </summary>
+    /// <value><see langword="null" /> (no declaration) by default.</value>
+    internal int? InboxCodePage { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the full message declares its own <c>PidTagMessageCodepage</c>.
+    /// </summary>
+    /// <value><see langword="true" /> by default; when cleared, the message's code-page strings rely on inheritance.</value>
+    internal bool MessageDeclaresCodePage { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a replacement for the by-value attachment's declared <c>PidTagAttachMethod</c>.
+    /// </summary>
+    /// <value><see langword="null" /> to declare <see cref="OutlookAttachmentMethod.ByValue" />.</value>
+    internal uint? AttachMethodOverride { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of <c>XBLOCK</c>s (each 1021 references to one 8 KB block) behind a large,
+    /// subnode-resident by-value attachment payload.
+    /// </summary>
+    /// <value><c>0</c> by default, keeping the payload heap-resident and small.</value>
+    internal int LargeAttachmentXBlocks { get; set; }
+
+    /// <summary>
+    /// Gets the logical length of the large attachment payload <see cref="LargeAttachmentXBlocks" /> produces.
+    /// </summary>
+    /// <value>The payload length in bytes.</value>
+    internal long LargeAttachmentLength =>
+        (long)LargeAttachmentXBlocks * 1021 * PstFixtureBuilder.MaxBlockPayload;
+
+    /// <summary>
     /// Gets or sets a value indicating whether the store carries the name-to-id map node.
     /// </summary>
     /// <value><see langword="true" /> by default.</value>
@@ -257,7 +298,8 @@ internal sealed class PstMessagingFixtureBuilder
     {
         var file = new PstFixtureBuilder();
 
-        AddStoreObject(file);
+        if (IncludeStoreObject)
+            AddStoreObject(file);
         if (IncludeNameToIdMap)
             AddNameToIdMap(file);
 
@@ -363,18 +405,24 @@ internal sealed class PstMessagingFixtureBuilder
     /// Adds the user folder, its declared counts, and its contents table referencing both messages.
     /// </summary>
     /// <param name="file">The container builder.</param>
-    private static void AddInbox(PstFixtureBuilder file)
+    private void AddInbox(PstFixtureBuilder file)
     {
         var ltp = new PstLtpFixtureBuilder();
         uint nameHid = ltp.AddItem(Encoding.Unicode.GetBytes(InboxDisplayName));
         uint classHid = ltp.AddItem(Encoding.Unicode.GetBytes("IPF.Note"));
 
-        _ = ltp.AddPropertyContext(
+        var records = new List<(ushort PropertyId, ushort WireType, uint RawValue)>
+        {
             (MapiPropertyIds.DisplayName, UnicodeType, nameHid),
             (MapiPropertyIds.ContainerClass, UnicodeType, classHid),
             (MapiPropertyIds.ContentCount, Int32Type, 2),
             (MapiPropertyIds.ContentUnreadCount, Int32Type, 1),
-            (MapiPropertyIds.Subfolders, BooleanType, 0));
+            (MapiPropertyIds.Subfolders, BooleanType, 0),
+        };
+        if (InboxCodePage is int codePage)
+            records.Add((MapiPropertyIds.MessageCodepage, Int32Type, (uint)codePage));
+
+        _ = ltp.AddPropertyContext([.. records]);
         _ = ltp.AddHeapNode(file, InboxNodeId);
 
         AddNodeReferenceTable(file, 0x80E, MessageNodeId, PlainMessageNodeId);
@@ -395,7 +443,8 @@ internal sealed class PstMessagingFixtureBuilder
         if (IncludeAttachmentTable)
         {
             subnodes.Add((AttachmentTableNodeId, AddAttachmentTable(file), 0));
-            subnodes.Add((ByValueAttachmentNodeId, AddByValueAttachment(file), 0));
+            (ulong attachmentData, ulong attachmentSubnodes) = AddByValueAttachment(file);
+            subnodes.Add((ByValueAttachmentNodeId, attachmentData, attachmentSubnodes));
 
             ulong embeddedSubnodeBlockId = IncludeEmbeddedMessageSubnode
                 ? file.AddSubnodeLeafBlock((EmbeddedMessageNodeId, AddEmbeddedMessage(file), 0))
@@ -418,18 +467,23 @@ internal sealed class PstMessagingFixtureBuilder
         uint mvUnicodeHid = ltp.AddItem(BuildMvUnicodePayload(MvUnicodeValues));
         uint mvInt32Hid = ltp.AddItem(BuildMvInt32Payload(MvInt32Values));
 
-        _ = ltp.AddPropertyContext(
+        var records = new List<(ushort PropertyId, ushort WireType, uint RawValue)>
+        {
             (MapiPropertyIds.Subject, UnicodeType, subjectHid),
             (MapiPropertyIds.SenderName, UnicodeType, senderHid),
             (MapiPropertyIds.SenderEmailAddress, UnicodeType, emailHid),
             (MapiPropertyIds.MessageClass, UnicodeType, classHid),
-            (MapiPropertyIds.MessageCodepage, Int32Type, MessageCodePage),
             (MapiPropertyIds.Body, String8Type, bodyHid),
             (MapiPropertyIds.Html, BinaryType, htmlHid),
             (MapiPropertyIds.RtfCompressed, BinaryType, rtfHid),
             (MapiPropertyIds.HasAttachments, BooleanType, 1),
             (MvUnicodePropertyId, MvUnicodeType, mvUnicodeHid),
-            (MvInt32PropertyId, MvInt32Type, mvInt32Hid));
+            (MvInt32PropertyId, MvInt32Type, mvInt32Hid),
+        };
+        if (MessageDeclaresCodePage)
+            records.Add((MapiPropertyIds.MessageCodepage, Int32Type, MessageCodePage));
+
+        _ = ltp.AddPropertyContext([.. records]);
         _ = ltp.AddHeapNode(file, MessageNodeId, subnodeBlockId);
     }
 
@@ -526,29 +580,52 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the by-value attachment object's property context, including its binary content payload.
+    /// Builds the by-value attachment object's property context, including its binary content payload — heap-resident
+    /// by default, or a large subnode-resident data tree when <see cref="LargeAttachmentXBlocks" /> is set.
     /// </summary>
     /// <param name="file">The container builder.</param>
-    /// <returns>The heap's data-block identifier, for the subnode row.</returns>
-    private static ulong AddByValueAttachment(PstFixtureBuilder file)
+    /// <returns>The heap's data-block identifier and the attachment's subnode-tree block identifier (zero when none).</returns>
+    private (ulong DataBlockId, ulong SubnodeBlockId) AddByValueAttachment(PstFixtureBuilder file)
     {
         var ltp = new PstLtpFixtureBuilder();
         uint longNameHid = ltp.AddItem(Encoding.Unicode.GetBytes(AttachmentLongFileName));
         uint shortNameHid = ltp.AddItem(Encoding.Unicode.GetBytes(AttachmentShortFileName));
         uint contentIdHid = ltp.AddItem(Encoding.Unicode.GetBytes(AttachmentContentId));
         uint mimeHid = ltp.AddItem(Encoding.Unicode.GetBytes(AttachmentMimeTag));
-        uint dataHid = ltp.AddItem(AttachmentContent);
+
+        ulong subnodeBlockId = 0;
+        uint dataHnid;
+        uint declaredSize;
+        if (LargeAttachmentXBlocks > 0)
+        {
+            const int LeafRefsPerXBlock = 1021;
+            ulong leafId = file.AddDataBlock(new byte[PstFixtureBuilder.MaxBlockPayload]);
+            uint xBlockLength = (uint)(LeafRefsPerXBlock * PstFixtureBuilder.MaxBlockPayload);
+            ulong xBlockId = file.AddXBlock(xBlockLength, [.. Enumerable.Repeat(leafId, LeafRefsPerXBlock)]);
+            ulong dataTreeId = LargeAttachmentXBlocks == 1
+                ? xBlockId
+                : file.AddXXBlock((uint)LargeAttachmentLength, [.. Enumerable.Repeat(xBlockId, LargeAttachmentXBlocks)]);
+
+            subnodeBlockId = file.AddSubnodeLeafBlock((LargeAttachmentDataNodeId, dataTreeId, 0));
+            dataHnid = LargeAttachmentDataNodeId;
+            declaredSize = (uint)LargeAttachmentLength;
+        }
+        else
+        {
+            dataHnid = ltp.AddItem(AttachmentContent);
+            declaredSize = (uint)AttachmentContent.Length;
+        }
 
         _ = ltp.AddPropertyContext(
-            (MapiPropertyIds.AttachMethod, Int32Type, (uint)OutlookAttachmentMethod.ByValue),
+            (MapiPropertyIds.AttachMethod, Int32Type, AttachMethodOverride ?? (uint)OutlookAttachmentMethod.ByValue),
             (MapiPropertyIds.AttachLongFilename, UnicodeType, longNameHid),
             (MapiPropertyIds.AttachFilename, UnicodeType, shortNameHid),
             (MapiPropertyIds.AttachContentId, UnicodeType, contentIdHid),
             (MapiPropertyIds.AttachMimeTag, UnicodeType, mimeHid),
-            (MapiPropertyIds.AttachSize, Int32Type, (uint)AttachmentContent.Length),
-            (MapiPropertyIds.AttachData, BinaryType, dataHid));
+            (MapiPropertyIds.AttachSize, Int32Type, declaredSize),
+            (MapiPropertyIds.AttachData, BinaryType, dataHnid));
 
-        return AddHeapBlocks(file, ltp);
+        return (AddHeapBlocks(file, ltp), subnodeBlockId);
     }
 
     /// <summary>
