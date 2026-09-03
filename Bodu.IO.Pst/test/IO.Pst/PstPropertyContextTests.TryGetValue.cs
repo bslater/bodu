@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+using Bodu.IO.Pst.Internal;
+
 namespace Bodu.IO.Pst;
 
 /// <summary>
@@ -93,6 +96,39 @@ public partial class PstPropertyContextTests
         using (file)
         {
             Assert.IsFalse(context.TryGetValue(0x7FFF, out _));
+        }
+    }
+
+    /// <summary>
+    /// Verifies that every property of a context whose records are stored out of key order is still found under the
+    /// tolerant levels: record ordering is enforced only under strict validation, so lookup must not assume it.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenRecordsAreUnordered_ForCompatible_ShouldFindEveryProperty()
+    {
+        static byte[] Record(int value)
+        {
+            var data = new byte[6];
+            BinaryPrimitives.WriteUInt16LittleEndian(data, 0x0003);
+            BinaryPrimitives.WriteInt32LittleEndian(data.AsSpan(2), value);
+            return data;
+        }
+
+        var builder = new PstFixtureBuilder();
+        var ltp = new PstLtpFixtureBuilder();
+        uint leaf = ltp.AddBthLeafItem(2, 6, (0x0030, Record(3)), (0x0010, Record(1)), (0x0020, Record(2)));
+        uint header = ltp.AddBthHeaderItem(2, 6, indexLevels: 0, leaf);
+        ltp.ClientSignature = 0xBC;
+        ltp.UserRootHid = header;
+        ltp.AddHeapNode(builder, NodeId);
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), PstFileOptions.Default);
+        PstPropertyContext context = file.GetNode(new PstNodeId(NodeId)).ReadPropertyContext();
+
+        foreach ((ushort id, int expected) in new[] { ((ushort)0x0010, 1), ((ushort)0x0020, 2), ((ushort)0x0030, 3) })
+        {
+            Assert.IsTrue(context.TryGetValue(id, out PstPropertyValue value), $"Property 0x{id:X4} must be found.");
+            Assert.AreEqual(expected, value.GetInt32());
         }
     }
 }

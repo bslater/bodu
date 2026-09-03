@@ -113,4 +113,54 @@ public partial class PstTableContextTests
 
         _ = Assert.ThrowsExactly<PstFileFormatException>(() => _ = context.EnumerateRows().ToList());
     }
+
+    /// <summary>
+    /// Verifies that a row matrix holding more rows than the row index records is rejected under strict validation
+    /// — surplus rows are unindexed content the writer never committed — while the tolerant levels yield exactly the
+    /// indexed rows.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateRows_WhenMatrixIsLongerThanTheIndex_ShouldThrowOnlyUnderStrict()
+    {
+        static PstFixtureBuilder Build()
+        {
+            var builder = new PstFixtureBuilder();
+            var ltp = new PstLtpFixtureBuilder();
+
+            byte[] matrix =
+            [
+                .. Row(FirstRowId, 7, 0, 0x0102, 1, 0b1101_1000),
+                .. Row(SecondRowId, 9, 0, 0x0304, 0, 0b1101_1000),
+            ];
+            uint matrixHid = ltp.AddItem(matrix);
+            _ = ltp.AddTableContext(
+                [
+                    (RowIdTag, 0, 4, 0),
+                    (Int32Tag, 4, 4, 1),
+                    (StringTag, 8, 4, 2),
+                    (Int16Tag, 12, 2, 3),
+                    (BooleanTag, 14, 1, 4),
+                ],
+                endOffset4: 12,
+                endOffset2: 14,
+                endOffset1: 15,
+                rowWidth: RowWidth,
+                rowsHnid: matrixHid,
+                (FirstRowId, 0));
+            ltp.AddHeapNode(builder, NodeId);
+            return builder;
+        }
+
+        using (PstFile tolerant = PstFile.Open(Build().BuildStream(), PstFileOptions.Default))
+        {
+            Assert.AreEqual(1, tolerant.GetNode(new PstNodeId(NodeId)).ReadTableContext().EnumerateRows().Count());
+        }
+
+        using PstFile strict = PstFile.Open(Build().BuildStream(), new PstFileOptions { ValidationLevel = PstValidationLevel.Strict });
+        PstTableContext context = strict.GetNode(new PstNodeId(NodeId)).ReadTableContext();
+
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = context.EnumerateRows().ToList());
+
+        Assert.AreEqual(PstFileError.InvalidTableContext, ex.Error);
+    }
 }

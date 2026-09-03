@@ -103,4 +103,54 @@ public partial class PstFileTests
             Assert.AreEqual(PstFileFormat.Unicode, file.Format);
         }
     }
+
+    /// <summary>
+    /// Verifies that a header declaring a file length beyond the stream's actual length is refused under strict
+    /// validation — the declared length is the one header fact the reader can cross-check — while the tolerant
+    /// levels still open the file.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenHeaderFileLengthExceedsStream_ShouldThrowOnlyUnderStrict()
+    {
+        byte[] bytes;
+        using (MemoryStream fixture = PstReferenceFixtures.OpenStream(Sample1))
+            bytes = fixture.ToArray();
+
+        System.Buffers.Binary.BinaryPrimitives.WriteInt64LittleEndian(bytes.AsSpan(184), bytes.Length + 4096L);
+        Bodu.IO.Pst.Internal.PstFixtureBuilder.RepairHeaderChecksum(bytes);
+
+        using (var tolerant = PstFile.Open(new MemoryStream(bytes), new PstFileOptions()))
+        {
+            Assert.AreEqual(PstFileFormat.Unicode, tolerant.Format);
+        }
+
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = PstFile.Open(new MemoryStream(bytes), new PstFileOptions { ValidationLevel = PstValidationLevel.Strict });
+        });
+
+        Assert.AreEqual(PstFileError.InvalidHeader, ex.Error);
+    }
+
+    /// <summary>
+    /// Verifies that a container embedded after leading bytes opens relative to the stream position it was handed
+    /// at, so every absolute file offset the header and trees carry is resolved against that base.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenStreamIsPositionedPastLeadingBytes_ShouldReadRelativeToThatPosition()
+    {
+        byte[] bytes;
+        using (MemoryStream fixture = PstReferenceFixtures.OpenStream(Sample1))
+            bytes = fixture.ToArray();
+
+        int expectedCount;
+        using (var clean = PstFile.Open(new MemoryStream(bytes), new PstFileOptions()))
+            expectedCount = clean.GetNode(PstNodeId.MessageStore).ReadPropertyContext().Count;
+
+        byte[] prefixed = [.. new byte[100], .. bytes];
+        using var stream = new MemoryStream(prefixed) { Position = 100 };
+        using PstFile file = PstFile.Open(stream, new PstFileOptions());
+
+        Assert.AreEqual(expectedCount, file.GetNode(PstNodeId.MessageStore).ReadPropertyContext().Count);
+    }
 }

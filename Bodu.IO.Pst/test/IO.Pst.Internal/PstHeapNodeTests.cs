@@ -15,7 +15,7 @@ namespace Bodu.IO.Pst.Internal;
 /// and rejection of malformed heap geometry.
 /// </summary>
 [TestClass]
-public class PstHeapNodeTests
+public partial class PstHeapNodeTests
 {
     /// <summary>The node identifier the fixtures use for the node under test.</summary>
     private const uint NodeId = 0x21;

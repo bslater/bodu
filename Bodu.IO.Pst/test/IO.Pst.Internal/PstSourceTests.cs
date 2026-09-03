@@ -20,7 +20,7 @@ namespace Bodu.IO.Pst.Internal;
 /// rather than merely reporting that a damaged file was refused.
 /// </remarks>
 [TestClass]
-public class PstSourceTests
+public partial class PstSourceTests
 {
     /// <summary>The node identifier the fixtures use.</summary>
     private const uint NodeId = 0x21;

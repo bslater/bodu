@@ -19,7 +19,7 @@ namespace Bodu.IO.Pst.Internal;
 /// none of the fixtures would notice.
 /// </remarks>
 [TestClass]
-public class PstBTreeTests
+public partial class PstBTreeTests
 {
     /// <summary>The number of nodes the multi-page fixtures declare.</summary>
     private const int NodeCount = 12;

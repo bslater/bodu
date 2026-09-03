@@ -18,7 +18,7 @@ namespace Bodu.IO.Pst.Internal;
 /// rejection unexercised, so the fixtures here are authored to produce each shape exactly.
 /// </remarks>
 [TestClass]
-public class PstSubnodeTreeTests
+public partial class PstSubnodeTreeTests
 {
     /// <summary>The node identifier the fixtures use for the owning node.</summary>
     private const uint NodeId = 0x21;

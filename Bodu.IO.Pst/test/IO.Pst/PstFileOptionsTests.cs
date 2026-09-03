@@ -10,7 +10,7 @@ namespace Bodu.IO.Pst;
 /// Verifies the behavior of <see cref="PstFileOptions" />.
 /// </summary>
 [TestClass]
-public class PstFileOptionsTests
+public partial class PstFileOptionsTests
 {
     /// <summary>
     /// Verifies that a new instance defaults to compatible validation.
