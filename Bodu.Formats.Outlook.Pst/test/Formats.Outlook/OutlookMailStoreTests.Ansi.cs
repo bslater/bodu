@@ -33,16 +33,22 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
-    /// Verifies that the empty ANSI corpus store exposes its single folder and no messages.
+    /// Verifies that the second ANSI corpus store exposes the folder the <c>lspst</c> oracle lists and that every
+    /// message it holds decodes; the oracle counted no e-mail items, but the store carries message nodes of other
+    /// classes, so only the folder is pinned.
     /// </summary>
     [TestMethod]
-    public void RootFolder_WhenEmptyAnsiCorpusStore_ShouldExposeSingleFolder()
+    public void RootFolder_WhenSecondAnsiCorpusStore_ShouldExposeOracleFolder()
     {
         using OutlookMailStore store = OutlookMailStore.OpenRead(PstReferenceFixtures.OpenStream(TestAnsi));
 
         var folders = Walk(store.RootFolder).ToList();
 
         Assert.IsTrue(folders.Any(static f => f.DisplayName == "Folder"), $"Folders: {string.Join(", ", folders.Select(static f => f.DisplayName))}");
-        Assert.AreEqual(0, folders.Sum(static f => f.EnumerateMessages().Count()));
+        foreach (OutlookMailMessage message in folders.SelectMany(static f => f.EnumerateMessages()))
+        {
+            _ = message.Subject;
+            _ = message.Properties;
+        }
     }
 }

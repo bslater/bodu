@@ -180,7 +180,7 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
-        ///   Looks up a localized string similar to The file uses the {0} PST format; only the Unicode format is supported..
+        ///   Looks up a localized string similar to The file uses the {0} PST format; only the Unicode and ANSI formats are supported..
         /// </summary>
         internal static string Op_NotSupported_PstFormat {
             get {

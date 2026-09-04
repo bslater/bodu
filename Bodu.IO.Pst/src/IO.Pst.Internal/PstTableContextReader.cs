@@ -24,14 +24,8 @@ internal static class PstTableContextReader
     /// <summary>The size of one <c>TCOLDESC</c>.</summary>
     private const int ColumnDescriptorSize = 8;
 
-    /// <summary>The key width the Unicode row index declares.</summary>
+    /// <summary>The key width the row index declares in both formats: the 32-bit row identifier.</summary>
     private const byte RowIndexKeySize = 4;
-
-    /// <summary>The record data width the Unicode row index declares.</summary>
-    private const byte RowIndexDataSize = 4;
-
-    /// <summary>The usable payload of one row-matrix block, which bounds the rows a block holds.</summary>
-    private const int RowMatrixBlockPayload = 8176;
 
     /// <summary>
     /// Reads the table context of the supplied node entry.
@@ -91,7 +85,9 @@ internal static class PstTableContextReader
         var tcInfo = new PstTcInfo(endOffset4, endOffset2, endOffset1, rowWidth, rowIndexHid, rowsHnid, columns);
 
         PstBthHeader rowIndex = PstBTreeOnHeap.ReadHeader(heap, rowIndexHid);
-        if (rowIndex.KeySize != RowIndexKeySize || rowIndex.DataSize != RowIndexDataSize)
+        // The row index maps the 32-bit row identifier to a row number that is four bytes wide in a Unicode store and
+        // two in an ANSI store (MS-PST §2.3.4.3 TCROWID).
+        if (rowIndex.KeySize != RowIndexKeySize || rowIndex.DataSize is not (2 or 4))
             throw Malformed(entry.NodeId);
 
         return (heap, tcInfo, rowIndex);
@@ -124,12 +120,18 @@ internal static class PstTableContextReader
     }
 
     /// <summary>
-    /// Computes the number of rows one row-matrix block holds when the matrix spans subnode blocks.
+    /// Computes how many rows one row-matrix block holds: the block's usable payload divided by the row width.
     /// </summary>
+    /// <param name="layout">The file layout, whose block payload is 8,176 bytes for Unicode and 8,180 for ANSI.</param>
     /// <param name="rowWidth">The row width.</param>
-    /// <returns>The rows per block; rows never span blocks.</returns>
-    internal static int RowsPerBlock(int rowWidth) =>
-        Math.Max(1, RowMatrixBlockPayload / rowWidth);
+    /// <returns>The rows per block, at least one.</returns>
+    /// <remarks>
+    /// MS-PST §2.3.4.4 packs ⌊payload / row width⌋ rows per block. The payload differs by format because the block
+    /// trailer does (16 bytes against 12), so a point lookup that used the Unicode figure on an ANSI store would land
+    /// on the wrong row whenever the quotients differ.
+    /// </remarks>
+    internal static int RowsPerBlock(PstLayout layout, int rowWidth) =>
+        Math.Max(1, layout.MaxBlockPayload / rowWidth);
 
     /// <summary>
     /// Creates the malformed-table-context exception for a node identifier.

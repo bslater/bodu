@@ -107,7 +107,7 @@
     <value>No property 0x{0:X4} exists in the property context of node {1}.</value>
   </data>
   <data name="Op_NotSupported_PstFormat" xml:space="preserve">
-    <value>The file uses the {0} PST format; only the Unicode format is supported.</value>
+    <value>The file uses the {0} PST format; only the Unicode and ANSI formats are supported.</value>
   </data>
   <data name="Op_NotSupported_PstCryptMethod" xml:space="preserve">
     <value>The file uses an unsupported content encoding method (0x{0:X2}).</value>

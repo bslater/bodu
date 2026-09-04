@@ -206,6 +206,13 @@ internal sealed class PstLayout
     internal int BbtLeafStride =>
         BrefSize + 4;
 
+    /// <summary>
+    /// Gets the size of a subnode block header (<c>SLBLOCK</c> / <c>SIBLOCK</c>): <c>btype</c>, <c>cLevel</c>, <c>cEnt</c>,
+    /// plus four bytes of padding in the Unicode layout only.
+    /// </summary>
+    internal int SubnodeBlockHeaderSize =>
+        IdWidth == 8 ? 8 : 4;
+
     /// <summary>Gets the size of a subnode leaf entry (<c>SLENTRY</c>): <c>nid</c>, <c>bidData</c>, <c>bidSub</c>.</summary>
     internal int SubnodeLeafEntrySize =>
         IdWidth * 3;

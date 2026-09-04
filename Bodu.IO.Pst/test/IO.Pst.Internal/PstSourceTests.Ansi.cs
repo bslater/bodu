@@ -27,8 +27,8 @@ public partial class PstSourceTests
     }
 
     /// <summary>
-    /// Verifies that an ANSI block is read through its 12-byte trailer and that a corrupted block identifier — which the
-    /// ANSI trailer places before the checksum — is reported as an invalid block.
+    /// Verifies that an ANSI block is read through its 12-byte trailer and that, under strict validation, a corrupted
+    /// block identifier — which the ANSI trailer places before the checksum — is reported as an invalid block.
     /// </summary>
     [TestMethod]
     public void ReadBlock_WhenAnsiTrailerBlockIdIsCorrupt_ShouldThrowInvalidBlock()
@@ -40,13 +40,14 @@ public partial class PstSourceTests
         long trailer = builder.BlockOffsets[blockId] + PstFixtureBuilder.BlockDiskLength(payload.Length, PstLayout.Ansi) - PstLayout.Ansi.BlockTrailerSize;
         file[trailer + PstLayout.Ansi.BlockTrailerBlockIdOffset] ^= 0x01;
 
-        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = ReadNodePayload(file, PstValidationLevel.Compatible));
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = ReadNodePayload(file, PstValidationLevel.Strict));
 
         Assert.AreEqual(PstFileError.InvalidBlock, ex.Error);
     }
 
     /// <summary>
-    /// Verifies that a corrupted ANSI block checksum — the trailer's last four bytes — is reported as an invalid block.
+    /// Verifies that, under strict validation, a corrupted ANSI block checksum — the trailer's last four bytes — is
+    /// reported as an invalid block.
     /// </summary>
     [TestMethod]
     public void ReadBlock_WhenAnsiTrailerCrcIsCorrupt_ShouldThrowInvalidBlock()
@@ -57,7 +58,7 @@ public partial class PstSourceTests
         long trailer = builder.BlockOffsets[blockId] + PstFixtureBuilder.BlockDiskLength(payload.Length, PstLayout.Ansi) - PstLayout.Ansi.BlockTrailerSize;
         file[trailer + PstLayout.Ansi.BlockTrailerCrcOffset] ^= 0x01;
 
-        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = ReadNodePayload(file, PstValidationLevel.Compatible));
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() => _ = ReadNodePayload(file, PstValidationLevel.Strict));
 
         Assert.AreEqual(PstFileError.InvalidBlock, ex.Error);
     }

@@ -36,6 +36,8 @@ public partial class PstFileTests
         {
             new object[] { new PstNodeCensusKat(Sample1, NodeCount: 52, FolderNodeCount: 5, MessageNodeCount: 1) },
             new object[] { new PstNodeCensusKat(TestUnicode, NodeCount: 48, FolderNodeCount: 5, MessageNodeCount: 2) },
+            new object[] { new PstNodeCensusKat(Sample2Ansi, NodeCount: 52, FolderNodeCount: 5, MessageNodeCount: 1) },
+            new object[] { new PstNodeCensusKat(TestAnsi, NodeCount: 47, FolderNodeCount: 5, MessageNodeCount: 1) },
         };
 
     /// <summary>

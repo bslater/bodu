@@ -160,8 +160,10 @@ public sealed class PstTableContext
 
         // Rows never span blocks and every block (a heap item included) fits the block payload, so the row's block
         // and position follow directly from the per-block row capacity.
-        int rowNumber = (int)BinaryPrimitives.ReadUInt32LittleEndian(data.Span);
-        int rowsPerBlock = PstTableContextReader.RowsPerBlock(_info.RowWidth);
+        int rowNumber = data.Length >= 4
+            ? (int)BinaryPrimitives.ReadUInt32LittleEndian(data.Span)
+            : BinaryPrimitives.ReadUInt16LittleEndian(data.Span);
+        int rowsPerBlock = PstTableContextReader.RowsPerBlock(_context.Source.Layout, _info.RowWidth);
         int targetBlock = rowNumber / rowsPerBlock;
         int positionInBlock = rowNumber % rowsPerBlock;
 

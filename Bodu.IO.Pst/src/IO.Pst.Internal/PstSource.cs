@@ -24,12 +24,6 @@ internal sealed class PstSource
     /// <summary>The page size of the Unicode format.</summary>
     internal const int PageSize = 512;
 
-    /// <summary>The block trailer size of the Unicode format.</summary>
-    private const int BlockTrailerSize = 16;
-
-    /// <summary>The maximum on-disk block size, including padding and trailer.</summary>
-    private const int MaxBlockSize = 8192;
-
 
     /// <summary>The source stream.</summary>
     private readonly Stream _stream;
@@ -86,6 +80,13 @@ internal sealed class PstSource
     internal PstHeader Header { get; }
 
     /// <summary>
+    /// Gets the on-disk layout (widths and offsets) of the file's format.
+    /// </summary>
+    /// <value>The layout the header selected.</value>
+    internal PstLayout Layout =>
+        Header.Layout;
+
+    /// <summary>
     /// Gets the validation level the source was opened with.
     /// </summary>
     /// <value>The validation level.</value>
@@ -133,10 +134,11 @@ internal sealed class PstSource
     {
         // A cached page was fully validated when it was filled; only the (cheap) expected-type check depends on the
         // caller, so it is re-run on every hit. A shape mismatch falls through to a fresh, fully validated read.
+        PstLayout layout = Layout;
         if (_pageCache is not null
             && _pageCache.TryGetValue(bref.BlockId, out byte[] cachedPage)
             && cachedPage.Length == PageSize
-            && cachedPage[496] == expectedType)
+            && cachedPage[layout.PageTrailerOffset] == expectedType)
         {
             return cachedPage;
         }
@@ -144,9 +146,10 @@ internal sealed class PstSource
         var page = new byte[PageSize];
         ReadAt((long)bref.Offset, page);
 
-        // PAGETRAILER at 496: ptype, ptypeRepeat, wSig, dwCRC, bid.
-        byte pageType = page[496];
-        if (pageType != expectedType || page[497] != pageType)
+        // PAGETRAILER: ptype, ptypeRepeat, wSig, then dwCRC and bid — in that order for Unicode (at 496) and with bid
+        // before dwCRC for ANSI (at 500); the layout carries the offsets.
+        byte pageType = page[layout.PageTrailerOffset];
+        if (pageType != expectedType || page[layout.PageTrailerOffset + 1] != pageType)
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
@@ -154,11 +157,11 @@ internal sealed class PstSource
 
         if (ValidationLevel == PstValidationLevel.Strict)
         {
-            ulong recordedId = BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(504));
-            uint recordedCrc = BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(500));
-            ushort recordedSignature = BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(498));
+            ulong recordedId = layout.ReadId(page.AsSpan(layout.PageBlockIdOffset));
+            uint recordedCrc = BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(layout.PageCrcOffset));
+            ushort recordedSignature = BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(layout.PageSignatureOffset));
             if (recordedId != bref.BlockId
-                || recordedCrc != PstCrc.Compute(page.AsSpan(0, 496))
+                || recordedCrc != PstCrc.Compute(page.AsSpan(0, layout.PageCrcLength))
                 || recordedSignature != ComputeSignature(bref.Offset, bref.BlockId))
             {
                 throw new PstFileFormatException(string.Format(
@@ -182,9 +185,10 @@ internal sealed class PstSource
         if (_blockCache is not null && _blockCache.TryGetValue(entry.Bref.BlockId, out byte[] cachedPayload))
             return cachedPayload;
 
+        PstLayout layout = Layout;
         int payloadLength = entry.Length;
-        int diskLength = (payloadLength + BlockTrailerSize + 63) & ~63;
-        if (payloadLength == 0 || diskLength > MaxBlockSize)
+        int diskLength = (payloadLength + layout.BlockTrailerSize + 63) & ~63;
+        if (payloadLength == 0 || diskLength > PstLayout.MaxBlockSize)
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstBlock, entry.Bref.Offset), PstFileError.InvalidBlock);
@@ -193,8 +197,8 @@ internal sealed class PstSource
         var block = new byte[diskLength];
         ReadAt((long)entry.Bref.Offset, block);
 
-        // BLOCKTRAILER at the end: cb, wSig, dwCRC, bid.
-        ReadOnlySpan<byte> trailer = block.AsSpan(diskLength - BlockTrailerSize);
+        // BLOCKTRAILER at the end: cb, wSig, then dwCRC and bid (Unicode) or bid and dwCRC (ANSI).
+        ReadOnlySpan<byte> trailer = block.AsSpan(diskLength - layout.BlockTrailerSize);
         if (BinaryPrimitives.ReadUInt16LittleEndian(trailer) != payloadLength)
         {
             throw new PstFileFormatException(string.Format(
@@ -203,8 +207,8 @@ internal sealed class PstSource
 
         if (ValidationLevel == PstValidationLevel.Strict)
         {
-            if (BinaryPrimitives.ReadUInt64LittleEndian(trailer.Slice(8)) != entry.Bref.BlockId
-                || BinaryPrimitives.ReadUInt32LittleEndian(trailer.Slice(4)) != PstCrc.Compute(block.AsSpan(0, payloadLength))
+            if (layout.ReadId(trailer.Slice(layout.BlockTrailerBlockIdOffset)) != entry.Bref.BlockId
+                || BinaryPrimitives.ReadUInt32LittleEndian(trailer.Slice(layout.BlockTrailerCrcOffset)) != PstCrc.Compute(block.AsSpan(0, payloadLength))
                 || BinaryPrimitives.ReadUInt16LittleEndian(trailer.Slice(2)) != ComputeSignature(entry.Bref.Offset, entry.Bref.BlockId))
             {
                 throw new PstFileFormatException(string.Format(

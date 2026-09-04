@@ -47,40 +47,44 @@ internal static class PstSubnodeTree
     /// <exception cref="PstFileFormatException">The block is not a well-formed subnode block.</exception>
     private static void AppendBlock(PstSource source, ulong blockId, List<PstNbtEntry> entries, bool allowIndex)
     {
+        PstLayout layout = source.Layout;
+        int idWidth = layout.IdWidth;
         byte[] block = PstDataTree.ReadBlock(source, blockId);
-        if (block.Length < 8 || block[0] != SubnodeBlockType)
+        if (block.Length < layout.SubnodeBlockHeaderSize || block[0] != SubnodeBlockType)
             throw Malformed(blockId);
 
+        // The header is btype, cLevel, cEnt; the Unicode layout pads it to eight bytes, the ANSI layout does not.
         byte level = block[1];
         int count = BinaryPrimitives.ReadUInt16LittleEndian(block.AsSpan(2));
-        ReadOnlySpan<byte> body = block.AsSpan(8);
-
+        ReadOnlySpan<byte> body = block.AsSpan(layout.SubnodeBlockHeaderSize);
         if (level == 0)
         {
-            // SLBLOCK: 24-byte SLENTRY rows — node id, data block id, nested subnode block id.
-            if (count * 24 > body.Length)
+            // SLBLOCK: SLENTRY rows — node id, data block id, nested subnode block id (24 bytes Unicode, 12 ANSI).
+            int entrySize = layout.SubnodeLeafEntrySize;
+            if (count * entrySize > body.Length)
                 throw Malformed(blockId);
 
             for (int i = 0; i < count; i++)
             {
-                // The SLENTRY nid is an 8-byte field whose upper dword real writers leave uninitialized; unlike the
-                // node B-tree, only the low 32 bits identify the subnode.
-                ReadOnlySpan<byte> row = body.Slice(i * 24, 24);
+                // The Unicode SLENTRY nid is an 8-byte field whose upper dword real writers leave uninitialized;
+                // unlike the node B-tree, only the low 32 bits identify the subnode. The ANSI field is 32 bits.
+                ReadOnlySpan<byte> row = body.Slice(i * entrySize, entrySize);
                 entries.Add(new PstNbtEntry(
-                    (uint)BinaryPrimitives.ReadUInt64LittleEndian(row),
-                    BinaryPrimitives.ReadUInt64LittleEndian(row.Slice(8)),
-                    BinaryPrimitives.ReadUInt64LittleEndian(row.Slice(16)),
+                    (uint)layout.ReadId(row),
+                    layout.ReadId(row.Slice(idWidth)),
+                    layout.ReadId(row.Slice(idWidth * 2)),
                     ParentNodeId: 0));
             }
         }
         else if (level == 1 && allowIndex)
         {
-            // SIBLOCK: 16-byte SIENTRY rows — node id, SLBLOCK id.
-            if (count * 16 > body.Length)
+            // SIBLOCK: SIENTRY rows — node id, SLBLOCK id (16 bytes Unicode, 8 ANSI).
+            int entrySize = layout.SubnodeIndexEntrySize;
+            if (count * entrySize > body.Length)
                 throw Malformed(blockId);
 
             for (int i = 0; i < count; i++)
-                AppendBlock(source, BinaryPrimitives.ReadUInt64LittleEndian(body.Slice((i * 16) + 8)), entries, allowIndex: false);
+                AppendBlock(source, layout.ReadId(body.Slice((i * entrySize) + idWidth)), entries, allowIndex: false);
         }
         else
         {

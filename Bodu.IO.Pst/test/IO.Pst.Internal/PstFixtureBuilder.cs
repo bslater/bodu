@@ -208,14 +208,15 @@ internal sealed class PstFixtureBuilder
     internal ulong AddSubnodeLeafBlock(params (uint NodeId, ulong DataBlockId, ulong SubnodeBlockId)[] entries)
     {
         int entrySize = Layout.SubnodeLeafEntrySize;
-        var block = new byte[8 + (entries.Length * entrySize)];
+        int header = Layout.SubnodeBlockHeaderSize;
+        var block = new byte[header + (entries.Length * entrySize)];
         block[0] = 0x02;
         block[1] = 0;
         BinaryPrimitives.WriteUInt16LittleEndian(block.AsSpan(2), (ushort)entries.Length);
 
         for (int i = 0; i < entries.Length; i++)
         {
-            Span<byte> row = block.AsSpan(8 + (i * entrySize), entrySize);
+            Span<byte> row = block.AsSpan(header + (i * entrySize), entrySize);
             Layout.WriteId(row, entries[i].NodeId);
             Layout.WriteId(row.Slice(Layout.IdWidth), entries[i].DataBlockId);
             Layout.WriteId(row.Slice(Layout.IdWidth * 2), entries[i].SubnodeBlockId);
@@ -232,14 +233,15 @@ internal sealed class PstFixtureBuilder
     internal ulong AddSubnodeIndexBlock(params ulong[] childIds)
     {
         int entrySize = Layout.SubnodeIndexEntrySize;
-        var block = new byte[8 + (childIds.Length * entrySize)];
+        int header = Layout.SubnodeBlockHeaderSize;
+        var block = new byte[header + (childIds.Length * entrySize)];
         block[0] = 0x02;
         block[1] = 1;
         BinaryPrimitives.WriteUInt16LittleEndian(block.AsSpan(2), (ushort)childIds.Length);
 
         for (int i = 0; i < childIds.Length; i++)
         {
-            Span<byte> row = block.AsSpan(8 + (i * entrySize), entrySize);
+            Span<byte> row = block.AsSpan(header + (i * entrySize), entrySize);
             Layout.WriteId(row, childIds[i]);
             Layout.WriteId(row.Slice(Layout.IdWidth), childIds[i]);
         }
