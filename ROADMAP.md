@@ -1190,6 +1190,15 @@ recognized and rejected.
   copies (`CompoundStorage` child index — the one `Bodu.IO.Compound`
   change — cached bodies, zero-copy attachment streams, in-place row-id
   enumeration, span-based variable-value decoding).
+- **Streaming attachment payloads — landed** ✅ (2026-09-04, the
+  follow-on the hardening pass recorded): `PstPropertyContext` /
+  `PstTableRow` gain value-length and value-stream accessors that serve
+  subnode-resident values block by block without materializing them, and
+  both readers gain `MaxInlineAttachmentBytes` (1 MiB) — a larger
+  `PidTagAttachDataBinary` stays a present-but-null property and
+  `OpenContentStream` streams it from the container, so an attachment of
+  any size can be enumerated, sized, and copied without ever being held
+  in memory in full.
 - **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
   corpus already carries two ANSI fixtures for it.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
