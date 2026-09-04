@@ -102,15 +102,31 @@ public sealed class PstMalformedCorpusTests
 
                 if (payload[3] == 0xBC)
                 {
-                    foreach (PstPropertyValue value in node.ReadPropertyContext())
+                    PstPropertyContext context = node.ReadPropertyContext();
+                    foreach (PstPropertyValue value in context)
+                    {
                         _ = value.GetBytes();
+                        _ = context.TryGetValueLength(value.PropertyId, out _);
+                        if (context.TryOpenValueStream(value.PropertyId, out Stream? valueStream))
+                        {
+                            using (valueStream)
+                                valueStream.CopyTo(Stream.Null);
+                        }
+                    }
                 }
                 else if (payload[3] == 0x7C)
                 {
                     foreach (PstTableRow row in node.ReadTableContext().EnumerateRows())
                     {
                         foreach (PstPropertyValue cell in row.EnumerateCells())
+                        {
                             _ = cell.GetBytes();
+                            if (row.TryOpenCellStream(cell.PropertyId, out Stream? cellStream))
+                            {
+                                using (cellStream)
+                                    cellStream.CopyTo(Stream.Null);
+                            }
+                        }
                     }
                 }
             }

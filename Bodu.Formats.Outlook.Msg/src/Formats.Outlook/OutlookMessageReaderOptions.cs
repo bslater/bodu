@@ -25,11 +25,17 @@ public sealed class OutlookMessageReaderOptions
     /// <summary>The default decompressed-RTF ceiling: 64 MiB.</summary>
     internal const int DefaultMaxDecompressedRtfBytes = 64 * 1024 * 1024;
 
+    /// <summary>The default <see cref="MaxInlineAttachmentBytes" />: 1 MiB.</summary>
+    internal const int DefaultMaxInlineAttachmentBytes = 1024 * 1024;
+
     /// <summary>The backing field for <see cref="MaxEmbeddedMessageDepth" />.</summary>
     private readonly int _maxEmbeddedMessageDepth = DefaultMaxEmbeddedMessageDepth;
 
     /// <summary>The backing field for <see cref="MaxDecompressedRtfBytes" />.</summary>
     private readonly int _maxDecompressedRtfBytes = DefaultMaxDecompressedRtfBytes;
+
+    /// <summary>The backing field for <see cref="MaxInlineAttachmentBytes" />.</summary>
+    private readonly int _maxInlineAttachmentBytes = DefaultMaxInlineAttachmentBytes;
 
     /// <summary>
     /// Gets the shared default options instance.
@@ -99,6 +105,32 @@ public sealed class OutlookMessageReaderOptions
             ThrowHelper.ThrowIfZeroOrNegative(value);
 
             _maxDecompressedRtfBytes = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the largest by-value attachment payload, in bytes, that is decoded into the attachment's
+    /// <see cref="OutlookAttachment.Properties" />; a larger <c>PidTagAttachDataBinary</c> stream is left in the
+    /// container and served only through <see cref="OutlookAttachment.OpenContentStream" />.
+    /// </summary>
+    /// <value>The inline payload limit; 1 MiB by default.</value>
+    /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>
+    /// <remarks>
+    /// Above the limit the property is still present in the collection, with a <see langword="null" /> value, so
+    /// <see cref="MapiPropertyCollection.Contains(MapiPropertyTag)" /> and <see cref="OutlookAttachment.Method" /> are
+    /// unaffected; <see cref="MapiPropertyCollection.GetBinary(ushort)" /> returns <see langword="null" /> and the
+    /// content is read from the container when the stream is opened. Combined with
+    /// <see cref="CompoundReadStrategy.Streaming" /> the payload is never held in memory in full. This is an
+    /// inline-decoding threshold, not a validation rule: it does not vary with <see cref="ValidationLevel" />.
+    /// </remarks>
+    public int MaxInlineAttachmentBytes
+    {
+        get => _maxInlineAttachmentBytes;
+        init
+        {
+            ThrowHelper.ThrowIfZeroOrNegative(value);
+
+            _maxInlineAttachmentBytes = value;
         }
     }
 

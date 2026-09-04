@@ -54,10 +54,12 @@ public class OutlookMessageReaderOptionsTests
         var defaults = new OutlookMessageReaderOptions();
         Assert.AreEqual(16, defaults.MaxEmbeddedMessageDepth);
         Assert.AreEqual(64 * 1024 * 1024, defaults.MaxDecompressedRtfBytes);
+        Assert.AreEqual(1024 * 1024, defaults.MaxInlineAttachmentBytes);
 
-        var options = new OutlookMessageReaderOptions { MaxEmbeddedMessageDepth = 2, MaxDecompressedRtfBytes = 1024 };
+        var options = new OutlookMessageReaderOptions { MaxEmbeddedMessageDepth = 2, MaxDecompressedRtfBytes = 1024, MaxInlineAttachmentBytes = 512 };
         Assert.AreEqual(2, options.MaxEmbeddedMessageDepth);
         Assert.AreEqual(1024, options.MaxDecompressedRtfBytes);
+        Assert.AreEqual(512, options.MaxInlineAttachmentBytes);
     }
 
     /// <summary>
@@ -77,6 +79,11 @@ public class OutlookMessageReaderOptionsTests
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new OutlookMessageReaderOptions { MaxDecompressedRtfBytes = value };
+        });
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new OutlookMessageReaderOptions { MaxInlineAttachmentBytes = value };
         });
     }
 }

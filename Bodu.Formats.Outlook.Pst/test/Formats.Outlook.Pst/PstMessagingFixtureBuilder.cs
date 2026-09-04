@@ -258,6 +258,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal int LargeAttachmentXBlocks { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the by-value attachment omits its <c>PidTagAttachSize</c> property.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool OmitAttachSize { get; set; }
+
+    /// <summary>
     /// Gets the logical length of the large attachment payload <see cref="LargeAttachmentXBlocks" /> produces.
     /// </summary>
     /// <value>The payload length in bytes.</value>
@@ -624,14 +630,19 @@ internal sealed class PstMessagingFixtureBuilder
             declaredSize = (uint)AttachmentContent.Length;
         }
 
-        _ = ltp.AddPropertyContext(
+        var records = new List<(ushort PropertyId, ushort WireType, uint RawValue)>
+        {
             (MapiPropertyIds.AttachMethod, Int32Type, AttachMethodOverride ?? (uint)OutlookAttachmentMethod.ByValue),
             (MapiPropertyIds.AttachLongFilename, UnicodeType, longNameHid),
             (MapiPropertyIds.AttachFilename, UnicodeType, shortNameHid),
             (MapiPropertyIds.AttachContentId, UnicodeType, contentIdHid),
             (MapiPropertyIds.AttachMimeTag, UnicodeType, mimeHid),
-            (MapiPropertyIds.AttachSize, Int32Type, declaredSize),
-            (MapiPropertyIds.AttachData, BinaryType, dataHnid));
+        };
+        if (!OmitAttachSize)
+            records.Add((MapiPropertyIds.AttachSize, Int32Type, declaredSize));
+        records.Add((MapiPropertyIds.AttachData, BinaryType, dataHnid));
+
+        _ = ltp.AddPropertyContext([.. records]);
 
         return (AddHeapBlocks(file, ltp), subnodeBlockId);
     }

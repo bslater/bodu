@@ -267,6 +267,42 @@ internal sealed class MsgFixtureBuilder
     /// </summary>
     /// <param name="configure">Configures the attachment's properties and streams on a nested builder.</param>
     /// <returns>This builder.</returns>
+    /// <summary>
+    /// Adds a by-value attachment storage carrying a patterned payload of the given length and no
+    /// <c>PidTagAttachSize</c> property.
+    /// </summary>
+    /// <param name="length">The payload length.</param>
+    /// <param name="fileName">The long file name.</param>
+    /// <returns>This builder.</returns>
+    internal MsgFixtureBuilder AddLargeAttachment(int length, string fileName = "large.bin") =>
+        AddAttachment(attachment => attachment
+            .AddFixedEntry(0x37050003, (ulong)OutlookAttachmentMethod.ByValue)
+            .AddUnicode(MapiPropertyIds.AttachLongFilename, fileName)
+            .AddBinary(MapiPropertyIds.AttachData, CreatePatternedPayload(length)));
+
+    /// <summary>
+    /// Creates a payload whose every byte is a deterministic function of its offset, so a streamed copy can be
+    /// checked without holding a second copy.
+    /// </summary>
+    /// <param name="length">The payload length.</param>
+    /// <returns>The patterned bytes.</returns>
+    internal static byte[] CreatePatternedPayload(int length)
+    {
+        var payload = new byte[length];
+        for (int i = 0; i < payload.Length; i++)
+            payload[i] = PatternByte(i);
+
+        return payload;
+    }
+
+    /// <summary>
+    /// Computes the byte <see cref="CreatePatternedPayload" /> places at an offset.
+    /// </summary>
+    /// <param name="offset">The byte offset.</param>
+    /// <returns>The pattern byte.</returns>
+    internal static byte PatternByte(long offset) =>
+        (byte)((offset * 31) + 7);
+
     internal MsgFixtureBuilder AddAttachment(Action<MsgFixtureBuilder> configure)
     {
         var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);

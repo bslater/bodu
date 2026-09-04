@@ -81,6 +81,44 @@ public sealed class PstTableRow
     }
 
     /// <summary>
+    /// Attempts to determine the length of a cell's payload without reading it.
+    /// </summary>
+    /// <param name="propertyId">The column's property identifier.</param>
+    /// <param name="length">When this method returns <see langword="true" />, the payload length in bytes.</param>
+    /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
+    /// <exception cref="PstFileFormatException">The cell's storage is malformed.</exception>
+    public bool TryGetCellLength(ushort propertyId, out long length)
+    {
+        if (TryGetCell(propertyId, out PstPropertyValue value))
+        {
+            length = value.RawData.Length;
+            return true;
+        }
+
+        length = 0;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to open a cell's payload as a read-only, seekable stream.
+    /// </summary>
+    /// <param name="propertyId">The column's property identifier.</param>
+    /// <param name="stream">When this method returns <see langword="true" />, the payload stream.</param>
+    /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
+    /// <exception cref="PstFileFormatException">The cell's storage is malformed.</exception>
+    public bool TryOpenCellStream(ushort propertyId, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
+    {
+        if (TryGetCell(propertyId, out PstPropertyValue value))
+        {
+            stream = new MemoryStream(value.RawData.ToArray(), writable: false);
+            return true;
+        }
+
+        stream = null;
+        return false;
+    }
+
+    /// <summary>
     /// Enumerates the row's present cells in column order, resolving each payload as it is yielded.
     /// </summary>
     /// <returns>The present cell values.</returns>

@@ -85,4 +85,44 @@ public partial class OutlookMailAttachmentTests
             maxDelta < CeilingBytes,
             $"Opening a {total / (1024 * 1024)} MB attachment allocated {maxDelta / (1024 * 1024)} MB — the payload is being copied.");
     }
+
+    /// <summary>
+    /// Verifies that the whole path — enumerating the attachment, reading its method and properties, and streaming
+    /// its content — stays under a memory ceiling far below a deferred payload's size, and yields every byte.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void OpenContentStream_WhenPayloadDeferred_ShouldStreamWithoutMaterializing()
+    {
+        const long CeilingBytes = 8L * 1024 * 1024;
+        var builder = new PstMessagingFixtureBuilder { LargeAttachmentXBlocks = 5 };
+        using OutlookMailStore store = OutlookMailStore.Open(builder.BuildStream(), new OutlookMailStoreReaderOptions());
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        long baseline = GC.GetTotalMemory(forceFullCollection: true);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+        Assert.AreEqual(OutlookAttachmentMethod.ByValue, attachment.Method);
+        _ = attachment.Properties;
+
+        long total = 0;
+        long maxDelta = GC.GetTotalMemory(forceFullCollection: false) - baseline;
+        var chunk = new byte[64 * 1024];
+        using (Stream content = attachment.OpenContentStream())
+        {
+            int read;
+            int chunkIndex = 0;
+            while ((read = content.Read(chunk, 0, chunk.Length)) > 0)
+            {
+                total += read;
+                if ((chunkIndex++ & 15) == 0)
+                    maxDelta = Math.Max(maxDelta, GC.GetTotalMemory(forceFullCollection: false) - baseline);
+            }
+        }
+
+        Assert.AreEqual(builder.LargeAttachmentLength, total);
+        Assert.IsTrue(maxDelta < CeilingBytes,
+            $"Reading a {builder.LargeAttachmentLength / (1024 * 1024)} MB attachment peaked {maxDelta / (1024 * 1024)} MB above baseline — the payload is being materialized.");
+    }
 }

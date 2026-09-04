@@ -28,6 +28,7 @@ public class OutlookMailStoreReaderOptionsTests
         Assert.AreEqual(256L * 1024 * 1024, options.MaxNodeDataLength);
         Assert.AreEqual(16, options.MaxEmbeddedMessageDepth);
         Assert.AreEqual(64 * 1024 * 1024, options.MaxDecompressedRtfBytes);
+        Assert.AreEqual(1024 * 1024, options.MaxInlineAttachmentBytes);
     }
 
     /// <summary>
@@ -77,6 +78,11 @@ public class OutlookMailStoreReaderOptionsTests
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new OutlookMailStoreReaderOptions { MaxDecompressedRtfBytes = value };
+        });
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new OutlookMailStoreReaderOptions { MaxInlineAttachmentBytes = value };
         });
     }
 }

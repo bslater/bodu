@@ -89,4 +89,50 @@ public partial class OutlookAttachmentTests
             _ = message.Attachments[0].OpenContentStream();
         });
     }
+
+    /// <summary>
+    /// Verifies that a deferred payload streams every byte from the container under a memory ceiling far below its
+    /// size when the container is read with the streaming strategy.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(Bodu.Test.TestCategories.Regression)]
+    public void OpenContentStream_WhenPayloadDeferred_ShouldStreamPatternedBytesWithoutMaterializing()
+    {
+        const long CeilingBytes = 1L * 1024 * 1024;
+        (MemoryStream container, OutlookMessage message) = OpenLargeAttachmentMessage(64 * 1024);
+        using (container)
+        using (message)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            long baseline = GC.GetTotalMemory(forceFullCollection: true);
+
+            OutlookAttachment attachment = message.Attachments[0];
+            Assert.AreEqual(OutlookAttachmentMethod.ByValue, attachment.Method);
+
+            long total = 0;
+            long maxDelta = GC.GetTotalMemory(forceFullCollection: false) - baseline;
+            var chunk = new byte[64 * 1024];
+            using (Stream content = attachment.OpenContentStream())
+            {
+                int read;
+                int chunkIndex = 0;
+                while ((read = content.Read(chunk, 0, chunk.Length)) > 0)
+                {
+                    for (int i = 0; i < read; i++)
+                    {
+                        if (chunk[i] != MsgFixtureBuilder.PatternByte(total + i))
+                            Assert.Fail($"Byte {total + i} does not match the pattern.");
+                    }
+
+                    total += read;
+                    if ((chunkIndex++ & 7) == 0)
+                        maxDelta = Math.Max(maxDelta, GC.GetTotalMemory(forceFullCollection: false) - baseline);
+                }
+            }
+
+            Assert.AreEqual((long)LargePayloadLength, total);
+            Assert.IsTrue(maxDelta < CeilingBytes, $"Streaming the attachment peaked {maxDelta / 1024} KB above baseline — the payload is being materialized.");
+        }
+    }
 }

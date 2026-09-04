@@ -60,6 +60,44 @@ public sealed class PstPropertyContext
         FindEntry(propertyId) >= 0;
 
     /// <summary>
+    /// Attempts to determine the length of a property's payload without reading it.
+    /// </summary>
+    /// <param name="propertyId">The 16-bit property identifier.</param>
+    /// <param name="length">When this method returns <see langword="true" />, the payload length in bytes.</param>
+    /// <returns><see langword="true" /> when the property is present.</returns>
+    /// <exception cref="PstFileFormatException">The value's storage is malformed.</exception>
+    public bool TryGetValueLength(ushort propertyId, out long length)
+    {
+        if (TryGetValue(propertyId, out PstPropertyValue value))
+        {
+            length = value.RawData.Length;
+            return true;
+        }
+
+        length = 0;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to open a property's payload as a read-only, seekable stream.
+    /// </summary>
+    /// <param name="propertyId">The 16-bit property identifier.</param>
+    /// <param name="stream">When this method returns <see langword="true" />, the payload stream.</param>
+    /// <returns><see langword="true" /> when the property is present.</returns>
+    /// <exception cref="PstFileFormatException">The value's storage is malformed.</exception>
+    public bool TryOpenValueStream(ushort propertyId, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
+    {
+        if (TryGetValue(propertyId, out PstPropertyValue value))
+        {
+            stream = new MemoryStream(value.RawData.ToArray(), writable: false);
+            return true;
+        }
+
+        stream = null;
+        return false;
+    }
+
+    /// <summary>
     /// Attempts to retrieve a property's value, resolving its payload.
     /// </summary>
     /// <param name="propertyId">The 16-bit property identifier.</param>
