@@ -166,6 +166,13 @@ public sealed partial class OutlookMailStore
         _options.MaxDecompressedRtfBytes;
 
     /// <summary>
+    /// Gets the largest by-value attachment payload decoded into an attachment's property collection.
+    /// </summary>
+    /// <value>The <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> the session was opened with.</value>
+    internal int MaxInlineAttachmentBytes =>
+        _options.MaxInlineAttachmentBytes;
+
+    /// <summary>
     /// Gets the encoding the store's code-page strings decoded with, forcing the store properties to decode first.
     /// </summary>
     /// <value>The store-level encoding child objects inherit when they declare no code page of their own.</value>
