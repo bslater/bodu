@@ -60,22 +60,60 @@ public sealed class PstPropertyContext
         FindEntry(propertyId) >= 0;
 
     /// <summary>
+    /// Enumerates the identifiers of the properties the context holds, in ascending order, without materializing any
+    /// value.
+    /// </summary>
+    /// <returns>The property identifiers.</returns>
+    public IEnumerable<ushort> EnumeratePropertyIds()
+    {
+        foreach (PstPcEntry entry in _entries)
+            yield return entry.PropertyId;
+    }
+
+    /// <summary>
+    /// Attempts to determine a property's wire type without materializing its value.
+    /// </summary>
+    /// <param name="propertyId">The 16-bit property identifier.</param>
+    /// <param name="wireType">When this method returns <see langword="true" />, the raw 16-bit wire type.</param>
+    /// <returns><see langword="true" /> when the property is present.</returns>
+    public bool TryGetWireType(ushort propertyId, out ushort wireType)
+    {
+        int index = FindEntry(propertyId);
+        if (index < 0)
+        {
+            wireType = 0;
+            return false;
+        }
+
+        wireType = _entries[index].WireType;
+        return true;
+    }
+
+    /// <summary>
     /// Attempts to determine the length of a property's payload without reading it.
     /// </summary>
     /// <param name="propertyId">The 16-bit property identifier.</param>
     /// <param name="length">When this method returns <see langword="true" />, the payload length in bytes.</param>
     /// <returns><see langword="true" /> when the property is present.</returns>
     /// <exception cref="PstFileFormatException">The value's storage is malformed.</exception>
+    /// <remarks>
+    /// For a subnode-resident value only the data tree's index blocks are read, so the length is available for a
+    /// payload of any size regardless of <see cref="PstFileOptions.MaxNodeDataLength" />.
+    /// </remarks>
     public bool TryGetValueLength(ushort propertyId, out long length)
     {
-        if (TryGetValue(propertyId, out PstPropertyValue value))
+        int index = FindEntry(propertyId);
+        if (index < 0)
         {
-            length = value.RawData.Length;
-            return true;
+            length = 0;
+            return false;
         }
 
-        length = 0;
-        return false;
+        PstPcEntry entry = _entries[index];
+        length = IsOutOfLine(entry)
+            ? _context.GetHnidLength(_heap, entry.RawValue)
+            : Materialize(entry).RawData.Length;
+        return true;
     }
 
     /// <summary>
@@ -85,16 +123,33 @@ public sealed class PstPropertyContext
     /// <param name="stream">When this method returns <see langword="true" />, the payload stream.</param>
     /// <returns><see langword="true" /> when the property is present.</returns>
     /// <exception cref="PstFileFormatException">The value's storage is malformed.</exception>
+    /// <remarks>
+    /// <para>
+    /// The stream is the streaming counterpart of <see cref="TryGetValue" />: a heap-resident value is served from
+    /// the heap's decoded bytes, and a subnode-resident value is read block by block on demand — the same stream
+    /// <see cref="PstNode.OpenDataStream" /> returns — so <see cref="PstFileOptions.MaxNodeDataLength" />, which
+    /// bounds materialization, does not apply. The stream is bound to the owning session and must be disposed before
+    /// it.
+    /// </para>
+    /// <para>
+    /// Inline and fixed-width values are exposed as their raw little-endian bytes for uniformity; the typed accessors
+    /// on <see cref="PstPropertyValue" /> remain the natural way to read them.
+    /// </para>
+    /// </remarks>
     public bool TryOpenValueStream(ushort propertyId, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
     {
-        if (TryGetValue(propertyId, out PstPropertyValue value))
+        int index = FindEntry(propertyId);
+        if (index < 0)
         {
-            stream = new MemoryStream(value.RawData.ToArray(), writable: false);
-            return true;
+            stream = null;
+            return false;
         }
 
-        stream = null;
-        return false;
+        PstPcEntry entry = _entries[index];
+        stream = IsOutOfLine(entry)
+            ? _context.OpenHnidStream(_heap, entry.RawValue)
+            : PstLtpContext.OpenMemoryStream(Materialize(entry).RawData);
+        return true;
     }
 
     /// <summary>
@@ -174,6 +229,17 @@ public sealed class PstPropertyContext
 
         return -1;
     }
+
+    /// <summary>
+    /// Determines whether a record's value lives out of line behind an HNID (a variable-length value), as opposed to
+    /// inline in the record, in a small fixed-width heap item, or as an unrecognized raw dword.
+    /// </summary>
+    /// <param name="entry">The property record.</param>
+    /// <returns><see langword="true" /> when the record's raw value is an HNID to a variable-length payload.</returns>
+    private static bool IsOutOfLine(PstPcEntry entry) =>
+        !PstWireType.TryGetInlineSize(entry.WireType, out _)
+            && !PstWireType.TryGetFixedHeapSize(entry.WireType, out _)
+            && PstWireType.IsKnown(entry.WireType);
 
     /// <summary>
     /// Resolves a record into its value, materializing inline, heap-resident, or subnode-resident payloads per the

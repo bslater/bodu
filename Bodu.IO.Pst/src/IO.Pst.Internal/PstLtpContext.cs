@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Bodu.IO.Pst.Internal;
 
@@ -95,6 +96,88 @@ internal sealed class PstLtpContext
 
         segments = PstDataTree.ResolveSegments(_source, entry.DataBlockId);
         return true;
+    }
+
+    /// <summary>
+    /// Determines the length of the payload an HNID references without reading any leaf data.
+    /// </summary>
+    /// <param name="heap">The heap the HNID belongs to.</param>
+    /// <param name="hnid">The heap identifier or subnode identifier.</param>
+    /// <returns>The payload length in bytes; zero for a null HNID.</returns>
+    /// <exception cref="PstFileFormatException">
+    /// The HNID names a heap item or subnode that does not exist, or the subnode's data tree is malformed.
+    /// </exception>
+    /// <remarks>
+    /// A subnode-resident value's length is the sum of its leaf block lengths, which the data tree's index blocks
+    /// carry; the leaves themselves are not read and no materialization limit applies.
+    /// </remarks>
+    internal long GetHnidLength(PstHeapNode heap, uint hnid)
+    {
+        if (PstHnid.IsNull(hnid))
+            return 0;
+
+        if (PstHnid.IsHeapId(hnid))
+            return heap.GetItem(hnid).Length;
+
+        long total = 0;
+        foreach (PstBbtEntry leaf in GetSubnodeLeaves(hnid))
+            total += leaf.Length;
+
+        return total;
+    }
+
+    /// <summary>
+    /// Opens the payload an HNID references as a read-only, seekable stream.
+    /// </summary>
+    /// <param name="heap">The heap the HNID belongs to.</param>
+    /// <param name="hnid">The heap identifier or subnode identifier.</param>
+    /// <returns>
+    /// A stream over the heap item for a heap-resident value, or a <see cref="PstDataStream" /> over the subnode's
+    /// leaf blocks for a subnode-resident value; an empty stream for a null HNID.
+    /// </returns>
+    /// <exception cref="PstFileFormatException">
+    /// The HNID names a heap item or subnode that does not exist, or the subnode's data tree is malformed.
+    /// </exception>
+    /// <remarks>
+    /// A heap-resident value is served from the heap's already-decoded bytes without copying; a subnode-resident
+    /// value is read block by block on demand, so <see cref="PstSource.MaxNodeDataLength" /> does not apply.
+    /// </remarks>
+    internal Stream OpenHnidStream(PstHeapNode heap, uint hnid)
+    {
+        if (PstHnid.IsNull(hnid))
+            return new MemoryStream([], writable: false);
+
+        if (PstHnid.IsHeapId(hnid))
+            return OpenMemoryStream(heap.GetItem(hnid));
+
+        return new PstDataStream(_source, GetSubnodeLeaves(hnid));
+    }
+
+    /// <summary>
+    /// Opens a read-only stream over already-decoded bytes without copying them when the memory is array-backed.
+    /// </summary>
+    /// <param name="bytes">The bytes to expose.</param>
+    /// <returns>The read-only stream.</returns>
+    internal static Stream OpenMemoryStream(ReadOnlyMemory<byte> bytes) =>
+        MemoryMarshal.TryGetArray(bytes, out ArraySegment<byte> segment)
+            ? new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false)
+            : new MemoryStream(bytes.ToArray(), writable: false);
+
+    /// <summary>
+    /// Resolves the leaf data blocks of a subnode's data tree, reading index blocks only.
+    /// </summary>
+    /// <param name="nid">The subnode identifier.</param>
+    /// <returns>The ordered leaf entries.</returns>
+    /// <exception cref="PstFileFormatException">The subnode does not exist or its data tree is malformed.</exception>
+    private List<PstBbtEntry> GetSubnodeLeaves(uint nid)
+    {
+        if (!TryGetSubnodeEntry(nid, out PstNbtEntry entry))
+        {
+            throw new PstFileFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstSubnodeTree, new PstNodeId(NodeId)), PstFileError.InvalidSubnodeTree);
+        }
+
+        return PstDataTree.ResolveLeafEntries(_source, entry.DataBlockId);
     }
 
     /// <summary>
