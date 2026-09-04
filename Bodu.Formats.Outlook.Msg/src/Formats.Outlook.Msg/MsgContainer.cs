@@ -90,6 +90,40 @@ internal static class MsgContainer
     }
 
     /// <summary>
+    /// Attempts to determine a child stream's length from the directory, without opening the stream.
+    /// </summary>
+    /// <param name="storage">The parent storage.</param>
+    /// <param name="name">The stream name.</param>
+    /// <param name="length">When this method returns <see langword="true" />, the stream length in bytes.</param>
+    /// <returns><see langword="true" /> when the stream exists.</returns>
+    /// <exception cref="OutlookMsgFormatException">The container is malformed.</exception>
+    /// <remarks>
+    /// Opening a stream under the buffered read strategy materializes its content, so the directory entry is the
+    /// only way to size a payload that is not going to be read.
+    /// </remarks>
+    internal static bool TryGetStreamLength(CompoundStorage storage, string name, out long length)
+    {
+        try
+        {
+            foreach (CompoundEntryInfo entry in storage.EnumerateStreams())
+            {
+                if (string.Equals(entry.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    length = entry.Length;
+                    return true;
+                }
+            }
+
+            length = 0;
+            return false;
+        }
+        catch (CompoundFileException ex)
+        {
+            throw Wrap(ex);
+        }
+    }
+
+    /// <summary>
     /// Lists the child storages of a storage.
     /// </summary>
     /// <param name="storage">The parent storage.</param>

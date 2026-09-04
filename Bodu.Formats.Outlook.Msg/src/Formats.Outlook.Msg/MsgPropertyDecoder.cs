@@ -70,6 +70,60 @@ internal static class MsgPropertyDecoder
     }
 
     /// <summary>
+    /// Decodes every property of a storage, leaving one variable-length property undecoded when its value stream
+    /// exceeds an inline limit.
+    /// </summary>
+    /// <param name="storage">The message, recipient, or attachment storage.</param>
+    /// <param name="kind">The storage kind, which determines the property-stream header shape.</param>
+    /// <param name="validationLevel">The validation level governing malformed-content handling.</param>
+    /// <param name="inheritedEncoding">The parent's string encoding, or <see langword="null" /> at the root.</param>
+    /// <param name="deferredTag">The raw tag of the property that may be deferred.</param>
+    /// <param name="maxInlineBytes">The largest value stream of that property decoded inline.</param>
+    /// <param name="header">When this method returns, the decoded property-stream header.</param>
+    /// <returns>The decoded property collection.</returns>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The storage has no property stream, the stream is malformed, the container is corrupt, or — under
+    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid.
+    /// </exception>
+    /// <remarks>
+    /// The deferred property's stream length is read from the directory before the stream is opened; above the
+    /// limit it is surfaced as a present property with a <see langword="null" /> value so callers can see it exists
+    /// and serve it through a stream instead.
+    /// </remarks>
+    internal static MapiPropertyCollection Decode(
+        CompoundStorage storage,
+        MsgPropertyStreamKind kind,
+        CompoundValidationLevel validationLevel,
+        Encoding? inheritedEncoding,
+        uint deferredTag,
+        int maxInlineBytes,
+        out MsgPropertyStreamHeader header)
+    {
+        if (!MsgContainer.TryReadStream(storage, MsgStreamNames.PropertiesStreamName, out byte[]? payload))
+            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgContainer);
+
+        MsgPropertyEntry[] entries = MsgPropertyStreamReader.Read(payload, kind, out header);
+        Encoding encoding = ResolveEncoding(entries, inheritedEncoding);
+
+        var properties = new List<MapiProperty>(entries.Length);
+        foreach (MsgPropertyEntry entry in entries)
+        {
+            if (entry.Tag == deferredTag
+                && MsgContainer.TryGetStreamLength(storage, MsgStreamNames.GetSubstgStreamName(entry.Tag), out long length)
+                && length > maxInlineBytes)
+            {
+                properties.Add(new MapiProperty(new MapiPropertyTag(entry.Tag), null));
+                continue;
+            }
+
+            if (TryDecodeEntry(storage, entry, encoding, validationLevel, out MapiProperty? property))
+                properties.Add(property);
+        }
+
+        return new MapiPropertyCollection(properties);
+    }
+
+    /// <summary>
     /// Resolves the string encoding for a storage from its own code-page entries, the inherited encoding, or the
     /// fallback.
     /// </summary>

@@ -45,7 +45,13 @@ public sealed partial class OutlookMessage
         for (int i = 0; i < storages.Count; i++)
         {
             MapiPropertyCollection properties = MsgPropertyDecoder.Decode(
-                storages[i], MsgPropertyStreamKind.RecipientOrAttachment, _options.ValidationLevel, _stringEncoding, out _);
+                storages[i],
+                MsgPropertyStreamKind.RecipientOrAttachment,
+                _options.ValidationLevel,
+                _stringEncoding,
+                OutlookAttachment.ContentTag.Value,
+                _options.MaxInlineAttachmentBytes,
+                out _);
             attachments[i] = new OutlookAttachment(this, storages[i], properties);
         }
 
