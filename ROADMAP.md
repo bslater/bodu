@@ -1199,8 +1199,23 @@ recognized and rejected.
   `OpenContentStream` streams it from the container, so an attachment of
   any size can be enumerated, sized, and copied without ever being held
   in memory in full.
-- **ANSI format** (`wVer` 14/15) as a demand-driven follow-on; the
-  corpus already carries two ANSI fixtures for it.
+- **ANSI format — landed** ✅ (2026-09-04): `wVer` 14/15 stores are read
+  through the same NDB readers as Unicode, driven by an internal
+  `PstLayout` descriptor (32-bit identifiers and offsets, the 12-byte
+  trailers with the block identifier before the checksum, the unpadded
+  subnode block header, the 8,180-byte row-matrix payload, the two-byte
+  row-index number). Validated against the two ANSI corpus fixtures and
+  their `lspst` oracle listings, the synthetic fixture builder in ANSI
+  mode, and the malformed sweeps at both levels; `OutlookMailStore`
+  walks an ANSI store unchanged. Only the 4 KiB-page OST variant remains
+  rejected.
+- **Follow-on closure — landed** ✅ (2026-09-04): `PstDataStream` gained
+  a real lifecycle (disposal, session binding, synchronous-completing
+  async reads); `.msg` value streams are read with a single allocation
+  (a pre-sized compound chain read plus a zero-copy hand-off from a
+  read-only cursor); the dead storage-name formatters are gone; and the
+  `CompressedRtf` tests are linked into the PST test project under the
+  `OUTLOOK_PST` namespace switch.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
   multi-megabyte stress option recorded in the fixture NOTICE.
 

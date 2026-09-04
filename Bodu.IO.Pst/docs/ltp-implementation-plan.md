@@ -39,7 +39,10 @@ tranches.
   time; nothing materializes the whole matrix.
 - **Unicode only (P-D1).** ANSI/OST rejection already happens at
   `PstHeader.Parse`; LTP readers keep offsets in named constants so the
-  ANSI widths can be parameterized later (R5).
+  ANSI widths can be parameterized later (R5). *(Since 2026-09-04 the
+  ANSI format is read; the LTP layer needed two changes only — the
+  row-matrix block payload, 8,180 bytes against 8,176, and the two-byte
+  ANSI row-index number — both driven by the shared `PstLayout`.)*
 
 ## 2. Format facts the implementation encodes (MS-PST §2.3)
 
@@ -193,7 +196,7 @@ before the final push.
 
 MAPI semantics and folder/message traversal (P3); the name-to-id map
 (P3); multi-valued / `PtypObject` / `PtypString8` decoding (raw
-payloads only); ANSI (`wVer` 14/15) and OST-4K (still rejected at
-open); the decoded-block LRU, malformed-file fuzz sweeps, and
+payloads only); OST-4K (still rejected at open; ANSI landed
+2026-09-04); the decoded-block LRU, malformed-file fuzz sweeps, and
 large-file memory-ceiling Regression (P2); writing, search machinery,
 WIP encryption, and password handling (§9 of the exploration doc).

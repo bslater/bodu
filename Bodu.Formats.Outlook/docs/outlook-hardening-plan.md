@@ -139,10 +139,16 @@ Deviations from the plan as written, each forced by evidence during Phase B:
 | `PstTableContext.EnumerateRows` strict surplus | Throw when the matrix is longer than the index. | Throws under Strict only when the matrix carries whole rows beyond the index count, counted across every block. | Tolerant reads stop at the index; the strict check must not misfire on the last block's slack. |
 | `OutlookMailAttachment.OpenContentStream` | Return `PstNode.OpenDataStream()` for a subnode-resident payload. | Wraps the decoded array read-only via `MemoryMarshal.TryGetArray`. | The property collection has already materialized the payload by the time the stream is opened; the zero-copy wrap meets the memory guard without a second read path. Streaming without materialization needs a container API for opening a property value as a stream — a follow-on. |
 
-Follow-ons recorded, not in scope here: `PstDataStream` async/`Dispose`
-overrides; the `.msg` `CompoundStream.AsMemory()` path for value streams that
-never escape as owned arrays. The value-stream follow-on landed separately —
-see below.
+Every follow-on the pass recorded has since landed: the value-stream API
+(below), and on 2026-09-04 the ANSI PST format (`Bodu.IO.Pst/docs/
+pst-container-exploration.md` P-D1), the `PstDataStream` lifecycle (disposal
+and session binding, synchronous-completing async reads), the `.msg`
+single-allocation value read (a pre-sized `CfbSectorReader.ReadChain` plus
+a zero-copy hand-off from a read-only cursor in `MsgContainer.TryReadStream`),
+the removal of the dead `MsgStreamNames` storage-name formatters, and the
+`CompressedRtfTests` link into the PST test project under the `OUTLOOK_PST`
+namespace switch — closing the one linking gap the deviation table above
+records. Only the 4 KiB-page OST variant remains outside the readers.
 
 ## Streaming property values — landed 2026-09-04
 

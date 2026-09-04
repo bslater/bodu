@@ -70,8 +70,10 @@ and signature), and `Minimal` (salvage reads of damaged files).
 
 ## Out of scope
 
-- The **ANSI** format (`wVer` 14/15) and the 4 KiB-page OST variant — recognized
-  and rejected with `PstUnsupportedFormatException`, not read.
+- The 4 KiB-page **OST** variant (`wVer` ≥ 36) — recognized and rejected with
+  `PstUnsupportedFormatException`, not read. (The ANSI format, `wVer` 14/15, is
+  read alongside Unicode: the same structures with 32-bit identifiers and
+  offsets, selected per file by an internal layout descriptor.)
 - **MAPI and messaging semantics** — folders, messages, recipients, attachments,
   named-property resolution, and multi-valued/object payload decoding (surfaced
   raw). These belong to the future `Bodu.Formats.Outlook.Pst` reader.
