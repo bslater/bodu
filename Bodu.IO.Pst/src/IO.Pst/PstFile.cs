@@ -253,6 +253,7 @@ public sealed class PstFile
             return;
 
         _disposed = true;
+        _source.MarkDisposed();
         if (!_leaveOpen)
             _stream.Dispose();
     }

@@ -37,6 +37,9 @@ internal sealed class PstSource
     /// <summary>The optional LRU cache of decoded block payloads, keyed by block identifier; <see langword="null" /> when caching is disabled.</summary>
     private readonly EvictingDictionary<ulong, byte[]>? _blockCache;
 
+    /// <summary>Whether the owning session has been disposed; set before the stream is released.</summary>
+    private bool _disposed;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstSource" /> class.
     /// </summary>
@@ -87,6 +90,28 @@ internal sealed class PstSource
         Header.Layout;
 
     /// <summary>
+    /// Marks the source as belonging to a disposed session, so every later page or block read — cache hit or not —
+    /// fails with <see cref="ObjectDisposedException" /> rather than serving stale data or surfacing the underlying
+    /// stream's error.
+    /// </summary>
+    internal void MarkDisposed() =>
+        _disposed = true;
+
+    /// <summary>
+    /// Gets a value indicating whether the owning session has been disposed.
+    /// </summary>
+    /// <value><see langword="true" /> once <see cref="MarkDisposed" /> has run.</value>
+    internal bool IsDisposed =>
+        _disposed;
+
+    /// <summary>
+    /// Throws when the owning session has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    private void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, typeof(PstFile));
+
+    /// <summary>
     /// Gets the validation level the source was opened with.
     /// </summary>
     /// <value>The validation level.</value>
@@ -100,6 +125,8 @@ internal sealed class PstSource
     /// <exception cref="PstFileFormatException">The range escapes the stream.</exception>
     internal void ReadAt(long offset, Span<byte> buffer)
     {
+        ThrowIfDisposed();
+
         // Subtract rather than add: an offset near the top of the range would wrap a sum negative and slip past.
         if (offset < 0 || buffer.Length > _stream.Length - _baseOffset - offset)
             throw InvalidRead(offset);
@@ -132,6 +159,8 @@ internal sealed class PstSource
     /// </exception>
     internal byte[] ReadPage(PstBref bref, byte expectedType)
     {
+        ThrowIfDisposed();
+
         // A cached page was fully validated when it was filled; only the (cheap) expected-type check depends on the
         // caller, so it is re-run on every hit. A shape mismatch falls through to a fresh, fully validated read.
         PstLayout layout = Layout;
@@ -182,6 +211,8 @@ internal sealed class PstSource
     /// <exception cref="PstFileFormatException">The block geometry or trailer is invalid.</exception>
     internal byte[] ReadBlock(PstBbtEntry entry)
     {
+        ThrowIfDisposed();
+
         if (_blockCache is not null && _blockCache.TryGetValue(entry.Bref.BlockId, out byte[] cachedPayload))
             return cachedPayload;
 

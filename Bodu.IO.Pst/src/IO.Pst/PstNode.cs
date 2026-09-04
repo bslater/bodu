@@ -102,6 +102,10 @@ public sealed class PstNode
     /// <remarks>
     /// The stream reads one leaf block at a time through the session's decoded-block cache, so an arbitrarily large
     /// payload is never materialized; use <see cref="ReadAllBytes" /> for the buffered convenience.
+    /// <para>
+    /// The stream is bound to this session: after the session is disposed every read throws
+    /// <see cref="ObjectDisposedException" />, even for data already cached. Dispose the stream before the session.
+    /// </para>
     /// </remarks>
     public Stream OpenDataStream() =>
         new PstDataStream(_file.GetSource(), ResolveDataLeaves());
