@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
 using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook.Msg;
@@ -79,7 +80,7 @@ internal static class MsgContainer
             }
 
             using (stream)
-                bytes = stream.ReadAllBytes();
+                bytes = ReadCursor(stream);
 
             return true;
         }
@@ -87,6 +88,31 @@ internal static class MsgContainer
         {
             throw Wrap(ex);
         }
+    }
+
+    /// <summary>
+    /// Reads a cursor's whole payload with as little copying as the cursor allows.
+    /// </summary>
+    /// <param name="stream">The open cursor; the caller disposes it.</param>
+    /// <returns>An array the caller owns.</returns>
+    /// <remarks>
+    /// A read-only cursor exposes its payload through <see cref="CompoundStream.AsMemory" />: under the buffered read
+    /// strategy that is the cursor's private materialization, which is handed back without a second copy; under the
+    /// streaming strategy it is one materialization of the sector chain. A writable cursor's memory is a view over a
+    /// live growth buffer, so it is always copied.
+    /// </remarks>
+    private static byte[] ReadCursor(CompoundStream stream)
+    {
+        if (stream.CanWrite)
+            return stream.ReadAllBytes();
+
+        ReadOnlyMemory<byte> memory = stream.AsMemory();
+        return MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment)
+            && segment.Offset == 0
+            && segment.Array is { } array
+            && segment.Count == array.Length
+            ? array
+            : memory.ToArray();
     }
 
     /// <summary>

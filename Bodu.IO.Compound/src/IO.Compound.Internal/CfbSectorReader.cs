@@ -123,38 +123,27 @@ internal sealed class CfbSectorReader
 
         size = BoundPaddedSize(size);
 
-        byte[] chain = ReadChainToEnd(startSector);
-        if (chain.Length < size)
+        // The result is sized once from the declared length and filled sector by sector; a growable buffer would
+        // allocate roughly three times the payload for a large stream. The chain is still walked to its end so a
+        // cycle or an out-of-range sector past the declared length is detected as before.
+        byte[] result = new byte[size];
+        byte[] scratch = new byte[_header.SectorSize];
+        long filled = 0;
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+        {
+            if (filled >= size)
+                continue;
+
+            ReadOnlySpan<byte> bytes = ReadSector(sector, scratch);
+            int take = (int)Math.Min(bytes.Length, size - filled);
+            bytes.Slice(0, take).CopyTo(result.AsSpan((int)filled));
+            filled += take;
+        }
+
+        if (filled < size)
             _ = StopOrThrow(true, CompoundFileError.StreamChainTooShort);
 
-        if (chain.Length == size)
-            return chain;
-
-        byte[] result = new byte[size];
-        Array.Copy(chain, result, Math.Min(chain.Length, size));
         return result;
-    }
-
-    /// <summary>
-    /// Reads every byte of a regular-sector chain, following the FAT until the end-of-chain sentinel.
-    /// </summary>
-    /// <param name="startSector">The first sector of the chain.</param>
-    /// <returns>The concatenated bytes of every sector in the chain; empty when the chain is empty.</returns>
-    /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the chain is circular or references an out-of-range sector.
-    /// </exception>
-    internal byte[] ReadChainToEnd(uint startSector)
-    {
-        if (startSector == CfbHeader.EndOfChain)
-            return [];
-
-        using MemoryStream buffer = new();
-        Span<byte> scratch = stackalloc byte[_header.SectorSize];
-
-        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
-            buffer.Write(ReadSector(sector, scratch));
-
-        return buffer.ToArray();
     }
 
     /// <summary>
@@ -274,6 +263,28 @@ internal sealed class CfbSectorReader
             miniFat[i] = BinaryPrimitives.ReadUInt32LittleEndian(miniFatBytes.AsSpan(i * sizeof(uint)));
 
         _miniFat = miniFat;
+    }
+
+    /// <summary>
+    /// Reads every byte of a regular-sector chain, following the FAT until the end-of-chain sentinel.
+    /// </summary>
+    /// <param name="startSector">The first sector of the chain.</param>
+    /// <returns>The concatenated bytes of every sector in the chain; empty when the chain is empty.</returns>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the chain is circular or references an out-of-range sector.
+    /// </exception>
+    internal byte[] ReadChainToEnd(uint startSector)
+    {
+        if (startSector == CfbHeader.EndOfChain)
+            return [];
+
+        using MemoryStream buffer = new();
+        Span<byte> scratch = stackalloc byte[_header.SectorSize];
+
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+            buffer.Write(ReadSector(sector, scratch));
+
+        return buffer.ToArray();
     }
 
     /// <summary>
