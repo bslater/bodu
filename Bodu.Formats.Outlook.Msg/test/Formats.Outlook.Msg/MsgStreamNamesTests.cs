@@ -49,15 +49,4 @@ public class MsgStreamNamesTests
         Assert.AreEqual("__substg1.0_3A58101F-00000000", MsgStreamNames.GetMultiValueElementStreamName(0x3A58101Fu, 0));
         Assert.AreEqual("__substg1.0_3A58101F-0000000A", MsgStreamNames.GetMultiValueElementStreamName(0x3A58101Fu, 10));
     }
-
-    /// <summary>
-    /// Verifies that recipient and attachment storage names carry the hash-prefixed eight-digit index.
-    /// </summary>
-    [TestMethod]
-    public void GetStorageNames_WhenIndex_ShouldComposeNames()
-    {
-        Assert.AreEqual("__recip_version1.0_#00000000", MsgStreamNames.GetRecipientStorageName(0));
-        Assert.AreEqual("__recip_version1.0_#0000000F", MsgStreamNames.GetRecipientStorageName(15));
-        Assert.AreEqual("__attach_version1.0_#00000001", MsgStreamNames.GetAttachmentStorageName(1));
-    }
 }

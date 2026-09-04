@@ -153,4 +153,46 @@ public partial class PstFileTests
 
         Assert.AreEqual(expectedCount, file.GetNode(PstNodeId.MessageStore).ReadPropertyContext().Count);
     }
+
+    /// <summary>
+    /// Verifies that a synthetic ANSI store opens and its node payload reads back through the 32-bit block tree.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenSyntheticAnsiStore_ShouldReadNodePayload()
+    {
+        var builder = new Bodu.IO.Pst.Internal.PstFixtureBuilder { Format = PstFileFormat.Ansi };
+        byte[] payload = [.. Enumerable.Range(0, 5000).Select(static i => (byte)(i % 251))];
+        builder.AddNode(0x21, builder.AddDataBlock(payload));
+
+        using PstFile file = PstFile.Open(builder.BuildStream(), new PstFileOptions { ValidationLevel = PstValidationLevel.Strict });
+
+        Assert.AreEqual(PstFileFormat.Ansi, file.Format);
+        CollectionAssert.AreEqual(payload, file.GetNode(new PstNodeId(0x21)).ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Verifies that the strict file-length check reads the ANSI header's 32-bit <c>ibFileEof</c> at its own offset.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenAnsiHeaderFileLengthExceedsStream_ShouldThrowOnlyUnderStrict()
+    {
+        var builder = new Bodu.IO.Pst.Internal.PstFixtureBuilder { Format = PstFileFormat.Ansi };
+        builder.AddNode(0x21, builder.AddDataBlock([1, 2, 3]));
+        byte[] bytes = builder.Build();
+
+        System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(Bodu.IO.Pst.Internal.PstLayout.Ansi.FileLengthOffset), (uint)(bytes.Length + 4096));
+        Bodu.IO.Pst.Internal.PstFixtureBuilder.RepairHeaderChecksum(bytes);
+
+        using (var tolerant = PstFile.Open(new MemoryStream(bytes), new PstFileOptions()))
+        {
+            Assert.AreEqual(PstFileFormat.Ansi, tolerant.Format);
+        }
+
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = PstFile.Open(new MemoryStream(bytes), new PstFileOptions { ValidationLevel = PstValidationLevel.Strict });
+        });
+
+        Assert.AreEqual(PstFileError.InvalidHeader, ex.Error);
+    }
 }

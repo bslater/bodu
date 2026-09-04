@@ -20,6 +20,12 @@ public partial class PstFileTests
     /// <summary>The manifest-relative path of the secondary Unicode fixture.</summary>
     internal const string TestUnicode = "unicode/test_unicode.pst";
 
+    /// <summary>The ANSI corpus store with one folder and one message.</summary>
+    internal const string Sample2Ansi = "ansi/sample2.pst";
+
+    /// <summary>The ANSI corpus store with one empty folder.</summary>
+    internal const string TestAnsi = "ansi/test_ansi.pst";
+
     /// <summary>
     /// Gets the node-census rows: the node-directory facts of each Unicode fixture, verified against the file
     /// contents during the P0 spike and cross-checked against the <c>lspst</c> seed manifest.

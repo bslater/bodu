@@ -18,7 +18,7 @@ namespace Bodu.IO.Pst.Internal;
 /// anyone handling the exception, so each is asserted by exact type.
 /// </remarks>
 [TestClass]
-public class PstHeaderTests
+public partial class PstHeaderTests
 {
     /// <summary>
     /// Opens a container built from the supplied builder and returns the exception it produced.

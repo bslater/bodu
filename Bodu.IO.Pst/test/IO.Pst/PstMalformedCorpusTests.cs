@@ -32,9 +32,11 @@ public sealed class PstMalformedCorpusTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Open_WhenBitFlipped_ShouldSucceedOrThrowPstFileException()
+    [DataRow(PstFileTests.Sample1)]
+    [DataRow(PstFileTests.Sample2Ansi)]
+    public void Open_WhenBitFlipped_ShouldSucceedOrThrowPstFileException(string fixture)
     {
-        byte[] original = PstReferenceFixtures.OpenStream(PstFileTests.Sample1).ToArray();
+        byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
         var rng = new Random(0x5EED_F1B5);
 
         for (int sample = 0; sample < 96; sample++)
@@ -56,9 +58,11 @@ public sealed class PstMalformedCorpusTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Open_WhenTruncated_ShouldSucceedOrThrowPstFileException()
+    [DataRow(PstFileTests.Sample1)]
+    [DataRow(PstFileTests.Sample2Ansi)]
+    public void Open_WhenTruncated_ShouldSucceedOrThrowPstFileException(string fixture)
     {
-        byte[] original = PstReferenceFixtures.OpenStream(PstFileTests.Sample1).ToArray();
+        byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
 
         var lengths = new List<int> { 0, 1, 100, 512, 563, 564, 1024 };
         for (int length = 2048; length < original.Length; length += 7919)

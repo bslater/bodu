@@ -34,9 +34,11 @@ public sealed class OutlookMailStoreMalformedCorpusTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Open_WhenBitFlipped_ShouldDecodeCleanOrThrowSanctionedFamily()
+    [DataRow(OutlookMailStoreTests.Sample1)]
+    [DataRow(OutlookMailStoreTests.Sample2Ansi)]
+    public void Open_WhenBitFlipped_ShouldDecodeCleanOrThrowSanctionedFamily(string fixture)
     {
-        byte[] original = PstReferenceFixtures.OpenStream(OutlookMailStoreTests.Sample1).ToArray();
+        byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
         var rng = new Random(0x0DDF_00D5);
 
         for (int sample = 0; sample < 64; sample++)
@@ -58,9 +60,11 @@ public sealed class OutlookMailStoreMalformedCorpusTests
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    public void Open_WhenTruncated_ShouldDecodeCleanOrThrowSanctionedFamily()
+    [DataRow(OutlookMailStoreTests.Sample1)]
+    [DataRow(OutlookMailStoreTests.Sample2Ansi)]
+    public void Open_WhenTruncated_ShouldDecodeCleanOrThrowSanctionedFamily(string fixture)
     {
-        byte[] original = PstReferenceFixtures.OpenStream(OutlookMailStoreTests.Sample1).ToArray();
+        byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
 
         var lengths = new List<int> { 0, 1, 100, 512, 563, 564, 1024 };
         for (int length = 2048; length < original.Length; length += 16007)

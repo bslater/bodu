@@ -6,7 +6,17 @@
 
 using Bodu.Test.Kat;
 
+#if OUTLOOK_PST
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookPstFormatException;
+#else
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookMsgFormatException;
+#endif
+
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 /// <summary>
 /// Verifies the behavior of <see cref="CompressedRtf" />, the MS-OXRTFCP decoder.
@@ -48,21 +58,21 @@ public partial class CompressedRtfTests
     /// <summary>
     /// Gets malformed payloads that must be rejected, keyed by the failure mode.
     /// </summary>
-    /// <value>Rows of payload hex expected to throw <see cref="OutlookMsgFormatException" />.</value>
+    /// <value>Rows of payload hex expected to throw <see cref="ExpectedFormatException" />.</value>
     public static IEnumerable<object[]> MalformedKats =>
         new InvalidKat<string>[]
         {
-            new("ShorterThanHeader", "2d0000002b0000004c5a4675f1c5c7", typeof(OutlookMsgFormatException)),
-            new("UnknownMagic", "2d0000002b000000deadbeeff1c5c7a700000000", typeof(OutlookMsgFormatException)),
+            new("ShorterThanHeader", "2d0000002b0000004c5a4675f1c5c7", typeof(ExpectedFormatException)),
+            new("UnknownMagic", "2d0000002b000000deadbeeff1c5c7a700000000", typeof(ExpectedFormatException)),
             new(
                 "CompressedSizeEscapesPayload",
                 "ff0000002b0000004c5a4675f1c5c7a703000a007263706731323542320af32068656c090020627705b06c647d0a800fa0",
-                typeof(OutlookMsgFormatException)),
+                typeof(ExpectedFormatException)),
             new(
                 "CrcMismatch",
                 "2d0000002b0000004c5a4675f1c5c7a803000a007263706731323542320af32068656c090020627705b06c647d0a800fa0",
-                typeof(OutlookMsgFormatException)),
-            new("UncompressedNonZeroCrc", "1c000000080000004d454c41010000007b5c727466317d0d0a", typeof(OutlookMsgFormatException)),
-            new("UncompressedRawSizeEscapesPayload", "1c000000ff0000004d454c41000000007b5c727466317d0d0a", typeof(OutlookMsgFormatException)),
+                typeof(ExpectedFormatException)),
+            new("UncompressedNonZeroCrc", "1c000000080000004d454c41010000007b5c727466317d0d0a", typeof(ExpectedFormatException)),
+            new("UncompressedRawSizeEscapesPayload", "1c000000ff0000004d454c41000000007b5c727466317d0d0a", typeof(ExpectedFormatException)),
         }.Select(kat => new object[] { kat });
 }

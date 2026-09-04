@@ -259,7 +259,7 @@ internal sealed class MsgFixtureBuilder
     {
         var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);
         configure(child);
-        return AddStorage(MsgStreamNames.GetRecipientStorageName(CountStorages(MsgStreamNames.RecipientStoragePrefix)), child);
+        return AddStorage(IndexedStorageName(MsgStreamNames.RecipientStoragePrefix, CountStorages(MsgStreamNames.RecipientStoragePrefix)), child);
     }
 
     /// <summary>
@@ -307,7 +307,7 @@ internal sealed class MsgFixtureBuilder
     {
         var child = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment);
         configure(child);
-        return AddStorage(MsgStreamNames.GetAttachmentStorageName(CountStorages(MsgStreamNames.AttachmentStoragePrefix)), child);
+        return AddStorage(IndexedStorageName(MsgStreamNames.AttachmentStoragePrefix, CountStorages(MsgStreamNames.AttachmentStoragePrefix)), child);
     }
 
     /// <summary>
@@ -378,6 +378,15 @@ internal sealed class MsgFixtureBuilder
     /// </summary>
     /// <param name="prefix">The storage-name prefix.</param>
     /// <returns>The number of matching storages.</returns>
+    /// <summary>
+    /// Composes an indexed storage name: the prefix followed by the eight-digit hexadecimal index.
+    /// </summary>
+    /// <param name="prefix">The storage-name prefix, including the <c>#</c>.</param>
+    /// <param name="index">The zero-based index.</param>
+    /// <returns>The storage name.</returns>
+    private static string IndexedStorageName(string prefix, int index) =>
+        prefix + index.ToString("X8", System.Globalization.CultureInfo.InvariantCulture);
+
     private int CountStorages(string prefix)
     {
         int count = 0;

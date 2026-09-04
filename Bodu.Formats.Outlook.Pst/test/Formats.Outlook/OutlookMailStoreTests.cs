@@ -18,6 +18,12 @@ public partial class OutlookMailStoreTests
     /// <summary>The primary Unicode reference fixture.</summary>
     internal const string Sample1 = "unicode/sample1.pst";
 
+    /// <summary>The ANSI corpus store with one folder and one message.</summary>
+    internal const string Sample2Ansi = "ansi/sample2.pst";
+
+    /// <summary>The ANSI corpus store with one empty folder.</summary>
+    internal const string TestAnsi = "ansi/test_ansi.pst";
+
     /// <summary>
     /// Opens the primary Unicode reference fixture as a mail store.
     /// </summary>

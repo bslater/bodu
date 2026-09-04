@@ -6,7 +6,17 @@
 
 using Bodu.Test.Kat;
 
+#if OUTLOOK_PST
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookPstFormatException;
+#else
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookMsgFormatException;
+#endif
+
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 public partial class CompressedRtfTests
 {
@@ -27,7 +37,7 @@ public partial class CompressedRtfTests
     }
 
     /// <summary>
-    /// Verifies that malformed payloads throw <see cref="OutlookMsgFormatException" />.
+    /// Verifies that malformed payloads throw <see cref="ExpectedFormatException" />.
     /// </summary>
     /// <param name="kat">The malformed-payload row.</param>
     [TestMethod]
@@ -35,11 +45,11 @@ public partial class CompressedRtfTests
         nameof(MalformedKats),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void Decompress_WhenMalformedPayload_ShouldThrowOutlookMsgFormatException(InvalidKat<string> kat)
+    public void Decompress_WhenMalformedPayload_ShouldThrowFormatException(InvalidKat<string> kat)
     {
         byte[] payload = Convert.FromHexString(kat.Input);
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
         {
             _ = CompressedRtf.Decompress(payload);
         });

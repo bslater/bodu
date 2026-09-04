@@ -7,7 +7,11 @@
 using System.Buffers.Binary;
 using Bodu.Test;
 
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 public partial class CompressedRtfTests
 {
