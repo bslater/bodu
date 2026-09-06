@@ -10,8 +10,8 @@ using Bodu.IO.Pst.Internal;
 namespace Bodu.IO.Pst;
 
 /// <summary>
-/// Provides a disposable, read-only session over a Unicode-format PST file's node database: the header facts, the node
-/// directory, and per-node data and subnode access.
+/// Provides a disposable, read-only session over a PST file's node database (Unicode or ANSI format): the header facts,
+/// the node directory, and per-node data and subnode access.
 /// </summary>
 /// <remarks>
 /// <para>

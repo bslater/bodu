@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — PST</Title>
-    <Description>A low-level, read-only container library for the Outlook personal-folders format (PST / MS-PST). Reads the Unicode-format node database — the header, the node and block B-trees, block data with the format's permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</Description>
+    <Description>A low-level, read-only container library for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files — the header, the node and block B-trees, block data with the format's permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</Description>
     <PackageTags>$(PackageTags);pst;outlook;mailbox;ndb;ltp;container;reader</PackageTags>
   </PropertyGroup>
 

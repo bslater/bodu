@@ -32,7 +32,10 @@ foreach (OutlookAttachment attachment in message.Attachments)
   `__substg1.0_…` value stream — fixed, variable-length, and multi-valued
   properties, Unicode and code-page (ANSI) strings alike.
 - Recipient and attachment storages, including attachment payload streams and
-  nested attached messages (recursively).
+  nested attached messages (recursively). A payload larger than
+  `OutlookMessageReaderOptions.MaxInlineAttachmentBytes` (1 MiB by default) is
+  not decoded into the property collection; `OpenContentStream` reads it from
+  the container on demand.
 - The named-property mapping (`__nameid_version1.0`), resolved bidirectionally.
 - The message bodies: plain text, HTML, and RTF (decompressed per MS-OXRTFCP).
 

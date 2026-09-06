@@ -21,7 +21,7 @@ namespace Bodu.IO.Pst.Internal;
 /// </remarks>
 internal sealed class PstSource
 {
-    /// <summary>The page size of the Unicode format.</summary>
+    /// <summary>The page size, shared by the Unicode and ANSI formats.</summary>
     internal const int PageSize = 512;
 
 

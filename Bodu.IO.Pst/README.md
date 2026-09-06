@@ -3,8 +3,8 @@
 > **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A **low-level, read-only container library** for the Outlook personal-folders format
-(PST, [MS-PST]). It reads the **node database (NDB)** layer of a Unicode-format file —
-the header, the node and block B-trees, block data with the format's permute and
+(PST, [MS-PST]). It reads the **node database (NDB)** layer of a Unicode- or ANSI-format
+file — the header, the node and block B-trees, block data with the format's permute and
 cyclic content encodings decoded and checksums verified, multi-block data trees, and
 per-node subnode trees — and the **LTP (Lists, Tables, Properties)** layer over it:
 each node's heap-on-node, BTree-on-heap, and the property-context and table-context
@@ -41,6 +41,9 @@ if (properties.TryGetValue(0x3001 /* display name */, out PstPropertyValue name)
 
 - **Header** — format discrimination (`wVer`), the content-encoding method
   (`bCryptMethod`), and the B-tree roots, with the header checksum verified.
+- **Both PST formats** — the Unicode format (`wVer` 23, 64-bit structures) and
+  the legacy ANSI format (`wVer` 14/15, 32-bit identifiers and offsets) are read
+  through the same surface; an internal layout descriptor is selected per file.
 - **Node B-tree (NBT)** — every node's identifier, parent, data-block and
   subnode-block references; enumerated in identifier order or looked up by id.
 - **Block B-tree (BBT)** — block resolution with trailer validation and, under
@@ -71,9 +74,7 @@ and signature), and `Minimal` (salvage reads of damaged files).
 ## Out of scope
 
 - The 4 KiB-page **OST** variant (`wVer` ≥ 36) — recognized and rejected with
-  `PstUnsupportedFormatException`, not read. (The ANSI format, `wVer` 14/15, is
-  read alongside Unicode: the same structures with 32-bit identifiers and
-  offsets, selected per file by an internal layout descriptor.)
+  `PstUnsupportedFormatException`, not read.
 - **MAPI and messaging semantics** — folders, messages, recipients, attachments,
   named-property resolution, and multi-valued/object payload decoding (surfaced
   raw). These belong to the future `Bodu.Formats.Outlook.Pst` reader.

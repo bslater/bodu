@@ -12,8 +12,8 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Provides a disposable, read-only session over an Outlook personal-folders mail store (a <c>.pst</c> file, MS-PST
-/// Unicode format): the store properties, the folder hierarchy, and the messages within it, decoded into the shared
-/// MAPI value model.
+/// Unicode or ANSI format): the store properties, the folder hierarchy, and the messages within it, decoded into the
+/// shared MAPI value model.
 /// </summary>
 /// <remarks>
 /// <para>
