@@ -24,8 +24,9 @@ consumes them yet; the P0 spike wires them.
 | `ansi/sample2.pst` | `!BDN`, `wVer` 14 | ANSI | `587a1ae2785eb218d7d42a98d43ded546aa72670908269d7b3ab25a711a91871` |
 | `ansi/test_ansi.pst` | `!BDN`, `wVer` 14 | ANSI | `f1ff591b7441f8fcf78cc6c65a78c5d168763338f2fcdf3df5745e742bd66d04` |
 
-The `unicode/` files are the P0 initial scope; the `ansi/` files serve the
-recognize-and-reject tests until ANSI support is implemented.
+The `unicode/` files were the P0 initial scope; the `ansi/` files drive the
+ANSI-format reader tests (header, corpus walk, `lspst` oracle rows, and the
+malformed-input sweeps) now that both formats are read.
 
 ## Manifest
 

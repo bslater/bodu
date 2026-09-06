@@ -19,4 +19,4 @@ Everything runs offline against the committed `Data/sample1.pst` (a Microsoft
 pstsdk test-corpus file, Apache-2.0 — see `Data/NOTICE.md` for provenance).
 PST files cannot be authored by this library, so the sample ships a real
 fixture rather than generating one; point `Program.SamplePath` at any other
-Unicode `.pst` to explore your own archive.
+Unicode or ANSI `.pst` to explore your own archive.

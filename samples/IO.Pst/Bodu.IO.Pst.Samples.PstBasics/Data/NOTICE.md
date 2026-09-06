@@ -9,4 +9,4 @@ provenance — source mirror, retrieval date, and SHA-256 pin — is recorded
 in [`Bodu.IO.Pst/test/Fixtures/Reference/NOTICE.md`](../../../../Bodu.IO.Pst/test/Fixtures/Reference/NOTICE.md).
 
 The copy exists so the sample runs offline out of the box; point the
-scenarios at any other Unicode `.pst` by editing `Program.cs`.
+scenarios at any other Unicode or ANSI `.pst` by editing `Program.cs`.

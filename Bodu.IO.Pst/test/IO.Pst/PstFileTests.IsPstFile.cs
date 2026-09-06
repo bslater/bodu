@@ -20,7 +20,7 @@ public partial class PstFileTests
         PstReferenceFixtures.Manifest.Fixtures.Select(f => new object[] { f });
 
     /// <summary>
-    /// Verifies that the sniff recognizes every corpus fixture, including the ANSI variants the reader cannot open.
+    /// Verifies that the sniff recognizes every corpus fixture, Unicode and ANSI alike.
     /// </summary>
     /// <param name="fixture">The manifest row of the fixture.</param>
     [TestMethod]

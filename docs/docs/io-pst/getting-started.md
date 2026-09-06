@@ -43,7 +43,7 @@ if (PstFile.IsPstFile(source))
 }
 ```
 
-`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant — a subsequent open of an ANSI or OST file throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant — Unicode and ANSI files then open, and <xref:Bodu.IO.Pst.PstFile.Format> reports which; a subsequent open of an OST file throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 
 ## Enumerate the node directory
 
@@ -127,7 +127,7 @@ try
 }
 catch (PstUnsupportedFormatException)
 {
-    Console.WriteLine("A recognized but unsupported PST variant (ANSI or OST).");
+    Console.WriteLine("A recognized but unsupported PST variant (the 4 KiB-page OST).");
 }
 catch (PstFileFormatException ex)
 {
