@@ -12,11 +12,11 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 
 A **PST file** (personal storage table, MS-PST) is a single-file database Outlook uses for personal-folders archives. Unlike a compound file's folder-and-stream hierarchy, a PST is organized as a flat **node database** indexed by B-trees, with the object hierarchy expressed through node identifiers rather than a directory tree. The format has three layers — the node database (NDB), the lists/tables/properties layer (LTP), and the messaging layer — and this package implements the first two. The messaging layer (folders, messages, MAPI semantics) belongs to `Bodu.Formats.Outlook.Pst`.
 
-The format comes in two variants: **Unicode** (`wVer` 23, the default since Outlook 2003, 64-bit internal offsets) and the legacy **ANSI** variant (`wVer` 14/15, 32-bit offsets). This package reads the Unicode variant; ANSI and OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. <xref:Bodu.IO.Pst.PstFileFormat> reports what the header declared.
+The format comes in two variants: **Unicode** (`wVer` 23, the default since Outlook 2003, 64-bit internal offsets) and the legacy **ANSI** variant (`wVer` 14/15, 32-bit offsets). This package reads both: an internal layout descriptor selected from the header's version supplies the identifier widths, structure offsets, and trailer layout for the file, and every public type behaves identically over either. OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. <xref:Bodu.IO.Pst.PstFileFormat> reports what the header declared.
 
 ## Header
 
-The header is the 564-byte preamble anchoring the file: the `!BDN` magic, a CRC over the following 471 bytes (the MS-PST §5.3 checksum), the client magic `SM`, the format version, the file size, the root references of the two B-trees, the sentinel byte, and the content-encoding method. Under <xref:Bodu.IO.Pst.PstValidationLevel.Strict> the header CRC is enforced; a wrong magic, an undeclared version, or a truncated header is rejected as malformed.
+The header is the preamble anchoring the file (564 bytes in the Unicode format, 512 in ANSI): the `!BDN` magic, a CRC over the following 471 bytes (the MS-PST §5.3 checksum), the client magic `SM`, the format version, the file size, the root references of the two B-trees, the sentinel byte, and the content-encoding method. Under <xref:Bodu.IO.Pst.PstValidationLevel.Strict> the header CRC is enforced; a wrong magic, an undeclared version, or a truncated header is rejected as malformed.
 
 ## Node identifier (NID)
 
@@ -73,7 +73,7 @@ A **table context** (heap client signature `0x7C`) is a node's table: a `TCINFO`
 Every failure surfaces through the <xref:Bodu.IO.Pst.PstFileException> family, carrying a <xref:Bodu.IO.Pst.PstFileError> category (invalid header, invalid block, invalid heap, node not found, …):
 
 - <xref:Bodu.IO.Pst.PstFileFormatException> — the file violates the format at the active validation level.
-- <xref:Bodu.IO.Pst.PstUnsupportedFormatException> — a recognized but unsupported variant (ANSI, OST).
+- <xref:Bodu.IO.Pst.PstUnsupportedFormatException> — a recognized but unsupported variant (the 4 KiB-page OST).
 - <xref:Bodu.IO.Pst.PstNodeNotFoundException> — a `GetNode` lookup for an absent identifier.
 
 Corruption never escapes as any other exception type — the corruption sweeps in the test suite enforce exactly that contract.

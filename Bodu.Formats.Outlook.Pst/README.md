@@ -3,7 +3,7 @@
 > **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A **read-only reader for the Outlook personal-folders format** (`.pst` / MS-PST,
-Unicode format), built on [`Bodu.IO.Pst`](../Bodu.IO.Pst) — the node-database
+Unicode and ANSI formats), built on [`Bodu.IO.Pst`](../Bodu.IO.Pst) — the node-database
 container reader — and the shared [`Bodu.Formats.Outlook`](../Bodu.Formats.Outlook)
 MAPI value model it has in common with the `.msg` reader.
 
@@ -44,14 +44,17 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   properties, Unicode and code-page (ANSI) strings alike, with per-object
   code-page resolution inherited down the store → message → attachment chain.
 - Recipient tables (row-resident properties) and attachment objects, including
-  by-value content payloads and nested embedded messages (recursively).
+  by-value content payloads and nested embedded messages (recursively). A payload
+  larger than `OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes` (1 MiB by
+  default) is not decoded into the property collection; `OpenContentStream`
+  streams it from the store block by block.
 - The store-wide name-to-id map (node `0x61`), resolved bidirectionally.
 - The message bodies: plain text, HTML, and RTF (decompressed per MS-OXRTFCP).
 
 ## Out of scope
 
 - Writing or editing `.pst` files.
-- The legacy ANSI variant and OST files (recognized and rejected).
+- OST files (recognized and rejected).
 - MAPI session semantics (`IMsgStore` emulation, search-folder population).
 - RTF→HTML/Text de-encapsulation (MS-OXRTFEX) — consumers receive the RTF verbatim.
 - TNEF (`winmail.dat`), S/MIME decryption, and OLE-attachment rendering.

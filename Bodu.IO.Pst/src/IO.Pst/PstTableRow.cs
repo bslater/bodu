@@ -81,6 +81,87 @@ public sealed class PstTableRow
     }
 
     /// <summary>
+    /// Attempts to determine the length of a cell's payload without reading it.
+    /// </summary>
+    /// <param name="propertyId">The column's property identifier.</param>
+    /// <param name="length">When this method returns <see langword="true" />, the payload length in bytes.</param>
+    /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
+    /// <exception cref="PstFileFormatException">The cell's storage is malformed.</exception>
+    public bool TryGetCellLength(ushort propertyId, out long length)
+    {
+        if (!TryFindPresentColumn(propertyId, out PstTcColumn column))
+        {
+            length = 0;
+            return false;
+        }
+
+        length = IsOutOfLine(column)
+            ? _context.GetHnidLength(_heap, BinaryPrimitives.ReadUInt32LittleEndian(_row.AsSpan(column.DataOffset)))
+            : Materialize(column).RawData.Length;
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to open a cell's payload as a read-only, seekable stream.
+    /// </summary>
+    /// <param name="propertyId">The column's property identifier.</param>
+    /// <param name="stream">When this method returns <see langword="true" />, the payload stream.</param>
+    /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
+    /// <exception cref="PstFileFormatException">The cell's storage is malformed.</exception>
+    /// <remarks>
+    /// The streaming counterpart of <see cref="TryGetCell" />: a subnode-resident cell value is read block by block
+    /// on demand rather than materialized, so <see cref="PstFileOptions.MaxNodeDataLength" /> does not apply. The
+    /// stream is bound to the owning session and must be disposed before it.
+    /// </remarks>
+    public bool TryOpenCellStream(ushort propertyId, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
+    {
+        if (!TryFindPresentColumn(propertyId, out PstTcColumn column))
+        {
+            stream = null;
+            return false;
+        }
+
+        stream = IsOutOfLine(column)
+            ? _context.OpenHnidStream(_heap, BinaryPrimitives.ReadUInt32LittleEndian(_row.AsSpan(column.DataOffset)))
+            : PstLtpContext.OpenMemoryStream(Materialize(column).RawData);
+        return true;
+    }
+
+    /// <summary>
+    /// Finds a column by property identifier when its cell is present in this row.
+    /// </summary>
+    /// <param name="propertyId">The column's property identifier.</param>
+    /// <param name="column">When this method returns <see langword="true" />, the column.</param>
+    /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
+    private bool TryFindPresentColumn(ushort propertyId, out PstTcColumn column)
+    {
+        foreach (PstTcColumn candidate in _info.Columns)
+        {
+            if (candidate.PropertyId == propertyId)
+            {
+                column = candidate;
+                return IsPresent(candidate);
+            }
+        }
+
+        column = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether a column's cell holds an HNID to an out-of-line payload rather than the value itself: the
+    /// wire type is known, not inline, not a fixed-width value wide enough to sit in the cell, and the cell is at
+    /// least four bytes.
+    /// </summary>
+    /// <param name="column">The column.</param>
+    /// <returns><see langword="true" /> when the cell is a value reference.</returns>
+    private static bool IsOutOfLine(PstTcColumn column) =>
+        !PstWireType.TryGetInlineSize(column.WireType, out _)
+            && !(PstWireType.TryGetFixedHeapSize(column.WireType, out int fixedSize) && column.DataSize >= fixedSize)
+            && PstWireType.IsKnown(column.WireType)
+            && column.DataSize >= 4;
+
+    /// <summary>
     /// Enumerates the row's present cells in column order, resolving each payload as it is yielded.
     /// </summary>
     /// <returns>The present cell values.</returns>

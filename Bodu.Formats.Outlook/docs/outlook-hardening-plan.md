@@ -139,8 +139,38 @@ Deviations from the plan as written, each forced by evidence during Phase B:
 | `PstTableContext.EnumerateRows` strict surplus | Throw when the matrix is longer than the index. | Throws under Strict only when the matrix carries whole rows beyond the index count, counted across every block. | Tolerant reads stop at the index; the strict check must not misfire on the last block's slack. |
 | `OutlookMailAttachment.OpenContentStream` | Return `PstNode.OpenDataStream()` for a subnode-resident payload. | Wraps the decoded array read-only via `MemoryMarshal.TryGetArray`. | The property collection has already materialized the payload by the time the stream is opened; the zero-copy wrap meets the memory guard without a second read path. Streaming without materialization needs a container API for opening a property value as a stream — a follow-on. |
 
-Follow-ons recorded, not in scope here: a `PstPropertyContext` value-stream
-API so large subnode-resident binaries never materialize; `PstDataStream`
-async/`Dispose` overrides; the `.msg` `CompoundStream.AsMemory()` path for
-value streams that never escape as owned arrays.
+Every follow-on the pass recorded has since landed: the value-stream API
+(below), and on 2026-09-04 the ANSI PST format (`Bodu.IO.Pst/docs/
+pst-container-exploration.md` P-D1), the `PstDataStream` lifecycle (disposal
+and session binding, synchronous-completing async reads), the `.msg`
+single-allocation value read (a pre-sized `CfbSectorReader.ReadChain` plus
+a zero-copy hand-off from a read-only cursor in `MsgContainer.TryReadStream`),
+the removal of the dead `MsgStreamNames` storage-name formatters, and the
+`CompressedRtfTests` link into the PST test project under the `OUTLOOK_PST`
+namespace switch — closing the one linking gap the deviation table above
+records. Only the 4 KiB-page OST variant remains outside the readers.
+
+## Streaming property values — landed 2026-09-04
+
+The last place a single property could force a large allocation was the
+attachment payload: `OutlookMailAttachment.Properties` (and anything reading
+it, `Method` and `FileName` included) materialized a subnode-resident
+`PidTagAttachDataBinary` in full, capped by `MaxNodeDataLength`; the `.msg`
+reader read the `__substg1.0_37010102` stream while decoding the attachment
+storage. Landed tests-first on `claude/next-up-n6wu7r` (`test` `2580e08`,
+then `fix` `dcfa3f9` container, `1220696` PST reader, `b752af6` `.msg`
+reader, and the closing docs commit):
+
+| Layer | Surface | Behaviour |
+|---|---|---|
+| `Bodu.IO.Pst` | `PstPropertyContext.TryGetValueLength` / `TryOpenValueStream`, `PstTableRow.TryGetCellLength` / `TryOpenCellStream`, `PstPropertyContext.EnumeratePropertyIds` / `TryGetWireType` | A heap-resident value is served from the heap's decoded bytes without a copy; a subnode-resident value sums its leaf lengths from the data tree's index blocks and streams through `PstDataStream`, so `MaxNodeDataLength` (materialization) does not apply. The id/wire-type accessors let a reader decide per property before touching a payload. |
+| `Bodu.Formats.Outlook.Pst` | `OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes` (1 MiB) | `PidTagAttachDataBinary` above the limit is a present property with a `null` value; `Method` reads presence, `Size` falls back to the store's recorded length, `OpenContentStream` streams block by block. |
+| `Bodu.Formats.Outlook.Msg` | `OutlookMessageReaderOptions.MaxInlineAttachmentBytes` (1 MiB) | Same contract; the stream is sized from the directory (opening it under the buffered strategy would materialize it), and a deferred payload is served through `MsgContentStream`, which translates a container fault raised during a read. Combined with `CompoundReadStrategy.Streaming` the payload is never held in memory in full. |
+
+Guards: the 318 MB subnode tree reports its length and streams under an
+8 MiB ceiling at the container level; the 5-XBLOCK PST fixture and the 4 MiB
+`.msg` fixture decode, report `Method` / `Size`, and stream under 8 MiB and
+1 MiB ceilings respectively; small payloads keep decoding inline; the
+malformed sweeps drain the new paths. Only the attachment payload is
+deferred — widening deferral to other binaries is a separate decision.
 

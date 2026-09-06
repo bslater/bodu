@@ -13,15 +13,22 @@ namespace Bodu.IO.Pst.Samples.PstBasics;
 /// format detection, the raw node database and its property/table views, streaming payload access
 /// with validation levels — and the mail-store view via <c>Bodu.Formats.Outlook.Pst</c>: folders,
 /// messages, recipients, attachments, and bodies. Everything runs offline against the committed
-/// <c>Data/sample1.pst</c> fixture (see <c>Data/NOTICE.md</c> for provenance).
+/// <c>Data/sample1.pst</c> (Unicode format) and <c>Data/sample2.pst</c> (ANSI format) fixtures; see
+/// <c>Data/NOTICE.md</c> for provenance.
 /// </summary>
 public static class Program
 {
     /// <summary>
-    /// Gets the path of the committed sample PST.
+    /// Gets the path of the committed Unicode-format sample PST (<c>wVer</c> 23, 64-bit structures).
     /// </summary>
     internal static string SamplePath { get; } =
         Path.Combine(AppContext.BaseDirectory, "Data", "sample1.pst");
+
+    /// <summary>
+    /// Gets the path of the committed ANSI-format sample PST (<c>wVer</c> 14, 32-bit structures).
+    /// </summary>
+    internal static string AnsiSamplePath { get; } =
+        Path.Combine(AppContext.BaseDirectory, "Data", "sample2.pst");
 
     /// <summary>
     /// Runs every scenario in order.

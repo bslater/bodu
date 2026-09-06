@@ -6,7 +6,7 @@ title: Bodu.IO.Pst — Introduction
 
 ![Bodu.IO.Pst](../../images/hero-io-pst.svg)
 
-**Bodu.IO.Pst** is a low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode format). Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it reads the node database (NDB) — the header, the node and block B-trees, block data with the format's permute and cyclic content encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. It carries **no MAPI semantics and no writing** — it is the substrate the [`Bodu.Formats.Outlook.Pst`](#the-mail-store-reader-built-on-this-package) mail-store reader builds on, the same container/format split as `Bodu.IO.Compound` beneath `Bodu.Formats.Excel.Binary`.
+**Bodu.IO.Pst** is a low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI formats). Part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic, it reads the node database (NDB) — the header, the node and block B-trees, block data with the format's permute and cyclic content encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. It carries **no MAPI semantics and no writing** — it is the substrate the [`Bodu.Formats.Outlook.Pst`](#the-mail-store-reader-built-on-this-package) mail-store reader builds on, the same container/format split as `Bodu.IO.Compound` beneath `Bodu.Formats.Excel.Binary`.
 
 A PST file is a node-oriented database in a single file. <xref:Bodu.IO.Pst.PstFile> opens it as a disposable session; every object the file holds — folders, messages, tables, internal maps — is a <xref:Bodu.IO.Pst.PstNode> addressed by a 32-bit <xref:Bodu.IO.Pst.PstNodeId> whose five low bits carry the node's <xref:Bodu.IO.Pst.PstNodeType>.
 
@@ -33,7 +33,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Read-only, Unicode format.** The post-2003 Unicode variant (`wVer` 23) is supported; the legacy ANSI variant and OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+- **Read-only, both PST formats.** The post-2003 Unicode format (`wVer` 23) and the legacy ANSI format (`wVer` 14/15) are read through the same surface; OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 - **No MAPI semantics.** Property values surface with their raw wire types; property *meaning* (subjects, senders, recipients) belongs to the mail-store reader layered on top.
 - **Bounded memory.** Payloads stream through a decoded-block LRU cache sized by <xref:Bodu.IO.Pst.PstFileOptions.BlockCacheSize>; `OpenDataStream` keeps one leaf block resident regardless of the logical payload size.
 

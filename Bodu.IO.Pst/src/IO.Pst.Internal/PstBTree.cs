@@ -85,7 +85,7 @@ internal static class PstBTree
         PstSource source,
         PstBref bref,
         byte pageType,
-        Func<byte[], int, TEntry> readEntry) =>
+        Func<PstLayout, byte[], int, TEntry> readEntry) =>
         EnumerateLeaves(source, bref, pageType, readEntry, expectedLevel: -1, depth: 0);
 
     /// <summary>
@@ -108,25 +108,25 @@ internal static class PstBTree
         PstSource source,
         PstBref bref,
         byte pageType,
-        Func<byte[], int, TEntry> readEntry,
+        Func<PstLayout, byte[], int, TEntry> readEntry,
         int expectedLevel,
         int depth)
     {
         byte[] page = source.ReadPage(bref, pageType);
-        (int count, int stride, int level) = ReadPageHeader(page, bref, expectedLevel, depth);
+        (int count, int stride, int level) = ReadPageHeader(source.Layout, page, bref, expectedLevel, depth);
 
         for (int i = 0; i < count; i++)
         {
             int offset = i * stride;
             if (level > 0)
             {
-                PstBref child = ReadChildReference(page, offset);
+                PstBref child = ReadChildReference(source.Layout, page, offset);
                 foreach (TEntry entry in EnumerateLeaves(source, child, pageType, readEntry, level - 1, depth + 1))
                     yield return entry;
             }
             else
             {
-                yield return readEntry(page, offset);
+                yield return readEntry(source.Layout, page, offset);
             }
         }
     }
@@ -152,7 +152,7 @@ internal static class PstBTree
         PstBref bref,
         byte pageType,
         ulong key,
-        Func<byte[], int, TEntry> readEntry,
+        Func<PstLayout, byte[], int, TEntry> readEntry,
         Func<TEntry, ulong> keyOf,
         out TEntry entry)
         where TEntry : struct
@@ -162,13 +162,13 @@ internal static class PstBTree
         for (int depth = 0; ; depth++)
         {
             byte[] page = source.ReadPage(current, pageType);
-            (int count, int stride, int level) = ReadPageHeader(page, current, expectedLevel, depth);
+            (int count, int stride, int level) = ReadPageHeader(source.Layout, page, current, expectedLevel, depth);
 
             if (level == 0)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    TEntry candidate = readEntry(page, i * stride);
+                    TEntry candidate = readEntry(source.Layout, page, i * stride);
                     if (keyOf(candidate) == key)
                     {
                         entry = candidate;
@@ -186,11 +186,11 @@ internal static class PstBTree
             for (int i = 0; i < count; i++)
             {
                 int offset = i * stride;
-                ulong entryKey = BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset));
+                ulong entryKey = source.Layout.ReadId(page.AsSpan(offset));
                 if (entryKey > key)
                     break;
 
-                child = ReadChildReference(page, offset);
+                child = ReadChildReference(source.Layout, page, offset);
                 found = true;
             }
 
@@ -208,6 +208,7 @@ internal static class PstBTree
     /// <summary>
     /// Reads and validates a page's entry geometry and its place in the tree.
     /// </summary>
+    /// <param name="layout">The file layout.</param>
     /// <param name="page">The page bytes.</param>
     /// <param name="bref">The page reference, for diagnostics.</param>
     /// <param name="expectedLevel">The level the page must declare, or <c>-1</c> when it is the root.</param>
@@ -217,12 +218,12 @@ internal static class PstBTree
     /// The geometry escapes the entry area, the level differs from the one the parent implies, or the depth exceeds
     /// <see cref="MaxDepth" />.
     /// </exception>
-    private static (int Count, int Stride, int Level) ReadPageHeader(byte[] page, PstBref bref, int expectedLevel, int depth)
+    private static (int Count, int Stride, int Level) ReadPageHeader(PstLayout layout, byte[] page, PstBref bref, int expectedLevel, int depth)
     {
-        int count = page[488];
-        int stride = page[490];
-        int level = page[491];
-        if (stride < 16 || count * stride > 488 || depth > MaxDepth || (expectedLevel >= 0 && level != expectedLevel))
+        int count = page[layout.PageEntryCountOffset];
+        int stride = page[layout.PageEntryStrideOffset];
+        int level = page[layout.PageLevelOffset];
+        if (stride < layout.BbtLeafStride || count * stride > layout.PageEntryArea || depth > MaxDepth || (expectedLevel >= 0 && level != expectedLevel))
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPage, bref.Offset), PstFileError.InvalidPage);
@@ -232,51 +233,52 @@ internal static class PstBTree
     }
 
     /// <summary>
-    /// Reads an intermediate entry's child page reference (the <c>BREF</c> after the 8-byte key).
+    /// Reads the child page reference of an intermediate entry: the <c>BREF</c> that follows the entry's key.
     /// </summary>
+    /// <param name="layout">The file layout.</param>
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The child page reference.</returns>
-    private static PstBref ReadChildReference(byte[] page, int offset) =>
-        new(
-            BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 8)),
-            BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 16)));
+    private static PstBref ReadChildReference(PstLayout layout, byte[] page, int offset) =>
+        layout.ReadBref(page.AsSpan(offset + layout.IdWidth));
 
     /// <summary>
-    /// Reads a leaf <c>NBTENTRY</c>.
+    /// Reads a node B-tree leaf entry (<c>NBTENTRY</c>).
     /// </summary>
+    /// <param name="layout">The file layout.</param>
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The node entry.</returns>
-    private static PstNbtEntry ReadNbtEntry(byte[] page, int offset)
+    /// <exception cref="PstFileFormatException">A Unicode entry's 64-bit <c>nid</c> field exceeds the 32-bit identifier space.</exception>
+    private static PstNbtEntry ReadNbtEntry(PstLayout layout, byte[] page, int offset)
     {
-        // The nid field is eight bytes wide but a node identifier is 32 bits; a set high dword is not a truncation
-        // to tolerate but a page that does not hold what its type claims.
-        ulong nodeId = BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset));
+        // In the Unicode layout the nid field is eight bytes wide but a node identifier is 32 bits; a set high dword
+        // is not a truncation to tolerate but a page that does not hold what its type claims. The ANSI field is 32 bits.
+        ulong nodeId = layout.ReadId(page.AsSpan(offset));
         if (nodeId > uint.MaxValue)
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstNodeIdentifier, nodeId), PstFileError.InvalidPage);
         }
 
+        int idWidth = layout.IdWidth;
         return new PstNbtEntry(
             (uint)nodeId,
-            BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 8)),
-            BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 16)),
-            BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(offset + 24)));
+            layout.ReadId(page.AsSpan(offset + idWidth)),
+            layout.ReadId(page.AsSpan(offset + (idWidth * 2))),
+            BinaryPrimitives.ReadUInt32LittleEndian(page.AsSpan(offset + (idWidth * 3))));
     }
 
     /// <summary>
-    /// Reads a leaf <c>BBTENTRY</c>.
+    /// Reads a block B-tree leaf entry (<c>BBTENTRY</c>).
     /// </summary>
+    /// <param name="layout">The file layout.</param>
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The block entry.</returns>
-    private static PstBbtEntry ReadBbtEntry(byte[] page, int offset) =>
+    private static PstBbtEntry ReadBbtEntry(PstLayout layout, byte[] page, int offset) =>
         new(
-            new PstBref(
-                BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset)),
-                BinaryPrimitives.ReadUInt64LittleEndian(page.AsSpan(offset + 8))),
-            BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(offset + 16)),
-            BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(offset + 18)));
+            layout.ReadBref(page.AsSpan(offset)),
+            BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(offset + layout.BrefSize)),
+            BinaryPrimitives.ReadUInt16LittleEndian(page.AsSpan(offset + layout.BrefSize + 2)));
 }

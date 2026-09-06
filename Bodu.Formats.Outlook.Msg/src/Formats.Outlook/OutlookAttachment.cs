@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Bodu.Formats.Outlook.Msg;
 using Bodu.IO.Compound;
 
@@ -28,8 +29,8 @@ public sealed class OutlookAttachment
     /// <summary>The attachment storage.</summary>
     private readonly CompoundStorage _storage;
 
-    /// <summary>Whether the storage carries a by-value content stream.</summary>
-    private readonly bool _hasContentStream;
+    /// <summary>The length of the by-value content stream, or <see langword="null" /> when the storage carries none.</summary>
+    private readonly long? _contentLength;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OutlookAttachment" /> class.
@@ -42,20 +43,30 @@ public sealed class OutlookAttachment
         _owner = owner;
         _storage = storage;
         Properties = properties;
-        _hasContentStream = MsgContainer.TryOpenStream(storage, ContentStreamName, out CompoundStream? content);
-        content?.Dispose();
+        _contentLength = MsgContainer.TryGetStreamLength(storage, ContentStreamName, out long length) ? length : null;
     }
+
+    /// <summary>
+    /// Gets the tag of the by-value content property (<c>PidTagAttachDataBinary</c>).
+    /// </summary>
+    internal static MapiPropertyTag ContentTag { get; } = new(MapiPropertyIds.AttachData, MapiPropertyType.Binary);
 
     /// <summary>
     /// Gets the name of the by-value content stream (<c>PidTagAttachDataBinary</c>).
     /// </summary>
-    private static string ContentStreamName =>
-        MsgStreamNames.GetSubstgStreamName(((uint)MapiPropertyIds.AttachData << 16) | (ushort)MapiPropertyType.Binary);
+    private static string ContentStreamName { get; } =
+        MsgStreamNames.GetSubstgStreamName(ContentTag.Value);
 
     /// <summary>
     /// Gets every decoded property of the attachment.
     /// </summary>
     /// <value>The tag-addressed property collection.</value>
+    /// <remarks>
+    /// A by-value payload (<c>PidTagAttachDataBinary</c>) larger than
+    /// <see cref="OutlookMessageReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present
+    /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly
+    /// from the container.
+    /// </remarks>
     public MapiPropertyCollection Properties { get; }
 
     /// <summary>
@@ -70,7 +81,7 @@ public sealed class OutlookAttachment
         Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value
             && value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.Ole
             ? (OutlookAttachmentMethod)value
-            : _hasContentStream ? OutlookAttachmentMethod.ByValue : OutlookAttachmentMethod.None;
+            : _contentLength is not null ? OutlookAttachmentMethod.ByValue : OutlookAttachmentMethod.None;
 
     /// <summary>
     /// Gets the attachment file name, preferring the long form.
@@ -97,11 +108,17 @@ public sealed class OutlookAttachment
         Properties.GetString(MapiPropertyIds.AttachMimeTag);
 
     /// <summary>
-    /// Gets the attachment size the writer recorded.
+    /// Gets the attachment size.
     /// </summary>
-    /// <value>The <c>PidTagAttachSize</c> value, or <see langword="null" /> when absent.</value>
+    /// <value>
+    /// The <c>PidTagAttachSize</c> value the writer recorded; when absent, the length of the by-value content stream;
+    /// <see langword="null" /> when neither is available.
+    /// </value>
+    /// <remarks>
+    /// The stream length comes from the container directory, so a deferred payload is never read to measure it.
+    /// </remarks>
     public long? Size =>
-        Properties.GetInt32(MapiPropertyIds.AttachSize);
+        Properties.GetInt32(MapiPropertyIds.AttachSize) ?? _contentLength;
 
     /// <summary>
     /// Opens the by-value content payload as a read-only stream.
@@ -116,8 +133,10 @@ public sealed class OutlookAttachment
     /// The by-value content stream is missing, or the container is malformed.
     /// </exception>
     /// <remarks>
-    /// The payload is read from the container in full when the stream is opened, so a container fault surfaces here
-    /// rather than part-way through a later read.
+    /// A payload decoded inline (at or below <see cref="OutlookMessageReaderOptions.MaxInlineAttachmentBytes" />) is
+    /// served from the decoded bytes without copying. A larger payload is opened from the container: under
+    /// <see cref="CompoundReadStrategy.Streaming" /> it is read sector by sector on demand, and a container fault
+    /// during a read surfaces as <see cref="OutlookMsgFormatException" />.
     /// </remarks>
     public Stream OpenContentStream()
     {
@@ -129,13 +148,22 @@ public sealed class OutlookAttachment
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Op_NotSupported_MsgAttachmentContent, Method));
         }
 
-        if (!MsgContainer.TryReadStream(_storage, ContentStreamName, out byte[]? content))
+        // An inline payload is served from the decoded bytes; a deferred one is opened from the container and read on
+        // demand, with container faults translated as they surface.
+        if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> inline)
+        {
+            return MemoryMarshal.TryGetArray(inline, out ArraySegment<byte> segment)
+                ? new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false)
+                : new MemoryStream(inline.ToArray(), writable: false);
+        }
+
+        if (!MsgContainer.TryOpenStream(_storage, ContentStreamName, out CompoundStream? content))
         {
             throw new OutlookMsgFormatException(string.Format(
                 CultureInfo.CurrentCulture, OutlookMsgResourceStrings.IO_KeyNotFound_MsgAttachmentContent, ContentStreamName));
         }
 
-        return new MemoryStream(content, writable: false);
+        return new MsgContentStream(content);
     }
 
     /// <summary>

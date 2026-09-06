@@ -162,15 +162,15 @@ public partial class PstFileTests
         nameof(AnsiFixtureRows),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
-    public void OpenRead_WhenAnsiFixture_ShouldThrowPstUnsupportedFormatException(PstReferenceFixture fixture)
+    public void OpenRead_WhenAnsiFixture_ShouldOpenAndReportAnsiFormat(PstReferenceFixture fixture)
     {
         using MemoryStream stream = PstReferenceFixtures.OpenStream(fixture.File);
 
-        var ex = Assert.ThrowsExactly<PstUnsupportedFormatException>(() =>
-        {
-            _ = PstFile.OpenRead(stream);
-        });
+        using PstFile file = PstFile.OpenRead(stream);
 
-        Assert.IsTrue(ex.Message.Contains(nameof(PstFileFormat.Ansi), StringComparison.Ordinal));
+        Assert.AreEqual(PstFileFormat.Ansi, file.Format);
+        Assert.IsTrue(file.EnumerateNodes().Any(), "An ANSI store must enumerate its nodes.");
+        Assert.IsTrue(file.TryGetNode(PstNodeId.MessageStore, out _), "The message store node must resolve.");
+        Assert.IsTrue(file.TryGetNode(PstNodeId.RootFolder, out _), "The root folder node must resolve.");
     }
 }

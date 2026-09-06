@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
 using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook.Msg;
@@ -79,9 +80,68 @@ internal static class MsgContainer
             }
 
             using (stream)
-                bytes = stream.ReadAllBytes();
+                bytes = ReadCursor(stream);
 
             return true;
+        }
+        catch (CompoundFileException ex)
+        {
+            throw Wrap(ex);
+        }
+    }
+
+    /// <summary>
+    /// Reads a cursor's whole payload with as little copying as the cursor allows.
+    /// </summary>
+    /// <param name="stream">The open cursor; the caller disposes it.</param>
+    /// <returns>An array the caller owns.</returns>
+    /// <remarks>
+    /// A read-only cursor exposes its payload through <see cref="CompoundStream.AsMemory" />: under the buffered read
+    /// strategy that is the cursor's private materialization, which is handed back without a second copy; under the
+    /// streaming strategy it is one materialization of the sector chain. A writable cursor's memory is a view over a
+    /// live growth buffer, so it is always copied.
+    /// </remarks>
+    private static byte[] ReadCursor(CompoundStream stream)
+    {
+        if (stream.CanWrite)
+            return stream.ReadAllBytes();
+
+        ReadOnlyMemory<byte> memory = stream.AsMemory();
+        return MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment)
+            && segment.Offset == 0
+            && segment.Array is { } array
+            && segment.Count == array.Length
+            ? array
+            : memory.ToArray();
+    }
+
+    /// <summary>
+    /// Attempts to determine a child stream's length from the directory, without opening the stream.
+    /// </summary>
+    /// <param name="storage">The parent storage.</param>
+    /// <param name="name">The stream name.</param>
+    /// <param name="length">When this method returns <see langword="true" />, the stream length in bytes.</param>
+    /// <returns><see langword="true" /> when the stream exists.</returns>
+    /// <exception cref="OutlookMsgFormatException">The container is malformed.</exception>
+    /// <remarks>
+    /// Opening a stream under the buffered read strategy materializes its content, so the directory entry is the
+    /// only way to size a payload that is not going to be read.
+    /// </remarks>
+    internal static bool TryGetStreamLength(CompoundStorage storage, string name, out long length)
+    {
+        try
+        {
+            foreach (CompoundEntryInfo entry in storage.EnumerateStreams())
+            {
+                if (string.Equals(entry.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    length = entry.Length;
+                    return true;
+                }
+            }
+
+            length = 0;
+            return false;
         }
         catch (CompoundFileException ex)
         {

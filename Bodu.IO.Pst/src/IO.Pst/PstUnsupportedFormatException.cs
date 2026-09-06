@@ -8,7 +8,7 @@ namespace Bodu.IO.Pst;
 
 /// <summary>
 /// Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library
-/// does not read yet (the ANSI format, the 4&#160;KiB-page OST variant, or Windows Information Protection encryption).
+/// does not read (the 4&#160;KiB-page OST variant or Windows Information Protection encryption).
 /// </summary>
 public sealed class PstUnsupportedFormatException
     : PstFileException

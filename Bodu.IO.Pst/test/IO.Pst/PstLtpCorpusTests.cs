@@ -37,12 +37,22 @@ public class PstLtpCorpusTests
         subject.Length >= 2 && subject[0] == '\u0001' ? subject[2..] : subject;
 
     /// <summary>
+    /// Reads a string property in either wire form: UTF-16 in the Unicode stores, code-page (Latin-1 for this corpus)
+    /// in the ANSI stores.
+    /// </summary>
+    /// <param name="value">The property value.</param>
+    /// <returns>The decoded text.</returns>
+    private static string ReadString(PstPropertyValue value) =>
+        value.WireType == 0x001E
+            ? System.Text.Encoding.Latin1.GetString(value.RawData.Span).TrimEnd('\0')
+            : value.GetString();
+
+    /// <summary>
     /// Gets one row per Unicode corpus fixture and validation level, since the ANSI fixtures are rejected at open.
     /// </summary>
     /// <value>The fixture/level rows.</value>
-    public static IEnumerable<object[]> UnicodeFixtureLevelRows =>
+    public static IEnumerable<object[]> FixtureLevelRows =>
         from fixture in PstReferenceFixtures.Manifest.Fixtures
-        where fixture.Format == "unicode"
         from level in new[] { PstValidationLevel.Compatible, PstValidationLevel.Strict }
         select new object[] { fixture, level };
 
@@ -55,7 +65,7 @@ public class PstLtpCorpusTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(
-        nameof(UnicodeFixtureLevelRows),
+        nameof(FixtureLevelRows),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ReadPropertyContext_WhenCorpusFolders_ShouldCarryOracleDisplayNames(PstReferenceFixture fixture, PstValidationLevel level)
@@ -71,7 +81,7 @@ public class PstLtpCorpusTests
         {
             PstPropertyContext context = file.GetNode(info.NodeId).ReadPropertyContext();
             if (context.TryGetValue(DisplayNameId, out PstPropertyValue name))
-                folderNames.Add(name.GetString());
+                folderNames.Add(ReadString(name));
         }
 
         foreach (string expected in expectedFolders)
@@ -87,7 +97,7 @@ public class PstLtpCorpusTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(
-        nameof(UnicodeFixtureLevelRows),
+        nameof(FixtureLevelRows),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ReadPropertyContext_WhenCorpusMessages_ShouldCarryOracleSubjectsAndSenders(PstReferenceFixture fixture, PstValidationLevel level)
@@ -107,8 +117,8 @@ public class PstLtpCorpusTests
         {
             PstPropertyContext context = file.GetNode(info.NodeId).ReadPropertyContext();
             messages.Add((
-                context.TryGetValue(SenderNameId, out PstPropertyValue sender) ? sender.GetString() : string.Empty,
-                context.TryGetValue(SubjectId, out PstPropertyValue subject) ? NormalizeSubject(subject.GetString()) : string.Empty));
+                context.TryGetValue(SenderNameId, out PstPropertyValue sender) ? ReadString(sender) : string.Empty,
+                context.TryGetValue(SubjectId, out PstPropertyValue subject) ? NormalizeSubject(ReadString(subject)) : string.Empty));
         }
 
         // The oracle count is a floor: lspst counts only the items it classifies as Email, and one fixture carries
@@ -131,7 +141,7 @@ public class PstLtpCorpusTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(
-        nameof(UnicodeFixtureLevelRows),
+        nameof(FixtureLevelRows),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void ReadTableContext_WhenCorpusContentsTables_ShouldMatchOracleMessageCounts(PstReferenceFixture fixture, PstValidationLevel level)
@@ -155,7 +165,7 @@ public class PstLtpCorpusTests
                 Assert.IsTrue(file.TryGetNode(new PstNodeId(row.RowId), out PstNode? message));
                 PstPropertyContext context = message.ReadPropertyContext();
                 Assert.IsTrue(context.TryGetValue(SubjectId, out PstPropertyValue subject));
-                rowSubjects.Add(NormalizeSubject(subject.GetString()));
+                rowSubjects.Add(NormalizeSubject(ReadString(subject)));
             }
         }
 
@@ -175,7 +185,7 @@ public class PstLtpCorpusTests
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(
-        nameof(UnicodeFixtureLevelRows),
+        nameof(FixtureLevelRows),
         DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
         DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void EnumerateNodes_WhenEveryHeapNodeIsRead_ShouldResolveEveryValueReference(PstReferenceFixture fixture, PstValidationLevel level)

@@ -12,8 +12,8 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Provides a disposable, read-only session over an Outlook personal-folders mail store (a <c>.pst</c> file, MS-PST
-/// Unicode format): the store properties, the folder hierarchy, and the messages within it, decoded into the shared
-/// MAPI value model.
+/// Unicode or ANSI format): the store properties, the folder hierarchy, and the messages within it, decoded into the
+/// shared MAPI value model.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -164,6 +164,13 @@ public sealed partial class OutlookMailStore
     /// <value>The configured <see cref="OutlookMailStoreReaderOptions.MaxDecompressedRtfBytes" /> value.</value>
     internal int MaxDecompressedRtfBytes =>
         _options.MaxDecompressedRtfBytes;
+
+    /// <summary>
+    /// Gets the largest by-value attachment payload decoded into an attachment's property collection.
+    /// </summary>
+    /// <value>The <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> the session was opened with.</value>
+    internal int MaxInlineAttachmentBytes =>
+        _options.MaxInlineAttachmentBytes;
 
     /// <summary>
     /// Gets the encoding the store's code-page strings decoded with, forcing the store properties to decode first.

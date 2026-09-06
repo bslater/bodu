@@ -118,11 +118,12 @@ internal static class PstDataTree
     /// <summary>
     /// Parses and validates a tree block's header; the child identifiers follow at offset 8.
     /// </summary>
+    /// <param name="layout">The file layout, which fixes the child identifier width.</param>
     /// <param name="block">The block payload.</param>
     /// <param name="blockId">The block identifier, for diagnostics.</param>
     /// <returns>The tree level and the child count.</returns>
     /// <exception cref="PstFileFormatException">The block is not a well-formed tree block.</exception>
-    private static (byte Level, int Count) ParseTreeBlock(byte[] block, ulong blockId)
+    private static (byte Level, int Count) ParseTreeBlock(PstLayout layout, byte[] block, ulong blockId)
     {
         if (block.Length < 8 || block[0] != DataTreeBlockType || block[1] is not(1 or 2))
         {
@@ -131,7 +132,7 @@ internal static class PstDataTree
         }
 
         int count = BinaryPrimitives.ReadUInt16LittleEndian(block.AsSpan(2));
-        if (8 + (count * 8) > block.Length)
+        if (8 + (count * layout.IdWidth) > block.Length)
         {
             throw new PstFileFormatException(string.Format(
                 CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstDataTree, blockId), PstFileError.InvalidDataTree);
@@ -165,11 +166,12 @@ internal static class PstDataTree
         }
 
         byte[] block = ReadBlock(source, blockId);
-        (byte level, int count) = ParseTreeBlock(block, blockId);
+        PstLayout layout = source.Layout;
+        (byte level, int count) = ParseTreeBlock(layout, block, blockId);
         int limit = source.MaxDataTreeLeaves;
         for (int i = 0; i < count; i++)
         {
-            ulong childId = BinaryPrimitives.ReadUInt64LittleEndian(block.AsSpan(8 + (i * 8)));
+            ulong childId = layout.ReadId(block.AsSpan(8 + (i * layout.IdWidth)));
             if (level == 1)
             {
                 // The fan-out is checked as it accumulates, before the leaf is even looked up: a crafted tree can
@@ -182,7 +184,7 @@ internal static class PstDataTree
             else
             {
                 byte[] child = ReadBlock(source, childId);
-                (byte childLevel, int childCount) = ParseTreeBlock(child, childId);
+                (byte childLevel, int childCount) = ParseTreeBlock(layout, child, childId);
                 if (childLevel != 1)
                 {
                     throw new PstFileFormatException(string.Format(
@@ -193,7 +195,7 @@ internal static class PstDataTree
                     throw LimitExceeded(blockId);
 
                 for (int j = 0; j < childCount; j++)
-                    leaves.Add(FindEntry(source, BinaryPrimitives.ReadUInt64LittleEndian(child.AsSpan(8 + (j * 8)))));
+                    leaves.Add(FindEntry(source, layout.ReadId(child.AsSpan(8 + (j * layout.IdWidth)))));
             }
         }
 

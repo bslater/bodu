@@ -61,6 +61,57 @@ internal static class PstMapiPropertyReader
     }
 
     /// <summary>
+    /// Decodes every property of a property context, leaving one binary property undecoded when its payload exceeds
+    /// an inline limit.
+    /// </summary>
+    /// <param name="context">The node's property context.</param>
+    /// <param name="inheritedEncoding">The encoding inherited from the owning object, or <see langword="null" />.</param>
+    /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
+    /// <param name="deferredPropertyId">The identifier of the binary property that may be deferred.</param>
+    /// <param name="maxInlineBytes">The largest payload of that property decoded inline.</param>
+    /// <param name="encoding">When this method returns, the encoding the code-page strings decoded with.</param>
+    /// <returns>The decoded property collection.</returns>
+    /// <exception cref="OutlookPstFormatException">A value is undecodable and <paramref name="strict" /> is set.</exception>
+    /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <remarks>
+    /// The deferred property's length is read from the container's index structures before any payload is touched;
+    /// above the limit it is surfaced as a present property with a <see langword="null" /> value so callers can see
+    /// it exists and serve it through a stream instead.
+    /// </remarks>
+    internal static MapiPropertyCollection Read(
+        PstPropertyContext context,
+        Encoding? inheritedEncoding,
+        bool strict,
+        ushort deferredPropertyId,
+        int maxInlineBytes,
+        out Encoding encoding)
+    {
+        encoding = ResolveEncoding(context, inheritedEncoding);
+
+        var properties = new List<MapiProperty>(context.Count);
+        foreach (ushort propertyId in context.EnumeratePropertyIds())
+        {
+            if (propertyId == deferredPropertyId
+                && context.TryGetWireType(propertyId, out ushort wireType)
+                && wireType == (ushort)MapiPropertyType.Binary
+                && context.TryGetValueLength(propertyId, out long length)
+                && length > maxInlineBytes)
+            {
+                properties.Add(new MapiProperty(new MapiPropertyTag(propertyId, MapiPropertyType.Binary), null));
+                continue;
+            }
+
+            if (context.TryGetValue(propertyId, out PstPropertyValue value)
+                && TryDecodeValue(value, encoding, strict, out MapiProperty? property))
+            {
+                properties.Add(property);
+            }
+        }
+
+        return new MapiPropertyCollection(properties);
+    }
+
+    /// <summary>
     /// Decodes a table row's present cells into the shared value model — the shape of recipient rows, whose
     /// properties are row-resident rather than held in a property context.
     /// </summary>

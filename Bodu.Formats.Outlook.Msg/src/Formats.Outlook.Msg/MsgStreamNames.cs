@@ -48,20 +48,4 @@ internal static class MsgStreamNames
     /// <returns>The element stream name, for example <c>__substg1.0_0037101F-00000000</c>.</returns>
     internal static string GetMultiValueElementStreamName(uint tagValue, int index) =>
         GetSubstgStreamName(tagValue) + "-" + index.ToString("X8", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Composes a recipient storage name.
-    /// </summary>
-    /// <param name="index">The zero-based recipient index.</param>
-    /// <returns>The storage name, for example <c>__recip_version1.0_#00000000</c>.</returns>
-    internal static string GetRecipientStorageName(int index) =>
-        RecipientStoragePrefix + index.ToString("X8", CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Composes an attachment storage name.
-    /// </summary>
-    /// <param name="index">The zero-based attachment index.</param>
-    /// <returns>The storage name, for example <c>__attach_version1.0_#00000000</c>.</returns>
-    internal static string GetAttachmentStorageName(int index) =>
-        AttachmentStoragePrefix + index.ToString("X8", CultureInfo.InvariantCulture);
 }

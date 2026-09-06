@@ -232,7 +232,7 @@ Shape rationale:
 
 | # | Decision | Position |
 | --- | --- | --- |
-| P-D1 | Format variants | **Unicode (`wVer 23`) only at first.** ANSI and the 4 KiB OST variant are recognized and rejected with a precise `PstFileFormatException` (the `ExcelBinaryUnsupportedException` pattern); their layouts are kept in mind (width-parameterized readers) so adding them is additive. |
+| P-D1 | Format variants | **Unicode (`wVer 23`) only at first.** ANSI and the 4 KiB OST variant are recognized and rejected with a precise `PstUnsupportedFormatException` (the `ExcelBinaryUnsupportedException` pattern); their layouts are kept in mind (width-parameterized readers) so adding them is additive. **Superseded 2026-09-04:** ANSI (`wVer` 14/15) is read. The readers had in fact hard-coded the Unicode widths; the ANSI work introduced the internal `PstLayout` descriptor (header, page and block trailers, B-tree strides, tree and subnode entry widths, row-matrix payload) that both variants now share, verified against the corpus rather than the specification text — the ANSI `ROOT` sits at 164, the ANSI page and block trailers place the block identifier before the checksum, the ANSI subnode block header has no padding dword, and the ANSI row index carries a two-byte row number. OST-4K remains rejected. |
 | P-D2 | Read/write | **Read-only, with authoring an explicit non-goal** for the foreseeable future — PST writing means allocation maps, free-space management, and CRC maintenance; no consumer needs it. |
 | P-D3 | Crypt methods | Permute and Cyclic both ship day one (files with either are common); the WIP-encrypted variant (`0x10`) is rejected. |
 | P-D4 | Search machinery | Search folders, search-update queues, and the DList are **skipped** — they are Outlook runtime state, not archive content. Their NIDs simply come back from `EnumerateNodes` untyped. |
@@ -307,6 +307,8 @@ start independently:
 - **R5 — ANSI/OST demand.** Deferring ANSI (P-D1) is a bet that
   post-2003 archives dominate. The width-parameterized internal
   readers keep the door open; revisit on the first real request.
+  **Resolved 2026-09-04:** ANSI landed (see P-D1); only OST-4K remains
+  deferred.
 
 ## 9. Non-goals
 

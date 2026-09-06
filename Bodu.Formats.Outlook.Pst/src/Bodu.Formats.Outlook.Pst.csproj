@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Outlook Pst</Title>
-    <Description>A read-only reader for the Outlook personal-folders format (.pst / MS-PST, Unicode format) over the Bodu.IO.Pst node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or store authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
+    <Description>A read-only reader for the Outlook personal-folders format (.pst / MS-PST, Unicode and ANSI formats) over the Bodu.IO.Pst node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or store authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
     <PackageTags>$(PackageTags);outlook;pst;mapi;email;mailbox;archive;reader</PackageTags>
   </PropertyGroup>
 

@@ -16,6 +16,11 @@
     <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.cs" />
     <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.TryConvertFileTime.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.TryConvertFileTime.cs" />
     <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\MapiValueDecoderTests.TryDecodeVariableValue.cs" Link="Formats.Outlook.Pst\Shared\MapiValueDecoderTests.TryDecodeVariableValue.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\CompressedRtfTests.cs" Link="Formats.Outlook.Pst\Shared\CompressedRtfTests.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\CompressedRtfTests.Decompress.cs" Link="Formats.Outlook.Pst\Shared\CompressedRtfTests.Decompress.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\CompressedRtfTests.Limits.cs" Link="Formats.Outlook.Pst\Shared\CompressedRtfTests.Limits.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\CompressedRtfTests.Allocation.cs" Link="Formats.Outlook.Pst\Shared\CompressedRtfTests.Allocation.cs" />
+    <Compile Include="..\..\Bodu.Formats.Outlook.Msg\test\Formats.Outlook.Msg\CompressedRtfTests.RoundTripSweep.cs" Link="Formats.Outlook.Pst\Shared\CompressedRtfTests.RoundTripSweep.cs" />
   </ItemGroup>
 
   <!-- The container test project is referenced for its fixture builders and embedded reference corpus

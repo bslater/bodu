@@ -28,6 +28,7 @@ Bodu.Financial.ExchangeRates.Yahoo hero-fx-yahoo.svg
 Bodu.Formats.Excel.Binary hero-excel.svg
 Bodu.Formats.Outlook hero-outlook.svg
 Bodu.Formats.Outlook.Msg hero-outlook-msg.svg
+Bodu.Formats.Outlook.Pst hero-outlook-pst.svg
 Bodu.Globalization.Calendar hero-calendar.svg
 Bodu.Globalization.Calendar.Africa hero-calendar-africa.svg
 Bodu.Globalization.Calendar.Americas hero-calendar-americas.svg

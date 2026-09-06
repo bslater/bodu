@@ -10,8 +10,8 @@ using Bodu.IO.Pst.Internal;
 namespace Bodu.IO.Pst;
 
 /// <summary>
-/// Provides a disposable, read-only session over a Unicode-format PST file's node database: the header facts, the node
-/// directory, and per-node data and subnode access.
+/// Provides a disposable, read-only session over a PST file's node database (Unicode or ANSI format): the header facts,
+/// the node directory, and per-node data and subnode access.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -67,7 +67,7 @@ public sealed class PstFile
     /// <summary>
     /// Gets the file's format variant.
     /// </summary>
-    /// <value>Always <see cref="PstFileFormat.Unicode" /> — other recognized variants fail to open.</value>
+    /// <value><see cref="PstFileFormat.Unicode" /> or <see cref="PstFileFormat.Ansi" />; the 4 KiB-page OST variant fails to open.</value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     public PstFileFormat Format
     {
@@ -253,6 +253,7 @@ public sealed class PstFile
             return;
 
         _disposed = true;
+        _source.MarkDisposed();
         if (!_leaveOpen)
             _stream.Dispose();
     }

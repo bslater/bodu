@@ -11,27 +11,41 @@ namespace Bodu.IO.Pst.Samples.PstBasics.Scenarios;
 /// <summary>
 /// Demonstrates the mail-store view layered on the container by <c>Bodu.Formats.Outlook.Pst</c>: the same
 /// file opened as an <see cref="OutlookMailStore" /> session, walking folders and messages with decoded MAPI
-/// properties, recipients, attachments, bodies, and named-property resolution.
+/// properties, recipients, attachments, bodies, and named-property resolution — first over the Unicode
+/// sample, then over the ANSI sample, whose code-page strings decode through the same accessors.
 /// </summary>
 public static class ReadMailStore
 {
     /// <summary>
-    /// Walks the sample store's folder hierarchy and dumps each message's headline facts.
+    /// Walks each sample store's folder hierarchy and dumps each message's headline facts.
     /// </summary>
     public static void Run()
     {
         Console.WriteLine("--- The mail-store view (Bodu.Formats.Outlook.Pst) ---");
 
-        using var store = OutlookMailStore.OpenRead(Program.SamplePath);
-        Console.WriteLine($"store: {store.DisplayName}");
+        using (var store = OutlookMailStore.OpenRead(Program.SamplePath))
+        {
+            Console.WriteLine($"store (Unicode): {store.DisplayName}");
 
-        Walk(store.RootFolder, depth: 0);
+            Walk(store.RootFolder, depth: 0);
 
-        // Named-property resolution is store-wide: identifiers at or above 0x8000 map through the
-        // file's name-to-id map to a durable (property-set GUID, numeric id or name) identity.
-        var tag = new MapiPropertyTag(0x8000, MapiPropertyType.Unicode);
-        if (store.TryGetPropertyName(tag, out MapiNamedProperty name))
-            Console.WriteLine($"named property 0x8000 resolves to {name}");
+            // Named-property resolution is store-wide: identifiers at or above 0x8000 map through the
+            // file's name-to-id map to a durable (property-set GUID, numeric id or name) identity.
+            var tag = new MapiPropertyTag(0x8000, MapiPropertyType.Unicode);
+            if (store.TryGetPropertyName(tag, out MapiNamedProperty name))
+                Console.WriteLine($"named property 0x8000 resolves to {name}");
+        }
+
+        Console.WriteLine();
+
+        // The ANSI store opens through the identical call. Its strings are stored as code-page
+        // (PT_STRING8) values rather than UTF-16, and the reader decodes them with the store's code page,
+        // so Subject, SenderName, and the bodies read the same way.
+        using (var store = OutlookMailStore.OpenRead(Program.AnsiSamplePath))
+        {
+            Console.WriteLine($"store (ANSI)   : {store.DisplayName}");
+            Walk(store.RootFolder, depth: 0);
+        }
 
         Console.WriteLine();
     }

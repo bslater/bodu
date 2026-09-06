@@ -33,6 +33,12 @@ public sealed class OutlookMailAttachment
     /// <summary>The attachment object subnode.</summary>
     private readonly PstNode _node;
 
+    /// <summary>The tag of the by-value payload property.</summary>
+    private static readonly MapiPropertyTag AttachDataTag = new(MapiPropertyIds.AttachData, MapiPropertyType.Binary);
+
+    /// <summary>The attachment object's property context; kept so a deferred payload can be streamed from it.</summary>
+    private PstPropertyContext? _context;
+
     /// <summary>The lazily decoded attachment properties.</summary>
     private MapiPropertyCollection? _properties;
 
@@ -58,6 +64,12 @@ public sealed class OutlookMailAttachment
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <remarks>
+    /// A by-value payload (<c>PidTagAttachDataBinary</c>) larger than
+    /// <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present
+    /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly
+    /// from the store.
+    /// </remarks>
     public MapiPropertyCollection Properties
     {
         get
@@ -66,8 +78,9 @@ public sealed class OutlookMailAttachment
 
             if (_properties is null)
             {
+                _context ??= _node.ReadPropertyContext();
                 _properties = PstMapiPropertyReader.Read(
-                    _node.ReadPropertyContext(), _owner.MessageEncoding, _store.Strict, out Encoding encoding);
+                    _context, _owner.MessageEncoding, _store.Strict, MapiPropertyIds.AttachData, _store.MaxInlineAttachmentBytes, out Encoding encoding);
                 _encoding = encoding;
             }
 
@@ -103,7 +116,7 @@ public sealed class OutlookMailAttachment
                 }
             }
 
-            return Properties.GetBinary(MapiPropertyIds.AttachData) is not null
+            return Properties.Contains(AttachDataTag)
                 ? OutlookAttachmentMethod.ByValue
                 : OutlookAttachmentMethod.None;
         }
@@ -134,11 +147,18 @@ public sealed class OutlookMailAttachment
         Properties.GetString(MapiPropertyIds.AttachMimeTag);
 
     /// <summary>
-    /// Gets the attachment size the writer recorded.
+    /// Gets the attachment size.
     /// </summary>
-    /// <value>The <c>PidTagAttachSize</c> value, or <see langword="null" /> when absent.</value>
+    /// <value>
+    /// The <c>PidTagAttachSize</c> value the writer recorded; when absent, the length of the by-value payload;
+    /// <see langword="null" /> when neither is available.
+    /// </value>
+    /// <remarks>
+    /// The payload length is read from the store's index structures, so a deferred payload is never materialized to
+    /// measure it.
+    /// </remarks>
     public long? Size =>
-        Properties.GetInt32(MapiPropertyIds.AttachSize);
+        Properties.GetInt32(MapiPropertyIds.AttachSize) ?? GetPayloadLength();
 
     /// <summary>
     /// Opens the by-value content payload as a read-only stream.
@@ -150,8 +170,9 @@ public sealed class OutlookMailAttachment
     /// </exception>
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
     /// <remarks>
-    /// The payload is the attachment object's <c>PidTagAttachData</c> value, buffered when the properties decode; the
-    /// returned stream reads from that buffer without copying it.
+    /// A payload decoded inline (at or below <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" />)
+    /// is served from the decoded bytes without copying; a larger payload is streamed from the store block by block
+    /// and is never held in memory in full. The stream is bound to the owning session.
     /// </remarks>
     public Stream OpenContentStream()
     {
@@ -161,15 +182,36 @@ public sealed class OutlookMailAttachment
                 CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstAttachmentContent, Method));
         }
 
-        if (Properties.GetBinary(MapiPropertyIds.AttachData) is not ReadOnlyMemory<byte> content)
-            throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstAttachmentContent);
+        if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> content)
+        {
+            // The decoded payload is an owned array the collection never mutates; wrap it read-only rather than
+            // copying it.
+            if (!MemoryMarshal.TryGetArray(content, out ArraySegment<byte> segment))
+                segment = new ArraySegment<byte>(content.ToArray());
 
-        // The decoded payload is an owned array the collection never mutates; wrap it read-only rather than copying
-        // a payload that can run to tens of megabytes.
-        if (!MemoryMarshal.TryGetArray(content, out ArraySegment<byte> segment))
-            segment = new ArraySegment<byte>(content.ToArray());
+            return new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false);
+        }
 
-        return new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false);
+        // A deferred payload is present in the collection with a null value; its bytes stay in the store.
+        if (Properties.Contains(AttachDataTag) && _context!.TryOpenValueStream(MapiPropertyIds.AttachData, out Stream? stream))
+            return stream;
+
+        throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstAttachmentContent);
+    }
+
+    /// <summary>
+    /// Gets the by-value payload length when the payload is present: the decoded length for an inline payload, the
+    /// store's recorded length for a deferred one.
+    /// </summary>
+    /// <returns>The payload length, or <see langword="null" /> when the attachment carries no by-value payload.</returns>
+    private long? GetPayloadLength()
+    {
+        if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> content)
+            return content.Length;
+
+        return Properties.Contains(AttachDataTag) && _context!.TryGetValueLength(MapiPropertyIds.AttachData, out long length)
+            ? length
+            : null;
     }
 
     /// <summary>

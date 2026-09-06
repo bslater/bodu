@@ -6,7 +6,17 @@
 
 using Bodu.Test;
 
+#if OUTLOOK_PST
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookPstFormatException;
+#else
+using ExpectedFormatException = Bodu.Formats.Outlook.OutlookMsgFormatException;
+#endif
+
+#if OUTLOOK_PST
+namespace Bodu.Formats.Outlook.Pst;
+#else
 namespace Bodu.Formats.Outlook.Msg;
+#endif
 
 public partial class CompressedRtfTests
 {
@@ -26,7 +36,7 @@ public partial class CompressedRtfTests
         GC.WaitForPendingFinalizers();
         long baseline = GC.GetTotalMemory(forceFullCollection: true);
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
         {
             _ = CompressedRtf.Decompress(payload);
         });
@@ -54,11 +64,11 @@ public partial class CompressedRtfTests
     /// partial result.
     /// </summary>
     [TestMethod]
-    public void Decompress_WhenReferenceTokenIsTruncated_ShouldThrowOutlookMsgFormatException()
+    public void Decompress_WhenReferenceTokenIsTruncated_ShouldThrowFormatException()
     {
         byte[] payload = BuildPayload([0x01, 0x12], 16);
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
         {
             _ = CompressedRtf.Decompress(payload);
         });
@@ -69,11 +79,11 @@ public partial class CompressedRtfTests
     /// silent partial result.
     /// </summary>
     [TestMethod]
-    public void Decompress_WhenLiteralTokenIsTruncated_ShouldThrowOutlookMsgFormatException()
+    public void Decompress_WhenLiteralTokenIsTruncated_ShouldThrowFormatException()
     {
         byte[] payload = BuildPayload([0x00, (byte)'a'], 16);
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
         {
             _ = CompressedRtf.Decompress(payload);
         });
@@ -83,11 +93,11 @@ public partial class CompressedRtfTests
     /// Verifies that a caller-supplied output ceiling below the declared size rejects the payload before decoding.
     /// </summary>
     [TestMethod]
-    public void Decompress_WhenMaxOutputBytesBelowDeclaredSize_ShouldThrowOutlookMsgFormatException()
+    public void Decompress_WhenMaxOutputBytesBelowDeclaredSize_ShouldThrowFormatException()
     {
         byte[] payload = BuildPayload(BuildLiteralBody(100), 100);
 
-        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
         {
             _ = CompressedRtf.Decompress(payload, maxOutputBytes: 50);
         });
