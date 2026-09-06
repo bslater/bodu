@@ -935,7 +935,7 @@ add("hero-io-pst", "Bodu.IO.Pst",
           '<tspan fill="#94A3B8">NBT</tspan> node B-tree',
           '<tspan fill="#94A3B8">BBT</tspan> block B-tree',
           'permute · cyclic decode', 'XBLOCK data trees', None,
-          '<tspan fill="#94A3B8" font-size="9">Unicode format (wVer 23)</tspan>'], y0=44, dy=17, size=10),
+          '<tspan fill="#94A3B8" font-size="9">Unicode (wVer 23) · ANSI (14/15)</tspan>'], y0=44, dy=17, size=10),
     "walk", "decode", "PstFile",
     mono(["EnumerateNodes()", "GetNode(nid)", "ReadAllBytes()",
           '<tspan fill="#60A5FA">subnode trees</tspan>',
@@ -996,6 +996,20 @@ add("hero-outlook-msg", "Bodu.Formats.Outlook.Msg",
           '<tspan fill="#94A3B8" font-size="9">MS-OXRTFCP decompression</tspan>',
           '<tspan fill="#94A3B8" font-size="9">Compatible / Strict levels</tspan>'], y0=44, dy=17, size=10),
     "MAPI properties · recipients · attachments · bodies", gid="olkmsg")
+
+add("hero-outlook-pst", "Bodu.Formats.Outlook.Pst",
+    "Bodu.Formats.Outlook.Pst — the read-only .pst mail-store reader over the PST node database",
+    "#FBBF24", "MS-PST nodes",
+    mono(['<tspan fill="#94A3B8">0x0021</tspan> message store', '<tspan fill="#94A3B8">0x0122</tspan> root folder',
+          '<tspan fill="#94A3B8">0x0061</tspan> name-to-id map', 'hierarchy · contents TC', 'message PC · subnodes', None,
+          '<tspan fill="#94A3B8" font-size="9">over Bodu.IO.Pst</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">Unicode + ANSI formats</tspan>'], y0=44, dy=17, size=10),
+    "walk", "decode", "OutlookMailStore",
+    mono(["RootFolder · subfolders", "EnumerateMessages()", "Recipients · Attachments",
+          '<tspan fill="#60A5FA">BodyText · Html · Rtf</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">large payloads streamed</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">Compatible / Strict / Minimal</tspan>'], y0=44, dy=17, size=10),
+    "folders · messages · attachments · bodies", gid="olkpst")
 
 
 def main():

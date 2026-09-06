@@ -21,7 +21,7 @@
       <text x="10" y="78"><tspan fill="#94A3B8">BBT</tspan> block B-tree</text>
       <text x="10" y="95">permute · cyclic decode</text>
       <text x="10" y="112">XBLOCK data trees</text>
-      <text x="10" y="137"><tspan fill="#94A3B8" font-size="9">Unicode format (wVer 23)</tspan></text>
+      <text x="10" y="137"><tspan fill="#94A3B8" font-size="9">Unicode (wVer 23) · ANSI (14/15)</tspan></text>
     </g>
   </g>
 
