@@ -25,12 +25,12 @@
     from the test application base.
   -->
   <ItemGroup>
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.csproj" />
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency.csproj" />
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency\Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency.csproj" />
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.Faulty.csproj" />
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty\Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty.csproj" />
-    <PluginFixture Include="Fixtures\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin\Bodu.Globalization.Calendar.Plugins.TestPlugin.NotPlugin.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin\TestPlugin.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin.Dependency\TestPlugin.Dependency.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin.WithDependency\TestPlugin.WithDependency.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin.Faulty\TestPlugin.Faulty.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin.StaticFaulty\TestPlugin.StaticFaulty.csproj" />
+    <PluginFixture Include="Fixtures\TestPlugin.NotPlugin\TestPlugin.NotPlugin.csproj" />
     <ProjectReference Include="@(PluginFixture)" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
 

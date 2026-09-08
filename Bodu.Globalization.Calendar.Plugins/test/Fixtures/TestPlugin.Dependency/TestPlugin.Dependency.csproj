@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <!-- The folder and project file carry only the short fixture name so the obj\ paths stay under the Windows
+         260-character MAX_PATH limit on a typical checkout; the assembly keeps the full name the loader tests look up. -->
+    <AssemblyName>Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency</AssemblyName>
     <RootNamespace>Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency</RootNamespace>
     <IsPackable>false</IsPackable>
     <!-- A loader fixture, not a test assembly: it is listed in bodu.slnx so Visual Studio builds it,
