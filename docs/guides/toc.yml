@@ -132,6 +132,8 @@
               href: cryptography/padding.md
             - name: Composing primitives
               href: cryptography/composing-primitives.md
+            - name: Hardware acceleration and the SIMD switch
+              href: cryptography/hardware-acceleration.md
         - name: Symmetric ciphers — Standard
           items:
             - name: AES-family block ciphers
@@ -200,6 +202,10 @@
               href: cryptography/argon2.md
             - name: Using scrypt
               href: cryptography/scrypt.md
+        - name: One-time passwords
+          items:
+            - name: Using HOTP and TOTP
+              href: cryptography/one-time-passwords.md
         - name: Asymmetric algorithms
           items:
             - name: Asymmetric algorithms overview
@@ -269,7 +275,7 @@
           items:
             - name: Date calculation algorithms
               href: calendar/algorithms.md
-        - name: Bodu.Globalization.Calendar.Data.* — Data packs
+        - name: Bodu.Globalization.Calendar.<Region> — Data packs
           items:
             - name: Calendar data packs
               href: calendar/data-packs.md
