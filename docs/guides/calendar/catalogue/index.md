@@ -6,7 +6,7 @@ title: Notable-date catalogue
 
 What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).
 
-Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. European packs import through the `europe-common` hub, which itself re-exports from the catalogues. The pages below present the same data along two axes.
+Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ([`africa-common`](theme-civil-and-christian.md#africa-common), [`americas-common`](theme-civil-and-christian.md#americas-common), [`europe-common`](theme-civil-and-christian.md#europe-common), [`middleeast-common`](theme-civil-and-christian.md#middleeast-common)) that re-exports the shared concepts its packs have in common — and occasionally defines a few of its own — so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.
 
 ## How to read these pages
 
@@ -16,15 +16,15 @@ Concepts are authored once in a **shared catalogue** and a **region pack** impor
 | Non-working | `Yes` = a non-working public holiday for the scope shown; `—` = a working observance |
 | Territory scope | `National`, a subdivision list (e.g. `ENG, WLS, NIR`), or `National + …` |
 | Calendar | shown only when non-Gregorian (`Hijri`, `Hebrew`, `Persian`, `ChineseLunisolar`, …) |
-| Source | `inline` (defined in the region pack) or `← catalogue` (the direct import) |
+| Source | `inline` (defined in the region pack) or `← catalogue` / `← <region>-common` (the direct import: a shared catalogue or the bundle's region hub) |
 | When | a one-phrase gloss: `Fixed 25 Dec`, `Easter +1`, `1st Mon May`, `Algorithm: western-easter` — never the recipe |
 
 ## By theme
 
 | Page | Catalogues |
 |---|---|
-| [Civil and Christian catalogues](theme-civil-and-christian.md) | `global-core`, `christian-western`, `christian-orthodox`, `default-minimal`, `europe-common` |
-| [Non-Gregorian religious catalogues](theme-religious-non-gregorian.md) | `global-anchors`, `global-islamic`, `global-islamic-umm-al-qura`, `global-jewish`, `global-hindu`, `global-buddhist`, `global-lunar`, `global-persian` |
+| [Civil and Christian catalogues](theme-civil-and-christian.md) | `global-core`, `christian-western`, `christian-orthodox`, `christian-oriental-orthodox`, `catholic`, `christian-anglican`, `christian-protestant`, `default-minimal`, `americas-common`, `europe-common`, `middleeast-common`, `africa-common` |
+| [Non-Gregorian religious catalogues](theme-religious-non-gregorian.md) | `global-anchors`, `global-islamic`, `global-islamic-umm-al-qura`, `global-jewish`, `global-hindu`, `global-buddhist`, `global-lunar`, `global-persian`, `global-bahai`, `global-jain`, `global-sikh`, `global-zoroastrian` |
 | [Cultural, family, and remembrance catalogues](theme-cultural-and-family.md) | `global-cultural`, `global-family`, `global-family-social`, `global-remembrance` |
 | [Awareness and themed observances](theme-awareness.md) | `global-un`, `global-health`, `global-environment`, `global-education`, `global-science`, `global-social`, `global-food`, `global-animals` |
 | [Aggregate and utility catalogues](theme-aggregates.md) | `global-all`, `global-multiday-normalization` |
@@ -47,11 +47,11 @@ See also the [cross-region comparison matrix](comparison-matrix.md).
 - **Region packs:** 63
 - **Distinct concepts (catalogues):** 308
 - **Comparison-matrix rows:** 18
-- **This page regenerated (UTC):** 2026-06-25T01:30:35Z
+- **This page regenerated (UTC):** 2026-09-09T03:00:56Z
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

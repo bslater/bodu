@@ -123,9 +123,61 @@ _Observed by:_ [ID](region-asia-pacific.md), [TH](region-asia-pacific.md)
 | Sizdah Bedar | Cultural | — | Persian | 13 month 1 (Persian) |
 | Yalda Night | Cultural | — | Persian | 30 month 9 (Persian) |
 
+## global-bahai
+
+| Concept | Category | Non-working | When |
+|---|---|---|---|
+| Ascension of Abdu'l-Baha | Religious | — | naw-ruz +252 |
+| Ascension of Baha'u'llah | Religious | — | naw-ruz +69 |
+| Day of the Covenant | Religious | — | naw-ruz +250 |
+| Declaration of the Bab | Religious | — | naw-ruz +64 |
+| First Day of Ridvan | Religious | — | naw-ruz +31 |
+| Martyrdom of the Bab | Religious | — | naw-ruz +111 |
+| Naw-Ruz | Religious | — | Algorithm: vernal-equinox |
+| Ninth Day of Ridvan | Religious | — | naw-ruz +39 |
+| Ridvan | Religious | — | naw-ruz +31 |
+| Twelfth Day of Ridvan | Religious | — | naw-ruz +42 |
+
+## global-jain
+
+| Concept | Category | Non-working | When |
+|---|---|---|---|
+| Das Lakshan | Religious | — | samvatsari +1 |
+| Jain Diwali | Religious | — | Algorithm: diwali |
+| Kartik Purnima | Religious | — | jain-diwali +15 |
+| Mahavir Jayanti | Religious | — | ram-navami-anchor +4 |
+| Maun Agiyaras | Religious | — | Algorithm: maun-agiyaras |
+| Paryushana (Shvetambara) | Religious | — | samvatsari -7 |
+| Ram Navami Anchor | Religious | — | Algorithm: ram-navami |
+| Samvatsari | Religious | — | Algorithm: ganesh-chaturthi |
+
+## global-sikh
+
+| Concept | Category | Non-working | When |
+|---|---|---|---|
+| Guru Gobind Singh Jayanti | Religious | — | Fixed 5 Jan |
+| Vaisakhi | Religious | — | Fixed 14 Apr |
+| Martyrdom of Guru Arjan Dev | Religious | — | Fixed 16 Jun |
+| Martyrdom of Guru Tegh Bahadur | Religious | — | Fixed 24 Nov |
+| Bandi Chhor Divas | Religious | — | Algorithm: diwali |
+| Guru Nanak Gurpurab | Religious | — | bandi-chhor-divas +15 |
+| Hola Mohalla | Religious | — | holi-anchor +1 |
+| Holi Anchor | Religious | — | Algorithm: holi |
+
+## global-zoroastrian
+
+| Concept | Category | Non-working | Calendar | When |
+|---|---|---|---|---|
+| Khordad Sal | Religious | — | Persian | 6 month 1 (Persian) |
+| Mehregan | Religious | — | Persian | 16 month 7 (Persian) |
+| Sadeh | Religious | — | Persian | 10 month 11 (Persian) |
+| Tirgan | Religious | — | Persian | 13 month 4 (Persian) |
+| Zartosht No-Diso | Religious | — | Persian | 11 month 10 (Persian) |
+| Zoroastrian Nowruz | Religious | — | Persian | 1 month 1 (Persian) |
+
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

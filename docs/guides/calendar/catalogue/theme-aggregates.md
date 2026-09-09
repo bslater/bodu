@@ -8,7 +8,7 @@ Concepts defined by the shared catalogues in this theme. A region pack imports t
 
 ## global-all
 
-Aggregate catalogue ($(@{Stem=global-all; ResourceId=common.global-all; Bundle=; Imports=System.Object[]; Concepts=System.Object[]}.ResourceId)): imports every other catalogue with no cherry-picks, so each contributes its full concept set. Identifiers shared across sources are de-duplicated first-source-wins. Intended for consumers that want every shared observance at once; territory packs cherry-pick instead.
+Aggregate catalogue (`common.global-all`): imports every other catalogue with no cherry-picks, so each contributes its full concept set. Identifiers shared across sources are de-duplicated first-source-wins. Intended for consumers that want every shared observance at once; territory packs cherry-pick instead.
 
 | Imports catalogue |
 |---|
@@ -57,7 +57,7 @@ _Observed by:_ [GB](region-europe.md)
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
