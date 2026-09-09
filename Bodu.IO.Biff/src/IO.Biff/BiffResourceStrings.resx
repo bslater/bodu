@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Format_Invalid_BiffTrailingBytes" xml:space="preserve">
+    <value>The BIFF stream ends with {0} trailing byte(s), too few to form a record header.</value>
+  </data>
+  <data name="Format_Invalid_BiffRecordOverrun" xml:space="preserve">
+    <value>The record 0x{0:X4} at offset {1} declares a {2}-byte payload that runs past the end of the data.</value>
+  </data>
+  <data name="Format_Invalid_BiffRecordPayload" xml:space="preserve">
+    <value>The {0} record payload is too short or malformed.</value>
+  </data>
+  <data name="Format_Invalid_BiffBofVersionMismatch" xml:space="preserve">
+    <value>The BOF record declares BIFF version 0x{0:X4}, but the stream was already established as {1}.</value>
+  </data>
+  <data name="Format_Invalid_BiffString" xml:space="preserve">
+    <value>A BIFF string runs past the end of its record.</value>
+  </data>
+  <data name="Format_Invalid_BiffSharedStringTable" xml:space="preserve">
+    <value>The shared string table is truncated or malformed.</value>
+  </data>
+  <data name="Format_Invalid_BiffContinueExpected" xml:space="preserve">
+    <value>A CONTINUE record was expected to complete the {0} record but was not found.</value>
+  </data>
+  <data name="Format_Invalid_BiffCodePage" xml:space="preserve">
+    <value>The code page {0} is not a recognized BIFF code page.</value>
+  </data>
+  <data name="Op_NotSupported_BiffVersion" xml:space="preserve">
+    <value>BIFF version 0x{0:X4} is not supported; only BIFF5 and BIFF8 streams can be processed.</value>
+  </data>
+  <data name="Op_NotSupported_BiffLegacyBof" xml:space="preserve">
+    <value>The stream begins with a BIFF2, BIFF3, or BIFF4 beginning-of-file record (0x{0:X4}); only BIFF5 and BIFF8 streams can be processed.</value>
+  </data>
+  <data name="Op_Invalid_BiffWrongRecord" xml:space="preserve">
+    <value>The current record is {0}, not {1}.</value>
+  </data>
+  <data name="Op_Invalid_BiffNoCurrentRecord" xml:space="preserve">
+    <value>No record is current; call Read() first.</value>
+  </data>
+  <data name="Op_Invalid_BiffVersionUnknown" xml:space="preserve">
+    <value>The BIFF version has not been established; read the BOF record first or supply the version through the options.</value>
+  </data>
+  <data name="Op_Invalid_BiffSstFragmented" xml:space="preserve">
+    <value>The current shared string spans a CONTINUE boundary and has no contiguous view; use GetString() or CopyTo() instead.</value>
+  </data>
+  <data name="Op_Invalid_BiffSstNoCurrent" xml:space="preserve">
+    <value>No shared string is current; call Read() first.</value>
+  </data>
+  <data name="Op_Invalid_BiffSstNotAtRecord" xml:space="preserve">
+    <value>The reader is not positioned on an SST record.</value>
+  </data>
+  <data name="Op_Invalid_BiffRecordNotInVersion" xml:space="preserve">
+    <value>The {0} record is not defined in {1}.</value>
+  </data>
+  <data name="Op_Invalid_BiffEofWithoutBof" xml:space="preserve">
+    <value>An EOF record cannot be written when no substream is open.</value>
+  </data>
+  <data name="Arg_OutOfRange_BiffPayloadTooLong" xml:space="preserve">
+    <value>The payload of {0} bytes exceeds the {1} maximum record payload length of {2} bytes.</value>
+  </data>
+  <data name="Arg_OutOfRange_BiffStringTooLong" xml:space="preserve">
+    <value>The text of {0} characters exceeds the maximum of {1} characters for this record.</value>
+  </data>
+  <data name="Arg_OutOfRange_BiffCellIndex" xml:space="preserve">
+    <value>The cell index {0} is outside the range this BIFF record can address.</value>
+  </data>
+</root>

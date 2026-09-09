@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <Title>Bodu — BIFF</Title>
+    <Description>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy .xls workbooks. A forward-only, allocation-free BiffReader walks physical records, detects the BIFF version, exposes every record's identifier and raw payload, and decodes the common structural and cell records through typed accessors — including the shared string table across its CONTINUE records — while a BiffWriter emits conformant BIFF5 or BIFF8 records from typed values or raw payloads. Understands how BIFF is encoded, not what an Excel workbook means: no compound-file container, no workbook or cell model, no formula evaluation.</Description>
+    <PackageTags>$(PackageTags);biff;biff5;biff8;xls;excel;binary;reader;writer;codec</PackageTags>
+  </PropertyGroup>
+
+  <!-- Grant the companion test project access to internal members. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.IO.Biff.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Bodu project dependencies. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Code-page encodings for BIFF5 byte strings. -->
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="IO.Biff\BiffResourceStrings.resx">
+      <LastGenOutput>BiffResourceStrings.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <Compile Update="IO.Biff\BiffResourceStrings.Designer.cs">
+      <DependentUpon>BiffResourceStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+</Project>
