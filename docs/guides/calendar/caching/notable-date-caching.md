@@ -82,17 +82,23 @@ var json = new JsonNotableDateCache(
     new FileNotableDateCacheOptions { CacheDirectory = "/var/cache/notable-dates" });
 ```
 
-The durable add-ons ship their own registrations, which replace the default TOML file
-cache inside `AddCachedNotableDateService`:
+The durable add-ons ship their own registrations. Each one adds an `INotableDateCache`
+to the container; it does not replace the TOML file cache that
+`AddCachedNotableDateService` builds by default. Pass the registered cache through the
+`cacheFactory` parameter to have the decorator use it:
 
 ```csharp
 // SQLite: one database file, WAL-enabled, best-effort.
 builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
 builder.Services.AddSqliteNotableDateCache(o => o.DatabaseFilePath = "/var/cache/notable-dates.db");
+builder.Services.AddCachedNotableDateService(
+    cacheFactory: sp => sp.GetRequiredService<INotableDateCache>());
 
 // Distributed: over the registered IDistributedCache (AddRedisNotableDateCache wires Redis directly).
 builder.Services.AddStackExchangeRedisCache(o => o.Configuration = "localhost:6379");
 builder.Services.AddDistributedNotableDateCache();
+builder.Services.AddCachedNotableDateService(
+    cacheFactory: sp => sp.GetRequiredService<INotableDateCache>());
 ```
 
 Every backend enforces the same ordering contract (occurrences round-trip in the

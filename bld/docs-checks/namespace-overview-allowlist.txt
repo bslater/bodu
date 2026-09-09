@@ -9,4 +9,3 @@ Bodu.IO.Compound.PropertySets
 Bodu.Text.Serialization
 Bodu.Financial.Extensions
 Bodu.Formats.Outlook
-Bodu.Globalization.Calendar.Caching
