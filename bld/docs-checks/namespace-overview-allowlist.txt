@@ -4,8 +4,5 @@
 # when its overview is written; never add to it for a new namespace.
 Bodu.Financial.ExchangeRates.Testing
 Bodu.Globalization.Calendar.Tool
-Bodu.IO.Compound.Builders
-Bodu.IO.Compound.PropertySets
 Bodu.Text.Serialization
 Bodu.Financial.Extensions
-Bodu.Formats.Outlook
