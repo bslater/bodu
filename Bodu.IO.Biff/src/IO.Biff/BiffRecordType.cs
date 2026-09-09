@@ -13,7 +13,8 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// The enumeration is a curated catalogue, not the full record set: a record whose identifier is not listed here is
 /// still readable through <see cref="BiffReader.RecordId" /> and <see cref="BiffReader.ValueSpan" />, and can be
-/// written as a raw record from its identifier and payload. Encountering an unlisted identifier is never an error.
+/// written through <see cref="BiffWriter.WriteRecord(ushort, ReadOnlySpan{byte})" />. Encountering an unlisted
+/// identifier is never an error.
 /// </remarks>
 public enum BiffRecordType : ushort
 {

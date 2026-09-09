@@ -6,8 +6,6 @@
 
 namespace Bodu.IO.Biff;
 
-/// <content> The typed accessors that decode the current record. Each interprets the current record only and maintains
-/// no state beyond it. </content>
 public ref partial struct BiffReader
 {
     /// <summary>
