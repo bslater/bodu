@@ -275,6 +275,18 @@
               href: calendar/dependency-injection.md
             - name: Caching notable dates
               href: calendar/caching/notable-date-caching.md
+            - name: Cache backends and options
+              href: calendar/caching/backends-and-options.md
+            - name: Writing a cache backend
+              href: calendar/caching/custom-backend.md
+            - name: Async resolution, localized names, and typed catalogues
+              href: calendar/async-and-localization.md
+        - name: Bodu.Globalization.Calendar — Tooling
+          items:
+            - name: The bodu-calendar CLI
+              href: calendar/tooling/bodu-calendar-cli.md
+            - name: Compiling packs in MSBuild
+              href: calendar/tooling/msbuild-integration.md
         - name: Bodu.Globalization.Calendar.Algorithms
           items:
             - name: Date calculation algorithms
@@ -313,6 +325,16 @@
       items:
         - name: Recurrence and scheduling
           href: recurrence/index.md
+        - name: RFC 5545 recurrence rules
+          href: recurrence/rrule.md
+        - name: Cron expressions
+          href: recurrence/cron.md
+        - name: Anchored intervals
+          href: recurrence/anchored-intervals.md
+        - name: Recurrence sets
+          href: recurrence/recurrence-sets.md
+        - name: Hosting schedules
+          href: recurrence/scheduling-host.md
 - name: Text & Serialization
   href: topics/text-and-serialization.md
   items:

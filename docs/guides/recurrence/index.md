@@ -107,6 +107,37 @@ if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out string?
 
 The message names the offending token — "The duration component '4X' is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S." beats "invalid format" — and the same overload shape exists on all four forms.
 
+## Guides
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="rrule.md">RFC 5545 recurrence rules</a></h3>
+  <p><code>RecurrenceRule</code> parse / format / typed parts, <code>RecurrenceRuleBuilder</code> and <code>WeekDayNum</code>, occurrence enumeration and the inclusive point queries, the <code>BY*</code> interactions implementations disagree on, and the effect of <code>WKST</code> — with run-verified examples.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="cron.md">Cron expressions</a></h3>
+  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the twelve-year search horizon, and <code>DateTimeOffset</code> handling.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="anchored-intervals.md">Anchored intervals</a></h3>
+  <p><code>AnchoredInterval</code> over a <code>TimeSpan</code> or RFC 5545 duration text, the exact grammar accepted, occurrences at <code>anchor + k·interval</code>, the anchor boundary, and heartbeat / back-off / daylight-saving patterns.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="recurrence-sets.md">Recurrence sets</a></h3>
+  <p><code>RecurrenceSet</code> composition — rules plus <code>RDATE</code> minus <code>EXDATE</code> — the canonical <code>DTSTART</code> / <code>RRULE</code> / <code>RDATE</code> / <code>EXDATE</code> property block, and importing from or exporting to a <code>VEVENT</code> fragment.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="scheduling-host.md">Hosting schedules</a></h3>
+  <p>One adapter over the four forms, a reproducible catch-up loop over <code>TimeProvider</code>, persisting the last-run instant, daylight-saving and time-zone conversion at the host boundary, and skipping non-working days with <code>Bodu.Globalization.Calendar</code>.</p>
+</div>
+
+</div>
+
 ## Runnable samples
 
 Five sample projects under
