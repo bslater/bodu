@@ -34,8 +34,12 @@ using Bodu;
 
 WeekPattern workweek  = WeekPattern.Weekdays;           // Mon–Fri
 WeekPattern weekend   = WeekPattern.Weekend;            // Sat–Sun
-WeekPattern allDays   = WeekPattern.Weekdays | WeekPattern.Weekend;  // Mon–Sun
+WeekPattern allDays   = WeekPattern.AllDays;            // Mon–Sun
 WeekPattern empty     = WeekPattern.Empty;              // no days
+
+// Regional working weeks, one preset per WorkingDaysOfWeek member.
+WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun–Thu
+WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon–Sat
 ```
 
 ## Pattern 3 — bitwise combination
@@ -147,6 +151,8 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 | `Empty` | Static field — no days selected. |
 | `Weekdays` | Static field — Mon–Fri. |
 | `Weekend` | Static field — Sat–Sun. |
+| `AllDays` | Static field — every day, Mon–Sun. |
+| `MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday` | Static fields — the regional working-week presets, one per `WorkingDaysOfWeek` member (`MondayToFriday` is the same set as `Weekdays`). |
 | `With(DayOfWeek)` | Returns a new pattern with the day added. |
 | `Without(DayOfWeek)` | Returns a new pattern with the day removed. |
 | `Contains(DayOfWeek)` | Returns `true` if the day is selected. |
@@ -156,6 +162,7 @@ WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // Monday
 | `ToString()` | Returns the compact abbreviation string. |
 | `\|`, `&`, `^`, `~` | Union, intersection, symmetric-difference, complement operators. |
 | `==`, `!=`, `<`, `<=`, `>`, `>=` | Equality (same day set) and total-order comparison of the bitmask. |
+| `IComparable<WeekPattern>`, `IComparable<byte>`, `IComparable` | `CompareTo` over the bitmask — the same total order the comparison operators use, so patterns sort with `OrderBy` and `SortedSet<WeekPattern>`. |
 | `IEnumerable<DayOfWeek>` | Enumerates selected days in `DayOfWeek` order. |
 
 ## Where to go next

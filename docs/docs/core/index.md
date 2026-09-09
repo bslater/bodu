@@ -55,13 +55,21 @@ Functional helpers and railway primitives. See the [Memoization](../../guides/co
 | <xref:Bodu.Functional.Either`2> | A symmetric disjoint union with `MapLeft` / `MapRight` / `Match` / `Swap`; `default` is an explicit uninitialized state. |
 | <xref:Bodu.Functional.OptionAsyncExtensions>, <xref:Bodu.Functional.ResultAsyncExtensions> | Task-based `MapAsync` / `BindAsync` / `MatchAsync` (and `TapAsync`) companions for async pipelines. |
 
+### `Bodu.Sequences`
+Lazy sequence factories. See the <xref:Bodu.Sequences> overview.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Sequences.SequenceGenerator> | Lazy generators — `Range`, `NextWhile`, `Factory` — and named mathematical series: `Fibonacci`, `Farey`, `Leibniz`, `LookAndSay`, `ThueMorse`. |
+
 ### `Bodu.Collections.Extensions` and `Bodu.Collections.Generic.Extensions`
 Sequence-shaping helpers that compose on top of `IEnumerable<T>` and `IList<T>`. These extension namespaces ship in `Bodu.Core`; the concrete collection types in the sibling `Bodu.Collections.*` namespaces ship in the [Bodu.Collections](../collections/index.md) package.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> | Recursive selection, sliding windows, batched enumeration, and other sequence helpers. |
-| <xref:Bodu.Collections.Generic.Extensions.IListExtensions>, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> | Pluggable randomness-driven shuffles backed by `IRandomGenerator`. |
+| <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> | Recursive selection (`RecursiveSelect` steered by `RecursiveSelectControl`), `CountOrDefault`, sliding windows (`Windowed`), batched enumeration (`Batch`), and other sequence helpers. |
+| <xref:Bodu.Collections.Generic.Extensions.IListExtensions> | Predicate-driven `IndexOf` / `LastIndexOf`, `ReplaceAll`, and the positional `TryMove` / `TrySwap` edits over `IList<T>`. |
+| <xref:Bodu.Collections.Generic.ShuffleHelpers>, `IEnumerableExtensions.Randomize`, <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode> | Pluggable randomness-driven shuffles backed by `IRandomGenerator` — in-place `Shuffle` over arrays / spans, lazy `ShuffleAndYield`, and `Randomize` over any sequence. `ShuffleHelpers` lives in `Bodu.Collections.Generic` but ships in `Bodu.Core`. |
 
 ### `Bodu.Extensions`
 Date, numeric, span, and array extension methods. Larger surface than the others; the highlights:
@@ -83,16 +91,19 @@ Culture-aware date / calendar helpers built on top of <xref:System.Globalization
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | `FirstDayOfWeek`, `LastDayOfWeek`, weekend-aware helpers over `DateTimeFormatInfo`. |
+| <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | A single helper, `LastDayOfWeek()` — the day that closes a culture's week, derived from the BCL `DateTimeFormatInfo.FirstDayOfWeek`. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
-Text and XML helpers used internally by the other Bodu packages; available publicly when you need them.
+Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper; used internally by the other Bodu packages and available publicly when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md).
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Encoding.Base16>, <xref:Bodu.Text.Encoding.Base32>, <xref:Bodu.Text.Encoding.Base58>, <xref:Bodu.Text.Encoding.Base64>, <xref:Bodu.Text.Encoding.Base85> | Per-radix codec entry points over text or binary input. Ship in the companion `Bodu.Text.Encoding` package. |
-| <xref:Bodu.Text.Encoding.BaseFormatStyles>, <xref:Bodu.Text.Encoding.BaseFormattingOptions> | Formatting-style and option flags consumed by every per-radix codec. |
+| <xref:Bodu.Text.EncodingDetection> | BOM sniffing — `TryDetectByPreamble(ReadOnlySpan<byte>, out Encoding?)`. |
+| <xref:Bodu.Text.EncodingExtensions> | Extension methods on `System.Text.Encoding` (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffers), on `Encoder` / `Decoder` (chunked transcoding), and on spans (`ToBytes`, `ToChars`, `DecodeToString`, `Transcode`). |
+| <xref:Bodu.Text.StringEncodingExtensions> | `string` fast paths — `ToUtf8Bytes`, `ToBytes(encoding)`, `ToBytesWithPreamble`, `GetUtf8ByteCount`, `EncodeUtf8To`, `WriteUtf8To(IBufferWriter<byte>)`, and the pooled `GetUtf8BytesPooled` / `GetBytesPooled`. |
 | <xref:Bodu.Xml.Linq.XmlNamespaceResolver> | `IXmlNamespaceResolver` helper used by the calendar rule parsers. |
+
+The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this package — they ship in the companion [Bodu.Text.Encoding](../text-encoding/index.md) package.
 
 ## Scenarios this library covers
 
@@ -107,7 +118,9 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> |
 | Sorting `file2` before `file10` | <xref:Bodu.Extensions.NaturalStringComparer> |
 | Sliding windows, batching, recursive selection over sequences | <xref:Bodu.Collections.Extensions.IEnumerableExtensions>, <xref:Bodu.Collections.Generic.Extensions.IEnumerableExtensions> |
-| Base16 / Base32 / Base58 / Base64 / Base85 encoding | <xref:Bodu.Text.Encoding.Base16>, <xref:Bodu.Text.Encoding.Base32>, <xref:Bodu.Text.Encoding.Base58>, <xref:Bodu.Text.Encoding.Base64>, <xref:Bodu.Text.Encoding.Base85> (in `Bodu.Text.Encoding`) |
+| BOM detection, `string`↔bytes without ceremony, preamble-aware decoding | <xref:Bodu.Text.EncodingDetection>, <xref:Bodu.Text.StringEncodingExtensions>, <xref:Bodu.Text.EncodingExtensions> |
+| Lazy numeric sequences and named series | <xref:Bodu.Sequences.SequenceGenerator> |
+| Base16 / Base32 / Base58 / Base64 / Base85 encoding | The [Bodu.Text.Encoding](../text-encoding/index.md) package |
 | Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
 | Fixed-capacity, evicting, navigable, graph, trie, and sketch collections | The [Bodu.Collections](../collections/index.md) package |
 | Thread-safe FIFO ring and unique set | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |

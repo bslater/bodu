@@ -18,7 +18,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | Namespace | What lives here | Guides |
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, bit sets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `BitSet`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) · [Bit set](bit-set.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>` (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
 | `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) |
@@ -26,7 +26,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
 | `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
-| `Bodu.Extensions` | Date, numeric, span, array, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`. | (no dedicated guide yet — see API reference) |
+| `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` — and the `NaturalStringComparer`. | [Natural string comparer](natural-string-comparer.md) (the extension classes are covered by the <xref:Bodu.Extensions> API reference) |
 | `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | — |
 
 ## Guides
@@ -133,7 +133,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
-  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring) and lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>.</p>
+  <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>.</p>
 </div>
 
 </div>
@@ -166,7 +166,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="trie.md">Tries and text search</a></h3>
-  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), the path-compressed <code>RadixTrie</code> pair with the same surface, the <code>AhoCorasickAutomaton</code> pair for single-pass multi-pattern text search, plus the n-ary <code>Tree&lt;T&gt;</code> with stack-safe traversals.</p>
+  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), the path-compressed <code>RadixTrie</code> pair with the same surface, and the <code>AhoCorasickAutomaton</code> pair for single-pass multi-pattern text search. (The namespace's n-ary <code>Tree&lt;T&gt;</code> has no guide yet — see the <a href="xref:Bodu.Collections.Generic.Trees">API reference</a>.)</p>
 </div>
 
 </div>

@@ -10,7 +10,7 @@ uid: Bodu.Buffers
 
 ## Key types
 
-- <xref:Bodu.Buffers.PooledBufferBuilder`1> — `ArrayPool<T>`-backed builder for assembling spans without allocation. Returns the rented array to the pool on `Dispose`; supports `Append`, `Span`, and `ToArray` / `WrittenSpan` access.
+- <xref:Bodu.Buffers.PooledBufferBuilder`1> — `ArrayPool<T>`-backed builder for assembling spans without allocation. Returns the rented array to the pool on `Dispose`. Writes go through `Append(T)`, `AppendRange(ReadOnlySpan<T>)` (with `ReadOnlyMemory<T>` / `IEnumerable<T>` overloads), `AddMany`, or the `IBufferWriter<T>` pair `GetSpan(sizeHint)` / `GetMemory(sizeHint)` + `Advance(count)`; reads go through `WrittenSpan` / `WrittenMemory`, `CopyTo` / `TryCopyTo`, or `ToArrayAndDispose()`, which hands back a right-sized array and returns the rental in one step.
 
 ## Example
 
@@ -20,10 +20,17 @@ using Bodu.Buffers;
 using var builder = new PooledBufferBuilder<byte>(initialCapacity: 256);
 builder.Append(0xDE);
 builder.Append(0xAD);
-builder.Append(stackalloc byte[] { 0xBE, 0xEF });
+ReadOnlySpan<byte> tail = stackalloc byte[] { 0xBE, 0xEF };
+builder.AppendRange(tail);
+
+// IBufferWriter<T> style: reserve, fill, commit.
+Span<byte> slot = builder.GetSpan(4);
+BinaryPrimitives.WriteUInt32LittleEndian(slot, 42);
+builder.Advance(4);
 
 ReadOnlySpan<byte> written = builder.WrittenSpan;
 // builder rents from ArrayPool<byte>.Shared; Dispose returns the buffer.
+// Alternatively, builder.ToArrayAndDispose() copies out the written bytes and disposes in one call.
 ```
 
 ## Notes

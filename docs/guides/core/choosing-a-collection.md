@@ -4,7 +4,7 @@ title: Choosing a collection
 
 # Choosing a collection
 
-Bodu.Core ships more than a dozen collection types. This page is the decision guide — it answers "which collection should I reach for?" without making the reader walk every namespace. For the full namespace map, start with the [Bodu.Core introduction](../../docs/core/index.md); for vocabulary, read [Core concepts](../../docs/core/concepts.md).
+Bodu.Collections ships more than a dozen collection types (with the thread-safe variants in Bodu.Collections.Concurrent). This page is the decision guide — it answers "which collection should I reach for?" without making the reader walk every namespace. For the full namespace map, start with the [Bodu.Collections introduction](../../docs/collections/index.md); for vocabulary, read the [Bodu.Collections concepts](../../docs/collections/concepts.md).
 
 ## Quick decision tree
 
@@ -39,7 +39,7 @@ Bodu.Core ships more than a dozen collection types. This page is the decision gu
 5. **Do you need a priority queue with key-based updates?** → <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2>.
 6. **Can the answer be approximate?** When the exact structure no longer fits in memory and a quantified error is acceptable → the `Bodu.Collections.Probabilistic` sketches; see [Approximate (probabilistic) collections](#approximate-probabilistic-collections) below.
 
-If none of the above fit, the BCL types (`List<T>`, `Dictionary<TKey,TValue>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`) are the right choice. Bodu.Core does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.
+If none of the above fit, the BCL types (`List<T>`, `Dictionary<TKey,TValue>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`) are the right choice. Bodu.Collections does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.
 
 The remainder of this page deepens that tree into per-axis tables, real-world scenarios, and a list of anti-patterns that come up most often when picking between similar types.
 
@@ -86,6 +86,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 |---|---|---|
 | Multi-threaded FIFO ring | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Implements <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> over a Vyukov MPMC algorithm. |
 | Multi-threaded unique set | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> | Lock-free split-ordered hash set; every operation is CAS-based, so writers never block each other or readers. |
+| Multi-threaded bounded cache (LRU / LFU / TTL) | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> | Lock-striped segments over all six <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> values, optional TTL expiry, single-flight `GetOrAdd`, and a post-commit `ItemEvicted` event. Eviction order is exact per segment, approximate globally. |
 | Single-threaded, every other scenario | All non-concurrent types in <xref:Bodu.Collections.Generic> | Wrap with external synchronisation if shared across threads. |
 
 The non-concurrent types are **not** thread-safe even for concurrent reads — <xref:Bodu.Collections.Generic.EvictingDictionary`2> mutates LRU and LFU metadata on read, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> mutates the element-to-slot map on every heap operation. Wrap with a lock or `ReaderWriterLockSlim` when sharing a single instance.
@@ -176,8 +177,8 @@ All three hash through the element's <xref:System.Collections.Generic.IEqualityC
 
 ## See also
 
-- [Bodu.Core introduction](../../docs/core/index.md) — namespace map and headline types.
-- [Bodu.Core concepts](../../docs/core/concepts.md) — vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespace map and headline types.
+- [Bodu.Collections concepts](../../docs/collections/concepts.md) — vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.
 - [Circular buffer](circular-buffer.md), [Deque](deque.md), [Evicting dictionary](evicting-dictionary.md), [Range dictionary](range-dictionary.md), [Indexed priority queue](indexed-priority-queue.md) — per-type walk-throughs.
 - [Concurrent collections](concurrent-collections.md) — the thread-safe variants in detail.
 - [Probabilistic collections (sketches)](probabilistic-collections.md) — the approximate `BloomFilter<T>` / `CountMinSketch<T>` / `HyperLogLog<T>` trio.

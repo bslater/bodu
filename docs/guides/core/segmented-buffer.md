@@ -137,7 +137,7 @@ Ten appends into a `segmentSize: 4` buffer triggered exactly three segment alloc
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide.
 - [Core Foundations guides](../topics/core-foundations.md) — every guide in this topic.
 - [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
-- [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.
 - [`SegmentedBuffer<T>` API reference](xref:Bodu.Collections.Generic.SegmentedBuffer`1)
 - [`PooledBufferBuilder<T>` API reference](xref:Bodu.Buffers.PooledBufferBuilder`1)
 - [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)

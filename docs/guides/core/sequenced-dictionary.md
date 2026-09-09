@@ -118,6 +118,6 @@ The BCL's `OrderedDictionary<TKey, TValue>` (.NET 9+) is *positional* — index-
 
 - [Evicting dictionary](evicting-dictionary.md) — fixed-capacity cache with FIFO / LRU / LFU eviction policies.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
-- [Bodu.Core overview](index.md) — all key types at a glance.
+- [Bodu.Collections guide index](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

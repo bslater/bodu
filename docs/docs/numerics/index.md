@@ -6,11 +6,11 @@ title: Bodu.Numerics — Introduction
 
 ![Bodu.Numerics](../../images/hero-numerics.svg)
 
-**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It centers on three value types — `Fraction<T>` for exact rational arithmetic, `Interval<T>` for intervals over ordered numeric coordinates, and `BigDecimal` for arbitrary-precision decimals beyond `System.Decimal`'s range — all built on the generic-math interfaces (`INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Around `Interval<T>` sit its set-algebra companions: the integer-domain `DiscreteInterval<T>`, the binary-result `IntervalPair<T>` / `DiscreteIntervalPair<T>`, and the N-ary `IntervalSet<T>`. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
+**Bodu.Numerics** is the numeric-primitives package of the Bodu suite. It centers on four value types — `Fraction<T>` for exact rational arithmetic, `Interval<T>` for intervals over ordered numeric coordinates, `BigDecimal` for arbitrary-precision decimals beyond `System.Decimal`'s range, and `Complex<T>` for complex numbers over any IEEE 754 component type — all built on the generic-math interfaces (`INumberBase<T>`, `INumber<T>`, `ISignedNumber<T>`) so they compose with anything that targets the .NET 7+ numeric abstractions. Around `Interval<T>` sit its set-algebra companions: the integer-domain `DiscreteInterval<T>`, the binary-result `IntervalPair<T>` / `DiscreteIntervalPair<T>`, and the N-ary `IntervalSet<T>`. Alongside them sit the single-pass statistics aggregates — `RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, and `MovingMinMax<T>`. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 `Bodu.Numerics` is the dependency that `Bodu.Financial` reaches for when an accounting workflow needs sub-minor-unit precision: `Money<TCurrency>.ToFraction()` round-trips through `Fraction<BigInteger>` for compound interest, percentage-of-percentage, and other chains where deferred rounding matters.
 
-![Bodu.Numerics type map — Fraction<T> and Interval<T> over the generic-math abstractions](../../images/diagrams/numerics-type-map.svg)
+![Bodu.Numerics type map — the headline value types over the generic-math abstractions](../../images/diagrams/numerics-type-map.svg)
 
 ## Namespaces and headline types
 
@@ -26,6 +26,9 @@ title: Bodu.Numerics — Introduction
 | <xref:Bodu.Numerics.IntervalPair`1>, <xref:Bodu.Numerics.DiscreteIntervalPair`1> | Allocation-free results of a binary `Difference` / `SymmetricDifference` — zero, one, or two disjoint pieces, indexable and enumerable. |
 | <xref:Bodu.Numerics.IntervalSet`1> | Immutable normalized union of disjoint, non-adjacent intervals — the N-ary home for `Union` / `Intersect` / `Except` / `Complement` when a result can be a disconnected range. |
 | <xref:Bodu.Numerics.BigDecimal> | Immutable arbitrary-precision decimal — a `BigInteger` unscaled value paired with an `int` scale. Unbounded (no overflow), with exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full `INumber<BigDecimal>` / `ISignedNumber<BigDecimal>` surface. |
+| <xref:Bodu.Numerics.Complex`1> | Immutable complex number over any `IFloatingPointIeee754<T>` component type (`float`, `double`, `Half`) — the generic counterpart of the `double`-only `System.Numerics.Complex`. Arithmetic, `Conjugate` / `Reciprocal`, the elementary functions (`Sqrt`, `Exp`, `Log`, `Pow`, trigonometric and hyperbolic), parsing / formatting, and the `INumberBase<T>` / `ISignedNumber<T>` surface. |
+| <xref:Bodu.Numerics.RunningStatistics`1>, <xref:Bodu.Numerics.RunningQuantile`1> | Single-pass, constant-space stream accumulators: Welford count / min / max / mean / variance with a parallel `Combine` merge, and a P² streaming quantile estimator. |
+| <xref:Bodu.Numerics.MovingSum`1>, <xref:Bodu.Numerics.MovingMinMax`1> | Rolling-window companions reporting the sum / mean and min / max of the most recent N samples in amortized O(1). |
 
 The core value types are serialization-agnostic — they carry no `[JsonConverter]` attribute. JSON support ships in the companion **`Bodu.Numerics.Serialization.Json`** package (below), which you register with `options.AddNumericsJsonConverters()`.
 
@@ -39,21 +42,22 @@ The core value types are serialization-agnostic — they carry no `[JsonConverte
 | <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> | Converters for `Interval<T>`, including the `lowerUnbounded` / `upperUnbounded` markers for infinite sides. |
 | <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> | Converters for `DiscreteInterval<T>` (through the interval wire shape) and `IntervalSet<T>` (a JSON array of pieces), each with a matching factory. |
 | <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> | Converter for `BigDecimal` — `Strict` object shape `{ "unscaledValue": …, "scale": … }` or the compact decimal string `"12.340"`. Non-generic, so it registers directly without a factory. |
+| <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory> | Converters for `Complex<T>` — `Strict` object shape `{ "real": …, "imaginary": … }` (non-finite components written as the strings `"NaN"` / `"Infinity"` / `"-Infinity"`) or the compact `"<real; imaginary>"` string. |
 | <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> | `ToJson()` / `FromJson<T>(string)` convenience helpers over the registered converters. |
 
 ### Interface surface
 
-Both value types are wide `readonly struct`s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters.
+The value types are `readonly struct`s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters. The four headline types compare as follows (the interval companions follow `Interval<T>`):
 
-| Interface | `Fraction<T>` | `Interval<T>` | What it unlocks |
-|---|:---:|:---:|---|
-| <xref:System.Numerics.INumber`1> | ✓ | — | First-class number — `Sum`, `Aggregate`, any `INumber`-constrained algorithm. |
-| <xref:System.Numerics.ISignedNumber`1> | ✓ | — | `NegativeOne`, signed-only generic constraints. |
-| <xref:System.IEquatable`1> | ✓ | ✓ | Structural value equality; safe hash-set / dictionary keys. |
-| <xref:System.IComparable`1> / <xref:System.IComparable> | ✓ | — | Ordering, `OrderBy`, `SortedSet`. (`Interval<T>` is a set, not a scalar — it does not order.) |
-| <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> | ✓ | ✓ | `Parse` / `TryParse` over `string` and `ReadOnlySpan<char>`. |
-| <xref:System.IUtf8SpanParsable`1> | ✓ | ✓ | `Parse` directly from a UTF-8 byte span. |
-| <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | `ToString(format, provider)` plus allocation-free `TryFormat` into char and UTF-8 buffers. |
+| Interface | `Fraction<T>` | `BigDecimal` | `Complex<T>` | `Interval<T>` | What it unlocks |
+|---|:---:|:---:|:---:|:---:|---|
+| <xref:System.Numerics.INumber`1> | ✓ | ✓ | — (`INumberBase<T>` only — complex numbers do not order) | — | First-class number — `Sum`, `Aggregate`, any `INumber`-constrained algorithm. |
+| <xref:System.Numerics.ISignedNumber`1> | ✓ | ✓ | ✓ | — | `NegativeOne`, signed-only generic constraints. |
+| <xref:System.IEquatable`1> | ✓ | ✓ | ✓ | ✓ | Structural value equality; safe hash-set / dictionary keys. |
+| <xref:System.IComparable`1> / <xref:System.IComparable> | ✓ | ✓ | — | — | Ordering, `OrderBy`, `SortedSet`. (`Interval<T>` is a set, not a scalar — it does not order.) |
+| <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> | ✓ | ✓ | ✓ | ✓ | `Parse` / `TryParse` over `string` and `ReadOnlySpan<char>`. |
+| <xref:System.IUtf8SpanParsable`1> | ✓ | ✓ | ✓ | ✓ | `Parse` directly from a UTF-8 byte span. |
+| <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | ✓ | ✓ | `ToString(format, provider)` plus allocation-free `TryFormat` into char and UTF-8 buffers. |
 
 ## Formatting and parsing
 
@@ -119,7 +123,7 @@ string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
 Fraction<int> roundTrip = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 ```
 
-Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> — `Strict` (explicit object shape), `Lenient` (`Strict` plus import-friendly aliases and defaulted inclusivity), or `Compact` (string forms: `"3/4"` for fractions, ISO 31-11 bracket notation `"[1, 5)"` for intervals). `DiscreteInterval<T>` and `IntervalSet<T>` are covered by the same call. See [JSON serialization](../../guides/numerics/json-serialization.md) for the policy table and worked examples.
+Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> — `Strict` (explicit object shape), `Lenient` (`Strict` plus import-friendly aliases and defaulted inclusivity), or `Compact` (string forms: `"3/4"` for fractions, ISO 31-11 bracket notation `"[1, 5)"` for intervals). `DiscreteInterval<T>`, `IntervalSet<T>`, `BigDecimal`, and `Complex<T>` are covered by the same call. See [JSON serialization](../../guides/numerics/json-serialization.md) for the policy table and worked examples.
 
 ## Scenarios this library covers
 
@@ -138,6 +142,9 @@ Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Jso
 | Mixed-number and Unicode-vulgar-fraction formatting | `Fraction<T>.ToString("M")` / `.ToString("U")` |
 | Round-trippable text for intervals (ISO 31-11 bracket notation) | `Interval<T>.ToString()` / `Parse` |
 | Generic-math algorithms (`Sum`, `Aggregate`, linear algebra) over exact rationals | `Fraction<T>` as `INumber<Fraction<T>>` |
+| Exact decimals beyond `System.Decimal`'s precision or exponent range | <xref:Bodu.Numerics.BigDecimal> |
+| Complex arithmetic and elementary functions over `float` / `double` / `Half` | <xref:Bodu.Numerics.Complex`1> |
+| Single-pass mean / variance / quantile summaries and rolling-window sums or extremes | <xref:Bodu.Numerics.RunningStatistics`1>, <xref:Bodu.Numerics.RunningQuantile`1>, <xref:Bodu.Numerics.MovingSum`1>, <xref:Bodu.Numerics.MovingMinMax`1> |
 | Selecting a JSON wire shape (object, import-lenient, compact string) | `AddNumericsJsonConverters(NumericsJsonPolicy.…)` |
 | Sub-minor-unit-precise monetary calculations | <xref:Bodu.Numerics.Fraction`1> via [`Money<TCurrency>.ToFraction()`](xref:Bodu.Financial.Money`1) |
 
@@ -162,6 +169,8 @@ Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Jso
 - **[Getting started](getting-started.md)** — install the package and run minimal samples for `Fraction<T>` and `Interval<T>`.
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
+- **[Working with `BigDecimal`](../../guides/numerics/bigdecimal.md)** — the unscaled-value / scale model, exact arithmetic, division precision, rounding, generic-math composition.
+- **[Running statistics and moving windows](../../guides/numerics/running-statistics.md)** — the single-pass accumulators and rolling-window companions.
 - **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, the `&` / `|` operators, and the N-ary `IntervalSet<T>`.
 - **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>` and how it differs from the continuous type.
 - **[Formatting and parsing `Fraction<T>`](../../guides/numerics/formatting-and-parsing.md)** — specifiers, the parsing grammar, culture handling, span / UTF-8 surfaces.

@@ -11,22 +11,30 @@ uid: Bodu.Collections.Extensions
 ## Key types
 
 - <xref:Bodu.Collections.Extensions.IEnumerableExtensions> — `CountOrDefault`, `RecursiveSelect` for non-generic shapes.
-- <xref:Bodu.Collections.Extensions.RecursiveSelectControl> — flag returned by recursive-selection callbacks to control descent: `IncludeAndDescend`, `IncludeAndStop`, `SkipAndDescend`, `SkipAndStop`.
+- <xref:Bodu.Collections.Extensions.RecursiveSelectControl> — `[Flags]` value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags `None`, `Yield`, `Recurse`, `Skip`, `Break`, `Exit`, and the named combinations `YieldOnly`, `RecurseOnly`, `YieldAndRecurse`, `SkipOnly`, `SkipAndRecurse`, `YieldAndBreak`, `SkipAndBreak`, `YieldAndExit`, `SkipAndExit`. Shared with the typed `RecursiveSelect` overloads in <xref:Bodu.Collections.Generic.Extensions>.
 
 ## Example
 
 ```csharp
 using Bodu.Collections.Extensions;
 
-// Counts an enumerable without forcing enumeration when the source is already a collection.
-int n = source.CountOrDefault(@default: 0);
+// Counts a non-generic IEnumerable — O(1) when the source is an ICollection, otherwise it enumerates.
+int n = source.CountOrDefault();
 
-// Recursive-select with fine-grained descent control.
-IEnumerable<Node> visible = root.RecursiveSelect(
-    n => n.Children,
-    n => n.IsVisible ? RecursiveSelectControl.IncludeAndDescend
-                     : RecursiveSelectControl.SkipAndStop);
+// Recursive-select over a non-generic IEnumerable: the child selector and the result are untyped.
+IEnumerable flattened = root.RecursiveSelect(node => ((Node)node).Children);
+
+// Fine-grained descent control on the non-generic surface: yield visible nodes and descend into
+// them, skip invisible subtrees, and stop the whole walk at the first node flagged as terminal.
+IEnumerable visible = root.RecursiveSelect(
+    node => ((Node)node).Children,
+    (node, index, depth) => node,
+    node => ((Node)node).IsTerminal ? RecursiveSelectControl.YieldAndExit
+          : ((Node)node).IsVisible  ? RecursiveSelectControl.YieldAndRecurse
+                                    : RecursiveSelectControl.SkipOnly);
 ```
+
+When the source is already an `IEnumerable<T>`, prefer the typed overloads in <xref:Bodu.Collections.Generic.Extensions> — the same `RecursiveSelectControl` vocabulary with strongly typed selectors and an `IEnumerable<TResult>` result.
 
 ## Notes
 

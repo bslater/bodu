@@ -160,6 +160,6 @@ int errors = tally.CountOf("error");   // → 2
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide.
 - [Core Foundations guides](../topics/core-foundations.md) — every guide in this topic.
 - [Core Foundations topic overview](../../docs/topics/core-foundations.md) — package map and install command.
-- [Bodu.Core introduction](../../docs/core/index.md) — namespaces, headline types, scenarios.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.
 - [`Multiset<T>` API reference](xref:Bodu.Collections.Generic.Multiset`1)
 - [`Bodu.Collections.Generic` namespace landing](xref:Bodu.Collections.Generic)

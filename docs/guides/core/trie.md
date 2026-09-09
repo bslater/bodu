@@ -240,5 +240,5 @@ Contracts to know: `Build` rejects a null or empty pattern collection and null o
 - <xref:Bodu.Collections.Generic.Trees> — the full API surface for the trie, radix-trie, automaton, and tree types.
 - [Choosing a collection](choosing-a-collection.md) — when a trie beats a `Dictionary` or sorted set.
 - [Evicting dictionary](evicting-dictionary.md) — a bounded-capacity map, when prefix matching is not the concern.
-- [Core foundations](../topics/core-foundations.md) — the wider `Bodu.Core` toolbox.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for `Bodu.Core`.
+- [Core foundations](../topics/core-foundations.md) — the wider Core Foundations toolbox.
+- [Bodu.Collections documentation](../../docs/collections/index.md) — concepts and getting started for `Bodu.Collections`.

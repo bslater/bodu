@@ -174,7 +174,7 @@ Symbolic(999);    // "unknown"
 ## When *not* to use this family
 
 - **Exact-key lookups.** Use `Dictionary<TKey, TValue>` or `SortedDictionary<TKey, TValue>` — both are simpler and faster when the key matches a stored value verbatim.
-- **Overlapping ranges.** Both `RangeDictionary` and `RangeSet` enforce non-overlap. For interval trees that admit overlapping intervals (e.g. event-scheduling conflict resolution), reach for a dedicated interval-tree implementation.
+- **Overlapping ranges.** Both `RangeDictionary` and `RangeSet` enforce non-overlap. For intervals that may overlap (e.g. event-scheduling conflict resolution), reach for [`IntervalTree<T>` / `IntervalTree<TKey,TValue>`](interval-tree.md), which ship in the same package.
 - **Closed-closed or open-open intervals.** Use [`Interval<T>`](../../guides/numerics/interval.md) for the full four-form bounded-interval surface; these types are half-open by design.
 
 ## See also

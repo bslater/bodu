@@ -94,5 +94,5 @@ If you are deciding between this namespace, the binary codecs, and the document 
 - **[Core Foundations concepts](../topics/core-foundations-concepts.md)** — topic-level vocabulary, including a dedicated character-encoding section (preamble, transcoding, validation, span-first surfaces).
 - **[Encoding helpers and BOM detection guide](../../guides/text-encoding/encoding-helpers.md)** — worked patterns for every surface above.
 - **[Bodu.Text.Encoding introduction](../text-encoding/index.md)** — the sibling package for binary-to-text codecs (Base16/32/58/64/85).
-- **[Cross-library getting started](../getting-started.md)** — install commands and a minimal `Bodu.Text` sample.
+- **[Cross-library getting started](../getting-started.md)** — install commands across the suite; the `Bodu.Text` walk-through itself is the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md) above.
 - **[Bodu.Text API reference](xref:Bodu.Text)** — full type-by-type docs.

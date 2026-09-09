@@ -101,8 +101,8 @@ A handful of these are worth knowing when you write the generic body:
 | `TSelf.Abs` / `MaxMagnitude` / `MinMagnitude` | Magnitude operations; the magnitude helpers break a tie by sign per the BCL convention. |
 
 `CreateChecked` over a non-bounded backing type never overflows from the
-conversion — `Fraction<BigInteger>.CreateChecked(anyInteger)` always
-succeeds — which is another reason a routine that must accept arbitrary
+conversion — `TSelf.CreateChecked(anyInteger)` with `TSelf` bound to
+`Fraction<BigInteger>` always succeeds — which is another reason a routine that must accept arbitrary
 magnitudes should be left parameterised over `T`.
 
 `Fraction<T>` additionally implements `ISignedNumber<Fraction<T>>`, so a

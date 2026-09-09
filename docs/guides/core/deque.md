@@ -154,7 +154,7 @@ for (int i = 0; i < 10_000; i++)
 
 ## Growth and seeding
 
-In growable mode the backing array doubles on overflow — the new capacity is `max(MinGrowCapacity, Capacity × 2)` (with a small floor for tiny deques), capped at <xref:System.Array.MaxLength>. Doubling keeps the per-element cost amortised O(1) over a run of appends.
+In growable mode the backing array doubles on overflow — the new capacity is twice the current one (with a small floor for tiny deques), capped at <xref:System.Array.MaxLength>. Doubling keeps the per-element cost amortised O(1) over a run of appends.
 
 A deque can be seeded from a sequence. When the source is longer than the supplied capacity, growable mode bumps the capacity to fit the whole source (nothing is dropped), whereas `allowGrow: false` with an over-long source throws `InvalidOperationException`. The default capacity is `16` and the default `allowGrow` is `true` on every constructor overload:
 
@@ -193,6 +193,6 @@ var grown  = new Deque<int>(new[] { 1, 2, 3, 4, 5 }, capacity: 2);             /
 
 - [Circular buffer](circular-buffer.md) — fixed-capacity FIFO with eviction-on-full semantics.
 - [Evicting dictionary](evicting-dictionary.md) — fixed-capacity key-value cache with LRU / LFU / FIFO eviction.
-- [Bodu.Core overview](index.md) — all key types at a glance.
+- [Bodu.Collections guide index](index.md) — all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.

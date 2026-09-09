@@ -70,7 +70,7 @@ generic-math interfaces that ship in .NET 8+.
 
 <div class="bodu-card">
   <h3><a href="json-serialization.md">JSON serialization</a></h3>
-  <p>Round-tripping <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> through <code>System.Text.Json</code> — the <code>Strict</code>, <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</p>
+  <p>Round-tripping <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, <code>BigDecimal</code>, and <code>Complex&lt;T&gt;</code> through <code>System.Text.Json</code> — the <code>Strict</code>, <code>Lenient</code>, and <code>Compact</code> wire shapes and how to register them.</p>
 </div>
 
 <div class="bodu-card">

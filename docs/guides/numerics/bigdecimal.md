@@ -150,7 +150,7 @@ BigDecimal a = BigDecimal.Parse("1.0", CultureInfo.InvariantCulture);
 BigDecimal b = BigDecimal.Parse("1.00", CultureInfo.InvariantCulture);
 
 bool equal = a == b;                       // true
-int order  = BigDecimal.Min(a, b) == a;    // both equal — Min returns either
+bool sameMin = BigDecimal.Min(a, b) == a;  // true — the values are equal, so Min returns either
 
 // GetHashCode() is consistent with value equality: a and b hash equal.
 ```
@@ -179,7 +179,10 @@ v.TryFormat(buffer, out int written, "G", CultureInfo.InvariantCulture);
 
 Because `BigDecimal` satisfies `INumber<BigDecimal>`, it flows through
 generic-math algorithms and the `CreateChecked` / `CreateTruncating`
-conversion factories:
+conversion factories. Those factories are static virtual members of
+`INumberBase<TSelf>`, so — as with `Fraction<T>` — they are reached
+through a constrained type parameter rather than called as
+`BigDecimal.CreateChecked(...)` on the concrete type:
 
 ```csharp
 static T Sum<T>(params T[] values) where T : INumber<T>
@@ -190,9 +193,12 @@ static T Sum<T>(params T[] values) where T : INumber<T>
     return acc;
 }
 
+static T FromInt32<T>(int value) where T : INumber<T> =>
+    T.CreateChecked(value);
+
 BigDecimal exact = Sum<BigDecimal>(0.1m, 0.2m, 0.3m);  // 0.6 exactly
-BigDecimal five  = BigDecimal.CreateChecked(5);        // via INumberBase<T>
-int back         = int.CreateTruncating(five);         // 5
+BigDecimal five  = FromInt32<BigDecimal>(5);           // T.CreateChecked via the constraint
+int back         = int.CreateTruncating(five);         // 5 — the BCL primitives expose the factories publicly
 ```
 
 The classification predicates (`IsInteger`, `IsEvenInteger`,
