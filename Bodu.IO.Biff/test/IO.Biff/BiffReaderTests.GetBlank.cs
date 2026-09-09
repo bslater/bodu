@@ -20,4 +20,15 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual(new BiffBlankRecord(5, 6, 7), blank);
     }
+
+    /// <summary>
+    /// Verifies that bytes beyond the six-byte layout are ignored.
+    /// </summary>
+    [TestMethod]
+    public void GetBlank_WhenPayloadHasTrailingBytes_ShouldDecodeLeadingFields()
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.Blank, [1, 0, 2, 0, 3, 0, 9, 9]), BiffRecordType.Blank);
+
+        Assert.AreEqual(new BiffBlankRecord(1, 2, 3), reader.GetBlank());
+    }
 }

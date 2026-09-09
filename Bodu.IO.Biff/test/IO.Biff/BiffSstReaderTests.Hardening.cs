@@ -91,4 +91,94 @@ public sealed partial class BiffSstReaderTests
 
         _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
     }
+
+    /// <summary>
+    /// Verifies that a continuation carrying only its flags byte, with no characters, is rejected rather than
+    /// looping.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenContinuationCarriesOnlyFlagsByte_ShouldThrowBiffFormatException()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(1, 1, [0x02, 0x00, Compressed, (byte)'A']), BiffTestRecords.Continue(Compressed), BiffTestRecords.Continue(Compressed, (byte)'B'));
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that trailers declared longer than the remaining table, with no continuation to hold them, are
+    /// rejected.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTrailersOverrunWithoutContinuation_ShouldThrowBiffFormatException()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(1, 1, [0x01, 0x00, (byte)(Compressed | 0x08), 0x10, 0x00, (byte)'a', 0, 0]));
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a hostile rich-run count on a fragmented string is rejected rather than skipped into the
+    /// following records.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenFragmentedStringDeclaresHostileRunCount_ShouldThrowBiffFormatException()
+    {
+        byte[] sst = BiffTestRecords.Sst(1, 1, [0x02, 0x00, (byte)(Compressed | 0x08), 0xFF, 0xFF, (byte)'a']);
+        byte[] cont = BiffTestRecords.Continue(Compressed, (byte)'b');
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(Table(sst, cont), out _));
+    }
+
+    /// <summary>
+    /// Verifies that a table whose next string header begins in a record that is not a continuation is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenNextRecordIsNotContinue_ShouldThrowBiffFormatException()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("one")), BiffTestRecords.Record(0x0FFE, BiffTestRecords.UnicodeString("two")));
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a failure leaves the parent reader on the record it had consumed, so the caller can still
+    /// resume at the next record after the table.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTableIsMalformed_ShouldLeaveParentAtConsumedRecord()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("only")));
+        var reader = new BiffReader(stream);
+        while (reader.Read() && reader.RecordType != BiffRecordType.Sst)
+        {
+        }
+
+        var strings = new BiffSstReader(ref reader);
+        Assert.IsTrue(strings.Read(ref reader));
+        try
+        {
+            _ = strings.Read(ref reader);
+            Assert.Fail("Expected a format exception.");
+        }
+        catch (BiffFormatException)
+        {
+        }
+
+        Assert.AreEqual(BiffRecordType.Sst, reader.RecordType);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BiffRecordType.Eof, reader.RecordType);
+    }
+
+    /// <summary>
+    /// Verifies that a string whose header lies entirely in the SST record but whose declared length is larger than
+    /// every following record combined is rejected once the data runs out.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDeclaredLengthExceedsAllContinuations_ShouldThrowBiffFormatException()
+    {
+        byte[] sst = BiffTestRecords.Sst(1, 1, [0xFF, 0xFF, Compressed, (byte)'a']);
+        byte[] cont = BiffTestRecords.Continue(Compressed, (byte)'b', (byte)'c');
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(Table(sst, cont), out _));
+    }
 }

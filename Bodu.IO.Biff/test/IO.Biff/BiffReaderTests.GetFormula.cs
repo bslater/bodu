@@ -86,4 +86,84 @@ public sealed partial class BiffReaderTests
             _ = reader.GetFormula();
         });
     }
+
+    /// <summary>
+    /// Verifies that a record too short to carry the token length, but long enough for the result, decodes with
+    /// empty tokens whatever its exact length.
+    /// </summary>
+    /// <param name="length">The payload length.</param>
+    [TestMethod]
+    [DataRow(15)]
+    [DataRow(20)]
+    [DataRow(21)]
+    public void GetFormula_WhenRecordEndsBeforeTokenLength_ShouldDecodeWithEmptyTokens(int length)
+    {
+        byte[] payload = new byte[length];
+        payload[14] = 0x01;
+        BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.Formula, payload), BiffRecordType.Formula);
+
+        BiffFormulaRecord formula = reader.GetFormula();
+
+        Assert.AreEqual(0, formula.Flags, "Flags are read only when the token length field is present too.");
+        Assert.IsTrue(formula.Tokens.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that a record declaring fewer token bytes than it holds exposes only the declared tokens.
+    /// </summary>
+    [TestMethod]
+    public void GetFormula_WhenRecordHoldsMoreBytesThanDeclaredTokens_ShouldExposeDeclaredTokensOnly()
+    {
+        byte[] record = BiffTestRecords.Formula(0, 0, BiffTestRecords.NumberResult(1), [0xAA, 0xBB, 0xCC]);
+        record[4 + 20] = 2;
+        BiffReader reader = ReadTo8(record, BiffRecordType.Formula);
+
+        CollectionAssert.AreEqual(new byte[] { 0xAA, 0xBB }, reader.GetFormula().Tokens.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a numeric result whose trailing bytes are not both 0xFF is a number, including values whose
+    /// high bytes happen to be 0xFF.
+    /// </summary>
+    [TestMethod]
+    public void GetFormula_WhenResultTrailerIsNotMarker_ShouldDecodeAsNumber()
+    {
+        byte[] result = [0, 0, 0, 0, 0, 0, 0xFF, 0x7F];
+        BiffReader reader = ReadTo8(BiffTestRecords.Formula(0, 0, result), BiffRecordType.Formula);
+
+        BiffFormulaRecord formula = reader.GetFormula();
+
+        Assert.AreEqual(BiffCachedResultKind.Number, formula.CachedResultKind);
+        Assert.AreEqual(System.Buffers.Binary.BinaryPrimitives.ReadDoubleLittleEndian(result), formula.NumberValue);
+    }
+
+    /// <summary>
+    /// Verifies that a numeric result of negative zero, NaN, or infinity round-trips through the eight-byte field.
+    /// </summary>
+    /// <param name="value">The cached number.</param>
+    [TestMethod]
+    [DataRow(-0.0)]
+    [DataRow(double.NaN)]
+    [DataRow(double.PositiveInfinity)]
+    [DataRow(double.NegativeInfinity)]
+    [DataRow(double.Epsilon)]
+    public void GetFormula_WhenNumberIsSpecialValue_ShouldPreserveBits(double value)
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Formula(0, 0, BiffTestRecords.NumberResult(value)), BiffRecordType.Formula);
+
+        double decoded = reader.GetFormula().NumberValue;
+
+        Assert.AreEqual(BitConverter.DoubleToInt64Bits(value), BitConverter.DoubleToInt64Bits(decoded));
+    }
+
+    /// <summary>
+    /// Verifies that a boolean cached result with a value byte other than one is reported as true.
+    /// </summary>
+    [TestMethod]
+    public void GetFormula_WhenBooleanByteIsNotOne_ShouldReportTrue()
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Formula(0, 0, BiffTestRecords.SpecialResult(1, 0x7F)), BiffRecordType.Formula);
+
+        Assert.IsTrue(reader.GetFormula().BooleanValue);
+    }
 }

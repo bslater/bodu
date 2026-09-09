@@ -71,4 +71,77 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual("AΘ", reader.GetLabel().Text.GetString());
     }
+
+    /// <summary>
+    /// Verifies that a zero-length CODEPAGE record is framed without changing the code page.
+    /// </summary>
+    [TestMethod]
+    public void CodePage_WhenCodePageRecordIsEmpty_ShouldLeaveCodePageUnchanged()
+    {
+        var reader = new BiffReader(BiffTestRecords.Stream(BiffTestRecords.CodePage(850), BiffTestRecords.Record(BiffRecordType.CodePage, default)));
+
+        Assert.IsTrue(reader.Read());
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(850, reader.CodePage);
+    }
+
+    /// <summary>
+    /// Verifies that successive CODEPAGE records each replace the code page, so the most recent one governs the byte
+    /// strings that follow it.
+    /// </summary>
+    [TestMethod]
+    public void CodePage_WhenSeveralCodePageRecords_ShouldUseMostRecent()
+    {
+        byte[] stream = BiffTestRecords.Stream(
+            BiffTestRecords.Bof5(),
+            BiffTestRecords.CodePage(437),
+            BiffTestRecords.Label5(0, 0, [0xE9]),
+            BiffTestRecords.CodePage(1252),
+            BiffTestRecords.Label5(0, 1, [0xE9]));
+        var reader = new BiffReader(stream);
+        var texts = new List<string>();
+
+        while (reader.Read())
+        {
+            if (reader.RecordType == BiffRecordType.Label)
+                texts.Add(reader.GetLabel().Text.GetString());
+        }
+
+        CollectionAssert.AreEqual(new[] { "Θ", "é" }, texts);
+        Assert.AreEqual(1252, reader.CodePage);
+    }
+
+    /// <summary>
+    /// Verifies that a CODEPAGE record declaring an unresolvable code page is accepted by the reader and only fails
+    /// when a byte string is decoded with it.
+    /// </summary>
+    [TestMethod]
+    public void CodePage_WhenCodePageIsUnresolvable_ShouldFailOnlyWhenDecoding()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof5(), BiffTestRecords.CodePage(12345), BiffTestRecords.Label5(0, 0, [0x41]));
+        BiffReader reader = ReadTo(stream, BiffRecordType.Label);
+        Assert.AreEqual(12345, reader.CodePage);
+        BiffLabelRecord label = reader.GetLabel();
+        Assert.AreEqual(1, label.Text.Length);
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() =>
+        {
+            BiffReader again = ReadTo(stream, BiffRecordType.Label);
+            _ = again.GetLabel().Text.GetString();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a BIFF8 stream's Unicode CODEPAGE value does not affect Unicode-string decoding.
+    /// </summary>
+    [TestMethod]
+    public void CodePage_WhenBiff8DeclaresUnicode_ShouldDecodeUnicodeStringsUnchanged()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof8(), BiffTestRecords.CodePage(1200), BiffTestRecords.Label8(0, 0, "café"));
+        BiffReader reader = ReadTo(stream, BiffRecordType.Label);
+
+        Assert.AreEqual(1200, reader.CodePage);
+        Assert.AreEqual("café", reader.GetLabel().Text.GetString());
+        Assert.IsTrue(reader.GetLabel().Text.IsUnicode);
+    }
 }

@@ -42,4 +42,50 @@ public sealed partial class BiffReaderTests
             _ = reader.GetRString();
         });
     }
+
+    /// <summary>
+    /// Verifies that an RSTRING record in a BIFF8 stream still decodes as a code-page byte string.
+    /// </summary>
+    [TestMethod]
+    public void GetRString_WhenBiff8Stream_ShouldDecodeAsByteString()
+    {
+        byte[] payload = [0, 0, 0, 0, 0, 0, 0x02, 0x00, 0x41, 0xE9, 0x00];
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof8(), BiffTestRecords.CodePage(437), BiffTestRecords.Record(BiffRecordType.RString, payload));
+        BiffReader reader = ReadTo(stream, BiffRecordType.RString);
+
+        BiffRStringRecord label = reader.GetRString();
+
+        Assert.IsFalse(label.Text.IsUnicode);
+        Assert.AreEqual("AΘ", label.Text.GetString());
+        Assert.AreEqual(0, label.RunCount);
+    }
+
+    /// <summary>
+    /// Verifies that a record with an empty text and no runs decodes to an empty string.
+    /// </summary>
+    [TestMethod]
+    public void GetRString_WhenTextIsEmpty_ShouldReturnEmptyString()
+    {
+        BiffReader reader = ReadTo5(BiffTestRecords.Record(BiffRecordType.RString, [0, 0, 0, 0, 0, 0, 0x00, 0x00, 0x00]), BiffRecordType.RString);
+
+        BiffRStringRecord label = reader.GetRString();
+
+        Assert.IsTrue(label.Text.IsEmpty);
+        Assert.IsTrue(label.Runs.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that a record that ends right after its text, with no run-count byte, is rejected.
+    /// </summary>
+    [TestMethod]
+    public void GetRString_WhenRunCountIsMissing_ShouldThrowBiffFormatException()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof5(), BiffTestRecords.Record(BiffRecordType.RString, [0, 0, 0, 0, 0, 0, 0x01, 0x00, 0x41]));
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() =>
+        {
+            BiffReader reader = ReadTo(stream, BiffRecordType.RString);
+            _ = reader.GetRString();
+        });
+    }
 }

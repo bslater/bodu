@@ -157,4 +157,143 @@ public sealed partial class BiffStringTests
     {
         _ = Assert.ThrowsExactly<BiffFormatException>(() => _ = Bytes([0x05, 0x00, 0x41]));
     }
+
+    /// <summary>
+    /// Verifies that the character count of a Unicode string follows its width flag.
+    /// </summary>
+    [TestMethod]
+    public void GetCharCount_WhenUnicode_ShouldFollowCharacterWidth()
+    {
+        BiffString compressed = Unicode([0x03, 0x00, 0x00, 0x61, 0x62, 0x63]);
+        BiffString wide = Unicode([0x03, 0x00, 0x01, 0x61, 0x00, 0x62, 0x00, 0x63, 0x00]);
+
+        Assert.AreEqual(3, compressed.GetCharCount());
+        Assert.AreEqual(3, wide.GetCharCount());
+        Assert.AreEqual(3, compressed.RawCharacters.Length);
+        Assert.AreEqual(6, wide.RawCharacters.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BiffString.ToString" /> yields the same text as <see cref="BiffString.GetString" />
+    /// for each representation.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenAnyRepresentation_ShouldMatchGetString()
+    {
+        BiffString wide = Unicode([0x02, 0x00, 0x01, 0x41, 0x00, 0xE9, 0x00]);
+        BiffString bytes = Bytes([0x02, 0x00, 0x41, 0xE9], 437);
+
+        Assert.AreEqual(wide.GetString(), wide.ToString());
+        Assert.AreEqual("AΘ", bytes.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that a rich-text flag with a zero run count reports no runs.
+    /// </summary>
+    [TestMethod]
+    public void HasRichRuns_WhenFlagSetButCountIsZero_ShouldBeFalse()
+    {
+        BiffString value = Unicode([0x01, 0x00, 0x08, 0x00, 0x00, (byte)'a']);
+
+        Assert.IsFalse(value.HasRichRuns);
+        Assert.AreEqual(0, value.RichRunCount);
+        Assert.IsTrue(value.RichRuns.IsEmpty);
+        Assert.AreEqual("a", value.GetString());
+        Assert.AreEqual(6, value.EncodedLength);
+    }
+
+    /// <summary>
+    /// Verifies that an extended-data flag with a zero size reports the flag with an empty span.
+    /// </summary>
+    [TestMethod]
+    public void HasExtendedData_WhenFlagSetButSizeIsZero_ShouldBeTrueWithEmptySpan()
+    {
+        BiffString value = Unicode([0x01, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, (byte)'a']);
+
+        Assert.IsTrue(value.HasExtendedData);
+        Assert.IsTrue(value.ExtendedData.IsEmpty);
+        Assert.AreEqual(8, value.EncodedLength);
+    }
+
+    /// <summary>
+    /// Verifies that a string is read from a non-zero offset and its encoded length covers only its own bytes.
+    /// </summary>
+    [TestMethod]
+    public void ReadUnicode_WhenOffsetIsNonZero_ShouldReadFromOffset()
+    {
+        byte[] payload = [0xEE, 0xEE, 0x02, 0x00, 0x00, (byte)'o', (byte)'k', 0xEE];
+
+        BiffString value = BiffString.ReadUnicode(payload, 2, wideLength: true, BiffRecordType.Label);
+
+        Assert.AreEqual("ok", value.GetString());
+        Assert.AreEqual(5, value.EncodedLength);
+    }
+
+    /// <summary>
+    /// Verifies that a byte string read with an 8-bit length prefix accounts for the prefix in its encoded length.
+    /// </summary>
+    [TestMethod]
+    public void ReadByteString_WhenByteLength_ShouldDecode()
+    {
+        BiffString value = Bytes([0x02, (byte)'h', (byte)'i', 0xEE], wideLength: false);
+
+        Assert.AreEqual("hi", value.GetString());
+        Assert.AreEqual(3, value.EncodedLength);
+        Assert.IsFalse(value.IsHighByte);
+    }
+
+    /// <summary>
+    /// Verifies that an extended-data size that would overflow the payload arithmetic is rejected as a format
+    /// error rather than an arithmetic failure.
+    /// </summary>
+    /// <param name="size">The declared extended-data size.</param>
+    [TestMethod]
+    [DataRow(0x7FFFFFFFu)]
+    [DataRow(0x80000000u)]
+    [DataRow(0xFFFFFFFFu)]
+    public void ReadUnicode_WhenExtendedSizeIsHostile_ShouldThrowBiffFormatException(uint size)
+    {
+        byte[] bytes = [0x01, 0x00, 0x04, (byte)size, (byte)(size >> 8), (byte)(size >> 16), (byte)(size >> 24), (byte)'a'];
+
+        _ = Assert.ThrowsExactly<BiffFormatException>(() => _ = Unicode(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that a compressed string whose bytes are all above 0x7F maps each to its Latin-1 code point.
+    /// </summary>
+    [TestMethod]
+    public void GetString_WhenCompressedHighBytes_ShouldMapToLatin1CodePoints()
+    {
+        BiffString value = Unicode([0x03, 0x00, 0x00, 0x80, 0xA0, 0xFF]);
+
+        Assert.AreEqual(" ÿ", value.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that a wide string with an unpaired surrogate keeps a single code unit, since the codec exposes the
+    /// stored UTF-16 without validation.
+    /// </summary>
+    [TestMethod]
+    public void GetString_WhenWideHasLoneSurrogate_ShouldKeepSingleCodeUnit()
+    {
+        BiffString value = Unicode([0x01, 0x00, 0x01, 0x00, 0xD8]);
+
+        Assert.AreEqual(1, value.GetString().Length);
+    }
+
+    /// <summary>
+    /// Verifies that a byte string of the maximum 16-bit length decodes in full.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void GetString_WhenByteStringIsMaximumLength_ShouldDecodeAll()
+    {
+        byte[] bytes = [0xFF, 0xFF, .. Enumerable.Repeat((byte)'x', ushort.MaxValue)];
+
+        BiffString value = Bytes(bytes);
+
+        Assert.AreEqual(ushort.MaxValue, value.Length);
+        Assert.AreEqual(ushort.MaxValue, value.GetString().Length);
+        Assert.AreEqual(ushort.MaxValue + 2, value.EncodedLength);
+    }
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Assertions;
+
 namespace Bodu.IO.Biff;
 
 public sealed partial class BiffWriterTests
@@ -82,5 +84,78 @@ public sealed partial class BiffWriterTests
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             Emit5((ref BiffWriter w) => w.WriteFormula(0, 0, 0, 1.0, new byte[BiffLimits.Biff5MaxPayloadLength])));
+    }
+
+    /// <summary>
+    /// Verifies that tokens exactly filling the record are accepted and one more byte is rejected with the tokens
+    /// parameter named, under each version.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    [TestMethod]
+    [DataRow(BiffVersion.Biff5)]
+    [DataRow(BiffVersion.Biff8)]
+    public void WriteFormula_WhenTokensAtCapacity_ShouldAcceptAndRejectOneOver(BiffVersion version)
+    {
+        int max = BiffLimits.GetMaxPayloadLength(version) - 22;
+        byte[] tokens = [.. Enumerable.Range(0, max).Select(i => (byte)i)];
+
+        byte[] bytes = Emit(version, (ref BiffWriter w) => w.WriteFormula(0, 0, 0, 1.0, tokens));
+        BiffReader reader = Single(bytes, version);
+        Assert.AreEqual(BiffLimits.GetMaxPayloadLength(version), reader.RecordLength);
+        CollectionAssert.AreEqual(tokens, reader.GetFormula().Tokens.ToArray());
+
+        byte[] tooMany = new byte[max + 1];
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () => Emit(version, (ref BiffWriter w) => w.WriteFormula(0, 0, 0, 1.0, tooMany)),
+            "tokens");
+    }
+
+    /// <summary>
+    /// Verifies that an undefined cached-result kind is rejected with the kind parameter named.
+    /// </summary>
+    [TestMethod]
+    public void WriteFormula_WhenResultKindUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () => Emit8((ref BiffWriter w) => w.WriteFormula(0, 0, 0, (BiffCachedResultKind)99, 0, default)),
+            "cachedResultKind");
+    }
+
+    /// <summary>
+    /// Verifies that the value byte is written only for boolean and error results, so a string or empty result
+    /// always decodes with a zero raw value.
+    /// </summary>
+    /// <param name="kind">The result kind.</param>
+    [TestMethod]
+    [DataRow(BiffCachedResultKind.String)]
+    [DataRow(BiffCachedResultKind.Empty)]
+    public void WriteFormula_WhenResultCarriesNoValue_ShouldIgnoreValueByte(BiffCachedResultKind kind)
+    {
+        byte[] bytes = Emit8((ref BiffWriter w) => w.WriteFormula(0, 0, 0, kind, 0xAB, default));
+
+        BiffFormulaRecord formula = Single(bytes).GetFormula();
+        Assert.AreEqual(kind, formula.CachedResultKind);
+        Assert.AreEqual(0, formula.RawValue);
+    }
+
+    /// <summary>
+    /// Verifies that a special result with tokens and flags round-trips every field, and its result bytes match the
+    /// documented marker layout.
+    /// </summary>
+    [TestMethod]
+    public void WriteFormula_WhenSpecialResultWithTokensAndFlags_ShouldRoundTripAllFields()
+    {
+        byte[] tokens = [0x1E, 0x01, 0x00];
+        byte[] bytes = Emit5((ref BiffWriter w) => w.WriteFormula(4, 5, 6, BiffCachedResultKind.Error, 0x2A, tokens, flags: 0x0009));
+
+        BiffFormulaRecord formula = Single(bytes, BiffVersion.Biff5).GetFormula();
+        Assert.AreEqual(4, formula.Row);
+        Assert.AreEqual(5, formula.Column);
+        Assert.AreEqual(6, formula.XfIndex);
+        Assert.AreEqual(BiffCachedResultKind.Error, formula.CachedResultKind);
+        Assert.AreEqual(0x2A, formula.ErrorCode);
+        Assert.AreEqual(0x0009, formula.Flags);
+        CollectionAssert.AreEqual(tokens, formula.Tokens.ToArray());
+        CollectionAssert.AreEqual(BiffTestRecords.Formula(4, 5, BiffTestRecords.SpecialResult(2, 0x2A), tokens, 0x0009, 6), bytes);
     }
 }

@@ -72,4 +72,90 @@ public sealed partial class BiffRkTests
 
         Assert.AreEqual(200001, encoded, "Every hundredth in the sweep has an RK form.");
     }
+
+    /// <summary>
+    /// Verifies that negative zero, which the integer form cannot preserve, is encoded through the double form and
+    /// decodes back with its sign.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenNegativeZero_ShouldUseDoubleFormAndPreserveSign()
+    {
+        Assert.IsTrue(BiffRk.TryEncode(-0.0, out uint rk));
+
+        Assert.AreEqual(0x80000000u, rk);
+        Assert.IsTrue(double.IsNegative(BiffRk.Decode(rk)));
+    }
+
+    /// <summary>
+    /// Verifies that values beyond the 30-bit integer range with a zero low mantissa use the double form.
+    /// </summary>
+    /// <param name="value">The number.</param>
+    /// <param name="expectedRk">The expected encoding.</param>
+    [TestMethod]
+    [DataRow(1099511627776.0, 0x42700000u)]
+    [DataRow(-1099511627776.0, 0xC2700000u)]
+    public void TryEncode_WhenLargeExactDouble_ShouldUseDoubleForm(double value, uint expectedRk)
+    {
+        Assert.IsTrue(BiffRk.TryEncode(value, out uint rk));
+
+        Assert.AreEqual(expectedRk, rk);
+        Assert.AreEqual(value, BiffRk.Decode(rk));
+    }
+
+    /// <summary>
+    /// Verifies that negative hundredths use the negative integer form with the divided-by-100 flag.
+    /// </summary>
+    /// <param name="value">The number.</param>
+    /// <param name="expectedRk">The expected encoding.</param>
+    [TestMethod]
+    [DataRow(-12.34, unchecked((uint)(-1234 << 2)) | 0x03u)]
+    [DataRow(-0.01, 0xFFFFFFFFu)]
+    [DataRow(-5368709.12, 0x80000003u)]
+    public void TryEncode_WhenNegativeHundredths_ShouldUseIntegerFormDividedByHundred(double value, uint expectedRk)
+    {
+        Assert.IsTrue(BiffRk.TryEncode(value, out uint rk));
+
+        Assert.AreEqual(expectedRk, rk);
+        Assert.AreEqual(value, BiffRk.Decode(rk));
+    }
+
+    /// <summary>
+    /// Verifies that values just outside each form's range fall through to the next form or are rejected.
+    /// </summary>
+    /// <param name="value">The number.</param>
+    /// <param name="expected">Whether an RK form exists.</param>
+    [TestMethod]
+    [DataRow(536870912.0, true)]
+    [DataRow(536870913.0, false)]
+    [DataRow(-536870913.0, false)]
+    [DataRow(5368709.11, true)]
+    [DataRow(5368709.13, false)]
+    [DataRow(0.001, false)]
+    [DataRow(1.005, false)]
+    public void TryEncode_WhenAtFormBoundaries_ShouldReportExactly(double value, bool expected)
+    {
+        Assert.AreEqual(expected, BiffRk.TryEncode(value, out uint rk));
+        if (expected)
+            Assert.AreEqual(value, BiffRk.Decode(rk));
+        else
+            Assert.AreEqual(0u, rk);
+    }
+
+    /// <summary>
+    /// Verifies that decoding a sample of integer-form patterns and re-encoding yields the same pattern, so the
+    /// integer forms are canonical.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void TryEncode_WhenSweepingIntegerForms_ShouldBeCanonical()
+    {
+        for (long high = -(1 << 29); high <= (1 << 29) - 1; high += 4099)
+        {
+            uint rk = ((uint)(int)high << 2) | 0x02;
+            double value = BiffRk.Decode(rk);
+
+            Assert.IsTrue(BiffRk.TryEncode(value, out uint encoded));
+            Assert.AreEqual(rk, encoded, $"Integer {high} did not re-encode canonically.");
+        }
+    }
 }

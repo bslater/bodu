@@ -29,4 +29,38 @@ public sealed partial class BiffRkTests
     {
         Assert.AreEqual(expected, BiffRk.Decode(rk), 1e-12);
     }
+
+    /// <summary>
+    /// Verifies that the double form with only the sign bit decodes to negative zero and that the divided-by-100
+    /// integer zero decodes to positive zero.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenZeroForms_ShouldDecodeSign()
+    {
+        Assert.IsTrue(double.IsNegative(BiffRk.Decode(0x80000000u)));
+        Assert.AreEqual(0.0, BiffRk.Decode(0x00000003u));
+        Assert.IsFalse(double.IsNegative(BiffRk.Decode(0x00000003u)));
+        Assert.AreEqual(0.0, BiffRk.Decode(0x00000000u));
+    }
+
+    /// <summary>
+    /// Verifies that the low two bits never contribute to the double form's mantissa.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenDoubleFormHasFlagBits_ShouldMaskThemFromMantissa()
+    {
+        Assert.AreEqual(BiffRk.Decode(0x3FF00000u), BiffRk.Decode(0x3FF00001u) * 100.0, 1e-12);
+        Assert.AreEqual(1.0, BiffRk.Decode(0x3FF00000u));
+    }
+
+    /// <summary>
+    /// Verifies that the double form can express NaN and infinity bit patterns.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenDoubleFormIsNonFinite_ShouldDecodeNonFinite()
+    {
+        Assert.IsTrue(double.IsPositiveInfinity(BiffRk.Decode(0x7FF00000u)));
+        Assert.IsTrue(double.IsNegativeInfinity(BiffRk.Decode(0xFFF00000u)));
+        Assert.IsTrue(double.IsNaN(BiffRk.Decode(0x7FF80000u)));
+    }
 }

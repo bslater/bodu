@@ -44,4 +44,56 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(0u, bof.FileHistoryFlags);
         Assert.AreEqual(0u, bof.LowestSaveVersion);
     }
+
+    /// <summary>
+    /// Verifies that a BOF record carrying only the version and substream type decodes with zero for the later fields
+    /// and still establishes the version.
+    /// </summary>
+    [TestMethod]
+    public void GetBof_WhenPayloadIsMinimal_ShouldDecodeWithZeroTrailingFields()
+    {
+        var reader = new BiffReader(BiffTestRecords.Record(BiffRecordType.Bof, [0x00, 0x06, 0x10, 0x00]));
+        Assert.IsTrue(reader.Read());
+
+        BiffBofRecord bof = reader.GetBof();
+
+        Assert.AreEqual(BiffVersion.Biff8, reader.Version);
+        Assert.AreEqual(BiffSubstreamType.Worksheet, bof.SubstreamType);
+        Assert.AreEqual(0, bof.Build);
+        Assert.AreEqual(0, bof.Year);
+        Assert.AreEqual(0u, bof.FileHistoryFlags);
+        Assert.AreEqual(0u, bof.LowestSaveVersion);
+    }
+
+    /// <summary>
+    /// Verifies that a BOF record whose payload lies between the BIFF5 and BIFF8 lengths decodes the fields it
+    /// carries and zero for the rest.
+    /// </summary>
+    [TestMethod]
+    public void GetBof_WhenPayloadIsTwelveBytes_ShouldDecodeHistoryButNotLowestVersion()
+    {
+        byte[] payload = new byte[12];
+        payload[1] = 0x06;
+        payload[2] = 0x05;
+        payload[8] = 0xC1;
+        var reader = new BiffReader(BiffTestRecords.Record(BiffRecordType.Bof, payload));
+        Assert.IsTrue(reader.Read());
+
+        BiffBofRecord bof = reader.GetBof();
+
+        Assert.AreEqual(0xC1u, bof.FileHistoryFlags);
+        Assert.AreEqual(0u, bof.LowestSaveVersion);
+    }
+
+    /// <summary>
+    /// Verifies that an unrecognized substream type is preserved as its raw value rather than mapped or rejected.
+    /// </summary>
+    [TestMethod]
+    public void GetBof_WhenSubstreamTypeIsUnknown_ShouldPreserveRawValue()
+    {
+        var reader = new BiffReader(BiffTestRecords.Bof(BiffTestRecords.Biff8Marker, (BiffSubstreamType)0x0123));
+        Assert.IsTrue(reader.Read());
+
+        Assert.AreEqual((BiffSubstreamType)0x0123, reader.GetBof().SubstreamType);
+    }
 }

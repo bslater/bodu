@@ -141,4 +141,86 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(4, reader.BytesConsumed);
         Assert.AreEqual(BiffRecordType.None, reader.RecordType);
     }
+
+    /// <summary>
+    /// Verifies that a record declaring a payload longer than the version's maximum is still framed by the reader,
+    /// which tolerates any 16-bit length, leaving enforcement to the writer.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenPayloadExceedsVersionMaximum_ShouldStillFrameRecord()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof5(), BiffTestRecords.Record(0x0FFE, new byte[BiffLimits.Biff5MaxPayloadLength + 1]), BiffTestRecords.Eof());
+        var reader = new BiffReader(stream);
+
+        Assert.IsTrue(reader.Read());
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BiffLimits.Biff5MaxPayloadLength + 1, reader.RecordLength);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BiffRecordType.Eof, reader.RecordType);
+    }
+
+    /// <summary>
+    /// Verifies that the record start index tracks each record's header offset and, after the stream ends, equals
+    /// the number of bytes consumed.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenAdvancing_ShouldTrackRecordStartIndex()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof8(), BiffTestRecords.Eof(), BiffTestRecords.Number(0, 0, 1));
+        var reader = new BiffReader(stream);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(0, reader.RecordStartIndex);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(20, reader.RecordStartIndex);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(24, reader.RecordStartIndex);
+        Assert.AreEqual(new BiffRecordHeader(0x0203, 14), reader.Header);
+        Assert.IsFalse(reader.Read());
+        Assert.AreEqual(stream.Length, reader.RecordStartIndex);
+        Assert.AreEqual(default, reader.Header);
+        Assert.IsTrue(reader.ValueSpan.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that a malformed final record surfaces only when the reader reaches it, after every preceding record
+    /// has been yielded, and that the exception's offset points at the bad header.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTruncatedRecordFollowsGoodRecords_ShouldYieldGoodRecordsFirst()
+    {
+        byte[] stream = BiffTestRecords.Stream(BiffTestRecords.Bof8(), BiffTestRecords.Eof(), [0x03, 0x02, 0x0E, 0x00, 0x01]);
+        var reader = new BiffReader(stream);
+        Assert.IsTrue(reader.Read());
+        Assert.IsTrue(reader.Read());
+
+        var ex = Assert.ThrowsExactly<BiffFormatException>(() =>
+        {
+            var again = new BiffReader(stream);
+            _ = again.Read();
+            _ = again.Read();
+            _ = again.Read();
+        });
+
+        Assert.AreEqual(24, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a stream consisting of consecutive CONTINUE records with no owning record is still framed
+    /// record by record.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenStreamIsOnlyContinueRecords_ShouldFrameEach()
+    {
+        var reader = new BiffReader(BiffTestRecords.Stream(BiffTestRecords.Continue(1), BiffTestRecords.Continue(), BiffTestRecords.Continue(2, 3)));
+        int count = 0;
+
+        while (reader.Read())
+        {
+            count++;
+            Assert.IsTrue(reader.IsContinuation);
+        }
+
+        Assert.AreEqual(3, count);
+    }
 }

@@ -55,4 +55,44 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual(0, reader.GetMulRk().Count);
     }
+
+    /// <summary>
+    /// Verifies that the declared last column is exposed as written even when it disagrees with the run length, and
+    /// that the columns derived from the run are computed from the first column.
+    /// </summary>
+    [TestMethod]
+    public void GetMulRk_WhenDeclaredLastColumnDisagreesWithRun_ShouldExposeDeclaredValue()
+    {
+        byte[] record = BiffTestRecords.MulRk(0, 10, (0, 0x02), (0, 0x06));
+        record[record.Length - 2] = 99;
+        BiffReader reader = ReadTo8(record, BiffRecordType.MulRk);
+
+        BiffMulRkRecord run = reader.GetMulRk();
+
+        Assert.AreEqual(99, run.LastColumn);
+        Assert.AreEqual(2, run.Count);
+        Assert.AreEqual(11, run.GetColumn(1));
+    }
+
+    /// <summary>
+    /// Verifies that a run at the largest column and row indices decodes without overflow and that a negative index
+    /// is rejected like one past the end.
+    /// </summary>
+    [TestMethod]
+    public void GetMulRk_WhenIndicesAtMaximum_ShouldDecodeAndRejectNegativeIndex()
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.MulRk(65535, 65535, (0xFFFF, 0xFFFFFFFE)), BiffRecordType.MulRk);
+
+        BiffMulRkRecord run = reader.GetMulRk();
+
+        Assert.AreEqual(65535, run.Row);
+        Assert.AreEqual(65535, run.FirstColumn);
+        Assert.AreEqual(0xFFFF, run[0].XfIndex);
+        Assert.AreEqual(-1.0, run[0].Value);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            BiffReader again = ReadTo8(BiffTestRecords.MulRk(0, 0, (0, 0x02)), BiffRecordType.MulRk);
+            _ = again.GetMulRk()[-1];
+        });
+    }
 }

@@ -43,4 +43,32 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(255, number.Column);
         Assert.AreEqual(42.25, number.Value);
     }
+
+    /// <summary>
+    /// Verifies that special double values are decoded bit for bit.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    [TestMethod]
+    [DataRow(-0.0)]
+    [DataRow(double.NaN)]
+    [DataRow(double.PositiveInfinity)]
+    [DataRow(double.MaxValue)]
+    [DataRow(double.Epsilon)]
+    public void GetNumber_WhenSpecialValue_ShouldPreserveBits(double value)
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Number(0, 0, value), BiffRecordType.Number);
+
+        Assert.AreEqual(BitConverter.DoubleToInt64Bits(value), BitConverter.DoubleToInt64Bits(reader.GetNumber().Value));
+    }
+
+    /// <summary>
+    /// Verifies that a cell at the largest row, column, and format index decodes unsigned.
+    /// </summary>
+    [TestMethod]
+    public void GetNumber_WhenPositionIsMaximum_ShouldDecodeUnsigned()
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Number(65535, 65535, 1, xf: 0xFFFF), BiffRecordType.Number);
+
+        Assert.AreEqual(new BiffNumberRecord(65535, 65535, 0xFFFF, 1), reader.GetNumber());
+    }
 }

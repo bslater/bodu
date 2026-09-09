@@ -81,4 +81,95 @@ public sealed partial class BiffWriterTests
         Assert.IsTrue(reader.Read());
         Assert.IsTrue(reader.GetDateMode().Is1904);
     }
+
+    /// <summary>
+    /// Verifies that the default build and year are zero and every substream type is written verbatim.
+    /// </summary>
+    /// <param name="substream">The substream type.</param>
+    [TestMethod]
+    [DataRow(BiffSubstreamType.WorkbookGlobals)]
+    [DataRow(BiffSubstreamType.Worksheet)]
+    [DataRow(BiffSubstreamType.Chart)]
+    [DataRow((BiffSubstreamType)0x0123)]
+    public void WriteBof_WhenSubstreamType_ShouldWriteVerbatimWithZeroBuild(BiffSubstreamType substream)
+    {
+        byte[] bytes = Emit5((ref BiffWriter w) => w.WriteBof(substream));
+
+        BiffBofRecord bof = Single(bytes, BiffVersion.Biff5).GetBof();
+        Assert.AreEqual(substream, bof.SubstreamType);
+        Assert.AreEqual(0, bof.Build);
+        Assert.AreEqual(0, bof.Year);
+    }
+
+    /// <summary>
+    /// Verifies that the BOF a writer emits establishes the same version in a reader created without options.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    [TestMethod]
+    [DataRow(BiffVersion.Biff5)]
+    [DataRow(BiffVersion.Biff8)]
+    public void WriteBof_WhenReadWithoutOptions_ShouldEstablishVersion(BiffVersion version)
+    {
+        byte[] bytes = Emit(version, (ref BiffWriter w) =>
+        {
+            w.WriteBof(BiffSubstreamType.WorkbookGlobals);
+            w.WriteEof();
+        });
+
+        var reader = new BiffReader(bytes);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(version, reader.Version);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BiffRecordType.Eof, reader.RecordType);
+        Assert.IsFalse(reader.Read());
+    }
+
+    /// <summary>
+    /// Verifies that a second stray EOF after balancing is rejected and the depth never goes negative.
+    /// </summary>
+    [TestMethod]
+    public void WriteEof_WhenCalledTwiceAfterOneBof_ShouldRejectSecond()
+    {
+        var output = new System.Buffers.ArrayBufferWriter<byte>();
+        var writer = new BiffWriter(output, BiffVersion.Biff8);
+        writer.WriteBof(BiffSubstreamType.Worksheet);
+        writer.WriteEof();
+
+        bool rejected = false;
+        try
+        {
+            writer.WriteEof();
+        }
+        catch (InvalidOperationException)
+        {
+            rejected = true;
+        }
+
+        Assert.IsTrue(rejected);
+        Assert.AreEqual(0, writer.OpenSubstreamDepth);
+        Assert.AreEqual(24L, writer.BytesCommitted, "The rejected EOF wrote nothing.");
+    }
+
+    /// <summary>
+    /// Verifies that CODEPAGE and DATEMODE are written in both versions with their fixed two-byte layout.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    [TestMethod]
+    [DataRow(BiffVersion.Biff5)]
+    [DataRow(BiffVersion.Biff8)]
+    public void WriteCodePage_WhenAnyVersion_ShouldWriteTwoByteRecords(BiffVersion version)
+    {
+        byte[] bytes = Emit(version, (ref BiffWriter w) =>
+        {
+            w.WriteCodePage(1252);
+            w.WriteDateMode(false);
+        });
+
+        Assert.AreEqual(12, bytes.Length);
+        var reader = new BiffReader(bytes, new BiffReaderOptions { Version = version });
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(1252, reader.GetCodePage().CodePage);
+        Assert.IsTrue(reader.Read());
+        Assert.IsFalse(reader.GetDateMode().Is1904);
+    }
 }

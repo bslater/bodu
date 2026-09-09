@@ -188,4 +188,219 @@ public sealed class BiffRoundTripTests
 
         CollectionAssert.AreEqual(original, output.WrittenSpan.ToArray());
     }
+
+    /// <summary>
+    /// Writes one record of every typed kind the writer supports under the version, in a plausible workbook order.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    /// <returns>The stream bytes.</returns>
+    private static byte[] WriteEveryRecord(BiffVersion version)
+    {
+        var output = new ArrayBufferWriter<byte>();
+        var writer = new BiffWriter(output, new BiffWriterOptions { Version = version, CodePage = 1252 });
+        Assert.IsTrue(BiffRk.TryEncode(-0.25, out uint rk));
+
+        writer.WriteBof(BiffSubstreamType.WorkbookGlobals, build: 1, year: 1997);
+        writer.WriteCodePage(1252);
+        writer.WriteDateMode(true);
+        writer.WriteFont(240, 0x0002, 0x7FFF, 700, 1, 2, 3, 4, "Tahoma");
+        writer.WriteFormat(200, "#,##0.00");
+        writer.WriteXf(new BiffXfRecord(1, 200, 0x0011));
+        writer.WriteBoundSheet(0x1000, BiffSheetState.Hidden, BiffSheetType.Worksheet, "Données");
+        if (version == BiffVersion.Biff8)
+            writer.WriteSst(["shared", "日本"], totalReferenceCount: 5);
+        writer.WriteEof();
+
+        writer.WriteBof(BiffSubstreamType.Worksheet);
+        writer.WriteDimensions(new BiffDimensionsRecord(1, 6, 2, 9));
+        writer.WriteRow(new BiffRowRecord(1, 2, 9, 300, 0x0140, 0x0001));
+        writer.WriteNumber(1, 2, 1, 1234.5678);
+        writer.WriteRk(1, 3, 1, rk);
+        writer.WriteMulRk(1, 4, [new BiffRkCell(1, 0x06), new BiffRkCell(1, 0x0A)]);
+        writer.WriteBlank(1, 6, 1);
+        writer.WriteMulBlank(1, 7, [1, 1]);
+        writer.WriteBoolean(2, 2, 1, true);
+        writer.WriteError(2, 3, 1, 0x1D);
+        writer.WriteLabel(2, 4, 1, "inline é");
+        if (version == BiffVersion.Biff8)
+            writer.WriteLabelSst(2, 5, 1, 1);
+        writer.WriteFormula(3, 2, 1, 42.0, [0x1E, 0x2A, 0x00], flags: 0x0002);
+        writer.WriteFormula(3, 3, 1, BiffCachedResultKind.String, 0, default);
+        writer.WriteString("cached");
+        writer.WriteFormula(3, 4, 1, BiffCachedResultKind.Boolean, 1, default);
+        writer.WriteFormula(3, 5, 1, BiffCachedResultKind.Error, 0x07, default);
+        writer.WriteFormula(3, 6, 1, BiffCachedResultKind.Empty, 0, default);
+        writer.WriteEof();
+
+        Assert.AreEqual(0, writer.OpenSubstreamDepth);
+        Assert.AreEqual(output.WrittenCount, writer.BytesCommitted);
+        return output.WrittenSpan.ToArray();
+    }
+
+    /// <summary>
+    /// Verifies that every typed record round-trips through the writer and reader under both versions, with the
+    /// version-specific layouts and text encodings applied.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    [TestMethod]
+    [DataRow(BiffVersion.Biff5)]
+    [DataRow(BiffVersion.Biff8)]
+    public void RoundTrip_WhenEveryTypedRecord_ShouldDecodeBack(BiffVersion version)
+    {
+        byte[] stream = WriteEveryRecord(version);
+        var reader = new BiffReader(stream);
+        var seen = new List<BiffRecordType>();
+        string[] shared = [];
+        var texts = new List<string>();
+        var kinds = new List<BiffCachedResultKind>();
+
+        while (reader.Read())
+        {
+            seen.Add(reader.RecordType);
+            switch (reader.RecordType)
+            {
+                case BiffRecordType.Bof:
+                    Assert.AreEqual(version, reader.GetBof().Version);
+                    break;
+                case BiffRecordType.CodePage:
+                    Assert.AreEqual(1252, reader.GetCodePage().CodePage);
+                    break;
+                case BiffRecordType.DateMode:
+                    Assert.IsTrue(reader.GetDateMode().Is1904);
+                    break;
+                case BiffRecordType.Font:
+                    BiffFontRecord font = reader.GetFont();
+                    Assert.AreEqual("Tahoma", font.Name.GetString());
+                    Assert.IsTrue(font.IsBold);
+                    Assert.IsTrue(font.IsItalic);
+                    break;
+                case BiffRecordType.Format:
+                    Assert.AreEqual("#,##0.00", reader.GetFormat().Code.GetString());
+                    break;
+                case BiffRecordType.Xf:
+                    Assert.AreEqual(version == BiffVersion.Biff8 ? 20 : 16, reader.RecordLength);
+                    Assert.AreEqual(200, reader.GetXf().FormatIndex);
+                    break;
+                case BiffRecordType.BoundSheet:
+                    BiffBoundSheetRecord sheet = reader.GetBoundSheet();
+                    Assert.AreEqual("Données", sheet.Name.GetString());
+                    Assert.AreEqual(BiffSheetState.Hidden, sheet.State);
+                    Assert.AreEqual(0x1000u, sheet.StreamOffset);
+                    break;
+                case BiffRecordType.Sst:
+                    var table = new BiffSstReader(ref reader);
+                    var list = new List<string>();
+                    while (table.Read(ref reader))
+                        list.Add(table.GetString());
+                    shared = [.. list];
+                    break;
+                case BiffRecordType.Dimensions:
+                    Assert.AreEqual(version == BiffVersion.Biff8 ? 14 : 10, reader.RecordLength);
+                    Assert.AreEqual(new BiffDimensionsRecord(1, 6, 2, 9), reader.GetDimensions());
+                    break;
+                case BiffRecordType.Row:
+                    Assert.AreEqual(300, reader.GetRow().Height);
+                    Assert.IsTrue(reader.GetRow().HasCustomHeight);
+                    break;
+                case BiffRecordType.Number:
+                    Assert.AreEqual(1234.5678, reader.GetNumber().Value);
+                    break;
+                case BiffRecordType.Rk:
+                    Assert.AreEqual(-0.25, reader.GetRk().Value);
+                    break;
+                case BiffRecordType.MulRk:
+                    Assert.AreEqual(2.0, reader.GetMulRk()[1].Value);
+                    Assert.AreEqual(5, reader.GetMulRk().LastColumn);
+                    break;
+                case BiffRecordType.Blank:
+                    Assert.AreEqual(6, reader.GetBlank().Column);
+                    break;
+                case BiffRecordType.MulBlank:
+                    Assert.AreEqual(8, reader.GetMulBlank().LastColumn);
+                    break;
+                case BiffRecordType.BoolErr:
+                    BiffBoolErrRecord flag = reader.GetBoolErr();
+                    Assert.AreEqual(flag.IsError ? (byte)0x1D : (byte)1, flag.RawValue);
+                    break;
+                case BiffRecordType.Label:
+                    texts.Add(reader.GetLabel().Text.GetString());
+                    break;
+                case BiffRecordType.LabelSst:
+                    texts.Add(shared[reader.GetLabelSst().SstIndex]);
+                    break;
+                case BiffRecordType.Formula:
+                    kinds.Add(reader.GetFormula().CachedResultKind);
+                    break;
+                case BiffRecordType.String:
+                    texts.Add(reader.GetString().Text.GetString());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        Assert.AreEqual(version, reader.Version);
+        Assert.AreEqual(2, seen.Count(t => t == BiffRecordType.Eof));
+        Assert.AreEqual(5, kinds.Count);
+        CollectionAssert.AreEqual(new[] { BiffCachedResultKind.Number, BiffCachedResultKind.String, BiffCachedResultKind.Boolean, BiffCachedResultKind.Error, BiffCachedResultKind.Empty }, kinds);
+        if (version == BiffVersion.Biff8)
+        {
+            CollectionAssert.AreEqual(new[] { "shared", "日本" }, shared);
+            CollectionAssert.AreEqual(new[] { "inline é", "日本", "cached" }, texts);
+        }
+        else
+        {
+            Assert.IsFalse(seen.Contains(BiffRecordType.Sst));
+            Assert.IsFalse(seen.Contains(BiffRecordType.LabelSst));
+            CollectionAssert.AreEqual(new[] { "inline é", "cached" }, texts);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a writer-produced workbook stream, including a shared string table with continuations, reads
+    /// identically whatever the block size it is fed in.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void RoundTrip_WhenStreamIsFedInEveryChunkSize_ShouldReadIdentically()
+    {
+        var output = new ArrayBufferWriter<byte>();
+        var writer = new BiffWriter(output, BiffVersion.Biff8);
+        writer.WriteBof(BiffSubstreamType.WorkbookGlobals);
+        writer.WriteSst([.. Enumerable.Range(0, 1200).Select(i => i % 5 == 0 ? $"日本{i}" : $"s{i}")]);
+        writer.WriteEof();
+        byte[] stream = output.WrittenSpan.ToArray();
+
+        List<(ushort Id, int Length)> expected = ReadFramesInChunks(stream, stream.Length);
+        Assert.IsGreaterThan(3, expected.Count, "The table spans continuation records.");
+
+        for (int chunkSize = 1; chunkSize <= stream.Length; chunkSize += chunkSize < 64 ? 1 : 97)
+            CollectionAssert.AreEqual(expected, ReadFramesInChunks(stream, chunkSize), $"Chunk size {chunkSize} changed the frames.");
+    }
+
+    /// <summary>
+    /// Frames the stream through readers fed the given number of new bytes per pass.
+    /// </summary>
+    /// <param name="stream">The stream bytes.</param>
+    /// <param name="chunkSize">The number of new bytes per pass.</param>
+    /// <returns>The identifier and length of every record, in order.</returns>
+    private static List<(ushort Id, int Length)> ReadFramesInChunks(byte[] stream, int chunkSize)
+    {
+        var frames = new List<(ushort, int)>();
+        BiffReaderState state = default;
+        int consumed = 0;
+        int available = 0;
+        while (consumed < stream.Length)
+        {
+            available = Math.Min(stream.Length, available + chunkSize);
+            var reader = new BiffReader(stream.AsSpan(consumed, available - consumed), available == stream.Length, state);
+            while (reader.Read())
+                frames.Add((reader.RecordId, reader.RecordLength));
+
+            consumed += reader.BytesConsumed;
+            state = reader.CurrentState;
+        }
+
+        return frames;
+    }
 }

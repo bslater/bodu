@@ -35,4 +35,36 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual(12.34, reader.GetRk().Value);
     }
+
+    /// <summary>
+    /// Verifies that the negative integer and negative divided-by-100 forms decode with their sign.
+    /// </summary>
+    /// <param name="rk">The raw RK value.</param>
+    /// <param name="expected">The decoded value.</param>
+    [TestMethod]
+    [DataRow(0xFFFFFFFEu, -1.0)]
+    [DataRow(0xFFFFFFFFu, -0.01)]
+    [DataRow(0xBFF00000u, -1.0)]
+    [DataRow(0xBFF00001u, -0.01)]
+    public void GetRk_WhenNegativeForms_ShouldDecodeSign(uint rk, double expected)
+    {
+        BiffReader reader = ReadTo8(BiffTestRecords.Rk(0, 0, rk), BiffRecordType.Rk);
+
+        BiffRkRecord record = reader.GetRk();
+
+        Assert.AreEqual(expected, record.Value, 1e-12);
+        Assert.AreEqual(rk, record.RawValue);
+    }
+
+    /// <summary>
+    /// Verifies that bytes beyond the ten-byte layout are ignored.
+    /// </summary>
+    [TestMethod]
+    public void GetRk_WhenPayloadHasTrailingBytes_ShouldDecodeLeadingFields()
+    {
+        byte[] record = BiffTestRecords.Rk(2, 3, 0x06, xf: 4);
+        BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.Rk, [.. record.AsSpan(4), 0xEE]), BiffRecordType.Rk);
+
+        Assert.AreEqual(new BiffRkRecord(2, 3, 4, 0x06), reader.GetRk());
+    }
 }
