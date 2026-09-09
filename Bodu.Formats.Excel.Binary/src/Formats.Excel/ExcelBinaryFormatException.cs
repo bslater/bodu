@@ -7,7 +7,7 @@
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// The exception thrown when the content of a workbook stream does not conform to the BIFF8 record structure.
+/// The exception thrown when the content of a workbook stream does not conform to the BIFF record structure.
 /// </summary>
 /// <remarks>
 /// Reports a structural failure of the BIFF record stream — a truncated record, an inconsistent length, trailing bytes,

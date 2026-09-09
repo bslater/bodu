@@ -211,6 +211,10 @@ public sealed class ExcelWorksheetReader
                     cell = ExcelCellMapper.FromLabel(reader.GetLabel(), _formats);
                     return true;
 
+                case BiffRecordType.RString:
+                    cell = ExcelCellMapper.FromRString(reader.GetRString(), _formats);
+                    return true;
+
                 case BiffRecordType.Number:
                     cell = ExcelCellMapper.FromNumber(reader.GetNumber(), _formats);
                     return true;

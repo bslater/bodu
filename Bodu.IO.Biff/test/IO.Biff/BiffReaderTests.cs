@@ -88,6 +88,7 @@ public sealed partial class BiffReaderTests
             yield return [new InvalidKat<byte[]>("BOUNDSHEET 6 bytes", Short(BiffRecordType.BoundSheet, 6), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("LABEL text overruns", BiffTestRecords.Record(BiffRecordType.Label, [0, 0, 0, 0, 0, 0, 0x05, 0x00, 0x00, (byte)'a']), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("STRING 2 bytes", Short(BiffRecordType.String, 2), typeof(BiffFormatException))];
+            yield return [new InvalidKat<byte[]>("RSTRING 7 bytes", Short(BiffRecordType.RString, 7), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("FORMAT 2 bytes", Short(BiffRecordType.Format, 2), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("FONT 14 bytes", Short(BiffRecordType.Font, 14), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("CODEPAGE 1 byte", Short(BiffRecordType.CodePage, 1), typeof(BiffFormatException))];
@@ -127,6 +128,7 @@ public sealed partial class BiffReaderTests
             case BiffRecordType.Dimensions: _ = reader.GetDimensions(); break;
             case BiffRecordType.BoundSheet: _ = reader.GetBoundSheet(); break;
             case BiffRecordType.Label: _ = reader.GetLabel(); break;
+            case BiffRecordType.RString: _ = reader.GetRString(); break;
             case BiffRecordType.String: _ = reader.GetString(); break;
             case BiffRecordType.Format: _ = reader.GetFormat(); break;
             case BiffRecordType.Font: _ = reader.GetFont(); break;

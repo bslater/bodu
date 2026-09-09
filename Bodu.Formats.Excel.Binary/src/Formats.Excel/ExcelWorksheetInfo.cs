@@ -7,7 +7,7 @@
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Describes a sheet within a BIFF8 workbook: its name, position, visibility, type, and declared used range.
+/// Describes a sheet within a BIFF workbook: its name, position, visibility, type, and declared used range.
 /// </summary>
 /// <remarks>
 /// An instance is produced from the workbook's bound-sheet record and the <c>DIMENSIONS</c> record of the sheet's

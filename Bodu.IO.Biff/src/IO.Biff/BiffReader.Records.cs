@@ -132,6 +132,21 @@ public ref partial struct BiffReader
     }
 
     /// <summary>
+    /// Decodes the current <c>RSTRING</c> record, the BIFF5 rich-text label cell.
+    /// </summary>
+    /// <returns>The decoded record.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the current record is not an <c>RSTRING</c> record.
+    /// </exception>
+    /// <exception cref="BiffFormatException">Thrown when the payload is malformed.</exception>
+    public readonly BiffRStringRecord GetRString()
+    {
+        RequireRecord(BiffRecordType.RString);
+
+        return BiffRStringRecord.Read(ValueSpan, CodePage);
+    }
+
+    /// <summary>
     /// Decodes the current <c>LABELSST</c> record.
     /// </summary>
     /// <returns>The decoded record.</returns>

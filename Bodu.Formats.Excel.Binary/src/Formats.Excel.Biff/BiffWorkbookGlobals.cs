@@ -184,11 +184,13 @@ internal sealed class BiffWorkbookGlobals
     /// Validates that the BOF record opens a workbook-globals substream in a supported version.
     /// </summary>
     /// <param name="bof">The decoded BOF record.</param>
-    /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the version is not BIFF8.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the version is neither BIFF5 nor BIFF8.
+    /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the substream is not the workbook globals.</exception>
     private static void ValidateGlobalsBof(BiffBofRecord bof)
     {
-        if (bof.Version != BiffVersion.Biff8)
+        if (bof.Version == BiffVersion.Unknown)
         {
             throw new ExcelBinaryUnsupportedException(
                 string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Op_NotSupported_Biff8Version, bof.RawVersion));

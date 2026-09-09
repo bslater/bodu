@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
 using Bodu.IO.Compound;
 using Bodu.Test;
 
@@ -193,27 +192,6 @@ public partial class ExcelBinaryWorkbookTests
         _ = Assert.ThrowsExactly<ExcelBinaryWorkbookStreamNotFoundException>(() =>
         {
             _ = ExcelBinaryWorkbook.OpenRead(container);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a workbook whose globals declare a non-BIFF8 version throws
-    /// <see cref="ExcelBinaryUnsupportedException" />.
-    /// </summary>
-    [TestMethod]
-    public void OpenRead_WhenVersionNotBiff8_ShouldThrowUnsupportedException()
-    {
-        // Globals BOF declaring BIFF5 (0x0500), followed by EOF.
-        byte[] bofPayload = new byte[16];
-        BinaryPrimitives.WriteUInt16LittleEndian(bofPayload, 0x0500);
-        BinaryPrimitives.WriteUInt16LittleEndian(bofPayload.AsSpan(2), Biff8TestWorkbook.BofGlobals);
-
-        byte[] globals = [.. Biff8TestWorkbook.Record(0x0809, bofPayload), .. Biff8TestWorkbook.Eof()];
-        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(globals, "Workbook");
-
-        _ = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
-        {
-            _ = ExcelBinaryWorkbook.OpenRead(xls);
         });
     }
 }

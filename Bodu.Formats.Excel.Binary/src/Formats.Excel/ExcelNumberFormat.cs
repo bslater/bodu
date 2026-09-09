@@ -7,7 +7,7 @@
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Classifies BIFF8 number formats, resolving built-in format codes and determining whether a format renders a value as
+/// Classifies BIFF number formats, resolving built-in format codes and determining whether a format renders a value as
 /// a date or time.
 /// </summary>
 /// <remarks>

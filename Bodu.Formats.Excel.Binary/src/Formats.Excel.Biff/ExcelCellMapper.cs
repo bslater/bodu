@@ -50,6 +50,15 @@ internal static class ExcelCellMapper
         ExcelCell.Text(record.Row, record.Column, record.Text.GetString(), formats.GetFormatIndex(record.XfIndex));
 
     /// <summary>
+    /// Maps an <c>RSTRING</c> record, the BIFF5 rich-text label, keeping its text and dropping its formatting runs.
+    /// </summary>
+    /// <param name="record">The decoded record.</param>
+    /// <param name="formats">The workbook format table.</param>
+    /// <returns>The text cell.</returns>
+    public static ExcelCell FromRString(in BiffRStringRecord record, BiffFormatTable formats) =>
+        ExcelCell.Text(record.Row, record.Column, record.Text.GetString(), formats.GetFormatIndex(record.XfIndex));
+
+    /// <summary>
     /// Maps a <c>NUMBER</c> record.
     /// </summary>
     /// <param name="record">The decoded record.</param>
