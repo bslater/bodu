@@ -15,7 +15,7 @@ MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011)
 | `MurmurHash3_32` | 32 bits | All platforms | General-purpose 32-bit fingerprint. |
 | `MurmurHash3_128` | 128 bits | 64-bit platforms | 128-bit fingerprint; the highest-quality variant. |
 
-Both derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `MurmurHash3<T>` base. Both buffer their input internally, consistent with MurmurHash3's one-shot design.
+Both derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `MurmurHash3` base. Both buffer their input internally, consistent with MurmurHash3's one-shot design.
 
 > **Not cryptographic.** MurmurHash3 must not be used for password hashing, digital signatures, or any application that requires adversarial collision resistance. An attacker who can choose inputs can construct collisions. For adversary-facing use, reach for <xref:Bodu.Security.Cryptography.SipHash64>.
 

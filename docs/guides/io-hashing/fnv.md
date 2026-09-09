@@ -17,7 +17,7 @@ Fowler–Noll–Vo is a simple, very fast non-cryptographic hash: each input byt
 | <xref:Bodu.IO.Hashing.Fnv164> | 64 bits | FNV-1 | 64-bit FNV-1 — legacy interop only. |
 | <xref:Bodu.IO.Hashing.Fnv1a64> | 64 bits | FNV-1a | General-purpose 64-bit fingerprint; the default choice at this width. |
 
-All four derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `Fnv<TSelf>` base, and all four expose the same API.
+All four derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `Fnv` base, and all four expose the same API.
 
 > **FNV-1a is preferred over FNV-1.** The two variants differ only in the order of the XOR and multiplication — FNV-1a's "XOR first, multiply second" has better avalanche on short inputs and is what most reference implementations choose today. Use FNV-1 only when you need bit-for-bit compatibility with an existing system.
 

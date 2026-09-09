@@ -20,7 +20,7 @@ Every accelerated primitive has a scalar reference implementation and an AVX-512
 | `Threefish1024` | Encrypt / decrypt block | AVX-512F |
 | `CubeHash` | Round permutation | AVX-512F |
 
-There are two gate forms. The 128- and 256-bit-lane kernels (BLAKE2b, BLAKE2s, BLAKE3, Threefish-256) require the AVX-512 **Vector Length** extension (`Avx512F.VL.IsSupported`); the 512-bit-lane kernels (Threefish-512/1024, CubeHash) require only AVX-512 **Foundation** (`Avx512F.IsSupported`). No other SIMD instruction set (AVX2, SSE, ARM AdvSimd) is used as a standalone fast path.
+There are two gate forms. The 128- and 256-bit-lane kernels (BLAKE2b, BLAKE2s, BLAKE3, Threefish-256) require the AVX-512 **Vector Length** extension (`Avx512F.VL.IsSupported`); the 512-bit-lane kernels (Threefish-512/1024, CubeHash) require only AVX-512 **Foundation** (`Avx512F.IsSupported`). Separately from the AVX-512 kernels, the GHASH multiplication shared by `GcmModeTransform` and `GcmSivModeTransform` has a carry-less-multiply fast path built on **PCLMULQDQ** (with SSSE3 for the byte shuffles); it is gated by `Pclmulqdq.IsSupported && Ssse3.IsSupported`, honours the same `DisableSimd` switch, and falls back to the constant-time scalar GF(2¹²⁸) reference otherwise. No other SIMD instruction set (AVX2, ARM AdvSimd) is used as a standalone fast path.
 
 ## When the fast path engages
 

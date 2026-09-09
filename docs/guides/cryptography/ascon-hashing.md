@@ -18,7 +18,7 @@ a sound choice in software as well.
 | <xref:Bodu.Security.Cryptography.AsconHash256> | `ASCON-HASH256` | 12 (Ascon-p12) | 12 | Maximum security margin — the conservative default. |
 | <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | 8 (Ascon-p8) | 12 | Higher throughput — reduced, but still substantial, absorption-phase margin. |
 
-Both derive from `BlockHashAlgorithm<T>`, which in turn derives from
+Both derive from <xref:Bodu.Security.Cryptography.AsconHash>, which sits on <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> and, through it, on
 <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so they slot
 into any API that accepts a standard .NET hash algorithm.
 

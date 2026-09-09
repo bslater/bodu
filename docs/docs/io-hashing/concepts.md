@@ -33,7 +33,7 @@ The library is partitioned into three subfamilies, each tuned for a different jo
 |---|---|---|---|---|
 | **Fingerprint** | Arbitrary byte buffer | Even distribution and speed | 32–128 bits | `Bodu.IO.Hashing` |
 | **Checksum** | Arbitrary byte buffer | Detecting specific error patterns | 16–64 bits | `Bodu.IO.Hashing.Checksums` |
-| **Check digit** | Printed character sequence | Catching human transcription errors | 1–2 characters | `Bodu.IO.Hashing.CheckDigits` (+ multi-char in `Checksums`) |
+| **Check digit** | Printed character sequence | Catching human transcription errors | 1–2 characters | `Bodu.IO.Hashing.CheckDigits` |
 
 A fingerprint such as <xref:Bodu.IO.Hashing.Fnv1a64> distributes evenly but offers no guarantees about which error patterns it catches. A checksum such as <xref:Bodu.IO.Hashing.Checksums.Crc> catches characterized error patterns but distributes poorly as a hash-table key. A check digit such as <xref:Bodu.IO.Hashing.CheckDigits.Luhn> guards a printed identifier and is meaningless on a binary buffer.
 
@@ -48,7 +48,7 @@ Every binary hash in `Bodu.IO.Hashing` derives from <xref:System.IO.Hashing.NonC
 | `TryGetCurrentHash(Span<byte>, out int)` | Same as `GetCurrentHash` but writes into a caller-supplied buffer. Returns `false` when the destination is too small. |
 | `Reset()` | Return the instance to its constructed initial state, ready to compute a fresh digest. |
 
-This streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. The check-digit base classes (<xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>) mirror the same shape over characters rather than bytes — `Append` / `GetCurrentCheckDigit(s)` / `Reset`.
+This streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. The check-digit base classes (<xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> and its three derivatives <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, and <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>) mirror the same shape over characters rather than bytes — `Append` / `GetCurrentCheckValue` (with the typed `GetCurrentCheckDigit` / `GetCurrentCheckDigits` on the derivatives) / `Reset`.
 
 ## Avalanche
 
@@ -97,7 +97,7 @@ Two variants that share `poly` and disagree on `refin`/`refout` produce complete
 
 ## CRC catalogue
 
-The **CRC catalogue** is the set of ~113 named, parameter-fixed CRC variants Bodu ships out of the box, sourced from the RevEng project. Each entry pairs a name (`CRC32_ISOHDLC`, `CRC16_MODBUS`, `CRC64_XZ`, …) with a `CrcStandard` value bundling the five parameters above plus the width.
+The **CRC catalogue** is the set of 112 named, parameter-fixed CRC variants Bodu ships out of the box, sourced from the RevEng project. Each entry pairs a name (`CRC32_ISOHDLC`, `CRC16_MODBUS`, `CRC64_XZ`, …) with a `CrcStandard` value bundling the five parameters above plus the width.
 
 Three ways to obtain a `CrcStandard`:
 
@@ -155,7 +155,7 @@ The classic example is the Luhn check digit on the last digit of a credit-card n
 
 ## Single-character vs. multi-character check digit
 
-Most check-digit schemes emit **one character** — a decimal digit drawn from `0`–`9`. Luhn, Damm, Verhoeff, EAN-8, EAN-13, GTIN-14, UPC-A, the ABA routing-number check, and the ISIN check all fit this shape. They live in `Bodu.IO.Hashing.CheckDigits` and share the <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> abstract base.
+Most check-digit schemes emit **one character**. Over a decimal payload — Luhn, Damm, Verhoeff, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check — the check is a decimal digit drawn from `0`–`9`, and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> abstract base. Over an alphanumeric payload — ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 — the single check character may come from a wider alphabet (ISBN-10's `X`, for example), and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> abstract base. Both bases, like the multi-character base below, derive from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm>; everything lives in `Bodu.IO.Hashing.CheckDigits`.
 
 A few high-stakes identifiers use **multi-character** checks — two or more characters, often drawn from a larger alphabet:
 
@@ -167,7 +167,7 @@ A few high-stakes identifiers use **multi-character** checks — two or more cha
 | ISBN-10 | 1 character (`0`–`9` or `X`) | Decimal payload, `X` permitted as check | <xref:Bodu.IO.Hashing.CheckDigits.Isbn10> |
 | CUSIP / SEDOL | 1 digit | Alphanumeric | <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol> |
 
-Multi-character check algorithms live in `Bodu.IO.Hashing.Checksums` alongside the generic ISO 7064 building blocks (<xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10>) and share the <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> abstract base.
+Multi-character check algorithms live in `Bodu.IO.Hashing.CheckDigits` alongside the generic ISO 7064 building blocks (<xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10>) and share the <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> abstract base.
 
 ## Validate vs. compute
 
@@ -178,7 +178,7 @@ Every check-digit type exposes two surfaces that consumers reach for in differen
 char  digit = Luhn.Compute(payload);                  // payload excludes the check
 bool  ok    = Luhn.IsValid(payloadWithCheck);         // payload includes the check
 
-// Multi-character schemes — Bodu.IO.Hashing.Checksums
+// Multi-character schemes — also Bodu.IO.Hashing.CheckDigits
 string check = Iban.Compute(body);                    // body excludes the two-digit check
 bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the check
 ```

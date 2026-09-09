@@ -146,22 +146,30 @@ Swap `Tiger` for `CubeHash`, `Blake2b`, `Whirlpool`, `Skein512`, or `AsconHash25
 ```csharp
 using Bodu.Security.Cryptography;
 
+// The ASCON XOFs are sponges, not HashAlgorithms: absorb, then squeeze as many bytes as you need.
 using var xof = new AsconXof128();
-xof.AppendData(data);
-byte[] output = xof.GetHashAndReset(byteCount: 64); // squeeze 64 bytes
+xof.Absorb(data);
+byte[] output = xof.GetHash(outputLength: 64);      // squeeze 64 bytes and finalize
+
+// One-shot equivalent.
+byte[] same = AsconXof128.HashData(data, outputLength: 64);
 ```
+
+`Squeeze(Span<byte>)` writes directly into a caller buffer, and `Initialize()` resets the sponge for the next message.
 
 ### Merkle tree — verifiable inclusion proofs
 
 ```csharp
+using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-using var inner = SHA256.Create();
-using var tree  = new MerkleTreeHash(inner, leafSize: 1024);
+// The tree hash owns its inner digests, so it takes a factory rather than an instance.
+using var tree = new MerkleTreeHash(SHA256.Create, blockSize: 1024, fanOut: 3);
 
-tree.AppendData(largeFile);
-byte[] root = tree.GetHashAndReset();
+byte[] root = tree.ComputeHash(largeFile);          // Stream, ReadOnlySpan<byte>, or byte[]
 ```
+
+`ComputeHash` is one-shot: the tree is rebuilt per call, so a `MerkleTreeHash` can be reused across inputs.
 
 ### Digital signature — Ed25519
 

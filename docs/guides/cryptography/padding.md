@@ -114,8 +114,8 @@ ISO/IEC 7816-4 appends a single `0x80` byte followed by `0x00` bytes out to the 
 ```csharp
 IPaddingStrategy bitPadding = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 
-byte[] padded   = bitPadding.Pad(plaintext, blockSize: 32);
-byte[] unpadded = bitPadding.Unpad(padded, blockSize: 32);
+byte[] padded   = bitPadding.Pad(plaintext, blockSize: 256);    // block size in bits — 256 for Threefish-256
+byte[] unpadded = bitPadding.Unpad(padded, blockSize: 256);
 ```
 
 ## None — only for block-aligned or stream modes
@@ -162,11 +162,11 @@ using System.Security.Cryptography;
 
 IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 
-byte[] padded   = pkcs7.Pad(plaintext, blockSize: 32);
-byte[] unpadded = pkcs7.Unpad(padded, blockSize: 32);
+byte[] padded   = pkcs7.Pad(plaintext, blockSize: 256);         // block size in bits — 256 for Threefish-256
+byte[] unpadded = pkcs7.Unpad(padded, blockSize: 256);
 ```
 
-This is primarily useful if you're composing a custom encryption pipeline against <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>.
+`IPaddingStrategy.Pad` / `Unpad` take the block size in **bits** (the same unit as `IBlockCipher.BlockSize`), so pass `256` for Threefish-256, `128` for AES, Camellia, Twofish, or Serpent-128, and `64` for Blowfish or Skipjack. This is primarily useful if you're composing a custom encryption pipeline against <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>.
 
 ## Padding oracles — the one caveat that spans schemes
 

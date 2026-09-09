@@ -87,28 +87,26 @@ using Bodu.Security.Cryptography.Extensions;
 byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("secret payload");
 byte[] aad       = System.Text.Encoding.UTF8.GetBytes("correlation-id:42");
 
-byte[] key = RandomNumberGenerator.GetBytes(32);          // AES-256
-byte[] iv  = new byte[16];                                 // J0 in GCM
-RandomNumberGenerator.Fill(iv.AsSpan(0, 12));              // 12-byte nonce
-iv[15] = 0x01;                                             // GCM counter-start convention
+byte[] key   = RandomNumberGenerator.GetBytes(32);        // AES-256
+byte[] nonce = RandomNumberGenerator.GetBytes(12);        // 96-bit GCM nonce — exactly 12 bytes
 
 // Encrypt — produces ciphertext || 16-byte tag
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, aad);
 
 // Decrypt — throws CryptographicException if the ciphertext or AAD has been tampered with
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
-    recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+    recovered = new GcmModeTransform(cipher, nonce).Decrypt(cipherWithTag, aad);
 ```
 
 > [!WARNING]
 > **Never reuse a `(key, nonce)` pair.** Doing so in GCM is catastrophic — the XOR of two ciphertexts recovers the XOR of the plaintexts, *and* an attacker can recover the hash key H and forge arbitrary messages. If you cannot guarantee nonce uniqueness, use SIV or GCM-SIV instead.
 
-### On the 16-byte IV
+### On the 12-byte nonce
 
-This implementation takes the initial counter block J0 directly as its 16-byte IV, following NIST SP 800-38D. For the standard 96-bit-nonce mode, build J0 as `nonce || 0x00000001` (12 bytes of nonce followed by a 4-byte big-endian 1). The snippet above does this explicitly.
+<xref:Bodu.Security.Cryptography.GcmModeTransform> implements the standard 96-bit-nonce profile of NIST SP 800-38D: every constructor (`byte[]`, `ReadOnlySpan<byte>`, or <xref:Bodu.Security.Cryptography.Nonce>) requires **exactly 12 bytes** and throws `ArgumentException` for any other length. The transform derives the initial counter block J0 (`nonce ‖ 0x00000001`) internally — do not build J0 yourself or pass a 16-byte block.
 
 ## CCM — a two-pass alternative
 
@@ -277,10 +275,8 @@ using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
 
-byte[] key = RandomNumberGenerator.GetBytes(32);   // AES-256
-byte[] iv  = new byte[16];
-RandomNumberGenerator.Fill(iv.AsSpan(0, 12));
-iv[15] = 0x01;                                       // 96-bit nonce → J0
+byte[] key   = RandomNumberGenerator.GetBytes(32);   // AES-256
+byte[] nonce = RandomNumberGenerator.GetBytes(12);   // 96-bit nonce — GcmModeTransform requires exactly 12 bytes
 
 byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("transfer £250 to account 9921");
 byte[] aad       = System.Text.Encoding.UTF8.GetBytes("txn-id:7f3a");
@@ -288,12 +284,12 @@ byte[] aad       = System.Text.Encoding.UTF8.GetBytes("txn-id:7f3a");
 // Encrypt — ciphertext || 16-byte tag.
 byte[] sealed_;
 using (var cipher = new AesBlockCipher(key))
-    sealed_ = new GcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    sealed_ = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, aad);
 
 // Honest decrypt — recovers the original plaintext.
 using (var cipher = new AesBlockCipher(key))
 {
-    byte[] recovered = new GcmModeTransform(cipher, iv).Decrypt(sealed_, aad);
+    byte[] recovered = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, aad);
     // recovered.SequenceEqual(plaintext) == true
 }
 
@@ -303,7 +299,7 @@ using (var cipher = new AesBlockCipher(key))
 {
     try
     {
-        _ = new GcmModeTransform(cipher, iv).Decrypt(sealed_, aad);
+        _ = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, aad);
     }
     catch (CryptographicException)
     {

@@ -14,7 +14,7 @@ CityHash is Google's family of fast, high-quality non-cryptographic hash functio
 | <xref:Bodu.IO.Hashing.CityHash64> | 64 bits | The most common CityHash choice — 64-bit fingerprints for de-duplication, sharding, content addressing. |
 | <xref:Bodu.IO.Hashing.CityHash128> | 128 bits | Longer fingerprint space, still cheaper than a cryptographic digest. |
 
-All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `CityHash<T>` base.
+All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `CityHash` base.
 
 ## Pattern 1 — compute a digest in one call
 

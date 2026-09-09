@@ -37,27 +37,24 @@ Fast, distribution-quality hash functions for hash-table keys, in-memory cache b
 | <xref:Bodu.IO.Hashing.BKDR> / <xref:Bodu.IO.Hashing.SDBM> / <xref:Bodu.IO.Hashing.JSHash> / <xref:Bodu.IO.Hashing.Elf64> / <xref:Bodu.IO.Hashing.ApHash> / <xref:Bodu.IO.Hashing.Pjw32> | 32–64 bits | Classic string hashes from compilers and early web servers. |
 | <xref:Bodu.IO.Hashing.SuperFastHash> | 32 bits | Paul Hsieh's hash; designed for short keys. |
 | <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm> | — | Abstract base for buffered block-oriented algorithms; the block-hash extension point. |
-| <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> | — | Optional contract: reverse-finalize a stored digest, append more bytes, finalize again. Implemented by `Crc`. |
+| <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> | — | Optional contract: reverse-finalize a stored digest, append more bytes, finalize again. Implemented by `Crc`, the FNV family (`Fnv132` / `Fnv164` / `Fnv1a32` / `Fnv1a64`), `Fletcher16` / `Fletcher32` / `Fletcher64`, and `Adler32` / `Adler32C` / `Adler64`. |
 
 > **BCL note.** `XxHash32` / `XxHash64` / `XxHash3` / `XxHash128` from `System.IO.Hashing` already cover the xxHash family — Bodu does not duplicate them. Use the BCL types directly when you want xxHash.
 
 ### `Bodu.IO.Hashing.Checksums` — Checksums
 
-Error-detection algorithms with characterized guarantees over specific error patterns. Also hosts the multi-character / alphanumeric check-digit algorithms for codes like IBAN, ISBN, and CUSIP.
+Error-detection algorithms with characterized guarantees over specific error patterns, operating on binary buffers.
 
 | Type | Output | Subfamily |
 |---|---|---|
-| <xref:Bodu.IO.Hashing.Checksums.Crc> + <xref:Bodu.IO.Hashing.Checksums.CrcStandard> + <xref:Bodu.IO.Hashing.Checksums.CrcStandards> | 1–64 bits | Polynomial-remainder; 113 named standards from the RevEng catalogue, plus custom parameter sets. |
+| <xref:Bodu.IO.Hashing.Checksums.Crc> + <xref:Bodu.IO.Hashing.Checksums.CrcStandard> + <xref:Bodu.IO.Hashing.Checksums.CrcStandards> | 1–64 bits | Polynomial-remainder; 112 named standards from the RevEng catalogue, plus custom parameter sets. |
 | <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder> / <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache> | — | Shared lookup-table cache so identical CRC parameter sets share a table. |
 | <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / <xref:Bodu.IO.Hashing.Checksums.Fletcher32> / <xref:Bodu.IO.Hashing.Checksums.Fletcher64> | 16 / 32 / 64 bits | Twin-accumulator; catches transpositions a simple sum or XOR misses. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler32> / <xref:Bodu.IO.Hashing.Checksums.Adler32C> / <xref:Bodu.IO.Hashing.Checksums.Adler64> | 32 / 32 / 64 bits | Prime / power-of-two modulus twin accumulator; Adler-32 is the canonical zlib checksum. |
-| <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Lei> | Multi-char | Alphanumeric / multi-character identifier checksums. |
-| <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10> | 1–2 chars | Generic ISO 7064 checksum building blocks for custom alphanumeric schemes. |
-| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitInputAlphabet> / <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitOutputAlphabet> | — | Character-set enums consumed by the alphanumeric check-digit algorithms. |
 
 ### `Bodu.IO.Hashing.CheckDigits` — Check digits
 
-Single-character check-digit algorithms over decimal alphabets, for human-typed identifiers like credit card numbers and barcodes.
+Check-digit algorithms for human-typed identifiers — single-character schemes over decimal alphabets (credit card numbers, barcodes), single-character schemes over alphanumeric alphabets (ISBN-10, ISIN, CUSIP, SEDOL), and the two-character ISO 7064 Mod 97-10 schemes (IBAN, LEI).
 
 | Type | Used by |
 |---|---|
@@ -69,7 +66,14 @@ Single-character check-digit algorithms over decimal alphabets, for human-typed 
 | <xref:Bodu.IO.Hashing.CheckDigits.UpcA> | US/Canada retail barcodes |
 | <xref:Bodu.IO.Hashing.CheckDigits.Isin> | International securities identifiers (ISO 6166) |
 | <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> | US bank routing numbers |
-| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> | Abstract base classes — extension points for custom schemes. |
+| <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13> | Book identifiers (ISBN-10 is alphanumeric — the check character may be `X`) |
+| <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip> | UK / US securities identifiers (alphanumeric) |
+| <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Lei> | Bank account and legal-entity identifiers (two-character ISO 7064 Mod 97-10 check) |
+| <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10> | Generic ISO 7064 building blocks for custom alphanumeric schemes |
+| <xref:Bodu.IO.Hashing.CheckDigits.Code39Mod43>, <xref:Bodu.IO.Hashing.CheckDigits.Crockford32> | Code 39 barcode and Crockford base-32 check characters |
+| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitInputAlphabet> / <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitOutputAlphabet> | Character-set enums consumed by the alphanumeric check-digit algorithms |
+| <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> | Abstract root of the check-digit hierarchy (`Append` / `GetCurrentCheckValue` / `Reset`) |
+| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> | Abstract base classes under `CheckValueAlgorithm` — extension points for decimal, alphanumeric, and multi-character schemes |
 
 ### `Bodu.IO.Hashing.Extensions`
 
@@ -126,19 +130,19 @@ Once the subfamily is chosen, this table compares the algorithms within each sub
 
 | Algorithm | Output | Streaming | Resumable | Typical scenario |
 |---|---|---|---|---|
-| `Fnv1a32` / `Fnv1a64` | 32 / 64 bits | Constant memory | No | Hash-table keys; the default fingerprint when in doubt. |
+| `Fnv1a32` / `Fnv1a64` (and `Fnv132` / `Fnv164`) | 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Hash-table keys; the default fingerprint when in doubt. |
 | `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Constant memory | No | Database index keys; widely used in distributed systems. |
 | `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | Buffered (SIMD) | No | Fastest on long inputs; CDN and large-blob fingerprints. |
 | `Pearson` | 8 – 2048 bits | Constant memory | No | Configurable output width in 8-bit steps; embedded scenarios. |
 | `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
 | `Crc` (any standard from <xref:Bodu.IO.Hashing.Checksums.CrcStandard>) | 1 – 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Error-detection checksum on transmission / storage channels; choice driven by published `CrcStandard` (e.g. CRC-32/ISO-HDLC for zlib / PNG / Ethernet). |
-| `Fletcher16` / `Fletcher32` / `Fletcher64` | 16 / 32 / 64 bits | Constant memory | No | Faster than CRC at comparable error coverage; protocol checksums. |
-| `Adler32` / `Adler32C` / `Adler64` | 32 / 32 / 64 bits | Constant memory | No | Used by zlib; checksum for short, low-entropy payloads. |
+| `Fletcher16` / `Fletcher32` / `Fletcher64` | 16 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Faster than CRC at comparable error coverage; protocol checksums. |
+| `Adler32` / `Adler32C` / `Adler64` | 32 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Used by zlib; checksum for short, low-entropy payloads. |
 | `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `UpcA`, `Gtin14`, `AbaRoutingNumber` | 1 character | Constant memory | No | Single-character check digit for human-typed numeric identifiers. |
 | `Isbn10`, `Sedol`, `Cusip`, `Isin`, `Iso7064Mod11_2` | 1 character | Constant memory | No | Single-character check digit for mixed numeric / alphanumeric identifiers. |
 | `Iban`, `Lei`, `Iso7064Mod97_10` | 2 characters | Constant memory | No | Two-character check digit (ISO 7064 Mod 97-10) for high-coverage validation. |
 
-> Only `Crc` currently implements `IResumableHashAlgorithm` — the ability to reverse-finalize a stored digest, append more bytes, and finalize again.
+> `Crc`, the FNV family, the Fletcher family, and the Adler family implement `IResumableHashAlgorithm` — the ability to reverse-finalize a stored digest, append more bytes, and finalize again. The buffered fingerprints (CityHash, MurmurHash3) and the classic string hashes do not.
 
 > The `Bodu.IO.Hashing.Extensions` namespace adds ergonomic one-shot and async helpers (`ComputeHash`, `ComputeHashAsync`, `VerifyHash`, `TryVerifyHash`) over every algorithm in the table.
 
@@ -146,6 +150,7 @@ Once the subfamily is chosen, this table compares the algorithms within each sub
 
 ```csharp
 using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
 
 using var hash = new Crc();      // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
 
@@ -158,7 +163,7 @@ byte[] full    = hash.GetCurrentHash();
 hash.Reset();                              // back to the initial state
 ```
 
-Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a stored digest, append more bytes, finalize again).
+`Crc`, the FNV family, the Fletcher family, and the Adler family also implement `IResumableHashAlgorithm` (reverse-finalize a stored digest, append more bytes, finalize again).
 
 ## Where to go next
 

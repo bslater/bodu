@@ -144,21 +144,31 @@ ECB encrypts every block independently. That means identical plaintext blocks en
 
 **Padding:** none — CTS *is* the no-expansion alternative to padding. It rearranges the final two ciphertext blocks so the output length matches the input.
 
-```csharp
-using var alg = new Threefish256
-{
-    BlockMode = CipherModeKind.CTS,
-    Padding   = PaddingMode.None,
-};
-alg.GenerateKey();
-alg.GenerateIV();
-alg.GenerateTweak();
+Like XTS below, CTS does **not** run through the `BlockMode` property of a `SymmetricAlgorithm` — <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> builds only the five classic modes and throws `NotSupportedException` for `CipherModeKind.CTS`. Construct a <xref:Bodu.Security.Cryptography.CtsModeTransform> directly over an <xref:Bodu.Security.Cryptography.IBlockCipher>:
 
-byte[] ciphertext = alg.Encrypt(plaintext);   // same length as plaintext
-byte[] recovered  = alg.Decrypt(ciphertext);
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key   = RandomNumberGenerator.GetBytes(32);
+byte[] tweak = RandomNumberGenerator.GetBytes(16);
+using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
+
+byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);   // one block, unpredictable
+
+byte[] ciphertext = new byte[plaintext.Length];                     // same length as plaintext
+using (var cts = new CtsModeTransform(cipher, iv))
+    cts.Transform(plaintext, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[ciphertext.Length];
+using (var cts = new CtsModeTransform(cipher, iv))
+    cts.Transform(ciphertext, recovered, encrypt: false);
 ```
 
 `CTS` mirrors the BCL <xref:System.Security.Cryptography.CipherMode>.`CTS` value, so it casts directly between the two enums. It is *not* an authenticated mode — pair it with a MAC if the ciphertext crosses a trust boundary.
+
+> [!NOTE]
+> **Which `CipherModeKind` values work where.** `ECB`, `CBC`, `CFB`, `OFB`, and `CTR` are the only values accepted by `BlockMode` on the `SymmetricAlgorithm` facades (they are what <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> can build). `CTS` and `XTS` are available only as the direct <xref:Bodu.Security.Cryptography.CtsModeTransform> / <xref:Bodu.Security.Cryptography.XtsModeTransform> transforms, and `OCB`, `EAX`, and `SIV` name the AEAD transforms in the [AEAD modes guide](aead-modes.md). Setting `BlockMode` to any of those five throws `NotSupportedException`.
 
 > [!NOTE]
 > CTS needs at least one full block of input. A plaintext shorter than the block size has nothing to steal from, so use CBC + PKCS7 (which expands) or a stream-shaped mode (CTR) for sub-block messages.

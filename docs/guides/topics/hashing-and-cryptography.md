@@ -21,7 +21,7 @@ Fast, portable, *non-adversarial* hashing on the BCL `NonCryptographicHashAlgori
 
 <div class="bodu-card">
   <h3><a href="../io-hashing/crc.md">Using CRC</a></h3>
-  <p>One engine, 113 named standards from the RevEng catalogue — <code>CrcStandard</code> selection, custom parameter sets, the shared lookup-table cache, and resumable hashing.</p>
+  <p>One engine, 112 named standards from the RevEng catalogue — <code>CrcStandard</code> selection, custom parameter sets, the shared lookup-table cache, and resumable hashing.</p>
 </div>
 
 <div class="bodu-card">

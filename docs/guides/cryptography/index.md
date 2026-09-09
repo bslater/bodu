@@ -8,7 +8,7 @@ Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the 
 
 Part of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the six subfamilies and explains how they differ.
+If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the five families and explains how they differ.
 
 For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
@@ -130,7 +130,7 @@ Raw, confidentiality-only XOR keystream ciphers — **no authentication**; pair 
 
 </div>
 
-The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256` / `Skein512` / `Skein1024`, and `Shake` without dedicated walk-throughs yet — consult the [API reference](xref:Bodu.Security.Cryptography) directly.
+The remaining digests have their own walk-throughs too — [BLAKE2 / BLAKE3](blake.md), [Skein](skein.md), [Whirlpool](whirlpool.md), and [SHAKE](shake.md) — or consult the [API reference](xref:Bodu.Security.Cryptography) directly.
 
 ## Keyed hashes (MAC)
 

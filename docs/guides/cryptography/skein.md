@@ -18,7 +18,7 @@ This guide covers all three on one page. For the broader "which hash do I pick?"
 | **Skein-512** | 512 bits / 64 bytes | Threefish-512 | 0–128 bytes | 128, 160, 224, 256, 384, 512 |
 | **Skein-1024** | 1024 bits / 128 bytes | Threefish-1024 | 0–128 bytes | 384, 512, 1024 |
 
-All three derive from `Skein<T>` (in turn `KeyedBlockHashAlgorithm<T>`, a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property) and support both plain hash and Skein-MAC mode (a preliminary KEY UBI phase). `Skein<T>.MaxKeySize` is 8192 bits (128 bytes) across all variants; the output size is fixed at construction to one of the permitted values above, and a value outside the set throws `ArgumentOutOfRangeException`.
+All three derive from <xref:Bodu.Security.Cryptography.Skein> (in turn <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm>, a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property) and support both plain hash and Skein-MAC mode (a preliminary KEY UBI phase). `Skein.MaxKeySize` is 8192 bits (128 bytes) across all variants; the output size is fixed at construction to one of the permitted values above, and a value outside the set throws `ArgumentOutOfRangeException`.
 
 ## When to pick which
 

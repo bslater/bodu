@@ -6,7 +6,7 @@ uid: Bodu.IO.Hashing.CheckDigits
 
 ## Purpose
 
-**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>, or <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>.
+**Bodu.IO.Hashing.CheckDigits** ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> through one of its three abstract bases — <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> (decimal payload, single check digit), <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> (alphanumeric payload, single check character), or <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> (fixed-length multi-character check).
 
 ## Key types
 
@@ -45,16 +45,24 @@ uid: Bodu.IO.Hashing.CheckDigits
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 
-// Validate or compute a Luhn check digit.
-bool ok    = Luhn.Instance.IsValid("79927398713");          // True
-char digit = Luhn.Instance.ComputeCheckDigit("7992739871"); // '3'
+// One-shot static helpers: compute the check digit for a body, or validate a full value.
+char digit = Luhn.Compute("7992739871");                 // '3'
+bool ok    = Luhn.IsValid("79927398713");                // true
 
-// IBAN validation.
-bool ibanOk = Iban.Instance.IsValid("DE89370400440532013000");
+// Multi-character schemes return a string check value.
+string ibanCheck = Iban.Compute("DE00370400440532013000"); // "89"
+bool   ibanOk    = Iban.IsValid("DE89370400440532013000");  // true
+
+// Streaming: feed the body in chunks and read the check non-destructively.
+var luhn = new Luhn();
+luhn.Append("79927");
+luhn.Append("39871");
+char streamed = luhn.GetCurrentCheckDigit();            // '3'
+luhn.Reset();
 ```
 
 ## Notes
 
-- **Stateless / static instances.** Every algorithm exposes an `Instance` singleton; the instances are stateless and safe to share across threads.
+- **Static one-shots, stateful instances.** Every algorithm exposes static `Compute` / `IsValid` helpers for the common one-shot case; an instance (`new Luhn()`) carries running state for the streaming `Append` / `GetCurrentCheckDigit` (or `GetCurrentCheckDigits` / `GetCurrentCheckValue`) / `Reset` idiom, so share instances across threads only with external synchronization.
 - **Shaped vs. generic.** Identifier-shaped algorithms (`Iban`, `Cusip`, `Sedol`) validate length, character set, and any embedded structure as well as the check digit; the generic algorithms (`Luhn`, `Damm`, `Verhoeff`) validate only the digit. Pick the shaped algorithm when you have a specific identifier type.
 - **See also:** the [Check-digits guide](~/guides/io-hashing/check-digits.md), the parent <xref:Bodu.IO.Hashing> landing page.

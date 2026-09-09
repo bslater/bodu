@@ -48,7 +48,7 @@ A **stream cipher** generates a deterministic **keystream** from a key and a non
 
 Two consequences follow from the XOR construction: stream ciphers are **self-inverse** (encrypt and decrypt are the same operation), and they provide **raw confidentiality only** — there is no integrity check, and reusing a `(key, nonce)` pair leaks the XOR of two plaintexts. Always pair a stream cipher with a MAC (e.g. <xref:Bodu.Security.Cryptography.Poly1305>), or prefer an AEAD construction when integrity matters.
 
-The base class for these algorithms is <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> — a `SymmetricAlgorithm` with no block mode or padding.
+The base class for these algorithms is <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>. It is deliberately *not* a `SymmetricAlgorithm` — there is no block mode, padding, or `IV` — but a standalone `IDisposable` base exposing `Key`, `Nonce` (with `NonceSize`), `GenerateKey()` / `GenerateNonce()`, and `CreateTransform()`; `CreateEncryptor()` / `CreateDecryptor()` are aliases of the same self-inverse transform.
 
 ## Mode of operation
 
@@ -64,7 +64,7 @@ A **mode of operation** turns a one-block-at-a-time block cipher into something 
 | **OFB** | Cipher iterates on itself to produce a keystream; XORed over plaintext. Parallel after keystream generated; bit-flip propagates one-to-one. |
 | **CTR** | Cipher applied to an incrementing counter to produce a keystream. Fully parallel; nonce-uniqueness critical. |
 
-<xref:Bodu.Security.Cryptography.CipherModeKind> enumerates the available modes (`ECB`, `CBC`, `CFB`, `OFB`, `CTR`, `CTS`, `XTS`); the standard `SymmetricAlgorithm` facades expose mode selection via the `BlockMode` property. See the [cipher modes guide](../../guides/cryptography/cipher-modes.md) for a per-mode walk-through with diagrams.
+<xref:Bodu.Security.Cryptography.CipherModeKind> has ten members: the BCL-compatible `ECB`, `CBC`, `CFB`, `OFB`, and `CTS`, plus `CTR`, `XTS`, `OCB`, `EAX`, and `SIV`. The standard `SymmetricAlgorithm` facades expose mode selection via the `BlockMode` property, which routes through <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> and therefore accepts only the five classic modes (`ECB`, `CBC`, `CFB`, `OFB`, `CTR`); `CTS` and `XTS` are built directly as <xref:Bodu.Security.Cryptography.CtsModeTransform> / <xref:Bodu.Security.Cryptography.XtsModeTransform>, and `OCB` / `EAX` / `SIV` name the AEAD transforms. See the [cipher modes guide](../../guides/cryptography/cipher-modes.md) for a per-mode walk-through with diagrams.
 
 ## Padding
 
@@ -90,7 +90,7 @@ Both are public, single-use inputs to a cipher; the distinction is what *uniquen
 - An **initialization vector (IV)** is the per-message starting state of a feedback mode (CBC, CFB, OFB). It must be **unpredictable** — choose it uniformly at random per message — because predictable IVs in CBC enable chosen-plaintext attacks.
 - A **nonce** ("number used once") is the per-message public input to a counter mode (CTR), an AEAD construction (GCM, CCM, OCB, EAX), or a stream cipher (ChaCha20, Salsa20). It must be **unique** within the lifetime of the key. It does *not* need to be unpredictable; a counter is acceptable.
 
-In the BCL surface both appear on the `IV` property; the contract of the algorithm dictates which requirement applies. The extended-nonce stream ciphers (<xref:Bodu.Security.Cryptography.XChaCha20>, <xref:Bodu.Security.Cryptography.XSalsa20>) widen the nonce to 192 bits so a random nonce per message is safe; the originals (96-bit ChaCha20, 64-bit Salsa20) need either a counter or a much tighter key-rotation policy.
+On the block-cipher facades both appear on the `IV` property, and the contract of the mode dictates which requirement applies; the stream ciphers carry theirs on the `Nonce` property of <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> instead. The extended-nonce stream ciphers (<xref:Bodu.Security.Cryptography.XChaCha20>, <xref:Bodu.Security.Cryptography.XSalsa20>) widen the nonce to 192 bits so a random nonce per message is safe; the originals (96-bit ChaCha20, 64-bit Salsa20) need either a counter or a much tighter key-rotation policy.
 
 ## AEAD (Authenticated Encryption with Associated Data)
 
@@ -128,7 +128,7 @@ Bodu's tweakable surface is <xref:Bodu.Security.Cryptography.TweakableSymmetricA
 Cryptographic digests in this library come in three structural shapes:
 
 - **Plain digest** — fixed-length output. <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.Whirlpool>, <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024>, <xref:Bodu.Security.Cryptography.Blake2b> / <xref:Bodu.Security.Cryptography.Blake2s>, <xref:Bodu.Security.Cryptography.CubeHash>, <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256>, <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256>.
-- **Extendable-output function (XOF)** — caller chooses the output length at finalize time. <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128>, <xref:Bodu.Security.Cryptography.AsconCxof128>, and <xref:Bodu.Security.Cryptography.Blake3> when used in XOF mode.
+- **Extendable-output function (XOF)** — caller chooses the output length at finalize time. <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128>, and <xref:Bodu.Security.Cryptography.AsconCxof128>. (<xref:Bodu.Security.Cryptography.Blake3> is tree-structured internally but exposes only its fixed 256-bit digest here.)
 - **Tree** — input split into leaves, leaves hashed in parallel, levels reduced to a root. <xref:Bodu.Security.Cryptography.Blake3> uses an internal tree; <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> expose an explicit tree over any inner `HashAlgorithm`.
 
 ## MAC vs. one-time authenticator
@@ -166,7 +166,7 @@ Everything above uses a **single secret key** shared by both parties. **Public-k
 
 The post-quantum schemes (ML-DSA, ML-KEM) defend against the **"harvest now, decrypt later"** threat: an adversary who records today's traffic could decrypt it once a large-scale quantum computer exists. Data with a long confidentiality horizon should be protected with a post-quantum (or hybrid) scheme now, even though no such computer exists yet.
 
-These primitives produce and consume **raw key encodings only** — the fixed-length byte arrays defined by their standards. PKCS#8 / SPKI (DER / PEM) container formats are deliberately not implemented.
+Every one of these primitives produces and consumes the **raw key encodings** defined by its standard — the fixed-length byte arrays of RFC 7748 / RFC 8032 and FIPS 203 / FIPS 204. Key formats differ by family: `Ed25519` / `X25519` carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (`ImportPkcs8PrivateKey` / `ImportSubjectPublicKeyInfo` and the `TryExport…` pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.
 
 ## Hybrid public-key encryption (HPKE)
 
@@ -185,10 +185,10 @@ Reaching for the wrong one is a security bug: an HKDF over a raw password offers
 
 Every primitive plugs into the standard BCL contracts so existing crypto code adopts these types without changes:
 
-- <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> — base class for block ciphers, tweakable ciphers, and stream ciphers. Lifecycle: configure `Key`, `IV`, mode and padding; call `CreateEncryptor()` / `CreateDecryptor()` or the Bodu `Encrypt` / `Decrypt` extension methods.
-- <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> — base class for cryptographic digests and XOFs. Lifecycle: `Append` / `TransformBlock`, then `GetHashAndReset()` (or BCL `ComputeHash`).
-- <xref:System.Security.Cryptography.KeyedHashAlgorithm?displayProperty=nameWithType> — base class for MACs (SipHash, Poly1305); a `HashAlgorithm` with a required `Key` property.
-- <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType> — base class for the public-key schemes (Ed25519, X25519, ML-KEM, ML-DSA). Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate. These types work in **raw key encodings only** — PKCS#8 / SPKI (DER / PEM) are deliberately not implemented.
+- <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> — base class for the block ciphers and tweakable ciphers (through Bodu's <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>, which adds `BlockMode` / `BlockPadding`). Lifecycle: configure `Key`, `IV`, mode and padding; call `CreateEncryptor()` / `CreateDecryptor()` or the Bodu `Encrypt` / `Decrypt` extension methods. The stream ciphers are **not** `SymmetricAlgorithm`s — they derive from <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>, a standalone `IDisposable` base with `Key`, `Nonce`, `GenerateNonce()`, and `CreateTransform()`.
+- <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> — base class for the cryptographic digests and `Shake`. Lifecycle: one-shot `ComputeHash`, or `TransformBlock` … `TransformFinalBlock` then read `Hash` (the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> add `AppendData` / `VerifyHash`). The ASCON XOFs (`Absorb` / `Squeeze` / `GetHash`) and the Merkle tree hashes (factory-constructed, one-shot `ComputeHash`) use their own surfaces.
+- <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> — Bodu's base for the MACs (SipHash, Poly1305, and Skein's MAC mode): a `HashAlgorithm` with a required `Key` property. The library does not route through the BCL `KeyedHashAlgorithm`.
+- <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType> — base class for the public-key schemes (Ed25519, X25519, ML-KEM, ML-DSA). Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate. Key formats differ by family: `Ed25519` / `X25519` carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (`ImportPkcs8PrivateKey` / `ImportSubjectPublicKeyInfo` and the `TryExport…` pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.
 
 Bodu extends the BCL surface in two places:
 
