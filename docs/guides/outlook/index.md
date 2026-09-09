@@ -12,7 +12,7 @@ A `.msg` file *is* an OLE2 compound file: the message's properties live in a `__
 
 <xref:Bodu.Formats.Outlook.OutlookMessage> opens the container and eagerly decodes the root property stream, so the property surface is available without further I/O. Recipients, attachments, and the named-property mapping are materialized lazily on first access. Attachment payloads stream directly from the container, and an attached message opens recursively as a nested session sharing the root's container.
 
-Both packages share the flattened `Bodu.Formats.Outlook` namespace: the value model — <xref:Bodu.Formats.Outlook.MapiPropertyTag>, <xref:Bodu.Formats.Outlook.MapiProperty>, the tag-addressed <xref:Bodu.Formats.Outlook.MapiPropertyCollection>, and <xref:Bodu.Formats.Outlook.MapiNamedProperty> — carries no container knowledge, so a future `.pst` reader can share it unchanged.
+Both packages share the flattened `Bodu.Formats.Outlook` namespace: the value model — <xref:Bodu.Formats.Outlook.MapiPropertyTag>, <xref:Bodu.Formats.Outlook.MapiProperty>, the tag-addressed <xref:Bodu.Formats.Outlook.MapiPropertyCollection>, and <xref:Bodu.Formats.Outlook.MapiNamedProperty> — carries no container knowledge, so the `.pst` mail-store reader, `Bodu.Formats.Outlook.Pst` (over `Bodu.IO.Pst`; see the [Bodu.IO.Pst introduction](../../docs/io-pst/index.md)), shares it unchanged.
 
 > These guides cover the read path only — the reader never writes `.msg` files, emulates a MAPI session, or de-encapsulates RTF into HTML.
 

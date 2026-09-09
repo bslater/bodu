@@ -6,7 +6,7 @@ title: Binary Formats & I/O — Guides
 
 Recipe-style walk-throughs for the **Binary Formats & I/O** topic — readers (and, for `Bodu.IO.Compound`, a CFB writer) for legacy binary container and document formats. The packages form a strictly layered stack: a general-purpose container reader and writer at the bottom, with narrower format readers built on top.
 
-`Bodu.IO.Compound` reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage "file system in a file" used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. `Bodu.Formats.Excel.Binary` builds on it to surface raw worksheet cell values from BIFF8 `.xls` workbooks.
+`Bodu.IO.Compound` reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage "file system in a file" used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. `Bodu.Formats.Excel.Binary` builds on it to surface raw worksheet cell values from BIFF8 `.xls` workbooks, and `Bodu.Formats.Outlook.Msg` builds on it to open `.msg` messages. `Bodu.IO.Pst` reads the second container in the topic — the Outlook personal-folders (PST) node database — and `Bodu.Formats.Outlook.Pst` builds on it to open a `.pst` mail store in the same `Bodu.Formats.Outlook` MAPI value model.
 
 ## Bodu.IO.Compound guides
 
@@ -69,6 +69,29 @@ The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell 
 
 </div>
 
+## Bodu.Formats.Outlook guides
+
+The Outlook format readers — the shared MAPI value model in `Bodu.Formats.Outlook`, and the read-only `.msg` reader `Bodu.Formats.Outlook.Msg` built on `Bodu.IO.Compound`. (The `.pst` mail-store reader, `Bodu.Formats.Outlook.Pst`, is introduced with its container in the [Bodu.IO.Pst introduction](../../docs/io-pst/index.md).)
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../outlook/index.md">Overview</a></h3>
+  <p>The full guide index for the Outlook readers — how a <code>.msg</code> file sits inside the CFB container, the namespace map, and which guide covers each concern.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../outlook/reading-msg-files.md">Reading .msg files</a></h3>
+  <p>Open a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../outlook/properties-and-named-properties.md">Properties and named properties</a></h3>
+  <p>The raw property surface, typed accessors, tags and wire types, and resolving named properties.</p>
+</div>
+
+</div>
+
 ## Start here
 
 1. **[Topic overview](../../docs/topics/binary-formats.md)** — the layered container-vs-format split and package selection on the docs side.
@@ -81,6 +104,6 @@ The BIFF8 `.xls` reader built on `Bodu.IO.Compound` surfaces raw worksheet cell 
 
 - **[Binary Formats & I/O overview](../../docs/topics/binary-formats.md)** — the topic landing page on the docs side.
 - **[Binary Formats & I/O concepts](../../docs/topics/binary-formats-concepts.md)** — the cross-package vocabulary.
-- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md).
-- **Guide index:** [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md).
-- **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).
+- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md) · [Bodu.IO.Pst](../../docs/io-pst/index.md).
+- **Guide index:** [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md) · [Bodu.Formats.Outlook](../outlook/index.md).
+- **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook).

@@ -37,7 +37,7 @@ NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso.
 
 ## Rules and strategies
 
-<xref:Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder> sets the rule's scalars (`WithPriority`, `WithCategory`, `AsNonWorking`, `WithDurationDays`, `WithComment`, `AddTag`), its applicability (`ForCalendar`, `ForTerritory` / `ForTerritories`, `FromYear`, `ToYear`, `EveryYears`, `AnchorYear`, `OnlyYears`, `ExceptYears`), its adjustment references (`WithAdjustment`), and **exactly one** of the six resolution strategies:
+<xref:Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder> sets the rule's scalars (`WithPriority`, `WithCategory`, `AsNonWorking`, `WithDurationDays`, `WithComment`, `AddTag`), its applicability (`ForCalendar`, `ForTerritory` / `ForTerritories`, `FromYear`, `ToYear`, `EveryYears`, `AnchorYear`, `OnlyYears`, `ExceptYears`), its adjustment references (`WithAdjustment`), and **exactly one** occurrence source — a single-date strategy or a frequency-based recurrence source. The most common:
 
 ```csharp
 r.Fixed(1, 1);                                                       // 1 January (month name or number)
@@ -48,7 +48,7 @@ r.OffsetFromRule("easter-sunday", -2, ruleRef: "default");          // Good Frid
 r.Algorithm("western-easter");                                       // a named algorithm key
 ```
 
-Selecting a second strategy on the same rule throws <xref:System.InvalidOperationException> — each rule commits to one. See [Date calculation algorithms](algorithms.md) for the strategy semantics and the `<Algorithm>` keys.
+The remaining single-date strategies (`OrdinalDayOfMonth`, `DayOfYear`, `IsoWeekDate`, `WeekdayNearRule`, `NthWeekdayFromRule`, `WorkingDayOffsetFromRule`, `WorkingDayInMonth`) and the recurrence sources (`DailyInterval`, `Weekly`, `MonthlyDay`, `MonthlyWeekday`) follow the same shape. Selecting a second strategy on the same rule throws <xref:System.InvalidOperationException> — each rule commits to one. See the [strategy reference](strategy-reference.md) for the full catalogue and [Date calculation algorithms](algorithms.md) for the strategy semantics and the `<Algorithm>` keys.
 
 ## Adjustment policies
 
@@ -151,7 +151,7 @@ Round-tripping carries precise guarantees — builder-canonical XML is byte-stab
 - [Builder round-trip guarantees](round-trip-guarantees.md) — exactly what `FromXml` / `ToXml`, `FromJson` / `ToJson`, and `Save` / `Load` guarantee.
 - [Authoring notable date rules](rule-authoring.md) — the XML / JSON document model the builder produces.
 - [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference.
-- [Date calculation algorithms](algorithms.md) — the six strategies and the `<Algorithm>` keys.
+- [Date calculation algorithms](algorithms.md) — the strategy kinds and the `<Algorithm>` keys.
 - [Using NotableDateService](notable-dates.md) — resolving the documents you build.
 - [`Bodu.Globalization.Calendar.Builder` API reference](xref:Bodu.Globalization.Calendar.Builder) — the full type list.
 - **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

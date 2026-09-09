@@ -154,5 +154,5 @@ content-dependent and mode-driven. They are intentionally **not** <xref:Bodu.Tex
 - **[Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding)** — full type-by-type docs.
 - **Special-purpose guides** — [Base45](../../guides/text-encoding/base45.md) (QR codes), [Base62](../../guides/text-encoding/base62.md) (compact IDs), [Bech32](../../guides/text-encoding/bech32.md) (checksummed addresses).
 - **Escape-encoding guides** — [Quoted-Printable](../../guides/text-encoding/quoted-printable.md) (MIME bodies), [Percent-encoding](../../guides/text-encoding/percent-encoding.md) (URIs and forms).
-- **For structured document formats** (Bencode, INI, TOML) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md).
-- **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML serializers.
+- **For structured document formats** (CSV / TSV, DotEnv, INI) with their own self-describing grammar, see [Bodu.Text.Formats](../formats/index.md); for object serialization to Bencode, TOML, or YAML, see the [Bodu serializers](../serialization/index.md).
+- **[Text & Serialization topic](../topics/text-and-serialization.md)** — this package alongside its siblings Bodu.Text.Formats and the Bencode / TOML / YAML serializers.

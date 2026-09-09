@@ -378,6 +378,6 @@ When the anchor rule produces no occurrence for the year, the offset rule produc
 - [NotableDateRule and adjustment-policy reference](rule-reference.md) — the element-by-element field reference for every fragment above.
 - [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
 - [Authoring notable date rules](rule-authoring.md) — assembling whole documents, importing the common catalogues, and overrides.
-- [Date calculation algorithms](algorithms.md) — the six strategies and the built-in `<Algorithm>` keys.
+- [Date calculation algorithms](algorithms.md) — the strategy kinds and the built-in `<Algorithm>` keys.
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — fixed dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
 - **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

@@ -22,9 +22,9 @@ The calendar runtime is intentionally small. Region-specific holiday data and de
 | `Bodu.Globalization.Calendar.Builder` | Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save. See the [builder guide](../../guides/calendar/notable-date-builder.md). |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` extensions for registering `INotableDateService` over a loaded `NotableDateResource`. See the [DI guide](../../guides/calendar/dependency-injection.md). |
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external assemblies that contribute custom date-calculation algorithms. See [Building and extending the service](../../guides/calendar/building-the-service.md). |
-| `Bodu.Globalization.Calendar.Americas` | Curated public-holiday rules for `US`, `CA`. |
+| `Bodu.Globalization.Calendar.Americas` | Curated public-holiday rules for `AR`, `BR`, `CA`, `CL`, `CO`, `MX`, `PE`, `US`. |
 | `Bodu.Globalization.Calendar.Europe` | Curated rules for 28 European territories including `DE`, `ES`, `FR`, `GB`, `IT`, `NL`. |
-| `Bodu.Globalization.Calendar.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `IN`, `JP`, `KR`, `MY`, `NZ`, `SG`. |
+| `Bodu.Globalization.Calendar.AsiaPacific` | Curated rules for `AU` (with subdivisions), `CN`, `HK`, `ID`, `IN`, `JP`, `KR`, `MY`, `NZ`, `PH`, `SG`, `TH`, `TW`, `VN`. |
 | `Bodu.Globalization.Calendar.Africa` | Curated rules for `ZA`, `NG`, `KE`, `GH`, `ET`, `EG`, `MA`. |
 | `Bodu.Globalization.Calendar.MiddleEast` | Curated rules for `AE`, `SA`, `IL`, `TR`, `QA`, `JO`. |
 
@@ -46,7 +46,7 @@ A **rule document** is authored text on the notable-date schema. **`NotableDateR
 |---|---|
 | **Document / resource** | The authored XML/JSON, and the immutable validated value it loads into. |
 | **Definition / rule** | A notable-date concept, and one of its calculation recipes. |
-| **Resolution strategy** | How a rule finds its nominal date: fixed, *n*th weekday-in-month, relative weekday, weekday-near-date, offset-from-rule, or algorithm. |
+| **Resolution strategy** | How a rule finds its nominal date — a fixed or positional date, a weekday-in-month rule, a reference to another rule, a working-day rule, or a named algorithm (13 single-date strategies), or one of the four frequency-based recurrence sources. See the [strategy reference](../../guides/calendar/strategy-reference.md). |
 | **Adjustment policy** | A reusable post-resolution shift that moves or substitutes the date — e.g. weekend rollover, substitute Monday — referenced by rules. |
 | **Territory** | Geographic scope where the rule applies — `AU` for Australia, `AU-NSW` for New South Wales. |
 | **Category / tag** | Classification used for filtering and display. `NotableDateCategory` is the well-known enum; tags are free-form strings. |
@@ -134,7 +134,7 @@ The `Bodu.Globalization.Calendar.Algorithms` namespace resolves an `<Algorithm k
 | `matariki` | New Zealand Matariki (gazetted table). |
 | `diwali`, `holi`, `maha-shivaratri`, … | Hindu lunisolar festivals. |
 
-Beneath the `<Algorithm key="…">` keys, the same `Bodu.Globalization.Calendar.Algorithms` namespace holds the date-computation **strategy** family — one type per resolution-strategy kind: <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy>, and <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> (the bridge to a named `INotableDateAlgorithm`). A rule selects its strategy declaratively through the notable-date XML / JSON or the [builder](../../guides/calendar/notable-date-builder.md); the strategies are resolved by the loader and are not instantiated directly by consumers. See the [algorithms guide](../../guides/calendar/algorithms.md).
+Beneath the `<Algorithm key="…">` keys, the same `Bodu.Globalization.Calendar.Algorithms` namespace holds the date-computation **strategy** family — one type per resolution-strategy kind. The most common are <xref:Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy>, <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy>, and <xref:Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy> (the bridge to a named `INotableDateAlgorithm`); the full catalogue is 13 <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> implementations plus the four <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> recurrence sources — see the [strategy reference](../../guides/calendar/strategy-reference.md). A rule selects its strategy declaratively through the notable-date XML / JSON or the [builder](../../guides/calendar/notable-date-builder.md); the strategies are resolved by the loader and are not instantiated directly by consumers. See the [algorithms guide](../../guides/calendar/algorithms.md).
 
 Region-specific holiday rules ship separately in the `Bodu.Globalization.Calendar.<Region>` data packs (`Americas`, `AsiaPacific`, `Europe`, `Africa`, `MiddleEast`) — see [Calendar data packs](../../guides/calendar/data-packs.md).
 
@@ -152,7 +152,7 @@ Region-specific holiday rules ship separately in the `Bodu.Globalization.Calenda
 
 ## Dependency injection
 
-The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `INotableDateService` into a `Microsoft.Extensions.DependencyInjection` container as a singleton via `services.AddNotableDateService(resource)` (or a resource factory), and `services.AddReloadableNotableDateService(resource)` for the runtime-swap workflow. There is no options object — the resource carries the behaviour. See the [dependency-injection guide](../../guides/calendar/dependency-injection.md).
+The optional `Bodu.Globalization.Calendar.DependencyInjection` companion package wires `INotableDateService` into a `Microsoft.Extensions.DependencyInjection` container as a singleton. `AddNotableDateService` has six overloads — a loaded resource or a resource factory, each with or without a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> (or an options factory) carrying the optional collaborators, plus two **keyed** forms (`string serviceKey`) for multi-jurisdiction hosts — and `AddReloadableNotableDateService` has four (resource, resource + options, resource factory + options, and an `IOptionsMonitor<TOptions>`-driven factory) for the runtime-swap workflow. Resource-level behaviour still lives in the document's `<ResolutionPolicy>`; the options object only carries collaborators. See the [dependency-injection guide](../../guides/calendar/dependency-injection.md).
 
 ## Advanced extensibility
 

@@ -52,6 +52,9 @@ Every companion depends on the runtime and attaches at one seam of the pipeline:
 | `…Calendar.<Region>` data packs | Loading | Curated documents plus the load-and-import wiring, behind a `<Region>CalendarData` factory. |
 | `…Calendar.Plugins` | Resolution (algorithms) | Trust-gated discovery of external algorithm assemblies. |
 | `…Calendar.DependencyInjection` | Hosting | `services.AddNotableDateService(resource)` and the reloadable runtime-swap registration. |
+| `…Calendar.Caching` (+ `.Sqlite`, `.Distributed`) | Serving (after resolution) | `CachingNotableDateService` decorates any `INotableDateService` with a per-territory, per-civil-year cache; the add-ons supply SQLite and `IDistributedCache` backends. |
+| `…Calendar.Tool` / `…Calendar.Build` | Build time (before load) | The `bodu-calendar` tool lints documents and compiles them to sealed `.bcal` binary packs; the Build package runs the same compile incrementally from MSBuild. |
+| `Bodu.Globalization.Recurrence` | — (independent sibling) | RFC 5545 recurrence rules, cron expressions, and anchored intervals; depends only on `Bodu.Core` and shares no dependency with the calendar engine in either direction. |
 
 The runtime never depends on a companion; the composition is strictly one-directional, which is why each piece can be adopted — or skipped — independently.
 

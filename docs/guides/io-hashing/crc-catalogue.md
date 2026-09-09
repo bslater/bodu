@@ -90,6 +90,7 @@ Access the following via `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromN
 | CRC-7/ROHC | 7 | academic | `CrcStandards.CRC7_ROHC` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc) |
 | CRC-7/UMTS | 7 | academic | `CrcStandards.CRC7_UMTS` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts) |
 | CRC-8/AUTOSAR | 8 | attested | `CrcStandards.CRC8_AUTOSAR` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar) |
+| CRC-8/BLUETOOTH | 8 | attested | `CrcStandards.CRC8_BLUETOOTH` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-bluetooth) |
 | CRC-8/CDMA2000 | 8 | academic | `CrcStandards.CRC8_CDMA2000` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000) |
 | CRC-8/DARC | 8 | attested | `CrcStandards.CRC8_DARC` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc) |
 | CRC-8/DVB-S2 | 8 | academic | `CrcStandards.CRC8_DVBS2` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2) |
@@ -180,7 +181,6 @@ Access the following via `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromN
 | CRC-40/GSM | 40 | academic | `CrcStandards.CRC40_GSM` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm) |
 | **CRC-64/ECMA-182** | 64 | academic | `CrcStandards.CRC64_ECMA182` | `CRC-64` | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182) |
 | CRC-64/GO-ISO | 64 | confirmed | `CrcStandards.CRC64_GOISO` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso) |
-| CRC-64/JONES | 64 | confirmed | `CrcStandards.CRC64_JONES` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-jones) |
 | CRC-64/MS | 64 | attested | `CrcStandards.CRC64_MS` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms) |
 | CRC-64/NVME | 64 | attested | `CrcStandards.CRC64_NVME` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme) |
 | CRC-64/REDIS | 64 | academic | `CrcStandards.CRC64_REDIS` | — | [spec](https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis) |

@@ -4,7 +4,7 @@ title: Mapping attributes
 
 # Mapping attributes
 
-The TOML serializer exposes an attribute family for shaping how a type maps to the wire: every TOML attribute derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) mirror this family with their own prefix — see the [serializer guides hub](../index.md). Each pattern below shows the TOML form and its output.
+The TOML serializer honours the attribute family from the shared <xref:Bodu.Text.Serialization> package for shaping how a type maps to the wire: every attribute derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) honour the very same attributes — there is no per-format prefix — see the [serializer guides hub](../index.md). Each pattern below shows the TOML form and its output.
 
 ## Pattern 1 — Rename a member
 
@@ -222,8 +222,8 @@ The attribute applies only to by-name serialization (the default enum handling, 
 
 When several settings could govern the same member, the closest one wins:
 
-1. a member-level attribute (`[PropertyName]`, `[Ignore]`, `[TomlConverter]`, `[ObjectCreationHandling]`, …);
-2. a type-level attribute (`[NamingPolicy]`, `[TomlConverter]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`);
+1. a member-level attribute (`[PropertyName]`, `[Ignore]`, `[Converter]`, `[ObjectCreationHandling]`, …);
+2. a type-level attribute (`[NamingPolicy]`, `[Converter]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`);
 3. the serializer options (`PropertyNamingPolicy`, `Converters`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
 
 ## See also

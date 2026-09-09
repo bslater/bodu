@@ -4,7 +4,7 @@ title: Mapping attributes
 
 # Mapping attributes
 
-The Bencode serializer exposes a family of attributes for shaping how a type maps to the wire — every one derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same family with their own prefix; the patterns transfer directly. Each pattern below shows the Bencode form and the dictionary entry it writes.
+The Bencode serializer honours the attribute family from the shared <xref:Bodu.Text.Serialization> package for shaping how a type maps to the wire — every one derives <xref:Bodu.Text.Serialization.SerializationAttribute>. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers honour the very same attributes (there is no per-format prefix); the patterns transfer directly. Each pattern below shows the Bencode form and the dictionary entry it writes.
 
 ## Pattern 1 — Rename a member
 
@@ -210,8 +210,8 @@ The attribute applies only to by-name serialization (the default enum handling, 
 
 When several settings could govern the same member, the closest one wins:
 
-1. a member-level attribute (`[PropertyName]`, `[Ignore]`, `[BencodeConverter]`, `[ObjectCreationHandling]`, …);
-2. a type-level attribute (`[NamingPolicy]`, `[BencodeConverter]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`);
+1. a member-level attribute (`[PropertyName]`, `[Ignore]`, `[Converter]`, `[ObjectCreationHandling]`, …);
+2. a type-level attribute (`[NamingPolicy]`, `[Converter]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`);
 3. the serializer options (`PropertyNamingPolicy`, `PropertyNameCaseInsensitive`, `Converters`, `DefaultIgnoreCondition`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `IncludeFields`).
 
 A member with no explicit `[Ignore]` falls back to the options-level `DefaultIgnoreCondition` (default `Never`); an absent `[NamingPolicy]` falls back to `PropertyNamingPolicy`. The `[PropertyName]` name always wins over every policy at any level.
@@ -219,6 +219,6 @@ A member with no explicit `[Ignore]` falls back to the options-level `DefaultIgn
 ## See also
 
 - **[Using Bencode](using.md)** — the format walk-through these attributes shape.
-- **[Writing converters](converters.md)** — `[BencodeConverter]` placement and the resolution order in detail.
+- **[Writing converters](converters.md)** — `[Converter]` placement and the resolution order in detail.
 - **[Bencode guides](index.md)** — the full guide index for the Bencode serializer.
 - **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the serializers.

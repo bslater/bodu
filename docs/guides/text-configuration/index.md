@@ -16,8 +16,9 @@ vocabulary (document, view, profile, target path, preamble, glob pattern, key ma
 ![Bodu Text Configuration pipeline](../../images/diagrams/text-configuration-pipeline.svg)
 
 A configuration document is parsed once and then projected — through a target path — into a flat
-<xref:Bodu.Text.Configuration.ConfigurationView>. The reader produces an immutable
-<xref:Bodu.Text.Configuration.IniDocument>; the resolver layers the preamble plus matching glob-anchored sections in source
+<xref:Bodu.Text.Configuration.ConfigurationView>. The reader produces a
+<xref:Bodu.Text.Configuration.ConfigurationDocument> over the read-only <xref:Bodu.Text.Configuration.IniDocumentBase>
+model (each <xref:Bodu.Text.Configuration.IniSection> stays editable through `SetEntry`); the resolver layers the preamble plus matching glob-anchored sections in source
 order; the view exposes typed accessors that return the effective value for each colon-delimited key.
 
 ## Guides

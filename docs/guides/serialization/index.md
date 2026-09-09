@@ -24,7 +24,7 @@ If you are new to the family, start with the [introduction](../../docs/serializa
 
 <div class="bodu-card">
   <h3><a href="yaml/index.md">YAML guides</a></h3>
-  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema (opt-in 1.1 typing), both DOMs, multi-document streams, member shaping with <code>[Yaml…]</code> attributes and naming policies, custom converters, and the built-in catalog.</p>
+  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema (opt-in 1.1 typing), both DOMs, multi-document streams, member shaping with the shared <code>Bodu.Text.Serialization</code> attributes and naming policies, custom converters, and the built-in catalog.</p>
 </div>
 
 </div>

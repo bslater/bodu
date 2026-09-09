@@ -28,8 +28,8 @@ into a typed graph and round-trips; YAML's implicit scalar typing coerces string
 null with the `YamlNumberHandling` knob; sequences and mappings bind to `List<T>`/arrays and
 `Dictionary<,>`; wire names layer a naming policy under the shared attribute family
 (`[PropertyName]`, `[Ignore]`, `[Required]`) with `WriteEnumsAsStrings` controlling enum output;
-and the wire knobs — `YamlSpecVersion` (defaulting to the Norway-problem-safe v1.2), scalar-style
-selection, and the duplicate-key and merge-key behaviours — are each shown. *Package:
+and the wire knobs — `YamlSpecVersion` (defaulting to the Norway-problem-safe v1.2) and the
+duplicate-key and merge-key behaviours — are each shown. *Package:
 `Bodu.Text.Yaml`.*
 
 ### Bodu.Text.Yaml.Samples.YamlDocuments

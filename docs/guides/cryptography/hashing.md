@@ -4,7 +4,7 @@ title: Using hashes and checksums
 
 # Using hashes and checksums
 
-**Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, ASCON-HASH256, ASCON-HASHA256), and Merkle-tree hashing. All of them plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract.
+**Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and the Merkle tree hashes are factory-constructed one-shot `ComputeHash` types over any inner `HashAlgorithm`.
 
 This page is the cross-cutting overview — what guarantee a cryptographic hash actually makes, how the structural shapes (digest / XOF / tree) differ, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:
 
@@ -13,6 +13,10 @@ This page is the cross-cutting overview — what guarantee a cryptographic hash 
 - [Using Tiger](tiger.md) — 128 / 160 / 192-bit cryptographic digest.
 - [Using CubeHash](cubehash.md) — SHA-3 submission with tunable rounds and block size.
 - [Using Snefru](snefru.md) — legacy 128 / 256-bit digest (interop only).
+- [Using Whirlpool](whirlpool.md) — 512-bit ISO/IEC 10118-3 digest.
+- [Using BLAKE2 and BLAKE3](blake.md) — BLAKE2b / BLAKE2s (keyed, configurable width) and the tree-structured BLAKE3.
+- [Using Skein](skein.md) — Threefish-based UBI digests with a MAC mode.
+- [Using SHAKE](shake.md) — Keccak extendable-output function (FIPS 202).
 - [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) — NIST SP 800-232 sponge digests; two variants trading margin for throughput.
 - [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity.
 

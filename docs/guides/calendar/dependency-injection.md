@@ -160,7 +160,7 @@ Anything the registration surface still cannot express remains expressible as a 
 ## Where to go next
 
 - **[Building and extending the service](building-the-service.md)** — the collaborators (`NotableDateAlgorithmRegistry`, collision resolver, adjustment handlers, code-first providers) you can compose into the resource/service before registering it.
-- **[Calendar data packs](data-packs.md)** — composing an Americas / Asia-Pacific / Europe pack resource through `AddNotableDateService`.
+- **[Calendar data packs](data-packs.md)** — composing a regional pack resource (Americas / Asia-Pacific / Europe / Middle East / Africa) through `AddNotableDateService`.
 - **[Using NotableDateService](notable-dates.md)** — query patterns and working-day arithmetic.
 - **[Bodu.Globalization.Calendar.DependencyInjection API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** — the registration surface.
 - **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

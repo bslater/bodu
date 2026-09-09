@@ -8,7 +8,7 @@ Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, 
 
 **Bodu.IO.Hashing** is the non-cryptographic library — fast fingerprints for hash-table keys and caches, error-detecting checksums (CRC, Fletcher, Adler) for transmission and storage channels, and check digits (Luhn, Damm, IBAN, ISBN, …) for human-typed identifiers. Nothing in it carries a security guarantee: every algorithm is trivially forgeable by anyone who controls the bytes, and that is by design — it buys speed, portability, and characterized error coverage on *trusted* input.
 
-**Bodu.Security.Cryptography** is the adversarial-setting library — block, tweakable, and stream ciphers, AEAD constructions, keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, and memory-hard key-derivation functions (Argon2, scrypt). Every algorithm is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions.
+**Bodu.Security.Cryptography** is the adversarial-setting library — block, tweakable, and stream ciphers, AEAD constructions (block-cipher modes, ASCON, and the Poly1305 stream-cipher pairings), keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), key-derivation functions (memory-hard Argon2 and scrypt, plus HKDF), and one-time passwords (HOTP / TOTP). Every algorithm is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions.
 
 ![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
 
@@ -16,8 +16,8 @@ Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, 
 
 | Package | Status | What it provides | Docs |
 |---|---|---|---|
-| **Bodu.IO.Hashing** | Stable | Fingerprints (FNV, CityHash, MurmurHash3, Pearson, the classic string hashes), checksums (`Crc` with 113 named standards, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA, LEI, ISO 7064) — all on the BCL `NonCryptographicHashAlgorithm` contract. | [Introduction](../io-hashing/index.md) · [Concepts](../io-hashing/concepts.md) · [Getting started](../io-hashing/getting-started.md) |
-| **Bodu.Security.Cryptography** | Stable | Block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 families, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), MACs (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, and KDFs (Argon2, scrypt) — on the BCL `SymmetricAlgorithm` / `HashAlgorithm` contracts. | [Introduction](../cryptography/index.md) · [Concepts](../cryptography/concepts.md) · [Getting started](../cryptography/getting-started.md) |
+| **Bodu.IO.Hashing** | Stable | Fingerprints (FNV, CityHash, MurmurHash3, Pearson, the classic string hashes), checksums (`Crc` with 112 named standards, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, EAN, GTIN, ISIN, IBAN, ISBN, SEDOL, CUSIP, ABA, LEI, ISO 7064) — all on the BCL `NonCryptographicHashAlgorithm` contract. | [Introduction](../io-hashing/index.md) · [Concepts](../io-hashing/concepts.md) · [Getting started](../io-hashing/getting-started.md) |
+| **Bodu.Security.Cryptography** | Stable | Block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 families, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), MACs (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), KDFs (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP) — the ciphers, digests, MACs, and public-key types on the BCL `SymmetricAlgorithm` / `HashAlgorithm` / `AsymmetricAlgorithm` contracts. | [Introduction](../cryptography/index.md) · [Concepts](../cryptography/concepts.md) · [Getting started](../cryptography/getting-started.md) |
 
 ## Two libraries, one decision
 
@@ -50,15 +50,17 @@ Cross the line the moment the trust assumption changes. A CRC that guards a down
 
 - **Fingerprints** (`Bodu.IO.Hashing`) — even distribution and speed for hash-table keys, cache bucketing, and deduplication. Judged on avalanche and streaming behavior, not error coverage.
 - **Checksums** (`Bodu.IO.Hashing.Checksums`) — short tags engineered to catch the error patterns of a channel: single-bit flips, burst errors, adjacent transpositions. Polynomial-remainder (`Crc`) and twin-accumulator (Fletcher, Adler) shapes.
-- **Check digits** (`Bodu.IO.Hashing.CheckDigits`, with the multi-character schemes in `Checksums`) — one or two characters appended to a *printed identifier* so a later reader can confirm it was not mis-typed.
+- **Check digits** (`Bodu.IO.Hashing.CheckDigits` — decimal, alphanumeric, and multi-character schemes alike) — one or two characters appended to a *printed identifier* so a later reader can confirm it was not mis-typed.
 
 **Bodu.Security.Cryptography** spans the cryptographic roles:
 
 - **Symmetric ciphers** — standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only — pair with a MAC or prefer AEAD).
-- **AEAD** — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via `AsconAead128` or AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms.
+- **AEAD** — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via `AsconAead128`, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (`XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and the libsodium-compatible `XSalsa20Poly1305`).
 - **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, Merkle trees).
 - **Keyed hashes / MACs** — the reusable PRF (SipHash) and the one-time authenticator (Poly1305).
-- **KDFs** — memory-hard password hashing and key derivation (Argon2id / Argon2i / Argon2d, scrypt).
+- **Public-key** — signatures (`Ed25519`, the post-quantum `MLDsa44/65/87`), key agreement (`X25519`), key encapsulation (the post-quantum `MLKem512/768/1024`), and `Hpke` (RFC 9180), which seals a message to a recipient's public key.
+- **KDFs** — memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand `Hkdf` for high-entropy secrets.
+- **One-time passwords** — `Hotp` (RFC 4226) and `Totp` (RFC 6238) code generation and verification.
 
 The lifecycle shape differs accordingly. Non-cryptographic hashes snapshot non-destructively; cryptographic algorithms finalize and dispose:
 

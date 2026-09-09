@@ -24,7 +24,7 @@ If you are new to the family, start with the [introduction](../../../docs/serial
 
 <div class="bodu-card">
   <h3><a href="converters.md">Writing converters</a></h3>
-  <p>Derive <code>YamlConverter&lt;T&gt;</code>, implement <code>Read(YamlElement, options)</code> and <code>Write(ref Utf8YamlWriter, …)</code>, and register on <code>options.Converters</code>.</p>
+  <p>Derive <code>YamlConverter&lt;T&gt;</code>, implement <code>Read(ref Utf8YamlReader, Type, YamlSerializerOptions)</code> and <code>Write(Utf8YamlWriter, T, YamlSerializerOptions)</code>, and register on <code>options.Converters</code>.</p>
 </div>
 
 <div class="bodu-card">

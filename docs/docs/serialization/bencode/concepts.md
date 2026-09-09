@@ -60,7 +60,7 @@ The first match wins, and the result is cached on the options.
 
 The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` namespace:
 
-- **Attributes** — `[PropertyName]`, `[Ignore]`, `[BencodeConverter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
+- **Attributes** — `[PropertyName]`, `[Ignore]`, `[Converter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
 - **Callbacks** — the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
 - **Naming policies** — <xref:Bodu.Text.Serialization.NamingPolicy>`.CamelCase`, `.SnakeCaseLower` / `.SnakeCaseUpper`, `.KebabCaseLower` / `.KebabCaseUpper`, plus the `BencodeSerializerDefaults.Web` preset.
 - **Enum converters** — a string-enum converter (member names) and a number-enum converter.

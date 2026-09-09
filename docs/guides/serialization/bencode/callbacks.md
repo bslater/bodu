@@ -4,7 +4,7 @@ title: Serialization callbacks
 
 # Serialization callbacks
 
-The Bencode serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces: <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers expose the same four hooks with their own prefix.
+The Bencode serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces: <xref:Bodu.Text.Serialization.IOnSerializing>, <xref:Bodu.Text.Serialization.IOnSerialized>, <xref:Bodu.Text.Serialization.IOnDeserializing>, and <xref:Bodu.Text.Serialization.IOnDeserialized>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The interfaces live in the shared <xref:Bodu.Text.Serialization> package, so the sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers honour exactly the same four hooks.
 
 | Hook | Runs | Typical use |
 |---|---|---|
@@ -141,7 +141,7 @@ Two consequences worth noting. On read, the member *converters* run before `OnDe
 
 ## Interplay with custom converters
 
-The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a dictionary. A type claimed by a *custom* converter (via `[BencodeConverter]` or `options.Converters`) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so **none of the callbacks fire for that type, even when it implements the interfaces**. If a converter-handled type needs lifecycle behavior, perform it inside the converter's `Read` / `Write`.
+The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a dictionary. A type claimed by a *custom* converter (via `[Converter]` or `options.Converters`) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so **none of the callbacks fire for that type, even when it implements the interfaces**. If a converter-handled type needs lifecycle behavior, perform it inside the converter's `Read` / `Write`.
 
 Member-level converters and callbacks compose, however: a callback-bearing type whose *members* use custom converters still fires all four hooks — the custom converters simply do the per-member reading and writing in phases 1 and 4 above.
 

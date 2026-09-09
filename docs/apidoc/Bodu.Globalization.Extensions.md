@@ -6,15 +6,24 @@ uid: Bodu.Globalization.Extensions
 
 ## Purpose
 
-**Bodu.Globalization.Extensions** holds the globalisation-specific helpers used by `Bodu.Globalization.Calendar` and surfaced for consumer use. The types here augment the BCL globalisation surface with calendar-aware helpers that don't fit naturally into <xref:Bodu.Extensions>.
+**Bodu.Globalization.Extensions** is a small companion namespace in the `Bodu.Core` package holding a single extension class over the BCL <xref:System.Globalization.DateTimeFormatInfo>. It answers one question the BCL leaves open — a culture declares the day its week *starts* on (`FirstDayOfWeek`), but not the day it *ends* on — and the week-boundary helpers in <xref:Bodu.Extensions> build on it.
 
 ## Key types
 
-The namespace provides helpers for working with `CultureInfo`, `RegionInfo`, `WeekPattern`, and `WorkingDaysOfWeek` in scenarios where the BCL surface is too narrow for calendar-style queries.
+- <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> — one method, `LastDayOfWeek(this DateTimeFormatInfo)`, which returns the day six days after the culture's `FirstDayOfWeek`: Sunday for a Monday-first culture, Saturday for a Sunday-first one.
 
-For the broader date / time / culture surface, see <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions>, and <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions>.
+## Example
+
+```csharp
+using System.Globalization;
+using Bodu.Globalization.Extensions;
+
+DateTimeFormatInfo enGb = CultureInfo.GetCultureInfo("en-GB").DateTimeFormat;
+DayOfWeek first = enGb.FirstDayOfWeek;    // Monday — BCL property
+DayOfWeek last  = enGb.LastDayOfWeek();   // Sunday — Bodu extension
+```
 
 ## Notes
 
-- **Companion namespace.** Most date / time helpers live in <xref:Bodu.Extensions>; this namespace covers the narrower globalisation-aware surface that `Bodu.Globalization.Calendar` depends on.
-- **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the [Bodu.Globalization.Calendar introduction](~/docs/calendar/index.md), <xref:Bodu.Extensions>.
+- **Companion namespace.** The broader date / time / culture surface — first and last date of the week, ISO week numbering, working-week tests — lives in <xref:Bodu.Extensions.DateTimeExtensions> and <xref:Bodu.Extensions.DateOnlyExtensions>; day-of-week *sets* are modelled by <xref:Bodu.WeekPattern> and <xref:Bodu.WorkingDaysOfWeek>.
+- **See also:** the [Bodu.Core introduction](~/docs/core/index.md), <xref:Bodu.Extensions>.

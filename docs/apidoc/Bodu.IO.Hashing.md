@@ -6,7 +6,7 @@ uid: Bodu.IO.Hashing
 
 ## Purpose
 
-**Bodu.IO.Hashing** is a focused library of **non-cryptographic** hashes, checksums, and check digits built on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract. It covers three subfamilies: **fingerprints** (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), **checksums** (the full CRC RevEng catalogue at widths 1–64 bits, Fletcher 16/32/64, Adler 32/32C/64, plus multi-character identifier checksums like IBAN and ISBN), and **check digits** (Luhn, Damm, Verhoeff, EAN/GTIN/UPC, ISIN, ABA routing).
+**Bodu.IO.Hashing** is a focused library of **non-cryptographic** hashes, checksums, and check digits built on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract. It covers three subfamilies: **fingerprints** (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), **checksums** (the full CRC RevEng catalogue at widths 1–64 bits, Fletcher 16/32/64, Adler 32/32C/64), and **check digits** (Luhn, Damm, Verhoeff, EAN/GTIN/UPC, ISIN, ABA routing, plus the alphanumeric and multi-character identifier schemes such as ISBN, IBAN, LEI, SEDOL, and CUSIP).
 
 Reach for this library when you need a fast, deterministic checksum for error detection, file integrity, framing, fingerprinting, or human-typed identifier validation — and when you want the result to drop straight into any API that accepts <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. If you need cryptographic integrity (against an active attacker, not just noise on the wire), see <xref:Bodu.Security.Cryptography> instead.
 
@@ -29,7 +29,7 @@ Reach for this library when you need a fast, deterministic checksum for error de
 - <xref:Bodu.IO.Hashing.Pearson> — table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; five built-in permutation tables via <xref:Bodu.IO.Hashing.Pearson.PearsonTableType>.
 - <xref:Bodu.IO.Hashing.Bernstein>, <xref:Bodu.IO.Hashing.BKDR>, <xref:Bodu.IO.Hashing.SDBM>, <xref:Bodu.IO.Hashing.JSHash>, <xref:Bodu.IO.Hashing.Elf64>, <xref:Bodu.IO.Hashing.ApHash>, <xref:Bodu.IO.Hashing.Pjw32>, <xref:Bodu.IO.Hashing.SuperFastHash> — classic string hashes from compilers and early web tooling.
 - <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm> — abstract base for buffered block-oriented algorithms.
-- <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — optional contract that reverse-finalizes a stored digest and continues appending; implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>.
+- <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — optional contract that reverse-finalizes a stored digest and continues appending; implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>, the <xref:Bodu.IO.Hashing.Fnv> family, the <xref:Bodu.IO.Hashing.Checksums.Fletcher> family, and the Adler family (<xref:Bodu.IO.Hashing.Checksums.Adler32Base> / <xref:Bodu.IO.Hashing.Checksums.Adler64Base>).
 
 **Checksums — `Bodu.IO.Hashing.Checksums`**
 
@@ -40,14 +40,14 @@ Reach for this library when you need a fast, deterministic checksum for error de
 - <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder> — builds a lookup table from parameters; used by the cache on first miss.
 - <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / <xref:Bodu.IO.Hashing.Checksums.Fletcher32> / <xref:Bodu.IO.Hashing.Checksums.Fletcher64> — twin-accumulator position-dependent checksums.
 - <xref:Bodu.IO.Hashing.Checksums.Adler32> / <xref:Bodu.IO.Hashing.Checksums.Adler32C> / <xref:Bodu.IO.Hashing.Checksums.Adler64> — Adler-32 (canonical zlib), Adler-32C (SIMD), Adler-64; over the shared <xref:Bodu.IO.Hashing.Checksums.Adler32Base> / <xref:Bodu.IO.Hashing.Checksums.Adler64Base> abstract bases.
-- <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Lei>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10> — multi-character and alphanumeric identifier checksums.
 
 **Check digits — `Bodu.IO.Hashing.CheckDigits`**
 
 - <xref:Bodu.IO.Hashing.CheckDigits.Luhn>, <xref:Bodu.IO.Hashing.CheckDigits.Damm>, <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff> — decimal-alphabet single-character check-digit algorithms with progressively wider error coverage.
 - <xref:Bodu.IO.Hashing.CheckDigits.Ean8>, <xref:Bodu.IO.Hashing.CheckDigits.Ean13>, <xref:Bodu.IO.Hashing.CheckDigits.Gtin14>, <xref:Bodu.IO.Hashing.CheckDigits.UpcA> — retail / shipping barcodes.
 - <xref:Bodu.IO.Hashing.CheckDigits.Isin>, <xref:Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber> — securities and bank-routing identifiers.
-- <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> — abstract bases, extension points for custom schemes.
+- <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Isbn13>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip>, <xref:Bodu.IO.Hashing.CheckDigits.Lei>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2>, <xref:Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10> — alphanumeric and multi-character identifier schemes.
+- <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> — the abstract root of the hierarchy; its derivatives <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, and <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> are the extension points for custom decimal, alphanumeric, and multi-character schemes.
 
 **Extensions — `Bodu.IO.Hashing.Extensions`**
 
@@ -82,6 +82,6 @@ byte[] combined = crc.ComputeHashFrom(previous, Encoding.UTF8.GetBytes(" jumps o
 - **Not cryptographically secure.** Every algorithm here is designed for error detection and hash-table distribution, not authentication. An attacker who can choose the input can trivially forge the output. Pair with a MAC or signature if integrity against an adversary matters — see <xref:Bodu.Security.Cryptography.SipHash64> for a keyed short-input hash, or `System.Security.Cryptography.SHA256` for a full cryptographic digest.
 - **Shared lookup tables.** <xref:Bodu.IO.Hashing.Checksums.Crc> instances with identical (width, polynomial, reflect-in) triples share a single 256-entry lookup table through <xref:Bodu.IO.Hashing.Checksums.Crc.GlobalCache>. Constructing a hundred `Crc(CrcStandard.CRC32_ISOHDLC)` instances allocates one table, not a hundred.
 - **Non-destructive `GetCurrentHash`.** Calling `NonCryptographicHashAlgorithm.GetCurrentHash` snapshots the accumulator and applies the final reflect / XOR / width-mask on the copy, so in-progress hashing is not disturbed. Call it as many times as you like.
-- **Resumable.** <xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — reverse-finalize a stored digest, append further data, re-finalize. Handy for chunked streams where re-reading earlier bytes is expensive.
+- **Resumable.** <xref:Bodu.IO.Hashing.Checksums.Crc>, the FNV family, the Fletcher family, and the Adler family implement <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — reverse-finalize a stored digest, append further data, re-finalize. Handy for chunked streams where re-reading earlier bytes is expensive.
 - **Determinism and portability.** All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.
 - **See also:** the [Using CRC](~/guides/io-hashing/crc.md) and [Using Fletcher](~/guides/io-hashing/fletcher.md) guides, the [full CRC catalogue](~/guides/io-hashing/crc-catalogue.md), and the [Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md).

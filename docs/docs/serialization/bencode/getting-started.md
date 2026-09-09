@@ -6,7 +6,7 @@ title: Bodu.Text.Bencode — Getting started
 
 ## Install
 
-Add the package. It is self-contained — there is no shared engine package to add.
+Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.
 
 ```shell
 dotnet add package Bodu.Text.Bencode
@@ -35,6 +35,7 @@ FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 
 ```csharp
 using Bodu.Text.Bencode;
+using Bodu.Text.Serialization;
 
 var options = new BencodeSerializerOptions
 {

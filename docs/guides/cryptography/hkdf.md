@@ -51,7 +51,7 @@ When you derive several independent keys from one secret, extract a single PRK a
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-byte[] prk = Hkdf.Extract(HashAlgorithmName.SHA256, ikm: sharedSecret, salt: salt);
+byte[] prk = Hkdf.Extract(HashAlgorithmName.SHA256, inputKeyingMaterial: sharedSecret, salt: salt);
 
 byte[] encryptionKey = Hkdf.Expand(HashAlgorithmName.SHA256, prk, 32, info: "encrypt"u8);
 byte[] macKey        = Hkdf.Expand(HashAlgorithmName.SHA256, prk, 32, info: "mac"u8);

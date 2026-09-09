@@ -16,7 +16,7 @@ Configuration flows through five stages; every stage past the parse is opt-in.
 
 | Stage | Performed by | Produces |
 |---|---|---|
-| **Document model** | The library's own trivia-preserving INI model | An immutable <xref:Bodu.Text.Configuration.IniDocument> — sections, entries, comments, ordering preserved. |
+| **Document model** | The library's own trivia-preserving INI model | A <xref:Bodu.Text.Configuration.ConfigurationDocument> over the <xref:Bodu.Text.Configuration.IniDocumentBase> model — sections, entries, comments, ordering preserved; entries stay editable through <xref:Bodu.Text.Configuration.IniSection>. |
 | **Profile-validated parse** | <xref:Bodu.Text.Configuration.ConfigurationDocument> with <xref:Bodu.Text.Configuration.ConfigurationParseOptions> | A `ConfigurationDocument`, optionally paired with diagnostics via `ParseWithDiagnostics`. |
 | **Layered resolution** | `Resolve(targetPath)` with <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> | A <xref:Bodu.Text.Configuration.ConfigurationView> — preamble plus matching glob-anchored sections, layered last-wins. |
 | **Typed access** | The view's getter family | `GetString`, `GetInt32`, `GetBoolean`, `GetEnum<T>`, and `GetValue<T>` for any `ISpanParsable<T>`. |
@@ -82,7 +82,7 @@ Dotted keys (`logging.level.default`) project to the canonical colon-delimited f
 
 ### Boundaries
 
-- **Use [`Bodu.Text.Ini`](../formats/index.md) instead** when you just need to read or edit an INI file with no layering, no profiles, and no glob resolution — its comment-preserving mutable DOM and `IniSerializer` cover plain INI end to end. `ConfigurationDocument` keeps its own <xref:Bodu.Text.Configuration.IniDocumentBase> model, so the two libraries are independent; promote to the configuration layer when you need its resolution semantics.
+- **Use [`Bodu.Text.Ini`](../formats/index.md) instead** when you just need to read or edit an INI file with no layering, no profiles, and no glob resolution — its comment-preserving mutable DOM and `IniSerializer` cover plain INI end to end. `ConfigurationDocument` keeps its own <xref:Bodu.Text.Configuration.IniDocumentBase> model, so the two libraries are independent; promote to the configuration layer when you need its resolution semantics. Note the name collision: `Bodu.Text.Configuration.IniDocument` is this library's mutable, trivia-preserving document, whereas `Bodu.Text.Ini.Document.IniDocument` is the line-format package's read-only DOM — the two are unrelated types.
 - **Skip the bridge when you don't host in `Microsoft.Extensions`.** `Bodu.Text.Configuration` is self-sufficient — `Parse`, `Resolve`, and the typed getters cover the full read path without an `IConfigurationBuilder` in sight.
 - **The bridge is not a general INI provider.** It exists specifically to surface profile-parsed, target-resolved Bodu configuration documents; for plain key-value INI in `IConfiguration`, the stock `Microsoft.Extensions.Configuration.Ini` provider may be all you need.
 
@@ -99,7 +99,7 @@ Dotted keys (`logging.level.default`) project to the canonical colon-delimited f
 | Bind a section to a POCO with `IOptions<T>` | `services.AddConfigurationOptions<MyOptions>(configuration, "section")` | A discoverability shim over the standard `Configure<T>` shape. |
 | Hot-reload settings when the file changes | `AddTextConfigurationFile(..., reloadOnChange: true)` | File watcher + standard reload tokens; `IOptionsMonitor<T>` re-binds automatically. |
 | Test fixtures or embedded resources | `builder.AddTextConfigurationStream(stream)` | One-shot; no reload-on-change. |
-| Plain INI editing with no layering | [`Bodu.Text.Formats`](../formats/index.md) `IniDocument` | The configuration layer is unnecessary overhead for that case. |
+| Plain INI editing with no layering | [`Bodu.Text.Ini`](../formats/index.md) — the mutable, comment-preserving `IniNode` DOM (its `IniDocument` is the read-only DOM) | The configuration layer is unnecessary overhead for that case. |
 
 ## Install
 

@@ -240,7 +240,7 @@ int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
 
 // The registry now backs <Algorithm key="contoso-founders-day"> rules:
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver, registry);
-NotableDateService  service  = new NotableDateService(resource, registry);
+NotableDateService  service  = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
 ```
 
 ### Trust policies

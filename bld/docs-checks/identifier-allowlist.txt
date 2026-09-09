@@ -1,0 +1,35 @@
+# Backticked identifiers used in the conceptual pages that are not declared
+# anywhere under */src but are legitimate: illustrative names in prose,
+# well-known external types, or vocabulary that happens to look like an
+# identifier. One entry per line; comments after '#'.
+
+# Illustrative names used in guide samples (a converter or service the reader writes).
+MoneyConverter
+PointConverter
+SettlementService
+ChaCha20Keystream
+ChaCha20Encrypt
+BuildRfc8439Input
+
+# Placeholder patterns standing for a family of members.
+GetXxx
+TryGetXxx
+IsXxx
+
+# Members the prose explicitly says do NOT exist ("there is no ...").
+TryDeserialize
+OpenAsync
+GetProof
+IgnoreAnchoredPatterns
+CompositeDatedExchangeRateProvider   # former name, mentioned for readers migrating
+
+# Table column labels naming cache backends, not types.
+InMemory
+TomlFile
+JsonFile
+
+# External identifiers: Win32 API, MSBuild property, NuGet package, WeekPattern text form.
+StgCreateStorageEx
+IsTestProject
+MSTest.TestFramework
+MTuW

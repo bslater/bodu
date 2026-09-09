@@ -17,13 +17,13 @@ Unlike a one-time authenticator such as <xref:Bodu.Security.Cryptography.Poly130
 | <xref:Bodu.Security.Cryptography.SipHash64> | 64 bits | SipHash-2-4 | The standard choice — hash-table keys, sharding, short fingerprints. |
 | <xref:Bodu.Security.Cryptography.SipHash128> | 128 bits | SipHash-2-4 | Longer output for content-addressing or de-duplication where 64 bits is uncomfortable. |
 
-Both derive from a shared `SipHash<T>` base, which sits on Bodu's `KeyedBlockHashAlgorithm<T>` — itself a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property (this package does not route through the BCL `KeyedHashAlgorithm`). The key is exactly **16 bytes** (the `SipHash<T>.KeySize` constant, 128 bits) — shorter or longer keys are rejected at configuration time.
+Both derive from a shared <xref:Bodu.Security.Cryptography.SipHash> base, which sits on Bodu's <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> — itself a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property (this package does not route through the BCL `KeyedHashAlgorithm`). The key is exactly **16 bytes** (the `SipHash.KeySize` constant, 128 bits) — shorter or longer keys are rejected at configuration time.
 
 ## Fixed sizes at a glance
 
 | Parameter | Size | Notes |
 |---|---|---|
-| `Key` | 128 bits (16 bytes) | Fixed; `SipHash<T>.KeySize` is the length in *bits* (128). Generate once, store in your process / vault. |
+| `Key` | 128 bits (16 bytes) | Fixed; `SipHash.KeySize` is the length in *bits* (128). Generate once, store in your process / vault. |
 | Output (`SipHash64`) | 64 bits (8 bytes) | — |
 | Output (`SipHash128`) | 128 bits (16 bytes) | — |
 | `CompressionRounds` | `>= 2` (default 2) | Inner rounds per 8-byte block. |

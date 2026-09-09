@@ -4,7 +4,7 @@ title: Graphs and graph algorithms
 
 # Graphs and graph algorithms
 
-The `Bodu.Collections.Generic.Graphs` namespace is a compact graph toolkit: an adjacency-list container, `Graph<T>`; a static catalogue of classic algorithms, `GraphAlgorithms`; and two union-find structures, `DisjointSet` and `DisjointSet<T>`. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — run over read-only interfaces, so they are decoupled from how the graph is stored.
+The `Bodu.Collections.Generic.Graphs` namespace is a compact graph toolkit: an adjacency-list container, `Graph<T>`; a static catalogue of classic algorithms, `GraphAlgorithms`; and a union-find structure, `DisjointSet<T>`. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — run over read-only interfaces, so they are decoupled from how the graph is stored.
 
 Edge directedness is fixed at construction by `GraphKind`, weights are finite and non-negative `double`s defaulting to `1.0`, and vertex identity follows an optional `IEqualityComparer<T>`. The algorithms reuse the library's own `Deque<T>` and `IndexedPriorityQueue<TElement, TPriority>` primitives and evaluate iteratively, so they do not overflow the stack on deep graphs. See the full API surface at <xref:Bodu.Collections.Generic.Graphs>.
 
@@ -225,7 +225,7 @@ Console.WriteLine(ds.Contains(99));     // false
 ## Where to go next
 
 - [Indexed priority queue](indexed-priority-queue.md) — the decrease-key heap that powers Dijkstra in Pattern 3.
-- [Choosing a collection](choosing-a-collection.md) — where the graph types sit among the other `Bodu.Core` collections.
-- [Core foundations overview](../../docs/core/index.md) — the headline `Bodu.Core` building blocks.
+- [Choosing a collection](choosing-a-collection.md) — where the graph types sit among the other `Bodu.Collections` collections.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — the headline `Bodu.Collections` building blocks.
 - [Core foundations topic](../topics/core-foundations.md) — the wider tour of buffers, collections, and extensions.
 - API reference: <xref:Bodu.Collections.Generic.Graphs>.

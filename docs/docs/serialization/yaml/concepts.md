@@ -4,16 +4,18 @@ title: Bodu.Text.Yaml — Core concepts
 
 # Core concepts
 
-This page describes the moving parts of **Bodu.Text.Yaml** — the serializer, the converter model, the two DOMs, and the reader/writer seam. The library keeps the [Bodu serializer family](../index.md) architecture but tunes its serializer surface to YAML; where a feature the [TOML](../toml/index.md) and [Bencode](../bencode/index.md) siblings carry has no equivalent here, that is called out below.
+This page describes the moving parts of **Bodu.Text.Yaml** — the serializer, the converter model, the two DOMs, and the reader/writer seam. The library keeps the [Bodu serializer family](../index.md) architecture — the same serializer facade, the shared attribute family, naming policies, serialization callbacks, converter factories, `[ExtensionData]`, `[Constructor]`, and `[Required]` that the [TOML](../toml/index.md) and [Bencode](../bencode/index.md) siblings carry — and tunes only what YAML's value model warrants; those YAML-specific points are called out below.
 
 Part of the **[Text & Serialization](../../topics/text-and-serialization.md)** topic.
 
 ## The serializer
 
-The static <xref:Bodu.Text.Yaml.YamlSerializer> is the high-level entry point. `Serialize` writes an object graph to YAML; `Deserialize<T>` binds YAML back to a type. Its surface is deliberately narrow — string text and UTF-8 bytes, with **no `Stream` overloads and no async API**:
+The static <xref:Bodu.Text.Yaml.YamlSerializer> is the high-level entry point. `Serialize` writes an object graph to YAML; `Deserialize<T>` binds YAML back to a type. Its surface is string text, UTF-8 bytes, and the same stream facade its siblings ship:
 
-- `Serialize<T>(T value, YamlSerializerOptions? options = null)` → `string`, and `Serialize(object? value, Type inputType, …)` → `string` for a runtime-typed value.
-- `Deserialize<T>(string yaml, …)` → `T?` and `Deserialize<T>(ReadOnlySpan<byte> utf8Yaml, …)` → `T?`, plus `Deserialize(ReadOnlySpan<byte> utf8Yaml, Type returnType, …)` → `object?`.
+- `Serialize<T>(T value, YamlSerializerOptions? options = null)` → `string`, and `Serialize(object? value, Type inputType, …)` → `string` for a runtime-typed value; `Serialize<T>(IBufferWriter<byte> destination, T value, …)` writes UTF-8 bytes; `SerializeAsync<T>(Stream destination, T value, …)` writes them to a stream.
+- `Deserialize<T>(string yaml, …)` → `T?` and `Deserialize<T>(ReadOnlySpan<byte> utf8Yaml, …)` → `T?`, plus `Deserialize(ReadOnlySpan<byte> utf8Yaml, Type returnType, …)` → `object?`; `Deserialize<T>(Stream source, …)` and `DeserializeAsync<T>(Stream source, …)` read a stream to its end.
+
+The stream overloads are buffered in full — the document is rendered or read into memory and only the stream copy is asynchronous — so they are conveniences over the span entry points rather than incremental parsers.
 
 `Deserialize<T>` returns a **nullable** `T?` — a top-level null scalar binds to `null`. Use the null-forgiving `!` where you know the document is non-null.
 
@@ -67,7 +69,7 @@ The non-generic <xref:Bodu.Text.Yaml.Serialization.YamlConverter> base exists on
 
 When you do not want a model, two DOMs serve the same documents:
 
-- **Mutable** — <xref:Bodu.Text.Yaml.Nodes.YamlNode> / <xref:Bodu.Text.Yaml.Nodes.YamlObject> / <xref:Bodu.Text.Yaml.Nodes.YamlArray> / <xref:Bodu.Text.Yaml.Nodes.YamlValue>. `YamlNode.Parse(string)` builds the tree (returning `null` for a null/empty document); index into it with `[int]` / `[string]`, cast with `AsObject` / `AsArray` / `AsValue`, build scalars with `YamlValue.Create(…)` (overloads for `string` / `long` / `double` / `bool` — the four scalar kinds), read them back with `GetValue<T>()` (a direct return for the stored type, else a `Convert.ChangeType` coercion), and write it back with `ToYamlString()` (or `WriteTo(ref Utf8YamlWriter)`). `YamlObject` preserves insertion order; a node may appear at most once in a tree.
+- **Mutable** — <xref:Bodu.Text.Yaml.Nodes.YamlNode> / <xref:Bodu.Text.Yaml.Nodes.YamlObject> / <xref:Bodu.Text.Yaml.Nodes.YamlArray> / <xref:Bodu.Text.Yaml.Nodes.YamlValue>. `YamlNode.Parse(string)` builds the tree (returning `null` for a null/empty document); index into it with `[int]` / `[string]`, cast with `AsObject` / `AsArray` / `AsValue`, build scalars with `YamlValue.Create(…)` (overloads for `string` / `long` / `double` / `bool` — the four scalar kinds), read them back with `GetValue<T>()` (a direct return for the stored type, else a `Convert.ChangeType` coercion), and write it back with `ToYamlString()` (or `WriteTo(Utf8YamlWriter)`). `YamlObject` preserves insertion order; a node may appear at most once in a tree.
 - **Read-only** — <xref:Bodu.Text.Yaml.Document.YamlDocument> / <xref:Bodu.Text.Yaml.Document.YamlElement> / <xref:Bodu.Text.Yaml.Document.YamlProperty>. A low-allocation view over a parsed buffer, walked through `RootElement`. `YamlDocument` is `IDisposable` — a document you parse is caller-owned, so dispose it when finished; an element read after disposal throws `ObjectDisposedException`. `ParseAllDocuments` returns every document in a multi-document stream, each independently caller-owned. Parsing options come from <xref:Bodu.Text.Yaml.Document.YamlDocumentOptions> (`SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `MaxDepth`).
 
 Typed access on a `YamlElement` goes through `GetString` / `GetInt64` / `GetDouble` / `GetBoolean` (each throwing `InvalidOperationException` on a kind mismatch), with `GetProperty` (throwing `KeyNotFoundException`) / `TryGetProperty`, `EnumerateMapping`, `GetSequenceLength` / `EnumerateSequence`, the `[int]` indexer, `ValueKind` / `ScalarStyle`, and a `ToString()` that renders the scalar text or the container kind name.
@@ -87,7 +89,7 @@ The serializer maps the BCL types it can represent natively:
 - `decimal` → a quoted exact-text string; `DateTime` / `DateTimeOffset` → a round-trip ISO-8601 string; `TimeSpan` → its invariant string. None of these is a native YAML kind, so each travels as a string and parses back with `CultureInfo.InvariantCulture`.
 - Enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`); read back by name (case-insensitively) or by integer.
 - Collections → sequences; dictionaries and plain objects → mappings. A dictionary keeps insertion order; an object writes its properties first (reflection order) then public fields when `IncludeFields` is set.
-- An `object`-typed member writes its runtime type's form. On **read** an `object` target binds to a loosely-typed graph — `Dictionary<string, object?>` for a mapping, `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars — not a <xref:Bodu.Text.Yaml.Document.YamlElement>. (A custom converter's `Read`, by contrast, *does* receive a `YamlElement`.)
+- An `object`-typed member writes its runtime type's form. On **read** an `object` target binds to a loosely-typed graph — `Dictionary<string, object?>` for a mapping, `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars — not a <xref:Bodu.Text.Yaml.Document.YamlElement>. (A custom converter's `Read`, by contrast, works through the `Utf8YamlReader` token cursor.)
 
 The full per-type catalog — including the radix forms accepted on read and the quoting rules — is in the [built-in converter catalog](../../../guides/serialization/yaml/builtin-converters.md).
 

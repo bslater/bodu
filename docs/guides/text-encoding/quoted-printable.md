@@ -44,6 +44,12 @@ breaks in the *source* are treated:
 | `Binary` (default) | Escaped as `=0D` / `=0A`; no byte sequence is a hard break | Arbitrary octet round-trips |
 | `Text` | A canonical `CRLF` pair becomes a hard break (`options.NewLine`); a lone CR or LF is escaped | RFC 2045 canonical text bodies |
 
+The mode travels on <xref:Bodu.Text.Encoding.QuotedPrintableEncodingOptions>, a `readonly record struct` with three
+members: `Mode` (a <xref:Bodu.Text.Encoding.QuotedPrintableEncodingMode>, default `Binary`), `MaxLineLength` (default
+76), and `NewLine` (the hard-break sequence; `null` selects `CRLF`). Its constructor takes the three in that order, so
+`new(QuotedPrintableEncodingMode.Text)` is enough to switch mode, and the static `Default` (binary) and `Text` presets
+cover the two common cases without spelling the arguments out.
+
 <!-- compile -->
 ```csharp
 byte[] crlf = "line1\r\nline2"u8.ToArray();

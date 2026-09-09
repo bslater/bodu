@@ -6,7 +6,7 @@ title: Bodu.Text.Bencode — Introduction
 
 # Bodu.Text.Bencode
 
-**Bodu.Text.Bencode** is a self-contained library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the three [Bodu serializers](../index.md) and shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) member-for-member with its siblings [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md). This page covers what is *specific* to Bencode.
+**Bodu.Text.Bencode** is a library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the three [Bodu serializers](../index.md) and shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) member-for-member with its siblings [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md). This page covers what is *specific* to Bencode.
 
 ## The format in one paragraph
 
@@ -24,7 +24,7 @@ This makes Bencode a natural fit for payloads that mix identifiers with raw hash
 
 ## Canonical output
 
-The writer always emits canonical BEP 3: dictionary entries appear in ascending bytewise key order regardless of member declaration order, integers carry no leading or negative zeros, and a `null` member is omitted. The reader is equally strict by default — it accepts only canonical input (unique ascending keys, a single root, no trailing bytes), so a successful round trip is byte-identical. Two opt-in switches relax the *read* path alone for documents from older, looser encoders — `AllowUnsortedKeys` and `AllowDuplicateKeys` on <xref:Bodu.Text.Bencode.BencodeSerializerOptions> — while the writer stays unconditionally canonical. The library's conformance is audited in the [BEP 3 compliance review](../../../reviews/bencode-bep3-compliance-review.md).
+The writer always emits canonical BEP 3: dictionary entries appear in ascending bytewise key order regardless of member declaration order, integers carry no leading or negative zeros, and a `null` member is omitted. The reader is equally strict by default — it accepts only canonical input (unique ascending keys, a single root, no trailing bytes), so a successful round trip is byte-identical. Two opt-in switches relax the *read* path alone for documents from older, looser encoders — `AllowUnsortedKeys` and `AllowDuplicateKeys` on <xref:Bodu.Text.Bencode.BencodeSerializerOptions> — while the writer stays unconditionally canonical. The library's conformance to BEP 3 and the BEP 52 canonical-form clarifications is pinned by data-driven tests in `Bodu.Text.Bencode/test` (integer grammar, byte-string grammar, dictionary key rules, container balance, single-root documents); the engineering review behind them lives in the repository under `docs/reviews/` and is not part of the published site.
 
 ## What Bencode cannot represent
 
@@ -69,5 +69,4 @@ The library never invents a lossy representation on your behalf; the choice of e
 - **[Core concepts](concepts.md)** — the Bencode vocabulary, including the full Bencode value-mapping table.
 - **[Getting started](getting-started.md)** — install and the first round trip.
 - **[Using Bencode](../../../guides/serialization/bencode/using.md)** — worked patterns: type mapping, converters for unrepresentable kinds, both DOMs, raw tokens.
-- **[BEP 3 compliance review](../../../reviews/bencode-bep3-compliance-review.md)** — the standards audit behind the canonical-output claims.
 - **API reference** — <xref:Bodu.Text.Bencode>.

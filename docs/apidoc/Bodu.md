@@ -15,7 +15,7 @@ The root **Bodu** namespace holds the cross-cutting primitives that the rest of 
 
 ## Key types
 
-- <xref:Bodu.WeekPattern> — an immutable bitmask value type for sets of days of the week. Supports composition (`WeekPattern.Monday | WeekPattern.Wednesday`), bitwise operators, parsing, formatting, and enumeration. See the [`WeekPattern` guide](~/guides/core/week-pattern.md).
+- <xref:Bodu.WeekPattern> — an immutable bitmask value type for sets of days of the week. Built from `DayOfWeek` values (`new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)`, `With` / `Without`) or taken from the named presets (`Weekdays`, `Weekend`, `AllDays`, `Empty`, and the regional working weeks such as `SundayToThursday`); supports bitwise composition (`WeekPattern.Weekdays | WeekPattern.Weekend`), parsing, formatting, and enumeration. See the [`WeekPattern` guide](~/guides/core/week-pattern.md).
 - <xref:Bodu.WorkingDaysOfWeek> — a `[Flags]` enum naming the conventional working-day sets used by the date and calendar extensions.
 - <xref:Bodu.IRandomGenerator> — a minimal abstraction over a random source, so algorithms (shuffles, sampling) can be tested deterministically or swapped between PRNG implementations.
 - <xref:Bodu.XorShiftRandom> — a fast xorshift PRNG that derives from `System.Random`; seedable for reproducible sequences. Drop-in where `Random` is expected, faster where throughput matters and cryptographic strength is *not* required.
@@ -27,17 +27,18 @@ The root **Bodu** namespace holds the cross-cutting primitives that the rest of 
 using Bodu;
 
 // Compose and test a day-of-week set.
-WeekPattern weekdays = WeekPattern.Monday | WeekPattern.Tuesday | WeekPattern.Wednesday
-                     | WeekPattern.Thursday | WeekPattern.Friday;
-bool worksSaturday = weekdays.Contains(DayOfWeek.Saturday);   // false
+WeekPattern weekdays = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                                       DayOfWeek.Thursday, DayOfWeek.Friday);   // same set as WeekPattern.Weekdays
+WeekPattern fourDay  = weekdays.Without(DayOfWeek.Friday);
+bool worksSaturday   = weekdays.Contains(DayOfWeek.Saturday);   // false
 
 // Deterministic randomness for reproducible tests.
 IRandomGenerator rng = new XorShiftRandom(seed: 12345);
-int roll = rng.Next(1, 7);
+int roll = rng.Next(6) + 1;   // Next(maxValue) yields [0, maxValue) — here a die roll of 1–6
 ```
 
 ## Notes
 
 - **`XorShiftRandom` is not cryptographically secure.** Use `System.Security.Cryptography.RandomNumberGenerator` for security-sensitive randomness.
 - **Validate through `ThrowHelper`.** When contributing public APIs, prefer an existing `ThrowIf…` helper over a hand-written check; add a new helper only when the rule is general-purpose.
-- **See also:** the [`WeekPattern` guide](~/guides/core/week-pattern.md) and the [Bodu.Collections.Generic overview](Bodu.Collections.Generic.md).
+- **See also:** the [`WeekPattern` guide](~/guides/core/week-pattern.md) and the [Bodu.Collections.Generic overview](xref:Bodu.Collections.Generic).

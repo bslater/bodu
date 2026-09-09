@@ -23,7 +23,7 @@ IReadOnlyList<NotableDate> dates = service.Resolve(DateTime.Today.Year, "XX");
 // → New Year's Day on 1 January
 ```
 
-Region-specific public holidays ship in dedicated `Bodu.Globalization.Calendar.Data.*` companion assemblies. See [Calendar data packs](data-packs.md).
+Region-specific public holidays ship in dedicated `Bodu.Globalization.Calendar.<Region>` companion packages. See [Calendar data packs](data-packs.md).
 
 ## Pattern 2 — load a data pack and filter by territory
 
@@ -314,7 +314,7 @@ See [The resolution pipeline](resolution-pipeline.md) for the full walk-through 
 - [Core concepts](../../docs/calendar/concepts.md) — the vocabulary used throughout this guide.
 - [Territories and regional composition](territories.md) — how `TerritoryCode` and containment govern query results.
 - [Working-day arithmetic](working-days.md) — `IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, snap operations.
-- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific companion assemblies.
+- [Calendar data packs](data-packs.md) — the official Americas / Asia-Pacific / Europe / Middle East / Africa companion packages.
 - [Authoring notable date rules](rule-authoring.md) — XML / JSON documents, imports, and overrides.
 - [Date calculation algorithms](algorithms.md) — the built-in keys and how to implement a custom algorithm.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.

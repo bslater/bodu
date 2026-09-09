@@ -136,7 +136,7 @@ bool ok = crc.TryComputeHashFrom(storedDigest, tail, destination, out int writte
 ```
 
 > [!IMPORTANT]
-> Resuming only works when the stored digest was produced by a `Crc` with the **same** `CrcStandard`. The reverse-finalize step assumes the standard's reflection and XOR-out parameters; feeding a digest from a different standard yields a meaningless register. `Crc` is currently the only type in the package that implements `IResumableHashAlgorithm`.
+> Resuming only works when the stored digest was produced by a `Crc` with the **same** `CrcStandard`. The reverse-finalize step assumes the standard's reflection and XOR-out parameters; feeding a digest from a different standard yields a meaningless register. The same contract is implemented by the FNV, Fletcher, and Adler families, with the same rule: resume only with an instance of the same algorithm and parameters.
 
 ## Pattern 7 — sharing lookup tables
 
@@ -177,6 +177,6 @@ Pick the *standard* — not just the width — to match the channel: the RevEng 
 ## Where to go next
 
 - [Using Fletcher](fletcher.md) — the other checksum family in this package.
-- [CRC catalogue](crc-catalogue.md) — the full table of 113 named standards.
+- [CRC catalogue](crc-catalogue.md) — the full table of 112 named standards.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

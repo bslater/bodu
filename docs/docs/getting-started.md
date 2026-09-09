@@ -10,7 +10,7 @@ If you only need a single library, jump straight to its section below — each o
 
 ## Prerequisites
 
-- The **.NET 8 SDK** — every package in the solution targets `net8.0`.
+- The **.NET 8 SDK** — every runtime package in the solution targets `net8.0`. (The one exception is the build-time `Bodu.Globalization.Calendar.Build` MSBuild task package, which targets `netstandard2.0` so it loads inside any MSBuild host.)
 
 ```bash
 dotnet --version
@@ -18,7 +18,7 @@ dotnet --version
 
 ## Install
 
-Each package is versioned and released independently; install only the ones you need. The only shared dependency is `Bodu.Core`, which the others pull in automatically.
+Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages — `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` — and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
 
 ```bash
 # Core Foundations
@@ -46,6 +46,7 @@ dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
 
 # Configuration
 dotnet add package Bodu.Text.Configuration
@@ -57,6 +58,13 @@ dotnet add package Bodu.Financial
 
 # Optional companions:
 dotnet add package Bodu.Financial.DependencyInjection
+
+# Binary Formats & I/O
+dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.IO.Pst
+dotnet add package Bodu.Formats.Outlook.Msg
+dotnet add package Bodu.Formats.Outlook.Pst
 ```
 
 ## Core Foundations
@@ -105,7 +113,7 @@ int oldest = buffer.Dequeue(); // 2
 
 ### Bodu.Collections.Concurrent
 
-**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification.
+**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) — the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`.
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;
@@ -286,7 +294,7 @@ The parsed model retains comments, ordering, and whitespace, so a `Parse` → mu
 
 ### Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml (serializers)
 
-**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three self-contained libraries that map your own types to and from a format. They share an architecture and a `System.Text.Json`-aligned shape, and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
+**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three libraries that map your own types to and from a format. They share the `Bodu.Text.Serialization` engine and a `System.Text.Json`-aligned shape, and each ships a serializer, two document object models, and a low-level `Utf8…Reader` / `Utf8…Writer` pair.
 
 ```csharp
 using Bodu.Text.Toml;
@@ -433,6 +441,6 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 ## Where to go next
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
-- **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial).
+- **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).

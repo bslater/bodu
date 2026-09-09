@@ -6,7 +6,7 @@ title: Bodu.Text.Toml — Getting started
 
 ## Install
 
-Add the package. Bodu.Text.Toml is self-contained — there is no shared engine package to add.
+Add the package. Its one library dependency, the shared **Bodu.Text.Serialization** package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.
 
 ```shell
 dotnet add package Bodu.Text.Toml
@@ -74,6 +74,7 @@ string text = TomlSerializer.Serialize(telemetry);
 ## Rename members
 
 ```csharp
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
 
 var options = new TomlSerializerOptions

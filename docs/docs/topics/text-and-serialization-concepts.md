@@ -4,30 +4,30 @@ title: Text & Serialization — Concepts
 
 # Text & Serialization — Concepts
 
-The four packages in this topic — `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Bencode`, and `Bodu.Text.Toml` — share a small set of cross-cutting ideas. This page defines them once at the topic level; each package's own concepts page (linked at the bottom) carries the full per-package vocabulary.
+The packages in this topic — `Bodu.Text.Encoding`, `Bodu.Text.Filtering`, `Bodu.Text.Formats`, `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` — share a small set of cross-cutting ideas. This page defines them once at the topic level; each package's own concepts page (linked at the bottom) carries the full per-package vocabulary.
 
 ## Codec, format, serializer
 
 The three jobs preserve different things, and that difference drives every API decision in the topic:
 
 - A **binary-to-text codec** (Base16 / Base32 / Base64 / Base58 / Base85 and friends) preserves the **byte sequence**. It maps raw bytes onto a printable alphabet and back; it attaches no meaning to the bytes, adds no structure, and is exactly invertible — `Decode(Encode(bytes))` is the identical input. Its vocabulary is alphabets, variants, padding, and decoration.
-- A **document format** (Delimited, DotEnv, INI) preserves the **document**. Parsing produces a typed value model — rows and fields, ordered entries, sections — and formatting writes the model back. INI and DotEnv additionally preserve trivia (comments, ordering, whitespace) so a parse–edit–format cycle round-trips faithfully. Its vocabulary is value models, codecs, and round-trip rules.
-- An **object serializer** (Bencode, TOML) preserves the **object graph**. `Serialize<T>` maps your types, members, and collections onto the format; `Deserialize<T>` binds the format back. The document is a means, not the subject — converters, attributes, and naming policies control the mapping. Its vocabulary is converters, options, DOMs, and readers / writers.
+- A **document format** (Delimited, DotEnv, INI) preserves the **document**. Parsing produces a typed value model — rows and fields, ordered entries, sections — and formatting writes the model back. Every format keeps entry order, and INI's mutable DOM additionally preserves comments, so a parse–edit–write cycle round-trips faithfully. Its vocabulary is value models, readers / writers, and round-trip rules.
+- An **object serializer** (Bencode, TOML, YAML) preserves the **object graph**. `Serialize<T>` maps your types, members, and collections onto the format; `Deserialize<T>` binds the format back. The document is a means, not the subject — converters, attributes, and naming policies control the mapping. Its vocabulary is converters, options, DOMs, and readers / writers.
 
 A practical test: if you would be satisfied getting `byte[]` back, you want a codec; if you would be satisfied getting a generic document tree back, you want a format or a DOM; if you want *your* type back, you want a serializer.
 
 ## The tier model
 
-Both serializers layer the same four surfaces over their format, and choosing a tier is choosing how much machinery you want between you and the bytes:
+All three serializers layer the same four surfaces over their format, and choosing a tier is choosing how much machinery you want between you and the bytes:
 
-| Tier | Bencode / TOML types | Reach for it when |
+| Tier | Bencode / TOML / YAML types | Reach for it when |
 |---|---|---|
-| **Serializer** | `BencodeSerializer` / `TomlSerializer` | You have a model type. The default tier. |
-| **Mutable DOM** | `BencodeNode` / `TomlNode` trees | You need to parse, index, edit, and write back without a model. |
-| **Read-only DOM** | `BencodeDocument` / `TomlDocument` | You need to inspect a parsed buffer with minimal allocation. |
-| **Utf8 reader / writer** | `Utf8BencodeReader` / `Utf8BencodeWriter`, `Utf8TomlReader` / `Utf8TomlWriter` | You process tokens by hand — forward-only, allocation-free `ref struct` machines. |
+| **Serializer** | `BencodeSerializer` / `TomlSerializer` / `YamlSerializer` | You have a model type. The default tier. |
+| **Mutable DOM** | `BencodeNode` / `TomlNode` / `YamlNode` trees | You need to parse, index, edit, and write back without a model. |
+| **Read-only DOM** | `BencodeDocument` / `TomlDocument` / `YamlDocument` | You need to inspect a parsed buffer with minimal allocation. |
+| **Utf8 reader / writer** | `Utf8BencodeReader` / `Utf8BencodeWriter`, `Utf8TomlReader` / `Utf8TomlWriter`, `Utf8YamlReader` / `Utf8YamlWriter` | You process tokens by hand — forward-only, allocation-free `ref struct` machines. |
 
-The tiers nest: the serializer is built on the reader / writer pair, and every custom converter receives that pair directly. `Bodu.Text.Formats` follows a compatible two-tier instinct — a typed value model over a streaming reader / writer — without the serializer tier, because mapping onto user types is not its job.
+The tiers nest: the serializer is built on the reader / writer pair, and every custom converter receives that pair directly. Each `Bodu.Text.Formats` line format follows the same layering — a `Utf8*Reader` / `Utf8*Writer` pair, a `*Serializer`, and both DOMs — but wires every scalar as a string, so scalar conversion stays local to each format's serializer rather than adopting the shared converter engine.
 
 ## Framing and self-describing documents
 
@@ -35,7 +35,7 @@ A **self-framing** (self-describing) format carries its structure inline in the 
 
 ## Canonical output
 
-Where a format admits several spellings of the same data, the libraries pick one and emit it consistently. Bencode is the strict case: the specification requires dictionary keys in ascending bytewise order, and `BencodeSerializer` always writes them that way, so equal inputs produce byte-identical output — a property torrent-style infohashing depends on. The document formats state their round-trip rules instead: INI and DotEnv re-emit comments, ordering, and whitespace as parsed, while Delimited output is canonical per the configured quoting policy.
+Where a format admits several spellings of the same data, the libraries pick one and emit it consistently. Bencode is the strict case: the specification requires dictionary keys in ascending bytewise order, and `BencodeSerializer` always writes them that way, so equal inputs produce byte-identical output — a property torrent-style infohashing depends on. The document formats state their round-trip rules instead: INI re-emits comments and ordering as parsed, DotEnv re-emits ordering and the `export` flag, and Delimited output is canonical per the configured quoting policy.
 
 ## Text wire vs. binary wire
 
@@ -46,7 +46,7 @@ Not everything under the `Bodu.Text.*` prefix is text on the wire. TOML is a tex
 Each job comes with its own round-trip promise, and knowing which one you are owed prevents most surprises:
 
 - **Codecs** promise *byte fidelity*: decode-of-encode is the identical byte sequence, always.
-- **Formats** promise *document fidelity* to the extent the format defines it: INI and DotEnv preserve comments, ordering, and whitespace through a parse–edit–format cycle; Delimited re-emits canonically per its quoting policy rather than byte-for-byte.
+- **Formats** promise *document fidelity* to the extent the format defines it: INI preserves comments and ordering through a parse–edit–write cycle, DotEnv preserves ordering and the `export` flag; Delimited re-emits canonically per its quoting policy rather than byte-for-byte.
 - **Serializers** promise *graph fidelity for representable values*: what the format can express round-trips through `Serialize` / `Deserialize<T>`, and what it cannot express fails loudly (or is delegated to a registered converter) rather than degrading silently — Bencode, for example, has no native boolean, floating-point, or date-time form.
 
 ## Strict vs. lenient parsing
@@ -55,13 +55,13 @@ Every package in the topic treats strictness as an explicit, opt-in policy rathe
 
 - **Codecs** parse strictly by default and loosen per call via `BaseFormatStyles` flags — `IgnoreWhitespace`, `AllowPrefix`, `AllowMissingPadding`.
 - **Line formats** centralize policy on their options types (`DelimitedReaderOptions`, `DotEnvReaderOptions`, `IniReaderOptions` / `IniDocumentOptions`) — quoting strictness, field-count and malformed-record handling, duplicate-key and duplicate-section policies.
-- **Serializers** reject malformed documents with a format-specific parse exception (`BencodeFormatException`, `TomlFormatException`) and binding failures with a serialization exception; tolerance for unmapped members, missing values, and type shapes is configured on `…SerializerOptions` and the attribute family, never silently assumed.
+- **Serializers** reject malformed documents with a format-specific parse exception (`BencodeFormatException`, `TomlFormatException`, `YamlFormatException`) and binding failures with a serialization exception; tolerance for unmapped members, missing values, and type shapes is configured on `…SerializerOptions` and the attribute family, never silently assumed.
 
 The shared rule across the family: the default path validates, and every relaxation is visible at the call site.
 
 ## Options as the unit of configuration
 
-The serializers concentrate configuration on a single reusable object: `BencodeSerializerOptions` / `TomlSerializerOptions` hold the converter list, the property naming policy, ignore conditions, unmapped-member policy, and maximum depth. An options instance becomes read-only the first time it is used and then caches its resolved converters and type metadata — so the intended pattern is one configured instance reused across many operations, not a fresh options object per call. The formats apply the same instinct one tier down: each `*ParseOptions` type is shared between the read and write paths, so a document parsed under a policy is formatted back under the same one.
+The serializers concentrate configuration on a single reusable object: `BencodeSerializerOptions` / `TomlSerializerOptions` / `YamlSerializerOptions` hold the converter list, the property naming policy, ignore conditions, unmapped-member policy, and maximum depth. An options instance becomes read-only the first time it is used and then caches its resolved converters and type metadata — so the intended pattern is one configured instance reused across many operations, not a fresh options object per call. The formats apply the same instinct one tier down: the `*ReaderOptions` / `*WriterOptions` pairs (and `IniDocumentOptions`) hold each direction's dialect policy, so a document read under a dialect is written back under the matching one.
 
 ## Per-package concept pages
 

@@ -25,7 +25,7 @@ These policies are carried by the document's `<ResolutionPolicy>` element and su
 - <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> — whether a higher or lower `Priority` wins: `HigherWins`, `LowerWins`.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> — what an adjustment emits: `ActualOnly`, `ObservedOnly`, `ActualAndObserved`, `ObservedAsAdditional`, `Suppress`.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> — which occurrence date controls inclusion in a range query: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> — `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`. Implement this to settle same-day collisions yourself; it is consulted only under `CollisionPolicy.Custom` and is supplied through the `NotableDateService` constructor.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> — `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`. Implement this to settle same-day collisions yourself; it is consulted only under `CollisionPolicy.Custom` and is supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>`.CollisionResolver` when the `NotableDateService` is constructed.
 
 ## Authored example
 

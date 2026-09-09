@@ -4,7 +4,7 @@ title: Financial dependency injection
 
 # Financial dependency injection
 
-The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, exchange-rate providers, and JSON converters. The registration extension methods live in the `Bodu.Financial` namespace, so a single `using Bodu.Financial;` brings them into scope.
+The optional `Bodu.Financial.DependencyInjection` companion package wires the [`Bodu.Financial`](index.md) stack into a `Microsoft.Extensions.DependencyInjection` container. A single `AddFinancialService(...)` call registers the currency-lookup service and hands back a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose currency lookups, named monetary contexts, and exchange-rate providers. JSON registration is not part of this package — it is the `AddFinancialJson` extension in the companion `Bodu.Financial.Serialization.Json` package (see [Consuming the financial JSON options](#consuming-the-financial-json-options)). The registration extension methods live in the `Bodu.Financial` namespace, so a single `using Bodu.Financial;` brings them into scope.
 
 If you are constructing the financial types by hand — in a console app or a test — keep using the `Bodu.Financial` constructors directly; this page is only relevant when you want the host to compose the stack for you.
 
@@ -14,7 +14,7 @@ If you are constructing the financial types by hand — in a console app or a te
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The package depends on `Bodu.Financial` and `Microsoft.Extensions.DependencyInjection.Abstractions`.
+The package references `Bodu.Financial` and `Bodu.Core`, plus `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Options`, `Microsoft.Extensions.Options.ConfigurationExtensions`, `Microsoft.Extensions.Configuration.Abstractions`, and `Microsoft.Extensions.Configuration.Binder` (for the `IConfiguration` binding overload).
 
 ## The registration surface
 
@@ -22,7 +22,7 @@ The entry point is the `AddFinancialService` `IServiceCollection` extension (in 
 
 | Method | Registers |
 |---|---|
-| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (its single `JsonPolicy` property) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
+| `AddFinancialService(IServiceCollection, IConfiguration?, string sectionName = "Financial")` | The currency lookup, and binds <xref:Bodu.Financial.FinancialOptions> (currently an empty options class — see [Binding options from configuration](#binding-options-from-configuration)) from the named configuration section. The `sectionName` constant is `ServiceCollectionExtensions.DefaultConfigurationSection`. |
 | `AddFinancialService(IServiceCollection, Action<IFinancialServiceBuilder> configure)` | The same, with the builder configured imperatively by the delegate. |
 
 ## Composing the builder

@@ -18,7 +18,7 @@ Tags use C# 11 static-abstract members, so metadata is accessed through the type
 
 <xref:Bodu.Financial.Money`1> is **compile-time-typed**: the currency is the type parameter. `Money<USD>` and `Money<JPY>` are distinct types, and adding them is a compile error. Use it whenever the currency is known at the call site.
 
-<xref:Bodu.Financial.Money> is **runtime-tagged**: it carries the currency as an ISO 4217 string. Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `Money.As<T>()` or `TryAs` at the boundary where the currency becomes known.
+<xref:Bodu.Financial.Money> is **runtime-tagged**: it carries the currency as a <xref:Bodu.Financial.Currencies.CurrencyCode> enum value (exposed through its `Code` property). Cross-currency arithmetic surfaces as <xref:System.InvalidOperationException> at runtime rather than at build time. Use it when the currency is data — deserialised payloads, generic invoicing engines, configuration-driven accounting — and convert to typed money with `Money.As<T>()` or `TryAs` at the boundary where the currency becomes known.
 
 Both types are immutable, value-equatable readonly structs and both round on construction.
 
@@ -106,11 +106,11 @@ The catalogue is closed: it is fixed to the shipped ISO 4217 set (active and his
 
 ## `ExchangeRate`
 
-<xref:Bodu.Financial.ExchangeRates.ExchangeRate> is an immutable record-struct describing a single observation: source ISO, destination ISO, observation date, the strictly-positive multiplier, the publishing provider's name, and a flag indicating whether the rate was derived from the reverse pair. It is the unit returned by providers and embedded in <xref:Bodu.Financial.ExchangeRates.RateLookupResult>; it deliberately does not round, so the destination currency's minor-unit precision applies only at the money boundary.
+<xref:Bodu.Financial.ExchangeRates.ExchangeRate> is an immutable record-struct describing a single observation: the source and destination currencies (`From` / `To`, both <xref:Bodu.Financial.Currencies.CurrencyCode>), the observation `Date`, the strictly-positive `Rate` multiplier, the publishing `Provider` name, an `IsInverted` flag indicating whether the rate was derived from the reverse pair, and an optional `FetchedAtUtc` instant. It is the unit returned by providers and embedded in <xref:Bodu.Financial.ExchangeRates.RateLookupResult>; it deliberately does not round, so the destination currency's minor-unit precision applies only at the money boundary.
 
 ## `CurrencyPair`
 
-<xref:Bodu.Financial.ExchangeRates.CurrencyPair> is the strongly-typed key for FX lookups — an immutable `(FromIsoCode, ToIsoCode)` record-struct that validates both codes at construction. Preferred over `(string, string)` tuples wherever a directional currency pair is used as a dictionary key or method argument; the named fields make the direction obvious and centralise validation. `Inverse()` returns the reverse-direction pair.
+<xref:Bodu.Financial.ExchangeRates.CurrencyPair> is the strongly-typed key for FX lookups — an immutable record-struct constructed as `new CurrencyPair(CurrencyCode from, CurrencyCode to)` and exposing `From` and `To`, validating both codes at construction. Preferred over `(string, string)` tuples wherever a directional currency pair is used as a dictionary key or method argument; the named properties make the direction obvious and centralise validation. `Inverse()` returns the reverse-direction pair.
 
 ## `RateSeries`
 
@@ -187,7 +187,7 @@ The bag is the type that models the **aggregate-then-convert** pattern: accumula
 | `Lenient` | Same shape as `Strict`, but also normalises lowercase ISO codes to uppercase and trims surrounding whitespace before validation. | Import workflows that ingest spreadsheets and external feeds. Not suitable as a canonical storage shape. |
 | `Compact` | Single JSON string `"19.99 USD"` for money; flat object `{ "USD": 19.99, "EUR": 12.34 }` for bags. Reads accept either ISO-prefix or ISO-suffix string forms. | Wire-size-sensitive APIs and human-readable logs. |
 
-Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the five financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair>. Registration is required — the core types carry no `[JsonConverter]` attribute, and the core library is serialization-agnostic.
+Register a policy via `options.AddFinancialJsonConverters(policy)`; this installs the six financial converters — for `Money<TCurrency>` (through a `JsonConverterFactory`), `Money`, <xref:Bodu.Financial.CalculatedMoney> (written at full unrounded precision), `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair>. Registration is required — the core types carry no `[JsonConverter]` attribute, and the core library is serialization-agnostic.
 
 ## Demonetisation
 

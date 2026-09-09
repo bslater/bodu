@@ -4,7 +4,7 @@ title: Globalization & Calendars — Guides
 
 # Globalization & Calendars — Guides
 
-Recipe-style walk-throughs for the calendar package family — the `Bodu.Globalization.Calendar` runtime, its companions (Builder, DependencyInjection, Plugins), and the five regional data packs. Every guide in this topic lives under the [Bodu.Globalization.Calendar guides section](../calendar/index.md); this page is the topic-level map.
+Recipe-style walk-throughs for the calendar package family — the `Bodu.Globalization.Calendar` runtime, its companions (Builder, DependencyInjection, Plugins, Caching, Tool, Build), the five regional data packs, and the independent `Bodu.Globalization.Recurrence` sibling. Every guide in this topic lives under the [Bodu.Globalization.Calendar guides section](../calendar/index.md); this page is the topic-level map.
 
 If you are new to the family, start with the [topic overview](../../docs/topics/globalization-and-calendars.md) for the package decision table and the [topic concepts](../../docs/topics/globalization-and-calendars-concepts.md) for the shared vocabulary, then come back here for the hands-on material.
 
@@ -61,6 +61,42 @@ If you are new to the family, start with the [topic overview](../../docs/topics/
 <div class="bodu-card">
   <h3><a href="../calendar/building-the-service.md">Building and extending the service</a></h3>
   <p>Composing the service with collaborators — algorithm and adjustment registries, collision resolvers, localizers, providers, and the trust-gated plugin system.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../calendar/plugin-trust.md">Calendar plugin trust</a></h3>
+  <p>What the deny-by-default plugin gate validates, what each bundled trust policy does and does not check, and how a rejected or failing plugin surfaces.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../calendar/caching/notable-date-caching.md">Caching notable dates</a></h3>
+  <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator — per-territory, per-civil-year entries, the in-memory / file / SQLite / distributed backends, warm-up, and the DI registration.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../calendar/round-trip-guarantees.md">Builder round-trip guarantees</a></h3>
+  <p>Exactly what the builder's XML and JSON serialization, parsing, and resource materialization guarantee — and what they do not.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../calendar/validation-diagnostics.md">Calendar validation diagnostics</a></h3>
+  <p>The stable <code>BODU-CAL-*</code> code catalogue, severities, and the collect-mode lint surface (<code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code>).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../calendar/binary-rule-packs.md">Binary rule packs</a></h3>
+  <p>Compiling validated documents to sealed <code>.bcal</code> packs — the trim- and AOT-friendly load path — with the <code>bodu-calendar</code> tool and the MSBuild integration.</p>
+</div>
+
+</div>
+
+## Recurrence and scheduling
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../recurrence/index.md">Recurrence and scheduling</a></h3>
+  <p><code>Bodu.Globalization.Recurrence</code> — RFC 5545 recurrence rules and rule sets, cron expressions, and anchored intervals behind one next / previous occurrence surface; an independent sibling that composes with the calendar from outside.</p>
 </div>
 
 </div>

@@ -81,9 +81,11 @@ $Ns = 'urn:bodu:globalization:calendar'
 # Theme pages: ordered list of { File; Title; Catalogues[] }. Each catalogue is a filename stem.
 $ThemePages = @(
     @{ File = 'theme-civil-and-christian.md';     Title = 'Civil and Christian catalogues'
-       Catalogues = @('global-core', 'christian-western', 'christian-orthodox', 'default-minimal', 'europe-common') }
+       Catalogues = @('global-core', 'christian-western', 'christian-orthodox', 'christian-oriental-orthodox', 'catholic', 'christian-anglican', 'christian-protestant', 'default-minimal',
+                      'americas-common', 'europe-common', 'middleeast-common', 'africa-common') }
     @{ File = 'theme-religious-non-gregorian.md';  Title = 'Non-Gregorian religious catalogues'
-       Catalogues = @('global-anchors', 'global-islamic', 'global-islamic-umm-al-qura', 'global-jewish', 'global-hindu', 'global-buddhist', 'global-lunar', 'global-persian') }
+       Catalogues = @('global-anchors', 'global-islamic', 'global-islamic-umm-al-qura', 'global-jewish', 'global-hindu', 'global-buddhist', 'global-lunar', 'global-persian',
+                      'global-bahai', 'global-jain', 'global-sikh', 'global-zoroastrian') }
     @{ File = 'theme-cultural-and-family.md';      Title = 'Cultural, family, and remembrance catalogues'
        Catalogues = @('global-cultural', 'global-family', 'global-family-social', 'global-remembrance') }
     @{ File = 'theme-awareness.md';                Title = 'Awareness and themed observances'
@@ -161,6 +163,21 @@ foreach ($kv in $ResourceDirs.GetEnumerator()) {
 
 # Region stems = "region-*" packs; everything else is a catalogue/hub.
 $script:RegionStems = @($script:Index.Keys | Where-Object { $_ -like 'region-*' } | Sort-Object)
+
+# Hub stems = the "*-common" resources hosted in a data-pack directory (one per bundle: americas-common,
+# europe-common, middleeast-common, africa-common). Each is rendered as a hub section on its theme page.
+$script:HubStems = @($script:Index.Keys | Where-Object { $_ -like '*-common' -and $null -ne $script:Index[$_].Bundle } | Sort-Object)
+function Test-IsHub([string]$stem) { return $script:HubStems -contains $stem }
+
+# Hub metadata: the owning bundle, its region page, a display name derived from the page title, and how many
+# region packs the bundle carries (the packs that import their shared observances from the hub).
+function Get-HubInfo([string]$stem) {
+    $bundle = $script:Index[$stem].Bundle
+    $page = $RegionPages | Where-Object { $_.Bundle -eq $bundle } | Select-Object -First 1
+    if ($null -eq $page) { throw "Hub '$stem' belongs to bundle '$bundle', which has no region page." }
+    $packCount = @($script:RegionStems | Where-Object { $script:Index[$_].Bundle -eq $bundle }).Count
+    [pscustomobject]@{ Stem = $stem; Bundle = $bundle; RegionName = ($page.Title -replace ' region packs$', ''); RegionFile = $page.File; PackCount = $packCount }
+}
 
 # ---------------------------------------------------------------------------------------------------------------
 # Section B — memoized parse into a resource model (namespace-aware via XmlNamespaceManager).
@@ -447,7 +464,8 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
     [void]$l.Add('')
 
     if ($stem -eq 'global-all') {
-        [void]$l.Add("Aggregate catalogue (`$($res.ResourceId)`): imports every other catalogue with no cherry-picks, so each contributes its full concept set. Identifiers shared across sources are de-duplicated first-source-wins. Intended for consumers that want every shared observance at once; territory packs cherry-pick instead.")
+        # Doubled backticks emit a literal Markdown backtick; a single backtick would escape the `$(` subexpression.
+        [void]$l.Add("Aggregate catalogue (``$($res.ResourceId)``): imports every other catalogue with no cherry-picks, so each contributes its full concept set. Identifiers shared across sources are de-duplicated first-source-wins. Intended for consumers that want every shared observance at once; territory packs cherry-pick instead.")
         [void]$l.Add('')
         [void]$l.Add('| Imports catalogue |')
         [void]$l.Add('|---|')
@@ -455,23 +473,33 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
         [void]$l.Add('')
         return $l
     }
-    if ($stem -eq 'europe-common') {
-        [void]$l.Add("Pan-European hub (`$($res.ResourceId)`): re-exports the common civil, Christian, family, and cultural concepts from the catalogues below, and defines the two Catholic feasts the catalogues do not carry. The 28 European region packs import their shared observances from here.")
+    if (Test-IsHub $stem) {
+        # Region hub: one per data bundle (americas-common, europe-common, middleeast-common, africa-common).
+        $hub = Get-HubInfo $stem
+        $inlineClause = switch ($res.Concepts.Count) {
+            0 { '' }
+            1 { ', and defines one concept of its own the catalogues do not carry' }
+            default { ", and defines $($res.Concepts.Count) concepts of its own the catalogues do not carry" }
+        }
+        $packNoun = if ($hub.PackCount -eq 1) { 'pack' } else { 'packs' }
+        [void]$l.Add("$($hub.RegionName) hub (``$($res.ResourceId)``): re-exports shared concepts from the catalogues below$inlineClause. Serves the $($hub.PackCount) $packNoun of the [$($hub.RegionName) region packs]($($hub.RegionFile)) bundle; those that import their shared observances from it are listed under _Observed by_.")
         [void]$l.Add('')
         $reexp = @($res.Imports | ForEach-Object { $_.Resource } | Select-Object -Unique | ForEach-Object { '`' + $_ + '`' })
         $reexpList = $reexp -join ', '
         [void]$l.Add("Re-exports from: $reexpList.")
         [void]$l.Add('')
-        [void]$l.Add('Defines inline:')
-        [void]$l.Add('')
-        [void]$l.Add('| Concept | Category | When |')
-        [void]$l.Add('|---|---|---|')
-        foreach ($c in $res.Concepts) {
-            $sk = Get-SortKey $c
-            $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
-            [void]$l.Add("| $(Esc $c.DisplayName) | $($c.Category) | $when |")
+        if ($res.Concepts.Count -gt 0) {
+            [void]$l.Add('Defines inline:')
+            [void]$l.Add('')
+            [void]$l.Add('| Concept | Category | When |')
+            [void]$l.Add('|---|---|---|')
+            foreach ($c in $res.Concepts) {
+                $sk = Get-SortKey $c
+                $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '—' }
+                [void]$l.Add("| $(Esc $c.DisplayName) | $($c.Category) | $when |")
+            }
+            [void]$l.Add('')
         }
-        [void]$l.Add('')
         return $l
     }
 
@@ -575,6 +603,11 @@ function Render-RegionPage($page, $models) {
 # Map a source catalogue stem to a "themeFile#anchor" link (for region Source column).
 $script:ThemeOfCatalogue = @{}
 foreach ($tp in $ThemePages) { foreach ($cat in $tp.Catalogues) { $script:ThemeOfCatalogue[$cat] = $tp.File } }
+# Safety net: every non-region resource (catalogue or hub) must be assigned to a theme page, otherwise it is
+# never rendered and any region Source link to it falls back to index.md.
+foreach ($stem in ($script:Index.Keys | Where-Object { $_ -notlike 'region-*' } | Sort-Object)) {
+    if (-not $script:ThemeOfCatalogue.ContainsKey($stem)) { Add-Warn "Catalogue '$stem' is not assigned to any theme page in `$ThemePages; it will not be rendered." }
+}
 function Get-SourceLink([string]$stem) {
     if ($script:ThemeOfCatalogue.ContainsKey($stem)) { return "$($script:ThemeOfCatalogue[$stem])#$(Format-Anchor $stem)" }
     return "index.md"
@@ -665,7 +698,8 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
     [void]$l.Add('')
     [void]$l.Add('What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).')
     [void]$l.Add('')
-    [void]$l.Add('Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. European packs import through the `europe-common` hub, which itself re-exports from the catalogues. The pages below present the same data along two axes.')
+    $hubLinks = @($script:HubStems | ForEach-Object { "[``$_``]($(Get-SourceLink $_))" }) -join ', '
+    [void]$l.Add("Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ($hubLinks) that re-exports the shared concepts its packs have in common — and occasionally defines a few of its own — so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.")
     [void]$l.Add('')
     [void]$l.Add('## How to read these pages')
     [void]$l.Add('')
@@ -675,7 +709,7 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
     [void]$l.Add('| Non-working | `Yes` = a non-working public holiday for the scope shown; `—` = a working observance |')
     [void]$l.Add('| Territory scope | `National`, a subdivision list (e.g. `ENG, WLS, NIR`), or `National + …` |')
     [void]$l.Add('| Calendar | shown only when non-Gregorian (`Hijri`, `Hebrew`, `Persian`, `ChineseLunisolar`, …) |')
-    [void]$l.Add('| Source | `inline` (defined in the region pack) or `← catalogue` (the direct import) |')
+    [void]$l.Add('| Source | `inline` (defined in the region pack) or `← catalogue` / `← <region>-common` (the direct import: a shared catalogue or the bundle''s region hub) |')
     [void]$l.Add('| When | a one-phrase gloss: `Fixed 25 Dec`, `Easter +1`, `1st Mon May`, `Algorithm: western-easter` — never the recipe |')
     [void]$l.Add('')
     [void]$l.Add('## By theme')

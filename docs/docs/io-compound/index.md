@@ -68,8 +68,8 @@ byte[] bytes = workbook.ReadAllBytes();
 | Classify why a file was rejected | `catch (CompoundFileFormatException ex)` → `ex.Category` |
 | List a storage's children | `EnumerateEntries` / `EnumerateStorages` / `EnumerateStreams` |
 | Read a required stream's bytes | `OpenStream(name).ReadAllBytes()` |
-| Read a stream incrementally | `OpenStream(name).Open()` → a `CompoundStream` cursor |
-| Look up a stream that may be absent | `TryOpenStream(name, out entry)` |
+| Read a stream incrementally | `OpenStream(name)` → a seekable `CompoundStream` cursor |
+| Look up a stream that may be absent | `TryOpenStream(name, out stream)` |
 | Read authored document metadata | `file.TryGetSummaryInformation(out summary)` |
 | Write document metadata | `file.SetSummaryInformation(summary)` (or `RootStorage.WritePropertySet(name, set)`) on a writable file |
 | Stamp storage entry metadata | set `RootStorage.ClassId` / `CreationTime` / `ModifiedTime` / `StateBits` on a writable file |

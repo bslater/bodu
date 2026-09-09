@@ -6,7 +6,7 @@ title: Bodu serializers — Introduction
 
 ![Bodu serializers](../../images/hero-serializers.svg)
 
-**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three self-contained libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each is a standalone package with no shared engine — every type a serializer needs lives inside its own assembly:
+**Bodu.Text.Bencode**, **Bodu.Text.Toml**, and **Bodu.Text.Yaml** are three libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the **[Text & Serialization](../topics/text-and-serialization.md)** topic, each ships its own reader, writer, DOMs, and converters, and each references the shared **Bodu.Text.Serialization** package (namespace <xref:Bodu.Text.Serialization>) for the vocabulary they have in common — the attribute family (`[PropertyName]`, `[Ignore]`, `[Converter]`, `[Required]`, `[Constructor]`, `[ExtensionData]`, …), the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces. The per-format packages also compile the shared metadata resolver and converter engine from that package's source under their own format symbol:
 
 | Package | Namespace | Format | Entry point |
 |---|---|---|---|
@@ -67,7 +67,7 @@ Three contracts hold identically across all three libraries, so they are worth l
 - **UTF-8 is the native encoding.** Every `Utf8…Reader` / `Utf8…Writer` operates on UTF-8 bytes, and the serializers accept `ReadOnlySpan<byte>` and write to `IBufferWriter<byte>` without a string detour.
 
 > [!NOTE]
-> Async stream surfaces differ by format: <xref:Bodu.Text.Bencode.BencodeSerializer> and <xref:Bodu.Text.Toml.TomlSerializer> add `SerializeAsync` / `DeserializeAsync` over a `Stream`, whereas <xref:Bodu.Text.Yaml.YamlSerializer> is synchronous over a `string` or a UTF-8 `ReadOnlySpan<byte>` (its reader is buffered, so there is no incremental async path).
+> All three serializers ship the same stream facade: `Serialize<T>(IBufferWriter<byte>, …)`, `SerializeAsync(Stream, …)`, `Deserialize<T>(Stream, …)`, and `DeserializeAsync<T>(Stream, …)`. The stream overloads buffer the whole document in memory — only the stream copy itself is asynchronous — so they are conveniences over the span / string entry points rather than incremental parsers.
 
 ## Common scenarios
 
@@ -76,8 +76,8 @@ Three contracts hold identically across all three libraries, so they are worth l
 | Map a config record to and from TOML | `TomlSerializer.Serialize` / `Deserialize<T>` |
 | Round-trip an object through YAML | `YamlSerializer.Serialize` / `Deserialize<T>` |
 | Encode a torrent-style object to Bencode bytes | `BencodeSerializer.Serialize` / `Deserialize<T>` |
-| Rename members on the wire | a `[…PropertyName]` attribute or a naming policy |
-| Control how a tricky type is written | a `…Converter<T>` |
+| Rename members on the wire | the shared `[PropertyName]` attribute or a naming policy |
+| Control how a tricky type is written | a `…Converter<T>`, attached with the shared `[Converter]` attribute or registered on the options |
 | Edit a document in place without a model | the mutable `…Node` DOM |
 | Inspect a document with minimal allocation | the read-only `…Document` / `…Element` DOM |
 | Process tokens by hand | the `Utf8…Reader` / `Utf8…Writer` pair |

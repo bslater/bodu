@@ -29,10 +29,10 @@ Reach for this library when you need EditorConfig-style file-targeted configurat
 
 **Profiles and options**
 
-- <xref:Bodu.Text.Configuration.ConfigurationProfile> — `Bodu` (default), `EditorConfigCompatible`, `Strict`, `Relaxed`. Each option type has a static `For(profile)` factory and four named property presets.
+- <xref:Bodu.Text.Configuration.ConfigurationProfile> — `Bodu` (default), `EditorConfigCompatible`, `Strict`, `Relaxed`. Each option type has a static `For(profile)` factory plus named presets: `ConfigurationParseOptions` exposes all four profiles, `ConfigurationResolveOptions` exposes `Bodu` and `EditorConfigCompatible`, and `ConfigurationWriteOptions` exposes `Bodu`, `EditorConfigCompatible`, and `Normalized`.
 - <xref:Bodu.Text.Configuration.ConfigurationParseOptions> — reader behaviour: `InlineCommentMode`, `DuplicateKeyMode`, `DuplicateSectionMode`, `DiagnosticMode`, `MaxLineLength`, `MaxKeyLength`, `TrimKeysAndValues`, `AllowKeyOnlyProperties`, `DefaultEncoding`, `KeyOptions`. Static presets `Bodu`, `EditorConfigCompatible`, `Strict`, `Relaxed`.
-- <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> — resolver behaviour: `PathRoot`, `MissingPathRootMode`, `ApplyPreambleProperties`, `PathComparison`, `UnsetValueMode`, `KeyOptions`. Static presets aligned with the same four profiles.
-- <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> — writer behaviour: encoding (default UTF-8 without BOM), newline style, blank-line policy, property formatting. Static presets aligned with the same four profiles.
+- <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> — resolver behaviour: `PathRoot`, `MissingPathRootMode`, `ApplyPreambleProperties`, `PathComparison`, `UnsetValueMode`, `KeyOptions`. Static presets `Bodu` and `EditorConfigCompatible`; use `For(profile)` for the others.
+- <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> — writer behaviour: encoding (default UTF-8 without BOM), newline style, blank-line policy, property formatting. Static presets `Bodu`, `EditorConfigCompatible`, and `Normalized` (the `Strict` profile's canonical layout).
 
 **Keys**
 
@@ -43,7 +43,7 @@ Reach for this library when you need EditorConfig-style file-targeted configurat
 **Diagnostics**
 
 - <xref:Bodu.Text.Configuration.ConfigurationDiagnostic> — immutable record carrying `Severity`, `Code`, `Message`, `Location`.
-- <xref:Bodu.Text.Configuration.ConfigurationDiagnosticSeverity> — `Warning`, `Error`.
+- <xref:Bodu.Text.Configuration.ConfigurationDiagnosticSeverity> — `Info`, `Warning`, `Error`.
 - <xref:Bodu.Text.Configuration.ConfigurationDiagnosticCode> — stable category identifier (duplicate key, invalid section header, invalid unset, line-length exceeded, …).
 - <xref:Bodu.Text.Configuration.ConfigurationDiagnosticMode> — `Throw` (default), `Collect`, `Ignore`.
 - <xref:Bodu.Text.Configuration.ConfigurationSourceLocation> — line / column / file metadata pointing into the source text.
@@ -52,7 +52,7 @@ Reach for this library when you need EditorConfig-style file-targeted configurat
 
 - <xref:Bodu.Text.Configuration.ConfigurationInlineCommentMode> — `Disabled` (EditorConfig), `WhitespaceIntroduced` (default), `Always`.
 - <xref:Bodu.Text.Configuration.ConfigurationUnsetValueMode> — `TreatAsLiteral` (default), `RemoveEffectiveValue` (EditorConfig sentinel).
-- <xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> — `UseEmptyRoot` (default), `Throw`, `IgnoreAnchoredPatterns`.
+- <xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> — `UseEmptyRoot` (the `Bodu` default), `Throw` (the `EditorConfigCompatible` default).
 
 **Pattern engine**
 

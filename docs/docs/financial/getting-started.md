@@ -104,10 +104,11 @@ Money<USD> back = Money<USD>.FromMinorUnits(1999);     // USD 19.99
 ### Runtime-tagged amounts (`Money`)
 
 ```csharp
-Money invoice = JsonSerializer.Deserialize<Money>(payload)!;
+// `options` is a JsonSerializerOptions with the financial converters registered — see the JSON section below.
+Money invoice = JsonSerializer.Deserialize<Money>(payload, options)!;
 // invoice could be "USD 19.99", "EUR 19.99", or "JPY 200" — same code path.
 
-Money total = invoice + new Money(5m, invoice.IsoCode);
+Money total = invoice + new Money(5m, invoice.Code);   // Code is the CurrencyCode enum
 
 Money<USD> typed = invoice.As<USD>();        // throws if mismatch
 bool ok = invoice.TryAs(out Money<USD> r);   // safe variant

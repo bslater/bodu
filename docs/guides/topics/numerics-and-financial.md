@@ -4,7 +4,7 @@ title: Numerics & Financial guides
 
 # Numerics & Financial guides
 
-Recipe-style walk-throughs for the **Numerics & Financial** topic — [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>` and `Interval<T>` (with its set-algebra family: `DiscreteInterval<T>`, `IntervalPair<T>`, and `IntervalSet<T>`), and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
+Recipe-style walk-throughs for the **Numerics & Financial** topic — [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>`, `BigDecimal`, and `Complex<T>`, the range type `Interval<T>` (with its set-algebra family: `DiscreteInterval<T>`, `IntervalPair<T>`, and `IntervalSet<T>`), and the streaming statistics aggregates (`RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, `MovingMinMax<T>`), and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
 
 If you are new to the topic, start with the [Numerics & Financial overview](../../docs/topics/numerics-and-financial.md) for the package boundaries and decision table, and the [Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md) glossary for the shared vocabulary (canonical form, deferred rounding, `BigInteger` promotion, endpoint inclusivity, minor unit, allocation, provenance).
 
@@ -16,7 +16,7 @@ Exact rational arithmetic and first-class numeric ranges over the .NET generic-m
 
 <div class="bodu-card">
   <h3><a href="../numerics/index.md">Overview</a></h3>
-  <p>The two value types, what each is for, and the boundary with <code>Bodu.Financial</code>.</p>
+  <p>The value types, what each is for, and the boundary with <code>Bodu.Financial</code>.</p>
 </div>
 
 <div class="bodu-card">
@@ -75,8 +75,18 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 </div>
 
 <div class="bodu-card">
+  <h3><a href="../financial/monetary-precision.md">Monetary precision &amp; unit pricing</a></h3>
+  <p>Sub-minor-unit prices via explicit-scale <code>Money</code> and unrounded <code>CalculatedMoney</code>, with the scale preserved through arithmetic and every JSON wire shape.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="../financial/exchange-rates.md">Working with exchange rates</a></h3>
   <p>Timeless vs. dated provider contracts, the audit-grade lookup result, the composite fallback stack, and the series / table builders.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../financial/exchange-types.md">Exchange-rate types — a usage-scenario catalogue</a></h3>
+  <p>Every FX type mapped to the scenario it was defined for, with a "reach for this when…" map and a decision walk-through.</p>
 </div>
 
 <div class="bodu-card">
@@ -85,8 +95,23 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 </div>
 
 <div class="bodu-card">
+  <h3><a href="../financial/exchange-rate-providers.md">Built-in exchange-rate providers</a></h3>
+  <p>The eleven live-feed packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF) — construction, warming, dependency injection, and composing with caching.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../financial/exchange-rate-caching.md">Caching and aggregating exchange rates</a></h3>
+  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>) and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../financial/testing-providers.md">Testing your own provider</a></h3>
+  <p><code>FixedDatedRateProvider</code> as the deterministic test double, and the in-repository contract-test bases the built-in providers pass.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="../financial/dependency-injection.md">Dependency injection</a></h3>
-  <p>Register the stack with <code>AddFinancialService(...)</code> — currency lookups, monetary contexts, FX providers, JSON converters, options binding.</p>
+  <p>Register the stack with <code>AddFinancialService(...)</code> — currency lookups, monetary contexts, FX providers, options binding — and the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
 </div>
 
 </div>

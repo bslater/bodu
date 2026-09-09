@@ -16,6 +16,8 @@
   href: recurrence.md
 - name: IO.Compound
   href: io-compound.md
+- name: IO.Pst
+  href: io-pst.md
 - name: IO.Hashing
   href: io-hashing.md
 - name: Numerics

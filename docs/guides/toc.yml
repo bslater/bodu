@@ -29,6 +29,10 @@
           items:
             - name: Natural string comparer
               href: core/natural-string-comparer.md
+        - name: Bodu.Text (namespace)
+          items:
+            - name: Encoding helpers and BOM detection
+              href: text-encoding/encoding-helpers.md
     - name: Bodu.Collections
       items:
         - name: Choosing a collection
@@ -132,6 +136,8 @@
               href: cryptography/padding.md
             - name: Composing primitives
               href: cryptography/composing-primitives.md
+            - name: Hardware acceleration and the SIMD switch
+              href: cryptography/hardware-acceleration.md
         - name: Symmetric ciphers — Standard
           items:
             - name: AES-family block ciphers
@@ -200,6 +206,10 @@
               href: cryptography/argon2.md
             - name: Using scrypt
               href: cryptography/scrypt.md
+        - name: One-time passwords
+          items:
+            - name: Using HOTP and TOTP
+              href: cryptography/one-time-passwords.md
         - name: Asymmetric algorithms
           items:
             - name: Asymmetric algorithms overview
@@ -269,7 +279,7 @@
           items:
             - name: Date calculation algorithms
               href: calendar/algorithms.md
-        - name: Bodu.Globalization.Calendar.Data.* — Data packs
+        - name: Bodu.Globalization.Calendar.<Region> — Data packs
           items:
             - name: Calendar data packs
               href: calendar/data-packs.md
@@ -368,6 +378,8 @@
           items:
             - name: Streams and async I/O
               href: formats/streaming.md
+            - name: Reflection-free binding with the source generator
+              href: formats/source-generator.md
     - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Guides overview
@@ -468,6 +480,8 @@
           href: financial/money.md
         - name: Monetary precision & unit pricing
           href: financial/monetary-precision.md
+        - name: JSON serialization
+          href: financial/json-serialization.md
         - name: Working with exchange rates
           href: financial/exchange-rates.md
         - name: Built-in exchange-rate providers

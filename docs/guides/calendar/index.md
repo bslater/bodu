@@ -27,7 +27,8 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 | `Bodu.Globalization.Calendar.RangeResolution` | Duplicate / collision / priority / observed-date policies on `ResolutionPolicy`. | [The resolution pipeline](resolution-pipeline.md) · [Identity, priority, observed dates](identity-and-resolution.md) |
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external algorithm assemblies — `NotableDatePluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | [Building and extending the service — Plugin system](building-the-service.md#plugin-system) |
 | `Bodu.Extensions` | Working-day arithmetic over `DateOnly`, `DateTime`, and `DateTimeOffset` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … | [Working-day arithmetic](working-days.md) |
-| `Bodu.Globalization.Calendar.Data` | Region-specific public-holiday resources shipped in the `Bodu.Globalization.Calendar.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
+| `Bodu.Globalization.Calendar` (data packs) | Region-specific public-holiday resources shipped in the `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`, `.MiddleEast`, and `.Africa` companion packages — each a `<Region>CalendarData` factory in the runtime's namespace. | [Calendar data packs](data-packs.md) |
+| `Bodu.Globalization.Calendar.Caching` | The read-through `CachingNotableDateService` decorator, the `INotableDateCache` contract, and the in-memory / TOML / JSON backends (SQLite and `IDistributedCache` backends in the `.Sqlite` / `.Distributed` add-ons; DI registration in `Bodu.Globalization.Calendar`). | [Caching notable dates](caching/notable-date-caching.md) |
 | `Bodu.Globalization.Calendar` (DI) | `IServiceCollection.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` from the DI companion package. | [Calendar dependency injection](dependency-injection.md) |
 | `Bodu.Globalization.Calendar.Builder` | Fluent C# authoring of notable-date documents — `NotableDateDocumentBuilder`, XML / JSON serialization, and load/save. | [Authoring with the notable-date builder](notable-date-builder.md) |
 
@@ -83,6 +84,21 @@ A **rule document** is authored on the notable-date schema and loaded into an im
   <p>Walkthrough of the load and query stages — parse, import resolution, override application, validation; then strategy resolution, adjustment evaluation, collision settlement, and emission — with a concrete worked trace.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="identity-and-resolution.md">Rule identity, priority, and observed-date resolution</a></h3>
+  <p>How occurrences are identified, how priority arbitrates same-day collisions, how <code>ResolutionPolicy</code> settles duplicates and collisions, and how emission modes and the observed-date range policy shape what a query returns.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="validation-diagnostics.md">Calendar validation diagnostics</a></h3>
+  <p>The stable <code>BODU-CAL-*</code> code catalogue and severities, and the collect-mode lint surface — <code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code> — for build tasks and editor integrations.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="binary-rule-packs.md">Binary rule packs</a></h3>
+  <p>Compiling a validated document to a sealed <code>.bcal</code> pack — the trim- and AOT-friendly load path — with the <code>bodu-calendar</code> tool and the <code>Bodu.Globalization.Calendar.Build</code> MSBuild integration.</p>
+</div>
+
 </div>
 
 ### `Bodu.Globalization.Calendar` — Patterns
@@ -106,7 +122,22 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 <div class="bodu-card">
   <h3><a href="dependency-injection.md">Calendar dependency injection</a></h3>
-  <p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package — <code>services.AddNotableDateService(...)</code>, the resource-factory overload, and <code>AddReloadableNotableDateService(...)</code> for the runtime-swap workflow.</p>
+  <p>The <code>Bodu.Globalization.Calendar.DependencyInjection</code> companion package — the <code>services.AddNotableDateService(...)</code> overloads (resource, factory, options, keyed) and <code>AddReloadableNotableDateService(...)</code> for the runtime-swap workflow.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="plugin-trust.md">Calendar plugin trust</a></h3>
+  <p>What the deny-by-default plugin gate validates, what each bundled trust policy (strong-name, file-hash, composite, delegating) does and does not check, and how a rejected or failing plugin surfaces.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="caching/notable-date-caching.md">Caching notable dates</a></h3>
+  <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator — per-territory, per-civil-year cache entries, the in-memory / TOML / JSON / SQLite / distributed backends, warm-up, observability, and the DI registration.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="round-trip-guarantees.md">Builder round-trip guarantees</a></h3>
+  <p>Exactly what <code>NotableDateDocumentBuilder</code> XML / JSON serialization, parsing, and resource materialization guarantee — and what they do not.</p>
 </div>
 
 </div>
@@ -117,25 +148,35 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 <div class="bodu-card">
   <h3><a href="algorithms.md">Date calculation algorithms</a></h3>
-  <p>The six resolution strategies, the built-in <code>&lt;Algorithm key="…"&gt;</code> keys — Easter (Gregorian / Orthodox), equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals — and a custom-algorithm walk-through.</p>
+  <p>The resolution strategy kinds (the full catalogue lives in the <a href="strategy-reference.md">strategy reference</a>), the built-in <code>&lt;Algorithm key="…"&gt;</code> keys — Easter (Gregorian / Orthodox), equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals — and a custom-algorithm walk-through.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="non-gregorian-calendars.md">Working with non-Gregorian calendars</a></h3>
+  <p><code>&lt;Fixed&gt;</code> dates authored in the Hijri, Umm al-Qura, Hebrew, Persian, or Chinese lunisolar calendar, how they project onto the Gregorian year, and the double-occurrence and leap-month cases.</p>
 </div>
 
 </div>
 
-### `Bodu.Globalization.Calendar.Data.*` — Data packs
+### `Bodu.Globalization.Calendar.<Region>` — Data packs
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="data-packs.md">Calendar data packs</a></h3>
-  <p>The official <code>Bodu.Globalization.Calendar.Data.*</code> companion assemblies — Americas, Europe, and Asia-Pacific — their <code>CreateService</code> / <code>LoadResource</code> factories, and territory coverage.</p>
+  <p>The official <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages — Americas, Asia-Pacific, Europe, Middle East, and Africa — their <code>CreateService</code> / <code>LoadResource</code> factories, and territory coverage.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="catalogue/index.md">Notable-date catalogue</a></h3>
+  <p>What notable dates the shipped resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
 </div>
 
 </div>
 
 ## Where to go next
 
-- **[Runnable samples](../../samples/calendar.md)** — offline sample projects under `samples/Globalization.Calendar/` composing the data packs, working-day arithmetic, the builder, DI, and custom algorithms end to end.
+- **[Runnable samples](../../samples/calendar.md)** — offline sample projects under `samples/Globalization.Calendar/` composing the data packs, working-day arithmetic, the builder, DI, custom algorithms, caching, and validation linting end to end.
 - [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — mental model, headline types, scenarios.
 - [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.

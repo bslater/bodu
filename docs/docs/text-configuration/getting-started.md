@@ -134,7 +134,8 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
 `Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
 correct root without an explicit `PathRoot` setting. `Load(Stream)` and `Parse(string)` produce documents with no
 path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` to be set explicitly — or
-`MissingPathRootMode` to opt into the empty-root or ignore behaviour.
+`MissingPathRootMode` set to `UseEmptyRoot` (the `Bodu` profile default; the `EditorConfigCompatible` profile selects
+`Throw`).
 
 ### Resolve options — anchor a path root
 

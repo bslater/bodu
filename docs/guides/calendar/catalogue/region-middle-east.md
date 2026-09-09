@@ -12,13 +12,13 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| New Year's Day | Yes | National | Gregorian | [← middleeast-common](index.md) | Fixed 1 Jan |
+| New Year's Day | Yes | National | Gregorian | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | Fixed 1 Jan |
 | Commemoration Day | Yes | National | Gregorian | inline | Fixed 1 Dec |
 | National Day | Yes | National | Gregorian | inline | Fixed 2 Dec |
-| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](index.md) | 10 Dhu al-Hijja (Hijri) |
-| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Shawwal (Hijri) |
-| Islamic New Year | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Muharram (Hijri) |
-| Mawlid al-Nabi | Yes | National | Hijri | [← middleeast-common](index.md) | 12 Rabi I (Hijri) |
+| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Shawwal (Hijri) |
+| Islamic New Year | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Muharram (Hijri) |
+| Mawlid al-Nabi | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 12 Rabi I (Hijri) |
 
 ## IL
 
@@ -45,14 +45,14 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| New Year's Day | Yes | National | Gregorian | [← middleeast-common](index.md) | Fixed 1 Jan |
-| International Workers' Day | Yes | National | Gregorian | [← middleeast-common](index.md) | Fixed 1 May |
+| New Year's Day | Yes | National | Gregorian | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | Fixed 1 Jan |
+| International Workers' Day | Yes | National | Gregorian | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | Fixed 1 May |
 | Independence Day | Yes | National | Gregorian | inline | Fixed 25 May |
 | Christmas Day | Yes | National | Gregorian | [← christian-western](theme-civil-and-christian.md#christian-western) | Fixed 25 Dec |
-| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](index.md) | 10 Dhu al-Hijja (Hijri) |
-| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Shawwal (Hijri) |
-| Islamic New Year | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Muharram (Hijri) |
-| Mawlid al-Nabi | Yes | National | Hijri | [← middleeast-common](index.md) | 12 Rabi I (Hijri) |
+| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Shawwal (Hijri) |
+| Islamic New Year | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Muharram (Hijri) |
+| Mawlid al-Nabi | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 12 Rabi I (Hijri) |
 
 ## QA
 
@@ -62,8 +62,8 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 |---|---|---|---|---|---|
 | National Sports Day | Yes | National | Gregorian | inline | 2nd Tue Feb |
 | National Day | Yes | National | Gregorian | inline | Fixed 18 Dec |
-| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](index.md) | 10 Dhu al-Hijja (Hijri) |
-| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Shawwal (Hijri) |
+| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Shawwal (Hijri) |
 
 ## SA
 
@@ -82,19 +82,19 @@ Notable dates observed by each country in the **MiddleEast** data pack, grouped 
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| New Year's Day | Yes | National | Gregorian | [← middleeast-common](index.md) | Fixed 1 Jan |
+| New Year's Day | Yes | National | Gregorian | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | Fixed 1 Jan |
 | National Sovereignty and Children's Day | Yes | National | Gregorian | inline | Fixed 23 Apr |
-| International Workers' Day | Yes | National | Gregorian | [← middleeast-common](index.md) | Fixed 1 May |
+| International Workers' Day | Yes | National | Gregorian | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | Fixed 1 May |
 | Commemoration of Atatürk, Youth and Sports Day | Yes | National | Gregorian | inline | Fixed 19 May |
 | Democracy and National Unity Day | Yes | National | Gregorian | inline | Fixed 15 Jul |
 | Victory Day | Yes | National | Gregorian | inline | Fixed 30 Aug |
 | Republic Day | Yes | National | Gregorian | inline | Fixed 29 Oct |
-| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](index.md) | 10 Dhu al-Hijja (Hijri) |
-| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](index.md) | 1 Shawwal (Hijri) |
+| Eid al-Adha | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 10 Dhu al-Hijja (Hijri) |
+| Eid al-Fitr | Yes | National | Hijri | [← middleeast-common](theme-civil-and-christian.md#middleeast-common) | 1 Shawwal (Hijri) |
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-06-25T01:30:35Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

@@ -64,12 +64,12 @@ Constant-memory and streaming. For SIMD-friendly throughput on large buffers, sw
 ```csharp
 using Bodu.IO.Hashing;
 
-using var hash = new Pearson(outputWidthBits: 256);
+using var hash = new Pearson(hashSizeBits: 256, tableType: Pearson.PearsonTableType.Pearson);
 hash.Append(data);
 byte[] digest = hash.GetCurrentHash(); // 32 bytes
 ```
 
-`Pearson` accepts any output width from 8 bits to 2048 bits in 8-bit steps.
+`Pearson` accepts any output width from 8 bits to 2048 bits in 8-bit steps; the nested `Pearson.PearsonTableType` enum selects one of the four built-in permutation tables, and a third constructor overload takes your own 256-byte permutation.
 
 ### Check digit — Luhn (credit card)
 

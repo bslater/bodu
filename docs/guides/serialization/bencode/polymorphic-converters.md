@@ -258,6 +258,6 @@ Three ordering consequences are worth keeping in mind:
 
 - [Writing converters](converters.md) — the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
 - [Built-in converter catalog](builtin-converters.md) — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
-- [Mapping attributes](attributes.md) — `[BencodeConverter]` placement and the precedence ladder in detail.
+- [Mapping attributes](attributes.md) — `[Converter]` placement and the precedence ladder in detail.
 - API reference — <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory>, <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>.
 - **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic.

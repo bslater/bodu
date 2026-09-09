@@ -320,6 +320,7 @@ x.Round(MidpointRounding.AwayFromZero);  // 3/1
 x.GetWholePart();      // 2 (T)
 x.GetFractionalPart(); // 1/3
 var (whole, frac) = x.ToMixedParts();    // (2, 1/3)
+var (w, fn, fd) = x;                     // (2, 1, 3) — three-way Deconstruct: whole, fractional numerator, denominator
 
 var (n, d) = Fraction<int>.Create(7, 3); // (7, 3) — Deconstruct over canonical components
 ```
@@ -330,22 +331,38 @@ The full <xref:System.MidpointRounding> enum is supported on `Round`.
 
 `Fraction<T>` implements `INumber<Fraction<T>>` and
 `ISignedNumber<Fraction<T>>`. The standard identities and predicates
-are provided:
+are provided — but as **explicit interface implementations**, so they
+are not callable on the concrete type: `Fraction<int>.AdditiveIdentity`
+or `Fraction<int>.IsNaN(x)` does not compile. They are reached through
+a generic type parameter constrained to the interface, which is exactly
+how every generic-math algorithm consumes them:
 
 ```csharp
-Fraction<int>.AdditiveIdentity;        // 0/1
-Fraction<int>.MultiplicativeIdentity;  // 1/1
-Fraction<int>.NegativeOne;             // -1/1
+static void Inspect<T>(T x, T y) where T : INumber<T>
+{
+    T zero = T.AdditiveIdentity;        // 0/1
+    T one  = T.MultiplicativeIdentity;  // 1/1
 
-Fraction<int>.IsZero(Fraction<int>.Zero);             // True
-Fraction<int>.IsInteger(Fraction<int>.Create(4, 2));  // True — canonical is 2/1
-Fraction<int>.IsNaN(any);                             // False — Fraction<T> is never NaN
-Fraction<int>.IsFinite(any);                          // True
-Fraction<int>.IsRealNumber(any);                      // True
+    T.IsZero(T.Zero);                   // True
+    T.IsInteger(x);                     // True for 4/2 — canonical is 2/1
+    T.IsNaN(x);                         // False — Fraction<T> is never NaN
+    T.IsFinite(x);                      // True
+    T.IsRealNumber(x);                  // True
 
-Fraction<int>.MaxMagnitude(a, b);
-Fraction<int>.MinMagnitude(a, b);
+    T.MaxMagnitude(x, y);
+    T.MinMagnitude(x, y);
+}
+
+static T MinusOne<T>() where T : ISignedNumber<T> => T.NegativeOne;   // -1/1
+
+Inspect(Fraction<int>.Create(4, 2), Fraction<int>.Create(-3, 1));
 ```
+
+Where a member has a meaning outside generic code it also has a named
+public counterpart on the concrete type: `Fraction<T>.Zero`, `One`, and
+`MinusOne` are the identities, and the instance properties `IsZero`,
+`IsInteger`, `IsProper`, `IsNegative`, and `IsPositive` are the
+classification predicates.
 
 This means `Fraction<T>` slots into algorithms written against the
 `INumber` abstractions — `Sum`, `Aggregate`, generic linear-algebra
@@ -354,22 +371,39 @@ routines — without special-casing.
 `MaxMagnitude` / `MinMagnitude` compare absolute values and break a tie
 by sign, mirroring the BCL convention: `MaxMagnitude` prefers the
 positive operand on a magnitude tie, `MinMagnitude` the negative one.
-`Clamp`, `CopySign`, `Max` / `MaxNumber`, and `Min` / `MinNumber` are
-all present; because `Fraction<T>` is never `NaN`, the `*Number`
-variants behave identically to their plain counterparts.
+`Clamp`, `Max`, and `Min` are public static members of the concrete
+type; `CopySign`, `MaxNumber`, and `MinNumber` are again reachable only
+through the interfaces. Because `Fraction<T>` is never `NaN`, the
+`*Number` variants behave identically to their plain counterparts.
 
 `Fraction<T>` also participates in generic cross-type conversion via
-`TSelf.CreateChecked` / `CreateSaturating` / `CreateTruncating`. Integer
-and `decimal` sources convert exactly; other finite sources convert
-through their nearest `double`; non-finite sources fail. The checked
-path overflows to <xref:System.OverflowException>, the saturating /
-truncating paths clamp to `MinValue` / `MaxValue` instead.
+`TSelf.CreateChecked` / `CreateSaturating` / `CreateTruncating`. These
+are static virtual members of `INumberBase<TSelf>` with default
+implementations, so they too exist only on the constrained type
+parameter, never on `Fraction<int>` directly. Integer and `decimal`
+sources convert exactly; other finite sources convert through their
+nearest `double`; non-finite sources fail. The checked path overflows
+to <xref:System.OverflowException>, the saturating / truncating paths
+clamp to `MinValue` / `MaxValue` instead.
 
 ```csharp
-Fraction<int>.CreateChecked(42);            // 42/1 — exact integer source
-Fraction<int>.CreateChecked(0.25m);         // 1/4  — exact decimal source
-Fraction<int>.CreateSaturating(1e30);       // MaxValue — clamps instead of throwing
+static T Checked<T, TOther>(TOther value)
+    where T : INumber<T>
+    where TOther : INumberBase<TOther> =>
+    T.CreateChecked(value);
+
+static T Saturating<T, TOther>(TOther value)
+    where T : INumber<T>
+    where TOther : INumberBase<TOther> =>
+    T.CreateSaturating(value);
+
+Checked<Fraction<int>, int>(42);           // 42/1 — exact integer source
+Checked<Fraction<int>, decimal>(0.25m);    // 1/4  — exact decimal source
+Saturating<Fraction<int>, double>(1e30);   // MaxValue — clamps instead of throwing
 ```
+
+See [Generic-math constraints](generic-math-constraints.md) for the
+constraint sets to use when writing such routines.
 
 The backing type is constrained as `where T : IBinaryInteger<T>`.
 

@@ -1,0 +1,4 @@
+# Public namespaces that still lack a docs/apidoc/<Namespace>.md overview.
+# This list is DEBT recorded by the 2026-09 documentation audit
+# (docs/reviews/docfx-coverage-audit-and-plan.md, Phase 2). Remove an entry
+# when its overview is written; never add to it for a new namespace.

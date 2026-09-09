@@ -24,7 +24,7 @@
     "content": [
       {
         "files": [ "**/*.{md,yml}" ],
-        "exclude": [ "_site/**", "templates/**", "apidoc/**" ]
+        "exclude": [ "_site/**", "templates/**", "apidoc/**", "reviews/**", "forensic-review/**" ]
       }
     ],
     "resource": [

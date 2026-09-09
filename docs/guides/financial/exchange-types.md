@@ -76,11 +76,12 @@ var back = ExchangeRate<USD, EUR>.FromRuntime(runtime); // throws on ISO mismatc
 ### `CurrencyPair` — the directional key
 
 [`CurrencyPair`](xref:Bodu.Financial.ExchangeRates.CurrencyPair) is an
-immutable `(FromIsoCode, ToIsoCode)` record struct that validates both
-codes at construction and exposes `Inverse()`. **Reach for it** instead
+immutable record struct constructed as `new CurrencyPair(CurrencyCode from, CurrencyCode to)`;
+it exposes `From` and `To`, validates both codes at construction, and
+exposes `Inverse()`. **Reach for it** instead
 of a `(string, string)` tuple anywhere a currency direction is used as
-a dictionary key or method argument — the named fields make the
-direction unambiguous and centralise ISO validation.
+a dictionary key or method argument — the named properties make the
+direction unambiguous and centralise currency validation.
 
 ### `RateObservation` — the bare data point
 

@@ -6,7 +6,7 @@ title: Writing converters
 
 A converter customises how a single type is read and written: derive `BencodeConverter<T>` (<xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>), reading through <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> and writing through <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter>. The set of converters the library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
 
-The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers follow the identical pattern against their own reader/writer pair; only the prefix differs.
+The sibling [TOML](../toml/index.md) and [YAML](../yaml/index.md) serializers follow the identical pattern against their own reader/writer pair and `…Converter<T>` base class; the `[Converter]` attribute and the callback interfaces are shared through <xref:Bodu.Text.Serialization>.
 
 ## Pattern 1 — Convert a value type
 
@@ -112,7 +112,7 @@ public sealed class BoolAsIntConverter : BencodeConverter<bool>
 
 ## Built-in enum converters
 
-For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[BencodeConverter]` attribute on a member, property, or the enumeration itself, or register one on the options.
+For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[Converter]` attribute on a member, property, or the enumeration itself, or register one on the options.
 
 On the enumeration itself, use the generic string-enum form (<xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1>), optionally renaming individual members:
 
@@ -151,7 +151,7 @@ options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLowe
 // Status.OnHold now serializes as the byte string "on_hold" everywhere.
 ```
 
-The generic forms expose a public parameterless constructor, which is what makes them usable from a `[BencodeConverter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
+The generic forms expose a public parameterless constructor, which is what makes them usable from a `[Converter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
 
 ## Pattern 6 — Fail clearly on malformed data
 
@@ -278,7 +278,7 @@ exception for the parser; never throw it from a converter.
 
 - [Polymorphic converters](polymorphic-converters.md) — converter factories for open-generic families and tagged hierarchies.
 - [Built-in converter catalog](builtin-converters.md) — the types that already have a converter, and their exact wire forms.
-- [Mapping attributes](attributes.md) — declarative shaping; `[BencodeConverter]` placement and the precedence ladder.
+- [Mapping attributes](attributes.md) — declarative shaping; `[Converter]` placement and the precedence ladder.
 - [Using Bencode](using.md) — the format walk-through, including the error-handling pattern.
 - [Core concepts](../../../docs/serialization/bencode/concepts.md) — converter resolution and options caching in the Bencode vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).

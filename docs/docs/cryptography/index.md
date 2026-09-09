@@ -6,7 +6,7 @@ title: Bodu.Security.Cryptography — Introduction
 
 ![Bodu.Security.Cryptography](../../images/hero-crypto.svg)
 
-**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic — managed block ciphers, authenticated encryption, keyed hashes, cryptographic digests, elliptic-curve and post-quantum public-key primitives, and password-hashing and key-derivation functions, all with a formal adversary model. Everything plugs into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>, and Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes.
+**Bodu.Security.Cryptography** is the cryptographic primitives package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic — managed block ciphers, authenticated encryption, keyed hashes, cryptographic digests, elliptic-curve and post-quantum public-key primitives, and password-hashing and key-derivation functions, all with a formal adversary model. The block ciphers, cryptographic digests, MACs, and public-key schemes plug into the standard BCL contracts (<xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>, plus Bodu's own `IBlockCipher` / `TweakableSymmetricAlgorithm`), so any code that already speaks .NET cryptography can adopt these types without changes. A few families deliberately use their own shapes instead — the stream ciphers (<xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>), the AEAD transforms (`IAeadTransform` / `IAeadBlockCipherModeTransform`), the ASCON XOFs (absorb / squeeze), the Merkle tree hashes, and the static KDF / OTP helpers.
 
 The library lives in two namespaces: `Bodu.Security.Cryptography` for primitives, and `Bodu.Security.Cryptography.Extensions` for ergonomic helpers.
 
@@ -54,7 +54,7 @@ A compact decision table for the most common requirements. The "BCL alternative"
 | **Confidentiality + integrity + authenticity** (AEAD) | `Aes` + `GcmModeTransform` / `CcmModeTransform` / `OcbModeTransform` / `EaxModeTransform` / `SivModeTransform` / `GcmSivModeTransform`; or `AsconAead128` | Ciphertext + auth tag | NIST SP 800-38D / RFC 5116 / RFC 7253 / NIST SP 800-232 | `AesGcm`, `AesCcm` (BCL — preferred for those modes) |
 | **Per-record / per-sector encryption** with public domain separation | `Threefish256/512/1024` with `Tweak`; `XtsModeTransform` | Tweakable ciphertext | IEEE P1619 (XTS) / Threefish whitepaper | None |
 | **Cryptographic digest** for content addressing | `Tiger`, `CubeHash`, `Whirlpool`, `Snefru`, `Blake2b`, `Blake3`, `AsconHash256`, `Skein256/512/1024` | 128 – 1024 bits | NESSIE / SHA-3 / RFC 7693 / NIST SP 800-232 | `SHA256`, `SHA384`, `SHA512`, `SHA3_256` (BCL — preferred where available) |
-| **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL — preferred where available) |
+| **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL — preferred where available) |
 | **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
 | **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
 | **Verifiable tree hashing** (Merkle root + inclusion proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 / Certificate Transparency | None |
@@ -64,6 +64,8 @@ A compact decision table for the most common requirements. The "BCL alternative"
 | **Key encapsulation** (post-quantum, seal a fresh secret to a public key) | `MLKem512`, `MLKem768`, `MLKem1024` | 32-byte secret + ciphertext | FIPS 203 | None on `net8.0` |
 | **Seal a message to a recipient's public key** (hybrid PKE) | `Hpke` | Encapsulated key + ciphertext + tag | RFC 9180 | None on `net8.0` |
 | **Password hashing / storage** (memory-hard) | `Argon2id`, `Argon2i`, `Argon2d`, `Scrypt` | Salted derived tag | RFC 9106 / RFC 7914 | None on `net8.0` |
+| **Authenticated stream encryption** (extended-nonce stream cipher + Poly1305) | `XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, `XSalsa20Poly1305` (libsodium `secretbox`) | Ciphertext ‖ 16-byte tag | RFC 8439 framing / NaCl | `ChaCha20Poly1305` (BCL — 96-bit nonce only) |
+| **One-time passcodes** (authenticator apps, hardware tokens) | `Hotp`, `Totp` | 6–8 digit code | RFC 4226 / RFC 6238 | None |
 | **Derive keys from a high-entropy secret** (extract-and-expand) | `Hkdf` | Configurable | RFC 5869 | `HKDF` (BCL — preferred where it covers your hash) |
 
 Cryptographic digests in this table provide **integrity only when the digest itself is transmitted via an authenticated channel**. For integrity + authenticity in a single primitive, pick a MAC or an AEAD mode. See the [Core concepts](concepts.md) page for the full safety vocabulary.
@@ -94,7 +96,7 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.Serpent1024> | 1024 bits | 1024 bits | 128 bits | Wide-block tweakable Serpent — non-standard construction. |
 
 ### Stream ciphers
-*<xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> lifecycle (a `SymmetricAlgorithm` with no block mode or padding): configure `Key` and `IV` (the nonce), then `CreateEncryptor()` / `Encrypt`. Self-inverse and raw — **confidentiality only, no authentication**. Never reuse a `(key, nonce)` pair; pair with a MAC or prefer AEAD.*
+*<xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm> lifecycle — **not** a `SymmetricAlgorithm`, but a standalone `IDisposable` base with `Key`, `Nonce`, `NonceSize`, `GenerateKey()` / `GenerateNonce()`, and `CreateTransform()` (the self-inverse `CreateEncryptor()` / `CreateDecryptor()` are aliases): configure `Key` and `Nonce`, then create a transform or call the `Encrypt` / `Decrypt` extensions in <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions>. No block mode, no padding. Raw — **confidentiality only, no authentication**. Never reuse a `(key, nonce)` pair; pair with a MAC or prefer AEAD.*
 
 | Type | Key | Nonce / IV | Notes |
 |---|---|---|---|
@@ -105,6 +107,16 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.Rabbit> | 128 bits | 64 bits | RFC 4503; evolving internal state (no seekable counter). |
 | <xref:Bodu.Security.Cryptography.Hc128> | 128 bits | 128 bits | Wu (eSTREAM); table-based, expensive setup. |
 
+### Authenticated stream ciphers (Poly1305 AEAD)
+*Extended-nonce stream ciphers paired with Poly1305 into a single-pass AEAD. Each type is an <xref:Bodu.Security.Cryptography.IStreamAeadTransform> constructed with `(key, nonce)` and exposing `Encrypt` / `Decrypt` with optional associated data — `byte[]`-returning overloads live in <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions>. Single-use per message.*
+
+| Type | Key | Nonce | Notes |
+|---|---|---|---|
+| <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> | 256 bits | 192 bits | XChaCha20-Poly1305 with associated data; wire layout `ciphertext ‖ tag`. |
+| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> | 256 bits | 192 bits | XSalsa20-Poly1305 with associated data (RFC 8439 framing). |
+| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> | 256 bits | 192 bits | The NaCl / libsodium `secretbox` construction (no associated data); `ToLibsodiumCombined` / `FromLibsodiumCombined` layout converters. |
+| <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> | — | — | Abstract base shared by the three constructions; the extension point for further stream-cipher + Poly1305 pairings. |
+
 ### Cipher composition (modes, padding, AEAD transforms)
 *Lower-level building blocks that the `SymmetricAlgorithm` wrappers compose internally — also usable directly via <xref:Bodu.Security.Cryptography.IBlockCipher> for pairing AES with the AEAD mode transforms.*
 
@@ -113,8 +125,8 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.IBlockCipher> | Block-cipher contract; implemented by every cipher and by `AesBlockCipher`. |
 | <xref:Bodu.Security.Cryptography.AesBlockCipher> | `IBlockCipher` over the BCL `Aes` engine — the bridge between AES and the AEAD mode transforms. |
 | <xref:Bodu.Security.Cryptography.BlockCipherTransform> | `ICryptoTransform` adapter over an `IBlockCipher` and a mode. |
-| <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> | Builds a mode transform (`CbcModeTransform`, `CtrModeTransform`, …) from a <xref:Bodu.Security.Cryptography.CipherModeKind> value. |
-| <xref:Bodu.Security.Cryptography.CipherModeKind> | Enum: `ECB`, `CBC`, `CFB`, `OFB`, `CTR`, `CTS`, `XTS`. |
+| <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> | Builds a mode transform from a <xref:Bodu.Security.Cryptography.CipherModeKind> value for the five classic modes (`ECB`, `CBC`, `CFB`, `OFB`, `CTR`) — the path the `SymmetricAlgorithm` facades take through `BlockMode`. Any other value throws `NotSupportedException`. |
+| <xref:Bodu.Security.Cryptography.CipherModeKind> | Enum: `ECB`, `CBC`, `CFB`, `OFB`, `CTS` (BCL-compatible values), plus `CTR`, `XTS`, `OCB`, `EAX`, `SIV`. Only the five classic modes work through `BlockMode`; `CTS` and `XTS` are constructed directly as transforms, and `OCB` / `EAX` / `SIV` name the AEAD transforms. |
 | <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform> | Mode-transform contract (per-block / per-stripe). |
 | <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> | AEAD-specific extension of the above; includes nonce / tag / associated-data semantics. |
 | <xref:Bodu.Security.Cryptography.EcbModeTransform>, <xref:Bodu.Security.Cryptography.CbcModeTransform>, <xref:Bodu.Security.Cryptography.CfbModeTransform>, <xref:Bodu.Security.Cryptography.OfbModeTransform>, <xref:Bodu.Security.Cryptography.CtrModeTransform>, <xref:Bodu.Security.Cryptography.CtsModeTransform>, <xref:Bodu.Security.Cryptography.XtsModeTransform> | Standard cipher modes. |
@@ -124,21 +136,21 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.PaddingFactory> + <xref:Bodu.Security.Cryptography.PaddingModeKind> | Selects a padding strategy from an enum that mirrors `System.Security.Cryptography.PaddingMode` and adds `ISO7816_4`. |
 
 ### Cryptographic hashes
-*`HashAlgorithm` lifecycle: `Append` then `GetHashAndReset()` (or BCL `ComputeHash`).*
+*`HashAlgorithm` lifecycle: one-shot `ComputeHash`, or `TransformBlock` … `TransformFinalBlock` then read `Hash`; the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> add `AppendData` and `VerifyHash`. The ASCON XOFs and the Merkle tree hashes are the exceptions — see their rows.*
 
 | Type | Output | Shape |
 |---|---|---|
-| <xref:Bodu.Security.Cryptography.Tiger> | 128 / 160 / 192 bits | Plain digest (1995); two padding variants via `Tiger.HashingVariant`. |
+| <xref:Bodu.Security.Cryptography.Tiger> | 128 / 160 / 192 bits | Plain digest (1995); two padding variants via `Tiger.Variant` (<xref:Bodu.Security.Cryptography.TigerHashingVariant>). |
 | <xref:Bodu.Security.Cryptography.CubeHash> | Configurable | Plain digest; tunable rounds / block size. |
 | <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256> | 128 / 256 bits | Plain digest — **cryptanalytically broken**, interop only. |
 | <xref:Bodu.Security.Cryptography.Whirlpool> | 512 bits | Plain digest (ISO/IEC 10118-3); `WhirlpoolVersion` selects the variant. |
 | <xref:Bodu.Security.Cryptography.Blake2b> / <xref:Bodu.Security.Cryptography.Blake2s> | Configurable | Modern high-throughput plain digest. |
-| <xref:Bodu.Security.Cryptography.Blake3> | Configurable | Parallel, tree-structured digest. |
+| <xref:Bodu.Security.Cryptography.Blake3> | 256 bits | Parallel, tree-structured digest; fixed 256-bit output (parameterless constructor, no XOF surface). |
 | <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024> | Configurable | Plain digest built on Threefish in UBI mode. |
 | <xref:Bodu.Security.Cryptography.Shake> | Variable | Keccak XOF (FIPS 202). |
 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | 256 bits | NIST SP 800-232 sponge digest; 12 / 8 round variants. |
-| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customizable XOF. |
-| <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Configurable | Tree hashing over any inner `HashAlgorithm`. |
+| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customizable XOF. **Not** a `HashAlgorithm` — a sponge surface: `Absorb`, `Squeeze`, `GetHash(outputLength)`, static `HashData`. |
+| <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Inner digest width | Tree hashing over any inner `HashAlgorithm` supplied through a factory (`Func<HashAlgorithm>` or `IHashAlgorithmFactory<HashAlgorithm>`); one-shot `ComputeHash` over a stream, span, or array. |
 | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> | — | Abstract bases for block-oriented digests (extension points). |
 | <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | — | Factory abstraction over `HashAlgorithm` for keyed / Merkle constructions. |
 
@@ -152,7 +164,7 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.Poly1305> | 128 bits | One-time authenticator (RFC 8439). |
 
 ### Asymmetric primitives — signatures, key agreement, KEM, HPKE
-*Public-key schemes over <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>. Raw key encodings only — PKCS#8 / SPKI (DER / PEM) are deliberately out of scope. Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate.*
+*Public-key schemes over <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType>. Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate. Key formats differ by family: `Ed25519` / `X25519` carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (`ImportPkcs8PrivateKey` / `ImportSubjectPublicKeyInfo` and the `TryExport…` pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.*
 
 | Type | Role | Standard | Notes |
 |---|---|---|---|
@@ -175,6 +187,14 @@ See the [asymmetric overview](../../guides/cryptography/asymmetric-overview.md) 
 | <xref:Bodu.Security.Cryptography.Hkdf> | RFC 5869 | HMAC extract-and-expand over SHA-1/256/384/512; `Extract` / `Expand` / `DeriveKey`. Backs the HPKE labeled KDF. **Not** a password hash — feed it high-entropy input only. |
 
 See the [Argon2](../../guides/cryptography/argon2.md), [scrypt](../../guides/cryptography/scrypt.md), and [HKDF](../../guides/cryptography/hkdf.md) guides.
+
+### One-time passwords
+*Static helpers for the HMAC-based one-time-password schemes behind authenticator apps and hardware tokens; the hash is selected with <xref:Bodu.Security.Cryptography.OtpHashAlgorithm> (SHA-1 default, SHA-256, SHA-512).*
+
+| Type | Standard | Notes |
+|---|---|---|
+| <xref:Bodu.Security.Cryptography.Hotp> | RFC 4226 | Counter-based: `GenerateCode(secret, counter, digits, algorithm)` and `VerifyCode` with an optional look-ahead window that reports the matched counter. |
+| <xref:Bodu.Security.Cryptography.Totp> | RFC 6238 | Time-based over HOTP: `GenerateCode(secret, timestamp, digits, periodSeconds, algorithm)` and `VerifyCode` with a ± step window that reports the matched step offset. |
 
 ### ASCON family — multi-role
 *Spans hash, XOF, and AEAD under a single sponge permutation. NIST SP 800-232.*
@@ -214,13 +234,15 @@ Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship a
 | Hash-table flooding defense | `SipHash64` / `SipHash128` |
 | One-time authenticator (e.g. paired with `ChaCha20`) | `Poly1305` |
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
-| Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` |
+| Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake` |
 | Tree / Merkle hashing for verifiable inclusion proofs | `MerkleTreeHash`, `ParallelMerkleTreeHash` |
 | Sign a message and verify it with a distributed public key | `Ed25519` (classical), `MLDsa65` (post-quantum) |
 | Establish a shared secret between two parties | `X25519` (classical), `MLKem768` (post-quantum) |
 | Encrypt a payload so only a given public key can read it | `Hpke` |
 | Store a password so offline guessing is expensive | `Argon2id`, `Scrypt` |
 | Derive session / traffic keys from a shared secret | `Hkdf` |
+| Authenticated encryption with a random 192-bit nonce and no block cipher | `XChaCha20Poly1305`, `XSalsa20Poly1305Aead` |
+| Generate or verify an authenticator-app code | `Totp` (time-based), `Hotp` (counter-based) |
 
 ## Where to go next
 

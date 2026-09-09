@@ -21,7 +21,7 @@ This guide builds on [Writing converters](converters.md); read that first
 for the single-type `Read` / `Write` pattern, the precedence ladder, and
 the statelessness rules. Everything here is TOML; the sibling libraries
 ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md))
-follow the identical shape with their own prefix and reader/writer pair.
+follow the identical shape against their own reader/writer pair.
 
 ## How a factory participates in resolution
 
@@ -255,6 +255,6 @@ Three ordering consequences are worth keeping in mind:
 
 - [Writing converters](converters.md) — the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
 - [Built-in converter catalog](builtin-converters.md) — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
-- [Mapping attributes](attributes.md) — `[TomlConverter]` placement and the precedence ladder in detail.
+- [Mapping attributes](attributes.md) — `[Converter]` placement and the precedence ladder in detail.
 - API reference — <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>, <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>.
 - **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic.

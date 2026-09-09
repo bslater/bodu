@@ -40,7 +40,7 @@ Any width from 8 to 2048 bits in 8-bit steps is supported. The implementation ru
 using Bodu.IO.Hashing;
 
 // 128-bit Pearson with the canonical permutation.
-var pearson = new Pearson(hashSizeBits: 128, tableType: PearsonTableType.Pearson);
+var pearson = new Pearson(hashSizeBits: 128, tableType: Pearson.PearsonTableType.Pearson);
 pearson.Append(data);
 byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 ```
@@ -49,9 +49,9 @@ byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 
 ## Pattern 3 — pick a permutation table
 
-The table defines the hash. Bodu ships five choices:
+The table defines the hash. The nested `Pearson.PearsonTableType` enum names four built-in tables plus the user-defined marker:
 
-| `PearsonTableType` | Source |
+| `Pearson.PearsonTableType` | Source |
 |---|---|
 | `Pearson` | Pearson's original 1990 table — the historically canonical choice. |
 | `AESSBox` | The AES S-box, used as a permutation (it already is one). |
@@ -62,7 +62,7 @@ The table defines the hash. Bodu ships five choices:
 ```csharp
 using Bodu.IO.Hashing;
 
-var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.AESSBox);
+var pearson = new Pearson(hashSizeBits: 64, tableType: Pearson.PearsonTableType.AESSBox);
 ```
 
 All four built-in tables are **permutations** — every byte 0–255 appears exactly once. This is the property Pearson relies on; it is checked at construction time, so a table with duplicates or missing values is rejected.
@@ -83,7 +83,7 @@ Constructing `Pearson` with `permutationTable`:
 
 - Validates that the array is exactly 256 bytes long and is a valid permutation (every value 0–255 appears exactly once).
 - Clones the array, so later mutation of your buffer does not affect the hash.
-- Reports `TableType == PearsonTableType.UserDefined`.
+- Reports `TableType == Pearson.PearsonTableType.UserDefined`.
 
 You can read the table back (as a clone) through the `Table` property — handy for round-tripping the configuration or for diagnostics:
 
@@ -98,7 +98,7 @@ Pearson follows the standard `NonCryptographicHashAlgorithm` lifecycle:
 ```csharp
 using Bodu.IO.Hashing;
 
-var pearson = new Pearson(hashSizeBits: 64, tableType: PearsonTableType.Pearson);
+var pearson = new Pearson(hashSizeBits: 64, tableType: Pearson.PearsonTableType.Pearson);
 
 pearson.Append(chunk1);
 pearson.Append(chunk2);

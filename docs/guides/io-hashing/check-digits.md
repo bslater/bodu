@@ -8,9 +8,9 @@ Check-digit algorithms validate human-readable identifiers — credit card numbe
 
 > **Note.** Check-digit algorithms are not cryptographic and must not be used for password hashing, digital signatures, or integrity validation in security-sensitive applications. They are error-detection primitives for human-readable identifiers, nothing more.
 
-## One namespace, three base classes
+## One namespace, one root, three base classes
 
-Every check-digit type in this package lives in the single `Bodu.IO.Hashing.CheckDigits` namespace. What differs between them is the abstract base each one extends — and the base captures the input alphabet and the output shape:
+Every check-digit type in this package lives in the single `Bodu.IO.Hashing.CheckDigits` namespace. Every one of them ultimately derives from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> (`AlgorithmName`, `CheckLength`, `Append`, `GetCurrentCheckValue`, `Reset`). What differs between them is which of its three abstract derivatives each one extends — and that base captures the input alphabet and the output shape:
 
 | Base class | Input alphabet | Output | Types |
 |---|---|---|---|
@@ -18,7 +18,7 @@ Every check-digit type in this package lives in the single `Bodu.IO.Hashing.Chec
 | <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> | Digits and/or letters | A single `char` (may be `'X'`) | `Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
 | <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> | Digits and/or letters | A fixed-length `string` (typically two digits) | `Iban`, `Lei`, `Iso7064Mod97_10` |
 
-All three bases expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (single-char bases) or `GetCurrentCheckDigits()` (the multi-char base) to read the result non-destructively; call `Reset()` to restart. The static `Compute` / `IsValid` helpers wrap that lifecycle for the common one-shot case.
+All three bases expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (single-char bases) or `GetCurrentCheckDigits()` (the multi-char base) — or the root's `GetCurrentCheckValue()` string form on any of them — to read the result non-destructively; call `Reset()` to restart. The static `Compute` / `IsValid` helpers wrap that lifecycle for the common one-shot case.
 
 > [!NOTE]
 > Every example below uses `using Bodu.IO.Hashing.CheckDigits;` — there is no longer a separate `Checksums` namespace for the alphanumeric or multi-character schemes.
@@ -38,8 +38,8 @@ using Bodu.IO.Hashing.CheckDigits;
 
 // Streaming — append the body digits and read the check digit.
 var luhn = new Luhn();
-luhn.Append("799273987");
-char check = luhn.GetCurrentCheckDigit();   // '3'  →  full number "7992739871 3"
+luhn.Append("7992739871");
+char check = luhn.GetCurrentCheckDigit();   // '3'  →  full number "79927398713"
 
 // One-shot static helpers.
 char computed = Luhn.Compute("7992739871");          // '3'

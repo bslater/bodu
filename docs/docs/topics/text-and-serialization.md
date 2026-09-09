@@ -31,14 +31,14 @@ The filtering package selects values rather than transforming them: glob (wildca
 
 The line-format libraries decode and encode **self-framing** documents — formats whose structure is described inline by the bytes themselves. Each of the three families (Delimited, DotEnv, INI) is a standalone `System.Text.Json`-shaped library: a forward-only `Utf8*Reader` / `Utf8*Writer` token pair, a `*Serializer` for typed binding, a mutable node DOM, and a read-only document DOM, each raising its own typed `*FormatException` with the source position attached.
 
-### Serializers: Bodu.Text.Bencode and Bodu.Text.Toml
+### Serializers: Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml
 
-The serializers are standalone, self-contained twins shaped after `System.Text.Json`: the same member-for-member surface with only the `Bencode` / `Toml` prefix changing. Each layers four tiers over its format — the `…Serializer` for object mapping, a mutable `…Node` DOM for editing without a model, a read-only `…Document` DOM for low-allocation inspection, and the `Utf8…Reader` / `Utf8…Writer` ref-struct pair for forward-only token processing. Converters, the attribute family, naming policies, and serialization callbacks customize the mapping.
+The serializers are three libraries shaped after `System.Text.Json`: Bencode and TOML are member-for-member twins with only the `Bencode` / `Toml` prefix changing, and YAML shares the same architecture with a surface tuned to its format. Each layers four tiers over its format — the `…Serializer` for object mapping, a mutable `…Node` DOM for editing without a model, a read-only `…Document` DOM for low-allocation inspection, and the `Utf8…Reader` / `Utf8…Writer` ref-struct pair for forward-only token processing. Converters, the attribute family, naming policies, and serialization callbacks customize the mapping; those attributes, policies, and callback interfaces live in the shared `Bodu.Text.Serialization` package (namespace <xref:Bodu.Text.Serialization>), which every serializer and line-format package references.
 
 One nearby surface is easy to confuse with all three: the **`Bodu.Text` namespace in `Bodu.Core`** provides *character*-encoding helpers over `System.Text.Encoding` — BOM detection, preamble handling, span-friendly transcoding and validation. It converts bytes to *characters*, not bytes to a printable *alphabet*, and it ships in `Bodu.Core`, not in any package on this page. See the [Bodu.Text introduction](../text/index.md).
 
 > [!NOTE]
-> The packages compose but do not depend on one another — each depends only on `Bodu.Core`. Adopting one job never pulls in the machinery of the others.
+> The packages compose but do not depend on one another. `Bodu.Text.Encoding` and `Bodu.Text.Filtering` depend only on `Bodu.Core`; the line formats and the serializers additionally reference the small shared `Bodu.Text.Serialization` package for their common attribute / naming-policy / callback vocabulary. Adopting one job never pulls in the machinery of the others.
 
 ## Packages in this topic
 
@@ -46,12 +46,12 @@ One nearby surface is easy to confuse with all three: the **`Bodu.Text` namespac
 |---|---|---|---|
 | `Bodu.Text.Encoding` | Stable | Binary-to-text encodings with span / UTF-8 surfaces, `OperationStatus` streaming, formatting decorations, lenient parsing, and the runtime-pluggable `IBinaryEncoding` contract. | [Introduction](../text-encoding/index.md) |
 | `Bodu.Text.Filtering` | Preview | Include/exclude text filtering: glob and regex patterns compiled into a cost-tiered `TextFilter`, AnyMatch sets or gitignore-style ordered rules, gitignore-convention parsing, and built-in match telemetry. | [Introduction](../text-filtering/index.md) |
-| `Bodu.Text.Formats` | Stable | Self-framing document formats — Delimited (CSV / TSV), DotEnv, INI — each with a typed value model, `Parse` / `Format` / `Try*` codecs, and forward-only streaming I/O. | [Introduction](../formats/index.md) |
-| `Bodu.Text.Bencode` | Stable | Self-contained Bencode (BEP 3) serializer shaped after `System.Text.Json`: `BencodeSerializer`, mutable and read-only DOMs, and the `Utf8BencodeReader` / `Utf8BencodeWriter` ref-struct pair. | [Serializers introduction](../serialization/index.md) · [Bencode](../serialization/bencode/index.md) |
-| `Bodu.Text.Toml` | Stable | Self-contained TOML (v1.0.0 / v1.1.0) serializer with the same member-for-member shape: `TomlSerializer`, both DOMs, and `Utf8TomlReader` / `Utf8TomlWriter`. | [Serializers introduction](../serialization/index.md) · [TOML](../serialization/toml/index.md) |
-| `Bodu.Text.Yaml` | Preview | Self-contained YAML (1.2 core schema) serializer sharing the family architecture with a YAML-tuned surface: `YamlSerializer`, both DOMs, the `Utf8YamlReader` / `Utf8YamlWriter` pair, block and flow collections, anchors and aliases, and multi-document streams. | [Serializers introduction](../serialization/index.md) · [YAML](../serialization/yaml/index.md) |
+| `Bodu.Text.Formats` | Preview | Self-framing document formats — Delimited (CSV / TSV), DotEnv, INI — each with a forward-only `Utf8*Reader` / `Utf8*Writer` pair, a `*Serializer`, and mutable / read-only DOMs. | [Introduction](../formats/index.md) |
+| `Bodu.Text.Bencode` | Stable | Bencode (BEP 3) serializer shaped after `System.Text.Json`: `BencodeSerializer`, mutable and read-only DOMs, and the `Utf8BencodeReader` / `Utf8BencodeWriter` ref-struct pair. | [Serializers introduction](../serialization/index.md) · [Bencode](../serialization/bencode/index.md) |
+| `Bodu.Text.Toml` | Stable | TOML (v1.0.0 / v1.1.0) serializer with the same member-for-member shape: `TomlSerializer`, both DOMs, and `Utf8TomlReader` / `Utf8TomlWriter`. | [Serializers introduction](../serialization/index.md) · [TOML](../serialization/toml/index.md) |
+| `Bodu.Text.Yaml` | Preview | YAML (1.2 core schema) serializer sharing the family architecture with a YAML-tuned surface: `YamlSerializer`, both DOMs, the `Utf8YamlReader` / `Utf8YamlWriter` pair, block and flow collections, anchors and aliases, and multi-document streams. | [Serializers introduction](../serialization/index.md) · [YAML](../serialization/yaml/index.md) |
 
-The authoritative dependency and status rows live in the [package matrix](../package-matrix.md). All five packages depend only on `Bodu.Core`.
+The authoritative dependency and status rows live in the [package matrix](../package-matrix.md). None of these packages depends on another package in this topic; the formats and serializers share only the `Bodu.Text.Serialization` vocabulary package.
 
 ### Namespace orientation
 
@@ -64,6 +64,7 @@ The package names and root namespaces line up one-to-one, with the formats and s
 | `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` | The standalone line-format libraries (one package per format; `Bodu.Text.Formats` is the umbrella meta-package over the three). |
 | `Bodu.Text.Bencode` | `Bodu.Text.Bencode` plus `.Reader`, `.Writer`, `.Document`, `.Nodes`, and `.Serialization` — mirroring the `System.Text.Json` source layout. |
 | `Bodu.Text.Toml` | `Bodu.Text.Toml` with the same `.Reader` / `.Writer` / `.Document` / `.Nodes` / `.Serialization` subdivision. |
+| `Bodu.Text.Yaml` | `Bodu.Text.Yaml` with the same `.Reader` / `.Writer` / `.Document` / `.Nodes` / `.Serialization` subdivision. |
 
 ## Which package do I need?
 
@@ -71,11 +72,11 @@ The package names and root namespaces line up one-to-one, with the formats and s
 |---|---|---|
 | "I have bytes and need printable text" — hashes as hex, TOTP secrets, JWT segments, Bitcoin addresses, QR payloads | `Bodu.Text.Encoding` | Pick the family by expansion and alphabet — see the [choose-an-encoding table](../text-encoding/index.md). |
 | "I select values by pattern" — keep `error*` lines, drop `*debug*` noise, honor a gitignore-style rule file | `Bodu.Text.Filtering` | Compile once, filter bulk lists cheapest-pattern-first; `Evaluate` reports which pattern decided — see the [introduction](../text-filtering/index.md). |
-| "I have a CSV / `.env` / INI file" — parse it, walk a typed model, edit, round-trip | `Bodu.Text.Formats` | INI and DotEnv preserve comments and ordering on round-trip; Delimited streams row by row. |
+| "I have a CSV / `.env` / INI file" — parse it, walk a typed model, edit, round-trip | `Bodu.Text.Formats` | INI preserves comments and ordering on round-trip, DotEnv preserves ordering and the `export` flag; Delimited streams row by row. |
 | "I map typed objects to a wire format" — config records, torrent-style payloads | `Bodu.Text.Toml` / `Bodu.Text.Bencode` / `Bodu.Text.Yaml` | `Serialize` / `Deserialize<T>` with converters, attributes, and naming policies; the three libraries share one architecture. |
-| "I want to inspect or patch a TOML / Bencode document without a model" | The serializers' DOMs | Mutable `…Node` tree to edit, read-only `…Document` to inspect with minimal allocation. |
+| "I want to inspect or patch a TOML / Bencode / YAML document without a model" | The serializers' DOMs | Mutable `…Node` tree to edit, read-only `…Document` to inspect with minimal allocation. |
 | "I need canonical, byte-identical output" — infohash-style hashing over the serialized form | `Bodu.Text.Bencode` | The spec mandates ascending bytewise dictionary-key order, and the serializer always emits it. |
-| "Malformed input is expected; I don't want exceptions on the hot path" | Any of the above | `Try*` overloads on the codecs and formats; `IsValid` predicates on the codecs. |
+| "Malformed input is expected; I don't want exceptions on the hot path" | The codecs and the line formats | `Try*` overloads and `IsValid` predicates on the codecs; on the line formats, the `*ReaderOptions` dialect policies (for example `DelimitedMalformedRecordBehavior.SkipRecord`) decide whether a bad record throws or is skipped. |
 | "I need BOM detection or `System.Text.Encoding` helpers" | The `Bodu.Text` namespace in `Bodu.Core` | Character encodings, not binary-to-text codecs — see [Bodu.Text](../text/index.md) and the [Core Foundations topic](core-foundations.md). |
 | "I need EditorConfig-style configuration layering over INI" | `Bodu.Text.Configuration` | Carries its own trivia-preserving INI model — see the [Configuration topic](configuration.md). |
 
@@ -87,6 +88,7 @@ dotnet add package Bodu.Text.Filtering
 dotnet add package Bodu.Text.Formats
 dotnet add package Bodu.Text.Toml
 dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
 ```
 
 ## Shared design traits
@@ -94,10 +96,10 @@ dotnet add package Bodu.Text.Bencode
 However different the three jobs are, the packages share the suite's design grain, so moving between them costs little:
 
 - **Span- and UTF-8-first.** Every package exposes `ReadOnlySpan<byte>` / `ReadOnlySpan<char>` overloads alongside `string` and `byte[]`; the codecs add `OperationStatus`-returning streaming methods, and the serializers' readers and writers operate on UTF-8 directly.
-- **`Try*` alongside throwing entry points.** Codecs (`TryDecode`, `TryGetDecodedLength`), formats (`Try*` parse overloads), and validation predicates let hot paths trade exceptions for `bool` results.
-- **Options objects, not parameter sprawl.** Behavior is configured on dedicated types — `BaseFormattingOptions` / `BaseFormatStyles` for the codecs, the per-format `*ParseOptions` for the formats, and `BencodeSerializerOptions` / `TomlSerializerOptions` for the serializers.
-- **Typed failures.** Malformed input surfaces as a precise, format-specific exception type rather than a bare `FormatException`, with the failure position where the format can supply one (TOML carries line, column, and offset).
-- **Streaming where the format allows it.** Delimited rows, format readers and writers, and the serializers' stream overloads (sync and async) all process input incrementally instead of demanding the whole document in memory.
+- **`Try*` alongside throwing entry points.** Codecs (`TryDecode`, `TryGetDecodedLength`) and validation predicates let hot paths trade exceptions for `bool` results; the line formats express tolerance as reader-options policies (field-count, malformed-record, duplicate-key behaviours) rather than `Try*` overloads.
+- **Options objects, not parameter sprawl.** Behavior is configured on dedicated types — `BaseFormattingOptions` / `BaseFormatStyles` for the codecs, the per-format `*ReaderOptions` / `*WriterOptions` (plus `IniDocumentOptions`) and `*SerializerOptions` for the formats, and `BencodeSerializerOptions` / `TomlSerializerOptions` / `YamlSerializerOptions` for the serializers.
+- **Typed failures.** Malformed input surfaces as a precise, format-specific exception type rather than a bare `FormatException`, with the failure position where the format can supply one (TOML and YAML carry line, column, and offset).
+- **Streaming where the format allows it.** Delimited rows, the format readers and writers, and Delimited's `IAsyncEnumerable<TRecord>` serializer pair process input incrementally instead of demanding the whole document in memory; the serializers' `Stream` overloads (sync and async) are conveniences that buffer the document in full, with only the stream copy asynchronous.
 
 ## A taste of each surface
 
@@ -125,7 +127,7 @@ AppSettings roundTripped = TomlSerializer.Deserialize<AppSettings>(toml);
 Three nearby surfaces sit just outside this topic, and each boundary is deliberate:
 
 - **`Bodu.Text` (in `Bodu.Core`)** — character-encoding helpers over <xref:System.Text.Encoding?displayProperty=nameWithType>: BOM detection, preamble handling, span-friendly transcoding and validation. Bytes to *characters*, not bytes to a printable alphabet. See the [Bodu.Text introduction](../text/index.md).
-- **`Bodu.Text.Configuration`** — EditorConfig-style profile presets, glob-anchored sections, and target-path resolution layered on the INI model that `Bodu.Text.Formats` ships. When you need INI parsing alone, use `Ini` directly; when you need configuration layering, move up a package. See the [Configuration topic](configuration.md).
+- **`Bodu.Text.Configuration`** — EditorConfig-style profile presets, glob-anchored sections, and target-path resolution over its **own** trivia-preserving INI model, independent of `Bodu.Text.Ini`. When you need INI parsing alone, use `Bodu.Text.Ini` directly; when you need configuration layering, move up a package. See the [Configuration topic](configuration.md).
 - **Checksums and digests** — the codecs print hashes; they do not compute them. Hashing lives in the [Hashing & Cryptography topic](hashing-and-cryptography.md).
 
 ## Where to go next

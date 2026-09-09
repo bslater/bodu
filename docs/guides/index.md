@@ -16,13 +16,58 @@ General-purpose building blocks every other package depends on — see the **[Co
 
 ### Bodu.Core
 
-Bounded collections, eviction-aware caches, day-of-week patterns, date and numeric extensions.
+Day-of-week patterns, pooled buffers, async coordination and railway primitives, memoization, natural string ordering, and date / numeric / span extensions — the `Bodu`, `Bodu.Buffers`, `Bodu.Extensions`, `Bodu.Functional`, and `Bodu.Threading` namespaces.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="core/index.md">Overview</a></h3>
-  <p>Namespace map (<code>Bodu.Collections.Generic</code>, <code>Bodu</code>, <code>Bodu.Extensions</code>) — key types and which guide covers each.</p>
+  <p>Namespace map for <code>Bodu.Core</code> and <code>Bodu.Collections</code> — key types and which guide covers each.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/week-pattern.md">WeekPattern</a></h3>
+  <p>Immutable bitmask value type for day-of-week sets — composition, parsing, bitwise operators.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/natural-string-comparer.md">Natural string comparer</a></h3>
+  <p>Numeric-aware ordering (<code>file2</code> before <code>file10</code>) as a stateless, thread-safe <code>NaturalStringComparer</code> with the <code>StringComparer</code> factory shape.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/pooled-buffer-builder.md">Pooled buffer builder</a></h3>
+  <p><code>PooledBufferBuilder&lt;T&gt;</code> — assemble a span from <code>ArrayPool&lt;T&gt;</code>-rented arrays; implements <code>IBufferWriter&lt;T&gt;</code> and <code>IMemoryOwner&lt;T&gt;</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/async-primitives.md">Async coordination primitives</a></h3>
+  <p>The <code>Bodu.Threading</code> counterparts of the synchronous <code>System.Threading</code> gates — await a lock or a signal without blocking a thread.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/functional-results.md">Options, results, and eithers</a></h3>
+  <p>The <code>Bodu.Functional</code> railway primitives — <code>Option&lt;T&gt;</code>, <code>Result</code> / <code>Result&lt;T&gt;</code>, and <code>Either&lt;TLeft,TRight&gt;</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/memoization.md">Memoization</a></h3>
+  <p><code>Memoizer</code> — wrap a pure, expensive <code>Func&lt;…&gt;</code> in a thread-safe result cache.</p>
+</div>
+
+</div>
+
+[Bodu API reference](xref:Bodu)
+
+### Bodu.Collections
+
+The specialized collection catalogue (depends on `Bodu.Core`) — bounded rings, eviction-aware caches, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches in the `Bodu.Collections.Generic`, `.Generic.Graphs`, `.Generic.Trees`, and `Bodu.Collections.Probabilistic` namespaces.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="core/choosing-a-collection.md">Choosing a collection</a></h3>
+  <p>The decision guide — which collection to reach for, without walking every namespace.</p>
 </div>
 
 <div class="bodu-card">
@@ -40,14 +85,26 @@ Bounded collections, eviction-aware caches, day-of-week patterns, date and numer
   <p>Capacity-bounded key-value store with FIFO, LRU, LFU, MRU, Random, and Second-Chance eviction policies.</p>
 </div>
 
-<div class="bodu-card">
-  <h3><a href="core/week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets — composition, parsing, bitwise operators.</p>
 </div>
 
-</div>
+The remaining collection guides — sequenced and bidirectional dictionaries, indexed priority queue, ordered sets, multiset, multi-value dictionary, segmented buffer, range-keyed lookups, interval tree, bit set, navigable set and dictionary, layered and defaulting dictionaries, the two-key table, probabilistic sketches, graphs, and tries — are listed on the **[Core Foundations guides landing](topics/core-foundations.md)**.
 
 [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)
+
+### Bodu.Collections.Concurrent
+
+The thread-safe members of the catalogue (depends on `Bodu.Collections`), in the `Bodu.Collections.Generic.Concurrent` namespace.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="core/concurrent-collections.md">Concurrent collections</a></h3>
+  <p><code>ConcurrentCircularBuffer&lt;T&gt;</code> (lock-free Vyukov MPMC), <code>ConcurrentHashSet&lt;T&gt;</code> (lock-free split-ordered), and <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (lock-striped bounded cache).</p>
+</div>
+
+</div>
+
+[Bodu.Collections.Generic.Concurrent API reference](xref:Bodu.Collections.Generic.Concurrent)
 
 ---
 

@@ -8,7 +8,7 @@ title: Bodu.Collections — Introduction
 
 **Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` — the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) for shared primitives such as `ThrowHelper` and the `IRandomGenerator` abstraction; see the [package matrix](../package-matrix.md) for the full dependency map.
 
-The thread-safe variants — `ConcurrentCircularBuffer<T>` and `ConcurrentHashSet<T>` in the `Bodu.Collections.Generic.Concurrent` namespace — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
+The thread-safe variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache in the `Bodu.Collections.Generic.Concurrent` namespace — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
 
 ![Bodu.Collections namespace map — the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency](../../images/diagrams/collections-namespace-map.svg)
 
@@ -67,7 +67,7 @@ The trie family and an n-ary tree. See the [Tries and text search](../../guides/
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Collections.Generic.Concurrent` (companion package)
-The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> and the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
+The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, and the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`) — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
 
 ## Scenarios this library covers
 
@@ -88,7 +88,7 @@ The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concur
 | Find every occurrence of many patterns in one pass | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> |
 | Approximate membership / frequency / distinct counts in fixed memory | <xref:Bodu.Collections.Probabilistic.BloomFilter`1>, <xref:Bodu.Collections.Probabilistic.CountMinSketch`1>, <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> |
 | Graph traversal, shortest path, topological sort | <xref:Bodu.Collections.Generic.Graphs.Graph`1> + <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> |
-| Thread-safe FIFO ring or unique set | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
+| Thread-safe FIFO ring, unique set, or bounded cache | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
 
 ## Design principles
 

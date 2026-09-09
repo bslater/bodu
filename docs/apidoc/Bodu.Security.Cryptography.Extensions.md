@@ -25,10 +25,14 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var blowfish = Blowfish.Create();
 blowfish.Key = key;
+blowfish.GenerateIV();
+blowfish.BlockMode    = CipherModeKind.CBC;
+blowfish.BlockPadding = PaddingModeKind.PKCS7;
 
-// One-shot encryption over a span — no manual buffer juggling.
-byte[] ciphertext = blowfish.EncryptEcb(plaintext, PaddingMode.PKCS7);
-byte[] plain      = blowfish.DecryptEcb(ciphertext, PaddingMode.PKCS7);
+// SymmetricAlgorithmExtensions.Encrypt / Decrypt: one-shot over a span or array —
+// creates the transform, runs it, and disposes it for you.
+byte[] ciphertext = blowfish.Encrypt(plaintext);
+byte[] plain      = blowfish.Decrypt(ciphertext);
 ```
 
 ## Notes

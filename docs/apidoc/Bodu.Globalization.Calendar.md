@@ -16,14 +16,14 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 - **[Bodu.Globalization.Calendar introduction](~/docs/calendar/index.md)** — package family, mental model, headline types, scenarios.
 - **[Bodu.Globalization.Calendar getting started](~/docs/calendar/getting-started.md)** — install and minimal samples for loading a resource, resolving dates, and working-day arithmetic.
-- **[Bodu.Globalization.Calendar guides](~/guides/calendar/index.md)** — [`NotableDateService`](~/guides/calendar/notable-dates.md), [rule authoring](~/guides/calendar/rule-authoring.md), [date-calculation algorithms](~/guides/calendar/algorithms.md), [companion data packs](~/guides/calendar/data-packs.md), [dependency injection](~/guides/calendar/dependency-injection.md).
+- **[Bodu.Globalization.Calendar guides](~/guides/calendar/index.md)** — [`NotableDateService`](~/guides/calendar/notable-dates.md), [rule authoring](~/guides/calendar/rule-authoring.md), [date-calculation algorithms](~/guides/calendar/algorithms.md), [companion data packs](~/guides/calendar/data-packs.md), [dependency injection](~/guides/calendar/dependency-injection.md), [caching notable dates](~/guides/calendar/caching/notable-date-caching.md), [plugin trust](~/guides/calendar/plugin-trust.md), [validation diagnostics](~/guides/calendar/validation-diagnostics.md), [binary rule packs](~/guides/calendar/binary-rule-packs.md), [builder round-trip guarantees](~/guides/calendar/round-trip-guarantees.md).
 
 ## Companion packages
 
 - [`Bodu.Globalization.Calendar.Builder`](Bodu.Globalization.Calendar.Builder.md) — a fluent C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save.
 - [`Bodu.Globalization.Calendar.DependencyInjection`](Bodu.Globalization.Calendar.DependencyInjection.md) — `Microsoft.Extensions.DependencyInjection` integration: `services.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` register `INotableDateService` as a singleton over a loaded `NotableDateResource`.
 - [`Bodu.Globalization.Calendar.Plugins`](Bodu.Globalization.Calendar.Plugins.md) — trust-gated loading of external assemblies that contribute custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> implementations.
-- [`Bodu.Globalization.Calendar.Data.*`](~/guides/calendar/data-packs.md) — curated public-holiday resources for the Americas, Asia-Pacific, and Europe territory bundles.
+- [`Bodu.Globalization.Calendar.<Region>`](~/guides/calendar/data-packs.md) — curated public-holiday resources for the `Americas`, `AsiaPacific`, `Europe`, `MiddleEast`, and `Africa` territory bundles.
 
 ## Key types
 
@@ -75,7 +75,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 ## Companion data packs
 
-National public-holiday resources ship in five companion assemblies (namespace `Bodu.Globalization.Calendar.Data`) so the data can be re-released independently of the runtime:
+National public-holiday resources ship in five companion packages, `Bodu.Globalization.Calendar.<Region>` (all in the `Bodu.Globalization.Calendar` namespace), so the data can be re-released independently of the runtime:
 
 - **Bodu.Globalization.Calendar.Americas** — `AR`, `BR`, `CA`, `CL`, `CO`, `MX`, `PE`, `US` (and subdivisions).
 - **Bodu.Globalization.Calendar.Europe** — 28 EU/EEA territories including `DE`, `ES`, `FR`, `GB`, `IE`, `IT`, `NL`, `SE`.
@@ -112,7 +112,7 @@ DateOnly inFive   = today.AddWorkingDays(5, service, "AU-NSW");
 
 ## Notes
 
-- **Immutable resource, configured service.** Loading produces an immutable, fully validated <xref:Bodu.Globalization.Calendar.NotableDateResource>; the service is configured purely through constructor collaborators. There is no mutable options object — resource-level behaviour (duplicate / collision / observed-date policy, working week) lives in the document's `<ResolutionPolicy>`.
+- **Immutable resource, configured service.** Loading produces an immutable, fully validated <xref:Bodu.Globalization.Calendar.NotableDateResource>; the service is configured through the `init`-only collaborators on <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, passed to its constructor. There is no mutable options object — resource-level behaviour (duplicate / collision / observed-date policy, working week) lives in the document's `<ResolutionPolicy>`.
 - **Nominal vs. observed.** A <xref:Bodu.Globalization.Calendar.NotableDate> tracks both its calculated `ActualDate` and its emitted `Date`, with `IsObserved` and the `AdjustmentPolicyId` / `AdjustmentReason` pair recording why they differ — so a rule like "if a fixed holiday falls on a weekend, observe it on the next working day" is applied transparently while preserving the original for audit and display.
 - **Thread safety.** A `NotableDateService` built from an immutable resource is safe for concurrent reads after construction; `ReloadableNotableDateService` reads its provider's `Current` resource per query and rebuilds atomically when it changes.
 - **Territory containment.** Territory is a plain `string` argument (`"AU"`, `"AU-NSW"`). A query for a subdivision includes rules authored for its parent country, so national and regional rules compose naturally.

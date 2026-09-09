@@ -74,9 +74,11 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> | `FileConfigurationProvider` subclass. Reads the file via the standard MEC pipeline and projects the resolved view into `Data`. |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | `StreamConfigurationSource` subclass. One-shot: no reload-on-change. |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | The matching stream provider. |
-| <xref:Bodu.Extensions.Configuration.Text.TextConfigurationLoader> | Internal helper that parses + resolves a stream into a flat key/value dictionary; reused by both `Text*` providers. |
-| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> | `FileConfigurationSource`-shaped source for TOML. Carries `Path`, `Optional`, `Stream`. Read-only — no `ReloadOnChange`. |
+| *Internal loader (not public)* | Parses + resolves a stream into a flat key/value dictionary; reused by both `Text*` providers. |
+| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> | Implements `IConfigurationSource` directly (not a `FileConfigurationSource`). Carries `Path`, `Optional`, `Stream`. Read-once — no `ReloadOnChange`. |
 | <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> | The matching TOML provider. Flattens the TOML table hierarchy into colon-delimited keys. |
+| <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource> | The Bencode counterpart — implements `IConfigurationSource` directly with the same `Path`, `Optional`, `Stream` shape. Read-once. |
+| <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider> | The matching Bencode provider. Requires a dictionary-rooted document and flattens nested dictionaries into colon-delimited keys. |
 
 ### Options binding
 

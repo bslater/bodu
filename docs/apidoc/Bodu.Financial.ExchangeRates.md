@@ -16,13 +16,18 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 
 ## Static documentation
 
+- **[Introduction](~/docs/exchange-rates/index.md)** — the infrastructure package: the two provider bases, the fetch machinery, the eleven-package provider family with status and DI registration, and the "which provider" table.
+- **[Core concepts](~/docs/exchange-rates/concepts.md)** — warm-then-lookup, bulk vs pair, `RateRangeResult`, history availability, payload cache vs rate cache, single-flight, synchronous access, resilience, failure modes, lifetimes, thread safety.
+- **[Getting started](~/docs/exchange-rates/getting-started.md)** — install, direct construction, DI registration with an `appsettings.json` section, API keys, range reads, and the payload cache.
 - **[Built-in exchange-rate providers guide](~/guides/financial/exchange-rate-providers.md)** — construction, warming the store or a pair, the shared lookup surface, dependency injection, and composing a provider with caching and aggregation.
+- **[Testing your own provider](~/guides/financial/testing-providers.md)** — the in-repository contract-test bases (see the [`Bodu.Financial.ExchangeRates.Testing` overview](Bodu.Financial.ExchangeRates.Testing.md)) and the offline stub handler.
 
 ## Key types
 
 **Core exchange types (in the `Bodu.Financial` package)**
 
 - <xref:Bodu.Financial.ExchangeRates.IRateProvider>, <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> — timeless and dated provider contracts.
+- <xref:Bodu.Financial.ExchangeRates.IHistoricalRateProvider> — the optional contract a provider implements to advertise how far back it can serve rates (its `HistoryAvailability`), so composing layers avoid asking for dates it has declared unavailable.
 - <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, <xref:Bodu.Financial.ExchangeRates.CurrencyPair>, <xref:Bodu.Financial.ExchangeRates.RateObservation>, <xref:Bodu.Financial.ExchangeRates.RateSeries> — observation record, strongly-typed (from, to) key, single dated observation value, and an O(log n) read-optimised time series.
 - <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder>, <xref:Bodu.Financial.ExchangeRates.RateSeriesKey>, <xref:Bodu.Financial.ExchangeRates.RateTableBuilder> — mutable companion for building or editing a series, the (pair, provider) key, and a higher-level multi-series editor for import workflows.
 - <xref:Bodu.Financial.ExchangeRates.RateLookupOptions>, <xref:Bodu.Financial.ExchangeRates.RateLookupResult>, <xref:Bodu.Financial.ExchangeRates.RateDateResolution> — resolution policy options and the audit-grade lookup result.
@@ -114,6 +119,8 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 - <xref:Bodu.Financial.ExchangeRates.ImfRateProvider> — the single-base (USD) provider built on the shared `WebRateProvider` base; warm the store with `LoadRangeAsync`. Registered with `AddImfExchangeRates`.
 - <xref:Bodu.Financial.ExchangeRates.ImfRateProviderOptions> — the report endpoint (`ReportPath`/`ReportType`), the on-disk month cache settings, and the `CurrencyNames` map from IMF currency label to ISO 4217 code.
 - <xref:Bodu.Financial.ExchangeRates.ImfSeriesInfo> — a discovered currency series (always quoted against USD), surfaced by `GetAvailablePairs`.
+- <xref:Bodu.Financial.ExchangeRates.ImfReportMonth> — one calendar month of the Representative Exchange Rates report, the download unit the provider fetches and caches.
+- <xref:Bodu.Financial.ExchangeRates.IImfReportCache>, <xref:Bodu.Financial.ExchangeRates.FileSystemImfReportCache>, <xref:Bodu.Financial.ExchangeRates.NullImfReportCache> — the raw-report cache seam, its on-disk implementation, and the no-op cache used when on-disk caching is disabled.
 
 ## Minimal sample
 

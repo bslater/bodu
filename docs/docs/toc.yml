@@ -74,6 +74,44 @@
           href: calendar/concepts.md
         - name: Getting started
           href: calendar/getting-started.md
+    - name: Bodu.Globalization.Recurrence
+      items:
+        - name: Introduction
+          href: recurrence/index.md
+        - name: Core concepts
+          href: recurrence/concepts.md
+        - name: Getting started
+          href: recurrence/getting-started.md
+    - name: Bodu.Globalization.Calendar.Builder
+      items:
+        - name: Introduction
+          href: calendar-builder/index.md
+    - name: Bodu.Globalization.Calendar.Plugins
+      items:
+        - name: Introduction
+          href: calendar-plugins/index.md
+    - name: Bodu.Globalization.Calendar.DependencyInjection
+      items:
+        - name: Introduction
+          href: calendar-di/index.md
+        - name: Getting started
+          href: calendar-di/getting-started.md
+    - name: Bodu.Globalization.Calendar.Caching
+      items:
+        - name: Introduction
+          href: calendar-caching/index.md
+        - name: Core concepts
+          href: calendar-caching/concepts.md
+        - name: Getting started
+          href: calendar-caching/getting-started.md
+    - name: Bodu.Globalization.Calendar.<Region> (data packs)
+      items:
+        - name: Calendar data packs
+          href: calendar-data/index.md
+    - name: Bodu.Globalization.Calendar.Tool / .Build
+      items:
+        - name: Calendar tooling
+          href: calendar-tooling/index.md
 - name: Text & Serialization
   href: topics/text-and-serialization.md
   items:
@@ -105,6 +143,22 @@
           href: formats/getting-started.md
         - name: Parser policies
           href: formats/parser-policies.md
+        - name: Reflection-free binding (source generator)
+          href: formats/generators.md
+        - name: Bodu.Text.Delimited
+          href: formats/delimited/index.md
+        - name: Bodu.Text.DotEnv
+          href: formats/dotenv/index.md
+        - name: Bodu.Text.Ini
+          href: formats/ini/index.md
+    - name: Bodu.Text.Serialization (shared core)
+      items:
+        - name: Introduction
+          href: serialization/core/index.md
+        - name: Core concepts
+          href: serialization/core/concepts.md
+        - name: Getting started
+          href: serialization/core/getting-started.md
     - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Serializers introduction
@@ -175,6 +229,30 @@
           href: financial/concepts.md
         - name: Getting started
           href: financial/getting-started.md
+    - name: Bodu.Numerics.Serialization.Json
+      items:
+        - name: Introduction
+          href: numerics-serialization-json/index.md
+        - name: Core concepts
+          href: numerics-serialization-json/concepts.md
+        - name: Getting started
+          href: numerics-serialization-json/getting-started.md
+    - name: Bodu.Financial.Serialization.Json
+      items:
+        - name: Introduction
+          href: financial-serialization-json/index.md
+        - name: Core concepts
+          href: financial-serialization-json/concepts.md
+        - name: Getting started
+          href: financial-serialization-json/getting-started.md
+    - name: Bodu.Financial.ExchangeRates
+      items:
+        - name: Introduction
+          href: exchange-rates/index.md
+        - name: Core concepts
+          href: exchange-rates/concepts.md
+        - name: Getting started
+          href: exchange-rates/getting-started.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:
@@ -204,3 +282,11 @@
           href: io-pst/concepts.md
         - name: Getting started
           href: io-pst/getting-started.md
+    - name: Bodu.Formats.Outlook
+      items:
+        - name: Introduction
+          href: outlook/index.md
+        - name: Core concepts
+          href: outlook/concepts.md
+        - name: Getting started
+          href: outlook/getting-started.md
