@@ -31,6 +31,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 | **Delimited (CSV / TSV)** | `Bodu.Text.Delimited` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **DotEnv** | `Bodu.Text.DotEnv` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
 | **INI** | `Bodu.Text.Ini` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Formats](formats/index.md) | [Get started](formats/getting-started.md) |
+| **Text formats source generator** | `Bodu.Text.Formats.Generators` | Preview | `Microsoft.CodeAnalysis.CSharp` (build-time only; not yet packable; project reference only) | [Bodu.Text.Formats.Generators](formats/generators.md) | [Get started](../guides/formats/source-generator.md) |
 | **TOML serializer** | `Bodu.Text.Toml` | Stable | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Toml](serialization/toml/index.md) | [Get started](serialization/toml/getting-started.md) |
 | **Bencode serializer** | `Bodu.Text.Bencode` | Stable | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Bencode](serialization/bencode/index.md) | [Get started](serialization/bencode/getting-started.md) |
 | **YAML serializer** | `Bodu.Text.Yaml` | Preview | `Bodu.Text.Serialization`, `Bodu.Core` | [Bodu.Text.Yaml](serialization/yaml/index.md) | [Get started](serialization/yaml/getting-started.md) |
