@@ -478,6 +478,207 @@ editing — `book.ToBuilder()` … edit … `ToBook().ToFixedProvider()`. Each s
 fetch instant (`FetchedAtUtc`) is preserved through every step, so provenance
 survives a web → fixed round trip losslessly.
 
+## Failure modes and exceptions
+
+Every provider fails the same way, because the failures are raised by the shared bases or by
+the shared exception types the sources are required to use. Each row names the type, the
+condition, and where in the call chain it surfaces:
+
+| Exception | Raised when | Surfaces from |
+|---|---|---|
+| `KeyNotFoundException` | A pair the provider covers has no observation on the requested date under the lookup options — the ordinary miss. `TryGetRate` returns `false` for the same case. | `GetRate` / `GetRateAsync`, after any fetch the call was allowed to make |
+| <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> (a `KeyNotFoundException`) | A single-base feed is asked for a pair it structurally cannot carry — `USD/JPY` on the ECB, a cross pair on RBA, BoE, or IMF. Thrown by `ValidateRangeRequest` **before any download**. Catch it ahead of the base type to tell "never" from "not today". | `GetRates` / `GetRatesAsync` / `LoadPairAsync` / `LoadRangeAsync` |
+| <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> (a `FormatException`) | A downloaded payload is malformed or lacks the expected rows (a maintenance page, an API error envelope, a changed schema). Never retried by the resilience pipeline. | The call that triggered the fetch: a warm-up, an asynchronous lookup, or a synchronous lookup with `AllowSynchronousNetworkAccess` on |
+| `HttpRequestException` | DNS, connection, TLS, or a non-success status. On a hand-built provider it is immediate; under DI it appears only after the standard resilience handler has exhausted its retries and timeouts. | The call that triggered the fetch |
+| `TaskCanceledException` | The per-request timeout of a provider-owned `HttpClient` (`HttpTimeout`), or the caller's token. | The call that triggered the fetch |
+| `InvalidOperationException` | `AllowSynchronousNetworkAccess` is `true`, a synchronous lookup misses, and the calling thread carries a `SynchronizationContext` — blocking there could deadlock, so the provider refuses. With the option at its default `false`, a synchronous miss is simply a miss (row 1) and never reaches the network. | Synchronous `GetRate` / `TryGetRate` / `GetRates` |
+| `ArgumentException` / `ArgumentNullException` | A malformed or null ISO code, an inverted range (`endDate < startDate`), or options that fail `Validate` in a constructor. | Argument validation, before any work |
+| `ObjectDisposedException` | Any member after `Dispose()`. Snapshots already handed out stay valid. | Every public member |
+
+Each case, exercised against the ECB provider over a
+<xref:Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler> (the two-day `eurofxref`
+document from [Testing your own provider](testing-providers.md#pattern-3--stubhttpmessagehandler-drives-a-real-provider-offline)
+is the feed constant here), with the payload cache off so nothing touches the disk:
+
+```csharp
+using System.Net;
+using System.Text;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.ExchangeRates.Testing;
+
+static EcbRateProvider CreateEcb(byte[] payload, HttpStatusCode status = HttpStatusCode.OK, bool allowSync = false) =>
+    new(new HttpClient(new StubHttpMessageHandler(payload, status)),
+        new EcbRateProviderOptions { EnableDiskCache = false, AllowSynchronousNetworkAccess = allowSync });
+
+byte[] feed = Encoding.UTF8.GetBytes(EcbFeed);
+
+// 1. A pair the single-base feed structurally cannot serve: rejected before any download.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    try { await ecb.GetRatesAsync("USD", "JPY", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (RateSeriesNotFoundException ex) { Console.WriteLine($"cross pair: {ex.Message}"); }
+}
+
+// 2. A covered pair with no observation on the date: an ordinary miss.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+    Console.WriteLine(ecb.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 1), RateLookupOptions.Exact, out _));   // False
+    try { ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 1)); }
+    catch (KeyNotFoundException ex) when (ex is not RateSeriesNotFoundException) { Console.WriteLine($"miss: {ex.Message}"); }
+}
+
+// 3. A payload the parser cannot read.
+using (EcbRateProvider ecb = CreateEcb(Encoding.UTF8.GetBytes("<html>maintenance page</html>")))
+{
+    try { await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (ExchangeRateFormatException ex) { Console.WriteLine($"format: {ex.Message}"); }
+}
+
+// 4. Transport failure: on a hand-built client there is no retry; under DI the resilience
+//    pipeline retries first and this surfaces only when it gives up.
+using (EcbRateProvider ecb = CreateEcb(Array.Empty<byte>(), HttpStatusCode.BadGateway))
+{
+    try { await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4)); }
+    catch (HttpRequestException ex) { Console.WriteLine($"transport: {ex.StatusCode}"); }
+}
+
+// 5. A synchronous miss with AllowSynchronousNetworkAccess left at false never touches the network:
+//    it is reported as a miss, exactly like case 2.
+using (EcbRateProvider ecb = CreateEcb(feed))
+{
+    Console.WriteLine(ecb.TryGetRate("EUR", "USD", new DateOnly(2023, 1, 3), null, out _));   // False — nothing loaded, no fetch
+}
+
+// 6. With AllowSynchronousNetworkAccess enabled, a synchronous miss blocks to fetch — unless the calling
+//    thread carries a SynchronizationContext, where blocking could deadlock: InvalidOperationException instead.
+using (EcbRateProvider ecb = CreateEcb(feed, allowSync: true))
+{
+    SynchronizationContext? previous = SynchronizationContext.Current;
+    SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+    try
+    {
+        ecb.GetRates("EUR", "USD", new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+    }
+    catch (InvalidOperationException ex) { Console.WriteLine($"captured context: {ex.Message}"); }
+    finally { SynchronizationContext.SetSynchronizationContext(previous); }
+}
+```
+
+Fetch failures (rows 3–5) are logged at `DownloadFailedLogLevel` (`Warning` by default) and
+rethrown; the pair base logs anything else under a distinct error event so a bug is not
+mislabelled as a feed problem. Cancellation is never logged. Under the
+[caching decorator](exchange-rate-caching.md), a miss for a date the provider has declared
+unavailable is answered without the provider being called at all.
+
+## Range reads and `RateRangeResult`
+
+`GetRates` / `GetRatesAsync` return every observation whose date falls inside the inclusive
+window as a <xref:Bodu.Financial.ExchangeRates.RateRangeResult>. It implements
+`IReadOnlyList<ExchangeRate>`, so it enumerates, indexes, and composes with LINQ like a plain
+sequence — and it carries the request alongside the data, so a caller can see how much of the
+window actually had observations without re-deriving it:
+
+| Member | Meaning |
+|---|---|
+| `FromIsoCode` / `ToIsoCode` | The requested direction. |
+| `RequestedStartDate` / `RequestedEndDate` | The inclusive window you asked for. |
+| `Rates` | The observations, ordered by date; also exposed through `Count`, `this[int]`, and enumeration. |
+| `IsEmpty` | `true` when no observation fell inside the window — an empty window is a result, not an exception. |
+| `FirstObservedDate` / `LastObservedDate` | The observed span, or `null` when empty. Compare with the requested window to measure the gap at either end. |
+
+No date-resolution policy applies to a range — you get the rows that exist — and each row's
+`Provider`, `Date`, and `IsInverted` travel on the `ExchangeRate` itself, so nothing is
+repeated per row:
+
+```csharp
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+IDatedRateProvider rates = new FixedDatedRateProvider(new[]
+{
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 3), 0.6606m, "RBA"),
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 4), 0.6629m, "RBA"),
+    new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, new DateOnly(2024, 1, 5), 0.6648m, "RBA"),
+});
+
+RateRangeResult january = rates.GetRates("AUD", "USD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 7));
+
+Console.WriteLine($"{january.FromIsoCode}/{january.ToIsoCode}: {january.Count} observations");   // AUD/USD: 3 observations
+Console.WriteLine($"{january.RequestedStartDate:yyyy-MM-dd}..{january.RequestedEndDate:yyyy-MM-dd}");   // 2024-01-01..2024-01-07
+Console.WriteLine($"{january.FirstObservedDate:yyyy-MM-dd}..{january.LastObservedDate:yyyy-MM-dd}");   // 2024-01-03..2024-01-05
+Console.WriteLine(january.IsEmpty);          // False
+Console.WriteLine(january[0].Rate);          // 0.6606 — IReadOnlyList<ExchangeRate>
+
+decimal average = january.Average(r => r.Rate);
+int missingDays = (january.RequestedEndDate.DayNumber - january.RequestedStartDate.DayNumber + 1) - january.Count;
+Console.WriteLine($"average {average:0.0000}, {missingDays} days without an observation");
+
+// The reverse direction is answered by reciprocating each row; IsInverted records it.
+RateRangeResult usdAud = rates.GetRates("USD", "AUD", new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 7));
+Console.WriteLine($"{usdAud[0].Rate:0.0000} inverted={usdAud[0].IsInverted}");   // 1.5138 inverted=True
+
+RateRangeResult empty = rates.GetRates("AUD", "USD", new DateOnly(2023, 6, 1), new DateOnly(2023, 6, 30));
+Console.WriteLine($"{empty.IsEmpty} {empty.FirstObservedDate is null}");   // True True — an empty window does not throw
+```
+
+On a web provider the asynchronous form fetches whatever unit covers the window first (the
+pair, the era, the feed); the synchronous form serves the current snapshot and blocks to fetch
+only under `AllowSynchronousNetworkAccess`. A range that starts before the provider's
+advertised history is served from what exists — see
+[Respecting advertised history](exchange-rate-caching.md#respecting-advertised-history) for
+how the caching layer clamps such requests.
+
+## Discovering series
+
+A provider knows nothing about a pair until it has fetched it. Afterwards, two views report what
+it holds. `GetAvailablePairs()` — declared on each provider with its own series type — returns
+one metadata object per fetched pair, carrying what the feed reported about it;
+`GetLoadedPairs()`, from the provider-agnostic
+<xref:Bodu.Financial.ExchangeRates.IPairRateLoader>, projects the same set to plain
+`CurrencyPair`s so cache-warming code can treat every provider alike. Both return a snapshot
+array; a cold provider reports nothing.
+
+| Provider | Series type | Members beyond `Pair` |
+|---|---|---|
+| RBA | `RbaSeriesInfo` | `QuoteIsoCode`, `SeriesId`, `Description`, `Units` — the workbook column. |
+| ECB | `EcbSeriesInfo` | `QuoteIsoCode`. |
+| Bank of England | `BoeSeriesInfo` | `QuoteIsoCode`, `SeriesCode`, `Description` — the IADB series. |
+| IMF | `ImfSeriesInfo` | `QuoteIsoCode`. |
+| Yahoo Finance | `YahooSeriesInfo` | `Symbol` (the ticker, `AUDUSD=X`), `QuoteIsoCode`. |
+| OFX | `OfxSeriesInfo` | `QuoteIsoCode`. |
+| XE.com | `XeSeriesInfo` | `QuoteIsoCode`. |
+| OANDA | `OandaSeriesInfo` | `QuoteIsoCode`, `Price` (`bid` / `mid` / `ask`). |
+| Fixer | `FixerSeriesInfo` | `BaseIsoCode`, `QuoteIsoCode`. |
+| exchangerate.host | `ExchangeRateHostSeriesInfo` | `SourceIsoCode`, `QuoteIsoCode`. |
+| FRED | `FredSeriesInfo` | `SeriesId` (the FRED identifier, `DEXUSEU`). |
+
+```csharp
+using Bodu.Financial.ExchangeRates;
+
+Console.WriteLine(ecb.GetAvailablePairs().Count);   // 0 — nothing fetched yet
+await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+
+foreach (EcbSeriesInfo series in ecb.GetAvailablePairs())
+    Console.WriteLine($"{series.Pair.From}/{series.Pair.To} quote={series.QuoteIsoCode}");   // EUR/USD quote=USD, EUR/JPY quote=JPY
+
+// The provider-agnostic view: the same pairs, without the feed-specific metadata.
+IPairRateLoader loader = ecb;
+foreach (CurrencyPair pair in loader.GetLoadedPairs())
+    Console.WriteLine($"{pair.From}/{pair.To}");
+
+// The advertised depth — what to ask for, not a per-date guarantee.
+RateHistoryAvailability history = ecb.HistoryAvailability;
+DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+Console.WriteLine($"{history.Kind}: earliest {history.GetEarliestAvailable(today)}");
+```
+
+Discovery is *post hoc* by design: none of the feeds publishes a cheap catalogue endpoint, so
+the providers report what they have loaded rather than pretend to know what the source could
+serve. To find out whether a pair *would* resolve, warm it (`LoadPairAsync`, or
+`LoadRangeAsync` on a bulk feed) and inspect the result; a single-base feed rejects a cross
+pair up front with `RateSeriesNotFoundException`, as the table above describes.
+
 ## Choosing a provider
 
 | Need | Reach for |
