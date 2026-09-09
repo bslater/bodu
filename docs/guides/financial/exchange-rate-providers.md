@@ -87,9 +87,9 @@ RateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
 // usd.Rate.Rate, usd.Rate.Provider == "RBA", usd.Provenance.Origin == RateOrigin.Live
 ```
 
-A synchronous lookup that misses an unloaded span blocks to download it when
-`AllowSynchronousNetworkAccess` is enabled (the default); set it to `false` to
-force callers onto the asynchronous surface or an explicit preload. Concurrent
+A synchronous lookup that misses an unloaded span blocks to download it only when
+`AllowSynchronousNetworkAccess` is set to `true`; it defaults to `false`, which
+keeps callers on the asynchronous surface or an explicit preload. Concurrent
 loads of the same span are coalesced, so a burst of misses triggers at most one
 download.
 
@@ -137,9 +137,10 @@ per-event `*LogLevel` properties, defaulting to one `Information` line per
 completed download, `Debug` for download starts, and `Trace` for per-observation
 detail.
 
-**Downloaded payloads are cached on disk.** Each provider keeps a best-effort cache
-of the raw bytes it downloaded (configurable, on by default), so immutable history
-is not re-fetched. This is distinct from the [rate cache](exchange-rate-caching.md):
+**Downloaded payloads are cached on disk.** The bulk providers (ECB, BoE, RBA, IMF)
+keep a best-effort cache of the raw bytes they downloaded through `EnableDiskCache`
+(on by default for ECB, BoE, and IMF; off for RBA), so immutable history is not
+re-fetched; the pair providers do not cache payloads. This is distinct from the [rate cache](exchange-rate-caching.md):
 the on-disk payload cache avoids re-downloading the source file, while the rate
 cache stores parsed, resolved rates in front of the provider.
 

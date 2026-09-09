@@ -16,7 +16,11 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 
 ## Static documentation
 
+- **[Introduction](~/docs/exchange-rates/index.md)** — the infrastructure package: the two provider bases, the fetch machinery, the eleven-package provider family with status and DI registration, and the "which provider" table.
+- **[Core concepts](~/docs/exchange-rates/concepts.md)** — warm-then-lookup, bulk vs pair, `RateRangeResult`, history availability, payload cache vs rate cache, single-flight, synchronous access, resilience, failure modes, lifetimes, thread safety.
+- **[Getting started](~/docs/exchange-rates/getting-started.md)** — install, direct construction, DI registration with an `appsettings.json` section, API keys, range reads, and the payload cache.
 - **[Built-in exchange-rate providers guide](~/guides/financial/exchange-rate-providers.md)** — construction, warming the store or a pair, the shared lookup surface, dependency injection, and composing a provider with caching and aggregation.
+- **[Testing your own provider](~/guides/financial/testing-providers.md)** — the in-repository contract-test bases (see the [`Bodu.Financial.ExchangeRates.Testing` overview](Bodu.Financial.ExchangeRates.Testing.md)) and the offline stub handler.
 
 ## Key types
 

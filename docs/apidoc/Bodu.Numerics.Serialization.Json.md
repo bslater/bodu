@@ -14,6 +14,9 @@ The core `Bodu.Numerics` library is serialization-agnostic — its value types c
 
 ## Static documentation
 
+- **[Introduction](~/docs/numerics-serialization-json/index.md)** — the converters and factories, the policy model, what is deliberately not covered, and the scenario index.
+- **[Core concepts](~/docs/numerics-serialization-json/concepts.md)** — factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.
+- **[Getting started](~/docs/numerics-serialization-json/getting-started.md)** — install + minimal samples for each policy and each type, including a source-generated context.
 - **[Numerics JSON serialization guide](~/guides/numerics/json-serialization.md)** — wire formats, the three policies, and registering the converters.
 
 ## Key types
