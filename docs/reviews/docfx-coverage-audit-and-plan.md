@@ -6,6 +6,19 @@
 
 ---
 
+## Progress
+
+| Phase | State | Notes |
+|---|---|---|
+| 0 — Guard rails and hygiene | **Done** (2026-09-09) | `bld/check-docs.py` (orphans, namespace overviews, prose identifiers, package status) runs in CI after the DocFX build; `reviews/` and `forensic-review/` are excluded from the site; the Articles section is in the root nav; the two orphaned crypto guides are in the TOC; the catalogue generator is fixed and regenerated; `samples/io-pst.md` added. Not done: a freshness check that the catalogue stamp is newer than the newest resource XML (needs git history, which the CI checkout does not fetch). |
+| 1 — Accuracy fixes | **Done** (2026-09-09) | Every §4 item applied and verified against `src/`, one commit per domain. Two audit claims were wrong and were not applied: `Fraction<T>.ToMixedParts()` exists (the guide now also shows `Deconstruct`), and the CCM/OCB samples were already correct (their constructors take a block-sized `iv` and use the first 12 bytes). The CRC catalogue page keeps "Entries in source: 113" because the RevEng source really has 113 entries (one, CRC-82/DARC, is unsupported); the enum has 112. |
+| 2 — Package landing pages and namespace overviews | Not started | The 35 missing overviews are listed in `bld/docs-checks/namespace-overview-allowlist.txt`; remove each entry as its overview lands. |
+| 3 — Guides | Not started | |
+| 4 — Navigation parity | Not started | |
+| 5 — Sustainment | Partly | The four CI checks exist; snippet-compile tests per project and the package definition-of-done check remain. |
+
+---
+
 ## 0. Executive summary
 
 The site is **structurally sound but not complete, and in places not accurate**.
