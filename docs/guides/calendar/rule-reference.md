@@ -4,7 +4,7 @@ title: NotableDateRule and adjustment-policy reference
 
 # NotableDateRule and adjustment-policy reference
 
-This page is the authoritative element-by-element reference for the document model on the notable-date schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, each of the six `<Strategy>` elements, and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document — imports and overrides — see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
+This page is the authoritative element-by-element reference for the document model on the notable-date schema (`urn:bodu:globalization:calendar`): the `<NotableDate>` concept, the `<Rule>` recipe, the `<Applicability>` filter, the most common `<Strategy>` elements (the [strategy reference](strategy-reference.md) covers all 13 single-date strategies and the four recurrence sources), and the reusable `<AdjustmentPolicy>` shape. For the vocabulary it assumes, start with [Core concepts](../../docs/calendar/concepts.md). For how to assemble a whole document — imports and overrides — see [Authoring notable date rules](rule-authoring.md). For where the service processes these elements, see [The resolution pipeline](resolution-pipeline.md).
 
 A rule is authored as XML or JSON and loaded into an immutable <xref:Bodu.Globalization.Calendar.NotableDateResource>; the loaded form is exposed through <xref:Bodu.Globalization.Calendar.NotableDateDefinition> and <xref:Bodu.Globalization.Calendar.NotableDateRule>, which are immutable and constructed by the loader — there is no object-initializer authoring API.
 
@@ -439,7 +439,7 @@ There is no `Name` property (use `DisplayName`) and no `WasAdjusted` property (u
 ## Where to go next
 
 - [Authoring notable date rules](rule-authoring.md) — assembling a whole document: imports and ID-targeted overrides.
-- [Date calculation algorithms](algorithms.md) — the six strategies in depth, built-in `<Algorithm>` keys, and custom algorithms.
+- [Date calculation algorithms](algorithms.md) — the strategy kinds in depth, built-in `<Algorithm>` keys, and custom algorithms.
 - [Observance adjustment rules](adjustment-rules.md) — the full `<AdjustmentPolicy>` trigger / action / emission catalogues and custom handlers.
 - [Holiday patterns and examples](holiday-patterns.md) — end-to-end worked examples for common holiday types.
 - [The resolution pipeline](resolution-pipeline.md) — how these elements are processed to produce `NotableDate` results.

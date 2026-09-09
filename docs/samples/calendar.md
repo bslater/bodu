@@ -71,6 +71,32 @@ declaratively from rules (`Algorithm("key")`), validated by the loader and dispa
 service — plus a five-line lambda adapter for one-off calculations. *Packages:
 `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
 
+### Bodu.Globalization.Calendar.Samples.Caching
+
+The caching layer: the read-through
+<xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService> decorator over the
+in-memory and JSON / TOML file backends (whole-territory, civil-year cache entries — warm queries,
+sub-range clipping, and filtered overloads all served without re-resolving; a file-backed cache
+lets a fresh service instance start warm), explicit `Warm` pre-resolution of a serving window,
+and `AddCachedNotableDateService` decorating an already-registered `INotableDateService`, with
+the SQLite / distributed backends and the hosted warm-up shown as fenced comment blocks. A
+`CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
+cache hit is proved by call count rather than by timing. *Packages: `Bodu.Globalization.Calendar`,
+`Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.DependencyInjection`,
+`Bodu.Globalization.Calendar.AsiaPacific`.*
+
+### Bodu.Globalization.Calendar.Samples.ValidationLint
+
+Collect-mode linting: `NotableDateDocumentBuilder.Validate()` / `TryBuild(...)` on clean,
+semantically invalid, and structurally incomplete builders, and
+`NotableDateResourceLoader.TryLoad` over arbitrary rule-pack text — malformed XML surfacing as
+`BODU-CAL-SYNTAX`, semantic problems as their stable codes, and a valid pack loading — every
+problem reported as a <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> with a
+stable `BODU-CAL-*` code instead of an exception, the shape build tasks and editor integrations
+want. The code catalogue lives in the
+[validation diagnostics guide](../guides/calendar/validation-diagnostics.md). *Packages:
+`Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
+
 ## Plugins, by choice
 
 No sample ships a plugin assembly — a single-project plugin demo would have to load itself under

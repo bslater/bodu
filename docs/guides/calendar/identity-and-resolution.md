@@ -191,7 +191,7 @@ IReadOnlyList<NotableDate> dates = service.Resolve(window, "AU");
 
 ## Validating a rule set
 
-Identity collisions, dangling references, and unknown algorithm keys are caught at **load** time, not at query time. <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> validates the assembled resource and throws a `NotableDateValidationException` on any error-severity finding; its `Diagnostics` collection reports every duplicate id, missing or ambiguous `<OffsetFromRule>` / `ReplaceWithRule` reference, reference cycle (errors), and unregistered algorithm key (a warning, since an optional pack may supply it later). See [The resolution pipeline — semantic validation](resolution-pipeline.md#stage-5--semantic-validation):
+Identity collisions, dangling references, and unknown algorithm keys are caught at **load** time, not at query time. <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> validates the assembled resource and throws a `NotableDateValidationException` on any error-severity finding; its `Diagnostics` collection reports every duplicate id, missing or ambiguous `<OffsetFromRule>` / `ReplaceWithRule` reference, reference cycle, and unregistered algorithm key (`BODU-CAL-ALGORITHM`) — all errors; see [Calendar validation diagnostics](validation-diagnostics.md) for the code catalogue. See [The resolution pipeline — semantic validation](resolution-pipeline.md#stage-5--semantic-validation):
 
 ```csharp
 using Bodu.Globalization.Calendar;

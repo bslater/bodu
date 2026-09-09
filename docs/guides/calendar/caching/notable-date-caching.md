@@ -192,7 +192,7 @@ builder.Services.AddNotableDateCacheWarmup(configure: warmup =>
 });
 ```
 
-Or bind the same options from configuration (section `Calendar:NotableDateCacheWarmup`):
+Or bind the same options from configuration (section `Calendar:NotableDateCacheWarmup`; the caching options themselves bind from `Calendar:NotableDateCache` through the `AddCachedNotableDateService(IConfiguration, sectionName, …)` overload):
 
 ```json
 {
@@ -208,7 +208,7 @@ Or bind the same options from configuration (section `Calendar:NotableDateCacheW
 ## Observability
 
 **Logs.** The decorator logs each hit and miss at levels set on the options
-(`CacheHitLogLevel` / `CacheMissLogLevel`, both defaulting to `Trace`), and every
+(`CacheHitLogLevel` / `CacheMissLogLevel`, both defaulting to `Information`), and every
 caching-layer message carries a stable `EventId`:
 
 | EventId | Event | Level |

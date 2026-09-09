@@ -81,7 +81,7 @@ catch (NotableDateValidationException ex)
 }
 ```
 
-Warnings (for example, an algorithm key an optional pack might supply later) do not abort the load.
+Warnings (currently produced only by non-fatal XSD findings under `BODU-CAL-SCHEMA`) do not abort the load; an `<Algorithm key>` that is neither built in nor registered is an **error** (`BODU-CAL-ALGORITHM`). See [Calendar validation diagnostics](validation-diagnostics.md) for the full code catalogue.
 
 ---
 

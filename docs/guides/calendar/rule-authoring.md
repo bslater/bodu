@@ -187,7 +187,7 @@ NotableDateResource resource =
 NotableDateService service = new NotableDateService(resource);
 ```
 
-A document with **no** `<Imports>` loads with the single-argument overload, `NotableDateResourceLoader.Load(xml)`. The companion `Bodu.Globalization.Calendar.Data.*` packs are built exactly this way — each region resource imports from the common catalogues and is loaded through the same resolver. See [Calendar data packs](data-packs.md).
+A document with **no** `<Imports>` loads with the single-argument overload, `NotableDateResourceLoader.Load(xml)`. The companion `Bodu.Globalization.Calendar.<Region>` data packs are built exactly this way — each region resource imports from the common catalogues and is loaded through the same resolver. See [Calendar data packs](data-packs.md).
 
 ---
 
@@ -336,6 +336,6 @@ Typical errors include a duplicate concept or rule id, an unknown adjustment `po
 - [Date calculation algorithms](algorithms.md) — the strategy kinds, the built-in `<Algorithm>` keys, and custom algorithms.
 - [Observance adjustment rules](adjustment-rules.md) — the full trigger / action / emission catalogues for `<AdjustmentPolicy>`.
 - [Working with non-Gregorian calendars](non-gregorian-calendars.md) — `<Fixed>` dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.
-- [Calendar data packs](data-packs.md) — the official Americas / Europe / Asia-Pacific resources, built from these same imports.
+- [Calendar data packs](data-packs.md) — the official Americas / Asia-Pacific / Europe / Middle East / Africa resources, built from these same imports.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type reference.
 - **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

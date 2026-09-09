@@ -48,7 +48,7 @@ Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an ad
 
 ## Resolution strategy
 
-Each rule carries exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy>, authored as one `<Strategy>` child element:
+Each rule carries exactly one occurrence source: a `<Strategy>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> producing at most one date per year) or a `<Recurrence>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> producing a frequency-based series). The most common single-date strategies:
 
 | Strategy element | What it does |
 |---|---|
@@ -59,7 +59,7 @@ Each rule carries exactly one <xref:Bodu.Globalization.Calendar.Algorithms.IDate
 | `<OffsetFromRule>` | A signed day-offset from another rule's occurrence (e.g. Easter Sunday − 2 = Good Friday). |
 | `<Algorithm>` | Delegated to a named algorithm key for astronomical or ecclesiastical computations (Easter, equinoxes, Vesak, Diwali, …). |
 
-See the [NotableDateRule and adjustment-policy reference](../../guides/calendar/rule-reference.md) for the per-element contracts and [Date calculation algorithms](../../guides/calendar/algorithms.md) for the algorithm keys.
+These six are the most-used of the 13 single-date strategies; the others cover positional dates (`<OrdinalDayOfMonth>`, `<DayOfYear>`, `<IsoWeekDate>`), further rule references (`<WeekdayNearRule>`, `<NthWeekdayFromRule>`, `<WorkingDayOffsetFromRule>`), and working days (`<WorkingDayInMonth>`), and the four recurrence sources (`<DailyInterval>`, `<Weekly>`, `<MonthlyDay>`, `<MonthlyWeekday>`) describe repeating series. See the [strategy reference](../../guides/calendar/strategy-reference.md) for the full catalogue, the [NotableDateRule and adjustment-policy reference](../../guides/calendar/rule-reference.md) for the per-element contracts, and [Date calculation algorithms](../../guides/calendar/algorithms.md) for the algorithm keys.
 
 ## Rule references (offset-from-rule)
 
@@ -95,7 +95,7 @@ See [Territories and regional composition](../../guides/calendar/territories.md)
 
 ## Imports and common catalogues
 
-A document rarely starts from scratch. `<Imports>` pull notable-date concepts from the bundled **common catalogues** — `global-core`, `christian-western`, `global-islamic`, `global-hindu`, and friends — resolved by name through <xref:Bodu.Globalization.Calendar.CommonNotableDateResources>. An `<Import>` can take every concept or cherry-pick with `<Use>` directives that rename, re-scope to a territory, override the category, or attach adjustment policies. Local concepts win over imported concepts of the same id. The `Bodu.Globalization.Calendar.Data.*` packs are built exactly this way. See [Authoring notable date rules](../../guides/calendar/rule-authoring.md).
+A document rarely starts from scratch. `<Imports>` pull notable-date concepts from the bundled **common catalogues** — `global-core`, `christian-western`, `global-islamic`, `global-hindu`, and friends — resolved by name through <xref:Bodu.Globalization.Calendar.CommonNotableDateResources>. An `<Import>` can take every concept or cherry-pick with `<Use>` directives that rename, re-scope to a territory, override the category, or attach adjustment policies. Local concepts win over imported concepts of the same id. The `Bodu.Globalization.Calendar.<Region>` data packs are built exactly this way. See [Authoring notable date rules](../../guides/calendar/rule-authoring.md).
 
 ## Overrides and runtime change
 

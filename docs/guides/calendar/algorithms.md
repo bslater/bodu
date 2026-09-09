@@ -248,7 +248,7 @@ INotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
 
 // … and to the service so AlgorithmDateStrategy can resolve them at query time.
-NotableDateService service = new NotableDateService(resource, registry);
+NotableDateService service = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
 ```
 
 The custom registry implements <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry> (`Contains(key)` and `TryGet(key, out algorithm)`), the same lookup surface the engine consults at resolution time. The rule document references the key exactly like a built-in one:

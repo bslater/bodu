@@ -56,6 +56,7 @@ The library operates on offsets, not time zones, so daylight-saving transitions 
 "Daily at 02:00, but not on public holidays" is a filter over an occurrence stream, applied from outside — the recurrence package carries no holiday, locale, or business-day data and takes no dependency on `Bodu.Globalization.Calendar`:
 
 ```csharp
+using Bodu.Extensions;                  // working-day extensions over INotableDateService
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Recurrence;
 
@@ -64,10 +65,12 @@ RecurrenceRule rule = RecurrenceRule.Parse("FREQ=DAILY");
 
 DateTime? nextWorkingRun = rule
     .GetOccurrences(start, from: now, to: now.AddDays(30))
-    .FirstOrDefault(occurrence => !holidays.IsHoliday(occurrence.Date));
+    .Where(occurrence => !occurrence.IsNonWorkingDay(holidays, "US"))
+    .Select(occurrence => (DateTime?)occurrence)
+    .FirstOrDefault();
 ```
 
-Any predicate works; the calendar package is just the in-repo source of holiday truth.
+Any predicate works; the calendar package is just the in-repo source of holiday truth. Here `IsNonWorkingDay` (from `Bodu.Extensions`) skips both weekends and the territory's resolved non-working notable dates; `IsNotableDate` tests the notable dates alone. The `Select` to `DateTime?` is what lets `FirstOrDefault` report "no occurrence" as `null` rather than `default(DateTime)`.
 
 ## Bounded searches
 
@@ -96,9 +99,9 @@ Those semantics are reconciled row by row against three committed corpora — th
 Hosts surface configuration errors verbatim, without exception-driven control flow:
 
 ```csharp
-if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out string? defect))
+if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out string? failureMessage))
 {
-    logger.LogError("Invalid schedule '{Text}': {Defect}", text, defect);
+    logger.LogError("Invalid schedule '{Text}': {FailureMessage}", text, failureMessage);
 }
 ```
 

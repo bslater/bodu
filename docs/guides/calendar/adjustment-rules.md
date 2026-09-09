@@ -273,7 +273,7 @@ When the built-in trigger and action values cannot express your logic, supply a 
 
 ### Custom trigger — `IAdjustmentTriggerHandler`
 
-A custom trigger implements <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler>, whose single method `bool ShouldAdjust(AdjustmentTriggerContext context)` returns whether the policy should fire. Register it under a key in an <xref:Bodu.Globalization.Calendar.AdjustmentTriggerHandlerRegistry> (chainable `Register(key, handler)`; the registry implements `Contains` / `TryGet`):
+A custom trigger implements <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler>, whose single method `bool ShouldAdjust(AdjustmentTriggerContext context)` returns whether the policy should fire. Register it under a key in an <xref:Bodu.Globalization.Calendar.AdjustmentTriggerHandlerRegistry> (chainable `Register(key, handler)`; the registry implements `Contains` / `TryGet`). The <xref:Bodu.Globalization.Calendar.AdjustmentTriggerContext> exposes `BaseDate` (the nominal date under evaluation), `Territory`, the `Policy` being applied, the `ResolutionContext`, and the policy's handler `Parameters`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -281,7 +281,7 @@ using Bodu.Globalization.Calendar;
 public sealed class FullMoonTrigger : IAdjustmentTriggerHandler
 {
     public bool ShouldAdjust(AdjustmentTriggerContext context) =>
-        IsFullMoon(context.Date);   // your astronomical test over the nominal date
+        IsFullMoon(context.BaseDate);   // your astronomical test over the nominal date
 
     private static bool IsFullMoon(DateOnly date) => /* … */ false;
 }
@@ -300,7 +300,7 @@ var triggerHandlers = new AdjustmentTriggerHandlerRegistry()
 
 ### Custom action — `IAdjustmentHandler`
 
-A custom action implements <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, whose method `DateOnly? Adjust(AdjustmentHandlerContext context)` returns the observed date (or `null` to leave the date unchanged). Register it in an <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry>. Parameters declared on the policy's `<Parameters>` block are available on the context:
+A custom action implements <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>, whose method `DateOnly? Adjust(AdjustmentHandlerContext context)` returns the observed date (or `null` to leave the date unchanged). Register it in an <xref:Bodu.Globalization.Calendar.AdjustmentHandlerRegistry>. The <xref:Bodu.Globalization.Calendar.AdjustmentHandlerContext> carries the same `BaseDate`, `Territory`, `Policy`, and `ResolutionContext` members as the trigger context, and parameters declared on the policy's `<Parameters>` block are available as `Parameters`:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -308,7 +308,7 @@ using Bodu.Globalization.Calendar;
 public sealed class EarlyCloseHandler : IAdjustmentHandler
 {
     public DateOnly? Adjust(AdjustmentHandlerContext context) =>
-        context.Date.AddDays(-1);   // move to the prior day, for example
+        context.BaseDate.AddDays(-1);   // move to the prior day, for example
 }
 
 var handlers = new AdjustmentHandlerRegistry()

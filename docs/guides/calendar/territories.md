@@ -180,7 +180,7 @@ Listing the same rule under every subdivision of one country produces duplicate 
 
 ## Data-pack conventions
 
-The official `Bodu.Globalization.Calendar.Data.*` companion packages follow the conventions above:
+The official `Bodu.Globalization.Calendar.<Region>` companion packages follow the conventions above:
 
 - National rules are authored at the country level (`AU`, `US`, `GB`).
 - State / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`).
