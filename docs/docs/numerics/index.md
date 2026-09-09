@@ -170,6 +170,7 @@ Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Jso
 - **[Working with `Fraction<T>`](../../guides/numerics/fraction.md)** — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
 - **[Working with `BigDecimal`](../../guides/numerics/bigdecimal.md)** — the unscaled-value / scale model, exact arithmetic, division precision, rounding, generic-math composition.
+- **[Working with `Complex<T>`](../../guides/numerics/complex.md)** — construction and polar form, arithmetic, magnitude / phase / conjugate / reciprocal, the elementary functions pinned against `System.Numerics.Complex`, the `<real; imaginary>` text form, and the JSON wire shape.
 - **[Running statistics and moving windows](../../guides/numerics/running-statistics.md)** — the single-pass accumulators and rolling-window companions.
 - **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, the `&` / `|` operators, and the N-ary `IntervalSet<T>`.
 - **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>` and how it differs from the continuous type.

@@ -28,7 +28,7 @@ Reach for this library when you need rational or decimal arithmetic that does no
 
 **Complex numbers**
 
-- <xref:Bodu.Numerics.Complex`1> — immutable complex number over any `IFloatingPointIeee754<T>` component type; the generic counterpart of the `double`-only `System.Numerics.Complex`, with arithmetic, `Conjugate` / `Reciprocal`, the elementary functions (`Sqrt`, `Exp`, `Log`, `Pow`, trigonometric and hyperbolic), parsing / formatting, and the `INumberBase<T>` / `ISignedNumber<T>` surface (complex numbers do not order, so not `INumber<T>`).
+- <xref:Bodu.Numerics.Complex`1> — immutable complex number over any `IFloatingPointIeee754<T>` component type; the generic counterpart of the `double`-only `System.Numerics.Complex`, with arithmetic, `Conjugate` / `Reciprocal`, the elementary functions (`Sqrt`, `Exp`, `Log`, `Pow`, trigonometric and hyperbolic), parsing / formatting, and the `INumberBase<T>` / `ISignedNumber<T>` surface (complex numbers do not order, so not `INumber<T>`). Guide: [Working with `Complex<T>`](~/guides/numerics/complex.md).
 
 > JSON support is serialization-agnostic in this package; the converters ship in the companion <xref:Bodu.Numerics.Serialization.Json> package.
 

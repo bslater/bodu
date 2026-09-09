@@ -53,7 +53,7 @@ Because `ThrowHelper` is the sole dependency most packages take on `Bodu.Core`, 
 | Pooled byte / char building without allocation | <xref:Bodu.Buffers.PooledBufferBuilder`1> | `ArrayPool<T>`-backed; implements `IBufferWriter<T>`; dispose to return the rented array. |
 | Range-keyed lookup (interval → value, or interval membership) | <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open `[start, end)` keys with O(log n) lookup. |
 | One key mapping to many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | The indexer returns an empty live view, never `null`. |
-| Day-of-week masks you can union, intersect, and parse | <xref:Bodu.WeekPattern> | Immutable 7-bit bitmask value type; `Parse("MTuWThF")`, bitwise operators, presets. |
+| Day-of-week masks you can union, intersect, and parse | <xref:Bodu.WeekPattern> | Immutable 7-bit bitmask value type; `Parse("_MTWTF_")`, bitwise operators, presets. |
 | Date arithmetic — first Monday of month, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> | Parameterized by the calendar-shape enums (quarter definitions, working weeks, week ordinals). |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> | `ReverseBits`, `RotateBitsLeft` / `Right`, `ReverseBytes` over unsigned integers. |
 | Detect a file's encoding from its byte-order mark | <xref:Bodu.Text.EncodingDetection> | Non-allocating `TryDetectByPreamble` over the five canonical Unicode preambles. |

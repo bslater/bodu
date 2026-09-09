@@ -78,8 +78,8 @@ The foundation of the suite — see the **[Core Foundations overview](topics/cor
 ```csharp
 using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse("MTuWThF");
-WeekPattern weekend  = WeekPattern.Parse("SaSu");
+WeekPattern weekdays = WeekPattern.Parse("_MTWTF_");
+WeekPattern weekend  = WeekPattern.Parse("S_____S");
 WeekPattern allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
@@ -146,9 +146,15 @@ System.Text.Encoding encoding =
         : System.Text.Encoding.UTF8;
 
 string text = encoding.GetStringSkippingPreamble(bytes);
+
+// Going the other way: encode without an intermediate byte[] when the destination is a span.
+Span<byte> buffer = stackalloc byte[text.GetUtf8ByteCount()];
+int written = text.EncodeUtf8To(buffer);
+
+byte[] withBom = text.ToBytesWithPreamble(System.Text.Encoding.UTF8);
 ```
 
-`EncodingDetection.TryDetectByPreamble` is non-allocating and recognises the five canonical Unicode BOMs; `GetStringSkippingPreamble` decodes the payload while dropping any leading preamble. The `EncodingExtensions` and `StringEncodingExtensions` surfaces add pooled, chunked, and `Try*` write-to-span overloads for the hot paths.
+`EncodingDetection.TryDetectByPreamble` is non-allocating and recognises the five canonical Unicode BOMs; `GetStringSkippingPreamble` decodes the payload while dropping any leading preamble. Going the other way, `StringEncodingExtensions` sizes and writes UTF-8 (or any encoding) straight into a span or `IBufferWriter<byte>` — `GetUtf8ByteCount` / `EncodeUtf8To` above, plus `TryEncodeUtf8To`, `WriteUtf8To`, the pooled `GetUtf8BytesPooled`, and their `Encoding`-parameterised twins — and `ToBytesWithPreamble` emits the BOM the detector will recognise. The `EncodingExtensions` surface adds the chunked and `Try*` overloads for the hot paths.
 
 → **[Introduction](text/index.md)** · **[API reference](xref:Bodu.Text)**
 

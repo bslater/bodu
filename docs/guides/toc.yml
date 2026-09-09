@@ -27,8 +27,20 @@
               href: core/week-pattern.md
         - name: Bodu.Extensions
           items:
+            - name: String extensions
+              href: core/string-extensions.md
+            - name: Date and time extensions
+              href: core/date-extensions.md
+            - name: Fiscal quarters, working weeks, and weekend providers
+              href: core/calendar-shapes-and-providers.md
+            - name: Numeric, enum, array, span, and stream extensions
+              href: core/numeric-enum-stream-extensions.md
             - name: Natural string comparer
               href: core/natural-string-comparer.md
+        - name: Bodu.Collections.Generic.Extensions / Bodu.Sequences
+          items:
+            - name: Sequence operators and generators
+              href: core/sequence-operators.md
         - name: Bodu.Text (namespace)
           items:
             - name: Encoding helpers and BOM detection
@@ -43,6 +55,8 @@
               href: core/circular-buffer.md
             - name: Deque
               href: core/deque.md
+            - name: Extending RingBackedCollection<T>
+              href: core/ring-backed-collections.md
             - name: Evicting dictionary
               href: core/evicting-dictionary.md
             - name: Sequenced dictionary
@@ -85,10 +99,14 @@
           items:
             - name: Tries and text search
               href: core/trie.md
+            - name: N-ary tree
+              href: core/tree.md
     - name: Bodu.Collections.Concurrent
       items:
         - name: Concurrent collections
           href: core/concurrent-collections.md
+    - name: Thread-safety contracts
+      href: core/thread-safety.md
 - name: Hashing & Cryptography
   href: topics/hashing-and-cryptography.md
   items:
@@ -502,6 +520,8 @@
           href: numerics/discrete-intervals.md
         - name: Working with BigDecimal
           href: numerics/bigdecimal.md
+        - name: Working with Complex<T>
+          href: numerics/complex.md
         - name: Running and moving statistics
           href: numerics/running-statistics.md
         - name: Generic math constraints

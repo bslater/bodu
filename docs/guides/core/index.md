@@ -21,13 +21,15 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
-| `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) |
+| `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) · [N-ary tree](tree.md) |
 | `Bodu.Threading` | Async coordination primitives — `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
 | `Bodu.Functional` | Functional helpers — `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
-| `Bodu` | Root namespace primitives — `WeekPattern`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) |
+| `Bodu` | Root namespace primitives — `WeekPattern`, `WorkingDaysOfWeek`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure — `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
-| `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` — and the `NaturalStringComparer`. | [Natural string comparer](natural-string-comparer.md) (the extension classes are covered by the <xref:Bodu.Extensions> API reference) |
+| `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods — `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` — the calendar-shape types (`CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`), and the `NaturalStringComparer`. | [String extensions](string-extensions.md) · [Date and time extensions](date-extensions.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) · [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) · [Natural string comparer](natural-string-comparer.md) |
+| `Bodu.Collections.Generic.Extensions`, `Bodu.Collections.Extensions`, `Bodu.Sequences` | The LINQ-style operator catalogue (`IEnumerableExtensions`, `IListExtensions`, `IDictionaryExtensions`, `RandomizationMode`, `RecursiveSelectControl`), `ShuffleHelpers`, and `SequenceGenerator`. | [Sequence operators and generators](sequence-operators.md) |
 | `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | — |
+| *(cross-cutting)* | Which types are safe to share between threads, and how each enumerates under mutation. | [Thread-safety contracts across Core Foundations](thread-safety.md) |
 
 ## Guides
 
@@ -125,6 +127,16 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
   <p>Two-key map (Guava <code>Table</code> shape) whose point is the projections — live <code>Row</code> / <code>Column</code> dictionary views over a row-major store, with an honest O(rows) column-axis cost.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="ring-backed-collections.md">Extending RingBackedCollection&lt;T&gt;</a></h3>
+  <p>The abstract ring-buffer base behind <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code> — its protected primitives, the structural-version counter and fail-fast contract, and a worked sliding-window derivation.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="thread-safety.md">Thread-safety contracts</a></h3>
+  <p>One table across <code>Bodu.Core</code>, <code>Bodu.Collections</code>, and <code>Bodu.Collections.Concurrent</code>: safe, immutable, read-only safe, or unsafe; which reads mutate; fail-fast versus snapshot enumeration.</p>
+</div>
+
 </div>
 
 ### `Bodu.Collections.Generic.Concurrent`
@@ -166,7 +178,12 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="trie.md">Tries and text search</a></h3>
-  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), the path-compressed <code>RadixTrie</code> pair with the same surface, and the <code>AhoCorasickAutomaton</code> pair for single-pass multi-pattern text search. (The namespace's n-ary <code>Tree&lt;T&gt;</code> has no guide yet — see the <a href="xref:Bodu.Collections.Generic.Trees">API reference</a>.)</p>
+  <p>The <code>Trie</code> string set and <code>Trie&lt;TValue&gt;</code> map with prefix queries (autocomplete-style), the path-compressed <code>RadixTrie</code> pair with the same surface, and the <code>AhoCorasickAutomaton</code> pair for single-pass multi-pattern text search.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="tree.md">N-ary tree</a></h3>
+  <p>Mutable <code>Tree&lt;T&gt;</code> nodes with parent / ordered-children structure, stack-safe pre-, post-, and level-order traversals, descendants, ancestors, and leaves, and the attach / detach rules.</p>
 </div>
 
 </div>
@@ -216,6 +233,48 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 <div class="bodu-card">
   <h3><a href="week-pattern.md">WeekPattern</a></h3>
   <p>Immutable bitmask value type for sets of days of the week; supports composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
+</div>
+
+</div>
+
+### `Bodu.Extensions`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="string-extensions.md">String extensions</a></h3>
+  <p>The 77-method <code>StringExtensions</code> surface by task — substring by marker, wrapping, whitespace and lines, ordinal predicates, null coalescing, affixes, filtering, identifier casing with <code>WordCasingOptions</code>, slugs, safe file names, truncation.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="date-extensions.md">Date and time extensions</a></h3>
+  <p><code>DateTimeExtensions</code> / <code>DateOnlyExtensions</code> — boundaries, day-of-week navigation, ISO and culture weeks, quarters and fiscal years, predicates, age and truncation, conversions — with the culture / working-week / quarter / provider overload matrix.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="calendar-shapes-and-providers.md">Fiscal quarters, working weeks, and weekend providers</a></h3>
+  <p><code>CalendarQuarterDefinition</code>, implementing <code>IQuarterDefinitionProvider</code>, the 52/53-week <code>FiscalWeekQuarterProvider</code> and <code>FiscalWeekPattern</code>, <code>WeekOrdinal</code>, a Friday–Saturday <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="numeric-enum-stream-extensions.md">Numeric, enum, array, span, and stream extensions</a></h3>
+  <p><code>NumericExtensions</code>, <code>ComparableExtensions</code> / <code>ComparableHelper</code>, <code>EnumExtensions</code> / <code>Enums</code>, <code>ArrayExtensions</code>, <code>SpanExtensions</code>, <code>StreamExtensions</code>, and <code>BufferConverter</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="natural-string-comparer.md">Natural string comparer</a></h3>
+  <p><code>NaturalStringComparer</code> — ordering strings with embedded numbers the way a person would (<code>file2</code> before <code>file10</code>).</p>
+</div>
+
+</div>
+
+### `Bodu.Collections.Generic.Extensions`, `Bodu.Sequences`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="sequence-operators.md">Sequence operators and generators</a></h3>
+  <p>The <code>IEnumerableExtensions</code> catalogue (lazy versus buffering, <code>BatchPooled</code>'s lifetime rule, <code>RecursiveSelectControl</code>), the list and dictionary helpers, <code>ShuffleHelpers</code> versus <code>Randomize</code>, and <code>SequenceGenerator</code>.</p>
 </div>
 
 </div>
