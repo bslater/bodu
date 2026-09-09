@@ -1,0 +1,3 @@
+# Hand-authored pages under docs/ that are deliberately reachable only by
+# link, not from a toc.yml. Paths are relative to docs/. Keep this empty
+# unless a page genuinely must stay out of the navigation.

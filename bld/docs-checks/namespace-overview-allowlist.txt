@@ -1,0 +1,39 @@
+# Public namespaces that still lack a docs/apidoc/<Namespace>.md overview.
+# This list is DEBT recorded by the 2026-09 documentation audit
+# (docs/reviews/docfx-coverage-audit-and-plan.md, Phase 2). Remove an entry
+# when its overview is written; never add to it for a new namespace.
+Bodu.Financial.ExchangeRates.Testing
+Bodu.Financial.Extensions
+Bodu.Formats.Outlook
+Bodu.Globalization.Calendar.Caching
+Bodu.Globalization.Calendar.Tool
+Bodu.IO.Compound.Builders
+Bodu.IO.Compound.PropertySets
+Bodu.Text.Bencode.Document
+Bodu.Text.Bencode.Nodes
+Bodu.Text.Bencode.Reader
+Bodu.Text.Bencode.Serialization
+Bodu.Text.Bencode.Writer
+Bodu.Text.Delimited.Document
+Bodu.Text.Delimited.Nodes
+Bodu.Text.Delimited.Reader
+Bodu.Text.Delimited.Writer
+Bodu.Text.DotEnv.Document
+Bodu.Text.DotEnv.Nodes
+Bodu.Text.DotEnv.Reader
+Bodu.Text.DotEnv.Writer
+Bodu.Text.Ini.Document
+Bodu.Text.Ini.Nodes
+Bodu.Text.Ini.Reader
+Bodu.Text.Ini.Writer
+Bodu.Text.Serialization
+Bodu.Text.Toml.Document
+Bodu.Text.Toml.Nodes
+Bodu.Text.Toml.Reader
+Bodu.Text.Toml.Serialization
+Bodu.Text.Toml.Writer
+Bodu.Text.Yaml.Document
+Bodu.Text.Yaml.Nodes
+Bodu.Text.Yaml.Reader
+Bodu.Text.Yaml.Serialization
+Bodu.Text.Yaml.Writer
