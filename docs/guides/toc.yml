@@ -374,6 +374,8 @@
           items:
             - name: Streams and async I/O
               href: formats/streaming.md
+            - name: Reflection-free binding with the source generator
+              href: formats/source-generator.md
     - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Guides overview
@@ -474,6 +476,8 @@
           href: financial/money.md
         - name: Monetary precision & unit pricing
           href: financial/monetary-precision.md
+        - name: JSON serialization
+          href: financial/json-serialization.md
         - name: Working with exchange rates
           href: financial/exchange-rates.md
         - name: Built-in exchange-rate providers
