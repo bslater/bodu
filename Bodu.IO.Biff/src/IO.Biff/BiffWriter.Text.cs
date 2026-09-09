@@ -32,7 +32,7 @@ public ref partial struct BiffWriter
         RequireCellIndex(row, nameof(row));
         RequireCellIndex(column, nameof(column));
 
-        int textLength = MeasureText(text, wideLength: true);
+        int textLength = MeasureText(text, wideLength: true, nameof(text));
         Span<byte> payload = Begin((ushort)BiffRecordType.Label, 6 + textLength, textLength, nameof(text));
         WriteCellPrefix(payload, row, column, xfIndex);
         EncodeText(payload.Slice(6), text, wideLength: true);
@@ -69,7 +69,7 @@ public ref partial struct BiffWriter
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the encoded text does not fit the record.</exception>
     public void WriteString(scoped ReadOnlySpan<char> text)
     {
-        int textLength = MeasureText(text, wideLength: true);
+        int textLength = MeasureText(text, wideLength: true, nameof(text));
         Span<byte> payload = Begin((ushort)BiffRecordType.String, textLength, textLength, nameof(text));
         EncodeText(payload, text, wideLength: true);
         Commit(payload.Length);
@@ -89,7 +89,7 @@ public ref partial struct BiffWriter
     /// </exception>
     public void WriteBoundSheet(uint streamOffset, BiffSheetState state, BiffSheetType sheetType, scoped ReadOnlySpan<char> name)
     {
-        int nameLength = MeasureText(name, wideLength: false);
+        int nameLength = MeasureText(name, wideLength: false, nameof(name));
         Span<byte> payload = Begin((ushort)BiffRecordType.BoundSheet, 6 + nameLength, nameLength, nameof(name));
         BinaryPrimitives.WriteUInt32LittleEndian(payload, streamOffset);
         payload[4] = (byte)((byte)state & 0x03);
@@ -107,7 +107,7 @@ public ref partial struct BiffWriter
     public void WriteFormat(ushort formatIndex, scoped ReadOnlySpan<char> code)
     {
         bool wideLength = _version == BiffVersion.Biff8;
-        int codeLength = MeasureText(code, wideLength);
+        int codeLength = MeasureText(code, wideLength, nameof(code));
         Span<byte> payload = Begin((ushort)BiffRecordType.Format, 2 + codeLength, codeLength, nameof(code));
         BinaryPrimitives.WriteUInt16LittleEndian(payload, formatIndex);
         EncodeText(payload.Slice(2), code, wideLength);
@@ -133,7 +133,7 @@ public ref partial struct BiffWriter
     /// </exception>
     public void WriteFont(ushort height, ushort attributes, ushort colorIndex, ushort weight, ushort escapement, byte underline, byte family, byte characterSet, scoped ReadOnlySpan<char> name)
     {
-        int nameLength = MeasureText(name, wideLength: false);
+        int nameLength = MeasureText(name, wideLength: false, nameof(name));
         Span<byte> payload = Begin((ushort)BiffRecordType.Font, 14 + nameLength, nameLength, nameof(name));
         payload.Slice(0, 14).Clear();
         BinaryPrimitives.WriteUInt16LittleEndian(payload, height);
@@ -289,11 +289,12 @@ public ref partial struct BiffWriter
     /// </summary>
     /// <param name="text">The text.</param>
     /// <param name="wideLength">Whether the length prefix is 16 bits (<see langword="true" />) or 8 bits.</param>
+    /// <param name="paramName">The name of the caller's parameter that supplied the text, for the exception.</param>
     /// <returns>The encoded size in bytes.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when the character count (BIFF8) or byte count (BIFF5) exceeds what the length prefix can express.
     /// </exception>
-    private readonly int MeasureText(ReadOnlySpan<char> text, bool wideLength)
+    private readonly int MeasureText(ReadOnlySpan<char> text, bool wideLength, string paramName)
     {
         int max = wideLength ? ushort.MaxValue : byte.MaxValue;
         int units;
@@ -313,7 +314,7 @@ public ref partial struct BiffWriter
         if (units > max)
         {
             throw new ArgumentOutOfRangeException(
-                nameof(text),
+                paramName,
                 units,
                 string.Format(CultureInfo.CurrentCulture, BiffResourceStrings.Arg_OutOfRange_BiffStringTooLong, units, max));
         }
