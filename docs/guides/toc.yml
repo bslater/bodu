@@ -402,10 +402,18 @@
               href: formats/streaming.md
             - name: Reflection-free binding with the source generator
               href: formats/source-generator.md
+            - name: Writer options and DOM options
+              href: formats/writer-options-and-dom-options.md
+            - name: Errors across the line formats
+              href: formats/error-handling.md
     - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Guides overview
           href: serialization/index.md
+        - name: Migrating from System.Text.Json
+          href: serialization/migrating-from-system-text-json.md
+        - name: Serializer options — freezing, caching, and thread safety
+          href: serialization/options-and-lifetime.md
         - name: Bodu.Text.Toml
           items:
             - name: TOML guides overview
@@ -448,6 +456,10 @@
               href: serialization/yaml/attributes.md
             - name: Writing converters
               href: serialization/yaml/converters.md
+            - name: Polymorphic converters
+              href: serialization/yaml/polymorphic-converters.md
+            - name: Serialization callbacks
+              href: serialization/yaml/callbacks.md
             - name: Built-in converter catalog
               href: serialization/yaml/builtin-converters.md
 - name: Configuration
