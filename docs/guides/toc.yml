@@ -29,6 +29,10 @@
           items:
             - name: Natural string comparer
               href: core/natural-string-comparer.md
+        - name: Bodu.Text (namespace)
+          items:
+            - name: Encoding helpers and BOM detection
+              href: text-encoding/encoding-helpers.md
     - name: Bodu.Collections
       items:
         - name: Choosing a collection
