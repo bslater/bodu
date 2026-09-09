@@ -28,7 +28,7 @@ An `.xls` file is an OLE2 compound file whose `Workbook` (BIFF8) or `Book` (BIFF
 | **Code page** | BIFF5 text is bytes in the code page the `CODEPAGE` record declares; the reader tracks it as state, like the version, so `BiffString.GetString()` needs no argument. |
 | **RK number** | A compact 30-bit numeric encoding used by `RK` and `MULRK` cells; <xref:Bodu.IO.Biff.BiffRk> encodes and decodes it. |
 
-For the full glossary, see [Core concepts](concepts.md).
+For the full glossary, see [Core concepts](concepts.md); for every record the codec names — identifier, BIFF5 and BIFF8 layouts, decoded type, accessor, and writer — see the [Record reference](records.md).
 
 ## Scope and limitations
 
@@ -106,7 +106,11 @@ while (reader.Read())
 | <xref:Bodu.IO.Biff.BiffSstReader> | The shared-string-table walker: `Header`, `Read(ref reader)`, `Index`, `Current` (contiguous view) or `GetString()` / `CopyTo` for fragmented strings. |
 | <xref:Bodu.IO.Biff.BiffWriter> | The writer: `WriteRecord`, `WriteContinuedRecord`, `WriteBof` / `WriteEof`, the cell and globals writers, `WriteSst`, `BytesCommitted`. |
 | <xref:Bodu.IO.Biff.BiffString> | The text view: `Length`, `IsUnicode` / `IsHighByte`, `RawCharacters`, rich-run and extended-data trailers, `GetString()` / `CopyTo`. |
+| <xref:Bodu.IO.Biff.BiffRk> | The RK number codec: `TryEncode` for the compact form a cell may take, `Decode` to reverse it. |
+| **Decoded records** — <xref:Bodu.IO.Biff.BiffBofRecord>, <xref:Bodu.IO.Biff.BiffBoundSheetRecord>, <xref:Bodu.IO.Biff.BiffDimensionsRecord>, <xref:Bodu.IO.Biff.BiffRowRecord>, <xref:Bodu.IO.Biff.BiffNumberRecord>, <xref:Bodu.IO.Biff.BiffRkRecord>, <xref:Bodu.IO.Biff.BiffMulRkRecord> (+ <xref:Bodu.IO.Biff.BiffRkCell>), <xref:Bodu.IO.Biff.BiffBlankRecord>, <xref:Bodu.IO.Biff.BiffMulBlankRecord>, <xref:Bodu.IO.Biff.BiffBoolErrRecord>, <xref:Bodu.IO.Biff.BiffLabelRecord>, <xref:Bodu.IO.Biff.BiffLabelSstRecord>, <xref:Bodu.IO.Biff.BiffRStringRecord>, <xref:Bodu.IO.Biff.BiffFormulaRecord> (+ <xref:Bodu.IO.Biff.BiffCachedResultKind>), <xref:Bodu.IO.Biff.BiffStringRecord>, <xref:Bodu.IO.Biff.BiffXfRecord>, <xref:Bodu.IO.Biff.BiffFormatRecord>, <xref:Bodu.IO.Biff.BiffFontRecord>, <xref:Bodu.IO.Biff.BiffCodePageRecord>, <xref:Bodu.IO.Biff.BiffDateModeRecord>, <xref:Bodu.IO.Biff.BiffFilePassRecord> (+ <xref:Bodu.IO.Biff.BiffEncryptionType>), <xref:Bodu.IO.Biff.BiffSstHeader> | One decoded type per record the reader's `Get…` accessors return and the writer's `Write…` methods take; `ref struct`s where they carry text or spans, `record struct`s otherwise. Layouts per version are tabulated in the [Record reference](records.md). |
 | <xref:Bodu.IO.Biff.BiffRecordType> / <xref:Bodu.IO.Biff.BiffVersion> / <xref:Bodu.IO.Biff.BiffSubstreamType> | The catalogue of named records, the two versions, and the substream kinds. |
+| <xref:Bodu.IO.Biff.BiffSheetState> / <xref:Bodu.IO.Biff.BiffSheetType> | The visibility and kind a `BOUNDSHEET` record declares. |
+| <xref:Bodu.IO.Biff.BiffReaderOptions> / <xref:Bodu.IO.Biff.BiffReaderState> / <xref:Bodu.IO.Biff.BiffWriterOptions> | Seed a known version and code page; carry the established state between readers; select the version and BIFF5 code page a writer emits. |
 | <xref:Bodu.IO.Biff.BiffRecordHeader> / <xref:Bodu.IO.Biff.BiffLimits> | The four-byte header (`TryParse` / `WriteTo`) and the format's structural limits. |
 | <xref:Bodu.IO.Biff.BiffFormatException> / <xref:Bodu.IO.Biff.BiffUnsupportedVersionException> | Invalid data (with the record offset) versus a version the codec does not process (with the raw marker). |
 
@@ -117,6 +121,7 @@ while (reader.Read())
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — full vocabulary: records and framing, versions, substreams, strings and code pages, continuation, RK numbers.
+- **[Record reference](records.md)** — every named record with its identifier, BIFF5 and BIFF8 layouts, decoded type, accessor, and writer.
 - **[Getting started](getting-started.md)** — install + minimal samples for reading, resuming, decoding strings, and writing.
 - **[Runnable sample](../../samples/io-biff.md)** — the `BiffBasics` console project.
 - **API reference** — [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).

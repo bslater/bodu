@@ -272,6 +272,8 @@
           href: io-biff/index.md
         - name: Core concepts
           href: io-biff/concepts.md
+        - name: Record reference
+          href: io-biff/records.md
         - name: Getting started
           href: io-biff/getting-started.md
     - name: Bodu.Formats.Excel.Binary

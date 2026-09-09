@@ -14,6 +14,7 @@ uid: Bodu.IO.Biff
 
 - **[Introduction](~/docs/io-biff/index.md)** — the headline types, the layering between the container and the Excel reader, and the scenarios the codec covers.
 - **[Core concepts](~/docs/io-biff/concepts.md)** — records, versions, substreams, continuation, strings and code pages, the shared string table, RK numbers, resumption.
+- **[Record reference](~/docs/io-biff/records.md)** — every named record with its identifier, BIFF5 and BIFF8 layouts, decoded type, reader accessor, and writer method.
 - **[Getting started](~/docs/io-biff/getting-started.md)** — install and minimal samples for reading, decoding, resuming, and writing.
 - **[Binary Formats & I/O topic overview](~/docs/topics/binary-formats.md)** — where the codec sits beneath the format readers.
 

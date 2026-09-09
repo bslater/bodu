@@ -74,7 +74,7 @@ while (reader.Read())
 }
 ```
 
-The version-dependent accessors (`GetBoundSheet`, `GetDimensions`, `GetLabel`, `GetString`, `GetFormat`, `GetFont`, `GetFilePass`) need the version to be known: read the `BOF` first, or supply it through the options.
+The version-dependent accessors (`GetBoundSheet`, `GetDimensions`, `GetLabel`, `GetString`, `GetFormat`, `GetFont`, `GetFilePass`) need the version to be known: read the `BOF` first, or supply it through the options. The [Record reference](records.md) lists every accessor with the record it decodes and the writer that pairs with it.
 
 ## Read the shared string table
 
@@ -241,5 +241,6 @@ Console.WriteLine($"{workbook.BiffVersion}: {workbook.Worksheets.Count} sheets")
 ## Where to go next
 
 - **[Core concepts](concepts.md)** — the full vocabulary.
+- **[Record reference](records.md)** — every record the codec decodes and writes, by version.
 - **[Runnable sample](../../samples/io-biff.md)** — the `BiffBasics` console project.
 - **API reference** — [Bodu.IO.Biff](xref:Bodu.IO.Biff).

@@ -51,7 +51,7 @@ BIFF8 pools cell text in the workbook globals: the `SST` record declares a total
 
 ## Cell records
 
-A cell record begins with the zero-based row, the zero-based column, and the index of the cell's extended format (`XF`), followed by its value: `NUMBER` (a double), `RK` (a packed number), `MULRK` / `MULBLANK` (a run of adjacent cells in one row), `BOOLERR` (a boolean or an error code), `LABEL` (inline text), `LABELSST` (a shared-string index, BIFF8), `RSTRING` (rich text, BIFF5), and `FORMULA` (the cached result plus the parsed expression, which the codec exposes as raw token bytes). A formula whose cached result is text is followed by a `STRING` record carrying it. Each has a typed accessor on the reader and a typed writer.
+A cell record begins with the zero-based row, the zero-based column, and the index of the cell's extended format (`XF`), followed by its value: `NUMBER` (a double), `RK` (a packed number), `MULRK` / `MULBLANK` (a run of adjacent cells in one row), `BOOLERR` (a boolean or an error code), `LABEL` (inline text), `LABELSST` (a shared-string index, BIFF8), `RSTRING` (rich text, BIFF5), and `FORMULA` (the cached result plus the parsed expression, which the codec exposes as raw token bytes). A formula whose cached result is text is followed by a `STRING` record carrying it. Each has a typed accessor on the reader and a typed writer; the [Record reference](records.md) tabulates every record's identifier, per-version layout, decoded type, accessor, and writer.
 
 ## RK numbers
 
@@ -70,6 +70,7 @@ An **RK** value packs a number into 32 bits: the low two bits select between a s
 
 ## Where to go next
 
+- **[Record reference](records.md)** — every named record and what the version changes.
 - **[Getting started](getting-started.md)** — install and minimal samples.
 - **[Introduction](index.md)** — the package at a glance.
 - **[Binary Formats & I/O concepts](../topics/binary-formats-concepts.md)** — the container-versus-format vocabulary shared across the topic.

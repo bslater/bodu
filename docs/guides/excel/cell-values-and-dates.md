@@ -43,7 +43,7 @@ if (cell.Kind == ExcelCellKind.Error)
 }
 ```
 
-<xref:Bodu.Formats.Excel.ExcelErrorCode> names the documented BIFF8 spreadsheet error codes — there are seven, each a `byte` whose value matches the on-disk error code:
+<xref:Bodu.Formats.Excel.ExcelErrorCode> names the documented BIFF spreadsheet error codes (the same in BIFF5 and BIFF8) — there are seven, each a `byte` whose value matches the on-disk error code:
 
 | Member | Display | Meaning |
 |---|---|---|

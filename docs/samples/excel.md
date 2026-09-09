@@ -23,7 +23,7 @@ dotnet run --project samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.Exc
 
 ### Bodu.Formats.Excel.Binary.Samples.ExcelReading
 
-The read-only BIFF8 (`.xls`) workbook reader, layer by layer:
+The read-only BIFF5 and BIFF8 (`.xls`) workbook reader, layer by layer:
 
 - **WorkbookAndSheets** — the <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> session: the
   sheet directory (<xref:Bodu.Formats.Excel.ExcelWorksheetInfo> — name, type, visibility,
@@ -36,13 +36,13 @@ The read-only BIFF8 (`.xls`) workbook reader, layer by layer:
 - **MaterializedWorksheet** — the convenience surface:
   <xref:Bodu.Formats.Excel.ExcelWorksheet> with coordinate lookup (`TryGetCell`), LINQ
   aggregation over the cell collection, and sparse-row semantics.
-- **CellKindsAndDates** — the five <xref:Bodu.Formats.Excel.ExcelCellKind>s and BIFF8's
+- **CellKindsAndDates** — the five <xref:Bodu.Formats.Excel.ExcelCellKind>s and BIFF's
   classic importer trap: dates are `Number` cells classified by *format*.
   `ExcelCell.IsDateFormatted` plus <xref:Bodu.Formats.Excel.ExcelSerialDate> and the
   workbook's date system decode 887 serial dates; error cells surface as
   <xref:Bodu.Formats.Excel.ExcelErrorCode> values rather than exceptions.
 
-Scope: Excel **97-2003 binary** (`.xls`) only, read-only; formula cells expose their cached
+Scope: Excel **binary** (`.xls` — BIFF8 from Excel 97-2003, BIFF5 from Excel 5.0/95) only, read-only; formula cells expose their cached
 results; encrypted workbooks throw. *Package: `Bodu.Formats.Excel.Binary`.*
 
 ## Guarded documentation

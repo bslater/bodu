@@ -8,13 +8,13 @@ Recipe-style walk-throughs for **Bodu.Formats.Excel.Binary**, the narrow, read-o
 
 An `.xls` file is a BIFF5 or BIFF8 record stream stored inside the `Workbook` stream of an OLE2 compound file. This package interprets the records as worksheets and cells; the container around them is read by <xref:Bodu.IO.Compound.CompoundFile>, and the record framing and decoding come from <xref:Bodu.IO.Biff.BiffReader> in `Bodu.IO.Biff` — the package is built on both.
 
-If you are new to the library, start with the [introduction](../../docs/excel/index.md), the [Core concepts](../../docs/excel/concepts.md) glossary, and the [getting-started page](../../docs/excel/getting-started.md). The guides below assume you know the vocabulary (BIFF8 record, workbook globals, cell kind, serial date, used range).
+If you are new to the library, start with the [introduction](../../docs/excel/index.md), the [Core concepts](../../docs/excel/concepts.md) glossary, and the [getting-started page](../../docs/excel/getting-started.md). The guides below assume you know the vocabulary (BIFF record, workbook globals, cell kind, serial date, used range).
 
 ## How the library works
 
 <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> opens the `.xls` container, parses the workbook globals once — the date system, the shared string table, the number-format table, and the sheet directory — and lists the sheets. A sheet is read on demand by seeking to the byte offset its directory entry records, so a single sheet can be read without parsing the others and the whole workbook is never materialized.
 
-![An Excel 97-2003 binary workbook is a BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes; ExcelBinaryWorkbook parses the workbook globals once, then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet.](../../images/diagrams/excel-binary-structure.svg)
+![An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes and Bodu.IO.Biff decodes the records; ExcelBinaryWorkbook parses the workbook globals once, then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet.](../../images/diagrams/excel-binary-structure.svg)
 
 A sheet is surfaced through one of two cell surfaces: the forward-only, low-allocation <xref:Bodu.Formats.Excel.ExcelWorksheetReader>, or the materialized, randomly addressable <xref:Bodu.Formats.Excel.ExcelWorksheet>. Both yield the same sparse <xref:Bodu.Formats.Excel.ExcelCell> values; only the access pattern and memory profile differ.
 

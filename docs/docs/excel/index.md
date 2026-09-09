@@ -10,7 +10,7 @@ title: Bodu.Formats.Excel.Binary — Introduction
 
 An `.xls` file is a BIFF5 or BIFF8 record stream stored *inside* the `Workbook` stream of an OLE2 compound file. This package interprets that record stream as worksheets and cells; the container around it is read by [`Bodu.IO.Compound`](../io-compound/index.md), and the record framing and decoding come from [`Bodu.IO.Biff`](../io-biff/index.md) — this package is built on both. <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> is the disposable session: it parses the workbook globals once and reads each sheet on demand.
 
-![An Excel 97-2003 binary workbook is a BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes; ExcelBinaryWorkbook parses the workbook globals once — the date system, shared strings, number formats, and sheet directory — then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet.](../../images/diagrams/excel-binary-structure.svg)
+![An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes and Bodu.IO.Biff decodes the records; ExcelBinaryWorkbook parses the workbook globals once — the date system, shared strings, number formats, and sheet directory — then reads each sheet on demand and surfaces ExcelCell values through a forward-only reader or a materialized worksheet.](../../images/diagrams/excel-binary-structure.svg)
 
 | Concept | Type | Role |
 |---|---|---|

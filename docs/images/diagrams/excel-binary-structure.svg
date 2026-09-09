@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="xls-t xls-d">
-  <title id="xls-t">BIFF8 (.xls) — a record stream read out of a compound file</title>
-  <desc id="xls-d">An Excel 97-2003 binary workbook is a BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes; Bodu.Formats.Excel.Binary reads the BIFF8 records. ExcelBinaryWorkbook.OpenRead parses the workbook globals once — the date system, the shared string table, the number-format table, and the sheet directory — then reads each sheet on demand by seeking to its stream offset. A sheet is surfaced either through the forward-only ExcelWorksheetReader or the materialized, randomly addressable ExcelWorksheet, both yielding ExcelCell values classified as string, number, boolean, or error.</desc>
+  <title id="xls-t">BIFF (.xls) — a record stream read out of a compound file</title>
+  <desc id="xls-d">An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes, Bodu.IO.Biff decodes the records, and Bodu.Formats.Excel.Binary interprets them. ExcelBinaryWorkbook.OpenRead parses the workbook globals once — the date system, the shared string table, the number-format table, and the sheet directory — then reads each sheet on demand by seeking to its stream offset. A sheet is surfaced either through the forward-only ExcelWorksheetReader or the materialized, randomly addressable ExcelWorksheet, both yielding ExcelCell values classified as string, number, boolean, or error.</desc>
 
   <defs>
     <style>
@@ -32,9 +32,9 @@
     <rect class="xb-pan" width="800" height="360" rx="8"/>
     <rect class="xb-hdr" width="800" height="46" rx="8"/>
     <rect class="xb-hdr" y="38" width="800" height="8"/>
-    <text class="xb-ttl" x="16" y="22">BIFF8 (.xls) — a record stream read out of a compound file</text>
-    <text class="xb-form" x="784" y="22" text-anchor="end">Excel 97-2003 · .xls</text>
-    <text class="xb-mut" x="16" y="38">ExcelBinaryWorkbook reads the BIFF8 records from the container's Workbook stream</text>
+    <text class="xb-ttl" x="16" y="22">BIFF (.xls) — a record stream read out of a compound file</text>
+    <text class="xb-form" x="784" y="22" text-anchor="end">Excel 5.0–2003 · .xls</text>
+    <text class="xb-mut" x="16" y="38">ExcelBinaryWorkbook reads the BIFF5 / BIFF8 records from the container's Workbook stream</text>
 
     <!-- ─────────────── Container layer (left) ─────────────── -->
     <text class="xb-lbl" x="28" y="78">Bodu.IO.Compound</text>
@@ -43,7 +43,7 @@
       <text class="xb-mono" x="14" y="24" fill="#C4B5FD">"Workbook"</text>
       <text class="xb-mut" x="14" y="40">CompoundStream · IStream</text>
       <text class="xb-byte" x="14" y="62">09 08 · 22 00 · FC 00</text>
-      <text class="xb-mut" x="14" y="78">opaque BIFF8 bytes</text>
+      <text class="xb-mut" x="14" y="78">opaque BIFF bytes</text>
     </g>
     <text class="xb-mut" x="28" y="196">supplies the stream's bytes</text>
 
