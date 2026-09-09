@@ -4,7 +4,7 @@ title: Reading workbooks
 
 # Reading workbooks
 
-<xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> opens an Excel 97–2003 binary workbook (`.xls`) and exposes its sheets and cell values. This guide covers the open path: open from a path or stream, list the sheets, govern ownership and optional work, and read the authored document properties.
+<xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> opens an Excel binary workbook (`.xls` — BIFF8 for Excel 97–2003, BIFF5 for Excel 5.0/95) and exposes its sheets and cell values. This guide covers the open path: open from a path or stream, list the sheets, govern ownership and optional work, and read the authored document properties.
 
 The mental model is a disposable session over the container. Opening parses the workbook globals — the date system, the shared string table, the number-format table, and the sheet directory — once, then reads each sheet on demand.
 
@@ -19,7 +19,7 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("rates.xls");
 Console.WriteLine($"{workbook.Worksheets.Count} sheet(s), {workbook.DateSystem} date system");
 ```
 
-`OpenRead` opens the file, verifies it is a BIFF8 compound file, and parses the globals. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the underlying file. A <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.FileInfo)> overload accepts a <xref:System.IO.FileInfo> when you already have one in hand and want the same path-owning behaviour.
+`OpenRead` opens the file, verifies it is a compound file carrying a BIFF8 or BIFF5 workbook stream (the detected version is exposed through <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion>), and parses the globals — the record framing and decoding are supplied by `Bodu.IO.Biff`. The returned workbook is <xref:System.IDisposable>; the `using` declaration disposes it and closes the underlying file. A <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenRead(System.IO.FileInfo)> overload accepts a <xref:System.IO.FileInfo> when you already have one in hand and want the same path-owning behaviour.
 
 > [!IMPORTANT]
 > The workbook owns the open compound-file container and seeks back into it every time you open a sheet. Keep the workbook alive for as long as you read its sheets, and do not dispose it until every <xref:Bodu.Formats.Excel.ExcelWorksheetReader> over it is finished — a reader returned by `OpenWorksheet` decodes from a buffer it captured at open, but `OpenWorksheet` / `ReadWorksheet` themselves seek into the live container and throw <xref:System.ObjectDisposedException> after the workbook is disposed.
@@ -114,7 +114,7 @@ Console.WriteLine(props.LastSaved);
 | <xref:System.ArgumentNullException> | The path or stream passed to `OpenRead` / `Open` is `null`. |
 | <xref:Bodu.IO.Compound.CompoundFileFormatException> | The content is not a well-formed compound file. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | A valid compound file with no `Workbook` (or legacy `Book`) stream — not a spreadsheet. |
-| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a non-BIFF8 version. |
+| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version other than BIFF8 or BIFF5. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present). |
 | <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed — raised while reading, not at open. |
 

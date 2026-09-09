@@ -275,7 +275,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-io-compound.svg" alt="Bodu.IO.Compound" />
   <h3>Bodu.IO.Compound</h3>
-  <p>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE summary-information property sets. The narrow BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it.</p>
+  <p>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream's bytes through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE summary-information property sets. The narrow BIFF5 and BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on top of it, with the record stream decoded by <code>Bodu.IO.Biff</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/io-compound/index.md">Introduction</a>
     <a href="guides/io-compound/index.md">Guides</a>
@@ -284,9 +284,19 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
+  <img src="images/hero-io-biff.svg" alt="Bodu.IO.Biff" />
+  <h3>Bodu.IO.Biff</h3>
+  <p>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; and <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</p>
+  <div class="bodu-card-links">
+    <a href="docs/io-biff/index.md">Introduction</a>
+    <a href="xref:Bodu.IO.Biff">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
   <img src="images/hero-excel.svg" alt="Bodu.Formats.Excel.Binary" />
   <h3>Bodu.Formats.Excel.Binary</h3>
-  <p>A narrow, read-only BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> that surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — with date-format detection, serial-date conversion, each sheet's declared used range, and the workbook document properties. Offers a forward-only streaming <code>ExcelWorksheetReader</code> and a randomly addressable <code>ExcelWorksheet</code>, without formula evaluation, styling, or higher-level interpretation.</p>
+  <p>A narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> that surfaces the raw cell values of each worksheet — strings, numbers, booleans, and errors, including a formula cell's cached result — with date-format detection, serial-date conversion, each sheet's declared used range, and the workbook document properties. Offers a forward-only streaming <code>ExcelWorksheetReader</code> and a randomly addressable <code>ExcelWorksheet</code>, without formula evaluation, styling, or higher-level interpretation.</p>
   <div class="bodu-card-links">
     <a href="docs/excel/index.md">Introduction</a>
     <a href="guides/excel/index.md">Guides</a>
@@ -339,6 +349,7 @@ dotnet add package Bodu.Extensions.Configuration.Text
 dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.IO.Biff
 dotnet add package Bodu.Formats.Excel.Binary
 dotnet add package Bodu.IO.Pst
 dotnet add package Bodu.Formats.Outlook.Msg

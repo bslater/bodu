@@ -316,6 +316,9 @@
   <Folder Name="/Samples/Formats.Excel/">
     <Project Path="samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading/Bodu.Formats.Excel.Binary.Samples.ExcelReading.csproj" />
   </Folder>
+  <Folder Name="/Samples/IO.Biff/">
+    <Project Path="samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics/Bodu.IO.Biff.Samples.BiffBasics.csproj" />
+  </Folder>
   <Folder Name="/Samples/IO.Compound/">
     <Project Path="samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics/Bodu.IO.Compound.Samples.CompoundBasics.csproj" />
   </Folder>

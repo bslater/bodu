@@ -8,9 +8,9 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 
 `Bodu.Formats.Excel.Binary` is part of the **[Binary Formats & I/O](../topics/binary-formats.md)** topic — the format tier above the container reader. For the high-level shape of the library, start with the [introduction](index.md).
 
-## BIFF8 and the Workbook stream
+## BIFF and the Workbook stream
 
-**BIFF8** (Binary Interchange File Format, version 8) is the on-disk format of an Excel 97–2003 `.xls` workbook. The workbook is a flat sequence of **records** — each a two-byte type, a two-byte length, and a typed body (a cell value, a shared-string entry, a sheet boundary) — stored inside the `Workbook` stream of an OLE2 compound file. <xref:Bodu.IO.Compound.CompoundFile> supplies that stream's bytes; <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> reads the records within. A compatibility save may carry both a legacy `Book` stream and a BIFF8 `Workbook` stream; the reader prefers `Workbook` and falls back to `Book`. A compound file that holds neither (a Word document, say) raises <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException>.
+**BIFF8** (Binary Interchange File Format, version 8) is the on-disk format of an Excel 97–2003 `.xls` workbook; **BIFF5** is its Excel 5.0/95 predecessor, carrying code-page byte strings where BIFF8 carries Unicode. In both, the workbook is a flat sequence of **records** — each a two-byte type, a two-byte length, and a typed body (a cell value, a shared-string entry, a sheet boundary) — stored inside the `Workbook` stream of an OLE2 compound file. <xref:Bodu.IO.Compound.CompoundFile> supplies that stream's bytes; [`Bodu.IO.Biff`](../io-biff/index.md) frames and decodes the records (establishing the version from the BOF record and the code page from CODEPAGE); <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook> interprets them as worksheets and cells, exposing the detected version through <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.BiffVersion>. A compatibility save may carry both a legacy `Book` stream and a BIFF8 `Workbook` stream; the reader prefers `Workbook` and falls back to `Book`. A compound file that holds neither (a Word document, say) raises <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException>.
 
 > [!NOTE]
 > The two byte-length fields are unsigned 16-bit values, so a single record's body is capped at 65,535 bytes. The reader does not surface raw records; it decodes the value-bearing ones into <xref:Bodu.Formats.Excel.ExcelCell> values and skips the rest. The record layer itself is internal — consumers work in terms of cells, sheets, and the workbook globals, never record types.
@@ -36,7 +36,7 @@ A populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelCell>
 
 `ExcelCellKind` is the classification a reader consumer switches on. The mapping from the on-disk record types is an internal detail, but understanding it explains why some surfaces behave as they do:
 
-| Cell kind | Originating BIFF8 records | Notes |
+| Cell kind | Originating BIFF records | Notes |
 |---|---|---|
 | `String` | `LABELSST`, `LABEL` | `LABELSST` references the shared string table by index; `LABEL` carries an inline string. |
 | `Number` | `NUMBER`, `RK`, `MULRK` | `RK` is a compact encoding for integers and short decimals; `MULRK` packs a run of adjacent numeric cells into one record, which the reader expands to one cell per value. |
@@ -115,7 +115,7 @@ The workbook's authored metadata is flattened into <xref:Bodu.Formats.Excel.Exce
 |---|---|
 | <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed — a truncated record, an inconsistent length, trailing bytes, or an out-of-range shared-string index. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | The compound file has no `Workbook` (or legacy `Book`) stream — it is a valid container but not a spreadsheet. |
-| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8). |
+| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8 and BIFF5). |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present); this reader does not decrypt. |
 
 The first three open-time failures all derive from familiar base types, so a caller can catch them by base where convenient: `ExcelBinaryFormatException` is a <xref:System.FormatException>, `ExcelBinaryWorkbookStreamNotFoundException` a <xref:System.Collections.Generic.KeyNotFoundException>, and both `ExcelBinaryUnsupportedException` and `ExcelBinaryEncryptedWorkbookException` are <xref:System.NotSupportedException>. Addressing a sheet by an unknown name throws a plain <xref:System.Collections.Generic.KeyNotFoundException>; an out-of-range index throws <xref:System.ArgumentOutOfRangeException>. Using a workbook or reader after disposal throws <xref:System.ObjectDisposedException>.
@@ -129,3 +129,4 @@ The first three open-time failures all derive from familiar base types, so a cal
 - **[Introduction](index.md)** — the headline types and scenarios.
 - **[Bodu.Formats.Excel.Binary guides](../../guides/excel/index.md)** — the recipe-style walk-throughs.
 - **[Bodu.IO.Compound concepts](../io-compound/concepts.md)** — the container vocabulary beneath this format reader.
+- **[Bodu.IO.Biff concepts](../io-biff/concepts.md)** — the record codec beneath this format reader: framing, version and code page, typed accessors.

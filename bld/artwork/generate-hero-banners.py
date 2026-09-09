@@ -20,6 +20,7 @@ DARK = {
     "#3B82F6": "#F8FAFC", "#60A5FA": "#0B2545", "#34D399": "#06281F",
     "#FBBF24": "#3A2A04", "#A78BFA": "#241A47", "#F472B6": "#3D0A24",
     "#2DD4BF": "#042F2A", "#FB923C": "#3B1E04", "#F87171": "#3B0A0A",
+    "#F59E0B": "#3A2A04",
 }
 
 TEMPLATE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="{aria}">
@@ -942,6 +943,21 @@ add("hero-io-pst", "Bodu.IO.Pst",
           '<tspan fill="#94A3B8" font-size="9">Compatible / Strict / Minimal</tspan>',
           '<tspan fill="#94A3B8" font-size="9">no MAPI semantics · no writing</tspan>'], y0=44, dy=17, size=10),
     "node database · checksums verified · raw payloads", gid="iopst")
+
+add("hero-io-biff", "Bodu.IO.Biff",
+    "Bodu.IO.Biff — low-level codec for the BIFF5 and BIFF8 record streams inside .xls workbooks",
+    "#F59E0B", "BIFF records",
+    mono(['<tspan fill="#94A3B8">BOF</tspan> · vers · dt',
+          'record id · length · payload',
+          '<tspan fill="#94A3B8">CONTINUE</tspan> · SST',
+          'RK · NUMBER · LABEL', None,
+          '<tspan fill="#94A3B8" font-size="9">BIFF5 code pages · BIFF8 Unicode</tspan>'], y0=44, dy=17, size=10),
+    "frame", "emit", "BiffReader",
+    mono(["Read()", "RecordType / ValueSpan", "GetNumber() · GetLabel()",
+          '<tspan fill="#60A5FA">BiffSstReader</tspan>',
+          '<tspan fill="#60A5FA">BiffWriter</tspan>',
+          '<tspan fill="#94A3B8" font-size="9">no workbook model · no CFB</tspan>'], y0=44, dy=17, size=10),
+    "record framing · typed accessors · reader + writer", gid="iobiff")
 
 add("hero-excel", "Bodu.Formats.Excel.Binary",
     "Bodu.Formats.Excel.Binary — BIFF8 records decoded into worksheet cells",

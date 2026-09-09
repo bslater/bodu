@@ -4,7 +4,7 @@ title: Bodu.Formats.Excel.Binary — Getting started
 
 # Bodu.Formats.Excel.Binary — Getting started
 
-Unfamiliar with terms like *BIFF8*, *workbook globals*, *cell kind*, *serial date*, or *used range*? Read [Core concepts](concepts.md) first.
+Unfamiliar with terms like *BIFF8* and *BIFF5*, *workbook globals*, *cell kind*, *serial date*, or *used range*? Read [Core concepts](concepts.md) first.
 
 ## Install
 
@@ -12,7 +12,7 @@ Unfamiliar with terms like *BIFF8*, *workbook globals*, *cell kind*, *serial dat
 dotnet add package Bodu.Formats.Excel.Binary
 ```
 
-Targets `net8.0`. Depends on `Bodu.IO.Compound` (the container reader), which depends only on `Bodu.Core` — no other NuGet references.
+Targets `net8.0`. Depends on `Bodu.IO.Compound` (the container reader) and `Bodu.IO.Biff` (the BIFF5 / BIFF8 record codec); `Bodu.IO.Compound` depends only on `Bodu.Core`, and `Bodu.IO.Biff` on `Bodu.Core` plus the `System.Text.Encoding.CodePages` NuGet package (for BIFF5 byte strings).
 
 ## Open a workbook and list its sheets
 
@@ -116,6 +116,7 @@ using (ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("report.xls")
 {
     Console.WriteLine(workbook.Properties.Title);
     Console.WriteLine(workbook.Properties.Author);
+    Console.WriteLine(workbook.BiffVersion);   // Biff8 (Excel 97–2003) or Biff5 (Excel 5.0/95)
 }
 
 // Or skip the optional metadata work for a pure numeric, time-series read.

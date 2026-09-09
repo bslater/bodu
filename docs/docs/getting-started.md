@@ -18,7 +18,7 @@ dotnet --version
 
 ## Install
 
-Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages — `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` — and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
+Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages — `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` — and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
 
 ```bash
 # Core Foundations
@@ -61,6 +61,7 @@ dotnet add package Bodu.Financial.DependencyInjection
 
 # Binary Formats & I/O
 dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.IO.Biff
 dotnet add package Bodu.Formats.Excel.Binary
 dotnet add package Bodu.IO.Pst
 dotnet add package Bodu.Formats.Outlook.Msg
@@ -434,7 +435,7 @@ CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 byte[] bytes = workbook.ReadAllBytes();
 ```
 
-Open with `buffered: false` to read sectors on demand for large files; `OpenStream(name)` returns a seekable `CompoundStream` cursor. The BIFF8 `.xls` reader **Bodu.Formats.Excel.Binary** is built on top of this container reader.
+Open with `buffered: false` to read sectors on demand for large files; `OpenStream(name)` returns a seekable `CompoundStream` cursor. The BIFF5 and BIFF8 `.xls` reader **Bodu.Formats.Excel.Binary** is built on top of this container reader, decoding the `Workbook` stream's records through **Bodu.IO.Biff**.
 
 → **[Introduction](io-compound/index.md)** · **[Getting started](io-compound/getting-started.md)** · **[Guides](../guides/io-compound/index.md)**
 
@@ -442,5 +443,5 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).
