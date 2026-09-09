@@ -130,6 +130,16 @@ A family of focused primary libraries organized into **seven topics** — alongs
     <a href="xref:Bodu.Globalization.Calendar">API reference</a>
   </div>
 </div>
+<div class="bodu-card">
+  <img src="images/hero-recurrence.svg" alt="Bodu.Globalization.Recurrence" />
+  <h3>Bodu.Globalization.Recurrence</h3>
+  <p>Recurrence-rule evaluation with no dependency on the calendar: <code>RecurrenceRule</code> (RFC 5545 <code>RRULE</code>), <code>RecurrenceSet</code> (rules composed with <code>RDATE</code>/<code>EXDATE</code>), <code>CronExpression</code> (Vixie five-field, optional seconds, <code>@</code> macros), and <code>AnchoredInterval</code>. Every form answers next and previous occurrence over <code>DateTime</code> and <code>DateTimeOffset</code>, is pure in its arguments, and carries a defect-naming <code>TryParse</code>.</p>
+  <div class="bodu-card-links">
+    <a href="docs/recurrence/index.md">Introduction</a>
+    <a href="guides/recurrence/index.md">Guides</a>
+    <a href="xref:Bodu.Globalization.Recurrence">API reference</a>
+  </div>
+</div>
 
 </div>
 
