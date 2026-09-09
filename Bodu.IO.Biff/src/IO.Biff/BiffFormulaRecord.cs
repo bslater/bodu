@@ -17,6 +17,10 @@ namespace Bodu.IO.Biff;
 /// selects the kind (<see cref="CachedResultKind" />) and a string result is carried by the <c>STRING</c> record that
 /// immediately follows. The layout is identical in BIFF5 and BIFF8.
 /// </remarks>
+/// <seealso cref="BiffReader.GetFormula" />
+/// <seealso cref="BiffWriter.WriteFormula(int, int, ushort, double, ReadOnlySpan{byte}, ushort)" />
+/// <seealso cref="BiffWriter.WriteFormula(int, int, ushort, BiffCachedResultKind, byte, ReadOnlySpan{byte}, ushort)" />
+/// <seealso cref="BiffCachedResultKind" /> <seealso cref="BiffStringRecord" />
 public readonly ref struct BiffFormulaRecord
 {
     /// <summary>The smallest payload the codec accepts: position, format, and result.</summary>

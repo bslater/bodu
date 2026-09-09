@@ -9,12 +9,19 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Represents a decoded <c>ROW</c> record: a row's used column extent, height, option flags, and default format.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Row" />. The payload is sixteen bytes in both versions; the two
+/// reserved words at offsets 8 through 11 are not interpreted. The derived properties mask the raw fields:
+/// <see cref="Height" />, <see cref="HasCustomHeight" />, <see cref="IsHidden" />, <see cref="OutlineLevel" />,
+/// <see cref="HasFormat" />, and <see cref="XfIndex" />.
+/// </remarks>
 /// <param name="Row">The zero-based row index.</param>
 /// <param name="FirstColumn">The zero-based index of the first defined cell in the row.</param>
 /// <param name="LastColumnExclusive">One past the zero-based index of the last defined cell in the row.</param>
 /// <param name="HeightField">The raw <c>miyRw</c> field: the height in twips in its low 15 bits.</param>
 /// <param name="Options">The raw option flags (<c>grbit</c>).</param>
 /// <param name="XfField">The raw format field: the extended-format index in its low 12 bits.</param>
+/// <seealso cref="BiffReader.GetRow" /> <seealso cref="BiffWriter.WriteRow(in BiffRowRecord)" />
 public readonly record struct BiffRowRecord(
     int Row,
     int FirstColumn,

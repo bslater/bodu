@@ -8,8 +8,8 @@ namespace Bodu.Formats.Excel;
 
 /// <summary>
 /// Identifies the spreadsheet error value carried by an <see cref="ExcelCell" /> of kind
-/// <see cref="ExcelCellKind.Error" />. The underlying values match the error codes defined by the Excel 97-2003 binary
-/// file format.
+/// <see cref="ExcelCellKind.Error" />. The underlying values match the error codes defined by the Excel binary file
+/// format, which are the same in BIFF5 and BIFF8.
 /// </summary>
 /// <remarks>
 /// A cell whose stored error code is not one of the documented values is surfaced as that raw numeric value cast to

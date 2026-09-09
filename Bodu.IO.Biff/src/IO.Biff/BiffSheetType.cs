@@ -9,6 +9,12 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Identifies the kind of sheet a <c>BOUNDSHEET</c> record describes.
 /// </summary>
+/// <remarks>
+/// Values match the <c>dt</c> byte of a <c>BOUNDSHEET</c> record. The byte is exposed unmasked, so a kind the
+/// enumeration does not name is preserved as its raw value rather than rejected. Only a <see cref="Worksheet" />
+/// carries the cell records the codec's cell accessors decode.
+/// </remarks>
+/// <seealso cref="BiffBoundSheetRecord.SheetType" /> <seealso cref="BiffSubstreamType" />
 public enum BiffSheetType : byte
 {
     /// <summary>

@@ -9,10 +9,16 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Represents a decoded <c>RK</c> record: a cell holding a number in the compact RK encoding.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Rk" />. The payload is ten bytes in both versions: the cell
+/// prefix, then the 32-bit RK value that <see cref="BiffRk.Decode(uint)" /> interprets.
+/// </remarks>
 /// <param name="Row">The zero-based row index.</param>
 /// <param name="Column">The zero-based column index.</param>
 /// <param name="XfIndex">The extended-format index of the cell.</param>
 /// <param name="RawValue">The 32-bit RK value as stored.</param>
+/// <seealso cref="BiffReader.GetRk" /> <seealso cref="BiffWriter.WriteRk(int, int, ushort, uint)" />
+/// <seealso cref="BiffRk" />
 public readonly record struct BiffRkRecord(int Row, int Column, ushort XfIndex, uint RawValue)
 {
     /// <summary>The payload length of the record.</summary>

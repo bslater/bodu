@@ -10,6 +10,13 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>FORMAT</c> record: a number-format index and its format code. The code is a 16-bit-length
 /// Unicode string in BIFF8 and an 8-bit-length code-page byte string in BIFF5.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Format" />. The payload is the 16-bit format index followed by
+/// the code. Indices below 164 are Excel's built-in formats and are normally not written to the stream; an <see
+/// cref="BiffXfRecord.FormatIndex" /> resolves against these records first and the built-in table otherwise.
+/// </remarks>
+/// <seealso cref="BiffReader.GetFormat" /> <seealso cref="BiffWriter.WriteFormat(ushort, ReadOnlySpan{char})" />
+/// <seealso cref="BiffXfRecord" />
 public readonly ref struct BiffFormatRecord
 {
     /// <summary>

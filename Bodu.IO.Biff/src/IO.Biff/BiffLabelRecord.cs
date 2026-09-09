@@ -10,6 +10,13 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>LABEL</c> record: a cell holding an inline text value. The text is a 16-bit-length Unicode
 /// string in BIFF8 and a 16-bit-length code-page byte string in BIFF5.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Label" />. The payload is the six-byte cell prefix followed by
+/// the string structure the version selects; bytes after the string are ignored. The <see cref="Text" /> view is valid
+/// only while the record's payload is.
+/// </remarks>
+/// <seealso cref="BiffReader.GetLabel" />
+/// <seealso cref="BiffWriter.WriteLabel(int, int, ushort, ReadOnlySpan{char})" /> <seealso cref="BiffString" />
 public readonly ref struct BiffLabelRecord
 {
     /// <summary>

@@ -10,6 +10,13 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>MULRK</c> record: a run of adjacent RK-encoded number cells in one row, exposed by index
 /// without materializing an array.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.MulRk" />. The payload is the row and first column, six bytes per
+/// cell (a 16-bit extended-format index and a 32-bit RK value), and the declared last column; the layout is identical
+/// in BIFF5 and BIFF8. A payload whose cell area is not a whole number of cells is rejected as malformed.
+/// </remarks>
+/// <seealso cref="BiffReader.GetMulRk" /> <seealso cref="BiffWriter.WriteMulRk(int, int, ReadOnlySpan{BiffRkCell})" />
+/// <seealso cref="BiffRkCell" />
 public readonly ref struct BiffMulRkRecord
 {
     /// <summary>The offset of the first cell within the payload.</summary>

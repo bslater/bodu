@@ -10,6 +10,13 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>STRING</c> record: the cached text result of the <c>FORMULA</c> record that precedes it. The
 /// text is a 16-bit-length Unicode string in BIFF8 and a 16-bit-length code-page byte string in BIFF5.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.String" />. The payload is the string structure alone. The record
+/// has no position of its own: it belongs to the <see cref="BiffFormulaRecord" /> immediately before it, whose
+/// <see cref="BiffFormulaRecord.CachedResultKind" /> is <see cref="BiffCachedResultKind.String" />.
+/// </remarks>
+/// <seealso cref="BiffReader.GetString" /> <seealso cref="BiffWriter.WriteString(ReadOnlySpan{char})" />
+/// <seealso cref="BiffFormulaRecord" />
 public readonly ref struct BiffStringRecord
 {
     /// <summary>

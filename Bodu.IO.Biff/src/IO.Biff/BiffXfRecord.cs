@@ -18,6 +18,8 @@ namespace Bodu.IO.Biff;
 /// <param name="TypeField">
 /// The raw type-and-protection word: locked (bit 0), hidden (bit 1), style (bit 2), parent style index (bits 4–15).
 /// </param>
+/// <seealso cref="BiffReader.GetXf" /> <seealso cref="BiffWriter.WriteXf(in BiffXfRecord)" />
+/// <seealso cref="BiffFormatRecord" /> <seealso cref="BiffFontRecord" />
 public readonly record struct BiffXfRecord(ushort FontIndex, ushort FormatIndex, ushort TypeField)
 {
     /// <summary>The number of leading bytes a record must carry: the font and format indices.</summary>

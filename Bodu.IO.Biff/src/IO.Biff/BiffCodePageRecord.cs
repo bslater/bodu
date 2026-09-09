@@ -9,9 +9,16 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Represents a decoded <c>CODEPAGE</c> record: the code page byte strings in the stream are encoded in.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.CodePage" />. The payload is a single 16-bit value in both
+/// versions. Reading the record also updates <see cref="BiffReader.CodePage" />, so the byte strings that follow decode
+/// with it; <see cref="CodePage" /> exposes the normalized Windows code page number.
+/// </remarks>
 /// <param name="RawValue">
 /// The value as stored, including the private markers for Apple Roman (<c>0x8000</c>) and the legacy ANSI page (<c>0x8001</c>).
 /// </param>
+/// <seealso cref="BiffReader.GetCodePage" /> <seealso cref="BiffReader.CodePage" />
+/// <seealso cref="BiffWriter.WriteCodePage(ushort)" /> <seealso cref="BiffReaderOptions.CodePage" />
 public readonly record struct BiffCodePageRecord(ushort RawValue)
 {
     /// <summary>The payload length of the record.</summary>

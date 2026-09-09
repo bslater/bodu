@@ -9,6 +9,12 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Defines the customizations a <see cref="BiffWriter" /> is created with.
 /// </summary>
+/// <remarks>
+/// The version selects every layout the writer emits and the maximum payload it enforces; the code page applies only to
+/// BIFF5 text and is normalized like a <c>CODEPAGE</c> record value, so the format's private markers are accepted.
+/// <see cref="BiffReaderOptions" /> is the reading counterpart.
+/// </remarks>
+/// <seealso cref="BiffWriter" /> <seealso cref="BiffReaderOptions" /> <seealso cref="BiffVersion" />
 public readonly struct BiffWriterOptions
 {
     /// <summary>

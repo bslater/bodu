@@ -14,6 +14,7 @@ namespace Bodu.IO.Biff;
 /// BIFF8 superseded the record with rich runs inside the shared string table; a BIFF8 stream may still carry it for
 /// compatibility, in which case the text is still a byte string in the stream's code page.
 /// </remarks>
+/// <seealso cref="BiffReader.GetRString" /> <seealso cref="BiffLabelRecord" />
 public readonly ref struct BiffRStringRecord
 {
     /// <summary>

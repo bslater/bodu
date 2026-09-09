@@ -17,6 +17,7 @@ namespace Bodu.IO.Biff;
 /// <param name="EncryptionType">The protection scheme.</param>
 /// <param name="XorKey">The XOR obfuscation key; zero for RC4.</param>
 /// <param name="XorHash">The XOR password verifier; zero for RC4.</param>
+/// <seealso cref="BiffReader.GetFilePass" /> <seealso cref="BiffEncryptionType" />
 public readonly record struct BiffFilePassRecord(BiffEncryptionType EncryptionType, ushort XorKey, ushort XorHash)
 {
     /// <summary>

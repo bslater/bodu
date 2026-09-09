@@ -12,8 +12,15 @@ namespace Bodu.IO.Biff;
 /// Represents the four-byte header that precedes every BIFF record: a 16-bit little-endian record identifier followed
 /// by the 16-bit little-endian length of the payload that follows.
 /// </summary>
+/// <remarks>
+/// <see cref="BiffReader" /> parses a header for every record it frames and exposes the current one as <see
+/// cref="BiffReader.Header" />; the type is public so a caller framing records itself — a stream scanner skipping
+/// payloads, for example — shares the same layout. <see cref="Length" /> is the declared payload length, which a
+/// conformant writer keeps within <see cref="BiffLimits.GetMaxPayloadLength(BiffVersion)" />.
+/// </remarks>
 /// <param name="Id">The 16-bit record identifier.</param>
 /// <param name="Length">The declared payload length, in bytes.</param>
+/// <seealso cref="BiffReader.Header" /> <seealso cref="BiffLimits" />
 public readonly record struct BiffRecordHeader(ushort Id, ushort Length)
 {
     /// <summary>

@@ -10,12 +10,21 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>BOF</c> record: the version marker, the kind of substream being opened, and the build
 /// information of the application that wrote it.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Bof" />. The payload is eight bytes in BIFF5 (version, substream
+/// type, build, year) and sixteen in BIFF8, which adds the file-history flags and the lowest saving version. The reader
+/// tolerates any payload of at least four bytes, reporting zero for fields the record omits, and establishes
+/// <see cref="BiffReader.Version" /> from the version marker when the record is read.
+/// </remarks>
 /// <param name="RawVersion">The <c>vers</c> field: <c>0x0500</c> for BIFF5, <c>0x0600</c> for BIFF8.</param>
 /// <param name="SubstreamType">The kind of substream the record opens.</param>
 /// <param name="Build">The build identifier of the writing application.</param>
 /// <param name="Year">The build year of the writing application.</param>
 /// <param name="FileHistoryFlags">The BIFF8 file-history flags; zero under BIFF5.</param>
 /// <param name="LowestSaveVersion">The lowest BIFF version that has saved the file (BIFF8); zero under BIFF5.</param>
+/// <seealso cref="BiffReader.GetBof" /> <seealso cref="BiffReader.Version" />
+/// <seealso cref="BiffWriter.WriteBof(BiffSubstreamType, ushort, ushort)" /> <seealso cref="BiffSubstreamType" />
+/// <seealso cref="BiffVersion" />
 public readonly record struct BiffBofRecord(
     ushort RawVersion,
     BiffSubstreamType SubstreamType,

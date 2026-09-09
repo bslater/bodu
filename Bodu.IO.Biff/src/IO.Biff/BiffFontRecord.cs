@@ -10,6 +10,15 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>FONT</c> record: size, style attributes, color, character set, and face name. The name is an
 /// 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Font" />. The payload is fourteen fixed bytes — height, attribute
+/// flags, color index, weight, escapement, underline, family, character set, and a reserved byte — followed by the
+/// name. Font indices used by <see cref="BiffXfRecord.FontIndex" /> count these records in stream order, skipping index
+/// 4, which Excel never writes.
+/// </remarks>
+/// <seealso cref="BiffReader.GetFont" />
+/// <seealso cref="BiffWriter.WriteFont(ushort, ushort, ushort, ushort, ushort, byte, byte, byte, ReadOnlySpan{char})" />
+/// <seealso cref="BiffXfRecord" />
 public readonly ref struct BiffFontRecord
 {
     /// <summary>The offset of the face name within the payload.</summary>

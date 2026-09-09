@@ -10,6 +10,13 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>MULBLANK</c> record: a run of adjacent blank (formatted, valueless) cells in one row,
 /// exposed by index without materializing an array.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.MulBlank" />. The payload is the row and first column, one 16-bit
+/// extended-format index per cell, and the declared last column; the layout is identical in BIFF5 and BIFF8. A payload
+/// whose index area has an odd length is rejected as malformed.
+/// </remarks>
+/// <seealso cref="BiffReader.GetMulBlank" />
+/// <seealso cref="BiffWriter.WriteMulBlank(int, int, ReadOnlySpan{ushort})" />
 public readonly ref struct BiffMulBlankRecord
 {
     /// <summary>The offset of the first format index within the payload.</summary>

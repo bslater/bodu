@@ -9,6 +9,13 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Defines the structural limits of the BIFF record format.
 /// </summary>
+/// <remarks>
+/// The per-version maximum payload is enforced by <see cref="BiffWriter" /> and tolerated, not enforced, by <see
+/// cref="BiffReader" />, which frames any length the 16-bit field can express. <see cref="DefaultCodePage" /> is
+/// assumed for BIFF5 byte strings until a <c>CODEPAGE</c> record is read, and <see cref="UnicodeCodePage" /> is the
+/// value a BIFF8 <c>CODEPAGE</c> record carries.
+/// </remarks>
+/// <seealso cref="BiffRecordHeader" /> <seealso cref="BiffWriter.MaxPayloadLength" />
 public static class BiffLimits
 {
     /// <summary>The size, in bytes, of a record header: a 16-bit identifier followed by a 16-bit payload length.</summary>

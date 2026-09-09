@@ -17,6 +17,7 @@ namespace Bodu.IO.Biff;
 /// <param name="LastRowExclusive">One past the zero-based index of the last used row.</param>
 /// <param name="FirstColumn">The zero-based index of the first used column.</param>
 /// <param name="LastColumnExclusive">One past the zero-based index of the last used column.</param>
+/// <seealso cref="BiffReader.GetDimensions" /> <seealso cref="BiffWriter.WriteDimensions(in BiffDimensionsRecord)" />
 public readonly record struct BiffDimensionsRecord(int FirstRow, int LastRowExclusive, int FirstColumn, int LastColumnExclusive)
 {
     /// <summary>The payload length of a BIFF5 record.</summary>

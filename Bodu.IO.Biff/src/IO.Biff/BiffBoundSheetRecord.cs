@@ -13,6 +13,9 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// The name is an 8-bit-length string in both versions — a Unicode string in BIFF8, a code-page byte string in BIFF5.
 /// </remarks>
+/// <seealso cref="BiffReader.GetBoundSheet" />
+/// <seealso cref="BiffWriter.WriteBoundSheet(uint, BiffSheetState, BiffSheetType, ReadOnlySpan{char})" />
+/// <seealso cref="BiffSheetState" /> <seealso cref="BiffSheetType" />
 public readonly ref struct BiffBoundSheetRecord
 {
     /// <summary>

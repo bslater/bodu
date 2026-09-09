@@ -9,6 +9,13 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Identifies the visibility a <c>BOUNDSHEET</c> record declares for its sheet.
 /// </summary>
+/// <remarks>
+/// Values match the low two bits of the <c>grbit</c> byte of a <c>BOUNDSHEET</c> record; the reader masks the byte, so
+/// a value outside the enumeration cannot be observed. A very hidden sheet is revealable only through the Excel object
+/// model, never through the user interface.
+/// </remarks>
+/// <seealso cref="BiffBoundSheetRecord.State" />
+/// <seealso cref="BiffWriter.WriteBoundSheet(uint, BiffSheetState, BiffSheetType, ReadOnlySpan{char})" />
 public enum BiffSheetState : byte
 {
     /// <summary>

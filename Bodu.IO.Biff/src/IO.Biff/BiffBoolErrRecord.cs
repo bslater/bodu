@@ -9,11 +9,18 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Represents a decoded <c>BOOLERR</c> record: a cell holding either a boolean or an error code.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.BoolErr" />. The payload is eight bytes in both versions: the
+/// cell prefix, the value byte, and a kind byte that is zero for a boolean and non-zero for an error code.
+/// </remarks>
 /// <param name="Row">The zero-based row index.</param>
 /// <param name="Column">The zero-based column index.</param>
 /// <param name="XfIndex">The extended-format index of the cell.</param>
 /// <param name="RawValue">The value byte: zero or one for a boolean, the error code otherwise.</param>
 /// <param name="IsError">Whether <paramref name="RawValue" /> is an error code rather than a boolean.</param>
+/// <seealso cref="BiffReader.GetBoolErr" /> <seealso cref="BiffWriter.WriteBoolean(int, int, ushort, bool)" />
+/// <seealso cref="BiffWriter.WriteError(int, int, ushort, byte)" />
+/// <seealso cref="BiffWriter.WriteBoolErr(int, int, ushort, byte, bool)" />
 public readonly record struct BiffBoolErrRecord(int Row, int Column, ushort XfIndex, byte RawValue, bool IsError)
 {
     /// <summary>The payload length of the record.</summary>

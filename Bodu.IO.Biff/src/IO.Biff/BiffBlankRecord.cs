@@ -9,9 +9,14 @@ namespace Bodu.IO.Biff;
 /// <summary>
 /// Represents a decoded <c>BLANK</c> record: a formatted cell carrying no value.
 /// </summary>
+/// <remarks>
+/// The record identifier is <see cref="BiffRecordType.Blank" />. The payload is the six-byte cell prefix alone, in both
+/// versions. A run of adjacent blank cells is written as a <see cref="BiffMulBlankRecord" /> instead.
+/// </remarks>
 /// <param name="Row">The zero-based row index.</param>
 /// <param name="Column">The zero-based column index.</param>
 /// <param name="XfIndex">The extended-format index of the cell.</param>
+/// <seealso cref="BiffReader.GetBlank" /> <seealso cref="BiffWriter.WriteBlank(int, int, ushort)" />
 public readonly record struct BiffBlankRecord(int Row, int Column, ushort XfIndex)
 {
     /// <summary>The payload length of the record.</summary>
