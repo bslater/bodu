@@ -247,7 +247,10 @@ public ref partial struct BiffReader
     public bool Read()
     {
         if (!TryFrame(out ushort id, out int payloadStart, out int payloadLength))
+        {
+            ClearCurrent();
             return false;
+        }
 
         Commit(id, payloadStart, payloadLength);
         return true;
@@ -322,6 +325,18 @@ public ref partial struct BiffReader
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Leaves the reader with no current record, keeping its position.
+    /// </summary>
+    private void ClearCurrent()
+    {
+        _hasRecord = false;
+        _recordId = 0;
+        _recordStart = _position;
+        _payloadStart = _position;
+        _payloadLength = 0;
     }
 
     /// <summary>

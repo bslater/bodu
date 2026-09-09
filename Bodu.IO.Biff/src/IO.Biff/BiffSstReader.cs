@@ -93,7 +93,7 @@ public ref struct BiffSstReader
     /// Thrown when <paramref name="reader" /> is not positioned on an <c>SST</c> record.
     /// </exception>
     /// <exception cref="BiffFormatException">Thrown when the record is too short to hold the table header.</exception>
-    public BiffSstReader(ref BiffReader reader)
+    public BiffSstReader(scoped ref BiffReader reader)
     {
         if (!reader.HasRecord || reader.RecordType != BiffRecordType.Sst)
             throw new InvalidOperationException(BiffResourceStrings.Op_Invalid_BiffSstNotAtRecord);
@@ -225,7 +225,7 @@ public ref struct BiffSstReader
     /// Thrown when the table ends before the declared strings do, a string header or its characters are truncated, or a
     /// continuation record is empty where character data was expected.
     /// </exception>
-    public bool Read(ref BiffReader reader)
+    public bool Read(scoped ref BiffReader reader)
     {
         if (_read >= _header.UniqueCount)
         {
@@ -352,7 +352,7 @@ public ref struct BiffSstReader
     /// </summary>
     /// <param name="reader">The parent reader.</param>
     /// <exception cref="BiffFormatException">Thrown when no continuation record follows.</exception>
-    private void AdvancePastBlockEnd(ref BiffReader reader)
+    private void AdvancePastBlockEnd(scoped ref BiffReader reader)
     {
         while (_offset >= _block.Length)
             NextBlock(ref reader);
@@ -363,7 +363,7 @@ public ref struct BiffSstReader
     /// </summary>
     /// <param name="reader">The parent reader.</param>
     /// <exception cref="BiffFormatException">Thrown when no continuation record follows.</exception>
-    private void NextBlock(ref BiffReader reader)
+    private void NextBlock(scoped ref BiffReader reader)
     {
         if (!reader.TryReadContinuation(out ReadOnlySpan<byte> next))
             throw Malformed();
@@ -425,7 +425,7 @@ public ref struct BiffSstReader
     /// <exception cref="BiffFormatException">
     /// Thrown when the data runs out, or a continued segment is empty.
     /// </exception>
-    private void ReadFragmentedCharacters(ref BiffReader reader, int length, bool highByte)
+    private void ReadFragmentedCharacters(scoped ref BiffReader reader, int length, bool highByte)
     {
         if (_scratch is null || _scratch.Length < length)
             _scratch = new char[Math.Max(length, InitialScratchLength)];
@@ -482,7 +482,7 @@ public ref struct BiffSstReader
     /// <param name="reader">The parent reader.</param>
     /// <param name="count">The number of bytes to skip.</param>
     /// <exception cref="BiffFormatException">Thrown when the data runs out.</exception>
-    private void SkipBytes(ref BiffReader reader, int count)
+    private void SkipBytes(scoped ref BiffReader reader, int count)
     {
         int remaining = count;
         while (remaining > 0)

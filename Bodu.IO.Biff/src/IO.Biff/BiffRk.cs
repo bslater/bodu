@@ -55,8 +55,8 @@ public static class BiffRk
     }
 
     /// <summary>
-    /// Attempts to encode a number in RK form, preferring the integer forms and falling back to the truncated-double
-    /// forms when they represent the value exactly.
+    /// Attempts to encode a number in RK form, preferring the plain integer and truncated-double forms and falling back
+    /// to their divided-by-100 variants when those represent the value exactly.
     /// </summary>
     /// <param name="value">The number to encode.</param>
     /// <param name="rk">
@@ -68,20 +68,26 @@ public static class BiffRk
     /// </returns>
     public static bool TryEncode(double value, out uint rk)
     {
-        if (TryEncodeInteger(value, out rk))
+        if (!double.IsFinite(value))
+        {
+            rk = 0;
+            return false;
+        }
+
+        if (TryEncodeInteger(value, out rk) || TryEncodeDouble(value, out rk))
             return true;
 
-        double scaled = value * 100.0;
-        if (TryEncodeInteger(scaled, out rk) && scaled / 100.0 == value)
+        // The divided-by-100 forms: round to the nearest hundredth candidate and accept it only when decoding it
+        // reproduces the value exactly, so floating-point drift in the scaling can never produce a lossy encoding.
+        double scaled = Math.Round(value * 100.0);
+        if (TryEncodeInteger(scaled, out rk) && Decode(rk | DividedByHundredFlag) == value)
         {
             rk |= DividedByHundredFlag;
             return true;
         }
 
-        if (TryEncodeDouble(value, out rk))
-            return true;
-
-        if (TryEncodeDouble(scaled, out rk) && scaled / 100.0 == value)
+        scaled = value * 100.0;
+        if (TryEncodeDouble(scaled, out rk) && Decode(rk | DividedByHundredFlag) == value)
         {
             rk |= DividedByHundredFlag;
             return true;
