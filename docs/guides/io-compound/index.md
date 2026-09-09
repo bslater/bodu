@@ -24,9 +24,9 @@ By default the whole source is buffered into memory at open time, so the file is
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.IO.Compound> | The `CompoundFile` reader and writer, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` / `CompoundFileSerializationException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) · [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound> | The `CompoundFile` reader and writer, the `CompoundStorage` / `CompoundStream` hierarchy, the `CompoundStream` cursor, `CompoundEntryInfo` metadata, and the `CompoundFileFormatException` / `CompoundStreamNotFoundException` / `CompoundFileSerializationException` errors. | [Reading compound files](reading-compound-files.md) · [Buffered vs streaming access](streaming-and-buffering.md) · [Authoring compound files](authoring-compound-files.md) · [Editing an existing container in place](editing-in-place.md) |
 | <xref:Bodu.IO.Compound.Builders> | The detached authoring object model — `CompoundStorageBuilder`, `CompoundStreamBuilder`, and the `CompoundBuildOptions` serialization options. | [Authoring compound files](authoring-compound-files.md) |
-| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers and writers — `SummaryInformation`, `DocumentSummaryInformation`, their `…Builder` authors, and the underlying `OlePropertySet`. | [Reading property sets](property-sets.md) · [Authoring compound files](authoring-compound-files.md) |
+| <xref:Bodu.IO.Compound.PropertySets> | The OLE property-set readers and writers — `SummaryInformation`, `DocumentSummaryInformation`, their `…Builder` authors, and the underlying `OlePropertySet` / `OlePropertySection` / `OlePropertyValue` model. | [Reading property sets](property-sets.md) · [Authoring custom property sets](custom-property-sets.md) · [Authoring compound files](authoring-compound-files.md) |
 
 ## Guides
 
@@ -43,6 +43,11 @@ By default the whole source is buffered into memory at open time, so the file is
 </div>
 
 <div class="bodu-card">
+  <h3><a href="editing-in-place.md">Editing an existing container in place</a></h3>
+  <p>Open a <code>.doc</code>, <code>.xls</code>, or <code>.msg</code> for update, add, replace, rename, and delete streams through writable <code>Stream</code> cursors, then <code>Commit</code> or <code>Revert</code> — with the staging model and its guarantees spelled out.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="streaming-and-buffering.md">Buffered vs streaming access</a></h3>
   <p>The <code>buffered</code> flag, the <code>CompoundStream</code> cursor, <code>AsMemory</code> vs chunked <code>Read</code>, asynchronous commit and streaming reads, lifetime and threading contracts, and how to bound memory for large files.</p>
 </div>
@@ -50,6 +55,11 @@ By default the whole source is buffered into memory at open time, so the file is
 <div class="bodu-card">
   <h3><a href="property-sets.md">Reading property sets</a></h3>
   <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams — typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="custom-property-sets.md">Authoring custom property sets</a></h3>
+  <p>The raw <code>OlePropertySet</code> / <code>OlePropertySection</code> / <code>OlePropertyValue</code> model, user-defined named properties on a document, property-set streams of your own on any storage, and round-tripping a real document's metadata.</p>
 </div>
 
 <div class="bodu-card">
@@ -65,6 +75,7 @@ By default the whole source is buffered into memory at open time, so the file is
 2. **[Buffered vs streaming access](streaming-and-buffering.md)** — once the file is too large to hold whole, or you need to control the source's lifetime.
 3. **[Reading property sets](property-sets.md)** — when you want the authored document metadata (title, author, timestamps) rather than the format payload.
 4. **[Authoring compound files](authoring-compound-files.md)** — when you need to *write* a container rather than read one.
+5. **[Editing an existing container in place](editing-in-place.md)** and **[Authoring custom property sets](custom-property-sets.md)** — when the container already exists and you need to change it, or stamp it with metadata of your own.
 
 ## Where to go next
 

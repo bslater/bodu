@@ -513,6 +513,10 @@
           href: io-compound/authoring-compound-files.md
         - name: Office format nuances
           href: io-compound/office-format-nuances.md
+        - name: Editing an existing container in place
+          href: io-compound/editing-in-place.md
+        - name: Authoring custom property sets
+          href: io-compound/custom-property-sets.md
     - name: Bodu.Formats.Excel.Binary
       items:
         - name: Overview
@@ -523,11 +527,23 @@
           href: excel/cell-values-and-dates.md
         - name: Streaming vs materialized
           href: excel/worksheets-and-rows.md
+    - name: Bodu.IO.Pst
+      items:
+        - name: Overview
+          href: io-pst/index.md
+        - name: Reading nodes and tables
+          href: io-pst/reading-nodes-and-tables.md
+        - name: Streaming and validation
+          href: io-pst/streaming-and-validation.md
     - name: Bodu.Formats.Outlook
       items:
         - name: Overview
           href: outlook/index.md
         - name: Reading .msg files
           href: outlook/reading-msg-files.md
+        - name: Reading .pst mail stores
+          href: outlook/reading-pst-mail-stores.md
         - name: Properties and named properties
           href: outlook/properties-and-named-properties.md
+        - name: Reader options and resource limits
+          href: outlook/reader-options-and-limits.md
