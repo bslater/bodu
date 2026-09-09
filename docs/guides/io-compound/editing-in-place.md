@@ -93,7 +93,7 @@ A writable file hands out a **read-write cursor** from `OpenStream(name, FileMod
 | `Open` | Cursor seeded with the current bytes, positioned at 0. | <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> (`TryOpenStream` returns `false`). |
 | `OpenOrCreate` | As `Open`. | Created empty. |
 | `Create` | **Truncated** to empty. | Created empty. |
-| `CreateNew` | <xref:System.IOException> (`TryOpenStream` returns `false`). | Created empty. |
+| `CreateNew` | <xref:System.IO.IOException> (`TryOpenStream` returns `false`). | Created empty. |
 | `Append` | Cursor seeded with the current bytes, positioned at the end. | Created empty. |
 | `Truncate` | <xref:System.NotSupportedException>. | |
 

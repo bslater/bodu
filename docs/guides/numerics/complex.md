@@ -222,7 +222,7 @@ Complex<double> back  = JsonSerializer.Deserialize<Complex<double>>("{\"real\":3
 Complex<float>  small = JsonSerializer.Deserialize<Complex<float>>("\"<1.5; -2>\"", compact);                  // <1.5; -2>
 ```
 
-Under `Strict` and `Lenient` the wire shape is the object `{ "real", "imaginary" }` with finite components as JSON numbers and non-finite ones as the strings `"NaN"`, `"Infinity"`, `"-Infinity"`; under `Compact` it is the `<real; imaginary>` string, parsed and formatted under the invariant culture. `System.Text.Json`'s default encoder writes `<` and `>` as `<` / `>` — harmless for round-tripping, but pass <xref:System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping> if the payload should read as `"<3; 4>"`. The policies and registration are described in full in [JSON serialization](json-serialization.md).
+Under `Strict` and `Lenient` the wire shape is the object `{ "real", "imaginary" }` with finite components as JSON numbers and non-finite ones as the strings `"NaN"`, `"Infinity"`, `"-Infinity"`; under `Compact` it is the `<real; imaginary>` string, parsed and formatted under the invariant culture. `System.Text.Json`'s default encoder writes `<` and `>` as `<` / `>` — harmless for round-tripping, but pass `JavaScriptEncoder.UnsafeRelaxedJsonEscaping` if the payload should read as `"<3; 4>"`. The policies and registration are described in full in [JSON serialization](json-serialization.md).
 
 ## Relationship to `System.Numerics.Complex`
 

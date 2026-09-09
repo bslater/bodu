@@ -29,7 +29,7 @@ Each item compiles to `$(NotableDatePackOutputPath)<Filename>.bcal` and, by defa
 
 ## The `CompileNotableDatePack` task
 
-The `.targets` file wires every item to <xref:Bodu.Globalization.Calendar.Build.CompileNotableDatePack>, a `ToolTask` that runs `dotnet exec --roll-forward Major <tool.dll> compile <Input> -o <Output> [--resolver-dir <ResolverDir>]`:
+The `.targets` file wires every item to `CompileNotableDatePack`, a `ToolTask` that runs `dotnet exec --roll-forward Major <tool.dll> compile <Input> -o <Output> [--resolver-dir <ResolverDir>]`:
 
 | Parameter | Required | Value the targets pass |
 |---|---|---|

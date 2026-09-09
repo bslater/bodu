@@ -136,14 +136,22 @@
               href: io-hashing/fletcher.md
             - name: Using Adler
               href: io-hashing/adler.md
+            - name: Streaming, async, and resumable hashing
+              href: io-hashing/streaming-and-async.md
         - name: Bodu.IO.Hashing.CheckDigits
           items:
             - name: Check digits overview
               href: io-hashing/check-digits.md
+            - name: Alphanumeric and encoded check digits
+              href: io-hashing/alphanumeric-check-digits.md
     - name: Bodu.Security.Cryptography
       items:
         - name: Overview
           href: cryptography/index.md
+        - name: Choosing a primitive
+          href: cryptography/choosing-a-primitive.md
+        - name: Interoperating with System.Security.Cryptography
+          href: cryptography/bcl-interop.md
         - name: Foundations
           items:
             - name: Encryption basics
@@ -154,6 +162,8 @@
               href: cryptography/padding.md
             - name: Composing primitives
               href: cryptography/composing-primitives.md
+            - name: Modes, transforms, and factories
+              href: cryptography/cipher-composition-reference.md
             - name: Hardware acceleration and the SIMD switch
               href: cryptography/hardware-acceleration.md
         - name: Symmetric ciphers — Standard
@@ -172,6 +182,8 @@
               href: cryptography/threefish-512.md
             - name: Using Threefish-1024
               href: cryptography/threefish-1024.md
+            - name: Using Serpent
+              href: cryptography/serpent.md
         - name: Symmetric ciphers — Stream
           items:
             - name: Using stream ciphers
@@ -180,6 +192,8 @@
           items:
             - name: AEAD modes (AES + transform)
               href: cryptography/aead-modes.md
+            - name: Authenticated stream ciphers
+              href: cryptography/stream-aead.md
         - name: Cryptographic hashes
           items:
             - name: Hashing overview
@@ -242,6 +256,16 @@
               href: cryptography/ml-dsa.md
             - name: Hybrid public key encryption with HPKE
               href: cryptography/hpke.md
+        - name: Cross-cutting
+          items:
+            - name: Streams and async
+              href: cryptography/streaming-and-async.md
+            - name: Nonces, salts, tags, and secrets
+              href: cryptography/value-types.md
+            - name: Security guarantees and limitations
+              href: cryptography/security-posture.md
+            - name: Extending the library
+              href: cryptography/extending.md
 - name: Globalization & Calendars
   href: topics/globalization-and-calendars.md
   items:

@@ -129,56 +129,12 @@ HC-128 has a comparatively expensive setup: it warms up two 512-word tables befo
 
 ## Authenticated stream ciphers — Poly1305 AEAD
 
-A raw stream cipher gives you confidentiality but **not** integrity. For authenticated encryption, the library pairs the extended-nonce stream ciphers with Poly1305 in three ready-made constructions. All three derive from the abstract <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> base, take a 256-bit (32-byte) key and a 192-bit (24-byte) extended nonce, produce a 128-bit (16-byte) tag, and emit the wire format `ciphertext ‖ tag`.
-
-| Construction | Stream cipher | Associated data? | Wire / framing |
-|---|---|---|---|
-| <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> | XChaCha20 | Yes | `ciphertext ‖ tag` (RFC 8439-style framing) |
-| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> | XSalsa20 | Yes | `ciphertext ‖ tag` (RFC 8439-style framing) |
-| <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> | XSalsa20 | **No** (NaCl `secretbox`) | `ciphertext ‖ tag`; libsodium layout via converters |
-
-Each instance is **single-use**: create a fresh instance for every message, because reusing a nonce under the same key destroys both confidentiality and authenticity.
-
-### XChaCha20-Poly1305 with associated data
-
-The span-based `Encrypt` / `Decrypt` on the base return the number of bytes written; the convenience `byte[]` overloads (from `Bodu.Security.Cryptography.Extensions`) allocate the result for you:
-
-```csharp
-using Bodu.Security.Cryptography;
-using Bodu.Security.Cryptography.Extensions;
-
-using var enc = new XChaCha20Poly1305(key, nonce);
-byte[] sealedMsg = enc.Encrypt(plaintext, associatedData: header);   // ciphertext || tag
-
-using var dec = new XChaCha20Poly1305(key, nonce);
-byte[] plain = dec.Decrypt(sealedMsg, associatedData: header);       // throws on tamper
-```
-
-Decryption verifies the tag (and the associated data) before returning; a modified ciphertext, tag, or header fails authentication and throws rather than returning altered plaintext.
-
-### NaCl `secretbox` — XSalsa20-Poly1305
-
-<xref:Bodu.Security.Cryptography.XSalsa20Poly1305> is the classic NaCl/libsodium `secretbox` construction. It does **not** accept associated data — passing any throws <xref:System.ArgumentException>. When you need associated data with XSalsa20, use `XSalsa20Poly1305Aead` instead:
-
-```csharp
-using var box = new XSalsa20Poly1305(key, nonce);
-byte[] sealedMsg = box.Encrypt(plaintext);   // ciphertext || tag, no associated data
-```
-
-This library emits `ciphertext ‖ tag`, whereas libsodium's combined `secretbox` places the tag first (`tag ‖ ciphertext`). Convert between the two layouts with the static helpers when interoperating:
-
-```csharp
-XSalsa20Poly1305.ToLibsodiumCombined(ciphertextThenTag, tagThenCiphertext);
-XSalsa20Poly1305.FromLibsodiumCombined(tagThenCiphertext, ciphertextThenTag);
-```
-
-### In-place operation
-
-The Poly1305 AEAD transforms support exact in-place use — the output span may begin at the same location as the input. Any other partial overlap is rejected with <xref:System.ArgumentException>.
+A raw stream cipher gives you confidentiality but **not** integrity. The library pairs the extended-nonce ciphers with Poly1305 in three ready-made AEAD constructions — <xref:Bodu.Security.Cryptography.XChaCha20Poly1305>, the NaCl `secretbox` <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> (with converters for libsodium's `tag ‖ ciphertext` layout), and the Bodu-defined <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead> — all built on <xref:Bodu.Security.Cryptography.Poly1305AeadTransform>, all taking a 256-bit key and a 192-bit nonce, all emitting `ciphertext ‖ tag`, and all single-use per message. They have their own guide now: **[Authenticated stream ciphers](stream-aead.md)** covers the draft-vector round trip, tamper and reuse behaviour, the secretbox layout, the `IStreamAeadTransform` interface, in-place operation, and detached tags.
 
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — the Key/IV lifecycle shared with the block ciphers.
+- [Authenticated stream ciphers](stream-aead.md) — the XChaCha20-Poly1305 and XSalsa20-Poly1305 constructions built on these ciphers.
 - [Using Poly1305](poly1305.md) — pair a raw stream cipher with a one-time authenticator (encrypt-then-MAC).
 - [AEAD modes](aead-modes.md) and [ASCON AEAD](ascon-aead.md) — authenticated encryption, the recommended default when you need integrity as well as confidentiality.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

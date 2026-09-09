@@ -222,7 +222,7 @@ Because every form round-trips through canonical text and compares by value, the
 
 ## Pattern 4 — daylight saving and time zones at the boundary
 
-Rule, cron, and set schedules name a **wall-clock** time. The library evaluates them in whatever offset you pass and never consults <xref:System.TimeZoneInfo>, so "02:00 every day in Sydney" needs the host to (1) ask for the next wall-clock occurrence, (2) resolve it against the zone, deciding skipped and ambiguous times to its own policy, and (3) wait on the resulting instant. Doing the conversion per evaluation is what keeps the schedule correct across a transition:
+Rule, cron, and set schedules name a **wall-clock** time. The library evaluates them in whatever offset you pass and never consults `TimeZoneInfo`, so "02:00 every day in Sydney" needs the host to (1) ask for the next wall-clock occurrence, (2) resolve it against the zone, deciding skipped and ambiguous times to its own policy, and (3) wait on the resulting instant. Doing the conversion per evaluation is what keeps the schedule correct across a transition:
 
 ```csharp
 using Bodu.Globalization.Recurrence;

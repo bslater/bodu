@@ -121,7 +121,7 @@ DateTime week20 = DateTimeExtensions.GetStartDateOfWeek(2024, 20, CultureInfo.Ge
 ```
 
 > [!WARNING]
-> `WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)` reproduces <xref:System.Globalization.Calendar.GetWeekOfYear*>, which numbers the last days of December as week 53 even when ISO 8601 assigns them to week 1 of the next year. Use `IsoWeekOfYear` / `IsoYear` when you need ISO semantics.
+> `WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)` reproduces `Calendar.GetWeekOfYear`, which numbers the last days of December as week 53 even when ISO 8601 assigns them to week 1 of the next year. Use `IsoWeekOfYear` / `IsoYear` when you need ISO semantics.
 
 `WeekOrdinalOfMonth` is *not* a week number: it reports which seven-day group of the month the date falls in (days 1–7 → `First`, 8–14 → `Second`, …, 29–31 → `Fifth`), which is exactly the ordinal `NthDateOfWeekInMonth` would need to land on that date.
 
