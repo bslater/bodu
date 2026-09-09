@@ -4,7 +4,7 @@ title: Using YAML
 
 # Using YAML
 
-<xref:Bodu.Text.Yaml.YamlSerializer> maps your types to and from [YAML](https://yaml.org/). Behavior is configured through <xref:Bodu.Text.Yaml.YamlSerializerOptions>; when you do not want a POCO, the same documents are served by the mutable <xref:Bodu.Text.Yaml.Nodes.YamlNode> DOM and the read-only <xref:Bodu.Text.Yaml.Document.YamlDocument> DOM. The surface is string text and UTF-8 bytes — there are no `Stream` overloads and no async API.
+<xref:Bodu.Text.Yaml.YamlSerializer> maps your types to and from [YAML](https://yaml.org/). Behavior is configured through <xref:Bodu.Text.Yaml.YamlSerializerOptions>; when you do not want a POCO, the same documents are served by the mutable <xref:Bodu.Text.Yaml.Nodes.YamlNode> DOM and the read-only <xref:Bodu.Text.Yaml.Document.YamlDocument> DOM. The surface is string text and UTF-8 bytes, plus the same stream facade the sibling serializers ship — `Serialize<T>(IBufferWriter<byte>, …)`, `SerializeAsync<T>(Stream, …)`, `Deserialize<T>(Stream)`, and `DeserializeAsync<T>(Stream)` — buffered in full, with only the stream copy asynchronous.
 
 ## Pattern 1 — Round-trip an object
 
@@ -23,7 +23,7 @@ string yaml = YamlSerializer.Serialize(config);
 ServerConfig back = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 ```
 
-`Serialize` returns a `string`; an `object` + `Type` overload covers runtime-typed values. `Deserialize<T>` reads a `string` or a `ReadOnlySpan<byte>` (UTF-8) and returns `T?`, so use `!` when the document is known to be non-null:
+`Serialize` returns a `string`; an `object` + `Type` overload covers runtime-typed values. `Deserialize<T>` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` and returns `T?`, so use `!` when the document is known to be non-null:
 
 ```csharp
 ReadOnlySpan<byte> utf8 = Encoding.UTF8.GetBytes(yaml);
@@ -115,7 +115,7 @@ string updated = root.ToYamlString();
 
 `YamlValue.Create` has overloads for `string`, `long`, `double`, and `bool` — those four kinds are the entire scalar model, so build an `int` as `YamlValue.Create((long)42)` and a `float` as a `double`. `GetValue<T>()` reads a value back out, returning a stored value of the matching CLR type directly and otherwise coercing through `Convert.ChangeType` with `CultureInfo.InvariantCulture` (so `GetValue<string>()` always succeeds, and `GetValue<int>()` narrows a stored `long`); an impossible conversion raises `InvalidOperationException`. <xref:Bodu.Text.Yaml.Nodes.YamlValue.ValueKind> reports which of the four kinds a scalar holds.
 
-The `YamlNode` tree is fully mutable and re-entrant: `AsObject()` / `AsArray()` / `AsValue()` cast a node to its concrete shape (throwing `InvalidOperationException` on a mismatch). <xref:Bodu.Text.Yaml.Nodes.YamlObject> preserves insertion order and exposes `Count`, `Keys`, `Add` (which throws on a duplicate key, unlike the adding `[string]` setter), `ContainsKey`, `Remove`, and `TryGetValue`; <xref:Bodu.Text.Yaml.Nodes.YamlArray> implements `IList<YamlNode?>` (`Add`, `Insert`, `RemoveAt`, `IndexOf`, the `[int]` indexer). A node may appear at most once in a tree. `WriteTo(ref Utf8YamlWriter)` drives the writer directly when you need control over indentation or the newline sequence; `ToYamlString()` is the convenience wrapper over it.
+The `YamlNode` tree is fully mutable and re-entrant: `AsObject()` / `AsArray()` / `AsValue()` cast a node to its concrete shape (throwing `InvalidOperationException` on a mismatch). <xref:Bodu.Text.Yaml.Nodes.YamlObject> preserves insertion order and exposes `Count`, `Keys`, `Add` (which throws on a duplicate key, unlike the adding `[string]` setter), `ContainsKey`, `Remove`, and `TryGetValue`; <xref:Bodu.Text.Yaml.Nodes.YamlArray> implements `IList<YamlNode?>` (`Add`, `Insert`, `RemoveAt`, `IndexOf`, the `[int]` indexer). A node may appear at most once in a tree. `WriteTo(Utf8YamlWriter)` drives the writer directly when you need control over indentation or the newline sequence; `ToYamlString()` is the convenience wrapper over it.
 
 ## Pattern 5 — Inspect a document with the read-only DOM
 
@@ -232,7 +232,7 @@ while (reader.Read())
 
 `TokenType` reports the current <xref:Bodu.Text.Yaml.YamlTokenType> (the `StartMapping` / `EndMapping` / `StartSequence` / `EndSequence` brackets, `PropertyName`, and the `Null` / `String` / `Integer` / `Float` / `Boolean` scalar tokens), `CurrentDepth` the nesting level, and `ValueTextEquals(ReadOnlySpan<byte>)` compares the current key against UTF-8 text without allocating. The scalar getters throw `InvalidOperationException` if the current token is the wrong kind. <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions> carries the same `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, and `MaxDepth` the document layer uses.
 
-The writer's surface is `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString` / `WriteInt64` / `WriteDouble` / `WriteBoolean` / `WriteNull`. It always emits **block** collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string, begin with an indicator character, contain `": "`, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow `{}` / `[]` so they round-trip as empty rather than null. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2, capped at 16), `NewLine` (only `"\n"` or `"\r\n"`), and `MaxDepth`:
+The writer's surface is `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString` / `WriteInteger` / `WriteDouble` / `WriteBoolean` / `WriteNull`. It always emits **block** collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string, begin with an indicator character, contain `": "`, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow `{}` / `[]` so they round-trip as empty rather than null. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2, capped at 16), `NewLine` (only `"\n"` or `"\r\n"`), and `MaxDepth`:
 
 ```csharp
 using Bodu.Text.Yaml.Writer;

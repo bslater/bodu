@@ -82,17 +82,17 @@ Parse, edit, and write structured documents — typed value models with streamin
 
 <div class="bodu-card">
   <h3><a href="../formats/delimited.md">Using delimited (CSV / TSV)</a></h3>
-  <p>RFC 4180 quoting, delimiter selection, header handling, and the streaming <code>DelimitedReader</code> / <code>DelimitedWriter</code>.</p>
+  <p>RFC 4180 quoting, delimiter selection, header handling, and the streaming <code>Utf8DelimitedReader</code> / <code>Utf8DelimitedWriter</code>.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../formats/dotenv.md">Using DotEnv</a></h3>
-  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, comment preservation, and duplicate-key policies.</p>
+  <p><code>KEY=VALUE</code> parsing, quoting and escape rules, the <code>export</code> prefix, and inline-comment handling.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../formats/ini.md">Using INI</a></h3>
-  <p>Section / entry model, comment trivia, duplicate policies, and mutating the round-trippable <code>IniDocument</code>.</p>
+  <p>Section / entry model, comment trivia, duplicate policies, and comment-preserving edits through the mutable <code>IniNode</code> DOM (the read-only <code>IniDocument</code> is for inspection).</p>
 </div>
 
 <div class="bodu-card">
@@ -130,7 +130,7 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an ar
 
 <div class="bodu-card">
   <h3><a href="../serialization/yaml/index.md">YAML guides</a></h3>
-  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema, both DOMs, multi-document streams, <code>[Yaml…]</code> attributes, custom converters, and the catalog.</p>
+  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema, both DOMs, multi-document streams, the shared <code>Bodu.Text.Serialization</code> attributes, custom converters, and the catalog.</p>
 </div>
 
 </div>

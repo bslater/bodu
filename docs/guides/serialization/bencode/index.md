@@ -30,7 +30,7 @@ Recipe-style walk-throughs for **Bodu.Text.Bencode** (<xref:Bodu.Text.Bencode.Be
 
 <div class="bodu-card">
   <h3><a href="callbacks.md">Serialization callbacks</a></h3>
-  <p>The four <code>IBencodeOn…</code> hooks — apply defaults, validate, derive state, and observe completed writes across the serialization lifecycle.</p>
+  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> hooks — apply defaults, validate, derive state, and observe completed writes across the serialization lifecycle.</p>
 </div>
 
 <div class="bodu-card">

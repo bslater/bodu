@@ -6,7 +6,7 @@ uid: Bodu.Text.Yaml
 
 ## Purpose
 
-**Bodu.Text.Yaml** is a self-contained [YAML](https://yaml.org/) library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a buffered token reader and a forward-only writer, with both a mutable and a read-only document object model.
+**Bodu.Text.Yaml** is a [YAML](https://yaml.org/) library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a buffered token reader and a forward-only writer, with both a mutable and a read-only document object model.
 
 The library is the third member of the [Bodu serializer family](~/docs/serialization/index.md), alongside <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode>. It shares the family's architecture — a static serializer façade, a low-level reader/writer pair, a mutable DOM, and a read-only DOM — but tunes the serializer surface to YAML and exposes YAML's richer presentation model. The types are organised into folders/namespaces by surface (`Reader`, `Writer`, `Document`, `Nodes`, `Serialization`).
 
@@ -25,7 +25,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 
 **Serializer (`Bodu.Text.Yaml`)**
 
-- <xref:Bodu.Text.Yaml.YamlSerializer> — static façade. `Serialize` to a `string` (from a typed value or an `object` + `Type`) and `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8).
+- <xref:Bodu.Text.Yaml.YamlSerializer> — static façade. `Serialize` to a `string` (from a typed value or an `object` + `Type`) or an `IBufferWriter<byte>`, `SerializeAsync` to a `Stream`; `Deserialize<T>` from a `string`, a UTF-8 `ReadOnlySpan<byte>`, or a `Stream`, and `DeserializeAsync<T>` from a `Stream`. The stream overloads are buffered in full — only the stream copy is asynchronous.
 - <xref:Bodu.Text.Yaml.YamlSerializerOptions> — naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, and `MaxDepth`; constructed plain or from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> preset (`General` / `Web`); cached and frozen on first use.
 - <xref:Bodu.Text.Serialization.NamingPolicy> — camel, snake (lower/upper), and kebab (lower/upper) casing policies.
 - <xref:Bodu.Text.Yaml.YamlTokenType>, <xref:Bodu.Text.Yaml.YamlValueKind> — the token and value-kind enumerations.
@@ -71,7 +71,7 @@ string back = node.ToYamlString();
 
 ## Notes
 
-- **Self-contained.** The library has no shared engine dependency — everything the serializer needs lives in this assembly, mirroring its siblings <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode>.
+- **Shared serialization core.** The library references <xref:Bodu.Text.Serialization> for the attribute family, the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces, and compiles that package's shared metadata resolver and converter engine under its own format symbol — the same arrangement as its siblings <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode>. The reader, writer, DOMs, and scalar converters are format-local.
 - **Full family serializer surface.** Member shaping is covered by the naming policies, the shared `Bodu.Text.Serialization` attribute family, the serialization callback interfaces, the options flags, and custom `YamlConverter<T>` converters and `YamlConverterFactory` factories — the same surface as the TOML and Bencode siblings. YAML's scalar converters remain format-local so implicit typing coerces across scalar kinds.
 - **Value mapping.** `string` / `char` / `Guid` / `Uri` and the integer family → string or integer scalars, `double` / `float` → float scalars, `bool` → boolean, `null` → the null scalar; enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`). Collections map to sequences; dictionaries and objects map to mappings in insertion order. An `object`-typed member reads back as a loosely-typed graph (`Dictionary<string, object?>` / `List<object?>` / scalars); members typed <xref:Bodu.Text.Yaml.Nodes.YamlNode> or <xref:Bodu.Text.Yaml.Document.YamlElement> bind through the DOM bridges. Public fields participate via `IncludeFields`.
 - **Presentation is resolved, not stored.** Scalar style (plain / quoted / literal / folded), block vs. flow layout, and anchors and aliases are handled by the reader and chosen by the writer rather than surfaced as distinct value kinds; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original scalar style.

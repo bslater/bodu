@@ -6,7 +6,7 @@ title: Bodu.Text.Yaml — Introduction
 
 ![Bodu.Text.Yaml](../../../images/hero-yaml.svg)
 
-**Bodu.Text.Yaml** is a self-contained library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture — a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair — and the shared `Bodu.Text.Serialization` attribute family, naming policies, serialization callbacks, converter attributes, and converter factories. On top of that, YAML adds its own presentation richness. This page covers what is *specific* to YAML.
+**Bodu.Text.Yaml** is a library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture — a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair — and the shared `Bodu.Text.Serialization` attribute family, naming policies, serialization callbacks, converter attributes, and converter factories. On top of that, YAML adds its own presentation richness. This page covers what is *specific* to YAML.
 
 ## The format in one paragraph
 
@@ -52,7 +52,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Yaml.YamlSerializer> | `Serialize` to a `string` (from a typed value or an `object` + `Type`); `Deserialize<T>` from a `string` or `ReadOnlySpan<byte>` (UTF-8). |
+| <xref:Bodu.Text.Yaml.YamlSerializer> | `Serialize` to a `string` (from a typed value or an `object` + `Type`) or to an `IBufferWriter<byte>`, `SerializeAsync` to a `Stream`; `Deserialize<T>` from a `string`, a UTF-8 `ReadOnlySpan<byte>`, or a `Stream`, and `DeserializeAsync<T>` from a `Stream`. The stream overloads buffer the whole document; only the stream copy is asynchronous. |
 | <xref:Bodu.Text.Yaml.YamlSerializerOptions> | Naming policy, converters, `IncludeFields`, `DefaultIgnoreCondition`, `WriteEnumsAsStrings`, `PropertyNameCaseInsensitive`, `SpecVersion`, `NumberHandling`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `UnmappedMemberHandling`, `PreferredObjectCreationHandling`, `MaxDepth`. Constructed plain or from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> preset (`General` / `Web`). Frozen on first use. |
 | <xref:Bodu.Text.Serialization.NamingPolicy> | `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, `KebabCaseLower` / `KebabCaseUpper`. |
 | <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> / <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> | Base classes for a custom per-type converter (reading through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>) and for a factory serving a family of types. |

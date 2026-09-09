@@ -6,7 +6,7 @@ title: Bodu.Text.Toml — Introduction
 
 # Bodu.Text.Toml
 
-**Bodu.Text.Toml** is a self-contained library for [TOML](https://toml.io/) v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the three [Bodu serializers](../index.md) — it shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its sibling libraries [Bodu.Text.Bencode](../bencode/index.md) and [Bodu.Text.Yaml](../yaml/index.md), so the family vocabulary applies here unchanged. This page covers what is *specific* to TOML.
+**Bodu.Text.Toml** is a library for [TOML](https://toml.io/) v1.0.0 and v1.1.0, the human-readable configuration format built around typed key/value pairs and tables. It is one of the three [Bodu serializers](../index.md) — it shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its sibling libraries [Bodu.Text.Bencode](../bencode/index.md) and [Bodu.Text.Yaml](../yaml/index.md), so the family vocabulary applies here unchanged. This page covers what is *specific* to TOML.
 
 ## The format in one paragraph
 

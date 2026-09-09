@@ -44,7 +44,7 @@ ReadOnlySpan<byte> utf8 = Encoding.UTF8.GetBytes(yaml);
 ServerConfig fromBytes = YamlSerializer.Deserialize<ServerConfig>(utf8)!;
 ```
 
-There are no `Stream` or async overloads — read a stream into a `string` or a byte buffer first.
+`Deserialize<T>(Stream)` and `DeserializeAsync<T>(Stream)` read a stream to its end, and `Serialize<T>(IBufferWriter<byte>, …)` / `SerializeAsync<T>(Stream, …)` write UTF-8 bytes. The stream overloads buffer the whole document in memory — only the stream copy is asynchronous.
 
 ## Rename members
 

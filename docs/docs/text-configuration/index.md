@@ -20,7 +20,7 @@ and read typed values back out. No reflection, no `dynamic`, no schema, no globa
 
 ![Configuration pipeline — source text to resolved view](../../images/diagrams/text-configuration-pipeline.svg)
 
-Configuration runs as a four-stage pipeline: the **reader** tokenises the source text and produces an immutable
+Configuration runs as a four-stage pipeline: the **reader** tokenises the source text and produces a
 <xref:Bodu.Text.Configuration.ConfigurationDocument> — a `sealed` type that inherits the read-only
 <xref:Bodu.Text.Configuration.IniDocumentBase> model; the **resolver** layers the document's preamble
 and matching glob-anchored sections in source order to produce a `ConfigurationView` for one target path; the **getter

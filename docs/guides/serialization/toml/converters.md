@@ -6,7 +6,7 @@ title: Writing converters
 
 A converter customises how a single type is read and written: derive `TomlConverter<T>` (<xref:Bodu.Text.Toml.Serialization.TomlConverter`1>) and read or write values through the format's reader and writer. A TOML converter reads through <xref:Bodu.Text.Toml.Reader.TomlDocumentReader> and writes through <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter>.
 
-Because the library is self-contained, a converter is written against the TOML reader/writer pair. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) follow the identical pattern with their own prefix and reader/writer types. The set of converters the library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
+A converter is written against the TOML reader/writer pair and attached with the shared <xref:Bodu.Text.Serialization.ConverterAttribute> or registered on the options. The sibling libraries ([Bodu.Text.Bencode](../bencode/index.md), [Bodu.Text.Yaml](../yaml/index.md)) follow the identical pattern against their own reader/writer types and `…Converter<T>` base class. The set of converters the library already ships — and therefore the types you never need to write one for — is listed in the [built-in converter catalog](builtin-converters.md).
 
 ## Pattern 1 — Convert a value type
 
@@ -97,7 +97,7 @@ public sealed class OrderIdConverter : TomlConverter<OrderId>
 
 ## Built-in enum converters
 
-For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[TomlConverter]` attribute on a member, property, or the enumeration itself, or register one on the options.
+For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a `[Converter]` attribute on a member, property, or the enumeration itself, or register one on the options.
 
 On the enumeration itself, use the generic string-enum form (<xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter`1>), optionally renaming individual members:
 
@@ -136,7 +136,7 @@ options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 // Status.OnHold now serializes as "on_hold" everywhere.
 ```
 
-The generic forms expose a public parameterless constructor, which is what makes them usable from a `[TomlConverter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
+The generic forms expose a public parameterless constructor, which is what makes them usable from a `[Converter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
 
 ## Pattern 6 — Fail clearly on malformed data
 
@@ -263,7 +263,7 @@ for the parser; never throw it from a converter.
 
 - [Built-in converter catalog](builtin-converters.md) — the types that already have a converter, and their exact wire forms.
 - [Polymorphic converters](polymorphic-converters.md) — the factory pattern for open generics and discriminated hierarchies.
-- [Mapping attributes](attributes.md) — declarative shaping; `[TomlConverter]` placement and the precedence ladder.
+- [Mapping attributes](attributes.md) — declarative shaping; `[Converter]` placement and the precedence ladder.
 - [Using TOML](using.md) — the format walk-through, including the error-handling pattern.
 - [Core concepts](../../../docs/serialization/toml/concepts.md) — converter resolution and options caching in the family vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) and the [topic overview](../../../docs/topics/text-and-serialization.md).

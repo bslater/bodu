@@ -16,7 +16,7 @@ The design is: exact-type scalar converters first, factories for open type famil
 6. the **`object` converter**, so an `object`-typed member dispatches on its runtime type instead of mapping to an empty table;
 7. the **object factory** last, as the catch-all that writes a plain class or struct as a table.
 
-A user converter, or a converter named by a `[TomlConverter]` attribute, is consulted ahead of this entire list — see [Writing converters](converters.md) for the precedence ladder.
+A user converter, or a converter named by a `[Converter]` attribute, is consulted ahead of this entire list — see [Writing converters](converters.md) for the precedence ladder.
 
 ## Scalars
 

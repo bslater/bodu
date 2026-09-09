@@ -17,7 +17,7 @@ New to the library? Start with the [introduction](../../../docs/serialization/to
 
 <div class="bodu-card">
   <h3><a href="attributes.md">Mapping attributes</a></h3>
-  <p>The full <code>[Toml…]</code> attribute family — rename, ignore, include, order, require, extension data, constructor selection, and the precedence ladder.</p>
+  <p>The full shared <code>Bodu.Text.Serialization</code> attribute family — rename, ignore, include, order, require, extension data, constructor selection, and the precedence ladder.</p>
 </div>
 
 <div class="bodu-card">
@@ -32,7 +32,7 @@ New to the library? Start with the [introduction](../../../docs/serialization/to
 
 <div class="bodu-card">
   <h3><a href="callbacks.md">Serialization callbacks</a></h3>
-  <p>The four <code>ITomlOn…</code> lifecycle hooks — defaults that survive omitted keys, post-deserialization validation, and derived state on write.</p>
+  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> lifecycle hooks — defaults that survive omitted keys, post-deserialization validation, and derived state on write.</p>
 </div>
 
 <div class="bodu-card">

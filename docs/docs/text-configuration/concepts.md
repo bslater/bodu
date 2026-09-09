@@ -22,8 +22,11 @@ duplicate-policy decisions, so it can be re-emitted byte-for-byte.
 
 Because it derives from `IniDocumentBase`, every read member of the INI model is available directly on the document:
 `doc.GlobalSection["root"]`, `doc.Sections[0].Name`, `section.Entries`, `section["indent_size"]`, and the typed
-`section.TryGetValue<T>(...)` accessors all work without first resolving a view. The public surface is read-only;
-`ConfigurationDocument` is produced by the reader and is not mutated by application code.
+`section.TryGetValue<T>(...)` accessors all work without first resolving a view. The document-level surface is
+read-only — `ConfigurationDocument` exposes no way to add or remove sections (that mutation surface lives on the
+standalone <xref:Bodu.Text.Configuration.IniDocument>, which adds `AddSection` / `GetOrAddSection` / `RemoveSection`)
+— but each <xref:Bodu.Text.Configuration.IniSection> stays editable through `AddEntry` / `SetEntry` / `RemoveEntry`,
+which is how a value is changed before a round-trip `Save`.
 
 A **view** is the resolved snapshot for one **target path** — a flat dictionary of colon-delimited configuration keys
 to their effective string values. <xref:Bodu.Text.Configuration.ConfigurationView> is one-shot: subsequent mutation
@@ -112,7 +115,7 @@ handling are free to diverge from the raw-INI dialect.
 > means anchored globs are matched against the bare target path (the empty-root behaviour).
 
 **<xref:Bodu.Text.Configuration.ConfigurationWriteOptions>** controls `Save`: encoding, newline style, blank-line
-policy, property layout. Use the static `Bodu` / `EditorConfigCompatible` / `Strict` / `Relaxed` presets, or supply a
+policy, property layout. Use the static `Bodu` / `EditorConfigCompatible` / `Normalized` presets (or `For(profile)`), or supply a
 custom bag.
 
 ## Key — raw, segments, configuration
