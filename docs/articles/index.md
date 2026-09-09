@@ -8,8 +8,11 @@ If you are new to Bodu, start with the [project introduction](../docs/introducti
 
 Each top-level namespace has a landing page that introduces its purpose, lists its key types, and shows a minimal usage example before handing off to the auto-generated reference.
 
-- **[Bodu.Collections.Generic — Bodu.Core collections and utilities](xref:Bodu.Collections.Generic)**
-  Fixed-capacity circular buffers (single-threaded and lock-free), the `Deque<T>` value-and-reference type, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, the `WeekPattern` value type, buffer conversion, base encoding, and centralized argument validation.
+- **[Bodu — Bodu.Core foundations](xref:Bodu)**
+  The `WeekPattern` value type, pooled buffers, the `Bodu.Threading` async coordination primitives, the `Bodu.Functional` railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), the date / numeric / span extensions, and the centralized `ThrowHelper` argument validation every other package builds on.
+
+- **[Bodu.Collections.Generic — the Bodu.Collections catalogue](xref:Bodu.Collections.Generic)**
+  Fixed-capacity circular buffers, the `Deque<T>`, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, navigable sets, interval trees, graphs, tries, and the probabilistic sketches — shipped in the `Bodu.Collections` package, with the lock-free and lock-striped variants in `Bodu.Collections.Concurrent`.
 
 - **[Bodu.IO.Hashing — fingerprints, checksums, and check digits](xref:Bodu.IO.Hashing)**
   Non-cryptographic hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm` — the full CRC RevEng catalogue (widths 1–64 bits), the Fletcher 16 / 32 / 64 family, Adler-32 / 32C / 64, FNV-1 / 1a, CityHash, MurmurHash3, Pearson, classic string hashes — plus single- and multi-character check digits (Luhn, Damm, Verhoeff, EAN, GTIN, IBAN, ISBN, SEDOL, CUSIP, LEI).
@@ -23,11 +26,11 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Text.Filtering — include/exclude text filtering](xref:Bodu.Text.Filtering)**
   A high-performance filtering engine for lists of text values: glob (wildcard, character-class, `{a,b}` alternation) and regex patterns compiled once into a cost-tiered `TextFilter` that runs the cheapest strategies first. Ant / MSBuild-style `AnyMatch` sets or gitignore-style `LastMatchWins` ordered rules with `!` re-inclusion, gitignore-convention line parsing, and built-in telemetry — decision counters, per-pattern hit counts, and a per-decision observer hook.
 
-- **[Bodu.Text.Formats — self-framing text document formats](../docs/formats/index.md)**
-  Strongly-typed value models and span- and stream-friendly codecs for self-framing document formats. Ships **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (round-trippable, section- and comment-preserving) — each exposing the same modern shape: `Parse` / `Format` and `Try*` over spans, a typed value model, forward-only streaming readers and writers, and strict invariant enforcement.
+- **[Bodu.Text.Formats — line-oriented text document formats](../docs/formats/index.md)**
+  An umbrella over three `System.Text.Json`-shaped sibling packages — **Delimited** (RFC 4180 CSV / TSV), **DotEnv** (`.env` key/value), and **INI** (comment-preserving) — each exposing the same shape: a forward-only `Utf8…Reader` / `Utf8…Writer` pair, a `…Serializer` POCO mapper (with streaming and reflection-free factory overloads), a mutable `…Node` DOM and a read-only `…Document` DOM, dialect policies for dirty input, and strict invariant enforcement.
 
-- **[Bodu.Text.Bencode & Bodu.Text.Toml — object-mapping serializers](../docs/serialization/index.md)**
-  Two self-contained libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3) and TOML. Deliberate twins, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
+- **[Bodu.Text.Bencode, Bodu.Text.Toml & Bodu.Text.Yaml — object-mapping serializers](../docs/serialization/index.md)**
+  Three libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3), TOML (v1.0.0 / v1.1.0), and YAML (1.2 core schema). Deliberate siblings over the shared `Bodu.Text.Serialization` engine, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, a low-level `Utf8…Reader` / `Utf8…Writer` ref-struct pair, and the full converter / attribute / callback / naming-policy surface.
 
 - **[Bodu.Text — encoding detection and text/byte conversion helpers](xref:Bodu.Text)**
   BOM-based `EncodingDetection` plus `EncodingExtensions` and `StringEncodingExtensions` — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of `System.Text.Encoding`, shipped in the `Bodu.Core` package. For binary-to-text codecs (Base16/32/58/64/85), see `Bodu.Text.Encoding`.
@@ -48,9 +51,10 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu serializer guides](../guides/serialization/index.md)** — [Using TOML](../guides/serialization/toml/using.md), [Using Bencode](../guides/serialization/bencode/using.md), [Using YAML](../guides/serialization/yaml/using.md), and writing converters.
 - **[Bodu.Numerics guides](../guides/numerics/index.md)** — [`Fraction<T>`](../guides/numerics/fraction.md), [`Interval<T>`](../guides/numerics/interval.md).
 - **[Bodu.Financial guides](../guides/financial/index.md)** — [`Money<TCurrency>`](../guides/financial/money.md).
+- **[Binary Formats & I/O guides](../guides/topics/binary-formats.md)** — [Bodu.IO.Compound](../guides/io-compound/index.md) (reading, editing, and authoring CFB containers, property sets), [Bodu.Formats.Excel.Binary](../guides/excel/index.md) (BIFF8 `.xls` workbooks, cells, and dates), and [Bodu.Formats.Outlook](../guides/outlook/index.md) (`.msg` messages, MAPI properties, and named properties).
 
 ## Project documentation
 
 - [Introduction](../docs/introduction.md) — project overview, design principles, and the per-library map.
 - [Getting started](../docs/getting-started.md) — prerequisites, install commands, and one-minute samples per library.
-- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md) · [Bodu.Text](../docs/text/index.md) · [Bodu.Numerics](../docs/numerics/index.md) · [Bodu.Financial](../docs/financial/index.md).
+- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md) · [Bodu.Text](../docs/text/index.md) · [Bodu.Numerics](../docs/numerics/index.md) · [Bodu.Financial](../docs/financial/index.md) · [Bodu.IO.Compound](../docs/io-compound/index.md) · [Bodu.Formats.Excel.Binary](../docs/excel/index.md) · [Bodu.IO.Pst](../docs/io-pst/index.md).

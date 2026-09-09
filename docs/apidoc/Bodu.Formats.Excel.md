@@ -76,4 +76,3 @@ while (reader.TryReadCell(out ExcelCell cell))
 - **Dates are numbers.** Excel stores dates as floating-point serial numbers. The reader never reinterprets a number, but flags date-formatted cells via <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> and offers <xref:Bodu.Formats.Excel.ExcelSerialDate> for conversion against the workbook's 1900 or 1904 date system.
 - **Errors.** Malformed records surface through <xref:Bodu.Formats.Excel.ExcelBinaryFormatException>; a missing workbook stream, a non-BIFF8 version, and an encrypted workbook through their dedicated exceptions.
 - **See also:** the [introduction](~/docs/excel/index.md), [core concepts](~/docs/excel/concepts.md), and [getting-started](~/docs/excel/getting-started.md); the [Binary Formats & I/O topic](~/docs/topics/binary-formats.md); and the container reader [Bodu.IO.Compound](xref:Bodu.IO.Compound) beneath it.
-```

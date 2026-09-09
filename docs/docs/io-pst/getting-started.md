@@ -12,7 +12,7 @@ Unfamiliar with terms like *node database*, *NID*, *data tree*, *heap-on-node*, 
 dotnet add package Bodu.IO.Pst
 ```
 
-Targets `net8.0`. Depends only on `Bodu.Core` for shared throw-helpers; no other NuGet references. For the message-level view — folders, subjects, senders, attachments — install `Bodu.Formats.Outlook.Pst` instead (it references this package) and see [the mail-store sample below](#read-the-mail-store-instead).
+Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `Bodu.Collections`; no third-party NuGet references. For the message-level view — folders, subjects, senders, attachments — install `Bodu.Formats.Outlook.Pst` instead (it references this package) and see [the mail-store sample below](#read-the-mail-store-instead).
 
 ## Open a file and read the store node
 

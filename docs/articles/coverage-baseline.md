@@ -27,7 +27,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.ExchangeRates.Oanda` | Stable | 97% | 89.2% | 164 / 169 |
 | `Bodu.Financial.ExchangeRates.Ofx` | Stable | 97.6% | 88.9% | 124 / 127 |
 | `Bodu.Financial.ExchangeRates.Rba` | Stable | 94.4% | 89.5% | 303 / 321 |
-| `Bodu.Financial.ExchangeRates.Xe` | Stable | 95.4% | 86.6% | 228 / 239 |
+| `Bodu.Financial.ExchangeRates.Xe` | Experimental | 95.4% | 86.6% | 228 / 239 |
 | `Bodu.Financial.ExchangeRates.Yahoo` | Stable | 96% | 73.1% | 143 / 149 |
 | `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
 | `Bodu.Formats.Excel.Binary` | Stable | 92.6% | 85.4% | 731 / 789 |

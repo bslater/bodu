@@ -21,7 +21,7 @@ Console.WriteLine(message.SentTime);
 Console.WriteLine(message.BodyText);
 ```
 
-Every convenience is nullable and returns <see langword="null" /> when the message does not carry the underlying property — real-world messages omit fields freely.
+Every convenience is nullable and returns `null` when the message does not carry the underlying property — real-world messages omit fields freely.
 
 ## Sniff before opening
 

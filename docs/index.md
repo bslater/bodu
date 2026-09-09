@@ -60,7 +60,7 @@ A family of focused primary libraries organized into **seven topics** — alongs
 <div class="bodu-card">
   <img src="images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent" />
   <h3>Bodu.Collections.Concurrent</h3>
-  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, and a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration. Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion — a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>). Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/collections-concurrent/index.md">Introduction</a>
     <a href="guides/core/concurrent-collections.md">Guides</a>
@@ -284,6 +284,27 @@ A family of focused primary libraries organized into **seven topics** — alongs
   </div>
 </div>
 
+<div class="bodu-card">
+  <img src="images/hero-io-pst.svg" alt="Bodu.IO.Pst" />
+  <h3>Bodu.IO.Pst</h3>
+  <p>A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI). Reads the node database — header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees — and the LTP layer over it, exposing each <code>PstNode</code>'s property-context and table-context views with wire-typed values. No MAPI semantics and no writing; the substrate the <code>.pst</code> mail-store reader is built on.</p>
+  <div class="bodu-card-links">
+    <a href="docs/io-pst/index.md">Introduction</a>
+    <a href="xref:Bodu.IO.Pst">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <img src="images/hero-outlook.svg" alt="Bodu.Formats.Outlook" />
+  <h3>Bodu.Formats.Outlook</h3>
+  <p>The Outlook format readers: <code>Bodu.Formats.Outlook</code> is the shared MAPI value model (property tags and types, the tag-addressed <code>MapiPropertyCollection</code>, named-property identities); <code>Bodu.Formats.Outlook.Msg</code> opens a <code>.msg</code> message over <code>Bodu.IO.Compound</code> and <code>Bodu.Formats.Outlook.Pst</code> opens a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code> — folders, messages, recipients, attachments, embedded messages, named-property resolution, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation.</p>
+  <div class="bodu-card-links">
+    <a href="guides/outlook/index.md">Guides</a>
+    <a href="docs/io-pst/index.md">PST mail store</a>
+    <a href="xref:Bodu.Formats.Outlook">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
@@ -309,6 +330,9 @@ dotnet add package Bodu.Numerics
 dotnet add package Bodu.Financial
 dotnet add package Bodu.IO.Compound
 dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.IO.Pst
+dotnet add package Bodu.Formats.Outlook.Msg
+dotnet add package Bodu.Formats.Outlook.Pst
 ```
 
 </div>

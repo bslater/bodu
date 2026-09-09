@@ -90,10 +90,10 @@ six-place prices round-tripping inside a POCO price list — see
 Consumer extensibility: a custom `CsvFileRateProvider` in the recommended shape (builder →
 book → delegated fixed provider), used directly, through the conversion extensions, and under
 the caching decorator. Its companion test project derives
-`DatedRateProviderContractTests<CsvFileRateProvider>` from
-`Bodu.Financial.ExchangeRates.Testing` — see [Testing your own provider](../guides/financial/testing-providers.md).
-*Packages: `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`,
-`Bodu.Financial.ExchangeRates.Testing` (test).*
+`DatedRateProviderContractTests<CsvFileRateProvider>` from the in-repo
+`Bodu.Financial.ExchangeRates.Testing` project — see [Testing your own provider](../guides/financial/testing-providers.md).
+*Packages: `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`; the test project also references
+the in-repo `Bodu.Financial.ExchangeRates.Testing` project, which is not published to NuGet.*
 
 ### Bodu.Financial.Samples.LiveRates
 
