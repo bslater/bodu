@@ -13,8 +13,8 @@ reports, and multi-source feeds that carry their provenance.
 
 ## Concepts in one minute
 
-- **Rate** — `ExchangeRate` is an immutable record-struct (`FromIsoCode`, `ToIsoCode`, `Date`, `Rate`, `Provider`, `IsInverted`). Rounding is deferred to the money boundary.
-- **Pair** — `CurrencyPair` is the `(From, To)` key. Validates both ISO codes at construction; exposes `Inverse()`.
+- **Rate** — `ExchangeRate` is an immutable record-struct: `From` and `To` (both `CurrencyCode`), `Date`, `Rate`, `Provider`, `IsInverted`, and an optional `FetchedAtUtc`, with a derived `Pair` and a `Convert(amount)` helper. Rounding is deferred to the money boundary.
+- **Pair** — `CurrencyPair` is the `(From, To)` key over two `CurrencyCode` values. Validates both codes at construction; exposes `Inverse()`.
 - **Observation** — `RateObservation` is the lightweight `(Date, Rate)` carrier used by series enumeration, builder mutation, and bulk-import APIs.
 - **Series** — `RateSeries` stores every observation for one `(pair, provider)` in two parallel sorted arrays. Resolution is `O(log n)` via `Array.BinarySearch`, allocation-free. Immutable; use `RateSeriesBuilder` to construct or edit observations.
 - **Builder** — `RateSeriesBuilder` is the mutable companion that maintains strictly ascending unique dates and produces immutable `RateSeries` snapshots via `ToSeries()`.

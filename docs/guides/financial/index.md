@@ -8,7 +8,7 @@ title: Bodu.Financial
 `Bodu.Numerics`. It ships the money, currency, and foreign-exchange
 types that an enterprise / accounting workload needs — kept separate
 from the generic numeric primitives so consumers of `Fraction<T>`
-don't pull in the 185-currency catalogue and the FX provider stack
+don't pull in the 184-currency catalogue and the FX provider stack
 they don't need.
 
 The package references `Bodu.Numerics` so `Money<TCurrency>` can
@@ -77,13 +77,23 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 </div>
 
 <div class="bodu-card">
+  <h3><a href="exchange-rate-providers.md">Built-in exchange-rate providers</a></h3>
+  <p>The eleven live-feed packages — BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF — with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="exchange-rate-caching.md">Caching and aggregating exchange rates</a></h3>
   <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="dependency-injection.md">Dependency injection</a></h3>
-  <p>Register the financial stack with <code>AddFinancialService(...)</code> — currency lookups, named monetary contexts, FX providers, JSON converters, and options binding.</p>
+  <p>Register the financial stack with <code>AddFinancialService(...)</code> — currency lookups, named monetary contexts, FX providers, and options binding — plus the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="testing-providers.md">Testing your own provider</a></h3>
+  <p><code>FixedDatedRateProvider</code> as the deterministic test double for provider consumers, and the in-repository contract-test bases the built-in providers pass.</p>
 </div>
 
 </div>

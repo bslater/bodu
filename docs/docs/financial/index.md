@@ -6,7 +6,7 @@ title: Bodu.Financial — Introduction
 
 ![Bodu.Financial](../../images/hero-financial.svg)
 
-**Bodu.Financial** is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of 184 ISO 4217 currencies (155 active and 29 historic), an exchange-rate provider stack with both timeless and dated lookup, and JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
+**Bodu.Financial** is the monetary-primitives package of the Bodu suite. It ships type-parameter-tagged and runtime-tagged money types, a shipped catalogue of 184 ISO 4217 currencies (155 active and 29 historic), an exchange-rate provider stack with both timeless and dated lookup, and — in the companion `Bodu.Financial.Serialization.Json` package — JSON converters with three policy shapes for ledger-style, lenient-import, and compact-wire integrations. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
 The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip through `Fraction<BigInteger>` for sub-minor-unit-precise intermediate calculations — interest accumulation, percentage-of-percentage, and other chains where deferred rounding matters.
 
@@ -56,7 +56,7 @@ The same namespace is also where the separate **`Bodu.Financial.ExchangeRates`**
 
 ### `Bodu.Financial.Serialization.Json` (companion package)
 
-`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> enum (`Strict = 0`, `Lenient = 1`, `Compact = 2`), shipped in the companion `Bodu.Financial.Serialization.Json` package — the core library is serialization-agnostic and its types carry no `[JsonConverter]` attribute. `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)` registers all five converters at once — for `Money<TCurrency>` (via a `JsonConverterFactory`), `Money`, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> — under the chosen policy, and returns the same `JsonSerializerOptions` for chaining. Each converter also has a parameterless constructor that defaults to `Strict`.
+`System.Text.Json` converters and the <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> enum (`Strict = 0`, `Lenient = 1`, `Compact = 2`), shipped in the companion `Bodu.Financial.Serialization.Json` package — the core library is serialization-agnostic and its types carry no `[JsonConverter]` attribute. `FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)` registers all six converters at once — for `Money<TCurrency>` (via a `JsonConverterFactory`), `Money`, <xref:Bodu.Financial.CalculatedMoney>, `MoneyBag`, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> — under the chosen policy, and returns the same `JsonSerializerOptions` for chaining. Each converter also has a parameterless constructor that defaults to `Strict`.
 
 ## Exchange-rate providers and caching
 
@@ -177,7 +177,7 @@ builder.Services.AddFinancialService(configure: financial =>
 });
 ```
 
-The package depends only on `Bodu.Financial` and `Microsoft.Extensions.DependencyInjection.Abstractions`; applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseCurrencyResolution` activation step.
+The package references `Bodu.Financial` and `Bodu.Core` plus the `Microsoft.Extensions` abstractions it binds against (`DependencyInjection.Abstractions`, `Options`, `Options.ConfigurationExtensions`, `Configuration.Abstractions`, `Configuration.Binder`); applications that construct the financial types by hand (consoles, libraries, tests) do not need to reference it. See [Financial dependency injection](../../guides/financial/dependency-injection.md) for the full builder surface, options binding, and the post-build `UseCurrencyResolution` activation step.
 
 ## Where to go next
 

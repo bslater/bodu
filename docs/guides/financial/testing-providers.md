@@ -4,10 +4,12 @@ title: Testing your own provider
 
 # Testing your own provider
 
-`Bodu.Financial.ExchangeRates.Testing` ships the MSTest contract-test bases the built-in
-providers themselves pass. When you write a custom rate source — or need a deterministic rate
-provider inside your own test suite — this package and one fixed-provider type cover both sides
-of the problem.
+`Bodu.Financial.ExchangeRates.Testing` is an in-repository test-infrastructure project (it is
+not packable, so it does not ship on NuGet) holding the MSTest contract-test bases the built-in
+providers themselves pass; the bases are available by project reference within the repository
+only. When you write a custom rate source — or need a deterministic rate provider inside your own
+test suite — those bases (for in-repo providers) and one shipped fixed-provider type cover both
+sides of the problem.
 
 ## FixedDatedRateProvider is the recommended test double
 

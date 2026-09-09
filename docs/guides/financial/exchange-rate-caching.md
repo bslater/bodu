@@ -5,7 +5,8 @@ title: Caching and aggregating exchange rates
 # Caching and aggregating exchange rates
 
 `Bodu.Financial.ExchangeRates.Caching` adds two pieces **in front of** the
-exchange-rate providers. The concrete providers (Yahoo, OFX, RBA, ECB, BoE) stay pure
+exchange-rate providers. The concrete providers (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer,
+exchangerate.host, FRED, IMF) stay pure
 fetchers that know nothing of caching; each piece implements the same
 [`IDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.IDatedRateProvider)
 contract (and the timeless [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)),
@@ -416,8 +417,9 @@ and [`DistributedRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.Distribut
 are exactly that and serve as worked references. Delegate the freshness, validity,
 merge, and coverage rules to the shared, public
 [`RateCacheRules`](xref:Bodu.Financial.ExchangeRates.Caching.RateCacheRules)
-so your backend stays behaviourally identical to the in-box caches (the same
-`RateCacheContractTests` apply), and make `StoreFetchedRange` write the merged
+so your backend stays behaviourally identical to the in-box caches — serving only
+fresh rows on read, merging and pruning on write, and reporting coverage only for
+windows it actually holds — and make `StoreFetchedRange` write the merged
 rows and the covered window as one atomic unit so a reader never observes coverage
 without its rows.
 
@@ -446,8 +448,8 @@ it through the DI extension method that ships inside the backend's own package (
   `AddRedisRateCache(redis => …, "RBA")` — the Redis configurator is the first
   argument, the provider name the second.
 
-Every backend shares the same freshness, merge, and coverage semantics — the same
-`RateCacheContractTests`.
+Every backend shares the same freshness, merge, and coverage semantics, because each
+delegates to the same `RateCacheRules`.
 
 > [!IMPORTANT]
 > The distributed cache is a **best-effort shared performance hint, not an

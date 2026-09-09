@@ -8,7 +8,7 @@ uid: Bodu.Financial.Serialization.Json
 
 ## Purpose
 
-**Bodu.Financial.Serialization.Json** carries the `System.Text.Json` integration for [`Bodu.Financial`](Bodu.Financial.md). It supplies the converters that round-trip <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, <xref:Bodu.Financial.MoneyBag>, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> to and from JSON, together with a one-call extension that registers them under a chosen policy and a dependency-injection registration for containers.
+**Bodu.Financial.Serialization.Json** carries the `System.Text.Json` integration for [`Bodu.Financial`](Bodu.Financial.md). It supplies the six converters that round-trip <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.Money`1>, <xref:Bodu.Financial.CalculatedMoney>, <xref:Bodu.Financial.MoneyBag>, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> to and from JSON, together with a one-call extension that registers them under a chosen policy and a dependency-injection registration for containers.
 
 The core `Bodu.Financial` library is serialization-agnostic — its monetary types carry no `[JsonConverter]` attribute. Add this package and call `AddFinancialJsonConverters` to opt into JSON support and select a wire policy across a whole `JsonSerializerOptions` instance.
 
@@ -23,6 +23,7 @@ The core `Bodu.Financial` library is serialization-agnostic — its monetary typ
 - <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> — selects the wire shape (`Strict`, `Lenient`, `Compact`).
 - <xref:Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter`1>, <xref:Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory> — converter and factory for <xref:Bodu.Financial.Money`1>.
 - <xref:Bodu.Financial.Serialization.Json.MoneyJsonConverter> — converter for <xref:Bodu.Financial.Money>.
+- <xref:Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter> — converter for <xref:Bodu.Financial.CalculatedMoney>; writes the unrounded `decimal` verbatim (trailing zeros included) so a high-precision unit price survives the round trip.
 - <xref:Bodu.Financial.Serialization.Json.MoneyBagJsonConverter> — converter for <xref:Bodu.Financial.MoneyBag>.
 - <xref:Bodu.Financial.Serialization.Json.ExchangeRateJsonConverter>, <xref:Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter> — converters for the FX value objects.
 - <xref:Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions> — the dependency-injection registration `AddFinancialJson(services, policy)`, a keyed `JsonSerializerOptions` singleton under `JsonOptionsKey` (`"Financial"`).

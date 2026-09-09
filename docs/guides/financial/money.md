@@ -583,7 +583,8 @@ invoicing engines, and FX systems where the currency comes from data,
 not type.
 
 ```csharp
-Money invoice = JsonSerializer.Deserialize<Money>(payload)!;
+// `options` has the financial converters registered (see the JSON section above).
+Money invoice = JsonSerializer.Deserialize<Money>(payload, options)!;
 // invoice could be "USD 19.99", "EUR 19.99", or "JPY 200" — same code.
 ```
 
