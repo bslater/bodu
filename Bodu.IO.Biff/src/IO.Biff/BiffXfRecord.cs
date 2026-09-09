@@ -20,8 +20,8 @@ namespace Bodu.IO.Biff;
 /// </param>
 public readonly record struct BiffXfRecord(ushort FontIndex, ushort FormatIndex, ushort TypeField)
 {
-    /// <summary>The number of leading bytes the codec decodes.</summary>
-    internal const int MinimumLength = 6;
+    /// <summary>The number of leading bytes a record must carry: the font and format indices.</summary>
+    internal const int MinimumLength = 4;
 
     /// <summary>The payload length of a BIFF5 record.</summary>
     internal const int Biff5Length = 16;
@@ -58,7 +58,11 @@ public readonly record struct BiffXfRecord(ushort FontIndex, ushort FormatIndex,
     /// </summary>
     /// <param name="payload">The record payload.</param>
     /// <returns>The decoded record.</returns>
-    /// <exception cref="BiffFormatException">Thrown when the payload is shorter than six bytes.</exception>
+    /// <exception cref="BiffFormatException">Thrown when the payload is shorter than four bytes.</exception>
+    /// <remarks>
+    /// A conformant record is 16 (BIFF5) or 20 (BIFF8) bytes; a record carrying only the two indices is tolerated with
+    /// a zero <see cref="TypeField" /> so a producer that truncates the record still yields its number format.
+    /// </remarks>
     internal static BiffXfRecord Read(ReadOnlySpan<byte> payload)
     {
         const BiffRecordType type = BiffRecordType.Xf;
@@ -67,6 +71,6 @@ public readonly record struct BiffXfRecord(ushort FontIndex, ushort FormatIndex,
         return new BiffXfRecord(
             BiffPayload.ReadUInt16(payload, 0, type),
             BiffPayload.ReadUInt16(payload, 2, type),
-            BiffPayload.ReadUInt16(payload, 4, type));
+            payload.Length >= 6 ? BiffPayload.ReadUInt16(payload, 4, type) : (ushort)0);
     }
 }

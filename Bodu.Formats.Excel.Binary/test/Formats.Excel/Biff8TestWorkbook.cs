@@ -5,7 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using Bodu.Formats.Excel.Biff8;
+using Bodu.Formats.Excel.Biff;
+using Bodu.IO.Biff;
 using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Excel;
@@ -239,9 +240,9 @@ internal static class Biff8TestWorkbook
         BinaryPrimitives.WriteUInt32LittleEndian(counts.Slice(4), (uint)strings.Length);
         payload.Write(counts);
 
+        Span<byte> header = stackalloc byte[3];
         foreach (string value in strings)
         {
-            Span<byte> header = stackalloc byte[3];
             BinaryPrimitives.WriteUInt16LittleEndian(header, (ushort)value.Length);
             header[2] = 0x00;
             payload.Write(header);
@@ -276,7 +277,7 @@ internal static class Biff8TestWorkbook
     public static ExcelWorksheetReader OpenWorksheetReader(params byte[][] body)
     {
         ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
-        return new ExcelWorksheetReader(info, WorksheetSubstream(body), [], Biff8FormatTable.Empty);
+        return new ExcelWorksheetReader(info, WorksheetSubstream(body), [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff8 });
     }
 
     /// <summary>
@@ -288,7 +289,7 @@ internal static class Biff8TestWorkbook
     public static ExcelWorksheetReader OpenWorksheetReaderRaw(byte[] substream)
     {
         ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
-        return new ExcelWorksheetReader(info, substream, [], Biff8FormatTable.Empty);
+        return new ExcelWorksheetReader(info, substream, [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff8 });
     }
 
     /// <summary>

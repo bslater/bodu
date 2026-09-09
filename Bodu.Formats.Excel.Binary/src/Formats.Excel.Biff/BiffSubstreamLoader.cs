@@ -1,12 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Biff8SubstreamLoader.cs" company="Bodu Pty. Ltd.">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="BiffSubstreamLoader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
+using Bodu.IO.Biff;
 
-namespace Bodu.Formats.Excel.Biff8;
+namespace Bodu.Formats.Excel.Biff;
 
 /// <summary>
 /// Reads a single BIFF substream — the records from a beginning-of-file marker up to and including the matching
@@ -17,7 +17,7 @@ namespace Bodu.Formats.Excel.Biff8;
 /// workbook. The caller positions the source stream at the substream's start (for a sheet, the <c>lbPlyPos</c> offset
 /// of its bound-sheet record) before calling <see cref="ReadSubstream(System.IO.Stream)" />.
 /// </remarks>
-internal static class Biff8SubstreamLoader
+internal static class BiffSubstreamLoader
 {
     /// <summary>
     /// Reads the substream beginning at the stream's current position, stopping after the first end-of-file record.
@@ -30,18 +30,17 @@ internal static class Biff8SubstreamLoader
     public static byte[] ReadSubstream(Stream stream)
     {
         using MemoryStream buffer = new();
-        Span<byte> header = stackalloc byte[4];
+        Span<byte> header = stackalloc byte[BiffLimits.RecordHeaderSize];
 
         while (true)
         {
             ReadExactly(stream, header);
             buffer.Write(header);
 
-            ushort id = BinaryPrimitives.ReadUInt16LittleEndian(header);
-            int length = BinaryPrimitives.ReadUInt16LittleEndian(header.Slice(2));
-            CopyExactly(stream, buffer, length);
+            _ = BiffRecordHeader.TryParse(header, out BiffRecordHeader record);
+            CopyExactly(stream, buffer, record.Length);
 
-            if (id == (ushort)Biff8RecordType.Eof)
+            if (record.Type == BiffRecordType.Eof)
                 break;
         }
 

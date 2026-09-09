@@ -83,7 +83,7 @@ public sealed partial class BiffReaderTests
             yield return [new InvalidKat<byte[]>("MULBLANK ragged run", Short(BiffRecordType.MulBlank, 7), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("FORMULA 13 bytes", Short(BiffRecordType.Formula, 13), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("ROW 15 bytes", Short(BiffRecordType.Row, 15), typeof(BiffFormatException))];
-            yield return [new InvalidKat<byte[]>("XF 5 bytes", Short(BiffRecordType.Xf, 5), typeof(BiffFormatException))];
+            yield return [new InvalidKat<byte[]>("XF 3 bytes", Short(BiffRecordType.Xf, 3), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("DIMENSIONS 11 bytes", Short(BiffRecordType.Dimensions, 11), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("BOUNDSHEET 6 bytes", Short(BiffRecordType.BoundSheet, 6), typeof(BiffFormatException))];
             yield return [new InvalidKat<byte[]>("LABEL text overruns", BiffTestRecords.Record(BiffRecordType.Label, [0, 0, 0, 0, 0, 0, 0x05, 0x00, 0x00, (byte)'a']), typeof(BiffFormatException))];
