@@ -44,7 +44,7 @@ A = {  # accent -> dark text colour for chips
     "#3B82F6": "#0B2545", "#60A5FA": "#0B2545", "#34D399": "#06281F",
     "#FBBF24": "#3A2A04", "#A78BFA": "#241A47", "#F472B6": "#3D0A24",
     "#2DD4BF": "#042F2A", "#FB923C": "#3B1E04", "#F87171": "#3B0A0A",
-    "#E2E8F0": "#1E293B",
+    "#E2E8F0": "#1E293B", "#F59E0B": "#3A2A04",
 }
 
 
@@ -200,6 +200,7 @@ ICONS = {
     "Bodu.Security.Cryptography":        ("crypto", "#F87171", "AEAD", "lock"),
     "Bodu.IO.Compound":                  ("iocmp", "#60A5FA", "CFB", "doclines"),
     "Bodu.IO.Pst":                       ("iopst", "#A78BFA", "PST", "doclines"),
+    "Bodu.IO.Biff":                      ("iobiff", "#F59E0B", "BIFF", "doclines"),
     "Bodu.Formats.Excel.Binary":         ("xls", "#34D399", "XLS", "grid"),
     "Bodu.Formats.Outlook":              ("olk", "#60A5FA", "MAPI", "eq"),
     "Bodu.Formats.Outlook.Msg":          ("olkmsg", "#2DD4BF", "MSG", "doclines"),

@@ -1,12 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExcelWorksheetReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers.Binary;
-using System.Globalization;
-using Bodu.Formats.Excel.Biff8;
+using Bodu.Formats.Excel.Biff;
+using Bodu.IO.Biff;
 
 namespace Bodu.Formats.Excel;
 
@@ -58,7 +57,7 @@ public sealed class ExcelWorksheetReader
     private readonly string[] _sharedStrings;
 
     /// <summary>The workbook format table used to resolve each cell's number format.</summary>
-    private readonly Biff8FormatTable _formats;
+    private readonly BiffFormatTable _formats;
 
     /// <summary>Cells pending emission from an expanded <c>MULRK</c> record.</summary>
     private ExcelCell[] _pending = [];
@@ -66,8 +65,11 @@ public sealed class ExcelWorksheetReader
     /// <summary>The index of the next pending cell to emit.</summary>
     private int _pendingIndex;
 
-    /// <summary>The current read position within the substream.</summary>
+    /// <summary>The offset of the next record header within the substream.</summary>
     private int _position;
+
+    /// <summary>The codec state carried between reads: the version and code page of the stream.</summary>
+    private BiffReaderState _state;
 
     /// <summary>Whether the reader has reached the worksheet's end-of-file record.</summary>
     private bool _ended;
@@ -82,12 +84,16 @@ public sealed class ExcelWorksheetReader
     /// <param name="substream">The worksheet substream bytes, from its BOF record through its EOF record.</param>
     /// <param name="sharedStrings">The workbook shared string table.</param>
     /// <param name="formats">The workbook format table.</param>
-    internal ExcelWorksheetReader(ExcelWorksheetInfo worksheet, byte[] substream, string[] sharedStrings, Biff8FormatTable formats)
+    /// <param name="options">
+    /// The codec options carrying the version and code page the workbook globals established.
+    /// </param>
+    internal ExcelWorksheetReader(ExcelWorksheetInfo worksheet, byte[] substream, string[] sharedStrings, BiffFormatTable formats, BiffReaderOptions options)
     {
         Worksheet = worksheet;
         _data = substream;
         _sharedStrings = sharedStrings;
         _formats = formats;
+        _state = new BiffReaderState(options);
     }
 
     /// <summary>
@@ -115,58 +121,14 @@ public sealed class ExcelWorksheetReader
             return true;
         }
 
-        while (!_ended && TryStep(out Biff8RecordType type, out int payloadStart, out int payloadLength))
+        try
         {
-            ReadOnlySpan<byte> payload = _data.AsSpan(payloadStart, payloadLength);
-            switch (type)
-            {
-                case Biff8RecordType.Eof:
-                    _ended = true;
-                    break;
-
-                case Biff8RecordType.LabelSst:
-                    cell = Biff8CellDecoder.ReadLabelSst(payload, _sharedStrings, _formats);
-                    return true;
-
-                case Biff8RecordType.Label:
-                    cell = Biff8CellDecoder.ReadLabel(payload, _formats);
-                    return true;
-
-                case Biff8RecordType.Number:
-                    cell = Biff8CellDecoder.ReadNumber(payload, _formats);
-                    return true;
-
-                case Biff8RecordType.Rk:
-                    cell = Biff8CellDecoder.ReadRk(payload, _formats);
-                    return true;
-
-                case Biff8RecordType.BoolErr:
-                    cell = Biff8CellDecoder.ReadBoolErr(payload, _formats);
-                    return true;
-
-                case Biff8RecordType.MulRk:
-                    _pending = Biff8CellDecoder.ReadMulRk(payload, _formats);
-                    _pendingIndex = 0;
-                    if (_pendingIndex < _pending.Length)
-                    {
-                        cell = _pending[_pendingIndex++];
-                        return true;
-                    }
-
-                    break;
-
-                case Biff8RecordType.Formula:
-                    cell = ReadFormula(payload);
-                    return true;
-
-                default:
-                    // BLANK, MULBLANK, ROW, formatting, and any unrecognized records carry no value to surface.
-                    break;
-            }
+            return TryReadCellCore(out cell);
         }
-
-        cell = default;
-        return false;
+        catch (BiffFormatException ex)
+        {
+            throw new ExcelBinaryFormatException(ex.Message, ex);
+        }
     }
 
     /// <summary>
@@ -189,7 +151,7 @@ public sealed class ExcelWorksheetReader
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     /// <remarks>
     /// Cells are grouped into a row while their row index does not change; a new row is started when the row index
-    /// advances. BIFF8 writes cells in row-major order, so this groups a producer's rows without buffering the whole
+    /// advances. Excel writes cells in row-major order, so this groups a producer's rows without buffering the whole
     /// worksheet.
     /// </remarks>
     public IEnumerable<ExcelRow> ReadRows()
@@ -218,67 +180,100 @@ public sealed class ExcelWorksheetReader
         _disposed = true;
 
     /// <summary>
-    /// Decodes a formula cell, consuming a following <c>STRING</c> record when the cached result is text.
+    /// Walks records from the current position until a value-bearing cell is decoded or the substream ends, letting
+    /// codec exceptions propagate.
     /// </summary>
-    /// <param name="payload">The formula record payload.</param>
-    /// <returns>The decoded cell carrying the cached result.</returns>
-    /// <exception cref="ExcelBinaryFormatException">Thrown when the formula or string record is malformed.</exception>
-    private ExcelCell ReadFormula(ReadOnlySpan<byte> payload)
+    /// <param name="cell">When this method returns, the decoded cell when one was found.</param>
+    /// <returns><see langword="true" /> when a cell was decoded.</returns>
+    private bool TryReadCellCore(out ExcelCell cell)
     {
-        ExcelCell cell = Biff8CellDecoder.ReadFormula(payload, _formats, out bool expectsString);
-        if (!expectsString)
-            return cell;
-
-        int savedPosition = _position;
-        if (TryStep(out Biff8RecordType type, out int stringStart, out int stringLength) && type == Biff8RecordType.String)
+        while (!_ended)
         {
-            string text = Biff8CellDecoder.ReadCachedString(_data.AsSpan(stringStart, stringLength));
-            return ExcelCell.Text(cell.RowIndex, cell.ColumnIndex, text, cell.FormatIndex);
+            var reader = new BiffReader(_data.AsSpan(_position), isFinalBlock: true, _state);
+            if (!reader.Read())
+                break;
+
+            // Commit the position before decoding so a decode failure leaves the reader past the bad record.
+            _position += reader.BytesConsumed;
+            _state = reader.CurrentState;
+
+            switch (reader.RecordType)
+            {
+                case BiffRecordType.Eof:
+                    _ended = true;
+                    break;
+
+                case BiffRecordType.LabelSst:
+                    cell = ExcelCellMapper.FromLabelSst(reader.GetLabelSst(), _sharedStrings, _formats);
+                    return true;
+
+                case BiffRecordType.Label:
+                    cell = ExcelCellMapper.FromLabel(reader.GetLabel(), _formats);
+                    return true;
+
+                case BiffRecordType.RString:
+                    cell = ExcelCellMapper.FromRString(reader.GetRString(), _formats);
+                    return true;
+
+                case BiffRecordType.Number:
+                    cell = ExcelCellMapper.FromNumber(reader.GetNumber(), _formats);
+                    return true;
+
+                case BiffRecordType.Rk:
+                    cell = ExcelCellMapper.FromRk(reader.GetRk(), _formats);
+                    return true;
+
+                case BiffRecordType.BoolErr:
+                    cell = ExcelCellMapper.FromBoolErr(reader.GetBoolErr(), _formats);
+                    return true;
+
+                case BiffRecordType.MulRk:
+                    _pending = ExcelCellMapper.FromMulRk(reader.GetMulRk(), _formats);
+                    _pendingIndex = 0;
+                    if (_pendingIndex < _pending.Length)
+                    {
+                        cell = _pending[_pendingIndex++];
+                        return true;
+                    }
+
+                    break;
+
+                case BiffRecordType.Formula:
+                    cell = ReadFormula(reader.GetFormula());
+                    return true;
+
+                default:
+                    // BLANK, MULBLANK, ROW, formatting, and any unrecognized records carry no value to surface.
+                    break;
+            }
         }
 
-        // The following record was not the expected STRING result; leave it for the next read.
-        _position = savedPosition;
-        return cell;
+        cell = default;
+        return false;
     }
 
     /// <summary>
-    /// Advances past the next record in the substream, reporting its type and payload location.
+    /// Maps a formula cell, consuming a following <c>STRING</c> record when the cached result is text.
     /// </summary>
-    /// <param name="type">When this method returns, the record's type.</param>
-    /// <param name="payloadStart">When this method returns, the byte offset of the record's payload.</param>
-    /// <param name="payloadLength">When this method returns, the length of the record's payload.</param>
-    /// <returns>
-    /// <see langword="true" /> when a record was read; <see langword="false" /> at the end of the substream.
-    /// </returns>
-    /// <exception cref="ExcelBinaryFormatException">
-    /// Thrown when a record header or payload runs past the substream.
-    /// </exception>
-    private bool TryStep(out Biff8RecordType type, out int payloadStart, out int payloadLength)
+    /// <param name="formula">The decoded formula record.</param>
+    /// <returns>The cell carrying the cached result.</returns>
+    /// <exception cref="BiffFormatException">Thrown when the string record is malformed.</exception>
+    private ExcelCell ReadFormula(in BiffFormulaRecord formula)
     {
-        int remaining = _data.Length - _position;
-        if (remaining == 0)
+        ExcelCell cell = ExcelCellMapper.FromFormula(formula, _formats, out bool expectsString);
+        if (!expectsString)
+            return cell;
+
+        // Peek at the next record; consume it only when it is the expected STRING result.
+        var probe = new BiffReader(_data.AsSpan(_position), isFinalBlock: true, _state);
+        if (probe.Read() && probe.RecordType == BiffRecordType.String)
         {
-            type = default;
-            payloadStart = 0;
-            payloadLength = 0;
-            return false;
+            string text = probe.GetString().Text.GetString();
+            _position += probe.BytesConsumed;
+            _state = probe.CurrentState;
+            return ExcelCell.Text(cell.RowIndex, cell.ColumnIndex, text, cell.FormatIndex);
         }
 
-        if (remaining < 4)
-        {
-            throw new ExcelBinaryFormatException(
-                string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Format_Invalid_Biff8TrailingBytes, remaining));
-        }
-
-        ushort id = BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(_position));
-        int length = BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(_position + 2));
-        payloadStart = _position + 4;
-        if (payloadStart + length > _data.Length)
-            throw new ExcelBinaryFormatException(ExcelBinaryResourceStrings.Format_Invalid_Biff8Structure);
-
-        type = (Biff8RecordType)id;
-        payloadLength = length;
-        _position = payloadStart + length;
-        return true;
+        return cell;
     }
 }

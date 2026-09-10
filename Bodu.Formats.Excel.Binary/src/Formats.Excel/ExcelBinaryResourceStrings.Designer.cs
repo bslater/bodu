@@ -61,7 +61,7 @@ namespace Bodu.Formats.Excel {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The workbook stream does not contain a valid BIFF8 record structure..
+        ///   Looks up a localized string similar to The workbook stream does not contain a valid BIFF record structure..
         /// </summary>
         internal static string Format_Invalid_Biff8Structure {
             get {
@@ -69,14 +69,6 @@ namespace Bodu.Formats.Excel {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The shared string table is malformed..
-        /// </summary>
-        internal static string Format_Invalid_Biff8SharedString {
-            get {
-                return ResourceManager.GetString("Format_Invalid_Biff8SharedString", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to A cell references shared string {0}, which is outside the shared string table..
@@ -87,23 +79,7 @@ namespace Bodu.Formats.Excel {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to A '{0}' record is malformed or its payload is too short..
-        /// </summary>
-        internal static string Format_Invalid_Biff8RecordPayload {
-            get {
-                return ResourceManager.GetString("Format_Invalid_Biff8RecordPayload", resourceCulture);
-            }
-        }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The workbook stream contains {0} trailing byte(s) after its final complete record..
-        /// </summary>
-        internal static string Format_Invalid_Biff8TrailingBytes {
-            get {
-                return ResourceManager.GetString("Format_Invalid_Biff8TrailingBytes", resourceCulture);
-            }
-        }
 
         /// <summary>
         ///   Looks up a localized string similar to The substream begins with an unexpected beginning-of-file type (0x{0:X4})..
@@ -133,7 +109,7 @@ namespace Bodu.Formats.Excel {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The workbook uses an unsupported BIFF version (0x{0:X4}); only BIFF8 is supported..
+        ///   Looks up a localized string similar to The workbook uses an unsupported BIFF version (0x{0:X4}); only BIFF5 and BIFF8 are supported..
         /// </summary>
         internal static string Op_NotSupported_Biff8Version {
             get {

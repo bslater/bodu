@@ -51,7 +51,7 @@ foreach (ExcelRow row in reader.ReadRows())
 }
 ```
 
-<xref:Bodu.Formats.Excel.ExcelWorksheetReader.ReadRows> groups consecutive cells into an <xref:Bodu.Formats.Excel.ExcelRow> as their row index advances. Because BIFF8 writes cells in row-major order, this groups a producer's rows without buffering the whole sheet. Rows with no populated cell are not materialized, so the sequence is sparse.
+<xref:Bodu.Formats.Excel.ExcelWorksheetReader.ReadRows> groups consecutive cells into an <xref:Bodu.Formats.Excel.ExcelRow> as their row index advances. Because Excel writes cells in row-major order, this groups a producer's rows without buffering the whole sheet. Rows with no populated cell are not materialized, so the sequence is sparse.
 
 ## Pattern 3 — random access by position
 
@@ -143,7 +143,7 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("big.xls", opt
 **Avoid full materialization for one-pass work.** `ReadCells` and `ReadRows`
 stream lazily; `ReadRows` groups consecutive cells into an
 <xref:Bodu.Formats.Excel.ExcelRow> as the row index advances without buffering the
-whole sheet, because BIFF8 writes cells in row-major order. Reach for
+whole sheet, because Excel writes cells in row-major order. Reach for
 `ReadWorksheet` (which buffers) only when you must revisit cells.
 
 | Goal | Do | Avoid |

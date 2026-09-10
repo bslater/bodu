@@ -7,7 +7,7 @@
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Represents a single populated cell read from a BIFF8 worksheet, carrying its zero-based position and raw value.
+/// Represents a single populated cell read from a BIFF worksheet, carrying its zero-based position and raw value.
 /// </summary>
 /// <remarks>
 /// The reader emits a cell only for a populated value; absent cells are simply not returned, so a worksheet is a sparse

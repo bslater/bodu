@@ -127,6 +127,10 @@
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.MiddleEast/src/Bodu.Globalization.Calendar.MiddleEast.csproj" />
     <Project Path="Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.MiddleEast/test/Bodu.Globalization.Calendar.MiddleEast.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.IO.Biff/">
+    <Project Path="Bodu.IO.Biff/src/Bodu.IO.Biff.csproj" />
+    <Project Path="Bodu.IO.Biff/test/Bodu.IO.Biff.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.IO.Compound/">
     <Project Path="Bodu.IO.Compound/src/Bodu.IO.Compound.csproj" />
     <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
@@ -311,6 +315,9 @@
   </Folder>
   <Folder Name="/Samples/Formats.Excel/">
     <Project Path="samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading/Bodu.Formats.Excel.Binary.Samples.ExcelReading.csproj" />
+  </Folder>
+  <Folder Name="/Samples/IO.Biff/">
+    <Project Path="samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics/Bodu.IO.Biff.Samples.BiffBasics.csproj" />
   </Folder>
   <Folder Name="/Samples/IO.Compound/">
     <Project Path="samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics/Bodu.IO.Compound.Samples.CompoundBasics.csproj" />

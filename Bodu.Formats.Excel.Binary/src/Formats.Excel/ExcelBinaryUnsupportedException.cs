@@ -10,8 +10,9 @@ namespace Bodu.Formats.Excel;
 /// The exception thrown when a workbook declares a BIFF version or feature this reader does not support.
 /// </summary>
 /// <remarks>
-/// The reader targets BIFF8 (Excel 97-2003). A workbook written in an earlier BIFF version, identified by the version
-/// field of its beginning-of-file record, is reported through this exception rather than mis-parsed.
+/// The reader targets BIFF5 (Excel 5.0/95) and BIFF8 (Excel 97-2003). A workbook written in an earlier BIFF version,
+/// identified by the version field of its beginning-of-file record, is reported through this exception rather than
+/// mis-parsed.
 /// </remarks>
 public sealed class ExcelBinaryUnsupportedException
     : NotSupportedException

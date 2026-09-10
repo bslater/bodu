@@ -59,19 +59,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Format_Invalid_Biff8Structure" xml:space="preserve">
-    <value>The workbook stream does not contain a valid BIFF8 record structure.</value>
-  </data>
-  <data name="Format_Invalid_Biff8SharedString" xml:space="preserve">
-    <value>The shared string table is malformed.</value>
+    <value>The workbook stream does not contain a valid BIFF record structure.</value>
   </data>
   <data name="Format_Invalid_Biff8StringIndex" xml:space="preserve">
     <value>A cell references shared string {0}, which is outside the shared string table.</value>
-  </data>
-  <data name="Format_Invalid_Biff8RecordPayload" xml:space="preserve">
-    <value>A '{0}' record is malformed or its payload is too short.</value>
-  </data>
-  <data name="Format_Invalid_Biff8TrailingBytes" xml:space="preserve">
-    <value>The workbook stream contains {0} trailing byte(s) after its final complete record.</value>
   </data>
   <data name="Format_Invalid_Biff8SubstreamType" xml:space="preserve">
     <value>The substream begins with an unexpected beginning-of-file type (0x{0:X4}).</value>
@@ -83,7 +74,7 @@
     <value>No worksheet named '{0}' exists in the workbook.</value>
   </data>
   <data name="Op_NotSupported_Biff8Version" xml:space="preserve">
-    <value>The workbook uses an unsupported BIFF version (0x{0:X4}); only BIFF8 is supported.</value>
+    <value>The workbook uses an unsupported BIFF version (0x{0:X4}); only BIFF5 and BIFF8 are supported.</value>
   </data>
   <data name="Op_NotSupported_Biff8Encrypted" xml:space="preserve">
     <value>The workbook is encrypted and cannot be read; decryption is not supported.</value>

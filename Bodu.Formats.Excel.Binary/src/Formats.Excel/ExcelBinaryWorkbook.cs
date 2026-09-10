@@ -5,15 +5,16 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using Bodu.Formats.Excel.Biff8;
+using Bodu.Formats.Excel.Biff;
+using Bodu.IO.Biff;
 using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
 
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Provides a disposable, read-only session over an Excel 97-2003 binary workbook (BIFF8 / <c>.xls</c>), exposing its
-/// sheets and the raw cell values of each.
+/// Provides a disposable, read-only session over an Excel binary workbook (<c>.xls</c>, BIFF5 as written by Excel
+/// 5.0/95 or BIFF8 as written by Excel 97-2003), exposing its sheets and the raw cell values of each.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -62,7 +63,7 @@ public sealed class ExcelBinaryWorkbook
     private readonly string _streamName;
 
     /// <summary>The parsed workbook globals.</summary>
-    private readonly Biff8WorkbookGlobals _globals;
+    private readonly BiffWorkbookGlobals _globals;
 
     /// <summary>The worksheet descriptors, in workbook order.</summary>
     private readonly ExcelWorksheetInfo[] _worksheets;
@@ -81,7 +82,7 @@ public sealed class ExcelBinaryWorkbook
     private ExcelBinaryWorkbook(
         CompoundFile compound,
         string streamName,
-        Biff8WorkbookGlobals globals,
+        BiffWorkbookGlobals globals,
         ExcelWorksheetInfo[] worksheets,
         ExcelWorkbookProperties properties)
     {
@@ -117,6 +118,15 @@ public sealed class ExcelBinaryWorkbook
     public ExcelDateSystem DateSystem => _globals.DateSystem;
 
     /// <summary>
+    /// Gets the BIFF version the workbook stream is encoded in.
+    /// </summary>
+    /// <value>
+    /// <see cref="IO.Biff.BiffVersion.Biff5" /> for an Excel 5.0/95 workbook or
+    /// <see cref="IO.Biff.BiffVersion.Biff8" /> for an Excel 97-2003 workbook.
+    /// </value>
+    public BiffVersion BiffVersion => _globals.Version;
+
+    /// <summary>
     /// Opens a workbook from a file path.
     /// </summary>
     /// <param name="path">The path of the <c>.xls</c> file.</param>
@@ -129,7 +139,9 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when the compound file has no workbook stream.
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
-    /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the workbook is not BIFF8.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the workbook is in a BIFF version before BIFF5.
+    /// </exception>
     /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     /// <example>
     /// <code language="csharp">
@@ -213,7 +225,9 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when the compound file has no workbook stream.
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
-    /// <exception cref="ExcelBinaryUnsupportedException">Thrown when the workbook is not BIFF8.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the workbook is in a BIFF version before BIFF5.
+    /// </exception>
     /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     public static ExcelBinaryWorkbook OpenRead(Stream stream, bool leaveOpen = false) =>
         OpenCore(stream, leaveOpen, ExcelBinaryReaderOptions.s_default);
@@ -278,7 +292,7 @@ public sealed class ExcelBinaryWorkbook
             throw new ArgumentOutOfRangeException(nameof(worksheetIndex));
 
         byte[] substream = ReadSheetSubstream(worksheetIndex);
-        return new ExcelWorksheetReader(_worksheets[worksheetIndex], substream, _globals.SharedStrings, _globals.Formats);
+        return new ExcelWorksheetReader(_worksheets[worksheetIndex], substream, _globals.SharedStrings, _globals.Formats, _globals.ReaderOptions);
     }
 
     /// <summary>
@@ -391,7 +405,7 @@ public sealed class ExcelBinaryWorkbook
             string streamName = ResolveWorkbookStreamName(root);
 
             byte[] globalsBytes = ReadGlobalsSubstream(root, streamName);
-            var globals = Biff8WorkbookGlobals.Parse(globalsBytes, options);
+            var globals = BiffWorkbookGlobals.Parse(globalsBytes, options);
 
             ExcelWorksheetInfo[] worksheets = DescribeWorksheets(root, streamName, globals);
             ExcelWorkbookProperties properties = options.ReadDocumentProperties
@@ -441,7 +455,7 @@ public sealed class ExcelBinaryWorkbook
     private static byte[] ReadGlobalsSubstream(CompoundStorage root, string streamName)
     {
         using CompoundStream stream = root.OpenStream(streamName);
-        return Biff8SubstreamLoader.ReadSubstream(stream);
+        return BiffSubstreamLoader.ReadSubstream(stream);
     }
 
     /// <summary>
@@ -451,9 +465,9 @@ public sealed class ExcelBinaryWorkbook
     /// <param name="streamName">The name of the workbook stream.</param>
     /// <param name="globals">The parsed workbook globals.</param>
     /// <returns>The worksheet descriptors, in workbook order.</returns>
-    private static ExcelWorksheetInfo[] DescribeWorksheets(CompoundStorage root, string streamName, Biff8WorkbookGlobals globals)
+    private static ExcelWorksheetInfo[] DescribeWorksheets(CompoundStorage root, string streamName, BiffWorkbookGlobals globals)
     {
-        IReadOnlyList<Biff8SheetDirectoryEntry> entries = globals.Sheets;
+        IReadOnlyList<BiffSheetDirectoryEntry> entries = globals.Sheets;
         var worksheets = new ExcelWorksheetInfo[entries.Count];
         if (entries.Count == 0)
             return worksheets;
@@ -461,9 +475,9 @@ public sealed class ExcelBinaryWorkbook
         using CompoundStream stream = root.OpenStream(streamName);
         for (int i = 0; i < entries.Count; i++)
         {
-            Biff8SheetDirectoryEntry entry = entries[i];
+            BiffSheetDirectoryEntry entry = entries[i];
             ExcelWorksheetDimensions dimensions = entry.Type == ExcelSheetType.Worksheet
-                ? Biff8DimensionsReader.Read(stream, entry.StreamOffset)
+                ? BiffDimensionsScanner.Read(stream, entry.StreamOffset, globals.Version)
                 : default;
 
             worksheets[i] = new ExcelWorksheetInfo(entry.Name, i, entry.Visibility, entry.Type, dimensions);
@@ -528,7 +542,7 @@ public sealed class ExcelBinaryWorkbook
         using CompoundStream stream = _root.OpenStream(_streamName);
         stream.Seek(offset, SeekOrigin.Begin);
 
-        return Biff8SubstreamLoader.ReadSubstream(stream);
+        return BiffSubstreamLoader.ReadSubstream(stream);
     }
 
     /// <summary>

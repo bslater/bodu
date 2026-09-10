@@ -14,6 +14,8 @@
   href: calendar.md
 - name: Globalization.Recurrence
   href: recurrence.md
+- name: IO.Biff
+  href: io-biff.md
 - name: IO.Compound
   href: io-compound.md
 - name: IO.Pst

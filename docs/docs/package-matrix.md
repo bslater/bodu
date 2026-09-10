@@ -82,7 +82,8 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | Package | Status | Purpose | Depends on |
 |---|---|---|---|
 | `Bodu.IO.Compound` | Stable | Reader and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Opens existing containers (exposing the embedded named streams) and authors new ones via `CompoundFile.Create` and the builder API, with no application-format knowledge. | `Bodu.Core` |
-| `Bodu.Formats.Excel.Binary` | Stable | Narrow, read-only BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.Core` |
+| `Bodu.IO.Biff` | Preview | A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy `.xls` workbooks — the substrate beneath `Bodu.Formats.Excel.Binary`, in the same relation `Bodu.IO.Pst` has to `Bodu.Formats.Outlook.Pst`. The forward-only, allocation-free `BiffReader` frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; `BiffSstReader` walks the BIFF8 shared string table across its CONTINUE records; `BiffWriter` emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation. | `Bodu.Core`, `System.Text.Encoding.CodePages` |
+| `Bodu.Formats.Excel.Binary` | Stable | Narrow, read-only BIFF5 and BIFF8 (`.xls`) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `Bodu.IO.Compound`, `Bodu.IO.Biff`, `Bodu.Core` |
 | `Bodu.IO.Pst` | Preview | Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files — header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing. | `Bodu.Collections`, `Bodu.Core` |
 | `Bodu.Formats.Outlook` | Preview | The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free — the `.msg` reader (`Bodu.Formats.Outlook.Msg`) and the `.pst` mail-store reader (`Bodu.Formats.Outlook.Pst`, over `Bodu.IO.Pst`) build on it rather than owning the model. | `Bodu.Core` |
 | `Bodu.Formats.Outlook.Msg` | Preview | Read-only reader for the Outlook message format (`.msg` / MS-OXMSG) over the `Bodu.IO.Compound` OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or message authoring. | `Bodu.IO.Compound`, `Bodu.Formats.Outlook`, `Bodu.Core` |
@@ -105,6 +106,7 @@ Several exchange-rate providers ship as independent packages over a shared `IDat
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | `SqliteRateCache`, an `IRateCache` over a SQLite database (via `Microsoft.Data.Sqlite`), persisting a provider's dated rates and fetch-coverage windows in `rates` and `coverage` tables; behaviourally identical to the in-memory and TOML caches (the repository's cache contract tests run unchanged against every backend). Includes its own `AddSqliteRateCache` DI registration (in the `Bodu.Financial.ExchangeRates` namespace), binding `SqliteRateCacheOptions`. | `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial`, `Bodu.Financial.DependencyInjection`, `Bodu.Core`, `Microsoft.Data.Sqlite` |
 
 <div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-io-biff.svg" alt="Bodu.IO.Biff" /><figcaption><code>Bodu.IO.Biff</code></figcaption></figure>
 <figure><img src="../images/hero-io-pst.svg" alt="Bodu.IO.Pst" /><figcaption><code>Bodu.IO.Pst</code></figcaption></figure>
 <figure><img src="../images/hero-outlook.svg" alt="Bodu.Formats.Outlook" /><figcaption><code>Bodu.Formats.Outlook</code></figcaption></figure>
 <figure><img src="../images/hero-outlook-msg.svg" alt="Bodu.Formats.Outlook.Msg" /><figcaption><code>Bodu.Formats.Outlook.Msg</code></figcaption></figure>
@@ -203,6 +205,7 @@ dotnet add package Bodu.Numerics.Serialization.Json
 
 # File formats and exchange-rate data
 dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.IO.Biff
 dotnet add package Bodu.Formats.Excel.Binary
 dotnet add package Bodu.IO.Pst
 dotnet add package Bodu.Formats.Outlook
