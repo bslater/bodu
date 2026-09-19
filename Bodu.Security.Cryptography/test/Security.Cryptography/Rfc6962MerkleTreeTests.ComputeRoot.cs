@@ -121,6 +121,63 @@ public partial class Rfc6962MerkleTreeTests
     }
 
     /// <summary>
+    /// Verifies that an odd trailing leaf is not duplicated and paired with itself, the construction behind
+    /// Bitcoin's CVE-2012-2459, under which two different leaf lists can share a root.
+    /// </summary>
+    /// <remarks>
+    /// There are two well-known wrong ways to reduce an odd node: re-hash it alone as a one-child node, which is
+    /// what <see cref="MerkleTreeHash" /> does, or duplicate it and hash it against itself, which is what Bitcoin
+    /// does. RFC 6962 does neither — it promotes the subtree root unchanged — and this pins the root against both
+    /// alternatives. Under the duplicating construction a three-leaf tree collides with a four-leaf tree whose last
+    /// leaf repeats the third, which is the forgery the CVE describes.
+    /// </remarks>
+    [TestMethod]
+    public void ComputeRoot_WhenTrailingLeafIsOdd_ShouldNotDuplicateItAgainstItself()
+    {
+        Rfc6962MerkleTree tree = CreateTree();
+        byte[] a = [0x61];
+        byte[] b = [0x62];
+        byte[] c = [0x63];
+
+        byte[] pairAb = tree.HashNode(tree.HashLeaf(a), tree.HashLeaf(b));
+        byte[] leafC = tree.HashLeaf(c);
+
+        string threeLeafRoot = Hex(tree.ComputeRoot([a, b, c]));
+
+        // Bitcoin's rebalancing would pair the lone leaf with a copy of itself.
+        byte[] duplicatedLeaf = tree.HashNode(leafC, leafC);
+
+        Assert.AreEqual(Hex(tree.HashNode(pairAb, leafC)), threeLeafRoot);
+        Assert.AreNotEqual(Hex(tree.HashNode(pairAb, duplicatedLeaf)), threeLeafRoot);
+
+        // And the collision the CVE turns on does not exist here: repeating the third leaf is a different tree.
+        Assert.AreNotEqual(threeLeafRoot, Hex(tree.ComputeRoot([a, b, c, c])));
+    }
+
+    /// <summary>
+    /// Verifies that an internal node's preimage cannot be passed off as leaf data, which is the second-preimage
+    /// attack the leaf and node domain prefixes exist to prevent.
+    /// </summary>
+    /// <remarks>
+    /// Without domain separation a two-leaf tree's root is <c>H(l0 || l1)</c>, so an attacker could present the
+    /// concatenation of the two child hashes as a single entry and obtain the same root from a one-entry tree. With
+    /// the prefixes the two preimages are structurally distinct and no such entry exists.
+    /// </remarks>
+    [TestMethod]
+    public void ComputeRoot_WhenAnInternalNodePreimageIsOfferedAsAnEntry_ShouldNotCollideWithTheTwoLeafRoot()
+    {
+        Rfc6962MerkleTree tree = CreateTree();
+        byte[] first = [0x61];
+        byte[] second = [0x62];
+
+        byte[] twoLeafRoot = tree.ComputeRoot([first, second]);
+        byte[] nodePreimage = [.. tree.HashLeaf(first), .. tree.HashLeaf(second)];
+
+        Assert.AreNotEqual(Hex(twoLeafRoot), Hex(tree.ComputeRoot([nodePreimage])));
+        Assert.AreNotEqual(Hex(twoLeafRoot), Hex(tree.HashLeaf(nodePreimage)));
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> entry list is rejected with
     /// <see cref="ArgumentNullException" />.
     /// </summary>
