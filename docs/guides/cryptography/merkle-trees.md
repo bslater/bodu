@@ -6,19 +6,20 @@ title: Using Merkle trees
 
 A Merkle tree takes a stream, chops it into fixed-size leaves, hashes each leaf, then hashes groups of child hashes together, level by level, until one root hash remains. The root changes if any byte of the input changes — but because the tree is built bottom-up, you can also prove a single chunk's integrity without rehashing the whole stream.
 
-**Bodu.Security.Cryptography** ships two implementations:
+**Bodu.Security.Cryptography** ships three implementations:
 
 | Type | Shape | When to reach for it |
 |---|---|---|
 | <xref:Bodu.Security.Cryptography.MerkleTreeHash> | Synchronous, single-threaded | Simple, deterministic. Fine for most files and everyday use. |
 | <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Asynchronous, level-worker pipeline | Large inputs where leaf hashing and internal-node reduction should overlap. |
+| <xref:Bodu.Security.Cryptography.Rfc6962MerkleTree> | Synchronous, RFC 6962 binary tree | Interoperating with a transparency log or any other RFC 6962 implementation, and the only one that produces **inclusion and consistency proofs**. |
 
-Neither is itself a `HashAlgorithm` — both are composition wrappers that take a **factory** for the underlying hash (SHA-256, Tiger, anything that derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>) and orchestrate the tree on top of it.
+None is itself a `HashAlgorithm` — all three are composition wrappers that take a **factory** for the underlying hash (SHA-256, Tiger, anything that derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>) and orchestrate the tree on top of it.
 
 > [!IMPORTANT]
-> **These types borrow RFC 6962's domain separation, not its tree.** Leaves are hashed as `H(0x00 ‖ block)` and internal nodes as `H(0x01 ‖ children)`, exactly as [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) specifies. The *reduction* is different: RFC 6962 splits a tree of *n* leaves at `k`, the largest power of two strictly below *n*, and promotes a lone subtree root unchanged, whereas both types here reduce level by level with a configurable `fanOut` and re-hash a lone leftover child as a one-child node. The roots agree only when the leaf count is a power of two.
+> **`MerkleTreeHash` and `ParallelMerkleTreeHash` borrow RFC 6962's domain separation, not its tree.** Leaves are hashed as `H(0x00 ‖ block)` and internal nodes as `H(0x01 ‖ children)`, exactly as [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) specifies. The *reduction* is different: RFC 6962 splits a tree of *n* leaves at `k`, the largest power of two strictly below *n*, and promotes a lone subtree root unchanged, whereas those two reduce level by level with a configurable `fanOut` and re-hash a lone leftover child as a one-child node. Their roots agree with RFC 6962's only when the leaf count is a power of two.
 >
-> So do **not** cross-check a root from either type against a transparency log or another RFC 6962 implementation. A level-by-level reduction is a sound commitment — it is simply a different one — and these roots are stable and will not change.
+> So do **not** cross-check a root from either of them against a transparency log or another RFC 6962 implementation. A level-by-level reduction is a sound commitment — it is simply a different one — and those roots are stable and will not change. Where you need RFC 6962's actual tree, and where you need proofs, use <xref:Bodu.Security.Cryptography.Rfc6962MerkleTree> — see [RFC 6962 trees and proofs](#rfc-6962-trees-and-proofs).
 
 ![Merkle tree construction](../../images/diagrams/merkle-tree.svg)
 
@@ -125,7 +126,10 @@ Diagnostics are optional; pass `null` when you don't need them and the pipeline 
 
 The reason to build a tree rather than a flat digest is the **inclusion proof** (a.k.a. Merkle / audit proof): a logarithmic-size witness that one leaf belongs under a known root, without revealing or rehashing the rest of the input. For a leaf at position `i`, the proof is the sequence of *sibling* hashes encountered on the path from that leaf up to the root — `fanOut − 1` siblings per level, so the proof size grows as `(fanOut − 1) · log_fanOut(leafCount)`. A verifier recomputes each parent by hashing the concatenation of the node and its siblings in order, level by level, and accepts only if the final value equals the trusted root.
 
-This package does not expose a one-call `GetProof(i)` API, but every hash the tree builds is available through <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics>, so you can assemble a proof yourself. Each captured <xref:Bodu.Security.Cryptography.MerkleTreeDiagnosticNode> records its `Level`, `Index`, produced `Hash`, and the ordered `ChildHashes` it was built from — enough to walk a leaf's path and collect the siblings:
+> [!TIP]
+> If you want inclusion proofs, reach for <xref:Bodu.Security.Cryptography.Rfc6962MerkleTree> rather than assembling them by hand — see [RFC 6962 trees and proofs](#rfc-6962-trees-and-proofs) below. The hand-rolled approach in this section remains documented because it is the only way to obtain a proof over the *level-by-level* tree shape that `MerkleTreeHash` and `ParallelMerkleTreeHash` build.
+
+For those two types there is no one-call `GetProof(i)` API, but every hash the tree builds is available through <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics>, so you can assemble a proof yourself. Each captured <xref:Bodu.Security.Cryptography.MerkleTreeDiagnosticNode> records its `Level`, `Index`, produced `Hash`, and the ordered `ChildHashes` it was built from — enough to walk a leaf's path and collect the siblings:
 
 ```csharp
 using System.Security.Cryptography;
@@ -159,6 +163,70 @@ To re-derive every internal node from its children and confirm the whole tree is
 
 <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> produces the **same root** as the sequential <xref:Bodu.Security.Cryptography.MerkleTreeHash> for the same `(algorithmFactory, blockSize, fanOut)` — the parallelism changes *how* the tree is built, not *what* tree results, so a root computed in parallel verifies against a proof checked sequentially and vice versa. The dispatcher reads the input in chunks and feeds leaves into a producer/consumer pipeline while level-workers reduce completed groups into parents concurrently; a short tail block is hashed at its **actual** length and is never zero-padded, so an input cannot collide with a zero-extended longer one. See [Pattern 4](#pattern-4--the-parallel-pipeline) above and the class documentation's swim-lane diagram.
 
+## RFC 6962 trees and proofs
+
+<xref:Bodu.Security.Cryptography.Rfc6962MerkleTree> is the type to use when a root must interoperate with a transparency log, an artifact attestation, or anything else built to [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) — and it is the only one of the three that produces proofs. It is binary by definition, so there is no `fanOut` to choose, and an empty tree's root is `H()` rather than an exception.
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+var tree = new Rfc6962MerkleTree(SHA256.Create);   // immutable; safe to share across threads
+
+ReadOnlyMemory<byte>[] entries = [ new byte[0], new byte[] { 0x00 }, new byte[] { 0x10 } ];
+
+byte[] root  = tree.ComputeRoot(entries);
+byte[][] path = tree.AuthenticationPath(entries, leafIndex: 2);
+
+bool ok = tree.VerifyInclusion(
+    root, treeSize: entries.Length, leafIndex: 2,
+    entry: entries[2].Span,
+    path: path.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
+```
+
+For a byte stream, block mode gives you the root and — in the same pass — the leaf hashes a path needs, so a large object is never read twice:
+
+```csharp
+MerkleComputation computation = tree.ComputeBlocked(stream, blockSize: 1024 * 1024);
+
+byte[]   root      = computation.Root;
+byte[][] blockPath = tree.AuthenticationPath(computation.LeafHashes, blockIndex);
+```
+
+Use `ComputeRootOfBlocks` instead when you want only the root: it folds the tree as it reads, so memory stays at `O(blockSize + log n · hashSize)` rather than retaining every leaf hash.
+
+### Trust the size, or bind it
+
+> [!WARNING]
+> `VerifyInclusion`'s `treeSize` is **trusted input**. A four-entry tree's path for entry 0 has exactly the length a three-entry tree's first path wants and walks to the same head, so verification accepts both. If you take the size from the party you are examining, they can understate it — exempting their last entries from ever being challenged — and every check still passes.
+
+That is RFC 6962 behaving as specified, not a defect. When the size comes from an untrusted party, publish a **length-bound** root and verify against that instead:
+
+```csharp
+byte[] published = tree.BindRoot(computation.Root, computation.InputLength);
+
+bool ok = tree.VerifyBlockInclusion(
+    published, computation.InputLength, blockSize, blockIndex, block, blockPath);
+```
+
+`VerifyBlockInclusion` derives the tree size from the bound length and block size, so there is no size left to misstate, and it requires the block to be exactly the length its position demands. `VerifyInclusionBound` is the entry-mode equivalent.
+
+### Consistency proofs
+
+For an append-only log, a consistency proof shows that an earlier published tree is a prefix of a later one:
+
+```csharp
+byte[][] proof = tree.ConsistencyProof(entries, firstSize: 3);
+
+bool ok = tree.VerifyConsistency(
+    firstRoot, firstSize: 3, secondRoot, secondSize: entries.Length,
+    proof.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
+```
+
+Both sizes and both roots are inputs and the proof must reconstruct both, so the size ambiguity above has no analogue here. Three cases are decided without walking the proof: a later size below the earlier one is rejected outright, equal sizes require identical roots *and* an empty proof, and a first size of zero requires an empty proof because every tree extends the empty tree.
+
+All verification entry points return `false` for malformed input rather than throwing — a wrong index, a path too long or too short, an element of the wrong width — because a verifier sits directly behind untrusted input, and an exception where a `false` belongs is a denial of service.
+
 ## When to use a Merkle tree
 
 - **Partial verification.** You want to prove that byte range `[N, M)` of a large file matches the original, without rehashing the whole file. The Merkle tree lets you do that with a logarithmic-size proof.
@@ -171,5 +239,5 @@ For a single end-to-end file digest where partial verification is not a requirem
 
 - [Hashing overview](hashing.md) — where Merkle trees sit alongside the other families.
 - [Using Tiger](tiger.md) — a common leaf-hash choice for content-addressed systems.
-- <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.
+- <xref:Bodu.Security.Cryptography.Rfc6962MerkleTree> · <xref:Bodu.Security.Cryptography.MerkleBlocks> · <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
