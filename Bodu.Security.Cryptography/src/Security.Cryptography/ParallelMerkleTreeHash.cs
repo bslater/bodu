@@ -161,8 +161,9 @@ public sealed class ParallelMerkleTreeHash
     /// <summary>The raw-byte accumulation buffer used to assemble each leaf block.</summary>
     /// <remarks>
     /// Single-caller only; not thread-safe. Allocated once and reused across calls; <see cref="Reset" /> zeroes
-    /// <see cref="_bufferLength" /> without clearing the buffer contents, since <see cref="FinalizeAsync" /> always
-    /// explicitly pads before hashing any tail block.
+    /// <see cref="_bufferLength" /> without clearing the buffer contents, because every hash is taken over exactly
+    /// the first <see cref="_bufferLength" /> bytes — a tail block is hashed at its actual length and never padded —
+    /// so stale bytes beyond that position can never reach a leaf.
     /// </remarks>
     private readonly byte[] _blockBuffer;
 

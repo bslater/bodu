@@ -15,6 +15,11 @@ A Merkle tree takes a stream, chops it into fixed-size leaves, hashes each leaf,
 
 Neither is itself a `HashAlgorithm` — both are composition wrappers that take a **factory** for the underlying hash (SHA-256, Tiger, anything that derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>) and orchestrate the tree on top of it.
 
+> [!IMPORTANT]
+> **These types borrow RFC 6962's domain separation, not its tree.** Leaves are hashed as `H(0x00 ‖ block)` and internal nodes as `H(0x01 ‖ children)`, exactly as [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) specifies. The *reduction* is different: RFC 6962 splits a tree of *n* leaves at `k`, the largest power of two strictly below *n*, and promotes a lone subtree root unchanged, whereas both types here reduce level by level with a configurable `fanOut` and re-hash a lone leftover child as a one-child node. The roots agree only when the leaf count is a power of two.
+>
+> So do **not** cross-check a root from either type against a transparency log or another RFC 6962 implementation. A level-by-level reduction is a sound commitment — it is simply a different one — and these roots are stable and will not change.
+
 ![Merkle tree construction](../../images/diagrams/merkle-tree.svg)
 
 ## Pattern 1 — a simple Merkle root
@@ -152,7 +157,7 @@ To re-derive every internal node from its children and confirm the whole tree is
 
 ## Parallel construction
 
-<xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> produces the **same root** as the sequential <xref:Bodu.Security.Cryptography.MerkleTreeHash> for the same `(algorithmFactory, blockSize, fanOut)` — the parallelism changes *how* the tree is built, not *what* tree results, so a root computed in parallel verifies against a proof checked sequentially and vice versa. The dispatcher reads the input in chunks and feeds leaves into a producer/consumer pipeline while level-workers reduce completed groups into parents concurrently; a short tail block is zero-padded to a full `blockSize` so every leaf is the same width. See [Pattern 4](#pattern-4--the-parallel-pipeline) above and the class documentation's swim-lane diagram.
+<xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> produces the **same root** as the sequential <xref:Bodu.Security.Cryptography.MerkleTreeHash> for the same `(algorithmFactory, blockSize, fanOut)` — the parallelism changes *how* the tree is built, not *what* tree results, so a root computed in parallel verifies against a proof checked sequentially and vice versa. The dispatcher reads the input in chunks and feeds leaves into a producer/consumer pipeline while level-workers reduce completed groups into parents concurrently; a short tail block is hashed at its **actual** length and is never zero-padded, so an input cannot collide with a zero-extended longer one. See [Pattern 4](#pattern-4--the-parallel-pipeline) above and the class documentation's swim-lane diagram.
 
 ## When to use a Merkle tree
 
