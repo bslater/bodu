@@ -65,8 +65,9 @@ public sealed class MerkleComputation
     /// rather than one empty block.
     /// </value>
     /// <remarks>
-    /// Pass this list to <c>AuthenticationPath</c> to produce an authentication path without re-reading the
-    /// input.
+    /// Pass this list to
+    /// <see cref="Rfc6962MerkleTree.AuthenticationPath(IReadOnlyList{byte[]}, long)" /> to produce an
+    /// authentication path without re-reading the input.
     /// </remarks>
     public IReadOnlyList<byte[]> LeafHashes { get; }
 }
