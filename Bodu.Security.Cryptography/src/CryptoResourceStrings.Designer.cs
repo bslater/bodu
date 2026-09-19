@@ -1157,5 +1157,50 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_NotSupported_XmlAndEncryptedKeyFormat", resourceCulture);
             }
         }
-    }
+            /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm factory returned null..
+        /// </summary>
+        internal static string Arg_Invalid_MerkleAlgorithmFactoryNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MerkleAlgorithmFactoryNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm reported a digest length that is not positive..
+        /// </summary>
+        internal static string Arg_Invalid_MerkleHashLengthNotPositive {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MerkleHashLengthNotPositive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A hash of {0} bytes was expected, but {1} bytes were supplied..
+        /// </summary>
+        internal static string Arg_Invalid_MerkleHashLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MerkleHashLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The leaf hash at index {0} is null..
+        /// </summary>
+        internal static string Arg_Invalid_MerkleLeafHashNullAtIndex {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MerkleLeafHashNullAtIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The leaf hash at index {0} must be {1} bytes, but is {2} bytes..
+        /// </summary>
+        internal static string Arg_Invalid_MerkleLeafHashLengthAtIndex {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MerkleLeafHashLengthAtIndex", resourceCulture);
+            }
+        }
+        
+}
 }
