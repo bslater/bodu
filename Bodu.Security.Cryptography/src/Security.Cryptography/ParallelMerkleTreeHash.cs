@@ -64,6 +64,16 @@ namespace Bodu.Security.Cryptography;
 /// event at <c>t₄</c> is exactly this case (two children, one of which was itself promoted from a short group).
 /// </para>
 /// <para>
+/// <strong>Domain separation is RFC 6962's; the tree is not.</strong> Leaves are hashed as <c>H(0x00 || block)</c>
+/// and internal nodes as <c>H(0x01 || children)</c>, following RFC 6962 §2.1. The reduction, however, is the
+/// level-by-level pipeline described above with a configurable fan-out, not RFC 6962's recursive split at the
+/// largest power of two strictly below the leaf count — and a lone leftover child is re-hashed as a one-child node
+/// where RFC 6962 promotes it unchanged. Roots from this type agree with RFC 6962's Merkle Tree Hash only when the
+/// leaf count is a power of two, so they must not be cross-checked against a transparency log or any other RFC 6962
+/// implementation. Note also that the default <c>fanOut</c> here is 2 while <see cref="MerkleTreeHash" />'s is 3;
+/// the two types produce identical roots only when configured with the same block size and fan-out.
+/// </para>
+/// <para>
 /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations. At the start of each call,
 /// all per-computation state is reset: the level channels and their worker tasks are discarded and recreated, the input
 /// buffer position is cleared, the leaf index is reset to zero, and the previous root hash is discarded. The algorithm

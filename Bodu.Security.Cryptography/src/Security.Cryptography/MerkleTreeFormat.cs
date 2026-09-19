@@ -20,6 +20,15 @@ namespace Bodu.Security.Cryptography;
 /// resistance).
 /// </para>
 /// <para>
+/// <strong>Domain separation only — not RFC 6962's tree.</strong> What both implementations borrow from RFC 6962 is
+/// this prefix scheme and nothing more. RFC 6962 reduces a tree of <em>n</em> leaves by splitting at <c>k</c>, the
+/// largest power of two strictly below <em>n</em>, and promoting a lone subtree root unchanged;
+/// <see cref="MerkleTreeHash" /> and <see cref="ParallelMerkleTreeHash" /> reduce level by level with a
+/// configurable fan-out and re-hash a lone leftover child as a one-child node. The resulting roots agree with
+/// RFC 6962's Merkle Tree Hash only when the leaf count is a power of two. Do not cross-check a root from either
+/// type against a transparency-log implementation.
+/// </para>
+/// <para>
 /// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size, so the
 /// exact input length is bound into every leaf and trailing-zero variations cannot collide.
 /// </para>
