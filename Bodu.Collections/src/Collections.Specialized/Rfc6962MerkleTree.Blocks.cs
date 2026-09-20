@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Rfc6962MerkleTree.Blocks.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -80,10 +80,10 @@ public sealed partial class Rfc6962MerkleTree
     /// authentication path afterwards, because it does not keep the leaf hashes.
     /// </para>
     /// <para>
-    /// Leaves are folded as they arrive: each new leaf is pushed as a one-leaf subtree, and while the top two pending
-    /// subtrees cover the same number of leaves they are combined. Every pending entry is therefore a <em>perfect</em>
-    /// subtree of strictly decreasing size, and combining them right to left at the end reproduces RFC 6962's shape —
-    /// left subtree perfect, right holding the remainder — without ever having held the whole tree.
+    /// Leaves are folded as they arrive, level by level: a level holds at most one pending node, and the moment it
+    /// receives a second the pair is hashed and the parent carried up. Every pending node is therefore a <em>perfect</em>
+    /// subtree, one per set bit of the leaf count, and carrying them upward at the end — a lone node promoted
+    /// unchanged, never re-hashed — reproduces RFC 6962's shape without ever having held the whole tree.
     /// </para>
     /// </remarks>
     public byte[] ComputeRootOfBlocks(
@@ -96,30 +96,11 @@ public sealed partial class Rfc6962MerkleTree
 
         using HashAlgorithm hasher = CreateAlgorithm();
 
-        List<byte[]> pending = [];
-        List<long> pendingLeafCounts = [];
+        // A fan-out of two folds level by level into exactly RFC 6962's tree, holding one pending subtree per level.
+        var fold = new MerkleLevelFold(hasher, HashLength, fanOut: 2);
+        _ = ForEachLeafHash(source, blockSize, hasher, fold.Add, cancellationToken);
 
-        _ = ForEachLeafHash(
-            source,
-            blockSize,
-            hasher,
-            leafHash =>
-            {
-                pending.Add(leafHash);
-                pendingLeafCounts.Add(1);
-
-                while (pending.Count >= 2 && pendingLeafCounts[^1] == pendingLeafCounts[^2])
-                    MergeTopTwo(pending, pendingLeafCounts, hasher);
-            },
-            cancellationToken);
-
-        if (pending.Count == 0)
-            return HashEmpty(hasher);
-
-        while (pending.Count > 1)
-            MergeTopTwo(pending, pendingLeafCounts, hasher);
-
-        return pending[0];
+        return fold.Finish();
     }
 
     /// <summary>
@@ -155,14 +136,6 @@ public sealed partial class Rfc6962MerkleTree
         return new MerkleBlockComputation(root, source.Length, blockSize, leafHashes);
     }
 
-    /// <summary>
-    /// Replaces the top two entries of the pending-subtree stack with their parent node.
-    /// </summary>
-    /// <param name="pending">The pending subtree roots.</param>
-    /// <param name="pendingLeafCounts">The number of leaves each pending root covers.</param>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    private void MergeTopTwo(List<byte[]> pending, List<long> pendingLeafCounts, HashAlgorithm hasher) =>
-        MerkleTreeCore.MergeTopTwo(pending, pendingLeafCounts, hasher, HashLength);
 
     /// <summary>
     /// Reads <paramref name="source" /> forward in <paramref name="blockSize" />-byte blocks, invoking

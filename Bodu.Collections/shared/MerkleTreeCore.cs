@@ -35,9 +35,9 @@ namespace Bodu.Collections.Specialized;
 /// backstops against a caller that skipped that validation, not the primary contract.
 /// </para>
 /// <para>
-/// <strong>What is deliberately not here.</strong> The level-by-level reduction used by <c>MerkleTreeHash</c> and
-/// <c>ParallelMerkleTreeHash</c> is a different tree and is not expressed through these primitives. Only the
-/// domain-separation prefixes are common to both, and those live in <c>MerkleTreeFormat</c> alongside this file.
+/// The level-by-level fold that <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c> reduce with is
+/// <c>MerkleLevelFold</c>, alongside this file: at a fan-out of two it produces this tree exactly, and the wider
+/// fan-outs it also offers are those types' own, non-RFC commitment.
 /// </para>
 /// </remarks>
 internal static class MerkleTreeCore
@@ -163,6 +163,42 @@ internal static class MerkleTreeCore
             rented[0] = prefix;
             first.CopyTo(rented.AsSpan(1));
             second.CopyTo(rented.AsSpan(1 + first.Length));
+
+            return HashBuffer(hasher, hashLength, rented.AsSpan(0, total));
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
+        }
+    }
+
+    /// <summary>
+    /// Computes an internal node over any number of children, <c>H(0x01 || child₀ || … || child_{k−1})</c>.
+    /// </summary>
+    /// <param name="hasher">The algorithm to hash with.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="children">The child hashes, in order. Must not be empty.</param>
+    /// <returns>The node's hash.</returns>
+    /// <remarks>
+    /// With two children this is byte-for-byte the node <see cref="HashWithPrefix" /> computes; the general form exists
+    /// for the level-by-level fold's wider fan-outs.
+    /// </remarks>
+    internal static byte[] HashChildren(HashAlgorithm hasher, int hashLength, ReadOnlySpan<byte[]> children)
+    {
+        int total = 1;
+        foreach (byte[] child in children)
+            total += child.Length;
+
+        byte[] rented = ArrayPool<byte>.Shared.Rent(total);
+        try
+        {
+            rented[0] = MerkleTreeFormat.InternalNodePrefix;
+            int cursor = 1;
+            foreach (byte[] child in children)
+            {
+                child.CopyTo(rented.AsSpan(cursor));
+                cursor += child.Length;
+            }
 
             return HashBuffer(hasher, hashLength, rented.AsSpan(0, total));
         }
@@ -373,33 +409,6 @@ internal static class MerkleTreeCore
         }
 
         return sn == 0 ? running : null;
-    }
-
-    /// <summary>
-    /// Replaces the top two entries of a pending-subtree stack with their parent node.
-    /// </summary>
-    /// <param name="pending">The pending subtree roots.</param>
-    /// <param name="pendingLeafCounts">The number of leaves each pending root covers.</param>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
-    internal static void MergeTopTwo(
-        List<byte[]> pending,
-        List<long> pendingLeafCounts,
-        HashAlgorithm hasher,
-        int hashLength)
-    {
-        int last = pending.Count - 1;
-
-        pending[last - 1] = HashWithPrefix(
-            hasher,
-            hashLength,
-            MerkleTreeFormat.InternalNodePrefix,
-            pending[last - 1],
-            pending[last]);
-        pendingLeafCounts[last - 1] += pendingLeafCounts[last];
-
-        pending.RemoveAt(last);
-        pendingLeafCounts.RemoveAt(last);
     }
 
     /// <summary>
