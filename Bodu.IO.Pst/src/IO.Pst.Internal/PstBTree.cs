@@ -20,10 +20,7 @@ namespace Bodu.IO.Pst.Internal;
 /// </remarks>
 internal static class PstBTree
 {
-    /// <summary>
-    /// The deepest node or block B-tree the reader descends. Real stores are a handful of levels deep; the cap turns a
-    /// page that references itself or an ancestor into a format error instead of unbounded recursion.
-    /// </summary>
+    /// <summary>The deepest node or block B-tree the reader descends. Real stores are a handful of levels deep; the cap turns a page that references itself or an ancestor into a format error instead of unbounded recursion.</summary>
     private const int MaxDepth = 16;
 
     /// <summary>The NBT page type.</summary>
@@ -89,8 +86,8 @@ internal static class PstBTree
         EnumerateLeaves(source, bref, pageType, readEntry, expectedLevel: -1, depth: 0);
 
     /// <summary>
-    /// Enumerates the leaf entries beneath a page in key order, checking that every child sits exactly one level
-    /// below its parent and that the descent stays within <see cref="MaxDepth" />.
+    /// Enumerates the leaf entries beneath a page in key order, checking that every child sits exactly one level below
+    /// its parent and that the descent stays within <see cref="MaxDepth" />.
     /// </summary>
     /// <typeparam name="TEntry">The leaf entry type.</typeparam>
     /// <param name="source">The open source.</param>
@@ -101,8 +98,8 @@ internal static class PstBTree
     /// <param name="depth">The number of pages above this one.</param>
     /// <returns>The leaf entries.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows — a
-    /// crafted page referencing itself or an ancestor cannot recurse without bound.
+    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows — a crafted
+    /// page referencing itself or an ancestor cannot recurse without bound.
     /// </exception>
     private static IEnumerable<TEntry> EnumerateLeaves<TEntry>(
         PstSource source,
@@ -132,8 +129,8 @@ internal static class PstBTree
     }
 
     /// <summary>
-    /// Searches beneath a page for a leaf entry with an exact key, descending iteratively with the same level and
-    /// depth checks as enumeration.
+    /// Searches beneath a page for a leaf entry with an exact key, descending iteratively with the same level and depth
+    /// checks as enumeration.
     /// </summary>
     /// <typeparam name="TEntry">The leaf entry type.</typeparam>
     /// <param name="source">The open source.</param>
@@ -249,7 +246,9 @@ internal static class PstBTree
     /// <param name="page">The page bytes.</param>
     /// <param name="offset">The entry offset.</param>
     /// <returns>The node entry.</returns>
-    /// <exception cref="PstFileFormatException">A Unicode entry's 64-bit <c>nid</c> field exceeds the 32-bit identifier space.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// A Unicode entry's 64-bit <c>nid</c> field exceeds the 32-bit identifier space.
+    /// </exception>
     private static PstNbtEntry ReadNbtEntry(PstLayout layout, byte[] page, int offset)
     {
         // In the Unicode layout the nid field is eight bytes wide but a node identifier is 32 bits; a set high dword

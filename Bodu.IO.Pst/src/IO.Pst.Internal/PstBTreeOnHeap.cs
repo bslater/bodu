@@ -14,18 +14,15 @@ namespace Bodu.IO.Pst.Internal;
 /// property context (keyed by property id) and the table context's row index (keyed by row id).
 /// </summary>
 /// <remarks>
-/// Keys are little-endian unsigned integers of the header's declared width. Descent is bounded three ways: the
-/// header's index level count is capped at <see cref="MaxIndexLevels" />, an index item that names itself or an
-/// ancestor as a child is rejected, and the record count is bounded by the heap size — so a crafted file can neither
-/// recurse without bound nor multiply the enumeration. Under <see cref="PstValidationLevel.Strict" />, leaf keys must
-/// be strictly increasing.
+/// Keys are little-endian unsigned integers of the header's declared width. Descent is bounded three ways: the header's
+/// index level count is capped at <see cref="MaxIndexLevels" />, an index item that names itself or an ancestor as a
+/// child is rejected, and the record count is bounded by the heap size — so a crafted file can neither recurse without
+/// bound nor multiply the enumeration. Under <see cref="PstValidationLevel.Strict" />, leaf keys must be strictly
+/// increasing.
 /// </remarks>
 internal static class PstBTreeOnHeap
 {
-    /// <summary>
-    /// The deepest index a BTree-on-heap may declare. A tree over an 8 KiB-block heap needs a handful of levels at
-    /// most; the cap keeps a crafted level count from multiplying the descent.
-    /// </summary>
+    /// <summary>The deepest index a BTree-on-heap may declare. A tree over an 8 KiB-block heap needs a handful of levels at most; the cap keeps a crafted level count from multiplying the descent.</summary>
     private const int MaxIndexLevels = 8;
 
     /// <summary>
@@ -66,8 +63,8 @@ internal static class PstBTreeOnHeap
     /// <param name="validationLevel">The active validation level.</param>
     /// <returns>The leaf records as key/data byte pairs of the header's declared widths.</returns>
     /// <exception cref="PstFileFormatException">
-    /// A record item's length is not a multiple of its record stride, a descent identifier does not resolve, or —
-    /// under <see cref="PstValidationLevel.Strict" /> — leaf keys are not strictly increasing.
+    /// A record item's length is not a multiple of its record stride, a descent identifier does not resolve, or — under
+    /// <see cref="PstValidationLevel.Strict" /> — leaf keys are not strictly increasing.
     /// </exception>
     internal static IEnumerable<(ReadOnlyMemory<byte> Key, ReadOnlyMemory<byte> Data)> EnumerateRecords(
         PstHeapNode heap, PstBthHeader header, PstValidationLevel validationLevel)

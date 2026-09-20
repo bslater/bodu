@@ -11,10 +11,9 @@ namespace Bodu.IO.Pst;
 /// </summary>
 /// <remarks>
 /// A missing node is a caller-visible condition distinct from structural corruption — the file is well-formed, the
-/// identifier simply is not present — so it carries its own exception type (with
-/// <see cref="PstFileException.Error" /> set to <see cref="PstFileError.NodeNotFound" />) rather than the base
-/// <see cref="PstFileException" />. Callers that prefer flow control over exceptions use
-/// <see cref="PstFile.TryGetNode" />.
+/// identifier simply is not present — so it carries its own exception type (with <see cref="PstFileException.Error" />
+/// set to <see cref="PstFileError.NodeNotFound" />) rather than the base <see cref="PstFileException" />. Callers that
+/// prefer flow control over exceptions use <see cref="PstFile.TryGetNode" />.
 /// </remarks>
 public sealed class PstNodeNotFoundException
     : PstFileException

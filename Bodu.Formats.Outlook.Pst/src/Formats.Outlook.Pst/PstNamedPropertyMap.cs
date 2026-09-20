@@ -15,9 +15,9 @@ namespace Bodu.Formats.Outlook.Pst;
 /// The mapping is file-specific: entry <c>i</c> of the entry stream (property <c>0x0003</c>) defines the property
 /// identifier <c>0x8000 + wPropIdx</c>. Each 8-byte <c>NAMEID</c> record carries a numeric name identifier or
 /// string-stream offset, a kind bit, and a GUID index — <c>1</c> for <c>PS_MAPI</c>, <c>2</c> for
-/// <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream (property <c>0x0002</c>).
-/// The hash buckets the node also stores (properties from <c>0x1000</c>) are write-time acceleration and are ignored
-/// on read.
+/// <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream (property <c>0x0002</c>). The
+/// hash buckets the node also stores (properties from <c>0x1000</c>) are write-time acceleration and are ignored on
+/// read.
 /// </remarks>
 internal sealed class PstNamedPropertyMap
 {

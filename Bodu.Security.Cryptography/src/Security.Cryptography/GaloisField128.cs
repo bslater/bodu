@@ -132,9 +132,9 @@ internal static class GaloisField128
     /// <param name="result">The destination span (16 bytes); may be the same span as <paramref name="x" />.</param>
     /// <remarks>
     /// <para>
-    /// Branch-free: the single secret-dependent decision — whether the most-significant bit of <paramref name="x" />
-    /// is set — is folded in through a <c>0x00</c>/<c>0xFF</c> mask instead of a branch, so control flow does not
-    /// depend on the (typically key-derived) operand.
+    /// Branch-free: the single secret-dependent decision — whether the most-significant bit of <paramref name="x" /> is
+    /// set — is folded in through a <c>0x00</c>/<c>0xFF</c> mask instead of a branch, so control flow does not depend
+    /// on the (typically key-derived) operand.
     /// </para>
     /// <para>
     /// This is the big-endian doubling used by the CMAC-based and OCB transforms. It is a distinct operation from the

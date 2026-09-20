@@ -112,7 +112,9 @@ public sealed class OffsetFromRuleStrategy
     /// Projects a referenced occurrence by the configured day offset.
     /// </summary>
     /// <param name="reference">The referenced occurrence to project from.</param>
-    /// <returns>The offset date, or <see langword="null" /> when the projection leaves the representable range.</returns>
+    /// <returns>
+    /// The offset date, or <see langword="null" /> when the projection leaves the representable range.
+    /// </returns>
     private DateOnly? Project(DateOnly reference)
     {
         // Guard the projection against rolling past the representable date range at the year extremes; the engine

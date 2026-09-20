@@ -69,8 +69,8 @@ public sealed class PstNode
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileFormatException">The data tree is malformed or fails validation.</exception>
     /// <remarks>
-    /// Resolving the length reads only the data tree's internal blocks — never the leaf payloads — so it is cheap
-    /// even for very large nodes.
+    /// Resolving the length reads only the data tree's internal blocks — never the leaf payloads — so it is cheap even
+    /// for very large nodes.
     /// </remarks>
     public long DataLength
     {
@@ -197,8 +197,8 @@ public sealed class PstNode
     /// The node's heap does not carry a table context, or the context is malformed.
     /// </exception>
     /// <remarks>
-    /// Each call re-reads the context from the source; retain the returned instance to read many rows. Row
-    /// enumeration streams the row matrix one block at a time.
+    /// Each call re-reads the context from the source; retain the returned instance to read many rows. Row enumeration
+    /// streams the row matrix one block at a time.
     /// </remarks>
     public PstTableContext ReadTableContext()
     {

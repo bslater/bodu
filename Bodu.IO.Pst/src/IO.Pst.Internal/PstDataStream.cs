@@ -7,13 +7,13 @@
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// A read-only, seekable stream over a node's data payload that reads one leaf block at a time, so an arbitrarily
-/// large logical payload is never materialized.
+/// A read-only, seekable stream over a node's data payload that reads one leaf block at a time, so an arbitrarily large
+/// logical payload is never materialized.
 /// </summary>
 /// <remarks>
-/// The stream resolves the node's ordered leaf block-tree entries once at construction — reading only the internal
-/// tree blocks — and thereafter loads leaf payloads on demand through <see cref="PstSource.ReadBlock" />, so repeat
-/// visits ride the session's decoded-block cache. Like the owning session, the stream is single-threaded.
+/// The stream resolves the node's ordered leaf block-tree entries once at construction — reading only the internal tree
+/// blocks — and thereafter loads leaf payloads on demand through <see cref="PstSource.ReadBlock" />, so repeat visits
+/// ride the session's decoded-block cache. Like the owning session, the stream is single-threaded.
 /// <para>
 /// The stream is bound to its session: once the owning <see cref="PstFile" /> is disposed, every read fails with
 /// <see cref="ObjectDisposedException" /> even when the leaf is cached, and disposing the stream itself releases only

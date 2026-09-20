@@ -27,8 +27,7 @@ internal static class PstDataTree
     /// <returns>The payload bytes, owned by the caller.</returns>
     /// <exception cref="PstFileFormatException">
     /// A referenced block is missing, a tree block is malformed, or the payload exceeds the session's
-    /// <see cref="PstSource.MaxNodeDataLength" /> or <see cref="PstSource.MaxDataTreeLeaves" /> limit
-    /// (<see cref="PstFileError.LimitExceeded" />).
+    /// <see cref="PstSource.MaxNodeDataLength" /> or <see cref="PstSource.MaxDataTreeLeaves" /> limit (<see cref="PstFileError.LimitExceeded" />).
     /// </exception>
     /// <remarks>
     /// The leaf entries are resolved first — reading only tree blocks — so the declared total is checked against the
@@ -66,14 +65,13 @@ internal static class PstDataTree
     /// <param name="blockId">The data-block identifier from the node entry; <c>0</c> yields an empty list.</param>
     /// <returns>The ordered leaf data blocks whose concatenation is the payload.</returns>
     /// <exception cref="PstFileFormatException">
-    /// A referenced block is missing, a tree block is malformed, or the payload exceeds the session's limits
-    /// (<see cref="PstFileError.LimitExceeded" />).
+    /// A referenced block is missing, a tree block is malformed, or the payload exceeds the session's limits (<see cref="PstFileError.LimitExceeded" />).
     /// </exception>
     /// <remarks>
-    /// The LTP heap-on-node addresses individual data blocks by index, so the segment boundaries are significant to
-    /// its readers; <see cref="Resolve" /> flattens the same segments for callers that only need the payload bytes.
-    /// Like <see cref="Resolve" />, the declared total is checked against the materialization limit before any leaf
-    /// payload is loaded.
+    /// The LTP heap-on-node addresses individual data blocks by index, so the segment boundaries are significant to its
+    /// readers; <see cref="Resolve" /> flattens the same segments for callers that only need the payload bytes. Like
+    /// <see cref="Resolve" />, the declared total is checked against the materialization limit before any leaf payload
+    /// is loaded.
     /// </remarks>
     internal static List<byte[]> ResolveSegments(PstSource source, ulong blockId)
     {
@@ -94,7 +92,9 @@ internal static class PstDataTree
     /// <param name="blockId">The tree's root block identifier, for diagnostics.</param>
     /// <param name="leaves">The resolved leaf entries.</param>
     /// <returns>The declared payload length.</returns>
-    /// <exception cref="PstFileFormatException">The total exceeds <see cref="PstSource.MaxNodeDataLength" />.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The total exceeds <see cref="PstSource.MaxNodeDataLength" />.
+    /// </exception>
     private static long EnsureMaterializable(PstSource source, ulong blockId, List<PstBbtEntry> leaves)
     {
         long total = 0;

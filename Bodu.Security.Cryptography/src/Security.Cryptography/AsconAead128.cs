@@ -256,8 +256,8 @@ public sealed class AsconAead128
     /// final state; the tag is then compared in constant time, and on mismatch
     /// <see cref="CryptographicOperations.ZeroMemory" /> clears the plaintext-length region of
     /// <paramref name="output" /> and the keyed sponge state is reset before <see cref="CryptographicException" /> is
-    /// thrown — no plaintext is observable to the caller, and the rejected message's permutation state does not
-    /// outlive the call.
+    /// thrown — no plaintext is observable to the caller, and the rejected message's permutation state does not outlive
+    /// the call.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {

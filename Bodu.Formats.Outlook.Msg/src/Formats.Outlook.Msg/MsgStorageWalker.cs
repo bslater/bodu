@@ -16,8 +16,8 @@ namespace Bodu.Formats.Outlook.Msg;
 /// <remarks>
 /// Under <see cref="CompoundValidationLevel.Strict" /> the series must be dense (indexes <c>0..n-1</c> without gaps or
 /// duplicates) and its length must match the count the property-stream header declares; under the tolerant levels
-/// storages with unparsable suffixes are skipped, a repeated index keeps its first storage in directory order, and
-/// the found series is returned as-is.
+/// storages with unparsable suffixes are skipped, a repeated index keeps its first storage in directory order, and the
+/// found series is returned as-is.
 /// </remarks>
 internal static class MsgStorageWalker
 {

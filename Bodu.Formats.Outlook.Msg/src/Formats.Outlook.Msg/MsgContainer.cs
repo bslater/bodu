@@ -10,14 +10,14 @@ using Bodu.IO.Compound;
 namespace Bodu.Formats.Outlook.Msg;
 
 /// <summary>
-/// Mediates every access to the compound-file container so that a container-level failure surfaces as the reader's
-/// own <see cref="OutlookMsgFormatException" /> rather than a <see cref="CompoundFileException" />.
+/// Mediates every access to the compound-file container so that a container-level failure surfaces as the reader's own
+/// <see cref="OutlookMsgFormatException" /> rather than a <see cref="CompoundFileException" />.
 /// </summary>
 /// <remarks>
 /// A corrupt directory, FAT chain, or stream can fail at any point after the container opened — when a storage is
-/// enumerated, a stream is looked up, or its bytes are read. Routing those calls through this type keeps the
-/// documented exception contract: callers observe <see cref="OutlookFormatException" /> descendants only, with the
-/// container exception preserved as the inner exception.
+/// enumerated, a stream is looked up, or its bytes are read. Routing those calls through this type keeps the documented
+/// exception contract: callers observe <see cref="OutlookFormatException" /> descendants only, with the container
+/// exception preserved as the inner exception.
 /// </remarks>
 internal static class MsgContainer
 {
@@ -124,8 +124,8 @@ internal static class MsgContainer
     /// <returns><see langword="true" /> when the stream exists.</returns>
     /// <exception cref="OutlookMsgFormatException">The container is malformed.</exception>
     /// <remarks>
-    /// Opening a stream under the buffered read strategy materializes its content, so the directory entry is the
-    /// only way to size a payload that is not going to be read.
+    /// Opening a stream under the buffered read strategy materializes its content, so the directory entry is the only
+    /// way to size a payload that is not going to be read.
     /// </remarks>
     internal static bool TryGetStreamLength(CompoundStorage storage, string name, out long length)
     {

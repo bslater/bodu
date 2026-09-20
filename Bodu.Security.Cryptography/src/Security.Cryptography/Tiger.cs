@@ -60,9 +60,9 @@ namespace Bodu.Security.Cryptography;
 /// <c>Bodu.IO.Hashing</c> are usually a better fit.
 /// </para>
 /// <para>
-/// This implementation is constant-time in its control flow, but the S-box lookup tables are read at
-/// message-dependent indices, so hashing secret data (for example inside a keyed construction) is <b>not</b> hardened
-/// against timing or cache-based side-channel attacks.
+/// This implementation is constant-time in its control flow, but the S-box lookup tables are read at message-dependent
+/// indices, so hashing secret data (for example inside a keyed construction) is <b>not</b> hardened against timing or
+/// cache-based side-channel attacks.
 /// </para>
 /// </remarks>
 /// <example>

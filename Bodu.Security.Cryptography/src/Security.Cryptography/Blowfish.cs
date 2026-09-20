@@ -57,9 +57,9 @@ namespace Bodu.Security.Cryptography;
 /// (SWEET32) when large volumes of data are encrypted under the same key. For new applications, a cipher with a 128-bit
 /// or larger block size (such as AES) should be preferred. </note>
 /// <para>
-/// The underlying block-cipher implementation is constant-time in its control flow, but the four key-dependent
-/// S-boxes are read at data-dependent indices on every round. As such, it is <b>not</b> hardened against timing or
-/// cache-based side-channel attacks.
+/// The underlying block-cipher implementation is constant-time in its control flow, but the four key-dependent S-boxes
+/// are read at data-dependent indices on every round. As such, it is <b>not</b> hardened against timing or cache-based
+/// side-channel attacks.
 /// </para>
 /// </remarks>
 /// <example>

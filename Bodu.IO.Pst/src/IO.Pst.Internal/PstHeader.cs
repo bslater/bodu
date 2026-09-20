@@ -44,7 +44,10 @@ internal sealed class PstHeader
     /// <summary>
     /// Gets the file format the header declares.
     /// </summary>
-    /// <value><see cref="PstFileFormat.Unicode" /> or <see cref="PstFileFormat.Ansi" />; the 4 KiB-page OST variant throws at parse.</value>
+    /// <value>
+    /// <see cref="PstFileFormat.Unicode" /> or <see cref="PstFileFormat.Ansi" />; the 4 KiB-page OST variant throws at
+    /// parse.
+    /// </value>
     internal PstFileFormat Format =>
         Layout.Format;
 
@@ -91,15 +94,23 @@ internal sealed class PstHeader
     /// <summary>
     /// Parses and validates a header.
     /// </summary>
-    /// <param name="data">The leading file bytes: at least <see cref="UnicodeHeaderSize" /> for a Unicode file, 512 for an ANSI file.</param>
-    /// <param name="validationLevel">The validation level; the partial checksum is skipped under <see cref="PstValidationLevel.Minimal" />.</param>
+    /// <param name="data">
+    /// The leading file bytes: at least <see cref="UnicodeHeaderSize" /> for a Unicode file, 512 for an ANSI file.
+    /// </param>
+    /// <param name="validationLevel">
+    /// The validation level; the partial checksum is skipped under <see cref="PstValidationLevel.Minimal" />.
+    /// </param>
     /// <returns>The parsed header.</returns>
-    /// <exception cref="PstFileFormatException">The header is malformed, too short for its format, or fails its checksum.</exception>
-    /// <exception cref="PstUnsupportedFormatException">The file is a 4 KiB-page OST or uses an unknown content encoding.</exception>
+    /// <exception cref="PstFileFormatException">
+    /// The header is malformed, too short for its format, or fails its checksum.
+    /// </exception>
+    /// <exception cref="PstUnsupportedFormatException">
+    /// The file is a 4 KiB-page OST or uses an unknown content encoding.
+    /// </exception>
     /// <remarks>
-    /// The version word at offset 10 selects the layout before anything else is read, so the length check, the
-    /// sentinel and crypt-method bytes, and the <c>ROOT</c> record are all located per format. The 471-byte partial
-    /// checksum range is the same in both formats.
+    /// The version word at offset 10 selects the layout before anything else is read, so the length check, the sentinel
+    /// and crypt-method bytes, and the <c>ROOT</c> record are all located per format. The 471-byte partial checksum
+    /// range is the same in both formats.
     /// </remarks>
     internal static PstHeader Parse(ReadOnlySpan<byte> data, PstValidationLevel validationLevel)
     {

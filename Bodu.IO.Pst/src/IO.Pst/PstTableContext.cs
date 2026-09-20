@@ -14,9 +14,9 @@ namespace Bodu.IO.Pst;
 /// forward-only row enumeration and keyed row lookup — format-agnostic, with no MAPI semantics.
 /// </summary>
 /// <remarks>
-/// Row enumeration streams the row matrix one block at a time and never materializes the whole table; each yielded
-/// row copies its own bytes, so rows remain valid after enumeration advances. The row count comes from the table's
-/// row index.
+/// Row enumeration streams the row matrix one block at a time and never materializes the whole table; each yielded row
+/// copies its own bytes, so rows remain valid after enumeration advances. The row count comes from the table's row
+/// index.
 /// </remarks>
 public sealed class PstTableContext
 {
@@ -115,9 +115,9 @@ public sealed class PstTableContext
     /// The row matrix does not resolve or holds fewer rows than the row index records.
     /// </exception>
     /// <remarks>
-    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone — each names
-    /// the object node the row stands for — so this path reads the leading dword of each row in place and allocates
-    /// nothing per row.
+    /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone — each names the
+    /// object node the row stands for — so this path reads the leading dword of each row in place and allocates nothing
+    /// per row.
     /// </remarks>
     public IEnumerable<uint> EnumerateRowIds()
     {

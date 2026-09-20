@@ -59,8 +59,8 @@ internal sealed class PstLtpContext
     /// <param name="hnid">The value reference; the null <c>HNID</c> yields an empty payload.</param>
     /// <returns>The payload bytes.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The reference does not resolve — a heap identifier outside the heap, or a node identifier absent from the
-    /// owning node's subnode tree.
+    /// The reference does not resolve — a heap identifier outside the heap, or a node identifier absent from the owning
+    /// node's subnode tree.
     /// </exception>
     internal byte[] ResolveHnidPayload(PstHeapNode heap, uint hnid)
     {
@@ -84,7 +84,9 @@ internal sealed class PstLtpContext
     /// directly.
     /// </summary>
     /// <param name="nid">The subnode identifier.</param>
-    /// <param name="segments">When this method returns <see langword="true" />, the subnode's ordered data blocks.</param>
+    /// <param name="segments">
+    /// When this method returns <see langword="true" />, the subnode's ordered data blocks.
+    /// </param>
     /// <returns><see langword="true" /> when the subnode exists.</returns>
     internal bool TryGetSubnodeSegments(uint nid, out List<byte[]> segments)
     {
@@ -132,15 +134,15 @@ internal sealed class PstLtpContext
     /// <param name="heap">The heap the HNID belongs to.</param>
     /// <param name="hnid">The heap identifier or subnode identifier.</param>
     /// <returns>
-    /// A stream over the heap item for a heap-resident value, or a <see cref="PstDataStream" /> over the subnode's
-    /// leaf blocks for a subnode-resident value; an empty stream for a null HNID.
+    /// A stream over the heap item for a heap-resident value, or a <see cref="PstDataStream" /> over the subnode's leaf
+    /// blocks for a subnode-resident value; an empty stream for a null HNID.
     /// </returns>
     /// <exception cref="PstFileFormatException">
     /// The HNID names a heap item or subnode that does not exist, or the subnode's data tree is malformed.
     /// </exception>
     /// <remarks>
-    /// A heap-resident value is served from the heap's already-decoded bytes without copying; a subnode-resident
-    /// value is read block by block on demand, so <see cref="PstSource.MaxNodeDataLength" /> does not apply.
+    /// A heap-resident value is served from the heap's already-decoded bytes without copying; a subnode-resident value
+    /// is read block by block on demand, so <see cref="PstSource.MaxNodeDataLength" /> does not apply.
     /// </remarks>
     internal Stream OpenHnidStream(PstHeapNode heap, uint hnid)
     {

@@ -24,8 +24,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation is constant-time in its control flow, but the precomputed key-dependent S-box/MDS tables are
-/// read at data-dependent indices on every round. As such, this implementation is <b>not</b> hardened against timing
-/// or cache-based side-channel attacks.
+/// read at data-dependent indices on every round. As such, this implementation is <b>not</b> hardened against timing or
+/// cache-based side-channel attacks.
 /// </para>
 /// </remarks>
 /// <example>

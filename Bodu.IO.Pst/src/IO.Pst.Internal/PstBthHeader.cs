@@ -11,7 +11,9 @@ namespace Bodu.IO.Pst.Internal;
 /// </summary>
 /// <param name="KeySize">The key width in bytes (<c>cbKey</c>): 2, 4, 8, or 16.</param>
 /// <param name="DataSize">The leaf-record data width in bytes (<c>cbEnt</c>).</param>
-/// <param name="IndexLevels">The number of index levels above the leaves (<c>bIdxLevels</c>); zero for a leaf-only tree.</param>
+/// <param name="IndexLevels">
+/// The number of index levels above the leaves (<c>bIdxLevels</c>); zero for a leaf-only tree.
+/// </param>
 /// <param name="RootHid">The <c>HID</c> of the root record item (<c>hidRoot</c>); zero when the tree is empty.</param>
 internal readonly record struct PstBthHeader(
     byte KeySize,

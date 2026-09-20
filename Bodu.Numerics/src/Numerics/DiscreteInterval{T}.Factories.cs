@@ -94,8 +94,8 @@ public readonly partial struct DiscreteInterval<T>
     /// </summary>
     /// <param name="lower">The exclusive lower bound.</param>
     /// <returns>
-    /// An upper-unbounded interval, or <see cref="Empty" /> when <paramref name="lower" /> is the domain maximum and
-    /// no integer lies above it.
+    /// An upper-unbounded interval, or <see cref="Empty" /> when <paramref name="lower" /> is the domain maximum and no
+    /// integer lies above it.
     /// </returns>
     public static DiscreteInterval<T> GreaterThan(T lower) =>
         TrySuccessor(lower, out T first)

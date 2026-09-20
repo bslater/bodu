@@ -107,8 +107,8 @@ public sealed class MapiPropertyCollection
     }
 
     /// <summary>
-    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type — the lookup for
-    /// callers that know which property they want but not which wire type the writer chose for it.
+    /// Attempts to retrieve the first property carrying a 16-bit identifier, whatever its type — the lookup for callers
+    /// that know which property they want but not which wire type the writer chose for it.
     /// </summary>
     /// <param name="id">The 16-bit property identifier.</param>
     /// <param name="property">When this method returns, the first matching property when one is present.</param>
@@ -156,8 +156,8 @@ public sealed class MapiPropertyCollection
     /// </summary>
     /// <param name="id">The property identifier.</param>
     /// <returns>
-    /// The <see cref="MapiPropertyType.Int32" /> value, or the <see cref="MapiPropertyType.Int16" /> value widened
-    /// when the writer stored the property in the narrower type; <see langword="null" /> when neither is present.
+    /// The <see cref="MapiPropertyType.Int32" /> value, or the <see cref="MapiPropertyType.Int16" /> value widened when
+    /// the writer stored the property in the narrower type; <see langword="null" /> when neither is present.
     /// </returns>
     public int? GetInt32(ushort id) =>
         GetValue(id, MapiPropertyType.Int32) is int i32

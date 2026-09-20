@@ -11,9 +11,9 @@ namespace Bodu.Formats.Outlook;
 /// </summary>
 /// <remarks>
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every recipient property
-/// remains reachable through <see cref="Properties" />. The format readers construct instances from whichever
-/// container structure carries the recipient — a <c>.msg</c> recipient storage or a PST recipient-table row — so the
-/// type itself is container-free.
+/// remains reachable through <see cref="Properties" />. The format readers construct instances from whichever container
+/// structure carries the recipient — a <c>.msg</c> recipient storage or a PST recipient-table row — so the type itself
+/// is container-free.
 /// </remarks>
 public sealed class OutlookRecipient
 {
@@ -21,7 +21,9 @@ public sealed class OutlookRecipient
     /// Initializes a new instance of the <see cref="OutlookRecipient" /> class.
     /// </summary>
     /// <param name="properties">The recipient's decoded properties. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="properties" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="properties" /> is <see langword="null" />.
+    /// </exception>
     public OutlookRecipient(MapiPropertyCollection properties)
     {
         ThrowHelper.ThrowIfNull(properties);

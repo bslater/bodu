@@ -13,14 +13,14 @@ using Bodu.IO.Pst;
 namespace Bodu.Formats.Outlook;
 
 /// <summary>
-/// Represents one attachment of an <see cref="OutlookMailMessage" />: a typed view over the attachment object's
-/// decoded properties, with access to the by-value payload or the nested attached message.
+/// Represents one attachment of an <see cref="OutlookMailMessage" />: a typed view over the attachment object's decoded
+/// properties, with access to the by-value payload or the nested attached message.
 /// </summary>
 /// <remarks>
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
-/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded
-/// message — each throws <see cref="NotSupportedException" /> for the other method kinds.
+/// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded message
+/// — each throws <see cref="NotSupportedException" /> for the other method kinds.
 /// </remarks>
 public sealed class OutlookMailAttachment
 {
@@ -67,8 +67,8 @@ public sealed class OutlookMailAttachment
     /// <remarks>
     /// A by-value payload (<c>PidTagAttachDataBinary</c>) larger than
     /// <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present
-    /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly
-    /// from the store.
+    /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly from
+    /// the store.
     /// </remarks>
     public MapiPropertyCollection Properties
     {
@@ -170,9 +170,9 @@ public sealed class OutlookMailAttachment
     /// </exception>
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
     /// <remarks>
-    /// A payload decoded inline (at or below <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" />)
-    /// is served from the decoded bytes without copying; a larger payload is streamed from the store block by block
-    /// and is never held in memory in full. The stream is bound to the owning session.
+    /// A payload decoded inline (at or below <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" />) is
+    /// served from the decoded bytes without copying; a larger payload is streamed from the store block by block and is
+    /// never held in memory in full. The stream is bound to the owning session.
     /// </remarks>
     public Stream OpenContentStream()
     {
@@ -203,7 +203,9 @@ public sealed class OutlookMailAttachment
     /// Gets the by-value payload length when the payload is present: the decoded length for an inline payload, the
     /// store's recorded length for a deferred one.
     /// </summary>
-    /// <returns>The payload length, or <see langword="null" /> when the attachment carries no by-value payload.</returns>
+    /// <returns>
+    /// The payload length, or <see langword="null" /> when the attachment carries no by-value payload.
+    /// </returns>
     private long? GetPayloadLength()
     {
         if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> content)

@@ -13,8 +13,8 @@ namespace Bodu.Formats.Outlook.Pst;
 #endif
 
 /// <summary>
-/// Parses the named-property mapping records the Outlook formats share: the <c>NAMEID</c> entry stream, the GUID
-/// stream it indexes, and the string stream that holds string-named properties.
+/// Parses the named-property mapping records the Outlook formats share: the <c>NAMEID</c> entry stream, the GUID stream
+/// it indexes, and the string stream that holds string-named properties.
 /// </summary>
 /// <remarks>
 /// <para>

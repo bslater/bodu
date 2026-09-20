@@ -69,14 +69,18 @@ public sealed class OutlookMailStoreReaderOptions
     /// Gets a value indicating whether the compressed RTF body (<c>PidTagRtfCompressed</c>) is decompressed when read
     /// through the body conveniences.
     /// </summary>
-    /// <value><see langword="true" /> by default; when disabled the RTF body convenience returns <see langword="null" />.</value>
+    /// <value>
+    /// <see langword="true" /> by default; when disabled the RTF body convenience returns <see langword="null" />.
+    /// </value>
     public bool DecompressRtf { get; init; } = true;
 
     /// <summary>
     /// Gets the largest node payload, in bytes, the underlying container materializes in memory — the ceiling on any
     /// single property value, attachment payload, or table the store decodes at once.
     /// </summary>
-    /// <value>The materialization limit; 256 MiB by default (see <see cref="PstFileOptions.MaxNodeDataLength" />).</value>
+    /// <value>
+    /// The materialization limit; 256 MiB by default (see <see cref="PstFileOptions.MaxNodeDataLength" />).
+    /// </value>
     /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>
     public long MaxNodeDataLength
     {
@@ -132,8 +136,8 @@ public sealed class OutlookMailStoreReaderOptions
 
     /// <summary>
     /// Gets the largest by-value attachment payload, in bytes, that is decoded into the attachment's
-    /// <see cref="OutlookMailAttachment.Properties" />; a larger <c>PidTagAttachDataBinary</c> is left in the store
-    /// and served only through <see cref="OutlookMailAttachment.OpenContentStream" />.
+    /// <see cref="OutlookMailAttachment.Properties" />; a larger <c>PidTagAttachDataBinary</c> is left in the store and
+    /// served only through <see cref="OutlookMailAttachment.OpenContentStream" />.
     /// </summary>
     /// <value>The inline payload limit; 1 MiB by default.</value>
     /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>

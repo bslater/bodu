@@ -82,7 +82,9 @@ internal sealed class PstLayout
         BlockTrailerCrcOffset = blockTrailerCrcOffset;
     }
 
-    /// <summary>Gets the Unicode layout (<c>wVer</c> 23).</summary>
+    /// <summary>
+    /// Gets the Unicode layout (<c>wVer</c> 23).
+    /// </summary>
     internal static PstLayout Unicode { get; } = new(
         PstFileFormat.Unicode,
         idWidth: 8,
@@ -99,7 +101,9 @@ internal sealed class PstLayout
         blockTrailerBlockIdOffset: 8,
         blockTrailerCrcOffset: 4);
 
-    /// <summary>Gets the ANSI layout (<c>wVer</c> 14 and 15).</summary>
+    /// <summary>
+    /// Gets the ANSI layout (<c>wVer</c> 14 and 15).
+    /// </summary>
     internal static PstLayout Ansi { get; } = new(
         PstFileFormat.Ansi,
         idWidth: 4,
@@ -116,108 +120,164 @@ internal sealed class PstLayout
         blockTrailerBlockIdOffset: 4,
         blockTrailerCrcOffset: 8);
 
-    /// <summary>Gets the format the layout describes.</summary>
+    /// <summary>
+    /// Gets the format the layout describes.
+    /// </summary>
     internal PstFileFormat Format { get; }
 
-    /// <summary>Gets the width of a block identifier or file offset: 8 for Unicode, 4 for ANSI.</summary>
+    /// <summary>
+    /// Gets the width of a block identifier or file offset: 8 for Unicode, 4 for ANSI.
+    /// </summary>
     internal int IdWidth { get; }
 
-    /// <summary>Gets the size of a <c>BREF</c> (a block identifier followed by an offset).</summary>
+    /// <summary>
+    /// Gets the size of a <c>BREF</c> (a block identifier followed by an offset).
+    /// </summary>
     internal int BrefSize =>
         IdWidth * 2;
 
-    /// <summary>Gets the header size.</summary>
+    /// <summary>
+    /// Gets the header size.
+    /// </summary>
     internal int HeaderSize { get; }
 
-    /// <summary>Gets the offset of <c>ibFileEof</c>, which is <see cref="IdWidth" /> bytes wide.</summary>
+    /// <summary>
+    /// Gets the offset of <c>ibFileEof</c>, which is <see cref="IdWidth" /> bytes wide.
+    /// </summary>
     internal int FileLengthOffset { get; }
 
-    /// <summary>Gets the offset of the node B-tree root <c>BREF</c>.</summary>
+    /// <summary>
+    /// Gets the offset of the node B-tree root <c>BREF</c>.
+    /// </summary>
     internal int NbtRootOffset { get; }
 
-    /// <summary>Gets the offset of the block B-tree root <c>BREF</c>.</summary>
+    /// <summary>
+    /// Gets the offset of the block B-tree root <c>BREF</c>.
+    /// </summary>
     internal int BbtRootOffset { get; }
 
-    /// <summary>Gets the offset of <c>bSentinel</c>; <c>bCryptMethod</c> follows it.</summary>
+    /// <summary>
+    /// Gets the offset of <c>bSentinel</c>; <c>bCryptMethod</c> follows it.
+    /// </summary>
     internal int SentinelOffset { get; }
 
-    /// <summary>Gets the offset of <c>bCryptMethod</c>.</summary>
+    /// <summary>
+    /// Gets the offset of <c>bCryptMethod</c>.
+    /// </summary>
     internal int CryptMethodOffset =>
         SentinelOffset + 1;
 
-    /// <summary>Gets the number of page bytes available to B-tree entries.</summary>
+    /// <summary>
+    /// Gets the number of page bytes available to B-tree entries.
+    /// </summary>
     internal int PageEntryArea { get; }
 
-    /// <summary>Gets the offset of the page's entry count (<c>cEnt</c>).</summary>
+    /// <summary>
+    /// Gets the offset of the page's entry count (<c>cEnt</c>).
+    /// </summary>
     internal int PageEntryCountOffset =>
         PageEntryArea;
 
-    /// <summary>Gets the offset of the page's entry capacity (<c>cEntMax</c>).</summary>
+    /// <summary>
+    /// Gets the offset of the page's entry capacity (<c>cEntMax</c>).
+    /// </summary>
     internal int PageEntryCapacityOffset =>
         PageEntryArea + 1;
 
-    /// <summary>Gets the offset of the page's entry stride (<c>cbEnt</c>).</summary>
+    /// <summary>
+    /// Gets the offset of the page's entry stride (<c>cbEnt</c>).
+    /// </summary>
     internal int PageEntryStrideOffset =>
         PageEntryArea + 2;
 
-    /// <summary>Gets the offset of the page's level (<c>cLevel</c>).</summary>
+    /// <summary>
+    /// Gets the offset of the page's level (<c>cLevel</c>).
+    /// </summary>
     internal int PageLevelOffset =>
         PageEntryArea + 3;
 
-    /// <summary>Gets the offset of the page trailer, whose first two bytes are the page type repeated.</summary>
+    /// <summary>
+    /// Gets the offset of the page trailer, whose first two bytes are the page type repeated.
+    /// </summary>
     internal int PageTrailerOffset { get; }
 
-    /// <summary>Gets the offset of the page trailer's signature.</summary>
+    /// <summary>
+    /// Gets the offset of the page trailer's signature.
+    /// </summary>
     internal int PageSignatureOffset =>
         PageTrailerOffset + 2;
 
-    /// <summary>Gets the offset of the page trailer's block identifier.</summary>
+    /// <summary>
+    /// Gets the offset of the page trailer's block identifier.
+    /// </summary>
     internal int PageBlockIdOffset { get; }
 
-    /// <summary>Gets the offset of the page trailer's checksum.</summary>
+    /// <summary>
+    /// Gets the offset of the page trailer's checksum.
+    /// </summary>
     internal int PageCrcOffset { get; }
 
-    /// <summary>Gets the number of leading page bytes the page checksum covers.</summary>
+    /// <summary>
+    /// Gets the number of leading page bytes the page checksum covers.
+    /// </summary>
     internal int PageCrcLength =>
         PageTrailerOffset;
 
-    /// <summary>Gets the block trailer size.</summary>
+    /// <summary>
+    /// Gets the block trailer size.
+    /// </summary>
     internal int BlockTrailerSize { get; }
 
-    /// <summary>Gets the offset of the block identifier within the block trailer.</summary>
+    /// <summary>
+    /// Gets the offset of the block identifier within the block trailer.
+    /// </summary>
     internal int BlockTrailerBlockIdOffset { get; }
 
-    /// <summary>Gets the offset of the checksum within the block trailer.</summary>
+    /// <summary>
+    /// Gets the offset of the checksum within the block trailer.
+    /// </summary>
     internal int BlockTrailerCrcOffset { get; }
 
-    /// <summary>Gets the largest block payload: the block size less the trailer.</summary>
+    /// <summary>
+    /// Gets the largest block payload: the block size less the trailer.
+    /// </summary>
     internal int MaxBlockPayload =>
         MaxBlockSize - BlockTrailerSize;
 
-    /// <summary>Gets the stride of an intermediate B-tree entry: a key followed by a <c>BREF</c>.</summary>
+    /// <summary>
+    /// Gets the stride of an intermediate B-tree entry: a key followed by a <c>BREF</c>.
+    /// </summary>
     internal int BranchEntryStride =>
         IdWidth + BrefSize;
 
-    /// <summary>Gets the stride of a node B-tree leaf entry: <c>nid</c>, <c>bidData</c>, <c>bidSub</c>, <c>nidParent</c>.</summary>
+    /// <summary>
+    /// Gets the stride of a node B-tree leaf entry: <c>nid</c>, <c>bidData</c>, <c>bidSub</c>, <c>nidParent</c>.
+    /// </summary>
     internal int NbtLeafStride =>
         (IdWidth * 3) + 4;
 
-    /// <summary>Gets the stride of a block B-tree leaf entry: a <c>BREF</c>, <c>cb</c>, <c>cRef</c>.</summary>
+    /// <summary>
+    /// Gets the stride of a block B-tree leaf entry: a <c>BREF</c>, <c>cb</c>, <c>cRef</c>.
+    /// </summary>
     internal int BbtLeafStride =>
         BrefSize + 4;
 
     /// <summary>
-    /// Gets the size of a subnode block header (<c>SLBLOCK</c> / <c>SIBLOCK</c>): <c>btype</c>, <c>cLevel</c>, <c>cEnt</c>,
-    /// plus four bytes of padding in the Unicode layout only.
+    /// Gets the size of a subnode block header (<c>SLBLOCK</c> / <c>SIBLOCK</c>): <c>btype</c>, <c>cLevel</c>,
+    /// <c>cEnt</c>, plus four bytes of padding in the Unicode layout only.
     /// </summary>
     internal int SubnodeBlockHeaderSize =>
         IdWidth == 8 ? 8 : 4;
 
-    /// <summary>Gets the size of a subnode leaf entry (<c>SLENTRY</c>): <c>nid</c>, <c>bidData</c>, <c>bidSub</c>.</summary>
+    /// <summary>
+    /// Gets the size of a subnode leaf entry (<c>SLENTRY</c>): <c>nid</c>, <c>bidData</c>, <c>bidSub</c>.
+    /// </summary>
     internal int SubnodeLeafEntrySize =>
         IdWidth * 3;
 
-    /// <summary>Gets the size of a subnode index entry (<c>SIENTRY</c>): <c>nid</c>, <c>bid</c>.</summary>
+    /// <summary>
+    /// Gets the size of a subnode index entry (<c>SIENTRY</c>): <c>nid</c>, <c>bid</c>.
+    /// </summary>
     internal int SubnodeIndexEntrySize =>
         IdWidth * 2;
 

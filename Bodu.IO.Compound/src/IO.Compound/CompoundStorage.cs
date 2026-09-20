@@ -71,10 +71,7 @@ public sealed class CompoundStorage
     /// <summary>The parent storage, or <see langword="null" /> when this is the root storage.</summary>
     private readonly CompoundStorage? _parent;
 
-    /// <summary>
-    /// The read-only storage's children indexed by name, built on the first lookup; <see langword="null" /> until then
-    /// and always for a writable storage, whose staging node keeps its own index.
-    /// </summary>
+    /// <summary>The read-only storage's children indexed by name, built on the first lookup; <see langword="null" /> until then and always for a writable storage, whose staging node keeps its own index.</summary>
     private Dictionary<string, CfbDirectoryEntry>? _childrenByName;
 
     /// <summary>

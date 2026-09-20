@@ -14,8 +14,8 @@ namespace Bodu.Formats.Outlook.Pst;
 #endif
 
 /// <summary>
-/// Decodes raw MAPI wire values into the CLR shapes <see cref="MapiProperty" /> documents, independent of the
-/// container the bytes came from.
+/// Decodes raw MAPI wire values into the CLR shapes <see cref="MapiProperty" /> documents, independent of the container
+/// the bytes came from.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,8 +25,8 @@ namespace Bodu.Formats.Outlook.Pst;
 /// property or raises that format's exception, so validation-level policy and resource strings stay format-local.
 /// </para>
 /// <para>
-/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader —
-/// the fixed-scalar layouts, the packed fixed-width multi-value layout, and FILETIME conversion are identical in a
+/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader — the
+/// fixed-scalar layouts, the packed fixed-width multi-value layout, and FILETIME conversion are identical in a
 /// <c>.msg</c> property stream and a PST property/table context. Container-specific layouts (the <c>.msg</c>
 /// per-element multi-value streams, the PST count-plus-offset-table multi-value form) stay in their format packages.
 /// The consuming project selects the namespace via its <c>DefineConstants</c> (<c>MSG</c> or <c>OUTLOOK_PST</c>).
@@ -37,12 +37,14 @@ internal static class MapiValueDecoder
     /// <summary>The UTF-8 code page, whose payloads may carry a byte order mark.</summary>
     private const int Utf8CodePage = 65001;
 
-    /// <summary>The UTF-8 byte order mark.</summary>
+    /// <summary>
+    /// The UTF-8 byte order mark.
+    /// </summary>
     private static ReadOnlySpan<byte> Utf8ByteOrderMark => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
-    /// Determines whether a base type stores its payload out of line (in a value stream or heap allocation) rather
-    /// than inline in the fixed record.
+    /// Determines whether a base type stores its payload out of line (in a value stream or heap allocation) rather than
+    /// inline in the fixed record.
     /// </summary>
     /// <param name="type">The base property type.</param>
     /// <returns><see langword="true" /> for the string, binary, and GUID types.</returns>
@@ -314,12 +316,14 @@ internal static class MapiValueDecoder
     /// Converts a FILETIME value to a UTC time stamp, rejecting zero and out-of-range values.
     /// </summary>
     /// <param name="raw">The raw FILETIME.</param>
-    /// <param name="value">When this method returns <see langword="true" />, the converted time stamp with a zero offset.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the converted time stamp with a zero offset.
+    /// </param>
     /// <returns><see langword="true" /> when the value is representable.</returns>
     /// <remarks>
     /// A FILETIME is defined in UTC, so the result carries <see cref="TimeSpan.Zero" /> regardless of the machine's
-    /// time zone; converting through local time would both shift the offset and reject values near the range limits
-    /// in zones ahead of UTC.
+    /// time zone; converting through local time would both shift the offset and reject values near the range limits in
+    /// zones ahead of UTC.
     /// </remarks>
     internal static bool TryConvertFileTime(ulong raw, out DateTimeOffset value)
     {

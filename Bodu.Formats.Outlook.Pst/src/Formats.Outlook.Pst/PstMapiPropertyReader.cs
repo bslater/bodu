@@ -17,11 +17,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Decoding is two-pass, mirroring the <c>.msg</c> reader: the code-page properties are read first so
-/// <c>PT_STRING8</c> payloads decode with the object's declared encoding (inheriting the parent's when it declares
-/// none, falling back to Windows-1252). Scalars, packed fixed-width multi-values, and FILETIME conversion ride the
-/// shared <see cref="MapiValueDecoder" />; the PST-specific count-plus-offset-table layout of variable-size
-/// multi-values (MS-PST §2.3.3.4.2) is decoded here.
+/// Decoding is two-pass, mirroring the <c>.msg</c> reader: the code-page properties are read first so <c>PT_STRING8</c>
+/// payloads decode with the object's declared encoding (inheriting the parent's when it declares none, falling back to
+/// Windows-1252). Scalars, packed fixed-width multi-values, and FILETIME conversion ride the shared
+/// <see cref="MapiValueDecoder" />; the PST-specific count-plus-offset-table layout of variable-size multi-values
+/// (MS-PST §2.3.3.4.2) is decoded here.
 /// </para>
 /// <para>
 /// Under strict validation an undecodable value throws <see cref="OutlookPstFormatException" />; under the tolerant
@@ -39,9 +39,13 @@ internal static class PstMapiPropertyReader
     /// <see langword="null" /> at the store root.
     /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
-    /// <param name="encoding">When this method returns, the encoding the object's code-page strings decoded with.</param>
+    /// <param name="encoding">
+    /// When this method returns, the encoding the object's code-page strings decoded with.
+    /// </param>
     /// <returns>The decoded property collection.</returns>
-    /// <exception cref="OutlookPstFormatException">A value is undecodable and <paramref name="strict" /> is set.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// A value is undecodable and <paramref name="strict" /> is set.
+    /// </exception>
     internal static MapiPropertyCollection Read(
         PstPropertyContext context,
         Encoding? inheritedEncoding,
@@ -61,22 +65,26 @@ internal static class PstMapiPropertyReader
     }
 
     /// <summary>
-    /// Decodes every property of a property context, leaving one binary property undecoded when its payload exceeds
-    /// an inline limit.
+    /// Decodes every property of a property context, leaving one binary property undecoded when its payload exceeds an
+    /// inline limit.
     /// </summary>
     /// <param name="context">The node's property context.</param>
-    /// <param name="inheritedEncoding">The encoding inherited from the owning object, or <see langword="null" />.</param>
+    /// <param name="inheritedEncoding">
+    /// The encoding inherited from the owning object, or <see langword="null" />.
+    /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
     /// <param name="deferredPropertyId">The identifier of the binary property that may be deferred.</param>
     /// <param name="maxInlineBytes">The largest payload of that property decoded inline.</param>
     /// <param name="encoding">When this method returns, the encoding the code-page strings decoded with.</param>
     /// <returns>The decoded property collection.</returns>
-    /// <exception cref="OutlookPstFormatException">A value is undecodable and <paramref name="strict" /> is set.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// A value is undecodable and <paramref name="strict" /> is set.
+    /// </exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <remarks>
     /// The deferred property's length is read from the container's index structures before any payload is touched;
-    /// above the limit it is surfaced as a present property with a <see langword="null" /> value so callers can see
-    /// it exists and serve it through a stream instead.
+    /// above the limit it is surfaced as a present property with a <see langword="null" /> value so callers can see it
+    /// exists and serve it through a stream instead.
     /// </remarks>
     internal static MapiPropertyCollection Read(
         PstPropertyContext context,
@@ -112,14 +120,18 @@ internal static class PstMapiPropertyReader
     }
 
     /// <summary>
-    /// Decodes a table row's present cells into the shared value model — the shape of recipient rows, whose
-    /// properties are row-resident rather than held in a property context.
+    /// Decodes a table row's present cells into the shared value model — the shape of recipient rows, whose properties
+    /// are row-resident rather than held in a property context.
     /// </summary>
     /// <param name="row">The container's table row.</param>
-    /// <param name="encoding">The owning message's string encoding, which the row's code-page strings decode under.</param>
+    /// <param name="encoding">
+    /// The owning message's string encoding, which the row's code-page strings decode under.
+    /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
     /// <returns>The decoded property collection.</returns>
-    /// <exception cref="OutlookPstFormatException">A cell is undecodable and <paramref name="strict" /> is set.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// A cell is undecodable and <paramref name="strict" /> is set.
+    /// </exception>
     internal static MapiPropertyCollection ReadRow(PstTableRow row, Encoding encoding, bool strict)
     {
         var properties = new List<MapiProperty>();
@@ -140,7 +152,9 @@ internal static class PstMapiPropertyReader
     /// <param name="strict">Whether an undecodable value throws instead of being skipped.</param>
     /// <param name="property">When this method returns <see langword="true" />, the decoded property.</param>
     /// <returns><see langword="true" /> when the value decodes; <see langword="false" /> when it is skipped.</returns>
-    /// <exception cref="OutlookPstFormatException">The value is undecodable and <paramref name="strict" /> is set.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// The value is undecodable and <paramref name="strict" /> is set.
+    /// </exception>
     internal static bool TryDecodeValue(
         PstPropertyValue value,
         Encoding encoding,
@@ -260,8 +274,12 @@ internal static class PstMapiPropertyReader
     /// <param name="encoding">The owning object's code-page string encoding.</param>
     /// <param name="strict">Whether malformed content throws instead of being skipped.</param>
     /// <param name="value">When this method returns <see langword="true" />, the decoded array value.</param>
-    /// <returns><see langword="true" /> when the payload decodes; <see langword="false" /> when it is skipped.</returns>
-    /// <exception cref="OutlookPstFormatException">The payload is malformed and <paramref name="strict" /> is set.</exception>
+    /// <returns>
+    /// <see langword="true" /> when the payload decodes; <see langword="false" /> when it is skipped.
+    /// </returns>
+    /// <exception cref="OutlookPstFormatException">
+    /// The payload is malformed and <paramref name="strict" /> is set.
+    /// </exception>
     private static bool TryDecodeMultiValue(
         MapiPropertyTag tag,
         ReadOnlySpan<byte> payload,

@@ -17,8 +17,8 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// Provider tests typically substitute a fixture-backed <c>IPairRateSource</c> that reads an embedded response and
 /// calls the parser directly. That covers parsing but bypasses request construction entirely, leaving the URL the
 /// provider actually builds unasserted. Driving the real source over this handler closes that gap:
-/// <see cref="LastRequestUri" /> is what makes the assertion possible, and <see cref="RequestCount" /> distinguishes
-/// a request that was served from one that was never issued.
+/// <see cref="LastRequestUri" /> is what makes the assertion possible, and <see cref="RequestCount" /> distinguishes a
+/// request that was served from one that was never issued.
 /// </para>
 /// </remarks>
 public sealed class StubHttpMessageHandler
@@ -55,8 +55,7 @@ public sealed class StubHttpMessageHandler
     public Uri? LastRequestUri { get; private set; }
 
     /// <summary>
-    /// Gets the <c>Authorization</c> header of the most recent request, or <see langword="null" /> when none was
-    /// sent.
+    /// Gets the <c>Authorization</c> header of the most recent request, or <see langword="null" /> when none was sent.
     /// </summary>
     /// <value>The last authorization header.</value>
     public AuthenticationHeaderValue? LastAuthorization { get; private set; }

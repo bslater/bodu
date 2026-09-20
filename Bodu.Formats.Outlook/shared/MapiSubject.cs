@@ -14,11 +14,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// Normalizes a stored <c>PidTagSubject</c> value for presentation.
 /// </summary>
 /// <remarks>
-/// Outlook stores a subject with a prefix (<c>RE:</c>, <c>FW:</c>, and the like) as U+0001, then a character whose
-/// code is the prefix length plus one, then the full subject text (MS-PST §2.4.5.1.2; the same encoding appears in
-/// other MAPI stores). The marker pair is stripped and the full text — prefix included — is returned; a subject that
-/// does not carry the marker is returned as stored. The property collection always surfaces the stored value. This
-/// file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader.
+/// Outlook stores a subject with a prefix (<c>RE:</c>, <c>FW:</c>, and the like) as U+0001, then a character whose code
+/// is the prefix length plus one, then the full subject text (MS-PST §2.4.5.1.2; the same encoding appears in other
+/// MAPI stores). The marker pair is stripped and the full text — prefix included — is returned; a subject that does not
+/// carry the marker is returned as stored. The property collection always surfaces the stored value. This file lives in
+/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader.
 /// </remarks>
 internal static class MapiSubject
 {

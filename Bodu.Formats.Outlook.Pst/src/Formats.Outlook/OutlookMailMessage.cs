@@ -11,8 +11,7 @@ using Bodu.IO.Pst;
 namespace Bodu.Formats.Outlook;
 
 /// <summary>
-/// Represents one message of a mail store: its decoded properties with typed conveniences over the well-known
-/// scalars.
+/// Represents one message of a mail store: its decoded properties with typed conveniences over the well-known scalars.
 /// </summary>
 /// <remarks>
 /// Message views are bound to their owning <see cref="OutlookMailStore" /> session and decode their property context
@@ -58,8 +57,8 @@ public sealed partial class OutlookMailMessage
     }
 
     /// <summary>
-    /// Gets the embedded-message nesting depth of this view: zero for a message enumerated from a folder, one more
-    /// for each level opened through <see cref="OutlookMailAttachment.OpenMessage" />.
+    /// Gets the embedded-message nesting depth of this view: zero for a message enumerated from a folder, one more for
+    /// each level opened through <see cref="OutlookMailAttachment.OpenMessage" />.
     /// </summary>
     /// <value>The nesting depth.</value>
     public int EmbeddedDepth =>

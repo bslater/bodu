@@ -125,11 +125,10 @@ public sealed class PstPropertyContext
     /// <exception cref="PstFileFormatException">The value's storage is malformed.</exception>
     /// <remarks>
     /// <para>
-    /// The stream is the streaming counterpart of <see cref="TryGetValue" />: a heap-resident value is served from
-    /// the heap's decoded bytes, and a subnode-resident value is read block by block on demand — the same stream
-    /// <see cref="PstNode.OpenDataStream" /> returns — so <see cref="PstFileOptions.MaxNodeDataLength" />, which
-    /// bounds materialization, does not apply. The stream is bound to the owning session and must be disposed before
-    /// it.
+    /// The stream is the streaming counterpart of <see cref="TryGetValue" />: a heap-resident value is served from the
+    /// heap's decoded bytes, and a subnode-resident value is read block by block on demand — the same stream
+    /// <see cref="PstNode.OpenDataStream" /> returns — so <see cref="PstFileOptions.MaxNodeDataLength" />, which bounds
+    /// materialization, does not apply. The stream is bound to the owning session and must be disposed before it.
     /// </para>
     /// <para>
     /// Inline and fixed-width values are exposed as their raw little-endian bytes for uniformity; the typed accessors
@@ -177,7 +176,10 @@ public sealed class PstPropertyContext
     /// </summary>
     /// <param name="propertyId">The 16-bit property identifier.</param>
     /// <returns>The property value.</returns>
-    /// <exception cref="PstFileException">The property is not present (<see cref="PstFileException.Error" /> is <see cref="PstFileError.PropertyNotFound" />).</exception>
+    /// <exception cref="PstFileException">
+    /// The property is not present (<see cref="PstFileException.Error" /> is
+    /// <see cref="PstFileError.PropertyNotFound" />).
+    /// </exception>
     /// <exception cref="PstFileFormatException">The property's value reference does not resolve.</exception>
     public PstPropertyValue GetValue(ushort propertyId)
     {
@@ -242,8 +244,8 @@ public sealed class PstPropertyContext
             && PstWireType.IsKnown(entry.WireType);
 
     /// <summary>
-    /// Resolves a record into its value, materializing inline, heap-resident, or subnode-resident payloads per the
-    /// wire type's storage classification.
+    /// Resolves a record into its value, materializing inline, heap-resident, or subnode-resident payloads per the wire
+    /// type's storage classification.
     /// </summary>
     /// <param name="entry">The record to resolve.</param>
     /// <returns>The property value.</returns>
