@@ -66,12 +66,11 @@ public sealed partial class Rfc6962MerkleTree
     /// hashes each block inside its own worker and therefore scales considerably better.
     /// </para>
     /// <para>
-    /// The gain also depends heavily on how fast the leaf hash is relative to memory bandwidth. Measured over 64 MiB at
-    /// one-mebibyte blocks on four cores, this overload returned roughly 1.1× for a hardware-accelerated SHA-256 —
-    /// which already runs near memory bandwidth, leaving little to recover — against roughly 2.4× for a managed digest
-    /// such as Tiger or BLAKE2b. The in-memory overload returned 1.9× to 3.0× across the same algorithms. Treat those
-    /// figures as shape rather than specification, and measure your own case: for a fast hash over a fast source, the
-    /// sequential overload may simply win.
+    /// Measured over 64 MiB at one-mebibyte blocks on four cores, this overload returned 2.2× to 2.6× over the
+    /// sequential fold, and the in-memory overload 3.1× to 3.4×, across SHA-256, SHA-512, Tiger and BLAKE2b alike. The
+    /// leaf hash makes little difference — the same per-block work is being spread either way — so the figure tracks
+    /// core count and the source far more than the digest. Treat those numbers as shape rather than specification and
+    /// measure your own case; the benchmark under <c>Bodu.Collections/bench</c> reproduces them.
     /// </para>
     /// <para>
     /// The returned root is bit-identical to the sequential overload's for every input, so switching between them is
@@ -194,10 +193,10 @@ public sealed partial class Rfc6962MerkleTree
     /// per-block cost parallelizes.
     /// </para>
     /// <para>
-    /// Whether that translates into wall-clock gain still depends on the leaf hash. A hardware-accelerated SHA-256
-    /// already runs close to memory bandwidth, leaving parallelism little to recover; a managed digest leaves a great
-    /// deal. See the remarks on <see cref="ComputeBlockedParallel(Stream, int, int, CancellationToken)" /> for measured
-    /// guidance.
+    /// That is why this overload scales close to the core count where the stream overload cannot: on four cores it
+    /// returned 3.1× to 3.4× against the sequential fold, regardless of whether the leaf hash was a
+    /// hardware-accelerated SHA-256 or a managed digest. See the remarks on
+    /// <see cref="ComputeBlockedParallel(Stream, int, int, CancellationToken)" /> for the full measured comparison.
     /// </para>
     /// </remarks>
     public MerkleComputation ComputeBlockedParallel(

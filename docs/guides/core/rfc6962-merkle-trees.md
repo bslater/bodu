@@ -105,17 +105,25 @@ byte[] root = tree.ComputeRootParallel(entries);
 
 Prefer the `ReadOnlyMemory<byte>` overload where you can. A stream must be read sequentially, so that overload copies each block on the calling thread before any worker can touch it, which caps the gain; the in-memory overload copies *and* hashes each block inside its own worker.
 
-How much you actually gain depends on how fast the leaf hash is relative to memory bandwidth — and it can be **negative**:
+How much you gain depends on the source and on how many cores you have. Measured on a 4-core Intel Xeon 2.80GHz under .NET 10, over 64 MiB at one-mebibyte blocks:
 
 | Leaf hash | Stream overload | In-memory overload |
 |---|---|---|
-| SHA-256 (hardware-accelerated) | ~1.1× | ~1.9× |
-| SHA-512 | ~1.8× | ~2.5× |
-| Tiger (managed) | ~2.4× | ~3.0× |
-| BLAKE2b (managed) | ~2.5× | ~2.6× |
+| SHA-256 | 2.6× | 3.4× |
+| SHA-512 | 2.3× | 3.2× |
+| Tiger | 2.6× | 3.3× |
+| BLAKE2b | 2.2× | 3.1× |
+
+Two things hold across all four. The in-memory overload lands close to the core count, because every block is copied *and* hashed inside its own worker. The stream overload lands consistently lower, because the read is serial — the copy happens on the calling thread no matter how many workers are waiting — and that ceiling is what the gap between the two columns measures.
 
 > [!NOTE]
-> Measured over 64 MiB at one-mebibyte blocks on four cores. Treat these as shape, not specification. A hardware-accelerated SHA-256 already runs close to memory bandwidth, so there is little for extra threads to recover — and on a fast source the sequential overload can beat the parallel stream overload outright. Measure your own case before reaching for these.
+> These come from the benchmark in `Bodu.Collections/bench`, so they can be re-measured rather than taken on trust:
+>
+> ```bash
+> dotnet run --project Bodu.Collections/bench/Bodu.Collections.Benchmarks.csproj -c Release -- --filter '*MerkleParallel*'
+> ```
+>
+> Speedup tracks core count, so on other hardware the numbers move together; the *ordering* of the two columns is the part that should hold. Note that the leaf hash barely matters here — a slow managed digest and a hardware-accelerated SHA-256 parallelize about equally well, because what is being spread across threads is the same per-block work either way.
 
 ## Why the prefixes are there
 

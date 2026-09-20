@@ -54,6 +54,7 @@
     <File Path="bld\InternalsVisibleTo.targets" />
   </Folder>
   <Folder Name="/Bodu.Collections/">
+    <Project Path="Bodu.Collections\bench\Bodu.Collections.Benchmarks.csproj" />
     <Project Path="Bodu.Collections\src\Bodu.Collections.csproj" />
     <Project Path="Bodu.Collections\test\Bodu.Collections.Test.csproj" />
   </Folder>
