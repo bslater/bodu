@@ -30,7 +30,7 @@ Bodu.Collections ships more than a dozen collection types (with the thread-safe 
    - Duplicates retained as multiplicity → <xref:Bodu.Collections.Generic.Multiset`1>.
    - Set of disjoint half-open intervals → <xref:Bodu.Collections.Generic.RangeSet`1>.
    - Overlapping intervals, queried by "what covers this point/window?" → <xref:Bodu.Collections.Generic.IntervalTree`1> (or <xref:Bodu.Collections.Generic.IntervalTree`2> to carry a value per interval).
-   - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Generic.BitSet>.
+   - Dense set of non-negative integers as packed bits → <xref:Bodu.Collections.Specialized.BitSet>.
    - Sorted, with floor/ceiling/rank/select and range counting → <xref:Bodu.Collections.Generic.NavigableSet`1>.
 4. **Do you need string-keyed prefix lookups or multi-pattern text search?**
    - Membership and prefix queries over string keys → <xref:Bodu.Collections.Generic.Trees.Trie> (or <xref:Bodu.Collections.Generic.Trees.Trie`1> to carry a value per key).
@@ -63,7 +63,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Layered lookup with first-wins precedence | <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Python `ChainMap` semantics: a live view over ordered layers, writes to the first layer only; removing a shadowing entry unshadows the deeper value. `Count`/enumeration walk every layer. |
 | Two-key map with row/column projections | <xref:Bodu.Collections.Generic.Table`3> | Guava `Table` shape: live `Row` / `Column` views over a row-major store. Column-axis operations are O(rows) — no second index. A plain `Dictionary<(TRow, TColumn), TValue>` covers lookup-only use. |
 | Auto-materializing defaults on indexer read | <xref:Bodu.Collections.Generic.DefaultingDictionary`2> | Python `defaultdict` semantics: only the indexer getter invokes the value factory and stores the result — `TryGetValue`/`ContainsKey` never materialize. The `GetOrAdd` extension stays the per-call-site option. |
-| Dense integer membership as packed bits | <xref:Bodu.Collections.Generic.BitSet> | Java `BitSet` semantics. Prefer over the BCL `BitArray`, which is fixed-size, has no set-bit query surface (`NextSetBit` / `NextClearBit` / `Cardinality`), and enumerates boxed `bool` values instead of set-bit indices. |
+| Dense integer membership as packed bits | <xref:Bodu.Collections.Specialized.BitSet> | Java `BitSet` semantics. Prefer over the BCL `BitArray`, which is fixed-size, has no set-bit query surface (`NextSetBit` / `NextClearBit` / `Cardinality`), and enumerates boxed `bool` values instead of set-bit indices. |
 | String-keyed prefix lookup (autocomplete, routing) | <xref:Bodu.Collections.Generic.Trees.Trie> / <xref:Bodu.Collections.Generic.Trees.Trie`1> | Membership and prefix queries cost O(key length), independent of key count. Configurable `IEqualityComparer<char>`. |
 | Prefix lookup over long, sparsely branching keys | <xref:Bodu.Collections.Generic.Trees.RadixTrie> / <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Same member-for-member surface as the tries over path-compressed string edges — node count tracks key count, not total key length. |
 | Multi-pattern text search (all occurrences, one pass) | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> / <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Built once from the pattern set, immutable after. O(text + matches) regardless of pattern count; matches reported ascending by end index, then pattern length. |

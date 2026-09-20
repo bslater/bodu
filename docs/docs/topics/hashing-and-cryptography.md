@@ -10,7 +10,7 @@ Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, 
 
 **Bodu.Security.Cryptography** is the adversarial-setting library — block, tweakable, and stream ciphers, AEAD constructions (block-cipher modes, ASCON, and the Poly1305 stream-cipher pairings), keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), key-derivation functions (memory-hard Argon2 and scrypt, plus HKDF), and one-time passwords (HOTP / TOTP). Every algorithm is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions.
 
-The commitment types live in **`Bodu.Collections.Generic`**, the headline namespace of the [`Bodu.Collections`](../collections/index.md) package, beside the rest of the collection catalogue: the RFC 6962 Merkle tree, inclusion and consistency proofs, and length-bound roots, over whatever `HashAlgorithm` the caller supplies. It belongs on the adversarial side (its whole purpose is proving something to a party who does not trust you), but it depends only on `Bodu.Core`, so a consumer who needs commitments does not take a catalogue of ciphers with them. See the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md).
+The commitment types live in **`Bodu.Collections.Specialized`**, a namespace of the [`Bodu.Collections`](../collections/index.md) package: the RFC 6962 Merkle tree, inclusion and consistency proofs, and length-bound roots, over whatever `HashAlgorithm` the caller supplies. It belongs on the adversarial side (its whole purpose is proving something to a party who does not trust you), but it depends only on `Bodu.Core`, so a consumer who needs commitments does not take a catalogue of ciphers with them. See the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md).
 
 ![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
 
@@ -58,7 +58,7 @@ Cross the line the moment the trust assumption changes. A CRC that guards a down
 
 - **Symmetric ciphers** — standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only — pair with a MAC or prefer AEAD).
 - **AEAD** — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via `AsconAead128`, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (`XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and the libsodium-compatible `XSalsa20Poly1305`).
-- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the level-by-level `MerkleTreeHash` / `ParallelMerkleTreeHash`; RFC 6962's tree lives in `Bodu.Collections.Generic`).
+- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the level-by-level `MerkleTreeHash` / `ParallelMerkleTreeHash`; RFC 6962's tree lives in `Bodu.Collections.Specialized`).
 - **Keyed hashes / MACs** — the reusable PRF (SipHash) and the one-time authenticator (Poly1305).
 - **Public-key** — signatures (`Ed25519`, the post-quantum `MLDsa44/65/87`), key agreement (`X25519`), key encapsulation (the post-quantum `MLKem512/768/1024`), and `Hpke` (RFC 9180), which seals a message to a recipient's public key.
 - **KDFs** — memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand `Hkdf` for high-entropy secrets.
@@ -116,7 +116,7 @@ All three target `net8.0` and depend only on `Bodu.Core` (and, for `Bodu.IO.Hash
 
 - **[Hashing & Cryptography — Concepts](hashing-and-cryptography-concepts.md)** — the full taxonomy: fingerprint vs. checksum vs. check digit vs. digest vs. MAC vs. AEAD vs. XOF vs. KDF, and the guarantee each does and does not make.
 - **[Bodu.IO.Hashing introduction](../io-hashing/index.md)** — subfamily map and the algorithm-selection tables.
-- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the standard's tree, inclusion and consistency proofs, and bound roots, in the `Bodu.Collections.Generic` namespace.
+- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the standard's tree, inclusion and consistency proofs, and bound roots, in the `Bodu.Collections.Specialized` namespace.
 - **[Bodu.Security.Cryptography introduction](../cryptography/index.md)** — the six subfamilies, the choosing-a-primitive table, and the safety rules.
 - **Getting started:** [Bodu.IO.Hashing](../io-hashing/getting-started.md) · [Bodu.Security.Cryptography](../cryptography/getting-started.md) · [Bodu.Collections](../collections/getting-started.md).
 - **[Hashing & Cryptography guides](../../guides/topics/hashing-and-cryptography.md)** — the recipe-style walk-throughs for this topic.

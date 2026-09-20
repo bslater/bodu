@@ -156,7 +156,7 @@ A root anyone can verify one entry against, without being shown the rest:
 
 ```csharp
 using System.Security.Cryptography;
-using Bodu.Collections.Generic;
+using Bodu.Collections.Specialized;
 
 var tree = new Rfc6962MerkleTree(SHA256.Create);   // immutable; share it across threads
 

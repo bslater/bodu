@@ -4,7 +4,7 @@ title: RFC 6962 Merkle trees and proofs
 
 # RFC 6962 Merkle trees and proofs
 
-<xref:Bodu.Collections.Generic.Rfc6962MerkleTree> — in the **Bodu.Collections** package, namespace `Bodu.Collections.Generic` alongside the rest of the collection catalogue — implements the Merkle tree of [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1): the Merkle Tree Hash, inclusion (audit) proofs, consistency proofs, and length-bound roots. It is the type to reach for when a root has to interoperate with a transparency log, an artifact attestation, or anything else built to the standard, and it is the only Bodu type that produces proofs.
+<xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> — in the **Bodu.Collections** package, namespace `Bodu.Collections.Specialized` — implements the Merkle tree of [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1): the Merkle Tree Hash, inclusion (audit) proofs, consistency proofs, and length-bound roots. It is the type to reach for when a root has to interoperate with a transparency log, an artifact attestation, or anything else built to the standard, and it is the only Bodu type that produces proofs.
 
 The package depends on `Bodu.Core` alone. Reaching for a commitment does not pull in a cipher catalogue — the hash is supplied by the caller as a `Func<HashAlgorithm>`, so the BCL algorithms and the Bodu digests both work while the package references neither. The types live beside the collection catalogue for the same reason the approximate sketches do: they need nothing else, and a package of their own would buy a consumer nothing.
 
@@ -38,7 +38,7 @@ The tree is binary by definition, so there is no `fanOut` to choose, and an empt
 
 ```csharp
 using System.Security.Cryptography;
-using Bodu.Collections.Generic;
+using Bodu.Collections.Specialized;
 
 var tree = new Rfc6962MerkleTree(SHA256.Create);   // immutable; safe to share across threads
 
@@ -55,7 +55,7 @@ bool ok = tree.VerifyInclusion(
 
 The instance keeps no digest state between calls and is deliberately **not** `IDisposable` — it creates and disposes a `HashAlgorithm` inside each call, so there is nothing on the tree itself to dispose and a `using` would imply a lifetime it does not have.
 
-`ComputeRootOfLeafHashes`, `AuthenticationPath(IReadOnlyList<byte[]>, long)`, and `VerifyInclusionOfLeafHash` are the counterparts for callers that already hold leaf hashes — from a cache, a previous pass, or a <xref:Bodu.Collections.Generic.MerkleComputation>.
+`ComputeRootOfLeafHashes`, `AuthenticationPath(IReadOnlyList<byte[]>, long)`, and `VerifyInclusionOfLeafHash` are the counterparts for callers that already hold leaf hashes — from a cache, a previous pass, or a <xref:Bodu.Collections.Specialized.MerkleComputation>.
 
 ## Block mode over a stream
 
@@ -74,7 +74,7 @@ Two conventions differ from padding-based schemes, and both are deliberate:
 - a **zero-length input has no blocks at all**, not one empty block, so its root is `H()`;
 - a **final short block is hashed at its actual length**, never zero-padded — padding would let a shorter input collide with a zero-extended longer one.
 
-<xref:Bodu.Collections.Generic.MerkleBlocks> exposes the arithmetic (`BlockCount`, `BlockOffset`, `BlockLength`) in 64-bit form, so blocks of a multi-gigabyte object can be addressed without overflow.
+<xref:Bodu.Collections.Specialized.MerkleBlocks> exposes the arithmetic (`BlockCount`, `BlockOffset`, `BlockLength`) in 64-bit form, so blocks of a multi-gigabyte object can be addressed without overflow.
 
 ### Root only, in logarithmic memory
 
@@ -199,5 +199,5 @@ For a single end-to-end digest where partial verification is not a requirement, 
 - **[Bodu.Collections introduction](../../docs/collections/index.md)** · **[core concepts](../../docs/collections/concepts.md#merkle-commitments)** · **[getting started](../../docs/collections/getting-started.md)** — the package these types ship in.
 - **[Using Merkle trees](../cryptography/merkle-trees.md)** — the level-by-level streaming digests in `Bodu.Security.Cryptography`, and why their roots differ from this one's.
 - **[Hashing overview](../cryptography/hashing.md)** — where tree hashing sits alongside the other families.
-- <xref:Bodu.Collections.Generic.Rfc6962MerkleTree> · <xref:Bodu.Collections.Generic.MerkleComputation> · <xref:Bodu.Collections.Generic.MerkleBlocks>.
+- <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> · <xref:Bodu.Collections.Specialized.MerkleComputation> · <xref:Bodu.Collections.Specialized.MerkleBlocks>.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic.

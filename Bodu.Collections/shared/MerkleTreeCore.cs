@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 #if SECURITY_CRYPTOGRAPHY
 namespace Bodu.Security.Cryptography;
 #else
-namespace Bodu.Collections.Generic;
+namespace Bodu.Collections.Specialized;
 #endif
 
 /// <summary>
