@@ -23,11 +23,12 @@ The foundation every other package builds on — collections, buffers, extension
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
 
-Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other.
+Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other. A third sits on the adversarial side while depending on neither: the RFC 6962 Merkle tree, for commitments and proofs.
 
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
+| **[Bodu.Collections.Merkle](collections-merkle/index.md)** | The RFC 6962 Merkle tree over any <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> the caller supplies — the Merkle Tree Hash in entry, block, and parallel modes, inclusion (audit) and consistency proofs, and length-bound roots that close the standard's tree-size ambiguity. Depends on `Bodu.Core` alone, so commitments do not drag in a cipher catalogue. | `net8.0` |
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
 
 ### [Globalization & Calendars](topics/globalization-and-calendars.md)

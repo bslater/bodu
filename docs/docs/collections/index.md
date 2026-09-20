@@ -109,5 +109,6 @@ A handful of conventions run through the whole package; knowing them up front ex
 - **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe companion package.
+- **[Bodu.Collections.Merkle introduction](../collections-merkle/index.md)** — the third package in the family: RFC 6962 Merkle trees and proofs. It shares the name prefix and the `Bodu.Core`-only dependency, but is documented under [Hashing & Cryptography](../topics/hashing-and-cryptography.md), because what it builds is a commitment rather than a container.
 - **[Bodu.Core introduction](../core/index.md)** — the foundation package this one builds on.
 - **[Core Foundations topic](../topics/core-foundations.md)** — how the three packages and the `Bodu.Text` namespace utilities fit together.

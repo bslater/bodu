@@ -73,6 +73,11 @@ Primitives with a formal adversary model, on the BCL `SymmetricAlgorithm` / `Has
 </div>
 
 <div class="bodu-card">
+  <h3><a href="../merkle/rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
+  <p>The standard&#39;s tree, inclusion and consistency proofs, and length-bound roots — <code>Bodu.Collections.Merkle</code>, which depends on <code>Bodu.Core</code> alone.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="../cryptography/siphash.md">Using SipHash</a></h3>
   <p>SipHash-64 and SipHash-128 — the keyed PRF for hash-flooding-resistant tables and short-message authentication.</p>
 </div>
