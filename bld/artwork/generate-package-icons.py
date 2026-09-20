@@ -171,11 +171,33 @@ def g_nodes(a):
     </g>'''
 
 
+def g_tree(a):
+    return f'''    <g stroke="{a}" stroke-width="3" fill="none">
+      <line x1="-13" y1="-12" x2="-22" y2="6"/>
+      <line x1="-13" y1="-12" x2="-4" y2="6"/>
+      <line x1="13" y1="-12" x2="4" y2="6"/>
+      <line x1="13" y1="-12" x2="22" y2="6"/>
+      <line x1="0" y1="-26" x2="-13" y2="-12"/>
+      <line x1="0" y1="-26" x2="13" y2="-12"/>
+    </g>
+    <circle cy="-26" r="6" fill="{a}"/>
+    <g fill="none" stroke="{a}" stroke-width="3">
+      <circle cx="-13" cy="-12" r="4.5"/>
+      <circle cx="13" cy="-12" r="4.5"/>
+    </g>
+    <g fill="{a}">
+      <rect x="-27" y="7" width="10" height="10" rx="2"/>
+      <rect x="-9" y="7" width="10" height="10" rx="2"/>
+      <rect x="-1" y="7" width="10" height="10" rx="2" opacity="0.55"/>
+      <rect x="17" y="7" width="10" height="10" rx="2" opacity="0.55"/>
+    </g>'''
+
+
 GLYPHS = {
     "ring": g_ring, "slots": g_slots, "lanes": g_lanes, "chips": g_chips,
     "doclines": g_doclines, "lock": g_lock, "grid": g_grid, "coin": g_coin,
     "plug": g_plug, "shield": g_shield, "spark": g_spark, "cylinder": g_cylinder,
-    "pills": g_pills, "fraction": g_fraction, "nodes": g_nodes,
+    "pills": g_pills, "fraction": g_fraction, "nodes": g_nodes, "tree": g_tree,
     "braces": lambda a: g_text(a, "{ }", 36), "hash": lambda a: g_text(a, "#", 44),
     "eq": lambda a: g_text(a, "k=v", 28), "indent": lambda a: g_text(a, "- :", 34),
     "bee": lambda a: g_text(a, "d…e", 28),
@@ -186,6 +208,7 @@ ICONS = {
     "Bodu.Core":                         ("core", "#3B82F6", "CORE", "ring"),
     "Bodu.Collections":                  ("col", "#34D399", "COL", "slots"),
     "Bodu.Collections.Concurrent":       ("colc", "#60A5FA", "CONC", "lanes"),
+    "Bodu.Collections.Merkle":           ("merkle", "#2DD4BF", "MTH", "tree"),
     "Bodu.Text.Encoding":                ("tenc", "#FBBF24", "B·N", "chips"),
     "Bodu.Text.Formats":                 ("tfmt", "#34D399", "FMT", "doclines"),
     "Bodu.Text.Delimited":               ("tdlm", "#34D399", "CSV", "grid"),

@@ -160,6 +160,29 @@ def provider_right(accent, history, note_text):
     ], y0=46, dy=16, size=9.5)
 
 
+def merkle_tree(accent):
+    """RFC 6962's 2 + 1 split over three leaves, panel-relative: the lone right leaf is promoted unchanged."""
+    return f'''    <g stroke="{accent}" stroke-width="1.6" fill="none">
+      <line x1="75" y1="52" x2="52" y2="80"/>
+      <line x1="75" y1="52" x2="112" y2="112"/>
+      <line x1="52" y1="90" x2="35" y2="112"/>
+      <line x1="52" y1="90" x2="69" y2="112"/>
+    </g>
+    <circle cx="75" cy="46" r="7" fill="{accent}"/>
+    <circle cx="52" cy="85" r="5.5" fill="none" stroke="{accent}" stroke-width="1.8"/>
+    <g fill="{accent}" stroke="#334155" stroke-width="0.8">
+      <rect x="28" y="112" width="14" height="14" rx="2.5"/>
+      <rect x="62" y="112" width="14" height="14" rx="2.5"/>
+      <rect x="105" y="112" width="14" height="14" rx="2.5" opacity="0.6"/>
+    </g>
+    <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="8.5" text-anchor="middle">
+      <text x="35" y="136">d0</text>
+      <text x="69" y="136">d1</text>
+      <text x="112" y="136">d2</text>
+    </g>
+{note("3 leaves split 2 + 1", y=152)}'''
+
+
 B = {}  # filename (without .svg) -> spec
 
 
@@ -187,6 +210,15 @@ add("hero-collections", "Bodu.Collections", "Bodu.Collections — bounded, order
           '<tspan fill="#60A5FA">IntervalTree</tspan>', '<tspan fill="#60A5FA">Trie · Graph&lt;T&gt;</tspan>',
           '<tspan fill="#34D399">BloomFilter · HLL</tspan>'], y0=42, dy=17),
     "bounded · ordered · navigable · probabilistic", gid="col")
+
+add("hero-merkle", "Bodu.Collections.Merkle", "Bodu.Collections.Merkle \u2014 RFC 6962 Merkle trees, inclusion proofs, and consistency proofs",
+    "#2DD4BF", "MTH(D[n])", merkle_tree("#2DD4BF"),
+    "commit", "verify", "Proofs",
+    mono(["ComputeRoot", "ComputeBlocked", '<tspan fill="#2DD4BF">AuthenticationPath</tspan>',
+          '<tspan fill="#2DD4BF">ConsistencyProof</tspan>', "VerifyInclusion", "BindRoot",
+          '<tspan fill="#94A3B8" font-size="9">Bodu.Core only</tspan>'], y0=42, dy=17),
+    "RFC 6962 \u00b7 H(0x00\u2016leaf) \u00b7 H(0x01\u2016l\u2016r) \u00b7 O(log n) proofs", gid="merkle")
+
 
 add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collections.Concurrent — thread-safe collection variants",
     "#60A5FA", "Threads",

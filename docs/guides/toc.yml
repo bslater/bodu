@@ -122,6 +122,10 @@
           items:
             - name: Check digits overview
               href: io-hashing/check-digits.md
+    - name: Bodu.Collections.Merkle
+      items:
+        - name: RFC 6962 Merkle trees and proofs
+          href: merkle/rfc6962-merkle-trees.md
     - name: Bodu.Security.Cryptography
       items:
         - name: Overview

@@ -4,6 +4,7 @@
 # Non-package art (namespace/format/family banners) is allowlisted in the workflow, not listed here.
 Bodu.Collections hero-collections.svg
 Bodu.Collections.Concurrent hero-collections-concurrent.svg
+Bodu.Collections.Merkle hero-merkle.svg
 Bodu.Core hero-core.svg
 Bodu.Extensions.Configuration.Text hero-extensions-config.svg
 Bodu.Financial hero-financial.svg
