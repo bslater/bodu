@@ -77,4 +77,55 @@ public sealed class MerkleBlockComputation
     /// authentication path without re-reading the input.
     /// </remarks>
     public IReadOnlyList<byte[]> LeafHashes { get; }
+
+    /// <summary>
+    /// Gets the number of blocks the input divided into, which is also the number of leaves.
+    /// </summary>
+    /// <value>
+    /// <see cref="MerkleBlocks.BlockCount(long, int)" /> over <see cref="InputLength" /> and <see cref="BlockSize" />;
+    /// zero for an empty input.
+    /// </value>
+    public long BlockCount =>
+        MerkleBlocks.BlockCount(InputLength, BlockSize);
+
+    /// <summary>
+    /// Returns the byte offset at which the specified block of this computation's input begins.
+    /// </summary>
+    /// <param name="blockIndex">The zero-based index of the block.</param>
+    /// <returns>The offset, in bytes, from the start of the input.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="MerkleBlocks.BlockOffset(long, int)" /> is pure arithmetic over any index; this member knows the
+    /// input it belongs to and rejects a block that does not exist.
+    /// </remarks>
+    public long BlockOffset(long blockIndex)
+    {
+        ThrowHelper.ThrowIfNegative(blockIndex);
+        ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
+
+        return MerkleBlocks.BlockOffset(blockIndex, BlockSize);
+    }
+
+    /// <summary>
+    /// Returns the length of the specified block of this computation's input, which is shorter than
+    /// <see cref="BlockSize" /> only for the final block of an input whose length is not a whole multiple of it.
+    /// </summary>
+    /// <param name="blockIndex">The zero-based index of the block.</param>
+    /// <returns>The length, in bytes, of the block.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="MerkleBlocks.BlockLength(long, long, int)" /> returns zero for a block beyond the input; this member
+    /// knows the input it belongs to and rejects such a block instead.
+    /// </remarks>
+    public int BlockLength(long blockIndex)
+    {
+        ThrowHelper.ThrowIfNegative(blockIndex);
+        ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
+
+        return MerkleBlocks.BlockLength(InputLength, blockIndex, BlockSize);
+    }
 }
