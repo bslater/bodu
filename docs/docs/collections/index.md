@@ -38,6 +38,15 @@ Bounded, ordered, navigable, and range-keyed collections, many built around a sh
 | <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Range-keyed lookups for ordered or interval-valued keys. |
 | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed `[low, high]` intervals that may freely overlap, O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries, O(log n) `Intersects` / `IntersectsPoint`, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps. |
 
+#### Merkle trees and proofs
+Also in `Bodu.Collections.Generic`: the [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) Merkle tree over any <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> the caller supplies — a commitment rather than a container, which is why nothing here implements a collection interface. It ships in this package because it needs nothing beyond `Bodu.Core`; folding it into [`Bodu.Security.Cryptography`](../cryptography/index.md) would make every consumer who wants a commitment take a cipher catalogue to get it. See the [RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md) guide.
+
+| Type | Purpose |
+|---|---|
+| <xref:Bodu.Collections.Generic.Rfc6962MerkleTree> | The whole surface, as one immutable, stateless facade over a `Func<HashAlgorithm>`: root computation in entry, fixed-size-block, and parallel modes; authentication paths and consistency proofs; five verifiers, all of which return `false` for malformed input rather than throwing; and the three domain-separated primitives (`HashLeaf`, `HashNode`, `BindRoot`). Safe to share across threads. |
+| <xref:Bodu.Collections.Generic.MerkleComputation> | The result of a block-mode pass — `Root`, `InputLength`, `BlockSize`, and the ordered `LeafHashes`. Returning the leaf hashes from the same pass is the point: an authentication path needs them, and without them a large object would have to be streamed twice. |
+| <xref:Bodu.Collections.Generic.MerkleBlocks> | The block arithmetic as standalone 64-bit helpers — `BlockCount`, `BlockOffset`, `BlockLength`. A zero-length input has no blocks rather than one empty block, and a final short block is hashed at its actual length rather than padded. |
+
 ### `Bodu.Collections.Probabilistic`
 Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
 
@@ -46,15 +55,6 @@ Approximate "sketch" structures that trade exactness for a fixed memory footprin
 | <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
 | <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | Approximate per-element frequency counting sized from `epsilon` / `delta`. Never underestimates; with probability at least `1 − δ` an estimate is at most the true count plus `ε · TotalCount`. Supports `MergeWith` (cell-wise sum) and export/import. |
 | <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Approximate distinct-element (cardinality) counting in `2^precision` one-byte registers with ~`1.04/√m` relative standard error. `MergeWith` (register-wise max) is lossless and never double-counts shared elements. |
-
-### `Bodu.Collections.Merkle`
-The [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) Merkle tree over any <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> the caller supplies — a commitment rather than a container, which is why nothing here implements a collection interface. It ships in this package because it needs nothing beyond `Bodu.Core`; folding it into [`Bodu.Security.Cryptography`](../cryptography/index.md) would make every consumer who wants a commitment take a cipher catalogue to get it. See the [RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md) guide and the <xref:Bodu.Collections.Merkle> overview.
-
-| Type | Purpose |
-|---|---|
-| <xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> | The whole surface, as one immutable, stateless facade over a `Func<HashAlgorithm>`: root computation in entry, fixed-size-block, and parallel modes; authentication paths and consistency proofs; five verifiers, all of which return `false` for malformed input rather than throwing; and the three domain-separated primitives (`HashLeaf`, `HashNode`, `BindRoot`). Safe to share across threads. |
-| <xref:Bodu.Collections.Merkle.MerkleComputation> | The result of a block-mode pass — `Root`, `InputLength`, `BlockSize`, and the ordered `LeafHashes`. Returning the leaf hashes from the same pass is the point: an authentication path needs them, and without them a large object would have to be streamed twice. |
-| <xref:Bodu.Collections.Merkle.MerkleBlocks> | The block arithmetic as standalone 64-bit helpers — `BlockCount`, `BlockOffset`, `BlockLength`. A zero-length input has no blocks rather than one empty block, and a final short block is hashed at its actual length rather than padded. |
 
 ### `Bodu.Collections.Generic.Graphs`
 Graphs and graph algorithms. See the [Graphs and graph algorithms](../../guides/core/graphs.md) guide and the <xref:Bodu.Collections.Generic.Graphs> overview.
@@ -96,8 +96,8 @@ The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concur
 | Prefix queries and autocomplete over string keys | <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie> |
 | Find every occurrence of many patterns in one pass | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> |
 | Approximate membership / frequency / distinct counts in fixed memory | <xref:Bodu.Collections.Probabilistic.BloomFilter`1>, <xref:Bodu.Collections.Probabilistic.CountMinSketch`1>, <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> |
-| Prove one entry or chunk belongs under a published root | <xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> (`AuthenticationPath` + `VerifyInclusion`) |
-| Prove an append-only log never rewrote history | <xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> (`ConsistencyProof` + `VerifyConsistency`) |
+| Prove one entry or chunk belongs under a published root | <xref:Bodu.Collections.Generic.Rfc6962MerkleTree> (`AuthenticationPath` + `VerifyInclusion`) |
+| Prove an append-only log never rewrote history | <xref:Bodu.Collections.Generic.Rfc6962MerkleTree> (`ConsistencyProof` + `VerifyConsistency`) |
 | Graph traversal, shortest path, topological sort | <xref:Bodu.Collections.Generic.Graphs.Graph`1> + <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> |
 | Thread-safe FIFO ring, unique set, or bounded cache | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
 
@@ -120,6 +120,6 @@ A handful of conventions run through the whole package; knowing them up front ex
 - **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe companion package.
-- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the `Bodu.Collections.Merkle` namespace in full: entry and block modes, proofs, bound roots, and parallel leaf hashing.
+- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the Merkle surface in full: entry and block modes, proofs, bound roots, and parallel leaf hashing.
 - **[Bodu.Core introduction](../core/index.md)** — the foundation package this one builds on.
 - **[Core Foundations topic](../topics/core-foundations.md)** — how the three packages and the `Bodu.Text` namespace utilities fit together.

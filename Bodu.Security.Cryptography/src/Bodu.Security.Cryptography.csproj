@@ -46,7 +46,7 @@
   </PropertyGroup>
 
   <!-- MerkleTreeHash and ParallelMerkleTreeHash share RFC 6962's leaf and node prefixes with
-       Bodu.Collections.Merkle's conforming tree, though not its tree shape. The values are compiled from source
+       Bodu.Collections' conforming Rfc6962MerkleTree, though not its tree shape. The values are compiled from source
        rather than duplicated, so they cannot drift apart; this creates no package dependency. -->
   <ItemGroup>
     <Compile Include="..\..\Bodu.Collections\shared\MerkleTreeFormat.cs"

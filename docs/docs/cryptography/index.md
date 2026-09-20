@@ -58,7 +58,7 @@ A compact decision table for the most common requirements. The "BCL alternative"
 | **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
 | **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
 | **Streaming tree hashing** (level-by-level Merkle root, no proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 | None |
-| **Verifiable tree hashing** (RFC 6962 root + inclusion / consistency proofs) | `Rfc6962MerkleTree` — the `Bodu.Collections.Merkle` namespace, in the `Bodu.Collections` package | Configurable leaf hash | RFC 6962 / Certificate Transparency | None |
+| **Verifiable tree hashing** (RFC 6962 root + inclusion / consistency proofs) | `Rfc6962MerkleTree` — `Bodu.Collections.Generic`, in the `Bodu.Collections` package | Configurable leaf hash | RFC 6962 / Certificate Transparency | None |
 | **Digital signature** (classical, sign / verify) | `Ed25519` | 64-byte deterministic signature | RFC 8032 | None on `net8.0` |
 | **Digital signature** (post-quantum) | `MLDsa44`, `MLDsa65`, `MLDsa87` | 2420 – 4627-byte signature | FIPS 204 | None on `net8.0` |
 | **Key agreement** (derive a shared secret from two public keys) | `X25519` | 32-byte shared secret | RFC 7748 | None on `net8.0` |
@@ -237,7 +237,7 @@ Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship a
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
 | Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake` |
 | Streaming tree digest inside a system you control | `MerkleTreeHash`, `ParallelMerkleTreeHash` |
-| Tree hashing with verifiable inclusion or consistency proofs | `Rfc6962MerkleTree` (the `Bodu.Collections.Merkle` namespace, in [Bodu.Collections](../collections/index.md)) |
+| Tree hashing with verifiable inclusion or consistency proofs | `Rfc6962MerkleTree` (`Bodu.Collections.Generic`, in [Bodu.Collections](../collections/index.md)) |
 | Sign a message and verify it with a distributed public key | `Ed25519` (classical), `MLDsa65` (post-quantum) |
 | Establish a shared secret between two parties | `X25519` (classical), `MLKem768` (post-quantum) |
 | Encrypt a payload so only a given public key can read it | `Hpke` |

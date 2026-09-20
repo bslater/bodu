@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 #if SECURITY_CRYPTOGRAPHY
 namespace Bodu.Security.Cryptography;
 #else
-namespace Bodu.Collections.Merkle;
+namespace Bodu.Collections.Generic;
 #endif
 
 /// <summary>
@@ -21,10 +21,10 @@ namespace Bodu.Collections.Merkle;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This file lives in <c>Bodu.Collections.Merkle/shared/</c> so it can be source-compiled into an assembly that must
-/// not take a package dependency, following the <c>Bodu.IO.Hashing/shared</c> pattern. The consuming project selects
-/// the namespace with the <c>SECURITY_CRYPTOGRAPHY</c> symbol; with no symbol it compiles into
-/// <c>Bodu.Collections.Merkle</c>. Its only outside dependency is <c>Bodu.Core</c>'s <c>ThrowHelper</c> and the BCL.
+/// This file lives in <c>Bodu.Collections/shared/</c> so it can be source-compiled into an assembly that must not take
+/// a package dependency, following the <c>Bodu.IO.Hashing/shared</c> pattern. The consuming project selects the
+/// namespace with the <c>SECURITY_CRYPTOGRAPHY</c> symbol; with no symbol it compiles into <c>Bodu.Collections</c>. Its
+/// only outside dependency is <c>Bodu.Core</c>'s <c>ThrowHelper</c> and the BCL.
 /// </para>
 /// <para>
 /// Every member is <see langword="static" /> and parameter-driven: callers supply the hash algorithm and its digest

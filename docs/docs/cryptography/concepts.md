@@ -156,7 +156,7 @@ Input is split into fixed-size **leaves**; each leaf is hashed; pairs of digests
 
 Both types borrow RFC 6962's **domain separation** (`0x00` for leaves, `0x01` for internal nodes) but not its **tree shape**, and neither produces a proof — see the [Merkle trees guide](../../guides/cryptography/merkle-trees.md) for the construction, the parallel pipeline, and how to assemble a proof by hand from the diagnostics.
 
-For the standard's tree, and for one-call inclusion and consistency proofs, use <xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> — the `Bodu.Collections.Merkle` namespace in the **[Bodu.Collections](../collections/index.md)** package, which depends on `Bodu.Core` alone, so reaching for it costs you no cryptography dependency. The [Merkle commitments](../collections/concepts.md) section covers the split point, the proof protocols, and the tree-size ambiguity that length-bound roots close; the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md) has the full walk-through.
+For the standard's tree, and for one-call inclusion and consistency proofs, use <xref:Bodu.Collections.Generic.Rfc6962MerkleTree> — in `Bodu.Collections.Generic`, from the **[Bodu.Collections](../collections/index.md)** package, which depends on `Bodu.Core` alone, so reaching for it costs you no cryptography dependency. The [Merkle commitments](../collections/concepts.md) section covers the split point, the proof protocols, and the tree-size ambiguity that length-bound roots close; the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md) has the full walk-through.
 
 ## Public-key (asymmetric) cryptography
 

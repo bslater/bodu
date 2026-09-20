@@ -6,7 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Collections</Title>
-    <Description>Specialized generic collections for .NET 8: circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set and range dictionary, segmented buffer, graphs (adjacency-list graph, traversal and shortest-path algorithms, disjoint set), and trees (n-ary tree, tries). Also ships the approximate sketches in Bodu.Collections.Probabilistic and the RFC 6962 Merkle tree in Bodu.Collections.Merkle — the Merkle Tree Hash with inclusion proofs, consistency proofs and length-bound roots over any HashAlgorithm the caller supplies. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces. Thread-safe variants live in Bodu.Collections.Concurrent.</Description>
+    <Description>Specialized generic collections for .NET 8: circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set and range dictionary, segmented buffer, graphs (adjacency-list graph, traversal and shortest-path algorithms, disjoint set), and trees (n-ary tree, tries). Also ships the approximate sketches in Bodu.Collections.Probabilistic and, in Bodu.Collections.Generic alongside the other structures, the RFC 6962 Merkle tree — the Merkle Tree Hash with inclusion proofs, consistency proofs and length-bound roots over any HashAlgorithm the caller supplies. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces. Thread-safe variants live in Bodu.Collections.Concurrent.</Description>
     <PackageTags>$(PackageTags);collections;circular-buffer;deque;evicting-dictionary;priority-queue;graph;trie;merkle-tree;merkle-proof;rfc6962;inclusion-proof;consistency-proof</PackageTags>
   </PropertyGroup>
 
@@ -36,7 +36,7 @@
 
   <!-- RFC 6962 domain-separation prefixes and the stateless tree primitives, shared in source with
        Bodu.Security.Cryptography's level-by-level Merkle types so the prefix values cannot drift apart.
-       No symbol is defined here, so the shared files compile into this package's Bodu.Collections.Merkle
+       No symbol is defined here, so the shared files compile into this package's Bodu.Collections.Generic
        namespace; Bodu.Security.Cryptography compiles the same files under SECURITY_CRYPTOGRAPHY. -->
   <ItemGroup>
     <Compile Include="..\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />

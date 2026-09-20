@@ -77,8 +77,6 @@
           items:
             - name: Probabilistic collections (sketches)
               href: core/probabilistic-collections.md
-        - name: Bodu.Collections.Merkle
-          items:
             - name: RFC 6962 Merkle trees and proofs
               href: core/rfc6962-merkle-trees.md
         - name: Bodu.Collections.Generic.Graphs

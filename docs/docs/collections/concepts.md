@@ -107,9 +107,9 @@ The one-sided contracts are what make sketches composable into exact systems: a 
 
 ## Merkle commitments
 
-The `Bodu.Collections.Merkle` types are the odd family here: nothing in them is a container. A **Merkle tree** turns an ordered list of entries into a single root hash, and — because it is built bottom-up — lets anyone prove that one entry sits under that root using a logarithmic number of hashes rather than the whole input. That proof is the only reason to pay for a tree instead of a flat digest.
+The Merkle types are the odd family in `Bodu.Collections.Generic`: nothing in them is a container. A **Merkle tree** turns an ordered list of entries into a single root hash, and — because it is built bottom-up — lets anyone prove that one entry sits under that root using a logarithmic number of hashes rather than the whole input. That proof is the only reason to pay for a tree instead of a flat digest.
 
-<xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> implements [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) precisely, which matters because several plausible-looking constructions give different roots for the same input and a divergent root verifies nowhere:
+<xref:Bodu.Collections.Generic.Rfc6962MerkleTree> implements [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) precisely, which matters because several plausible-looking constructions give different roots for the same input and a divergent root verifies nowhere:
 
 - a tree of *n* entries splits at `k`, the largest power of two **strictly** below *n* — three entries split 2 + 1, never 1 + 2;
 - a subtree holding one entry contributes its **leaf hash unchanged**, never re-hashed as a one-child node;

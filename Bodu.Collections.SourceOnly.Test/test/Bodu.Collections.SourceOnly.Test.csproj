@@ -13,7 +13,7 @@
     It also exercises the namespace switch. SECURITY_CRYPTOGRAPHY is the symbol Bodu.Security.Cryptography
     itself defines, so the shared files land in that namespace here too - which is why the test file below
     imports Bodu.Security.Cryptography despite guarding the Merkle source, and why nothing here collides with
-    the real Bodu.Collections.Merkle types.
+    the real Bodu.Collections.Generic Merkle types.
   -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>

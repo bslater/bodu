@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// commitment; it is simply a different one. The divergence is pinned as a test expectation, and the roots this type
 /// produces are stable and will not be changed. Where a root must interoperate — or where an inclusion or consistency
 /// <em>proof</em> is needed, which this type does not produce — use <c>Rfc6962MerkleTree</c> from the
-/// <c>Bodu.Collections.Merkle</c> package, which implements RFC 6962's tree and depends only on <c>Bodu.Core</c>.
+/// <c>Bodu.Collections</c> package, which implements RFC 6962's tree and depends only on <c>Bodu.Core</c>.
 /// </para>
 /// <para>
 /// Each call to a <c>ComputeHash</c> overload resets internal state, so the same instance may be reused across multiple
