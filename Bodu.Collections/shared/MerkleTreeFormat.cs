@@ -16,10 +16,10 @@ namespace Bodu.Collections.Specialized;
 /// <remarks>
 /// <para>
 /// This file lives in <c>Bodu.Collections/shared/</c> and is compiled into more than one assembly: into
-/// <c>Bodu.Collections</c>, whose <c>Rfc6962MerkleTree</c> uses all three prefixes, and source-compiled (no package
-/// dependency) into <c>Bodu.Security.Cryptography</c>, whose <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c>
-/// use the first two. The consuming project selects the namespace with the <c>SECURITY_CRYPTOGRAPHY</c> preprocessor
-/// symbol, following the <c>Bodu.IO.Hashing/shared</c> pattern.
+/// <c>Bodu.Collections.Specialized</c>, whose <c>Rfc6962MerkleTree</c> uses all three prefixes, and source-compiled (no
+/// package dependency) into <c>Bodu.Security.Cryptography</c>, whose <c>MerkleTreeHash</c> and
+/// <c>ParallelMerkleTreeHash</c> use the first two. The consuming project selects the namespace with the
+/// <c>SECURITY_CRYPTOGRAPHY</c> preprocessor symbol, following the <c>Bodu.IO.Hashing/shared</c> pattern.
 /// </para>
 /// <para>
 /// Sharing one declaration is what makes prefix drift structurally impossible rather than merely test-detected. The two
@@ -41,7 +41,7 @@ namespace Bodu.Collections.Specialized;
 /// <c>Bodu.Security.Cryptography</c> reduce level by level with a configurable fan-out and re-hash a lone leftover
 /// child as a one-child node. Their roots agree only when the leaf count is a power of two, so a root from those types
 /// must not be cross-checked against a transparency log. For RFC 6962's actual tree, and for inclusion and consistency
-/// proofs, use <c>Rfc6962MerkleTree</c> in the <c>Bodu.Collections</c> package.
+/// proofs, use <c>Rfc6962MerkleTree</c> in <c>Bodu.Collections.Specialized</c>.
 /// </para>
 /// <para>
 /// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size in both

@@ -52,7 +52,7 @@ namespace Bodu.Collections.Specialized;
 /// <code language="csharp">
 ///<![CDATA[
 /// using System.Security.Cryptography;
-/// using Bodu.Collections.Generic;
+/// using Bodu.Collections.Specialized;
 ///
 /// var tree = new Rfc6962MerkleTree(SHA256.Create);
 ///

@@ -63,8 +63,6 @@
               href: core/range-dictionary.md
             - name: Interval tree
               href: core/interval-tree.md
-            - name: Bit set
-              href: core/bit-set.md
             - name: Navigable set
               href: core/navigable-set.md
             - name: Navigable dictionary
@@ -73,12 +71,16 @@
               href: core/layered-and-defaulting-dictionaries.md
             - name: Table (two-key map)
               href: core/table.md
+        - name: Bodu.Collections.Specialized
+          items:
+            - name: Bit set
+              href: core/bit-set.md
+            - name: RFC 6962 Merkle trees and proofs
+              href: core/rfc6962-merkle-trees.md
         - name: Bodu.Collections.Probabilistic
           items:
             - name: Probabilistic collections (sketches)
               href: core/probabilistic-collections.md
-            - name: RFC 6962 Merkle trees and proofs
-              href: core/rfc6962-merkle-trees.md
         - name: Bodu.Collections.Generic.Graphs
           items:
             - name: Graphs and graph algorithms
