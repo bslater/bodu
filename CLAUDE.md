@@ -413,6 +413,7 @@ Carve-outs (exempt from the rules above):
 
 - **Asset / embedded-resource folders** may keep their own nested structure and are not required to match a namespace: any folder named `Fixtures` or `TomlTestCorpus`, or ending in `Resources` (calendar `.xml` packs, spec test corpora, `.resx`/`.Designer.cs` pairs, and other `EmbeddedResource`/`None`/`Content` data). These are wired to csproj globs by path, so do not move them.
 - **BCL-convention foreign namespaces** live at the project root: files deliberately declared in `Microsoft.*` or `System.*` (e.g. `IServiceCollection` registration extensions in `Microsoft.Extensions.DependencyInjection`).
+- **Shared source compiled into more than one project** switches namespace with `#if <SYMBOL>` (`Bodu.Collections/shared/**`, the Outlook shared test sources under `Bodu.Formats.Outlook.Msg/test/Formats.Outlook.Msg/`). The folder follows the namespace the *owning* project compiles — the `#else` branch, since the owning project does not define the symbol; the `#if` branch is what the file becomes when linked into the other project. The checker resolves the declaration the same way.
 
 This convention is the dotted-flat reading of `dotnet_style_namespace_match_folder` / IDE0130 (a folder literally named `Collections.Generic` maps to `Bodu.Collections.Generic`). Run `bld/check-folder-namespace-alignment.sh` to verify a project or the whole tree; it encodes the rules and carve-outs above and exits non-zero on any violation.
 

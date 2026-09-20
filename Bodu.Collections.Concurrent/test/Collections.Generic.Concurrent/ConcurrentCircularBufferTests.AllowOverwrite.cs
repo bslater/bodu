@@ -72,52 +72,50 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that toggles of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread are observable by readers on other threads.
+    /// Verifies that toggles of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread are observed
+    /// by a reader on another thread: after every write the reader reports back the value it read, and the writer
+    /// does not proceed to the next toggle until it has.
     /// </summary>
+    /// <remarks>
+    /// The writer's progress is gated on the reader's observation rather than on an iteration count or a fixed
+    /// delay, so a reader that is slow to be scheduled cannot be outrun. Because each round ends with the reader
+    /// reporting the opposite value, a report of the new value can only come from a read made after the write. A
+    /// write that never became visible surfaces as the safety bound expiring.
+    /// </remarks>
     [TestMethod]
     public void AllowOverwrite_WhenToggledAcrossThreads_ShouldBeVisibleToAllThreads()
     {
+        const int rounds = 100;
+        var bound = TimeSpan.FromSeconds(10);
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity: 5, allowOverwrite: false);
 
-        using var startGate = new ManualResetEventSlim(false);
-        using var seenTrue = new ManualResetEventSlim(false);
-        using var seenFalse = new ManualResetEventSlim(false);
+        // 1 when the reader last read true, 0 when it last read false. Written only by the reader, read only here.
+        var lastSeen = 0;
         using var done = new CancellationTokenSource();
 
-        // Reader: keep reading until it has seen both states or we cancel.
         var reader = Task.Run(() =>
         {
-            startGate.Wait();
-            while (!done.IsCancellationRequested && !(seenTrue.IsSet && seenFalse.IsSet))
+            while (!done.IsCancellationRequested)
             {
-                if (buffer.AllowOverwrite) seenTrue.Set();
-                else seenFalse.Set();
-
-                // Let the writer run; reduces starvation on some schedulers
+                Volatile.Write(ref lastSeen, buffer.AllowOverwrite ? 1 : 0);
                 Thread.Yield();
             }
         });
 
-        // Start both tasks at the same time
-        startGate.Set();
-
-        // Writer: toggle until both states have been observed (or a safety bound). Small delay
-        // between toggles to create interleavings on fast CPUs.
-        for (int i = 0; i < 50_000 && !(seenTrue.IsSet && seenFalse.IsSet); i++)
+        for (var round = 0; round < rounds; round++)
         {
-            buffer.AllowOverwrite = (i % 2 == 0);
-            Thread.SpinWait(50);
+            var value = round % 2 == 0;
+            var expected = value ? 1 : 0;
+
+            buffer.AllowOverwrite = value;
+
+            Assert.IsTrue(
+                SpinWait.SpinUntil(() => Volatile.Read(ref lastSeen) == expected, bound),
+                $"The reader never observed AllowOverwrite = {value} in round {round}.");
         }
 
-        // Give the reader a brief chance to observe the last flip(s)
-        Thread.Sleep(20);
         done.Cancel();
-
-        // Ensure the reader exits
         reader.Wait();
-
-        Assert.IsTrue(seenTrue.IsSet && seenFalse.IsSet,
-            "Reader should observe both AllowOverwrite states at least once.");
     }
 
     // Issue 3 — the previous assertion was: buffer.AllowOverwrite == true || buffer.AllowOverwrite == false
@@ -154,32 +152,49 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that a write to <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> is observed by a
-    /// concurrently running enqueuer, such that at least one enqueue against a full buffer throws
-    /// <see cref="InvalidOperationException" /> while overwriting is disabled, and ongoing toggling between
-    /// <see langword="true" /> and <see langword="false" /> continues without corrupting the buffer.
+    /// Verifies that disabling <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread is observed by
+    /// an enqueuer on another, whose next enqueue against the full buffer throws
+    /// <see cref="InvalidOperationException" />, and that toggling the flag concurrently with further enqueues
+    /// refuses only with that exception and leaves the buffer full and intact.
     /// </summary>
+    /// <remarks>
+    /// The toggler does not begin alternating until the enqueuer has reported meeting the disabled state, so the
+    /// first observation cannot be lost to scheduling. The concurrent phase asserts only what holds under every
+    /// interleaving: a refusal is always <see cref="InvalidOperationException" />, and with no consumer a full
+    /// buffer stays exactly full whether an enqueue overwrote or was refused.
+    /// </remarks>
     [TestMethod]
     public void AllowOverwrite_WhenToggledDuringEnqueue_ShouldAffectBehaviorImmediately()
     {
+        const int rounds = 200;
         var buffer = new ConcurrentCircularBuffer<TestItem>(3, allowOverwrite: true);
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
         buffer.Enqueue(new TestItem(3));
 
-        var exceptions = new ConcurrentBag<Exception>();
+        var refusals = new ConcurrentBag<Exception>();
+        using var disabled = new ManualResetEventSlim(initialState: false);
+        using var disabledObserved = new ManualResetEventSlim(initialState: false);
 
-        // Handshake: the toggler establishes AllowOverwrite = false before the writer's first
-        // Enqueue, guaranteeing at least one observation of the disabled state against a full
-        // buffer. Concurrent toggling then proceeds for the remainder of both loops so the test
-        // still exercises inter-thread visibility under contention.
-        using var togglerPrimed = new ManualResetEventSlim(initialState: false);
-
-        var writer = Task.Run(() =>
+        var enqueuer = Task.Run(() =>
         {
-            togglerPrimed.Wait();
+            disabled.Wait();
 
-            for (int i = 0; i < 200; i++)
+            // The enqueuer itself must meet the disabled state: the full buffer refuses its enqueue.
+            try
+            {
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
+                {
+                    buffer.Enqueue(new TestItem(100));
+                });
+            }
+            finally
+            {
+                // Released on failure as well, so the toggler cannot wait forever behind a failed assertion.
+                disabledObserved.Set();
+            }
+
+            for (var i = 1; i < rounds; i++)
             {
                 try
                 {
@@ -187,10 +202,9 @@ public partial class ConcurrentCircularBufferTests
                 }
                 catch (Exception ex)
                 {
-                    exceptions.Add(ex);
+                    refusals.Add(ex);
                 }
 
-                // Introduce variable delay to broaden interleaving with the toggler.
                 Thread.SpinWait(1000 + (i % 5) * 100);
             }
         });
@@ -198,87 +212,108 @@ public partial class ConcurrentCircularBufferTests
         var toggler = Task.Run(() =>
         {
             buffer.AllowOverwrite = false;
-            togglerPrimed.Set();
+            disabled.Set();
+            disabledObserved.Wait();
 
-            // Continue alternating starting from i = 1 so the next write is true, preserving
-            // the original true/false cadence after the primed false state.
-            for (int i = 1; i < 200; i++)
+            for (var i = 1; i < rounds; i++)
             {
-                buffer.AllowOverwrite = (i % 2 == 0);
+                buffer.AllowOverwrite = i % 2 == 0;
                 Thread.SpinWait(2000);
             }
         });
 
-        Task.WaitAll(writer, toggler);
+        Task.WaitAll(enqueuer, toggler);
 
-        Assert.IsNotEmpty(exceptions, "At least one enqueue should have failed when AllowOverwrite was false.");
-        Assert.IsTrue(exceptions.All(e => e is InvalidOperationException));
+        Assert.IsTrue(
+            refusals.All(e => e is InvalidOperationException),
+            "A refused enqueue must surface as InvalidOperationException and nothing else.");
+        Assert.AreEqual(buffer.Capacity, buffer.Count, "With no consumer, a full buffer must stay exactly full.");
+        Assert.AreEqual(buffer.Capacity, buffer.ToArray().Length);
     }
 
     /// <summary>
-    /// Verifies that under sustained concurrent load with <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" />
-    /// toggling between <see langword="true" /> and <see langword="false" />, the enqueuer observes at least one
-    /// success (while overwriting is enabled) and at least one <see cref="InvalidOperationException" /> (while
-    /// overwriting is disabled), and no unexpected exception type escapes.
+    /// Verifies that under sustained enqueues with <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" />
+    /// toggling on another thread, the enqueuer observes a success while overwriting is enabled and an
+    /// <see cref="InvalidOperationException" /> while it is disabled, in every round, and no other exception type
+    /// escapes.
     /// </summary>
+    /// <remarks>
+    /// The toggler holds each state until the enqueuer has reported the outcome that state produces, so both
+    /// outcomes are proven per round rather than expected to emerge from a free-running interleaving. A success can
+    /// only follow an enqueue that read the flag as enabled, and a refusal one that read it as disabled; because the
+    /// previous round ended on the opposite outcome, a report of the expected one can only come from an enqueue made
+    /// after the write. A state that never produced its outcome surfaces as the safety bound expiring.
+    /// </remarks>
     [TestMethod]
     public void AllowOverwrite_WhenToggledUnderLoad_ShouldProduceMixedEnqueueResultsWithoutCrashing()
     {
+        const int rounds = 200;
+        const int succeeded = 1;
+        const int refused = 2;
+        var bound = TimeSpan.FromSeconds(10);
         var buffer = new ConcurrentCircularBuffer<TestItem>(3, allowOverwrite: true);
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
         buffer.Enqueue(new TestItem(3));
 
         var exceptions = new ConcurrentBag<Exception>();
-        int successes = 0;
+        var successes = 0;
 
-        // Handshake: the toggler establishes AllowOverwrite = false before the writer's first
-        // Enqueue, guaranteeing at least one deterministic InvalidOperationException against
-        // the full buffer. The subsequent toggle loop still exercises both true and false
-        // states concurrently, so the "some successes" assertion remains meaningful.
-        using var togglerPrimed = new ManualResetEventSlim(initialState: false);
+        // The outcome of the enqueuer's most recent enqueue. Written only by the enqueuer, read only by the toggler.
+        var lastOutcome = 0;
+        using var done = new CancellationTokenSource();
 
-        var writer = Task.Run(() =>
+        var enqueuer = Task.Run(() =>
         {
-            togglerPrimed.Wait();
-
-            for (int i = 0; i < 2000; i++)
+            for (var i = 0; !done.IsCancellationRequested; i++)
             {
                 try
                 {
                     buffer.Enqueue(new TestItem(100 + i));
                     Interlocked.Increment(ref successes);
+                    Volatile.Write(ref lastOutcome, succeeded);
                 }
                 catch (Exception ex)
                 {
                     exceptions.Add(ex);
+                    Volatile.Write(ref lastOutcome, refused);
                 }
 
-                Thread.SpinWait(200); // vary interleaving
+                Thread.SpinWait(200);
             }
         });
 
         var toggler = Task.Run(() =>
         {
-            buffer.AllowOverwrite = false;
-            togglerPrimed.Set();
-
-            // Continue alternating starting from i = 1 so the next write is true, preserving
-            // the original true/false cadence after the primed false state.
-            for (int i = 1; i < 2000; i++)
+            try
             {
-                buffer.AllowOverwrite = (i % 2 == 0);
-                Thread.SpinWait(400);
+                for (var round = 0; round < rounds; round++)
+                {
+                    var enabled = round % 2 != 0;
+                    var expected = enabled ? succeeded : refused;
+
+                    buffer.AllowOverwrite = enabled;
+
+                    Assert.IsTrue(
+                        SpinWait.SpinUntil(() => Volatile.Read(ref lastOutcome) == expected, bound),
+                        $"The enqueuer never observed AllowOverwrite = {enabled} in round {round}.");
+                }
+            }
+            finally
+            {
+                // Released on failure as well, so the enqueuer cannot loop forever behind a failed assertion.
+                done.Cancel();
             }
         });
 
-        Task.WaitAll(writer, toggler);
+        Task.WaitAll(enqueuer, toggler);
 
-        // Expect both some successes (during overwrite=true) and some InvalidOperationExceptions
-        // (during overwrite=false).
         Assert.IsGreaterThan(0, successes, "Some enqueues should succeed when overwrite is enabled.");
         Assert.IsNotEmpty(exceptions, "Some enqueues should fail when overwrite is disabled.");
-        Assert.IsTrue(exceptions.All(e => e is InvalidOperationException), "Failures should be InvalidOperationException only.");
+        Assert.IsTrue(
+            exceptions.All(e => e is InvalidOperationException),
+            "Failures should be InvalidOperationException only.");
+        Assert.AreEqual(buffer.Capacity, buffer.Count, "With no consumer, a full buffer must stay exactly full.");
     }
 
 }

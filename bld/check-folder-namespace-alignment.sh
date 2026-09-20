@@ -13,6 +13,8 @@
 #   * BCL-convention foreign namespaces: files declared in 'Microsoft.*' or 'System.*'
 #     (e.g. DI registration extensions) live at the project root by design.
 #   * Generated files: '*.Designer.cs'.
+#   * Conditional namespaces: a file compiled into more than one project switches namespace with
+#     '#if <SYMBOL>'; the folder follows the '#else' (owning-project) declaration, not the first one.
 #
 # Excludes the archive/ and docs/ trees. Scans the rest of the repo, including Bodu.CodeStyle.
 #
@@ -35,6 +37,26 @@ is_asset_path() {
     return 1
 }
 
+# Prints the namespace a file takes in the project that physically owns it. Source compiled into more
+# than one project switches namespace with '#if <SYMBOL>' (Bodu.Collections/shared/**, the Outlook shared
+# test sources under Bodu.Formats.Outlook.Msg/test/). The owning project does not define the symbol, so
+# its namespace is the declaration in an '#else' branch or outside any conditional; the '#if' branch is
+# what the file becomes when linked into the other project. Falls back to the first declaration when
+# every one is conditional.
+owning_namespace() {
+    awk '
+        /^[[:space:]]*#[[:space:]]*if[[:space:]]/            { depth++; inelse[depth] = 0; next }
+        /^[[:space:]]*#[[:space:]]*else([[:space:]]|$)/      { inelse[depth] = 1; next }
+        /^[[:space:]]*#[[:space:]]*endif/                    { inelse[depth] = 0; depth--; next }
+        /^[[:space:]]*namespace[[:space:]]+[A-Za-z0-9_.]+/ {
+            ns = $2; sub(/[^A-Za-z0-9_.].*$/, "", ns)
+            if (first == "") first = ns
+            if (depth == 0 || inelse[depth]) { print ns; found = 1; exit }
+        }
+        END { if (!found && first != "") print first }
+    ' "$1"
+}
+
 scan_project() {
     local csproj="$1"
     local base proj rootns
@@ -49,7 +71,7 @@ scan_project() {
         rel="${f#"$base"/}"
         is_asset_path "$rel" && continue
 
-        ns="$(grep -oP '^\s*namespace\s+\K[A-Za-z0-9_.]+' "$f" | head -1)"
+        ns="$(owning_namespace "$f")"
         [ -z "$ns" ] && continue
         case "$ns" in Microsoft.*|System.*) continue ;; esac   # foreign-namespace carve-out
 
