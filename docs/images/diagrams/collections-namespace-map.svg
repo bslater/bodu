@@ -90,6 +90,7 @@
     <!-- Annotation: dependencies -->
     <rect class="clm-aux" x="14" y="380" width="792" height="34" rx="6"/>
     <text class="clm-auxt" x="28" y="401">Depends on Bodu.Core</text>
-    <text class="clm-auxs" x="182" y="401">ThrowHelper guards · IRandomGenerator — thread-safe variants (ConcurrentCircularBuffer&lt;T&gt;, ConcurrentHashSet&lt;T&gt;) ship in Bodu.Collections.Concurrent</text>
+    <text class="clm-auxs" x="182" y="396">ThrowHelper guards · IRandomGenerator</text>
+    <text class="clm-auxs" x="182" y="409">thread-safe variants (ConcurrentCircularBuffer&lt;T&gt;, ConcurrentHashSet&lt;T&gt;) ship in Bodu.Collections.Concurrent</text>
   </g>
 </svg>
