@@ -25,6 +25,13 @@
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
+  <!-- Domain-separation prefixes, shared in source with Bodu.Security.Cryptography's level-by-level Merkle types
+       so the prefix values cannot drift apart. No symbol is defined here, so the shared file compiles into this
+       package's own namespace. -->
+  <ItemGroup>
+    <Compile Include="..\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>
     <EmbeddedResource Update="MerkleResourceStrings.resx">
