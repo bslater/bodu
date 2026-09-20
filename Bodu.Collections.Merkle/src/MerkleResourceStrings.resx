@@ -79,7 +79,4 @@
   <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
     <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
   </data>
-  <data name="Crypt_Invalid_HashDestinationTooSmall" xml:space="preserve">
-    <value>The hash algorithm could not write its digest into the destination buffer.</value>
-  </data>
 </root>

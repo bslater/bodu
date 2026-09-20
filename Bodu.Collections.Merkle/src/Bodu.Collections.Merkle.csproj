@@ -12,7 +12,7 @@
 
   <!--
     InternalsVisibleTo grants:
-      - Bodu.Collections.Merkle.Test : test project (MerkleTreeFormat prefix values, MerkleThrowHelper).
+      - Bodu.Collections.Merkle.Test : test project (MerkleTreeFormat prefix values, MerkleTreeCore primitives).
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->
   <ItemGroup>

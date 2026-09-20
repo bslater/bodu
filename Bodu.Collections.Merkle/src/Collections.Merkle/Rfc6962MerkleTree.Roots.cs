@@ -16,7 +16,7 @@ namespace Bodu.Collections.Merkle;
 public sealed partial class Rfc6962MerkleTree
 {
     /// <summary>The width, in bytes, of the big-endian value bound into a root.</summary>
-    private const int BoundValueLength = sizeof(ulong);
+    private const int BoundValueLength = MerkleTreeCore.BoundValueLength;
 
     /// <summary>
     /// Computes the leaf hash of an entry as <c>H(0x00 || entry)</c>.
@@ -145,37 +145,15 @@ public sealed partial class Rfc6962MerkleTree
     /// returned unchanged — a subtree root is promoted, never re-hashed, which is the single point on which this
     /// construction differs from a level-by-level reduction.
     /// </remarks>
-    private byte[] Mth(ReadOnlySpan<byte[]> leafHashes, HashAlgorithm hasher)
-    {
-        if (leafHashes.Length == 1)
-            return leafHashes[0];
-
-        int split = SplitPoint(leafHashes.Length);
-        return HashWithPrefix(
-            hasher,
-            MerkleTreeFormat.InternalNodePrefix,
-            Mth(leafHashes[..split], hasher),
-            Mth(leafHashes[split..], hasher));
-    }
+    private byte[] Mth(ReadOnlySpan<byte[]> leafHashes, HashAlgorithm hasher) =>
+        MerkleTreeCore.Mth(leafHashes, hasher, HashLength);
 
     /// <summary>
     /// Computes the empty tree's root, <c>H()</c>.
     /// </summary>
     /// <param name="hasher">The algorithm to hash with.</param>
     /// <returns>The hash of zero bytes.</returns>
-    private byte[] HashEmpty(HashAlgorithm hasher)
-    {
-        byte[] result = new byte[HashLength];
-        MerkleThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash([], result, out int written));
-
-        if (written == result.Length)
-            return result;
-
-        byte[] trimmed = new byte[written];
-        Buffer.BlockCopy(result, 0, trimmed, 0, written);
-        return trimmed;
-    }
+    private byte[] HashEmpty(HashAlgorithm hasher) => MerkleTreeCore.HashEmpty(hasher, HashLength);
 
     /// <summary>
     /// Creates a hash algorithm for one operation.

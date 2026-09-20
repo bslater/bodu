@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers;
 using System.Security.Cryptography;
 
 namespace Bodu.Collections.Merkle;
@@ -114,14 +113,7 @@ public sealed partial class Rfc6962MerkleTree
     /// This is deliberately not a halving. For seven entries the split is 4 + 3, not 3 + 4 or 4 + 4; a tree built by
     /// halving has the same leaves and a different root.
     /// </remarks>
-    private static int SplitPoint(int count)
-    {
-        int split = 1;
-        while (split * 2 < count)
-            split *= 2;
-
-        return split;
-    }
+    private static int SplitPoint(int count) => MerkleTreeCore.SplitPoint(count);
 
     /// <summary>
     /// Computes <c>H(prefix || first || second)</c> using the supplied algorithm and a single pooled buffer.
@@ -139,30 +131,6 @@ public sealed partial class Rfc6962MerkleTree
         HashAlgorithm hasher,
         byte prefix,
         ReadOnlySpan<byte> first,
-        ReadOnlySpan<byte> second = default)
-    {
-        int total = 1 + first.Length + second.Length;
-        byte[] rented = ArrayPool<byte>.Shared.Rent(total);
-        try
-        {
-            rented[0] = prefix;
-            first.CopyTo(rented.AsSpan(1));
-            second.CopyTo(rented.AsSpan(1 + first.Length));
-
-            byte[] result = new byte[HashLength];
-            MerkleThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-                hasher.TryComputeHash(rented.AsSpan(0, total), result, out int written));
-
-            if (written == result.Length)
-                return result;
-
-            byte[] trimmed = new byte[written];
-            Buffer.BlockCopy(result, 0, trimmed, 0, written);
-            return trimmed;
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
-        }
-    }
+        ReadOnlySpan<byte> second = default) =>
+        MerkleTreeCore.HashWithPrefix(hasher, HashLength, prefix, first, second);
 }

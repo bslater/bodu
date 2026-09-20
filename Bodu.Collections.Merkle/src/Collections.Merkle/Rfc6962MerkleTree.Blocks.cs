@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
@@ -156,20 +155,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="pending">The pending subtree roots.</param>
     /// <param name="pendingLeafCounts">The number of leaves each pending root covers.</param>
     /// <param name="hasher">The algorithm to hash with.</param>
-    private void MergeTopTwo(List<byte[]> pending, List<long> pendingLeafCounts, HashAlgorithm hasher)
-    {
-        int last = pending.Count - 1;
-
-        pending[last - 1] = HashWithPrefix(
-            hasher,
-            MerkleTreeFormat.InternalNodePrefix,
-            pending[last - 1],
-            pending[last]);
-        pendingLeafCounts[last - 1] += pendingLeafCounts[last];
-
-        pending.RemoveAt(last);
-        pendingLeafCounts.RemoveAt(last);
-    }
+    private void MergeTopTwo(List<byte[]> pending, List<long> pendingLeafCounts, HashAlgorithm hasher) =>
+        MerkleTreeCore.MergeTopTwo(pending, pendingLeafCounts, hasher, HashLength);
 
     /// <summary>
     /// Reads <paramref name="source" /> forward in <paramref name="blockSize" />-byte blocks, invoking
@@ -192,48 +179,6 @@ public sealed partial class Rfc6962MerkleTree
         int blockSize,
         HashAlgorithm hasher,
         Action<byte[]> onLeafHash,
-        CancellationToken cancellationToken)
-    {
-        long inputLength = 0;
-        byte[] rented = ArrayPool<byte>.Shared.Rent(blockSize + 1);
-        try
-        {
-            rented[0] = MerkleTreeFormat.LeafPrefix;
-
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                int filled = 0;
-                while (filled < blockSize)
-                {
-                    int read = source.Read(rented, 1 + filled, blockSize - filled);
-                    if (read <= 0)
-                        break;
-
-                    filled += read;
-                }
-
-                if (filled == 0)
-                    break;
-
-                inputLength += filled;
-
-                byte[] result = new byte[HashLength];
-                MerkleThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-                    hasher.TryComputeHash(rented.AsSpan(0, 1 + filled), result, out int written));
-                onLeafHash(written == result.Length ? result : result[..written]);
-
-                // A partially-filled block can only be the last: the inner loop exits early solely on end of stream.
-                if (filled < blockSize)
-                    break;
-            }
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
-        }
-
-        return inputLength;
-    }
+        CancellationToken cancellationToken) =>
+        MerkleTreeCore.ForEachLeafHash(source, blockSize, hasher, HashLength, onLeafHash, cancellationToken);
 }

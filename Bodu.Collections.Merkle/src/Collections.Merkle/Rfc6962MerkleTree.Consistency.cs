@@ -194,7 +194,7 @@ public sealed partial class Rfc6962MerkleTree
     /// </summary>
     /// <param name="value">The value to test.</param>
     /// <returns><see langword="true" /> when <paramref name="value" /> is a positive power of two.</returns>
-    private static bool IsPowerOfTwo(long value) => value > 0 && (value & (value - 1)) == 0;
+    private static bool IsPowerOfTwo(long value) => MerkleTreeCore.IsPowerOfTwo(value);
 
     /// <summary>
     /// Builds the consistency proof over a validated leaf-hash array.
@@ -235,26 +235,6 @@ public sealed partial class Rfc6962MerkleTree
         int first,
         bool onBoundary,
         List<byte[]> proof,
-        HashAlgorithm hasher)
-    {
-        if (first == leafHashes.Length)
-        {
-            if (!onBoundary)
-                proof.Add(Mth(leafHashes, hasher));
-
-            return;
-        }
-
-        int split = SplitPoint(leafHashes.Length);
-        if (first <= split)
-        {
-            AppendSubProof(leafHashes[..split], first, onBoundary, proof, hasher);
-            proof.Add(Mth(leafHashes[split..], hasher));
-        }
-        else
-        {
-            AppendSubProof(leafHashes[split..], first - split, onBoundary: false, proof, hasher);
-            proof.Add(Mth(leafHashes[..split], hasher));
-        }
-    }
+        HashAlgorithm hasher) =>
+        MerkleTreeCore.AppendSubProof(leafHashes, first, onBoundary, proof, hasher, HashLength);
 }

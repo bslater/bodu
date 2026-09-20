@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Numerics;
 using System.Security.Cryptography;
 
 namespace Bodu.Collections.Merkle;
@@ -271,8 +270,7 @@ public sealed partial class Rfc6962MerkleTree
     /// has two — so a guard tightened to a per-index length would reject valid proofs. Only a path longer than this
     /// bound can be discarded before it is walked; a path that is too short is caught by the walk itself.
     /// </remarks>
-    private static int MaximumPathLength(long treeSize) =>
-        treeSize <= 1 ? 0 : 64 - BitOperations.LeadingZeroCount((ulong)(treeSize - 1));
+    private static int MaximumPathLength(long treeSize) => MerkleTreeCore.MaximumPathLength(treeSize);
 
     /// <summary>
     /// Walks an authentication path from a leaf hash to the tree head, following RFC 6962 §2.1.1.
@@ -300,48 +298,8 @@ public sealed partial class Rfc6962MerkleTree
         long leafIndex,
         ReadOnlySpan<byte> leafHash,
         IReadOnlyList<ReadOnlyMemory<byte>> path,
-        HashAlgorithm hasher)
-    {
-        if (treeSize <= 0 || leafIndex < 0 || leafIndex >= treeSize)
-            return null;
-
-        if (path.Count > MaximumPathLength(treeSize))
-            return null;
-
-        ulong fn = (ulong)leafIndex;
-        ulong sn = (ulong)(treeSize - 1);
-        byte[] running = leafHash.ToArray();
-
-        for (int step = 0; step < path.Count; step++)
-        {
-            ReadOnlySpan<byte> sibling = path[step].Span;
-            if (sn == 0 || sibling.Length != HashLength)
-                return null;
-
-            if ((fn & 1) == 1 || fn == sn)
-            {
-                running = HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, sibling, running);
-
-                if ((fn & 1) == 0)
-                {
-                    while ((fn & 1) == 0 && sn != 0)
-                    {
-                        fn >>= 1;
-                        sn >>= 1;
-                    }
-                }
-            }
-            else
-            {
-                running = HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, running, sibling);
-            }
-
-            fn >>= 1;
-            sn >>= 1;
-        }
-
-        return sn == 0 ? running : null;
-    }
+        HashAlgorithm hasher) =>
+        MerkleTreeCore.WalkToHead(treeSize, leafIndex, leafHash, path, hasher, HashLength);
 
     /// <summary>
     /// Builds the authentication path for one leaf of a validated leaf-hash array.
@@ -370,21 +328,6 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="index">The index within this subtree of the leaf being proved.</param>
     /// <param name="path">The path being built.</param>
     /// <param name="hasher">The algorithm to hash with.</param>
-    private void AppendPath(ReadOnlySpan<byte[]> leafHashes, int index, List<byte[]> path, HashAlgorithm hasher)
-    {
-        if (leafHashes.Length <= 1)
-            return;
-
-        int split = SplitPoint(leafHashes.Length);
-        if (index < split)
-        {
-            AppendPath(leafHashes[..split], index, path, hasher);
-            path.Add(Mth(leafHashes[split..], hasher));
-        }
-        else
-        {
-            AppendPath(leafHashes[split..], index - split, path, hasher);
-            path.Add(Mth(leafHashes[..split], hasher));
-        }
-    }
+    private void AppendPath(ReadOnlySpan<byte[]> leafHashes, int index, List<byte[]> path, HashAlgorithm hasher) =>
+        MerkleTreeCore.AppendPath(leafHashes, index, path, hasher, HashLength);
 }

@@ -117,14 +117,5 @@ namespace Bodu {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to The hash algorithm could not write its digest into the destination buffer..
-        /// </summary>
-        internal static string Crypt_Invalid_HashDestinationTooSmall {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_HashDestinationTooSmall", resourceCulture);
-            }
-        }
-        
     }
 }

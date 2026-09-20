@@ -340,14 +340,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="hasher">The algorithm to hash with.</param>
     /// <param name="prefixedPayload">The prefix byte followed by the node's payload.</param>
     /// <returns>The resulting hash.</returns>
-    private byte[] HashBuffer(HashAlgorithm hasher, ReadOnlySpan<byte> prefixedPayload)
-    {
-        byte[] result = new byte[HashLength];
-        MerkleThrowHelper.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash(prefixedPayload, result, out int written));
-
-        return written == result.Length ? result : result[..written];
-    }
+    private byte[] HashBuffer(HashAlgorithm hasher, ReadOnlySpan<byte> prefixedPayload) =>
+        MerkleTreeCore.HashBuffer(hasher, HashLength, prefixedPayload);
 
     /// <summary>The greatest number of blocks buffered per batch, whatever degree of parallelism is requested.</summary>
     /// <remarks>
@@ -356,18 +350,15 @@ public sealed partial class Rfc6962MerkleTree
     /// requested degree is still handed to <see cref="ParallelOptions" />, and a degree above this cap simply has
     /// fewer blocks available to work on at once.
     /// </remarks>
-    private const int MaximumBatchSize = 256;
+    private const int MaximumBatchSize = MerkleTreeCore.MaximumBatchSize;
 
     /// <summary>
     /// Resolves a degree-of-parallelism argument to a concrete batch size.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The requested degree, or <c>-1</c> for the processor count.</param>
     /// <returns>The number of blocks to buffer and hash per batch.</returns>
-    private static int ResolveBatchSize(int maxDegreeOfParallelism)
-    {
-        int requested = maxDegreeOfParallelism == -1 ? Environment.ProcessorCount : maxDegreeOfParallelism;
-        return Math.Clamp(requested, 1, MaximumBatchSize);
-    }
+    private static int ResolveBatchSize(int maxDegreeOfParallelism) =>
+        MerkleTreeCore.ResolveBatchSize(maxDegreeOfParallelism);
 
     /// <summary>
     /// Throws when a degree-of-parallelism argument is neither <c>-1</c> nor a positive count.
