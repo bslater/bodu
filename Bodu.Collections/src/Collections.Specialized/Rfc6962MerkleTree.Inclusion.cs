@@ -51,7 +51,7 @@ public sealed partial class Rfc6962MerkleTree
     /// <paramref name="leafIndex" /> is negative or is not less than the number of leaf hashes.
     /// </exception>
     /// <remarks>
-    /// The leaf hashes of a streamed computation are available from <see cref="MerkleComputation.LeafHashes" />.
+    /// The leaf hashes of a streamed computation are available from <see cref="MerkleBlockComputation.LeafHashes" />.
     /// </remarks>
     public byte[][] AuthenticationPath(IReadOnlyList<byte[]> leafHashes, long leafIndex)
     {

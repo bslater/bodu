@@ -61,7 +61,7 @@ public partial class Rfc6962MerkleTreeTests
         foreach (int degree in ParallelDegrees)
         {
             using var stream = new MemoryStream(BlockModeInput(kat.Input));
-            MerkleComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, degree);
+            MerkleBlockComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, degree);
 
             Assert.AreEqual(kat.Expected, Hex(computation.Root), $"degree {degree}");
             Assert.AreEqual(kat.Input, computation.InputLength, $"degree {degree}");
@@ -84,7 +84,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(kat.Input));
 
-        MerkleComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, maxDegreeOfParallelism: 4);
+        MerkleBlockComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, maxDegreeOfParallelism: 4);
 
         Assert.AreEqual(kat.Expected, Hex(tree.BindRoot(computation.Root, computation.InputLength)));
     }
@@ -111,12 +111,12 @@ public partial class Rfc6962MerkleTreeTests
                 byte[] input = BlockModeInput(length);
 
                 using var sequentialStream = new MemoryStream(input);
-                MerkleComputation sequential = tree.ComputeBlocked(sequentialStream, VectorBlockSize);
+                MerkleBlockComputation sequential = tree.ComputeBlocked(sequentialStream, VectorBlockSize);
 
                 foreach (int degree in ParallelDegrees)
                 {
                     using var parallelStream = new MemoryStream(input);
-                    MerkleComputation parallel = tree.ComputeBlockedParallel(parallelStream, VectorBlockSize, degree);
+                    MerkleBlockComputation parallel = tree.ComputeBlockedParallel(parallelStream, VectorBlockSize, degree);
 
                     Assert.AreEqual(Hex(sequential.Root), Hex(parallel.Root), $"length {length} degree {degree}");
                     Assert.AreEqual(sequential.InputLength, parallel.InputLength, $"length {length} degree {degree}");
@@ -146,12 +146,12 @@ public partial class Rfc6962MerkleTreeTests
         byte[] input = BlockModeInput(leafCount);
 
         using var sequentialStream = new MemoryStream(input);
-        MerkleComputation sequential = tree.ComputeBlocked(sequentialStream, blockSize: 1);
+        MerkleBlockComputation sequential = tree.ComputeBlocked(sequentialStream, blockSize: 1);
 
         foreach (int degree in (int[])[-1, 2, 8])
         {
             using var parallelStream = new MemoryStream(input);
-            MerkleComputation parallel = tree.ComputeBlockedParallel(parallelStream, blockSize: 1, degree);
+            MerkleBlockComputation parallel = tree.ComputeBlockedParallel(parallelStream, blockSize: 1, degree);
 
             Assert.AreEqual(leafCount, parallel.LeafHashes.Count, $"degree {degree}");
             Assert.AreEqual(Hex(sequential.Root), Hex(parallel.Root), $"degree {degree}");
@@ -172,7 +172,7 @@ public partial class Rfc6962MerkleTreeTests
 
         foreach (int degree in ParallelDegrees)
         {
-            MerkleComputation computation =
+            MerkleBlockComputation computation =
                 tree.ComputeBlockedParallel(BlockModeInput(kat.Input).AsMemory(), VectorBlockSize, degree);
 
             Assert.AreEqual(kat.Expected, Hex(computation.Root), $"degree {degree}");
@@ -203,11 +203,11 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(length);
 
-        MerkleComputation sequentialSpan = tree.ComputeBlocked(input.AsSpan(), VectorBlockSize);
-        MerkleComputation parallelMemory = tree.ComputeBlockedParallel(input.AsMemory(), VectorBlockSize, 4);
+        MerkleBlockComputation sequentialSpan = tree.ComputeBlocked(input.AsSpan(), VectorBlockSize);
+        MerkleBlockComputation parallelMemory = tree.ComputeBlockedParallel(input.AsMemory(), VectorBlockSize, 4);
 
         using var stream = new MemoryStream(input);
-        MerkleComputation parallelStream = tree.ComputeBlockedParallel(stream, VectorBlockSize, 4);
+        MerkleBlockComputation parallelStream = tree.ComputeBlockedParallel(stream, VectorBlockSize, 4);
 
         Assert.AreEqual(Hex(sequentialSpan.Root), Hex(parallelMemory.Root), "memory parallel vs sequential span");
         Assert.AreEqual(Hex(sequentialSpan.Root), Hex(parallelStream.Root), "stream parallel vs sequential span");
@@ -251,7 +251,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
 
         using var throttled = new ThrottledStream(BlockModeInput(33), maxBytesPerRead: 3);
-        MerkleComputation computation = tree.ComputeBlockedParallel(throttled, VectorBlockSize, maxDegreeOfParallelism: 4);
+        MerkleBlockComputation computation = tree.ComputeBlockedParallel(throttled, VectorBlockSize, maxDegreeOfParallelism: 4);
 
         Assert.AreEqual("31dce6ff9c5ac1336d203f99ea214a31eaba3429a3316fdc7eb7dfa1e787e9ec", Hex(computation.Root));
         Assert.AreEqual(33, computation.InputLength);
@@ -272,7 +272,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(CounterStream(kat.Input));
 
-        MerkleComputation computation = tree.ComputeBlockedParallel(stream, OneMebibyteBlock);
+        MerkleBlockComputation computation = tree.ComputeBlockedParallel(stream, OneMebibyteBlock);
 
         Assert.AreEqual(kat.Input, computation.InputLength);
         Assert.AreEqual(kat.Expected, Hex(tree.BindRoot(computation.Root, computation.InputLength)));
@@ -289,7 +289,7 @@ public partial class Rfc6962MerkleTreeTests
         byte[] input = BlockModeInput(17);
         using var stream = new MemoryStream(input);
 
-        MerkleComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, maxDegreeOfParallelism: 3);
+        MerkleBlockComputation computation = tree.ComputeBlockedParallel(stream, VectorBlockSize, maxDegreeOfParallelism: 3);
         byte[] boundRoot = tree.BindRoot(computation.Root, computation.InputLength);
 
         for (long blockIndex = 0; blockIndex < computation.LeafHashes.Count; blockIndex++)
@@ -319,8 +319,8 @@ public partial class Rfc6962MerkleTreeTests
         using var sequentialStream = new MemoryStream(input);
         using var parallelStream = new MemoryStream(input);
 
-        MerkleComputation sequential = tree.ComputeBlocked(sequentialStream, VectorBlockSize);
-        MerkleComputation parallel = tree.ComputeBlockedParallel(parallelStream, VectorBlockSize, 4);
+        MerkleBlockComputation sequential = tree.ComputeBlocked(sequentialStream, VectorBlockSize);
+        MerkleBlockComputation parallel = tree.ComputeBlockedParallel(parallelStream, VectorBlockSize, 4);
 
         Assert.AreEqual(64, parallel.Root.Length);
         Assert.AreEqual(Hex(sequential.Root), Hex(parallel.Root));

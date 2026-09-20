@@ -72,7 +72,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(kat.Input));
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
 
         Assert.AreEqual(kat.Expected, Hex(computation.Root));
         Assert.AreEqual(kat.Input, computation.InputLength);
@@ -142,7 +142,7 @@ public partial class Rfc6962MerkleTreeTests
         using var retaining = new MemoryStream(input);
         using var folding = new MemoryStream(input);
 
-        MerkleComputation computation = tree.ComputeBlocked(retaining, blockSize: 1);
+        MerkleBlockComputation computation = tree.ComputeBlocked(retaining, blockSize: 1);
 
         Assert.AreEqual(leafCount, computation.LeafHashes.Count);
         Assert.AreEqual(Hex(computation.Root), Hex(tree.ComputeRootOfBlocks(folding, blockSize: 1)));
@@ -184,7 +184,7 @@ public partial class Rfc6962MerkleTreeTests
         string expected = Hex(tree.ComputeBlocked(whole, VectorBlockSize).Root);
 
         using var throttled = new ThrottledStream(input, maxBytesPerRead);
-        MerkleComputation computation = tree.ComputeBlocked(throttled, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(throttled, VectorBlockSize);
 
         Assert.AreEqual("31dce6ff9c5ac1336d203f99ea214a31eaba3429a3316fdc7eb7dfa1e787e9ec", expected);
         Assert.AreEqual(expected, Hex(computation.Root));
@@ -242,7 +242,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(CounterStream(kat.Input));
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, OneMebibyteBlock);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, OneMebibyteBlock);
 
         Assert.AreEqual(kat.Input, computation.InputLength);
         Assert.AreEqual(kat.Expected, Hex(tree.BindRoot(computation.Root, computation.InputLength)));
@@ -257,7 +257,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream([]);
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
 
         Assert.AreEqual(0, computation.LeafHashes.Count);
         Assert.AreEqual(0L, computation.InputLength);
@@ -275,7 +275,7 @@ public partial class Rfc6962MerkleTreeTests
         byte[] input = BlockModeInput(9);
         using var stream = new MemoryStream(input);
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
 
         Assert.AreEqual(3, computation.LeafHashes.Count);
         Assert.AreEqual(Hex(tree.HashLeaf(input.AsSpan(0, 4))), Hex(computation.LeafHashes[0]));
@@ -299,7 +299,7 @@ public partial class Rfc6962MerkleTreeTests
         Rfc6962MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(length));
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
 
         Assert.AreEqual(
             Hex(computation.Root),

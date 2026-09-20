@@ -53,7 +53,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 **Sibling namespace in the same package**
 
-- <xref:Bodu.Collections.Specialized> — the specialized structures that are not part of the general container catalogue: `BitSet` (packed bit set) and the RFC 6962 Merkle tree (`Rfc6962MerkleTree`, `MerkleComputation`, `MerkleBlocks`). They ship in `Bodu.Collections` alongside this namespace and need only a second `using`.
+- <xref:Bodu.Collections.Specialized> — the specialized structures that are not part of the general container catalogue: `BitSet` (packed bit set) and the RFC 6962 Merkle tree (`Rfc6962MerkleTree`, `MerkleBlockComputation`, `MerkleBlocks`). They ship in `Bodu.Collections` alongside this namespace and need only a second `using`.
 
 **Related namespaces** (these ship in the `Bodu.Core` package, which `Bodu.Collections` depends on)
 

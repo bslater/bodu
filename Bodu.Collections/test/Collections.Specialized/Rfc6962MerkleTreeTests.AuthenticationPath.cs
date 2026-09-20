@@ -145,7 +145,7 @@ public partial class Rfc6962MerkleTreeTests
         byte[] input = BlockModeInput(17);
         using var stream = new MemoryStream(input);
 
-        MerkleComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
 
         for (long blockIndex = 0; blockIndex < computation.LeafHashes.Count; blockIndex++)
         {

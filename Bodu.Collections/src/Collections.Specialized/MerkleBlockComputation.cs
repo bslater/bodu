@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleComputation.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleBlockComputation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -23,16 +23,16 @@ namespace Bodu.Collections.Specialized;
 /// which folds the tree as it reads and never holds more than a logarithmic number of hashes.
 /// </para>
 /// </remarks>
-public sealed class MerkleComputation
+public sealed class MerkleBlockComputation
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MerkleComputation" /> class.
+    /// Initializes a new instance of the <see cref="MerkleBlockComputation" /> class.
     /// </summary>
     /// <param name="root">The tree's root hash.</param>
     /// <param name="inputLength">The total number of input bytes the tree was computed over.</param>
     /// <param name="blockSize">The block size the input was divided by.</param>
     /// <param name="leafHashes">The ordered leaf hashes.</param>
-    internal MerkleComputation(byte[] root, long inputLength, int blockSize, IReadOnlyList<byte[]> leafHashes)
+    internal MerkleBlockComputation(byte[] root, long inputLength, int blockSize, IReadOnlyList<byte[]> leafHashes)
     {
         Root = root;
         InputLength = inputLength;

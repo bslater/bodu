@@ -77,7 +77,7 @@ public sealed partial class Rfc6962MerkleTree
     /// never a compatibility question — only a performance one.
     /// </para>
     /// </remarks>
-    public MerkleComputation ComputeBlockedParallel(
+    public MerkleBlockComputation ComputeBlockedParallel(
         Stream source,
         int blockSize,
         int maxDegreeOfParallelism = -1,
@@ -165,7 +165,7 @@ public sealed partial class Rfc6962MerkleTree
             ? HashEmpty(reducer)
             : Mth(CollectionsMarshal.AsSpan(leafHashes), reducer);
 
-        return new MerkleComputation(root, inputLength, blockSize, leafHashes);
+        return new MerkleBlockComputation(root, inputLength, blockSize, leafHashes);
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public sealed partial class Rfc6962MerkleTree
     /// <see cref="ComputeBlockedParallel(Stream, int, int, CancellationToken)" /> for the full measured comparison.
     /// </para>
     /// </remarks>
-    public MerkleComputation ComputeBlockedParallel(
+    public MerkleBlockComputation ComputeBlockedParallel(
         ReadOnlyMemory<byte> source,
         int blockSize,
         int maxDegreeOfParallelism = -1,
@@ -212,7 +212,7 @@ public sealed partial class Rfc6962MerkleTree
         if (count == 0)
         {
             using HashAlgorithm empty = CreateAlgorithm();
-            return new MerkleComputation(HashEmpty(empty), 0, blockSize, []);
+            return new MerkleBlockComputation(HashEmpty(empty), 0, blockSize, []);
         }
 
         byte[][] leafHashes = new byte[count][];
@@ -240,7 +240,7 @@ public sealed partial class Rfc6962MerkleTree
             hasher => hasher.Dispose());
 
         using HashAlgorithm reducer = CreateAlgorithm();
-        return new MerkleComputation(Mth(leafHashes, reducer), source.Length, blockSize, leafHashes);
+        return new MerkleBlockComputation(Mth(leafHashes, reducer), source.Length, blockSize, leafHashes);
     }
 
     /// <summary>

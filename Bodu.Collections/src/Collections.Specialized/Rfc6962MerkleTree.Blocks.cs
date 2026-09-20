@@ -40,7 +40,7 @@ public sealed partial class Rfc6962MerkleTree
     /// hashed at its actual length and never padded.
     /// </para>
     /// </remarks>
-    public MerkleComputation ComputeBlocked(
+    public MerkleBlockComputation ComputeBlocked(
         Stream source,
         int blockSize,
         CancellationToken cancellationToken = default)
@@ -57,7 +57,7 @@ public sealed partial class Rfc6962MerkleTree
             ? HashEmpty(hasher)
             : Mth(CollectionsMarshal.AsSpan(leafHashes), hasher);
 
-        return new MerkleComputation(root, inputLength, blockSize, leafHashes);
+        return new MerkleBlockComputation(root, inputLength, blockSize, leafHashes);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public sealed partial class Rfc6962MerkleTree
     /// Equivalent to <see cref="ComputeBlocked(Stream, int, CancellationToken)" /> over the same bytes; provided so a
     /// caller holding a buffer need not wrap it in a <see cref="MemoryStream" />.
     /// </remarks>
-    public MerkleComputation ComputeBlocked(ReadOnlySpan<byte> source, int blockSize)
+    public MerkleBlockComputation ComputeBlocked(ReadOnlySpan<byte> source, int blockSize)
     {
         MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
 
@@ -152,7 +152,7 @@ public sealed partial class Rfc6962MerkleTree
 
         byte[] root = count == 0 ? HashEmpty(hasher) : Mth(leafHashes, hasher);
 
-        return new MerkleComputation(root, source.Length, blockSize, leafHashes);
+        return new MerkleBlockComputation(root, source.Length, blockSize, leafHashes);
     }
 
     /// <summary>

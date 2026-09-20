@@ -55,14 +55,14 @@ bool ok = tree.VerifyInclusion(
 
 The instance keeps no digest state between calls and is deliberately **not** `IDisposable` — it creates and disposes a `HashAlgorithm` inside each call, so there is nothing on the tree itself to dispose and a `using` would imply a lifetime it does not have.
 
-`ComputeRootOfLeafHashes`, `AuthenticationPath(IReadOnlyList<byte[]>, long)`, and `VerifyInclusionOfLeafHash` are the counterparts for callers that already hold leaf hashes — from a cache, a previous pass, or a <xref:Bodu.Collections.Specialized.MerkleComputation>.
+`ComputeRootOfLeafHashes`, `AuthenticationPath(IReadOnlyList<byte[]>, long)`, and `VerifyInclusionOfLeafHash` are the counterparts for callers that already hold leaf hashes — from a cache, a previous pass, or a <xref:Bodu.Collections.Specialized.MerkleBlockComputation>.
 
 ## Block mode over a stream
 
 For a byte stream, block mode cuts the input into fixed-size leaves and returns the root **and** the leaf hashes a path needs from the same pass, so a large object is never read twice:
 
 ```csharp
-MerkleComputation computation = tree.ComputeBlocked(stream, blockSize: 1024 * 1024);
+MerkleBlockComputation computation = tree.ComputeBlocked(stream, blockSize: 1024 * 1024);
 
 byte[]   root      = computation.Root;
 long     length    = computation.InputLength;
@@ -94,10 +94,10 @@ The trade is that no path can be produced afterwards without a second pass. `Com
 
 ```csharp
 // Bytes already in memory — this is the one that scales.
-MerkleComputation computation = tree.ComputeBlockedParallel(buffer.AsMemory(), blockSize: 1024 * 1024);
+MerkleBlockComputation computation = tree.ComputeBlockedParallel(buffer.AsMemory(), blockSize: 1024 * 1024);
 
 // From a stream, when the object is too large to hold.
-MerkleComputation streamed = tree.ComputeBlockedParallel(stream, blockSize: 1024 * 1024);
+MerkleBlockComputation streamed = tree.ComputeBlockedParallel(stream, blockSize: 1024 * 1024);
 
 // Entry mode, root only.
 byte[] root = tree.ComputeRootParallel(entries);
@@ -207,5 +207,5 @@ For a single end-to-end digest where partial verification is not a requirement, 
 - **[Bodu.Collections introduction](../../docs/collections/index.md)** · **[core concepts](../../docs/collections/concepts.md#merkle-commitments)** · **[getting started](../../docs/collections/getting-started.md)** — the package these types ship in.
 - **[Using Merkle trees](../cryptography/merkle-trees.md)** — the level-by-level streaming digests in `Bodu.Security.Cryptography`, and why their roots differ from this one's.
 - **[Hashing overview](../cryptography/hashing.md)** — where tree hashing sits alongside the other families.
-- <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> · <xref:Bodu.Collections.Specialized.MerkleComputation> · <xref:Bodu.Collections.Specialized.MerkleBlocks>.
+- <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> · <xref:Bodu.Collections.Specialized.MerkleBlockComputation> · <xref:Bodu.Collections.Specialized.MerkleBlocks>.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic.

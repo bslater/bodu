@@ -61,7 +61,7 @@ namespace Bodu.Collections.Specialized;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="MerkleComputation" /> <seealso cref="MerkleBlocks" />
+/// <seealso cref="MerkleBlockComputation" /> <seealso cref="MerkleBlocks" />
 public sealed partial class Rfc6962MerkleTree
 {
     /// <summary>The factory invoked once per operation to obtain a hash algorithm instance.</summary>

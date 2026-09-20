@@ -49,7 +49,7 @@ public partial class Rfc6962MerkleTreeTests
         byte[] boundRoot = Convert.FromHexString(PathVectorRoot);
 
         using var stream = new MemoryStream(preimage);
-        MerkleComputation computation = tree.ComputeBlocked(stream, OneMebibyteBlock);
+        MerkleBlockComputation computation = tree.ComputeBlocked(stream, OneMebibyteBlock);
 
         Assert.AreEqual(kat.TreeSize, computation.LeafHashes.Count);
         Assert.AreEqual(PathVectorRoot, Hex(tree.BindRoot(computation.Root, computation.InputLength)));
