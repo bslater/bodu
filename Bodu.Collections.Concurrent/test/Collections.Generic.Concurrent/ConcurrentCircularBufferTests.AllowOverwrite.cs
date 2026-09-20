@@ -72,52 +72,50 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that toggles of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread are observable by readers on other threads.
+    /// Verifies that toggles of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> on one thread are observed
+    /// by a reader on another thread: after every write the reader reports back the value it read, and the writer
+    /// does not proceed to the next toggle until it has.
     /// </summary>
+    /// <remarks>
+    /// The writer's progress is gated on the reader's observation rather than on an iteration count or a fixed
+    /// delay, so a reader that is slow to be scheduled cannot be outrun. Because each round ends with the reader
+    /// reporting the opposite value, a report of the new value can only come from a read made after the write. A
+    /// write that never became visible surfaces as the safety bound expiring.
+    /// </remarks>
     [TestMethod]
     public void AllowOverwrite_WhenToggledAcrossThreads_ShouldBeVisibleToAllThreads()
     {
+        const int rounds = 100;
+        var bound = TimeSpan.FromSeconds(10);
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity: 5, allowOverwrite: false);
 
-        using var startGate = new ManualResetEventSlim(false);
-        using var seenTrue = new ManualResetEventSlim(false);
-        using var seenFalse = new ManualResetEventSlim(false);
+        // 1 when the reader last read true, 0 when it last read false. Written only by the reader, read only here.
+        var lastSeen = 0;
         using var done = new CancellationTokenSource();
 
-        // Reader: keep reading until it has seen both states or we cancel.
         var reader = Task.Run(() =>
         {
-            startGate.Wait();
-            while (!done.IsCancellationRequested && !(seenTrue.IsSet && seenFalse.IsSet))
+            while (!done.IsCancellationRequested)
             {
-                if (buffer.AllowOverwrite) seenTrue.Set();
-                else seenFalse.Set();
-
-                // Let the writer run; reduces starvation on some schedulers
+                Volatile.Write(ref lastSeen, buffer.AllowOverwrite ? 1 : 0);
                 Thread.Yield();
             }
         });
 
-        // Start both tasks at the same time
-        startGate.Set();
-
-        // Writer: toggle until both states have been observed (or a safety bound). Small delay
-        // between toggles to create interleavings on fast CPUs.
-        for (int i = 0; i < 50_000 && !(seenTrue.IsSet && seenFalse.IsSet); i++)
+        for (var round = 0; round < rounds; round++)
         {
-            buffer.AllowOverwrite = (i % 2 == 0);
-            Thread.SpinWait(50);
+            var value = round % 2 == 0;
+            var expected = value ? 1 : 0;
+
+            buffer.AllowOverwrite = value;
+
+            Assert.IsTrue(
+                SpinWait.SpinUntil(() => Volatile.Read(ref lastSeen) == expected, bound),
+                $"The reader never observed AllowOverwrite = {value} in round {round}.");
         }
 
-        // Give the reader a brief chance to observe the last flip(s)
-        Thread.Sleep(20);
         done.Cancel();
-
-        // Ensure the reader exits
         reader.Wait();
-
-        Assert.IsTrue(seenTrue.IsSet && seenFalse.IsSet,
-            "Reader should observe both AllowOverwrite states at least once.");
     }
 
     // Issue 3 — the previous assertion was: buffer.AllowOverwrite == true || buffer.AllowOverwrite == false
