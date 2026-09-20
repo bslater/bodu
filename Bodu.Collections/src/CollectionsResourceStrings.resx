@@ -177,6 +177,21 @@
   <data name="Arg_Invalid_IncompatibleHyperLogLog" xml:space="preserve">
     <value>The HyperLogLog sketches are incompatible; both sketches must have the same precision and equality comparer.</value>
   </data>
+  <data name="Arg_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
+    <value>The hash algorithm factory returned null.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleHashLength" xml:space="preserve">
+    <value>A hash of {0} bytes was expected, but {1} bytes were supplied.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleHashLengthNotPositive" xml:space="preserve">
+    <value>The hash algorithm reported a digest length that is not positive.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleLeafHashLengthAtIndex" xml:space="preserve">
+    <value>The leaf hash at index {0} must be {1} bytes, but is {2} bytes.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleLeafHashNullAtIndex" xml:space="preserve">
+    <value>The leaf hash at index {0} is null.</value>
+  </data>
   <data name="Arg_Invalid_NullCollectionElement" xml:space="preserve">
     <value>The collection cannot contain null elements.</value>
   </data>
@@ -192,6 +207,9 @@
   <data name="Arg_Invalid_VertexNotInGraph" xml:space="preserve">
     <value>The specified vertex does not exist in the graph.</value>
   </data>
+  <data name="Arg_OutOfRange_BlockSizeMustBeGreaterThan" xml:space="preserve">
+    <value>Specified block size must be greater than {0}.</value>
+  </data>
   <data name="Arg_OutOfRange_BloomFilterImportHashCount" xml:space="preserve">
     <value>The imported hash count ({0}) exceeds the maximum supported value ({1}).</value>
   </data>
@@ -203,6 +221,9 @@
   </data>
   <data name="Arg_OutOfRange_GraphWeightNotFinite" xml:space="preserve">
     <value>The edge weight must be a finite, non-negative number.</value>
+  </data>
+  <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
+    <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
   </data>
   <data name="KeyNotFound_Dictionary" xml:space="preserve">
     <value>The given key '{0}' was not present in the dictionary.</value>

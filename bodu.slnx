@@ -61,12 +61,8 @@
     <Project Path="Bodu.Collections.Concurrent\src\Bodu.Collections.Concurrent.csproj" />
     <Project Path="Bodu.Collections.Concurrent\test\Bodu.Collections.Concurrent.Test.csproj" />
   </Folder>
-  <Folder Name="/Bodu.Collections.Merkle/">
-    <Project Path="Bodu.Collections.Merkle\src\Bodu.Collections.Merkle.csproj" />
-    <Project Path="Bodu.Collections.Merkle\test\Bodu.Collections.Merkle.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Collections.Merkle.SourceOnly.Test/">
-    <Project Path="Bodu.Collections.Merkle.SourceOnly.Test\test\Bodu.Collections.Merkle.SourceOnly.Test.csproj" />
+  <Folder Name="/Bodu.Collections.SourceOnly.Test/">
+    <Project Path="Bodu.Collections.SourceOnly.Test\test\Bodu.Collections.SourceOnly.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />

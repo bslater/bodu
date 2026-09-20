@@ -166,7 +166,7 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="InvalidOperationException">The factory returned <see langword="null" />.</exception>
     private HashAlgorithm CreateAlgorithm() =>
         _algorithmFactory()
-            ?? throw new InvalidOperationException(MerkleResourceStrings.Arg_Invalid_MerkleAlgorithmFactoryNull);
+            ?? throw new InvalidOperationException(CollectionsResourceStrings.Arg_Invalid_MerkleAlgorithmFactoryNull);
 
     /// <summary>
     /// Copies and validates a caller-supplied list of leaf hashes.
@@ -188,7 +188,7 @@ public sealed partial class Rfc6962MerkleTree
                 ?? throw new ArgumentException(
                     string.Format(
                         CultureInfo.CurrentCulture,
-                        MerkleResourceStrings.Arg_Invalid_MerkleLeafHashNullAtIndex,
+                        CollectionsResourceStrings.Arg_Invalid_MerkleLeafHashNullAtIndex,
                         index),
                     nameof(leafHashes));
 
@@ -197,7 +197,7 @@ public sealed partial class Rfc6962MerkleTree
                 throw new ArgumentException(
                     string.Format(
                         CultureInfo.CurrentCulture,
-                        MerkleResourceStrings.Arg_Invalid_MerkleLeafHashLengthAtIndex,
+                        CollectionsResourceStrings.Arg_Invalid_MerkleLeafHashLengthAtIndex,
                         index,
                         HashLength,
                         leafHash.Length),
@@ -223,7 +223,7 @@ public sealed partial class Rfc6962MerkleTree
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    MerkleResourceStrings.Arg_Invalid_MerkleHashLength,
+                    CollectionsResourceStrings.Arg_Invalid_MerkleHashLength,
                     HashLength,
                     length),
                 paramName);

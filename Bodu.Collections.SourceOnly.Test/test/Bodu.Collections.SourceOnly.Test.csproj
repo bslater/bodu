@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Dedicated test assembly that compiles Bodu.Collections.Merkle/shared/** FROM SOURCE and holds it to the
-    published vectors, with no reference to Bodu.Collections.Merkle at all.
+    Dedicated test assembly that compiles Bodu.Collections/shared/** FROM SOURCE and holds it to the
+    published RFC 6962 vectors, with no reference to Bodu.Collections at all.
 
     The shared folder exists so that an assembly which must not take a package dependency can still use the
     RFC 6962 primitives, the way Bodu.IO.Pst source-compiles Bodu.IO.Hashing/shared/CrcCore.cs. That claim is
@@ -12,7 +12,7 @@
 
     It also exercises the namespace switch. SECURITY_CRYPTOGRAPHY is the symbol Bodu.Security.Cryptography
     itself defines, so the shared files land in that namespace here too - which is why the test file below
-    imports Bodu.Security.Cryptography despite living in a Merkle project, and why nothing here collides with
+    imports Bodu.Security.Cryptography despite guarding the Merkle source, and why nothing here collides with
     the real Bodu.Collections.Merkle types.
   -->
   <PropertyGroup>
@@ -28,8 +28,8 @@
   </PropertyGroup>
 
   <!--
-    Deliberately NOT a ProjectReference to Bodu.Collections.Merkle. Bodu.Core is the only production
-    dependency the shared source is allowed, and adding any other reference here would defeat the guard.
+    Deliberately NOT a ProjectReference to Bodu.Collections. Bodu.Core is the only production dependency the
+    shared source is allowed, and adding any other reference here would defeat the guard.
   -->
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Bodu.Collections.Merkle\shared\**\*.cs"
+    <Compile Include="..\..\Bodu.Collections\shared\**\*.cs"
              Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 

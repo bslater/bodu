@@ -377,7 +377,7 @@ public sealed partial class Rfc6962MerkleTree
                 paramName,
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    MerkleResourceStrings.Arg_OutOfRange_MerkleParallelism,
+                    CollectionsResourceStrings.Arg_OutOfRange_MerkleParallelism,
                     maxDegreeOfParallelism));
         }
     }

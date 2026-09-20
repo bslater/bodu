@@ -92,11 +92,11 @@ public sealed partial class Rfc6962MerkleTree
         _algorithmFactory = algorithmFactory;
 
         using HashAlgorithm probe = algorithmFactory()
-            ?? throw new ArgumentException(MerkleResourceStrings.Arg_Invalid_MerkleAlgorithmFactoryNull, nameof(algorithmFactory));
+            ?? throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_MerkleAlgorithmFactoryNull, nameof(algorithmFactory));
 
         int hashLength = probe.HashSize / 8;
         if (hashLength <= 0)
-            throw new ArgumentException(MerkleResourceStrings.Arg_Invalid_MerkleHashLengthNotPositive, nameof(algorithmFactory));
+            throw new ArgumentException(CollectionsResourceStrings.Arg_Invalid_MerkleHashLengthNotPositive, nameof(algorithmFactory));
 
         HashLength = hashLength;
     }

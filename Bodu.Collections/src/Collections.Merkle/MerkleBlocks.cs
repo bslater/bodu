@@ -116,7 +116,7 @@ public static class MerkleBlocks
                 paramName,
                 string.Format(
                     CultureInfo.CurrentCulture,
-                    MerkleResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan,
+                    CollectionsResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan,
                     0));
         }
     }
