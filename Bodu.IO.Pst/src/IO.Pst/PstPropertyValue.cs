@@ -22,8 +22,8 @@ namespace Bodu.IO.Pst;
 /// </para>
 /// <para>
 /// Each typed accessor requires the matching wire type and a payload of at least the type's width;
-/// <see cref="GetString" /> decodes the UTF-16LE string type (<c>0x001F</c>) only — the code-page string type
-/// (<c>0x001E</c>) stays bytes, because resolving its code page is a format-layer concern.
+/// <see cref="GetString" /> decodes the UTF-16LE string type (<c>0x001F</c>) only — the code-page string type (<c>0x001E</c>)
+/// stays bytes, because resolving its code page is a format-layer concern.
 /// </para>
 /// </remarks>
 public readonly struct PstPropertyValue
@@ -110,8 +110,7 @@ public readonly struct PstPropertyValue
         BinaryPrimitives.ReadSingleLittleEndian(Require(0x0004, 4));
 
     /// <summary>
-    /// Reads the value as a 64-bit floating-point number (wire type <c>0x0005</c>, or the floating time
-    /// <c>0x0007</c>).
+    /// Reads the value as a 64-bit floating-point number (wire type <c>0x0005</c>, or the floating time <c>0x0007</c>).
     /// </summary>
     /// <returns>The value.</returns>
     /// <exception cref="InvalidOperationException">The wire type or payload width does not match.</exception>

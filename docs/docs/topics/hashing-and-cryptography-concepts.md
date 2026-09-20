@@ -67,6 +67,7 @@ None of this applies to `Bodu.IO.Hashing`: a CRC or fingerprint comparison prote
 | Member | Concepts coverage |
 |---|---|
 | Bodu.IO.Hashing | [Bodu.IO.Hashing — Core concepts](../io-hashing/concepts.md) — the adversary-model table, fingerprint / checksum / check digit boundaries, the `NonCryptographicHashAlgorithm` contract, avalanche, CRC parameters and the RevEng catalogue, twin-sum checksums, check-digit subfamilies, and endianness. |
+| Bodu.Collections.Specialized *(in the Bodu.Collections package)* | [Merkle commitments](../collections/concepts.md) — the Merkle Tree Hash, the split point, domain separation and the attacks it stops, inclusion and consistency proofs, the tree-size ambiguity and length-bound roots, and total verification. |
 | Bodu.Security.Cryptography | [Bodu.Security.Cryptography — Core concepts](../cryptography/concepts.md) — confidentiality / integrity / authenticity, block vs. stream ciphers, modes of operation, padding, IV vs. nonce, AEAD and tags, tweakable ciphers, digest output shapes, MAC vs. one-time authenticator, sponges, Merkle trees, and the BCL surface. |
 
 For the package map, contrast table, and decision rule, return to the [Hashing & Cryptography overview](hashing-and-cryptography.md); for hands-on walk-throughs, see the [Hashing & Cryptography guides](../../guides/topics/hashing-and-cryptography.md).

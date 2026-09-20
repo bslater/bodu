@@ -67,7 +67,10 @@ public sealed class PstFile
     /// <summary>
     /// Gets the file's format variant.
     /// </summary>
-    /// <value><see cref="PstFileFormat.Unicode" /> or <see cref="PstFileFormat.Ansi" />; the 4 KiB-page OST variant fails to open.</value>
+    /// <value>
+    /// <see cref="PstFileFormat.Unicode" /> or <see cref="PstFileFormat.Ansi" />; the 4 KiB-page OST variant fails to
+    /// open.
+    /// </value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     public PstFileFormat Format
     {

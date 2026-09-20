@@ -325,7 +325,12 @@ Cryptographic primitives with a formal adversary model — block ciphers, stream
 
 <div class="bodu-card">
   <h3><a href="cryptography/merkle-trees.md">Using Merkle trees</a></h3>
-  <p>Tree-structured streaming integrity over any inner <code>HashAlgorithm</code>.</p>
+  <p>Tree-structured streaming integrity over any inner <code>HashAlgorithm</code> — the level-by-level types.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
+  <p>The standard&#39;s tree, inclusion and consistency proofs, and length-bound roots — <code>Bodu.Collections.Generic</code>.</p>
 </div>
 
 </div>

@@ -21,7 +21,7 @@ A few contract points worth keeping in mind:
 ## Pattern 1 — set, query, enumerate
 
 ```csharp
-using Bodu.Collections.Generic;
+using Bodu.Collections.Specialized;
 
 var sieve = new BitSet();
 sieve.Set(2);
@@ -44,7 +44,7 @@ foreach (int index in sieve)           // non-boxing struct enumerator
 `NextSetBit` / `NextClearBit` support the classic Java iteration idioms — finding the next allocated slot, the next free slot, or walking set bits from an arbitrary offset:
 
 ```csharp
-using Bodu.Collections.Generic;
+using Bodu.Collections.Specialized;
 
 var slots = new BitSet(256);
 slots.Set(0, 64);                      // occupy the first word [0, 64)
@@ -65,7 +65,7 @@ for (int i = slots.NextSetBit(0); i >= 0; i = slots.NextSetBit(i + 1))
 `And`, `Or`, `Xor`, and `AndNot` mutate the receiver in place with Java semantics: `Or`/`Xor` grow the receiver to cover the other operand's logical length, while `And`/`AndNot` never grow (the result cannot exceed the receiver's content). Use the copy constructor when the operand must be preserved:
 
 ```csharp
-using Bodu.Collections.Generic;
+using Bodu.Collections.Specialized;
 
 var wantsEmail = new BitSet();
 wantsEmail.Set(0, 100);
@@ -85,7 +85,7 @@ bool overlap = wantsEmail.Intersects(unsubscribed);   // true — non-mutating p
 
 ## Where to go next
 
-- <xref:Bodu.Collections.Generic.BitSet> — the full API surface.
+- <xref:Bodu.Collections.Specialized.BitSet> — the full API surface.
 - [Range-keyed lookups](range-dictionary.md) — interval membership when the set is a few contiguous runs rather than dense bits.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
 - [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.

@@ -96,7 +96,9 @@ internal sealed class IntegerConverter<T>
     /// </summary>
     /// <param name="writer">The destination writer.</param>
     /// <param name="fits">Whether the value fits the signed 64-bit range.</param>
-    /// <param name="integer">The value narrowed to 64 bits, meaningful only when <paramref name="fits" /> is <see langword="true" />.</param>
+    /// <param name="integer">
+    /// The value narrowed to 64 bits, meaningful only when <paramref name="fits" /> is <see langword="true" />.
+    /// </param>
     /// <param name="text">The value's invariant text, written when the value does not fit.</param>
     private static void WriteInt64OrText(Utf8YamlWriter writer, bool fits, long integer, string text)
     {

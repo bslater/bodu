@@ -109,9 +109,9 @@ public sealed class PstTableRow
     /// <returns><see langword="true" /> when the column exists and the cell is present.</returns>
     /// <exception cref="PstFileFormatException">The cell's storage is malformed.</exception>
     /// <remarks>
-    /// The streaming counterpart of <see cref="TryGetCell" />: a subnode-resident cell value is read block by block
-    /// on demand rather than materialized, so <see cref="PstFileOptions.MaxNodeDataLength" /> does not apply. The
-    /// stream is bound to the owning session and must be disposed before it.
+    /// The streaming counterpart of <see cref="TryGetCell" />: a subnode-resident cell value is read block by block on
+    /// demand rather than materialized, so <see cref="PstFileOptions.MaxNodeDataLength" /> does not apply. The stream
+    /// is bound to the owning session and must be disposed before it.
     /// </remarks>
     public bool TryOpenCellStream(ushort propertyId, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
     {
@@ -150,8 +150,8 @@ public sealed class PstTableRow
 
     /// <summary>
     /// Determines whether a column's cell holds an HNID to an out-of-line payload rather than the value itself: the
-    /// wire type is known, not inline, not a fixed-width value wide enough to sit in the cell, and the cell is at
-    /// least four bytes.
+    /// wire type is known, not inline, not a fixed-width value wide enough to sit in the cell, and the cell is at least
+    /// four bytes.
     /// </summary>
     /// <param name="column">The column.</param>
     /// <returns><see langword="true" /> when the cell is a value reference.</returns>

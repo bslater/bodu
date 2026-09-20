@@ -160,6 +160,7 @@ def provider_right(accent, history, note_text):
     ], y0=46, dy=16, size=9.5)
 
 
+
 B = {}  # filename (without .svg) -> spec
 
 
@@ -187,6 +188,7 @@ add("hero-collections", "Bodu.Collections", "Bodu.Collections — bounded, order
           '<tspan fill="#60A5FA">IntervalTree</tspan>', '<tspan fill="#60A5FA">Trie · Graph&lt;T&gt;</tspan>',
           '<tspan fill="#34D399">BloomFilter · HLL</tspan>'], y0=42, dy=17),
     "bounded · ordered · navigable · probabilistic", gid="col")
+
 
 add("hero-collections-concurrent", "Bodu.Collections.Concurrent", "Bodu.Collections.Concurrent — thread-safe collection variants",
     "#60A5FA", "Threads",

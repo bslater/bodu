@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Internal benchmarking tool - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+  <!--
+    Bodu.Security.Cryptography is referenced only so the managed digests (Tiger, BLAKE2b) can be
+    benchmarked alongside the hardware-accelerated BCL ones - parallel leaf hashing pays off in
+    proportion to how slow the leaf hash is, so a cipher-free run would measure only the flattest
+    case. This is a tooling project, not part of the library graph: Bodu.Collections itself still
+    depends on Bodu.Core alone.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\src\Bodu.Collections.csproj" />
+    <ProjectReference Include="..\..\Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
+  </ItemGroup>
+
+</Project>

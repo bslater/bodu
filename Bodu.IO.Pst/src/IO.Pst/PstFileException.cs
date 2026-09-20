@@ -50,8 +50,8 @@ public class PstFileException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message, an error category, and the
-    /// exception that caused it.
+    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message, an error category, and
+    /// the exception that caused it.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     /// <param name="error">The category of container defect the exception reports.</param>
@@ -63,8 +63,8 @@ public class PstFileException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message, an inner exception,
-    /// and an error category.
+    /// Initializes a new instance of the <see cref="PstFileException" /> class with a message, an inner exception, and
+    /// an error category.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     /// <param name="innerException">The exception that caused this error.</param>
@@ -76,8 +76,8 @@ public class PstFileException
     }
 
     /// <summary>
-    /// Gets the category of the failure, so callers can distinguish a missing object from structural corruption
-    /// without parsing messages.
+    /// Gets the category of the failure, so callers can distinguish a missing object from structural corruption without
+    /// parsing messages.
     /// </summary>
     /// <value>The error category; <see cref="PstFileError.None" /> when the throw site recorded none.</value>
     public PstFileError Error { get; }

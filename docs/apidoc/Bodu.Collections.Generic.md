@@ -48,9 +48,12 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 - <xref:Bodu.Collections.Generic.IndexedSet`1>, <xref:Bodu.Collections.Generic.OrderedSet`1>, <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> — index-aware set and priority-queue variants for lookup-by-position and key-based priority updates.
 - <xref:Bodu.Collections.Generic.NavigableSet`1> — comparer-ordered set over the same order-statistic red-black tree: O(log n) `TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`, rank / select, `CountInRange`, and live `Ascending` / `Descending` / `Range` views. See the [navigable set guide](~/guides/core/navigable-set.md).
 - <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> — multi-map and multi-set semantics over `IEqualityComparer<TKey>`; <xref:Bodu.Collections.Generic.MultiValueBacking> (`List` / `Set`) chooses whether each key's values are an ordered list or a de-duplicated set.
-- <xref:Bodu.Collections.Generic.BitSet> — growable packed bit set with Java `BitSet` semantics (`NextSetBit` / `NextClearBit` / `Cardinality`, in-place `And` / `Or` / `Xor` / `AndNot`). See the [bit set guide](~/guides/core/bit-set.md).
 - <xref:Bodu.Collections.Generic.Range`1>, <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1>, <xref:Bodu.Collections.Generic.ValueRange`2> — range-keyed lookups for ordered or interval-valued keys (non-overlapping ranges).
 - <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> — overlap-storing interval trees over a max-endpoint augmented red-black tree: O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries over closed intervals that may freely overlap. See the [interval tree guide](~/guides/core/interval-tree.md).
+
+**Sibling namespace in the same package**
+
+- <xref:Bodu.Collections.Specialized> — the specialized structures that are not part of the general container catalogue: `BitSet` (packed bit set) and the RFC 6962 Merkle tree (`Rfc6962MerkleTree`, `MerkleComputation`, `MerkleBlocks`). They ship in `Bodu.Collections` alongside this namespace and need only a second `using`.
 
 **Related namespaces** (these ship in the `Bodu.Core` package, which `Bodu.Collections` depends on)
 

@@ -211,8 +211,8 @@ public sealed class CcmModeTransform
     /// plaintext, so the CTR decryption stream is applied to <paramref name="output" /> first and the tag is compared
     /// in constant time afterwards. On any failure — an authentication mismatch or an exception from the underlying
     /// cipher mid-transform — the plaintext region of <paramref name="output" /> is zeroed before the exception
-    /// propagates, so unverified plaintext never escapes. See
-    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for the library-wide failure contract.
+    /// propagates, so unverified plaintext never escapes. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for
+    /// the library-wide failure contract.
     /// </remarks>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {

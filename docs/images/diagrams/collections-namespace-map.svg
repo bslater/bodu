@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="clm-t clm-d">
   <title id="clm-t">Bodu.Collections — namespace map</title>
-  <desc id="clm-d">Bodu.Collections ships the specialized collection catalogue across four namespaces. Bodu.Collections.Generic holds the bounded ring-backed collections, the evicting and sequenced dictionaries, navigable sets and dictionaries with rank and select, bidirectional, layered, and defaulting dictionaries, the two-key table, bit set, and the range-keyed lookups and overlap-storing interval trees. Bodu.Collections.Probabilistic holds the approximate sketches: BloomFilter, CountMinSketch, and HyperLogLog. Bodu.Collections.Generic.Graphs holds the graph container, graph algorithms, and union-find. Bodu.Collections.Generic.Trees holds the trie family, radix tries, the Aho-Corasick multi-pattern matcher, and the n-ary tree. The package depends on Bodu.Core, and the thread-safe variants ship in Bodu.Collections.Concurrent.</desc>
+  <desc id="clm-d">Bodu.Collections ships the specialized collection catalogue across five namespaces. Bodu.Collections.Generic holds the bounded ring-backed collections, the evicting and sequenced dictionaries, navigable sets and dictionaries with rank and select, bidirectional, layered, and defaulting dictionaries, the two-key table, and the range-keyed lookups and overlap-storing interval trees. Bodu.Collections.Specialized holds the standalone structures that are not general-purpose containers: the packed BitSet, and the RFC 6962 Merkle tree with its inclusion and consistency proofs. Bodu.Collections.Probabilistic holds the approximate sketches: BloomFilter, CountMinSketch, and HyperLogLog. Bodu.Collections.Generic.Graphs holds the graph container, graph algorithms, and union-find. Bodu.Collections.Generic.Trees holds the trie family, radix tries, the Aho-Corasick multi-pattern matcher, and the n-ary tree. The package depends on Bodu.Core, and the thread-safe variants ship in Bodu.Collections.Concurrent.</desc>
 
   <defs>
     <style>
@@ -37,7 +37,7 @@
       <text class="clm-type" x="12" y="82">EvictingDictionary&lt;K,V&gt; (policies + TTL expiry)</text>
       <text class="clm-type" x="12" y="100">SequencedDictionary&lt;K,V&gt; · BiDictionary&lt;K,V&gt;</text>
       <text class="clm-type" x="12" y="118">LayeredDictionary&lt;K,V&gt; · DefaultingDictionary&lt;K,V&gt;</text>
-      <text class="clm-type" x="12" y="136">Table&lt;R,C,V&gt; · BitSet · Multiset&lt;T&gt;</text>
+      <text class="clm-type" x="12" y="136">Table&lt;R,C,V&gt; · Multiset&lt;T&gt;</text>
       <text class="clm-type" x="412" y="64">NavigableSet&lt;T&gt; · NavigableDictionary&lt;K,V&gt; (rank/select)</text>
       <text class="clm-type" x="412" y="82">IndexedSet&lt;T&gt; · OrderedSet&lt;T&gt; · IndexedPriorityQueue&lt;T,P&gt;</text>
       <text class="clm-type" x="412" y="100">RangeDictionary&lt;K,V&gt; · RangeSet&lt;T&gt;</text>
@@ -45,41 +45,52 @@
       <text class="clm-type" x="412" y="136">MultiValueDictionary&lt;K,V&gt; · RingBackedCollection&lt;T&gt;</text>
     </g>
 
-    <!-- Row 2: three sibling namespaces -->
+    <!-- Row 2: four sibling namespaces -->
     <g transform="translate(14 218)">
-      <rect class="clm-card" width="256" height="146" rx="7"/>
+      <rect class="clm-card" width="189" height="146" rx="7"/>
+      <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
+      <text class="clm-ns" x="12" y="37">.Specialized</text>
+      <text class="clm-role" x="12" y="57">Specialised, standalone</text>
+      <text class="clm-type" x="12" y="77">BitSet (packed bits)</text>
+      <text class="clm-type" x="12" y="95">Rfc6962MerkleTree</text>
+      <text class="clm-type" x="12" y="113">MerkleComputation</text>
+      <text class="clm-type" x="12" y="131">MerkleBlocks · proofs</text>
+    </g>
+    <g transform="translate(215 218)">
+      <rect class="clm-card" width="189" height="146" rx="7"/>
       <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
       <text class="clm-ns" x="12" y="37">.Probabilistic</text>
       <text class="clm-role" x="12" y="57">Approximate sketches</text>
       <text class="clm-type" x="12" y="77">BloomFilter&lt;T&gt;</text>
       <text class="clm-type" x="12" y="95">CountMinSketch&lt;T&gt;</text>
       <text class="clm-type" x="12" y="113">HyperLogLog&lt;T&gt;</text>
-      <text class="clm-type" x="12" y="131">one-sided error contracts</text>
+      <text class="clm-type" x="12" y="131">one-sided error</text>
     </g>
-    <g transform="translate(282 218)">
-      <rect class="clm-card" width="256" height="146" rx="7"/>
+    <g transform="translate(416 218)">
+      <rect class="clm-card" width="189" height="146" rx="7"/>
       <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
       <text class="clm-ns" x="12" y="37">.Generic.Graphs</text>
       <text class="clm-role" x="12" y="57">Graphs and algorithms</text>
-      <text class="clm-type" x="12" y="77">Graph&lt;T&gt; (weighted / directed)</text>
-      <text class="clm-type" x="12" y="95">GraphAlgorithms — BFS · DFS ·</text>
-      <text class="clm-type" x="12" y="113">shortest path · topo sort</text>
+      <text class="clm-type" x="12" y="77">Graph&lt;T&gt; (weighted)</text>
+      <text class="clm-type" x="12" y="95">GraphAlgorithms — BFS ·</text>
+      <text class="clm-type" x="12" y="113">DFS · paths · topo sort</text>
       <text class="clm-type" x="12" y="131">DisjointSet&lt;T&gt; union-find</text>
     </g>
-    <g transform="translate(550 218)">
-      <rect class="clm-card" width="256" height="146" rx="7"/>
+    <g transform="translate(617 218)">
+      <rect class="clm-card" width="189" height="146" rx="7"/>
       <text class="clm-ns" x="12" y="22">Bodu.Collections</text>
       <text class="clm-ns" x="12" y="37">.Generic.Trees</text>
       <text class="clm-role" x="12" y="57">Tries and text search</text>
       <text class="clm-type" x="12" y="77">Trie · Trie&lt;V&gt;</text>
-      <text class="clm-type" x="12" y="95">RadixTrie (path-compressed)</text>
+      <text class="clm-type" x="12" y="95">RadixTrie (compressed)</text>
       <text class="clm-type" x="12" y="113">AhoCorasickAutomaton</text>
-      <text class="clm-type" x="12" y="131">Tree&lt;T&gt; n-ary traversals</text>
+      <text class="clm-type" x="12" y="131">Tree&lt;T&gt; n-ary</text>
     </g>
 
     <!-- Annotation: dependencies -->
     <rect class="clm-aux" x="14" y="380" width="792" height="34" rx="6"/>
     <text class="clm-auxt" x="28" y="401">Depends on Bodu.Core</text>
-    <text class="clm-auxs" x="182" y="401">ThrowHelper guards · IRandomGenerator — thread-safe variants (ConcurrentCircularBuffer&lt;T&gt;, ConcurrentHashSet&lt;T&gt;) ship in Bodu.Collections.Concurrent</text>
+    <text class="clm-auxs" x="182" y="396">ThrowHelper guards · IRandomGenerator</text>
+    <text class="clm-auxs" x="182" y="409">thread-safe variants (ConcurrentCircularBuffer&lt;T&gt;, ConcurrentHashSet&lt;T&gt;) ship in Bodu.Collections.Concurrent</text>
   </g>
 </svg>

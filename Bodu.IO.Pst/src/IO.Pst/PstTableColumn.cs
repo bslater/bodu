@@ -9,8 +9,8 @@ using System.Globalization;
 namespace Bodu.IO.Pst;
 
 /// <summary>
-/// Represents one column of a table context: its 16-bit property identifier, its raw wire type code, and its cell
-/// width within a row.
+/// Represents one column of a table context: its 16-bit property identifier, its raw wire type code, and its cell width
+/// within a row.
 /// </summary>
 public readonly struct PstTableColumn
 {

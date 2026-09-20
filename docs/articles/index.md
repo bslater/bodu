@@ -12,12 +12,12 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
   The `WeekPattern` value type, pooled buffers, the `Bodu.Threading` async coordination primitives, the `Bodu.Functional` railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), the date / numeric / span extensions, and the centralized `ThrowHelper` argument validation every other package builds on.
 
 - **[Bodu.Collections.Generic — the Bodu.Collections catalogue](xref:Bodu.Collections.Generic)**
-  Fixed-capacity circular buffers, the `Deque<T>`, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, navigable sets, interval trees, graphs, tries, and the probabilistic sketches — shipped in the `Bodu.Collections` package, with the lock-free and lock-striped variants in `Bodu.Collections.Concurrent`.
+  Fixed-capacity circular buffers, the `Deque<T>`, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, navigable sets, interval trees, graphs, tries, the probabilistic sketches, and the RFC 6962 Merkle tree (`Rfc6962MerkleTree` — the Merkle Tree Hash exactly as §2.1 specifies it, with authentication paths, consistency proofs, total never-throwing verifiers, and length-bound roots that close the standard's tree-size ambiguity) — shipped in the `Bodu.Collections` package, with the lock-free and lock-striped variants in `Bodu.Collections.Concurrent`.
 
 - **[Bodu.IO.Hashing — fingerprints, checksums, and check digits](xref:Bodu.IO.Hashing)**
   Non-cryptographic hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm` — the full CRC RevEng catalogue (widths 1–64 bits), the Fletcher 16 / 32 / 64 family, Adler-32 / 32C / 64, FNV-1 / 1a, CityHash, MurmurHash3, Pearson, classic string hashes — plus single- and multi-character check digits (Luhn, Damm, Verhoeff, EAN, GTIN, IBAN, ISBN, SEDOL, CUSIP, LEI).
 
-- **[Bodu.Security.Cryptography — ciphers, hashes, AEAD, and Merkle trees](xref:Bodu.Security.Cryptography)**
+- **[Bodu.Security.Cryptography — ciphers, hashes, AEAD, and streaming tree digests](xref:Bodu.Security.Cryptography)**
   Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an `AesBlockCipher` adapter over the BCL AES engine paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle-tree hashing, and full ASCON-AEAD support.
 
 - **[Bodu.Globalization.Calendar — notable-date resolution](xref:Bodu.Globalization.Calendar)**

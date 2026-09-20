@@ -55,7 +55,9 @@ public sealed class YamlStringEnumConverter
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether a YAML integer scalar is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether a YAML integer scalar is accepted as an enumeration value on read.
+    /// </param>
     public YamlStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {
         _namingPolicy = namingPolicy;

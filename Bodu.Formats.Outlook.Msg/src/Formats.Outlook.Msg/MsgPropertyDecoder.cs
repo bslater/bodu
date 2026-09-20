@@ -86,9 +86,9 @@ internal static class MsgPropertyDecoder
     /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid.
     /// </exception>
     /// <remarks>
-    /// The deferred property's stream length is read from the directory before the stream is opened; above the
-    /// limit it is surfaced as a present property with a <see langword="null" /> value so callers can see it exists
-    /// and serve it through a stream instead.
+    /// The deferred property's stream length is read from the directory before the stream is opened; above the limit it
+    /// is surfaced as a present property with a <see langword="null" /> value so callers can see it exists and serve it
+    /// through a stream instead.
     /// </remarks>
     internal static MapiPropertyCollection Decode(
         CompoundStorage storage,

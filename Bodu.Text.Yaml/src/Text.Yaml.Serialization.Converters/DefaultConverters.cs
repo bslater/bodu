@@ -14,13 +14,13 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <para>
 /// Order is significant: the node bridge leads so a <see cref="Bodu.Text.Yaml.Nodes.YamlNode" />-typed target is never
 /// claimed structurally by the dictionary, collection, or polymorphic converters (a <c>YamlObject</c> carries a
-/// dictionary surface); the scalar converters precede the structural factories so a scalar type is never claimed by
-/// the object factory; the generic dictionary factory precedes the untyped dictionary fallback so a string-keyed
-/// dictionary maps through its typed converter; the dictionary converters precede the collection factory so a
-/// dictionary becomes a mapping rather than a sequence of pairs; the <see cref="object" /> converter precedes the
-/// catch-all so an <see cref="object" />-typed member dispatches on its runtime type instead of mapping to an empty
-/// mapping; the polymorphic converter claims the interface and abstract declarations the catch-all cannot construct;
-/// and the object factory is last as the catch-all.
+/// dictionary surface); the scalar converters precede the structural factories so a scalar type is never claimed by the
+/// object factory; the generic dictionary factory precedes the untyped dictionary fallback so a string-keyed dictionary
+/// maps through its typed converter; the dictionary converters precede the collection factory so a dictionary becomes a
+/// mapping rather than a sequence of pairs; the <see cref="object" /> converter precedes the catch-all so an
+/// <see cref="object" />-typed member dispatches on its runtime type instead of mapping to an empty mapping; the
+/// polymorphic converter claims the interface and abstract declarations the catch-all cannot construct; and the object
+/// factory is last as the catch-all.
 /// </para>
 /// <para>
 /// YAML can represent strings, integers, floats, booleans, and null natively, so the built-in set covers

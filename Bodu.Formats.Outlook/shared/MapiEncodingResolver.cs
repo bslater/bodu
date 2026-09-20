@@ -21,10 +21,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
 /// code page, then the internet code page, then falls back to Windows-1252 — the historical default for messages that
 /// declare nothing (Latin-1 when the code-page provider is unavailable). The UTF-16 code pages (1200 and 1201) are not
-/// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate; resolved encodings are cached per
-/// code page. Every method always returns an encoding and never throws. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook
-/// format reader — the same code-page properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a
-/// PST property context; the consuming project selects the namespace via its <c>DefineConstants</c>.
+/// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate; resolved encodings are cached per code
+/// page. Every method always returns an encoding and never throws. This file lives in
+/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader — the same code-page
+/// properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a PST property context; the consuming
+/// project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
 internal static class MapiEncodingResolver
 {

@@ -20,12 +20,12 @@ namespace Bodu.Formats.Outlook;
 /// The session owns its <see cref="PstFile" /> container (and the source stream unless it is left open); every
 /// <see cref="OutlookMailFolder" /> and <see cref="OutlookMailMessage" /> obtained from it is a view bound to the
 /// session's lifetime — disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
-/// only the container header, folder and message enumerations stream table rows, and each object decodes its
-/// properties once on first access.
+/// only the container header, folder and message enumerations stream table rows, and each object decodes its properties
+/// once on first access.
 /// </para>
 /// <para>
-/// The session is single-threaded, matching the container's documented contract: its members — and the members of
-/// every view obtained from it — must not be called concurrently.
+/// The session is single-threaded, matching the container's documented contract: its members — and the members of every
+/// view obtained from it — must not be called concurrently.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -168,7 +168,9 @@ public sealed partial class OutlookMailStore
     /// <summary>
     /// Gets the largest by-value attachment payload decoded into an attachment's property collection.
     /// </summary>
-    /// <value>The <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> the session was opened with.</value>
+    /// <value>
+    /// The <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> the session was opened with.
+    /// </value>
     internal int MaxInlineAttachmentBytes =>
         _options.MaxInlineAttachmentBytes;
 
@@ -191,7 +193,9 @@ public sealed partial class OutlookMailStore
     /// </summary>
     /// <param name="path">The file path.</param>
     /// <returns>The open session.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="path" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="PstFileFormatException">The file is not a structurally valid PST file.</exception>
     /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
     public static OutlookMailStore OpenRead(string path)
@@ -216,7 +220,9 @@ public sealed partial class OutlookMailStore
     /// <param name="stream">The readable, seekable stream positioned at the file start.</param>
     /// <param name="leaveOpen"><see langword="true" /> to leave the stream open when the session is disposed.</param>
     /// <returns>The open session.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">The stream is not readable and seekable.</exception>
     /// <exception cref="PstFileFormatException">The stream is not a structurally valid PST file.</exception>
     /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
@@ -249,7 +255,9 @@ public sealed partial class OutlookMailStore
     /// </summary>
     /// <param name="stream">The readable, seekable stream to sniff.</param>
     /// <returns><see langword="true" /> when the stream looks like a PST file of any variant.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsPstFile(Stream stream) =>
         PstFile.IsPstFile(stream);
 

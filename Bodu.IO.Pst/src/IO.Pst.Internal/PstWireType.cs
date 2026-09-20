@@ -7,8 +7,8 @@
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Classifies the LTP's 16-bit property wire type codes (the MS-OXCDATA <c>Ptyp*</c> values) by how a property
-/// context or table context stores their payloads: inline in the value dword, in a fixed-size heap item, or behind an
+/// Classifies the LTP's 16-bit property wire type codes (the MS-OXCDATA <c>Ptyp*</c> values) by how a property context
+/// or table context stores their payloads: inline in the value dword, in a fixed-size heap item, or behind an
 /// <c>HNID</c> as variable-size data.
 /// </summary>
 /// <remarks>
@@ -24,7 +24,9 @@ internal static class PstWireType
     /// Attempts to classify a wire type as one stored inline in the value dword.
     /// </summary>
     /// <param name="wireType">The wire type code.</param>
-    /// <param name="size">When this method returns <see langword="true" />, the value's width in bytes (0 to 4).</param>
+    /// <param name="size">
+    /// When this method returns <see langword="true" />, the value's width in bytes (0 to 4).
+    /// </param>
     /// <returns><see langword="true" /> when the type is stored inline.</returns>
     internal static bool TryGetInlineSize(ushort wireType, out int size)
     {
@@ -59,7 +61,9 @@ internal static class PstWireType
     /// Attempts to classify a wire type as one stored in a fixed-size heap item addressed by the value dword.
     /// </summary>
     /// <param name="wireType">The wire type code.</param>
-    /// <param name="size">When this method returns <see langword="true" />, the value's width in bytes (8 or 16).</param>
+    /// <param name="size">
+    /// When this method returns <see langword="true" />, the value's width in bytes (8 or 16).
+    /// </param>
     /// <returns><see langword="true" /> when the type is stored as a fixed-size heap item.</returns>
     internal static bool TryGetFixedHeapSize(ushort wireType, out int size)
     {
@@ -84,8 +88,8 @@ internal static class PstWireType
     }
 
     /// <summary>
-    /// Determines whether a wire type is one this reader recognizes: the inline and fixed-size sets, the
-    /// variable-size scalar types, and every multi-valued form of a recognized base type.
+    /// Determines whether a wire type is one this reader recognizes: the inline and fixed-size sets, the variable-size
+    /// scalar types, and every multi-valued form of a recognized base type.
     /// </summary>
     /// <param name="wireType">The wire type code.</param>
     /// <returns><see langword="true" /> when the type's storage classification is known.</returns>

@@ -124,8 +124,8 @@ internal static class CompressedRtf
     }
 
     /// <summary>
-    /// Decompresses a <c>PidTagRtfCompressed</c> payload without a caller-imposed output ceiling; the declared size
-    /// is still bounded by what the body can physically expand to.
+    /// Decompresses a <c>PidTagRtfCompressed</c> payload without a caller-imposed output ceiling; the declared size is
+    /// still bounded by what the body can physically expand to.
     /// </summary>
     /// <param name="data">The complete payload, including the 16-byte header.</param>
     /// <returns>The decompressed RTF bytes.</returns>
@@ -145,7 +145,9 @@ internal static class CompressedRtf
     /// </summary>
     /// <param name="payload">The compressed body after the header.</param>
     /// <param name="rawSize">The declared uncompressed size, which is also the output ceiling.</param>
-    /// <returns>The decoded bytes: the whole buffer when the stream fills it, otherwise a copy of the bytes produced.</returns>
+    /// <returns>
+    /// The decoded bytes: the whole buffer when the stream fills it, otherwise a copy of the bytes produced.
+    /// </returns>
     /// <exception cref="OutlookFormatException">A token is cut short by the end of the body.</exception>
     /// <remarks>
     /// Decoding stops when the declared size is reached or the terminator reference (an offset equal to the current

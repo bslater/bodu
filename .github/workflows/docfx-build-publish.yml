@@ -58,10 +58,15 @@ jobs:
     - name: Audit content for stale link patterns
       run: |
         set -eu
+        # Scoped to the trees DocFX actually publishes. reviews/ and forensic-review/ are
+        # excluded from build.content in docs/docfx.json, so nothing in them renders as a link —
+        # a file path named in a planning table there is not a stale link, and failing on it
+        # blocks the build for no reachable defect.
         echo "Checking for direct apidoc/Bodu.*.md links (should use xref instead)..."
-        if grep -rEn 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md' >/dev/null; then
-          echo "::error::Found direct apidoc/Bodu.*.md links in docs/. Use xref:Bodu.<Namespace> instead."
-          grep -rEn 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md'
+        AUDIT_SKIP="--exclude-dir=reviews --exclude-dir=forensic-review --exclude-dir=_site"
+        if grep -rEn $AUDIT_SKIP 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md' >/dev/null; then
+          echo "::error::Found direct apidoc/Bodu.*.md links in published docs/. Use xref:Bodu.<Namespace> instead."
+          grep -rEn $AUDIT_SKIP 'apidoc/Bodu\.[A-Za-z0-9_.]+\.md' docs/ --include='*.md'
           exit 1
         fi
         echo "Checking for stale Text.Configuration profile names..."

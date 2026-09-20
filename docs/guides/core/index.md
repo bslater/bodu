@@ -17,8 +17,9 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, bit sets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `BitSet`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) · [Bit set](bit-set.md) |
+| `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups — `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) |
 | `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Specialized` | Specialised structures that are not general-purpose containers — the packed `BitSet`, and the RFC 6962 Merkle tree (`Rfc6962MerkleTree`, `MerkleComputation`, `MerkleBlocks`) with its inclusion and consistency proofs. | [Bit set](bit-set.md) · [RFC 6962 Merkle trees and proofs](rfc6962-merkle-trees.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds — `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms — `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
 | `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree — `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) |
@@ -101,11 +102,6 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 </div>
 
 <div class="bodu-card">
-  <h3><a href="bit-set.md">Bit set</a></h3>
-  <p>Growable packed bit set (Java <code>BitSet</code> shape) with <code>NextSetBit</code> / <code>NextClearBit</code>, in-place logical ops, and a non-boxing enumerator over set-bit indices.</p>
-</div>
-
-<div class="bodu-card">
   <h3><a href="navigable-set.md">Navigable set</a></h3>
   <p>Sorted set over an order-statistic red-black tree — O(log n) floor/ceiling/higher/lower, rank/select (<code>IndexOf</code> / <code>GetAt</code>), <code>CountInRange</code>, and live ascending/descending/range views.</p>
 </div>
@@ -134,6 +130,22 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
   <p>Thread-safe peers — lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>.</p>
+</div>
+
+</div>
+
+### `Bodu.Collections.Specialized`
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="bit-set.md">Bit set</a></h3>
+  <p>Growable packed bit set (Java <code>BitSet</code> shape) with <code>NextSetBit</code> / <code>NextClearBit</code>, in-place logical ops, and a non-boxing enumerator over set-bit indices.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
+  <p>The standard&#39;s Merkle Tree Hash over any <code>HashAlgorithm</code> — entry and block modes, inclusion and consistency proofs, total verifiers, and length-bound roots.</p>
 </div>
 
 </div>

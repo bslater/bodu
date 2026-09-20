@@ -39,8 +39,7 @@ public sealed class PstFileOptions
     public PstValidationLevel ValidationLevel { get; init; } = PstValidationLevel.Compatible;
 
     /// <summary>
-    /// Gets the maximum number of decoded pages and block payloads the session keeps in its least-recently-used
-    /// cache.
+    /// Gets the maximum number of decoded pages and block payloads the session keeps in its least-recently-used cache.
     /// </summary>
     /// <value>The cache entry budget; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
     /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
@@ -96,8 +95,8 @@ public sealed class PstFileOptions
     /// <exception cref="ArgumentOutOfRangeException">The value is zero or negative.</exception>
     /// <remarks>
     /// The limit is enforced while the tree's internal blocks are walked, before any leaf payload is read, and applies
-    /// to streaming and buffered reads alike — the leaf list itself is the allocation it bounds. A tree exceeding it
-    /// is refused with <see cref="PstFileFormatException" /> and <see cref="PstFileError.LimitExceeded" />.
+    /// to streaming and buffered reads alike — the leaf list itself is the allocation it bounds. A tree exceeding it is
+    /// refused with <see cref="PstFileFormatException" /> and <see cref="PstFileError.LimitExceeded" />.
     /// </remarks>
     public int MaxDataTreeLeaves
     {

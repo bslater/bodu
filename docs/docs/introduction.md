@@ -23,7 +23,7 @@ The foundation every other package builds on — collections, buffers, extension
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
 
-Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other.
+Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other. A third capability sits on the adversarial side while depending on neither: the RFC 6962 Merkle tree, for commitments and proofs, which ships in the [`Bodu.Collections`](collections/index.md) package because `Bodu.Core` is all it needs.
 
 | Package | What it provides | Target framework |
 |---|---|---|

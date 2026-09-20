@@ -16,8 +16,7 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// A document produced by deserialization shares the reader's immutable row store and holds no pooled resources, so
-/// disposal is optional. Writing a disposed document surfaces the document's own
-/// <see cref="ObjectDisposedException" />.
+/// disposal is optional. Writing a disposed document surfaces the document's own <see cref="ObjectDisposedException" />.
 /// </remarks>
 internal sealed class YamlDocumentConverter
     : YamlConverter<YamlDocument>

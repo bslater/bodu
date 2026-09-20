@@ -63,9 +63,9 @@ public sealed class OutlookAttachment
     /// <value>The tag-addressed property collection.</value>
     /// <remarks>
     /// A by-value payload (<c>PidTagAttachDataBinary</c>) larger than
-    /// <see cref="OutlookMessageReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present
-    /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly
-    /// from the container.
+    /// <see cref="OutlookMessageReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present with
+    /// a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly from the
+    /// container.
     /// </remarks>
     public MapiPropertyCollection Properties { get; }
 
@@ -170,8 +170,8 @@ public sealed class OutlookAttachment
     /// Opens the nested attached message.
     /// </summary>
     /// <returns>
-    /// The nested message session. It shares the root session's container and named-property mapping; disposing it is
-    /// a no-op, and it becomes unusable when the root session is disposed.
+    /// The nested message session. It shares the root session's container and named-property mapping; disposing it is a
+    /// no-op, and it becomes unusable when the root session is disposed.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">

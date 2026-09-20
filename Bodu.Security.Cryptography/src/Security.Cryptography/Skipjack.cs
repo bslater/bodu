@@ -55,8 +55,8 @@ namespace Bodu.Security.Cryptography;
 /// birthday-bound attacks (SWEET32) when large volumes of data are encrypted under the same key. Prefer a modern cipher
 /// such as AES. </note>
 /// <para>
-/// The underlying block-cipher implementation is constant-time in its control flow, but the S-box lookup table
-/// remains data-dependent. As such, it is <b>not</b> hardened against timing or cache-based side-channel attacks.
+/// The underlying block-cipher implementation is constant-time in its control flow, but the S-box lookup table remains
+/// data-dependent. As such, it is <b>not</b> hardened against timing or cache-based side-channel attacks.
 /// </para>
 /// </remarks>
 /// <example>
