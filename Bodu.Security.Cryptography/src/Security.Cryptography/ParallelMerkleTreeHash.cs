@@ -71,7 +71,10 @@ namespace Bodu.Security.Cryptography;
 /// it unchanged. Roots from this type agree with RFC 6962's Merkle Tree Hash only when the leaf count is a power of
 /// two, so they must not be cross-checked against a transparency log or any other RFC 6962 implementation. Note also
 /// that the default <c>fanOut</c> here is 2 while <see cref="MerkleTreeHash" />'s is 3; the two types produce identical
-/// roots only when configured with the same block size and fan-out.
+/// roots only when configured with the same block size and fan-out. Where a root must interoperate — or where an
+/// inclusion or consistency <em>proof</em> is needed, which neither type produces — use <c>Rfc6962MerkleTree</c> from
+/// the <c>Bodu.Collections.Merkle</c> package, which implements RFC 6962's tree and depends only on <c>Bodu.Core</c>;
+/// it offers parallel leaf hashing of its own.
 /// </para>
 /// <para>
 /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations. At the start of each call,

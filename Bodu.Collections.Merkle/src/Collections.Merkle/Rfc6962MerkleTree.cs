@@ -52,7 +52,7 @@ namespace Bodu.Collections.Merkle;
 /// <code language="csharp">
 ///<![CDATA[
 /// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
+/// using Bodu.Collections.Merkle;
 ///
 /// var tree = new Rfc6962MerkleTree(SHA256.Create);
 ///
@@ -61,7 +61,7 @@ namespace Bodu.Collections.Merkle;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="MerkleBlocks" />
+/// <seealso cref="MerkleComputation" /> <seealso cref="MerkleBlocks" />
 public sealed partial class Rfc6962MerkleTree
 {
     /// <summary>The factory invoked once per operation to obtain a hash algorithm instance.</summary>
