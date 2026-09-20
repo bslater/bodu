@@ -64,14 +64,14 @@ namespace Bodu.Security.Cryptography;
 /// event at <c>t₄</c> is exactly this case (two children, one of which was itself promoted from a short group).
 /// </para>
 /// <para>
-/// <strong>Domain separation is RFC 6962's; the tree is not.</strong> Leaves are hashed as <c>H(0x00 || block)</c>
-/// and internal nodes as <c>H(0x01 || children)</c>, following RFC 6962 §2.1. The reduction, however, is the
-/// level-by-level pipeline described above with a configurable fan-out, not RFC 6962's recursive split at the
-/// largest power of two strictly below the leaf count — and a lone leftover child is re-hashed as a one-child node
-/// where RFC 6962 promotes it unchanged. Roots from this type agree with RFC 6962's Merkle Tree Hash only when the
-/// leaf count is a power of two, so they must not be cross-checked against a transparency log or any other RFC 6962
-/// implementation. Note also that the default <c>fanOut</c> here is 2 while <see cref="MerkleTreeHash" />'s is 3;
-/// the two types produce identical roots only when configured with the same block size and fan-out.
+/// <strong>Domain separation is RFC 6962's; the tree is not.</strong> Leaves are hashed as <c>H(0x00 || block)</c> and
+/// internal nodes as <c>H(0x01 || children)</c>, following RFC 6962 §2.1. The reduction, however, is the level-by-level
+/// pipeline described above with a configurable fan-out, not RFC 6962's recursive split at the largest power of two
+/// strictly below the leaf count — and a lone leftover child is re-hashed as a one-child node where RFC 6962 promotes
+/// it unchanged. Roots from this type agree with RFC 6962's Merkle Tree Hash only when the leaf count is a power of
+/// two, so they must not be cross-checked against a transparency log or any other RFC 6962 implementation. Note also
+/// that the default <c>fanOut</c> here is 2 while <see cref="MerkleTreeHash" />'s is 3; the two types produce identical
+/// roots only when configured with the same block size and fan-out.
 /// </para>
 /// <para>
 /// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations. At the start of each call,
@@ -161,9 +161,9 @@ public sealed class ParallelMerkleTreeHash
     /// <summary>The raw-byte accumulation buffer used to assemble each leaf block.</summary>
     /// <remarks>
     /// Single-caller only; not thread-safe. Allocated once and reused across calls; <see cref="Reset" /> zeroes
-    /// <see cref="_bufferLength" /> without clearing the buffer contents, because every hash is taken over exactly
-    /// the first <see cref="_bufferLength" /> bytes — a tail block is hashed at its actual length and never padded —
-    /// so stale bytes beyond that position can never reach a leaf.
+    /// <see cref="_bufferLength" /> without clearing the buffer contents, because every hash is taken over exactly the
+    /// first <see cref="_bufferLength" /> bytes — a tail block is hashed at its actual length and never padded — so
+    /// stale bytes beyond that position can never reach a leaf.
     /// </remarks>
     private readonly byte[] _blockBuffer;
 

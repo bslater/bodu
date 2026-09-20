@@ -17,32 +17,31 @@ namespace Bodu.Collections.Merkle;
 /// <para>
 /// A tree of <em>n</em> entries is reduced by splitting at <c>k</c>, the largest power of two <em>strictly</em> below
 /// <em>n</em>, and recursing: the left subtree is always perfect and the right holds the remainder. A subtree root is
-/// promoted unchanged, never re-hashed. Three entries therefore split 2 + 1 and never 1 + 2, and there is no fan-out
-/// to configure — RFC 6962 is binary.
+/// promoted unchanged, never re-hashed. Three entries therefore split 2 + 1 and never 1 + 2, and there is no fan-out to
+/// configure — RFC 6962 is binary.
 /// </para>
 /// <para>
 /// Leaves and internal nodes are domain-separated: <c>leaf(d) = H(0x00 || d)</c> and
 /// <c>node(l, r) = H(0x01 || l || r)</c>. Without the leaf prefix a one-entry tree's root would be the entry's bare
-/// digest, and an internal node's preimage — two concatenated child hashes — could be presented as leaf data. That
-/// is how a second tree is constructed to produce a root somebody has already signed.
+/// digest, and an internal node's preimage — two concatenated child hashes — could be presented as leaf data. That is
+/// how a second tree is constructed to produce a root somebody has already signed.
 /// </para>
 /// <para>
-/// An empty tree's root is <c>H()</c>, the hash of zero bytes; no exception is raised. A log that has published
-/// nothing still has a head to sign.
+/// An empty tree's root is <c>H()</c>, the hash of zero bytes; no exception is raised. A log that has published nothing
+/// still has a head to sign.
 /// </para>
 /// <para>
-/// <strong>Relationship to the other Merkle types.</strong> <c>MerkleTreeHash</c> and
-/// <c>ParallelMerkleTreeHash</c> share this type's domain separation but reduce level by level with a
-/// configurable fan-out, re-hashing a lone leftover child as a one-child node. Their roots agree with this type's
-/// only when the leaf count is a power of two. This type is the one to use when a root must interoperate with a
-/// transparency log or any other RFC 6962 implementation; the other two are unchanged and their roots are stable.
+/// <strong>Relationship to the other Merkle types.</strong> <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c>
+/// share this type's domain separation but reduce level by level with a configurable fan-out, re-hashing a lone
+/// leftover child as a one-child node. Their roots agree with this type's only when the leaf count is a power of two.
+/// This type is the one to use when a root must interoperate with a transparency log or any other RFC 6962
+/// implementation; the other two are unchanged and their roots are stable.
 /// </para>
 /// <para>
-/// <strong>Thread safety.</strong> Instances are immutable and every operation is safe for concurrent use, provided
-/// the supplied factory returns a <em>fresh</em> <see cref="HashAlgorithm" /> on each call — as
-/// <c>SHA256.Create</c> does. A factory that hands back one shared instance is not safe and will corrupt concurrent
-/// computations. A single instance may therefore be registered as a singleton and used from many connection
-/// handlers at once.
+/// <strong>Thread safety.</strong> Instances are immutable and every operation is safe for concurrent use, provided the
+/// supplied factory returns a <em>fresh</em> <see cref="HashAlgorithm" /> on each call — as <c>SHA256.Create</c> does.
+/// A factory that hands back one shared instance is not safe and will corrupt concurrent computations. A single
+/// instance may therefore be registered as a singleton and used from many connection handlers at once.
 /// </para>
 /// <para>
 /// <strong>Algorithm agnosticism.</strong> Any <see cref="HashAlgorithm" /> may be configured; nothing assumes a
@@ -76,7 +75,9 @@ public sealed partial class Rfc6962MerkleTree
     /// A delegate supplying the <see cref="HashAlgorithm" /> used for every leaf, node and root. Must not be
     /// <see langword="null" /> and must return a fresh instance on each call.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="algorithmFactory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="algorithmFactory" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// The factory returned <see langword="null" />, or an algorithm whose digest length is not positive.
     /// </exception>
@@ -100,7 +101,9 @@ public sealed partial class Rfc6962MerkleTree
         HashLength = hashLength;
     }
 
-    /// <summary>Gets the length, in bytes, of every leaf hash, node hash and root this instance produces.</summary>
+    /// <summary>
+    /// Gets the length, in bytes, of every leaf hash, node hash and root this instance produces.
+    /// </summary>
     /// <value>The configured algorithm's digest length in bytes — 32 for SHA-256, 64 for SHA-512.</value>
     public int HashLength { get; }
 

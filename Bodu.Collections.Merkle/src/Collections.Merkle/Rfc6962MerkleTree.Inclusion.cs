@@ -18,9 +18,7 @@ public sealed partial class Rfc6962MerkleTree
     /// </summary>
     /// <param name="entries">The tree's entries, in order.</param>
     /// <param name="leafIndex">The zero-based index of the entry to prove.</param>
-    /// <returns>
-    /// The path, leaf-upward. Empty for a one-entry tree, whose leaf hash is already the root.
-    /// </returns>
+    /// <returns>The path, leaf-upward. Empty for a one-entry tree, whose leaf hash is already the root.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="leafIndex" /> is negative or is not less than the number of entries.
@@ -39,8 +37,8 @@ public sealed partial class Rfc6962MerkleTree
     }
 
     /// <summary>
-    /// Produces the authentication path for one leaf from hashes already computed — what a party that streamed a
-    /// large input past itself can answer without re-reading it.
+    /// Produces the authentication path for one leaf from hashes already computed — what a party that streamed a large
+    /// input past itself can answer without re-reading it.
     /// </summary>
     /// <param name="leafHashes">The ordered leaf hashes, each <see cref="HashLength" /> bytes long.</param>
     /// <param name="leafIndex">The zero-based index of the leaf to prove.</param>
@@ -53,8 +51,7 @@ public sealed partial class Rfc6962MerkleTree
     /// <paramref name="leafIndex" /> is negative or is not less than the number of leaf hashes.
     /// </exception>
     /// <remarks>
-    /// The leaf hashes of a streamed computation are available from
-    /// <see cref="MerkleComputation.LeafHashes" />.
+    /// The leaf hashes of a streamed computation are available from <see cref="MerkleComputation.LeafHashes" />.
     /// </remarks>
     public byte[][] AuthenticationPath(IReadOnlyList<byte[]> leafHashes, long leafIndex)
     {
@@ -73,29 +70,29 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="entry">The entry's bytes, which are hashed as a leaf.</param>
     /// <param name="path">The authentication path, leaf-upward.</param>
     /// <returns>
-    /// <see langword="true" /> when the path carries <paramref name="entry" /> to <paramref name="root" />;
-    /// otherwise <see langword="false" />.
+    /// <see langword="true" /> when the path carries <paramref name="entry" /> to <paramref name="root" />; otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// <para>
-    /// <strong><paramref name="treeSize" /> is trusted input.</strong> RFC 6962's verifier takes the tree size from
-    /// its caller and cannot detect a false one. A caller that obtains the size from the party being examined has
-    /// <em>no soundness guarantee</em>: a four-entry tree's first authentication path has exactly the length a
-    /// three-entry tree's first path wants and walks to the same head, so this method returns
-    /// <see langword="true" /> for both. A holder that has lost its last entry can therefore declare a smaller tree,
-    /// never be asked for that entry, and pass every challenge for ever.
+    /// <strong><paramref name="treeSize" /> is trusted input.</strong> RFC 6962's verifier takes the tree size from its
+    /// caller and cannot detect a false one. A caller that obtains the size from the party being examined has <em>no
+    /// soundness guarantee</em>: a four-entry tree's first authentication path has exactly the length a three-entry
+    /// tree's first path wants and walks to the same head, so this method returns <see langword="true" /> for both. A
+    /// holder that has lost its last entry can therefore declare a smaller tree, never be asked for that entry, and
+    /// pass every challenge for ever.
     /// </para>
     /// <para>
-    /// That behaviour is RFC 6962 working as specified, not a defect here. When the size comes from an untrusted
-    /// party, verify against a length-bound root with
+    /// That behaviour is RFC 6962 working as specified, not a defect here. When the size comes from an untrusted party,
+    /// verify against a length-bound root with
     /// <see cref="VerifyInclusionBound(ReadOnlySpan{byte}, long, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />
     /// instead, which fails closed on a size the publisher did not commit to.
     /// </para>
     /// <para>
-    /// Every malformed input returns <see langword="false" /> rather than throwing — a wrong index, a path that is
-    /// too long or too short, an element of the wrong width, a zero tree size — because a verifier sits directly
-    /// behind untrusted input and an exception where a <see langword="false" /> belongs is a denial of service.
+    /// Every malformed input returns <see langword="false" /> rather than throwing — a wrong index, a path that is too
+    /// long or too short, an element of the wrong width, a zero tree size — because a verifier sits directly behind
+    /// untrusted input and an exception where a <see langword="false" /> belongs is a denial of service.
     /// </para>
     /// </remarks>
     public bool VerifyInclusion(
@@ -134,12 +131,12 @@ public sealed partial class Rfc6962MerkleTree
     /// <para>
     /// Prefer
     /// <see cref="VerifyInclusion(ReadOnlySpan{byte}, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />
-    /// where the entry's bytes are available. Possession of a leaf <em>hash</em> proves nothing about possession of
-    /// the data: a party that kept its leaf hashes and discarded the bytes can still satisfy this overload.
+    /// where the entry's bytes are available. Possession of a leaf <em>hash</em> proves nothing about possession of the
+    /// data: a party that kept its leaf hashes and discarded the bytes can still satisfy this overload.
     /// </para>
     /// <para>
-    /// <paramref name="treeSize" /> is trusted input here for the same reason and with the same consequence as in
-    /// the entry overload.
+    /// <paramref name="treeSize" /> is trusted input here for the same reason and with the same consequence as in the
+    /// entry overload.
     /// </para>
     /// </remarks>
     public bool VerifyInclusionOfLeafHash(
@@ -207,8 +204,8 @@ public sealed partial class Rfc6962MerkleTree
     }
 
     /// <summary>
-    /// Verifies that a block occupies the stated position of a block-mode tree whose bound root pins the input's
-    /// byte length, and that the block is exactly the length that position requires.
+    /// Verifies that a block occupies the stated position of a block-mode tree whose bound root pins the input's byte
+    /// length, and that the block is exactly the length that position requires.
     /// </summary>
     /// <param name="boundRoot">The published bound root, binding <paramref name="inputLength" />.</param>
     /// <param name="inputLength">The input's total length in bytes, as the publisher committed to it.</param>
@@ -224,14 +221,13 @@ public sealed partial class Rfc6962MerkleTree
     /// <para>
     /// This is the possession-check shape: the tree size is <em>derived</em> from the bound length and block size
     /// rather than supplied, so there is no size for a holder to misstate. It additionally requires
-    /// <paramref name="block" /> to be exactly
-    /// <see cref="MerkleBlocks.BlockLength(long, long, int)" /> bytes — a check the entry-mode overloads cannot make,
-    /// because a variable-length entry has no expected length.
+    /// <paramref name="block" /> to be exactly <see cref="MerkleBlocks.BlockLength(long, long, int)" /> bytes — a check
+    /// the entry-mode overloads cannot make, because a variable-length entry has no expected length.
     /// </para>
     /// <para>
-    /// The block's <em>bytes</em> are the proof. A party that retained the authentication path but discarded the
-    /// block can still produce the path and still cannot answer, which is the difference between this and a digest
-    /// it could have cached on receipt.
+    /// The block's <em>bytes</em> are the proof. A party that retained the authentication path but discarded the block
+    /// can still produce the path and still cannot answer, which is the difference between this and a digest it could
+    /// have cached on receipt.
     /// </para>
     /// </remarks>
     public bool VerifyBlockInclusion(
@@ -284,8 +280,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <remarks>
     /// <para>
     /// The <c>sn</c> bookkeeping alone rejects a path that is too short or too long; the only length check applied
-    /// before the walk is the strict upper bound of <see cref="MaximumPathLength(long)" />, which cannot reject a
-    /// valid proof.
+    /// before the walk is the strict upper bound of <see cref="MaximumPathLength(long)" />, which cannot reject a valid
+    /// proof.
     /// </para>
     /// <para>
     /// The inner shift loop terminates on <c>sn = 0</c>, which is RFC 6962's own wording. An implementation that

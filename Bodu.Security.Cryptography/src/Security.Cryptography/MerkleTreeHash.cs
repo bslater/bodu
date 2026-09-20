@@ -35,14 +35,14 @@ namespace Bodu.Security.Cryptography;
 /// its surviving children only — shown in the diagram as the single-edged reduction of <b>L₇</b> into <b>N₃</b>.
 /// </para>
 /// <para>
-/// <strong>This is not RFC 6962's tree.</strong> The prefix scheme above is RFC 6962 §2.1's; the tree shape is not.
-/// RFC 6962 splits a tree of <em>n</em> leaves at <c>k</c>, the largest power of two strictly below <em>n</em>, and
+/// <strong>This is not RFC 6962's tree.</strong> The prefix scheme above is RFC 6962 §2.1's; the tree shape is not. RFC
+/// 6962 splits a tree of <em>n</em> leaves at <c>k</c>, the largest power of two strictly below <em>n</em>, and
 /// promotes a lone subtree root <em>unchanged</em>. This type reduces level by level and re-hashes a lone leftover
-/// child as a one-child node <c>H(0x01 || child)</c>. The two constructions therefore produce the same root only
-/// when the leaf count is a power of two, and differ for every other leaf count — so a root from this type must not
-/// be cross-checked against a transparency log or any other RFC 6962 implementation. A level-by-level reduction is
-/// a sound commitment; it is simply a different one. The divergence is pinned as a test expectation, and the roots
-/// this type produces are stable and will not be changed.
+/// child as a one-child node <c>H(0x01 || child)</c>. The two constructions therefore produce the same root only when
+/// the leaf count is a power of two, and differ for every other leaf count — so a root from this type must not be
+/// cross-checked against a transparency log or any other RFC 6962 implementation. A level-by-level reduction is a sound
+/// commitment; it is simply a different one. The divergence is pinned as a test expectation, and the roots this type
+/// produces are stable and will not be changed.
 /// </para>
 /// <para>
 /// Each call to a <c>ComputeHash</c> overload resets internal state, so the same instance may be reused across multiple

@@ -42,7 +42,9 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="ArgumentException">
     /// <paramref name="left" /> or <paramref name="right" /> is not <see cref="HashLength" /> bytes long.
     /// </exception>
-    /// <remarks>Order is significant: <c>HashNode(a, b)</c> is not <c>HashNode(b, a)</c>.</remarks>
+    /// <remarks>
+    /// Order is significant: <c>HashNode(a, b)</c> is not <c>HashNode(b, a)</c>.
+    /// </remarks>
     public byte[] HashNode(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
     {
         ThrowIfNotHashLength(left.Length, nameof(left));
@@ -98,28 +100,30 @@ public sealed partial class Rfc6962MerkleTree
     }
 
     /// <summary>
-    /// Binds a value into a root as <c>H(0x02 || u64_be(boundValue) || root)</c>, producing a commitment that names
-    /// one tree and no other.
+    /// Binds a value into a root as <c>H(0x02 || u64_be(boundValue) || root)</c>, producing a commitment that names one
+    /// tree and no other.
     /// </summary>
     /// <param name="root">The tree head to bind, <see cref="HashLength" /> bytes long.</param>
     /// <param name="boundValue">
     /// The value to bind — the entry count in entry mode, or the input's byte length in block mode.
     /// </param>
     /// <returns>The bound root, <see cref="HashLength" /> bytes long.</returns>
-    /// <exception cref="ArgumentException"><paramref name="root" /> is not <see cref="HashLength" /> bytes long.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="root" /> is not <see cref="HashLength" /> bytes long.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="boundValue" /> is negative.</exception>
     /// <remarks>
     /// <para>
     /// This is an addition to RFC 6962, not part of it, and it closes a real hole. RFC 6962's verifier takes the tree
-    /// size from its caller; when the caller obtains that size from the party being examined, the party can
-    /// understate it. A four-entry tree's first authentication path has exactly the length a three-entry tree's first
-    /// path wants and walks to the same head, so the unbound verifier accepts both. A holder that has lost its last
-    /// entry can therefore declare a smaller tree, never be asked for that entry, and pass every challenge.
+    /// size from its caller; when the caller obtains that size from the party being examined, the party can understate
+    /// it. A four-entry tree's first authentication path has exactly the length a three-entry tree's first path wants
+    /// and walks to the same head, so the unbound verifier accepts both. A holder that has lost its last entry can
+    /// therefore declare a smaller tree, never be asked for that entry, and pass every challenge.
     /// </para>
     /// <para>
     /// Binding the size into the published commitment makes a disagreeing size produce a different root, so the
-    /// challenge fails closed. In block mode bind the <em>byte length</em> rather than the block count: it is
-    /// strictly stronger, because it also pins the final block's length.
+    /// challenge fails closed. In block mode bind the <em>byte length</em> rather than the block count: it is strictly
+    /// stronger, because it also pins the final block's length.
     /// </para>
     /// </remarks>
     public byte[] BindRoot(ReadOnlySpan<byte> root, long boundValue)

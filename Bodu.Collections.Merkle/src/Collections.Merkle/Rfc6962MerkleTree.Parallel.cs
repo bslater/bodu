@@ -16,17 +16,17 @@ namespace Bodu.Collections.Merkle;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Leaf hashing is where a block-mode computation spends essentially all of its time: one hash over
-/// <c>blockSize</c> bytes per leaf, against <c>n − 1</c> node hashes over twice the digest width each. Hashing a
-/// 512 MiB object at one-mebibyte blocks is 512 MiB of leaf hashing and roughly 33 KiB of reduction, so the leaves
-/// are the only part worth parallelizing.
+/// Leaf hashing is where a block-mode computation spends essentially all of its time: one hash over <c>blockSize</c>
+/// bytes per leaf, against <c>n − 1</c> node hashes over twice the digest width each. Hashing a 512 MiB object at
+/// one-mebibyte blocks is 512 MiB of leaf hashing and roughly 33 KiB of reduction, so the leaves are the only part
+/// worth parallelizing.
 /// </para>
 /// <para>
 /// <strong>Why the two paths cannot disagree.</strong> The parallel entry points differ from the sequential ones only
-/// in <em>who</em> computes each leaf hash. Once the leaf hashes exist they are folded by the same
-/// <c>Mth</c> used everywhere else, over an array indexed by block position, so the tree shape is not reimplemented
-/// here and cannot drift. Leaf hashes are written to fixed indices rather than appended, so completion order has no
-/// effect on the result.
+/// in <em>who</em> computes each leaf hash. Once the leaf hashes exist they are folded by the same <c>Mth</c> used
+/// everywhere else, over an array indexed by block position, so the tree shape is not reimplemented here and cannot
+/// drift. Leaf hashes are written to fixed indices rather than appended, so completion order has no effect on the
+/// result.
 /// </para>
 /// </remarks>
 public sealed partial class Rfc6962MerkleTree
@@ -42,13 +42,12 @@ public sealed partial class Rfc6962MerkleTree
     /// </param>
     /// <param name="cancellationToken">A token observed between batches.</param>
     /// <returns>
-    /// The same result <see cref="ComputeBlocked(Stream, int, CancellationToken)" /> would return over the same
-    /// bytes.
+    /// The same result <see cref="ComputeBlocked(Stream, int, CancellationToken)" /> would return over the same bytes.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="blockSize" /> is less than or equal to zero, or
-    /// <paramref name="maxDegreeOfParallelism" /> is zero or below <c>-1</c>.
+    /// <paramref name="blockSize" /> is less than or equal to zero, or <paramref name="maxDegreeOfParallelism" /> is
+    /// zero or below <c>-1</c>.
     /// </exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
     /// <remarks>
@@ -56,19 +55,19 @@ public sealed partial class Rfc6962MerkleTree
     /// The stream is read sequentially — a stream cannot be read out of order — into a batch of buffers, and the batch
     /// is then hashed concurrently. Peak input buffering is therefore
     /// <c>min(maxDegreeOfParallelism, 256) × (blockSize + 1)</c> bytes: 8 MiB for one-mebibyte blocks across eight
-    /// threads. Reading and hashing alternate per batch rather than overlapping, which keeps the memory bound exact
-    /// and the ordering trivially deterministic.
+    /// threads. Reading and hashing alternate per batch rather than overlapping, which keeps the memory bound exact and
+    /// the ordering trivially deterministic.
     /// </para>
     /// <para>
     /// <strong>Expect a modest gain here, and choose the overload to match the source.</strong> Copying each block off
-    /// the stream happens on the calling thread and cannot be parallelized, so it caps the achievable speedup. When
-    /// the bytes are already in memory, prefer
+    /// the stream happens on the calling thread and cannot be parallelized, so it caps the achievable speedup. When the
+    /// bytes are already in memory, prefer
     /// <see cref="ComputeBlockedParallel(ReadOnlyMemory{byte}, int, int, CancellationToken)" />, which copies and
     /// hashes each block inside its own worker and therefore scales considerably better.
     /// </para>
     /// <para>
-    /// The gain also depends heavily on how fast the leaf hash is relative to memory bandwidth. Measured over 64 MiB
-    /// at one-mebibyte blocks on four cores, this overload returned roughly 1.1× for a hardware-accelerated SHA-256 —
+    /// The gain also depends heavily on how fast the leaf hash is relative to memory bandwidth. Measured over 64 MiB at
+    /// one-mebibyte blocks on four cores, this overload returned roughly 1.1× for a hardware-accelerated SHA-256 —
     /// which already runs near memory bandwidth, leaving little to recover — against roughly 2.4× for a managed digest
     /// such as Tiger or BLAKE2b. The in-memory overload returned 1.9× to 3.0× across the same algorithms. Treat those
     /// figures as shape rather than specification, and measure your own case: for a fast hash over a fast source, the
@@ -183,8 +182,8 @@ public sealed partial class Rfc6962MerkleTree
     /// The same result <see cref="ComputeBlocked(ReadOnlySpan{byte}, int)" /> would return over the same bytes.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="blockSize" /> is less than or equal to zero, or
-    /// <paramref name="maxDegreeOfParallelism" /> is zero or below <c>-1</c>.
+    /// <paramref name="blockSize" /> is less than or equal to zero, or <paramref name="maxDegreeOfParallelism" /> is
+    /// zero or below <c>-1</c>.
     /// </exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
     /// <remarks>
@@ -197,8 +196,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <para>
     /// Whether that translates into wall-clock gain still depends on the leaf hash. A hardware-accelerated SHA-256
     /// already runs close to memory bandwidth, leaving parallelism little to recover; a managed digest leaves a great
-    /// deal. See the remarks on <see cref="ComputeBlockedParallel(Stream, int, int, CancellationToken)" /> for
-    /// measured guidance.
+    /// deal. See the remarks on <see cref="ComputeBlockedParallel(Stream, int, int, CancellationToken)" /> for measured
+    /// guidance.
     /// </para>
     /// </remarks>
     public MerkleComputation ComputeBlockedParallel(
@@ -263,8 +262,8 @@ public sealed partial class Rfc6962MerkleTree
     /// </exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
     /// <remarks>
-    /// Worthwhile only when the entries are individually large; for a log of short entries the reduction and the
-    /// thread coordination together outweigh the leaf hashing, and the sequential overload is faster.
+    /// Worthwhile only when the entries are individually large; for a log of short entries the reduction and the thread
+    /// coordination together outweigh the leaf hashing, and the sequential overload is faster.
     /// </remarks>
     public byte[] ComputeRootParallel(
         IReadOnlyList<ReadOnlyMemory<byte>> entries,
@@ -309,9 +308,9 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="filledBlocks">The number of buffers that hold a block.</param>
     /// <param name="options">The parallel options, carrying the degree limit and cancellation.</param>
     /// <remarks>
-    /// Each worker holds its own <see cref="HashAlgorithm" /> for the batch, so the factory is invoked once per
-    /// worker rather than once per block. Writes go to distinct slots of a plain array, so no synchronization is
-    /// needed and completion order cannot affect the result.
+    /// Each worker holds its own <see cref="HashAlgorithm" /> for the batch, so the factory is invoked once per worker
+    /// rather than once per block. Writes go to distinct slots of a plain array, so no synchronization is needed and
+    /// completion order cannot affect the result.
     /// </remarks>
     private void HashBatchInParallel(
         byte[]?[] batch,
@@ -345,10 +344,10 @@ public sealed partial class Rfc6962MerkleTree
 
     /// <summary>The greatest number of blocks buffered per batch, whatever degree of parallelism is requested.</summary>
     /// <remarks>
-    /// Buffering is <c>batchSize × (blockSize + 1)</c> bytes, so an unreasonably large requested degree would
-    /// otherwise translate directly into an unreasonably large allocation. Capping the batch costs nothing: the
-    /// requested degree is still handed to <see cref="ParallelOptions" />, and a degree above this cap simply has
-    /// fewer blocks available to work on at once.
+    /// Buffering is <c>batchSize × (blockSize + 1)</c> bytes, so an unreasonably large requested degree would otherwise
+    /// translate directly into an unreasonably large allocation. Capping the batch costs nothing: the requested degree
+    /// is still handed to <see cref="ParallelOptions" />, and a degree above this cap simply has fewer blocks available
+    /// to work on at once.
     /// </remarks>
     private const int MaximumBatchSize = MerkleTreeCore.MaximumBatchSize;
 

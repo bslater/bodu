@@ -76,17 +76,16 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="ArgumentNullException"><paramref name="proof" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// <para>
-    /// This is <see href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1.2">RFC 6962 §2.1.2</see>. Unlike
-    /// inclusion verification, both sizes and both roots are inputs, and the proof must reconstruct
-    /// <em>both</em> — so there is no analogue here of the tree-size ambiguity that the bound root exists to close.
+    /// This is <see href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1.2">RFC 6962 §2.1.2</see>. Unlike inclusion
+    /// verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> — so there is
+    /// no analogue here of the tree-size ambiguity that the bound root exists to close.
     /// </para>
     /// <para>
     /// Three degenerate cases are decided before the walk. A <paramref name="secondSize" /> below
-    /// <paramref name="firstSize" /> is rejected outright: a log cannot shrink. Equal sizes require an
-    /// <em>empty</em> proof and identical roots — a non-empty proof between equal sizes is rejected rather than
-    /// walked, because the only evidence that could be offered is evidence of something else. A
-    /// <paramref name="firstSize" /> of zero likewise requires an empty proof, since every tree extends the empty
-    /// tree.
+    /// <paramref name="firstSize" /> is rejected outright: a log cannot shrink. Equal sizes require an <em>empty</em>
+    /// proof and identical roots — a non-empty proof between equal sizes is rejected rather than walked, because the
+    /// only evidence that could be offered is evidence of something else. A <paramref name="firstSize" /> of zero
+    /// likewise requires an empty proof, since every tree extends the empty tree.
     /// </para>
     /// <para>
     /// Like the inclusion verifiers, this returns <see langword="false" /> for every malformed input rather than
@@ -225,8 +224,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="leafHashes">The subtree's leaf hashes.</param>
     /// <param name="first">The prefix length within this subtree.</param>
     /// <param name="onBoundary">
-    /// Whether the prefix ends exactly on this subtree's boundary, in which case its root is already implied and is
-    /// not carried in the proof.
+    /// Whether the prefix ends exactly on this subtree's boundary, in which case its root is already implied and is not
+    /// carried in the proof.
     /// </param>
     /// <param name="proof">The proof being built.</param>
     /// <param name="hasher">The algorithm to hash with.</param>

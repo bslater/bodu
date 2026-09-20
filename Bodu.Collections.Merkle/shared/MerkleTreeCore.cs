@@ -16,8 +16,8 @@ namespace Bodu.Collections.Merkle;
 
 /// <summary>
 /// Provides the stateless RFC 6962 primitives — the split point, the Merkle Tree Hash, the authentication-path and
-/// consistency walks, the block arithmetic, and the streaming fold — behind the public
-/// <c>Rfc6962MerkleTree</c> and <c>MerkleBlocks</c> facades.
+/// consistency walks, the block arithmetic, and the streaming fold — behind the public <c>Rfc6962MerkleTree</c> and
+/// <c>MerkleBlocks</c> facades.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,16 +28,15 @@ namespace Bodu.Collections.Merkle;
 /// </para>
 /// <para>
 /// Every member is <see langword="static" /> and parameter-driven: callers supply the hash algorithm and its digest
-/// length rather than the core holding either, so one instance of anything is never shared across threads by this
-/// code. Nothing here reads a resource file, so argument failures throw without a message — shared source carries no
-/// resources, and the facades perform the message-bearing validation before delegating. The guards that remain here
-/// are backstops against a caller that skipped that validation, not the primary contract.
+/// length rather than the core holding either, so one instance of anything is never shared across threads by this code.
+/// Nothing here reads a resource file, so argument failures throw without a message — shared source carries no
+/// resources, and the facades perform the message-bearing validation before delegating. The guards that remain here are
+/// backstops against a caller that skipped that validation, not the primary contract.
 /// </para>
 /// <para>
-/// <strong>What is deliberately not here.</strong> The level-by-level reduction used by
-/// <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c> is a different tree and is not expressed through these
-/// primitives. Only the domain-separation prefixes are common to both, and those live in
-/// <c>MerkleTreeFormat</c> alongside this file.
+/// <strong>What is deliberately not here.</strong> The level-by-level reduction used by <c>MerkleTreeHash</c> and
+/// <c>ParallelMerkleTreeHash</c> is a different tree and is not expressed through these primitives. Only the
+/// domain-separation prefixes are common to both, and those live in <c>MerkleTreeFormat</c> alongside this file.
 /// </para>
 /// </remarks>
 internal static class MerkleTreeCore
@@ -47,10 +46,10 @@ internal static class MerkleTreeCore
 
     /// <summary>The greatest number of blocks buffered per batch, whatever degree of parallelism is requested.</summary>
     /// <remarks>
-    /// Buffering is <c>batchSize × (blockSize + 1)</c> bytes, so an unreasonably large requested degree would
-    /// otherwise translate directly into an unreasonably large allocation. Capping the batch costs nothing: the
-    /// requested degree still reaches <see cref="ParallelOptions" />, and a degree above this cap simply has fewer
-    /// blocks available to work on at once.
+    /// Buffering is <c>batchSize × (blockSize + 1)</c> bytes, so an unreasonably large requested degree would otherwise
+    /// translate directly into an unreasonably large allocation. Capping the batch costs nothing: the requested degree
+    /// still reaches <see cref="ParallelOptions" />, and a degree above this cap simply has fewer blocks available to
+    /// work on at once.
     /// </remarks>
     internal const int MaximumBatchSize = 256;
 
@@ -86,7 +85,9 @@ internal static class MerkleTreeCore
     internal static int MaximumPathLength(long treeSize) =>
         treeSize <= 1 ? 0 : 64 - BitOperations.LeadingZeroCount((ulong)(treeSize - 1));
 
-    /// <summary>Returns whether a value is an exact power of two.</summary>
+    /// <summary>
+    /// Returns whether a value is an exact power of two.
+    /// </summary>
     /// <param name="value">The value to test.</param>
     /// <returns><see langword="true" /> when <paramref name="value" /> is a positive power of two.</returns>
     internal static bool IsPowerOfTwo(long value) => value > 0 && (value & (value - 1)) == 0;
@@ -102,13 +103,19 @@ internal static class MerkleTreeCore
         return Math.Clamp(requested, 1, MaximumBatchSize);
     }
 
-    /// <summary>Returns the number of blocks an input of the given length divides into.</summary>
+    /// <summary>
+    /// Returns the number of blocks an input of the given length divides into.
+    /// </summary>
     /// <param name="inputLength">The total length, in bytes, of the input.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
-    /// <returns>Zero when <paramref name="inputLength" /> is zero, otherwise <c>ceil(inputLength / blockSize)</c>.</returns>
+    /// <returns>
+    /// Zero when <paramref name="inputLength" /> is zero, otherwise <c>ceil(inputLength / blockSize)</c>.
+    /// </returns>
     internal static long BlockCount(long inputLength, int blockSize) => (inputLength + blockSize - 1) / blockSize;
 
-    /// <summary>Returns the byte offset at which a block begins, in 64-bit arithmetic.</summary>
+    /// <summary>
+    /// Returns the byte offset at which a block begins, in 64-bit arithmetic.
+    /// </summary>
     /// <param name="blockIndex">The zero-based index of the block.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
     /// <returns>The offset, in bytes, from the start of the input.</returns>
@@ -189,7 +196,9 @@ internal static class MerkleTreeCore
         return trimmed;
     }
 
-    /// <summary>Computes the empty tree's root, <c>H()</c>.</summary>
+    /// <summary>
+    /// Computes the empty tree's root, <c>H()</c>.
+    /// </summary>
     /// <param name="hasher">The algorithm to hash with.</param>
     /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
     /// <returns>The hash of zero bytes.</returns>
@@ -259,8 +268,8 @@ internal static class MerkleTreeCore
     /// <param name="leafHashes">The subtree's leaf hashes.</param>
     /// <param name="first">The prefix length within this subtree.</param>
     /// <param name="onBoundary">
-    /// Whether the prefix ends exactly on this subtree's boundary, in which case its root is already implied and is
-    /// not carried in the proof.
+    /// Whether the prefix ends exactly on this subtree's boundary, in which case its root is already implied and is not
+    /// carried in the proof.
     /// </param>
     /// <param name="proof">The proof being built.</param>
     /// <param name="hasher">The algorithm to hash with.</param>
@@ -307,8 +316,8 @@ internal static class MerkleTreeCore
     /// <remarks>
     /// <para>
     /// The <c>sn</c> bookkeeping alone rejects a path that is too short or too long; the only length check applied
-    /// before the walk is the strict upper bound of <see cref="MaximumPathLength(long)" />, which cannot reject a
-    /// valid proof.
+    /// before the walk is the strict upper bound of <see cref="MaximumPathLength(long)" />, which cannot reject a valid
+    /// proof.
     /// </para>
     /// <para>
     /// The inner shift loop terminates on <c>sn = 0</c>, which is RFC 6962 §2.1.1's own wording. Note that §2.1.2's
@@ -393,8 +402,8 @@ internal static class MerkleTreeCore
     }
 
     /// <summary>
-    /// Reads a stream forward in fixed-size blocks, invoking <paramref name="onLeafHash" /> with each block's leaf
-    /// hash in order.
+    /// Reads a stream forward in fixed-size blocks, invoking <paramref name="onLeafHash" /> with each block's leaf hash
+    /// in order.
     /// </summary>
     /// <param name="source">The stream to read.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
@@ -404,10 +413,10 @@ internal static class MerkleTreeCore
     /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <returns>The total number of bytes read.</returns>
     /// <remarks>
-    /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each
-    /// block is hashed straight out of the buffer it was read into and the stream's bytes are never copied again. A
-    /// short read is topped up rather than taken as the end of the stream, which a network, cryptographic or
-    /// decompression stream requires — only a read returning zero ends the loop.
+    /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each block
+    /// is hashed straight out of the buffer it was read into and the stream's bytes are never copied again. A short
+    /// read is topped up rather than taken as the end of the stream, which a network, cryptographic or decompression
+    /// stream requires — only a read returning zero ends the loop.
     /// </remarks>
     internal static long ForEachLeafHash(
         Stream source,

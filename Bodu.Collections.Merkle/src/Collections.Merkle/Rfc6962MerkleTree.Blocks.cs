@@ -23,7 +23,9 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <returns>The computation's root, input length, block size and leaf hashes.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
     /// <remarks>
     /// <para>
@@ -66,7 +68,9 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <returns>The tree's root.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
     /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
     /// <remarks>
     /// <para>
@@ -124,7 +128,9 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="source">The bytes to divide into blocks.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
     /// <returns>The computation's root, input length, block size and leaf hashes.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
     /// <remarks>
     /// Equivalent to <see cref="ComputeBlocked(Stream, int, CancellationToken)" /> over the same bytes; provided so a
     /// caller holding a buffer need not wrap it in a <see cref="MemoryStream" />.
@@ -169,10 +175,10 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <returns>The total number of bytes read.</returns>
     /// <remarks>
-    /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each
-    /// block is hashed straight out of the buffer it was read into and the stream's bytes are never copied again. A
-    /// short read is topped up rather than taken as the end of the stream, which a network, cryptographic or
-    /// decompression stream requires — only a read returning zero ends the loop.
+    /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each block
+    /// is hashed straight out of the buffer it was read into and the stream's bytes are never copied again. A short
+    /// read is topped up rather than taken as the end of the stream, which a network, cryptographic or decompression
+    /// stream requires — only a read returning zero ends the loop.
     /// </remarks>
     private long ForEachLeafHash(
         Stream source,

@@ -9,23 +9,23 @@ using System.Globalization;
 namespace Bodu.Collections.Merkle;
 
 /// <summary>
-/// Provides the block arithmetic shared by every consumer of <see cref="Rfc6962MerkleTree" />'s block mode — the
-/// number of blocks a byte length divides into, and the offset and length of each one.
+/// Provides the block arithmetic shared by every consumer of <see cref="Rfc6962MerkleTree" />'s block mode — the number
+/// of blocks a byte length divides into, and the offset and length of each one.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A byte stream becomes an ordered sequence of tree entries by cutting it into fixed-size blocks. Every block but
-/// the last is <c>blockSize</c> bytes; the last is short whenever the length is not a whole multiple, and is hashed
-/// at its <em>actual</em> length rather than padded — padding would make a short final block indistinguishable from
-/// a full block of the same bytes followed by zeros.
+/// A byte stream becomes an ordered sequence of tree entries by cutting it into fixed-size blocks. Every block but the
+/// last is <c>blockSize</c> bytes; the last is short whenever the length is not a whole multiple, and is hashed at its
+/// <em>actual</em> length rather than padded — padding would make a short final block indistinguishable from a full
+/// block of the same bytes followed by zeros.
 /// </para>
 /// <para>
-/// A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty
-/// tree's — the hash of zero bytes — rather than the hash of one empty leaf.
+/// A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty tree's —
+/// the hash of zero bytes — rather than the hash of one empty leaf.
 /// </para>
 /// <para>
-/// These three functions are trivial and are nonetheless centralized here, because a consumer that computes the
-/// final block's length incorrectly does not fail loudly — it produces a different, wrong root.
+/// These three functions are trivial and are nonetheless centralized here, because a consumer that computes the final
+/// block's length incorrectly does not fail loudly — it produces a different, wrong root.
 /// </para>
 /// </remarks>
 public static class MerkleBlocks
@@ -79,12 +79,11 @@ public static class MerkleBlocks
     /// <param name="blockIndex">The zero-based index of the block.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
     /// <returns>
-    /// The length, in bytes, of the block; zero when the block begins at or beyond
-    /// <paramref name="inputLength" />.
+    /// The length, in bytes, of the block; zero when the block begins at or beyond <paramref name="inputLength" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="inputLength" /> or <paramref name="blockIndex" /> is negative, or
-    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// <paramref name="inputLength" /> or <paramref name="blockIndex" /> is negative, or <paramref name="blockSize" />
+    /// is less than or equal to zero.
     /// </exception>
     public static int BlockLength(long inputLength, long blockIndex, int blockSize)
     {
