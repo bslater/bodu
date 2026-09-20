@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build configuration and NuGet package metadata. -->
+  <PropertyGroup>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <RootNamespace>Bodu</RootNamespace>
+    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+    <Title>Bodu — Merkle Trees and Proofs</Title>
+    <Description>RFC 6962 Merkle Tree Hash with inclusion proofs, consistency proofs and length-bound roots, over any HashAlgorithm. Entry mode and fixed-size block mode, single-pass streaming with a logarithmic-memory fold, and optional parallel leaf hashing. Depends only on Bodu.Core — no cipher types — so a consumer that needs commitments does not take a cryptography catalogue with it.</Description>
+    <PackageTags>$(PackageTags);merkle-tree;merkle-proof;rfc6962;inclusion-proof;consistency-proof;transparency-log;content-addressing;commitment;audit-proof</PackageTags>
+  </PropertyGroup>
+
+  <!--
+    InternalsVisibleTo grants:
+      - Bodu.Collections.Merkle.Test : test project (MerkleTreeFormat prefix values, MerkleThrowHelper).
+    Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
+  -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Bodu.Collections.Merkle.Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+  <ItemGroup>
+    <EmbeddedResource Update="MerkleResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MerkleResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="MerkleResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MerkleResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

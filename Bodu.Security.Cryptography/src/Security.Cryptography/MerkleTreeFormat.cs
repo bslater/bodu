@@ -41,14 +41,4 @@ internal static class MerkleTreeFormat
     /// <summary>The domain-separation prefix byte prepended to an internal node's concatenated child hashes.</summary>
     internal const byte InternalNodePrefix = 0x01;
 
-    /// <summary>
-    /// The domain-separation prefix byte prepended to a length-bound root, as
-    /// <c>H(<see cref="RootPrefix" /> || u64_be(boundValue) || treeHead)</c>.
-    /// </summary>
-    /// <remarks>
-    /// Used only by <see cref="Rfc6962MerkleTree" />'s bound-root mode, which is an addition to RFC 6962 rather
-    /// than part of it. A third prefix keeps a bound root from being confused with either a leaf or an internal
-    /// node, exactly as the first two keep leaves and nodes apart.
-    /// </remarks>
-    internal const byte RootPrefix = 0x02;
 }

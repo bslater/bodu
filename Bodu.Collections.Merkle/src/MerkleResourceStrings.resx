@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
+    <value>The hash algorithm factory returned null.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleHashLengthNotPositive" xml:space="preserve">
+    <value>The hash algorithm reported a digest length that is not positive.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleHashLength" xml:space="preserve">
+    <value>A hash of {0} bytes was expected, but {1} bytes were supplied.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleLeafHashNullAtIndex" xml:space="preserve">
+    <value>The leaf hash at index {0} is null.</value>
+  </data>
+  <data name="Arg_Invalid_MerkleLeafHashLengthAtIndex" xml:space="preserve">
+    <value>The leaf hash at index {0} must be {1} bytes, but is {2} bytes.</value>
+  </data>
+  <data name="Arg_OutOfRange_BlockSizeMustBeGreaterThan" xml:space="preserve">
+    <value>Specified block size must be greater than {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
+    <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
+  </data>
+  <data name="Crypt_Invalid_HashDestinationTooSmall" xml:space="preserve">
+    <value>The hash algorithm could not write its digest into the destination buffer.</value>
+  </data>
+</root>
