@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
@@ -40,17 +40,18 @@
   </ItemGroup>
 
 
-  <!-- Namespace selector for the shared Merkle domain-separation prefixes compiled in below. -->
+  <!-- Namespace selector for the shared Merkle source compiled in below. -->
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);SECURITY_CRYPTOGRAPHY</DefineConstants>
   </PropertyGroup>
 
-  <!-- MerkleTreeHash and ParallelMerkleTreeHash share RFC 6962's leaf and node prefixes with
-       Bodu.Collections' conforming Rfc6962MerkleTree, though not its tree shape. The values are compiled from source
-       rather than duplicated, so they cannot drift apart; this creates no package dependency. -->
+  <!-- MerkleTreeHash and ParallelMerkleTreeHash are facades over the same Merkle core as Bodu.Collections'
+       Rfc6962MerkleTree: the domain-separation prefixes, the level-by-level fold, and the diagnostics recorder are
+       compiled from source rather than duplicated, so the two packages cannot drift apart; this creates no package
+       dependency. -->
   <ItemGroup>
-    <Compile Include="..\..\Bodu.Collections\shared\MerkleTreeFormat.cs"
-             Link="shared\MerkleTreeFormat.cs" />
+    <Compile Include="..\..\Bodu.Collections\shared\**\*.cs"
+             Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

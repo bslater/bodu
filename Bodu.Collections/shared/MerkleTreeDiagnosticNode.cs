@@ -1,10 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTreeDiagnosticNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if SECURITY_CRYPTOGRAPHY
 namespace Bodu.Security.Cryptography;
+#else
+namespace Bodu.Collections.Specialized;
+#endif
 
 /// <summary>
 /// Represents a single node captured during a Merkle tree hash computation, recording the child hashes used as input
@@ -29,7 +33,7 @@ namespace Bodu.Security.Cryptography;
     Justification = "The positional record parameters intentionally use PascalCase because they define the generated public property names; using lower-case parameter names would produce lower-case public properties and violate .NET member naming conventions.")]
 public sealed record MerkleTreeDiagnosticNode(
     int Level,
-    int Index,
+    long Index,
     bool IsLeaf,
     byte[] Hash,
     IReadOnlyList<byte[]> ChildHashes);

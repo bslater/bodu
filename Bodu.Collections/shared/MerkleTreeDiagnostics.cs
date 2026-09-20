@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTreeDiagnostics.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,17 +7,23 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 
+#if SECURITY_CRYPTOGRAPHY
 namespace Bodu.Security.Cryptography;
+#else
+namespace Bodu.Collections.Specialized;
+#endif
 
 /// <summary>
-/// Captures the complete node-by-node trace of a <see cref="ParallelMerkleTreeHash" /> computation, and provides
-/// structural inspection and independent hash re-validation.
+/// Captures the complete node-by-node trace of a Merkle computation, and provides structural inspection and independent
+/// hash re-validation.
 /// </summary>
 /// <remarks>
 /// <para>
-/// An instance is passed to a <see cref="ParallelMerkleTreeHash" /> <c>ComputeHash</c> call. As the tree is built, each
-/// leaf and internal node is recorded concurrently by the level workers. Once the call returns, the complete trace is
-/// available for inspection.
+/// An instance is passed to any Merkle computation in the solution that accepts one — the block-mode root of
+/// <c>Rfc6962MerkleTree</c>, or a <c>ComputeHash</c> call on <c>MerkleTreeHash</c> or <c>ParallelMerkleTreeHash</c>. As
+/// the tree is built, each leaf and each hashed internal node is recorded; a node promoted to a higher level unchanged
+/// is recorded once, at the level that produced it. Once the call returns, the complete trace is available for
+/// inspection.
 /// </para>
 /// <para>
 /// Storing child hash snapshots for every internal node incurs additional allocation proportional to the number of
@@ -29,13 +35,16 @@ namespace Bodu.Security.Cryptography;
 /// and confirms the result matches the value stored in the node. Leaf hashes are not re-validated against the original
 /// input bytes, as raw blocks are not retained.
 /// </para>
+/// <para>
+/// This file lives in <c>Bodu.Collections/shared/</c> and is source-compiled into <c>Bodu.Security.Cryptography</c>
+/// alongside the Merkle core, so the same recorder serves every Merkle type without a package dependency.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code>
 ///<![CDATA[
 /// var diagnostics = new MerkleTreeDiagnostics();
-/// using var hasher = new ParallelMerkleTreeHash(() => SHA256.Create(), blockSize: 64, fanOut: 2);
-/// byte[] root = hasher.ComputeHash(data, diagnostics);
+/// byte[] root = tree.ComputeRootOfBlocks(stream, blockSize: 64, diagnostics);
 ///
 /// diagnostics.WriteTo(Console.Out);
 ///
@@ -44,12 +53,13 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 public sealed class MerkleTreeDiagnostics
+    : IMerkleTreeObserver
 {
     /// <summary>The thread-safe collection of recorded leaf and internal nodes captured during the tree computation.</summary>
     private readonly ConcurrentBag<MerkleTreeDiagnosticNode> _nodes = new();
 
     // -----------------------------------------------------------------------------------------
-    // Internal recording — called by ParallelMerkleTreeHash during computation
+    // Internal recording — reached through IMerkleTreeObserver by every Merkle computation
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
@@ -57,7 +67,7 @@ public sealed class MerkleTreeDiagnostics
     /// </summary>
     /// <param name="index">The zero-based leaf index.</param>
     /// <param name="hash">The computed leaf hash bytes.</param>
-    internal void RecordLeaf(int index, byte[] hash) =>
+    internal void RecordLeaf(long index, byte[] hash) =>
         _nodes.Add(new MerkleTreeDiagnosticNode(
             Level: 0,
             Index: index,
@@ -72,13 +82,21 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="index">The zero-based index of the parent node within its level.</param>
     /// <param name="childHashes">Snapshots of the child hash values used as input.</param>
     /// <param name="hash">The resulting parent hash.</param>
-    internal void RecordInternal(int level, int index, byte[][] childHashes, byte[] hash) =>
+    internal void RecordInternal(int level, long index, byte[][] childHashes, byte[] hash) =>
         _nodes.Add(new MerkleTreeDiagnosticNode(
             Level: level,
             Index: index,
             IsLeaf: false,
             Hash: (byte[])hash.Clone(),
             ChildHashes: childHashes));
+
+    /// <inheritdoc />
+    void IMerkleTreeObserver.OnLeaf(long index, byte[] hash) =>
+        RecordLeaf(index, hash);
+
+    /// <inheritdoc />
+    void IMerkleTreeObserver.OnNode(int level, long index, byte[][] children, byte[] hash) =>
+        RecordInternal(level, index, children, hash);
 
     // -----------------------------------------------------------------------------------------
     // Inspection
@@ -282,23 +300,17 @@ public sealed class MerkleTreeDiagnostics
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Combines a list of child hashes using the same <see cref="HashAlgorithm.TransformBlock" /> strategy employed by
-    /// <see cref="ParallelMerkleTreeHash" />, and returns the resulting hash.
+    /// Recomputes an internal node from its children through the shared core, so validation and every producer use the
+    /// same node hash.
     /// </summary>
-    /// <param name="hashes">The ordered child hashes to concatenate and re-hash.</param>
+    /// <param name="hashes">The ordered child hashes to re-hash.</param>
     /// <param name="factory">A factory producing a fresh <see cref="HashAlgorithm" /> for this combination.</param>
     /// <returns>The combined parent hash.</returns>
     private static byte[] CombineHashes(IReadOnlyList<byte[]> hashes, Func<HashAlgorithm> factory)
     {
         using HashAlgorithm hasher = factory();
 
-        // Internal-node domain separation: recompute H(0x01 || child₀ || … ) to match both hasher implementations.
-        byte[] prefix = [MerkleTreeFormat.InternalNodePrefix];
-        hasher.TransformBlock(prefix, 0, prefix.Length, null, 0);
-        for (int i = 0; i < hashes.Count - 1; i++)
-            hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
-        hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);
-        return hasher.Hash!;
+        return MerkleTreeCore.HashChildren(hasher, hasher.HashSize >> 3, [.. hashes]);
     }
 
     /// <summary>

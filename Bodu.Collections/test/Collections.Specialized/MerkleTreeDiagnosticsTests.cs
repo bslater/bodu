@@ -6,12 +6,12 @@
 
 using System.Security.Cryptography;
 
-namespace Bodu.Security.Cryptography;
+namespace Bodu.Collections.Specialized;
 
 /// <summary>
 /// Direct unit tests for <see cref="MerkleTreeDiagnostics" /> and
 /// <see cref="MerkleTreeDiagnosticNode" />. The diagnostic recorder is exercised indirectly
-/// via <c>ParallelMerkleTreeHashTests.Diagnostics.cs</c>, but its inspection, validation, and
+/// via the producers' own test suites, but its inspection, validation, and
 /// formatting APIs deserve targeted coverage that does not depend on the parallel pipeline
 /// being correct.
 /// </summary>
@@ -89,10 +89,10 @@ public sealed class MerkleTreeDiagnosticsTests
         IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetAllNodes();
         var ordered = nodes.Select(n => (n.Level, n.Index)).ToList();
 
-        var expected = new List<(int Level, int Index)>
+        var expected = new List<(int Level, long Index)>
         {
-            (0, 0), (0, 1), (0, 2),
-            (1, 0), (1, 1),
+            (0, 0L), (0, 1L), (0, 2L),
+            (1, 0L), (1, 1L),
         };
 
         CollectionAssert.AreEqual(expected, ordered);

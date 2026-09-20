@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Rfc6962MerkleTreeTests.ComputeBlocked.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -428,5 +428,34 @@ public partial class Rfc6962MerkleTreeTests
 
         /// <inheritdoc />
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
+
+    /// <summary>
+    /// Verifies that a supplied <see cref="MerkleTreeDiagnostics" /> receives a trace that validates on its own, holds
+    /// one leaf per block, and ends at the root the call returned — for every leaf count up to sixteen, so promoted
+    /// leftovers are covered as well as full pairs.
+    /// </summary>
+    [TestMethod]
+    public void ComputeRootOfBlocks_WhenDiagnosticsAreSupplied_ShouldRecordAValidatingTraceEndingAtTheRoot()
+    {
+        Rfc6962MerkleTree tree = CreateTree();
+
+        for (int leafCount = 0; leafCount <= 16; leafCount++)
+        {
+            using var source = new MemoryStream(BlockModeInput(leafCount * VectorBlockSize));
+            var diagnostics = new MerkleTreeDiagnostics();
+
+            byte[] root = tree.ComputeRootOfBlocks(source, VectorBlockSize, diagnostics);
+
+            Assert.IsTrue(
+                diagnostics.Validate(SHA256.Create, out IReadOnlyList<string> errors),
+                string.Join("; ", errors));
+            Assert.AreEqual(leafCount, diagnostics.GetLevel(0).Count, $"leaf count {leafCount}");
+
+            if (leafCount == 0)
+                Assert.IsNull(diagnostics.Root, "an empty tree records no node");
+            else
+                Assert.AreEqual(Hex(root), Hex(diagnostics.Root!.Hash), $"leaf count {leafCount}");
+        }
     }
 }

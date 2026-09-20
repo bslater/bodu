@@ -89,6 +89,34 @@ public sealed partial class Rfc6962MerkleTree
     public byte[] ComputeRootOfBlocks(
         Stream source,
         int blockSize,
+        CancellationToken cancellationToken = default) =>
+        ComputeRootOfBlocks(source, blockSize, diagnostics: null, cancellationToken);
+
+    /// <summary>
+    /// Computes the root over fixed-size blocks of a stream while holding only a logarithmic number of hashes,
+    /// recording every leaf and internal node into <paramref name="diagnostics" />.
+    /// </summary>
+    /// <param name="source">The stream to read to its end.</param>
+    /// <param name="blockSize">The size, in bytes, of each block.</param>
+    /// <param name="diagnostics">
+    /// The recorder that receives the tree's nodes as they are produced, or <see langword="null" /> to record nothing.
+    /// </param>
+    /// <param name="cancellationToken">A token observed between blocks.</param>
+    /// <returns>The root hash.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <remarks>
+    /// Recording retains one entry per node, so the logarithmic memory bound of the overload without a recorder does
+    /// not hold while <paramref name="diagnostics" /> is supplied; the fold itself still holds only one pending subtree
+    /// per level.
+    /// </remarks>
+    public byte[] ComputeRootOfBlocks(
+        Stream source,
+        int blockSize,
+        MerkleTreeDiagnostics? diagnostics,
         CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -97,7 +125,7 @@ public sealed partial class Rfc6962MerkleTree
         using HashAlgorithm hasher = CreateAlgorithm();
 
         // A fan-out of two folds level by level into exactly RFC 6962's tree, holding one pending subtree per level.
-        var fold = new MerkleLevelFold(hasher, HashLength, fanOut: 2);
+        var fold = new MerkleLevelFold(hasher, HashLength, fanOut: 2, diagnostics);
         _ = ForEachLeafHash(source, blockSize, hasher, fold.Add, cancellationToken);
 
         return fold.Finish();

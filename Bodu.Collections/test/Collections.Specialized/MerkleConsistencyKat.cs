@@ -16,8 +16,8 @@ namespace Bodu.Collections.Specialized;
 /// <param name="SecondSize">The later tree's entry count.</param>
 /// <param name="Proof">The expected proof steps, lowercase hex.</param>
 /// <remarks>
-/// A bespoke record rather than <see cref="ValidKat{TInput,TExpected}" /> because the input is the pair of sizes,
-/// which the generic's single <c>Input</c> cannot carry legibly.
+/// A bespoke record rather than <see cref="ValidKat{TInput,TExpected}" /> because the input is the pair of sizes, which
+/// the generic's single <c>Input</c> cannot carry legibly.
 /// </remarks>
 public sealed record MerkleConsistencyKat(
     string Name,
