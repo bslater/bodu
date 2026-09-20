@@ -31,6 +31,15 @@ namespace Bodu.Collections.Specialized;
 /// The leaf-retaining pass is measured too, and required to grow. A probe that cannot see growth where growth is
 /// certain proves nothing about its absence elsewhere, so that half is what keeps this test from being vacuous.
 /// </para>
+/// <para>
+/// Both thresholds are deliberately loose against the measured behavior. On a four-core x64 container the fold
+/// grows 136-160 bytes going from 4,096 to 65,536 leaves, while the leaf-retaining pass grows 3,588,096 bytes, so
+/// the ratio assertion clears its bound by roughly three orders of magnitude and the anti-vacuity floor by 3.6x.
+/// The fold's figure is not merely small but close to the predicted one: the sample lands nine-tenths of the way
+/// through each stream, where the fold holds one subtree per set bit of the blocks consumed so far, and the two
+/// extra set bits between the two inputs account for most of it. Because every assertion compares two samples
+/// taken in the same process, the spread across repeated runs is a few dozen bytes rather than a few megabytes.
+/// </para>
 /// </remarks>
 public partial class Rfc6962MerkleTreeTests
 {
