@@ -65,6 +65,9 @@
     <Project Path="Bodu.Collections.Merkle\src\Bodu.Collections.Merkle.csproj" />
     <Project Path="Bodu.Collections.Merkle\test\Bodu.Collections.Merkle.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Collections.Merkle.SourceOnly.Test/">
+    <Project Path="Bodu.Collections.Merkle.SourceOnly.Test\test\Bodu.Collections.Merkle.SourceOnly.Test.csproj" />
+  </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />
