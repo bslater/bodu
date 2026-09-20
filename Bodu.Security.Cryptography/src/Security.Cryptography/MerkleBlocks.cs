@@ -112,11 +112,13 @@ public static class MerkleBlocks
         [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(blockSize))] string? paramName = null)
     {
         if (blockSize <= 0)
+        {
             throw new ArgumentOutOfRangeException(
                 paramName,
                 string.Format(
                     CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan,
                     0));
+        }
     }
 }

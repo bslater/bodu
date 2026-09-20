@@ -195,6 +195,32 @@ byte[][] blockPath = tree.AuthenticationPath(computation.LeafHashes, blockIndex)
 
 Use `ComputeRootOfBlocks` instead when you want only the root: it folds the tree as it reads, so memory stays at `O(blockSize + log n · hashSize)` rather than retaining every leaf hash.
 
+### Hashing leaves in parallel
+
+`ComputeBlockedParallel` and `ComputeRootParallel` spread **leaf hashing** across threads. The tree shape is untouched — both paths fold the resulting leaf hashes through the same reduction — so the root is bit-identical to the sequential one for every input, and switching between them is a performance question and never a compatibility one.
+
+```csharp
+// Bytes already in memory — this is the one that scales.
+MerkleComputation computation = tree.ComputeBlockedParallel(buffer.AsMemory(), blockSize: 1024 * 1024);
+
+// From a stream, when the object is too large to hold.
+MerkleComputation streamed = tree.ComputeBlockedParallel(stream, blockSize: 1024 * 1024);
+```
+
+Prefer the `ReadOnlyMemory<byte>` overload where you can. A stream must be read sequentially, so that overload copies each block on the calling thread before any worker can touch it, which caps the gain; the in-memory overload copies *and* hashes each block inside its own worker.
+
+How much you actually gain depends on how fast the leaf hash is relative to memory bandwidth — and it can be **negative**:
+
+| Leaf hash | Stream overload | In-memory overload |
+|---|---|---|
+| SHA-256 (hardware-accelerated) | ~1.1× | ~1.9× |
+| SHA-512 | ~1.8× | ~2.5× |
+| Tiger (managed) | ~2.4× | ~3.0× |
+| BLAKE2b (managed) | ~2.5× | ~2.6× |
+
+> [!NOTE]
+> Measured over 64 MiB at one-mebibyte blocks on four cores. Treat these as shape, not specification. A hardware-accelerated SHA-256 already runs close to memory bandwidth, so there is little for extra threads to recover — and on a fast source the sequential overload can beat the parallel stream overload outright. Measure your own case before reaching for these.
+
 ### Trust the size, or bind it
 
 > [!WARNING]

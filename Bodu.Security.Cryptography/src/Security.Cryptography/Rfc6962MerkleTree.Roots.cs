@@ -211,6 +211,7 @@ public sealed partial class Rfc6962MerkleTree
                     nameof(leafHashes));
 
             if (leafHash.Length != HashLength)
+            {
                 throw new ArgumentException(
                     string.Format(
                         CultureInfo.CurrentCulture,
@@ -219,6 +220,7 @@ public sealed partial class Rfc6962MerkleTree
                         HashLength,
                         leafHash.Length),
                     nameof(leafHashes));
+            }
 
             copy[index] = leafHash;
         }
@@ -235,6 +237,7 @@ public sealed partial class Rfc6962MerkleTree
     private void ThrowIfNotHashLength(int length, string paramName)
     {
         if (length != HashLength)
+        {
             throw new ArgumentException(
                 string.Format(
                     CultureInfo.CurrentCulture,
@@ -242,5 +245,6 @@ public sealed partial class Rfc6962MerkleTree
                     HashLength,
                     length),
                 paramName);
+        }
     }
 }

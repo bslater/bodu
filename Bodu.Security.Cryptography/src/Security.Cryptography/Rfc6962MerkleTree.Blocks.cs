@@ -50,7 +50,7 @@ public sealed partial class Rfc6962MerkleTree
         using HashAlgorithm hasher = CreateAlgorithm();
 
         List<byte[]> leafHashes = [];
-        long inputLength = ForEachLeafHash(source, blockSize, hasher, cancellationToken, leafHashes.Add);
+        long inputLength = ForEachLeafHash(source, blockSize, hasher, leafHashes.Add, cancellationToken);
 
         byte[] root = leafHashes.Count == 0
             ? HashEmpty(hasher)
@@ -96,14 +96,19 @@ public sealed partial class Rfc6962MerkleTree
         List<byte[]> pending = [];
         List<long> pendingLeafCounts = [];
 
-        _ = ForEachLeafHash(source, blockSize, hasher, cancellationToken, leafHash =>
-        {
-            pending.Add(leafHash);
-            pendingLeafCounts.Add(1);
+        _ = ForEachLeafHash(
+            source,
+            blockSize,
+            hasher,
+            leafHash =>
+            {
+                pending.Add(leafHash);
+                pendingLeafCounts.Add(1);
 
-            while (pending.Count >= 2 && pendingLeafCounts[^1] == pendingLeafCounts[^2])
-                MergeTopTwo(pending, pendingLeafCounts, hasher);
-        });
+                while (pending.Count >= 2 && pendingLeafCounts[^1] == pendingLeafCounts[^2])
+                    MergeTopTwo(pending, pendingLeafCounts, hasher);
+            },
+            cancellationToken);
 
         if (pending.Count == 0)
             return HashEmpty(hasher);
@@ -173,8 +178,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <param name="source">The stream to read.</param>
     /// <param name="blockSize">The size, in bytes, of each block.</param>
     /// <param name="hasher">The algorithm to hash with.</param>
-    /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <param name="onLeafHash">Invoked once per block, in block order.</param>
+    /// <param name="cancellationToken">A token observed between blocks.</param>
     /// <returns>The total number of bytes read.</returns>
     /// <remarks>
     /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each
@@ -186,8 +191,8 @@ public sealed partial class Rfc6962MerkleTree
         Stream source,
         int blockSize,
         HashAlgorithm hasher,
-        CancellationToken cancellationToken,
-        Action<byte[]> onLeafHash)
+        Action<byte[]> onLeafHash,
+        CancellationToken cancellationToken)
     {
         long inputLength = 0;
         byte[] rented = ArrayPool<byte>.Shared.Rent(blockSize + 1);

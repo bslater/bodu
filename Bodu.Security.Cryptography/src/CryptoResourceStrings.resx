@@ -439,4 +439,7 @@
   <data name="Arg_Invalid_MerkleLeafHashLengthAtIndex" xml:space="preserve">
     <value>The leaf hash at index {0} must be {1} bytes, but is {2} bytes.</value>
   </data>
+  <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
+    <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
+  </data>
 </root>
