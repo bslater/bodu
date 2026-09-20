@@ -4,12 +4,12 @@ title: RFC 6962 Merkle trees and proofs
 
 # RFC 6962 Merkle trees and proofs
 
-<xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> — in the **Bodu.Collections.Merkle** package, namespace `Bodu.Collections.Merkle` — implements the Merkle tree of [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1): the Merkle Tree Hash, inclusion (audit) proofs, consistency proofs, and length-bound roots. It is the type to reach for when a root has to interoperate with a transparency log, an artifact attestation, or anything else built to the standard, and it is the only Bodu type that produces proofs.
+<xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> — in the **Bodu.Collections** package, namespace `Bodu.Collections.Merkle` — implements the Merkle tree of [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1): the Merkle Tree Hash, inclusion (audit) proofs, consistency proofs, and length-bound roots. It is the type to reach for when a root has to interoperate with a transparency log, an artifact attestation, or anything else built to the standard, and it is the only Bodu type that produces proofs.
 
-The package depends on `Bodu.Core` alone. Reaching for a commitment does not pull in a cipher catalogue — the hash is supplied by the caller as a `Func<HashAlgorithm>`, so the BCL algorithms and the Bodu digests both work while the package references neither.
+The package depends on `Bodu.Core` alone. Reaching for a commitment does not pull in a cipher catalogue — the hash is supplied by the caller as a `Func<HashAlgorithm>`, so the BCL algorithms and the Bodu digests both work while the package references neither. The types live beside the collection catalogue for the same reason the approximate sketches do: they need nothing else, and a package of their own would buy a consumer nothing.
 
 ```bash
-dotnet add package Bodu.Collections.Merkle
+dotnet add package Bodu.Collections
 ```
 
 > [!IMPORTANT]
@@ -196,7 +196,7 @@ For a single end-to-end digest where partial verification is not a requirement, 
 
 ## Where to go next
 
-- **[Bodu.Collections.Merkle introduction](../../docs/collections-merkle/index.md)** · **[core concepts](../../docs/collections-merkle/concepts.md)** · **[getting started](../../docs/collections-merkle/getting-started.md)**.
+- **[Bodu.Collections introduction](../../docs/collections/index.md)** · **[core concepts](../../docs/collections/concepts.md#merkle-commitments)** · **[getting started](../../docs/collections/getting-started.md)** — the package these types ship in.
 - **[Using Merkle trees](../cryptography/merkle-trees.md)** — the level-by-level streaming digests in `Bodu.Security.Cryptography`, and why their roots differ from this one's.
 - **[Hashing overview](../cryptography/hashing.md)** — where tree hashing sits alongside the other families.
 - <xref:Bodu.Collections.Merkle.Rfc6962MerkleTree> · <xref:Bodu.Collections.Merkle.MerkleComputation> · <xref:Bodu.Collections.Merkle.MerkleBlocks>.

@@ -53,14 +53,6 @@
           href: io-hashing/concepts.md
         - name: Getting started
           href: io-hashing/getting-started.md
-    - name: Bodu.Collections.Merkle
-      items:
-        - name: Introduction
-          href: collections-merkle/index.md
-        - name: Core concepts
-          href: collections-merkle/concepts.md
-        - name: Getting started
-          href: collections-merkle/getting-started.md
     - name: Bodu.Security.Cryptography
       items:
         - name: Introduction

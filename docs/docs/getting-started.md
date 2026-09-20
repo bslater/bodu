@@ -193,7 +193,7 @@ using var sip = new SipHash64 { Key = key };
 ulong digest = BitConverter.ToUInt64(sip.ComputeHash(data));
 ```
 
-`SipHash64` derives from `System.Security.Cryptography.HashAlgorithm`, so it drops into any API that expects a standard .NET hash. For block ciphers, AEAD modes, streaming tree digests, and the ASCON family, see the per-library pages below; for RFC 6962 Merkle trees and proofs, see [Bodu.Collections.Merkle](collections-merkle/getting-started.md).
+`SipHash64` derives from `System.Security.Cryptography.HashAlgorithm`, so it drops into any API that expects a standard .NET hash. For block ciphers, AEAD modes, streaming tree digests, and the ASCON family, see the per-library pages below; for RFC 6962 Merkle trees and proofs, see the [`Bodu.Collections.Merkle` namespace](../guides/core/rfc6962-merkle-trees.md) in `Bodu.Collections`.
 
 → **[Introduction](cryptography/index.md)** · **[Getting started](cryptography/getting-started.md)** · **[Guides](../guides/cryptography/index.md)**
 

@@ -100,17 +100,6 @@ A family of focused primary libraries organized into **seven topics** — alongs
 </div>
 
 <div class="bodu-card">
-  <img src="images/hero-merkle.svg" alt="Bodu.Collections.Merkle" />
-  <h3>Bodu.Collections.Merkle</h3>
-  <p>The RFC 6962 Merkle tree over any <code>HashAlgorithm</code> you supply — the Merkle Tree Hash in entry, block, and parallel modes, inclusion (audit) and consistency proofs, and length-bound roots that close the standard&#39;s tree-size ambiguity. Depends on <code>Bodu.Core</code> alone.</p>
-  <div class="bodu-card-links">
-    <a href="docs/collections-merkle/index.md">Introduction</a>
-    <a href="guides/merkle/rfc6962-merkle-trees.md">Guides</a>
-    <a href="xref:Bodu.Collections.Merkle">API reference</a>
-  </div>
-</div>
-
-<div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
   <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), and Merkle-tree hashing.</p>

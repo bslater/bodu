@@ -2,22 +2,22 @@
 uid: Bodu.Collections.Merkle
 ---
 
-![Bodu.Collections.Merkle](~/images/hero-merkle.svg)
+![Bodu.Collections.Merkle](~/images/hero-collections.svg)
 
 ## Purpose
 
 **Bodu.Collections.Merkle** is the [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) Merkle tree: the Merkle Tree Hash, inclusion (audit) proofs, consistency proofs, and length-bound roots, computed over any <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>. It is the package to reach for when a root must interoperate with a transparency log, an artifact attestation, a content-addressed store, or anything else built to the standard — and the only Bodu type that produces proofs.
 
-The package depends on `Bodu.Core` alone. That is the reason it exists as its own package rather than as a corner of <xref:Bodu.Security.Cryptography>: a consumer that needs commitments should not have to take a cipher catalogue with it. The hash itself is supplied by the caller as a factory, so the BCL algorithms, the Bodu digests, and anything else deriving from `HashAlgorithm` all work without this package referencing any of them.
+The types ship in the **Bodu.Collections** package and depend on `Bodu.Core` alone. That dependency is the reason they live there rather than in <xref:Bodu.Security.Cryptography>: a consumer that needs commitments should not have to take a cipher catalogue with it, and `Bodu.Collections` costs them nothing beyond `Bodu.Core`. The hash itself is supplied by the caller as a factory, so the BCL algorithms, the Bodu digests, and anything else deriving from `HashAlgorithm` all work without the package referencing any of them.
 
 > [!IMPORTANT]
 > `Bodu.Security.Cryptography` also ships <xref:Bodu.Security.Cryptography.MerkleTreeHash> and <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>. Those two borrow RFC 6962's **domain separation** but not its **tree shape** — they reduce level by level with a configurable `fanOut` and re-hash a lone leftover child, so their roots agree with RFC 6962's only when the leaf count is a power of two. They are sound commitments, simply different ones. Where the root has to interoperate, or where you need proofs, the type on this page is the one to use.
 
 ## Static documentation
 
-- **[RFC 6962 Merkle trees and proofs](~/guides/merkle/rfc6962-merkle-trees.md)** — the full walk-through: entry mode, block mode, the streaming fold, proofs, the tree-size ambiguity, and parallel leaf hashing.
-- **[Introduction](~/docs/collections-merkle/index.md)** — the package shape, headline types, and scenario table.
-- **[Core concepts](~/docs/collections-merkle/concepts.md)** — the vocabulary: Merkle Tree Hash, split point, domain separation, audit and consistency proofs, bound roots.
+- **[RFC 6962 Merkle trees and proofs](~/guides/core/rfc6962-merkle-trees.md)** — the full walk-through: entry mode, block mode, the streaming fold, proofs, the tree-size ambiguity, and parallel leaf hashing.
+- **[Bodu.Collections introduction](~/docs/collections/index.md)** — the package these types ship in, and where they sit among its namespaces.
+- **[Merkle commitments](~/docs/collections/concepts.md)** — the vocabulary: Merkle Tree Hash, split point, domain separation, audit and consistency proofs, bound roots.
 - **[Using Merkle trees](~/guides/cryptography/merkle-trees.md)** — the level-by-level streaming digests in `Bodu.Security.Cryptography`, and how they differ from this tree.
 
 ## Key types
@@ -64,4 +64,4 @@ bool blockOk = tree.VerifyBlockInclusion(
 - **Logarithmic memory when you only want the root.** `ComputeRootOfBlocks` folds the tree as it reads — each leaf is pushed as a one-leaf subtree and equal-sized tops are merged immediately — so the stack never exceeds `popcount(n)` hashes and peak memory is `O(blockSize + log n · HashLength)`. `ComputeBlocked` retains every leaf hash instead, which is what makes a later path possible; budget `leafCount × HashLength` bytes for it.
 - **Parallel leaf hashing never changes the root.** `ComputeBlockedParallel` / `ComputeRootParallel` hash leaves concurrently and fold the results through the same reduction, so the root is bit-identical to the sequential one for every input. Choosing between them is a performance question, never a compatibility one. Prefer the `ReadOnlyMemory<byte>` overload: a stream must be read sequentially, so the stream overload copies each block on the calling thread and caps the gain.
 - **Inclusion proves membership; consistency proves append-only growth.** `VerifyConsistency` takes both sizes and both roots and must reconstruct both, so the size ambiguity above has no analogue. Three cases are decided without walking the proof: a later size below the earlier one is rejected, equal sizes require identical roots *and* an empty proof, and a first size of zero requires an empty proof because every tree extends the empty tree.
-- **The domain-separation prefixes are shared in source, not duplicated.** `MerkleTreeFormat` — the `0x00` / `0x01` / `0x02` prefixes — lives in this package's `shared/` folder and is source-compiled into `Bodu.Security.Cryptography` as well, so the two libraries' prefix values cannot drift apart. The stateless RFC 6962 primitives beneath the facade (`MerkleTreeCore`) are shared the same way and depend on nothing beyond `Bodu.Core`; a separate source-only test assembly compiles them with no reference to this package at all, so adding an outside dependency to the shared source fails that build.
+- **The domain-separation prefixes are shared in source, not duplicated.** `MerkleTreeFormat` — the `0x00` / `0x01` / `0x02` prefixes — lives in `Bodu.Collections/shared/` and is source-compiled into `Bodu.Security.Cryptography` as well, so the two libraries' prefix values cannot drift apart. The stateless RFC 6962 primitives beneath the facade (`MerkleTreeCore`) are shared the same way and depend on nothing beyond `Bodu.Core`; a separate source-only test assembly compiles them with no reference to `Bodu.Collections` at all, so adding an outside dependency to the shared source fails that build.

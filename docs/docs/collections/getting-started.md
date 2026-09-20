@@ -150,11 +150,35 @@ if (!seen.MightContain(candidate))
 }
 ```
 
+### RFC 6962 Merkle tree (`Rfc6962MerkleTree`)
+
+A root anyone can verify one entry against, without being shown the rest:
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Collections.Merkle;
+
+var tree = new Rfc6962MerkleTree(SHA256.Create);   // immutable; share it across threads
+
+ReadOnlyMemory<byte>[] entries = [new byte[0], new byte[] { 0x00 }, new byte[] { 0x10 }];
+
+byte[]   root = tree.ComputeRoot(entries);
+byte[][] path = tree.AuthenticationPath(entries, leafIndex: 2);
+
+bool included = tree.VerifyInclusion(
+    root, treeSize: entries.Length, leafIndex: 2,
+    entry: entries[2].Span,
+    path: path.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
+```
+
+The hash is yours to choose — anything deriving from `HashAlgorithm`. Verification never throws on malformed input; it returns `false`. For a byte stream, `ComputeBlocked` cuts it into fixed-size leaves and hands back the root *and* the leaf hashes a path needs in the same pass, and `ComputeRootOfBlocks` folds the tree as it reads when only the root is wanted. See the [Merkle guide](../../guides/core/rfc6962-merkle-trees.md).
+
 ## Where to go next
 
 - **[Bodu.Collections introduction](index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](concepts.md)** — the collection vocabulary (overflow policies, eviction, navigation, sketches).
 - **[Choosing a collection](../../guides/core/choosing-a-collection.md)** — the decision guide across the catalogue.
 - **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
+- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — proofs, bound roots, block mode, and parallel leaf hashing.
 - **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** — the thread-safe companion package.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.

@@ -129,7 +129,7 @@ Raw, confidentiality-only XOR keystream ciphers — **no authentication**; pair 
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../merkle/rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
+  <h3><a href="../core/rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
   <p>The standard&#39;s tree, inclusion and consistency proofs, and length-bound roots — in the separate <code>Bodu.Collections.Merkle</code> package.</p>
 </div>
 

@@ -19,7 +19,7 @@ This page is the cross-cutting overview — what guarantee a cryptographic hash 
 - [Using SHAKE](shake.md) — Keccak extendable-output function (FIPS 202).
 - [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) — NIST SP 800-232 sponge digests; two variants trading margin for throughput.
 - [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity, level by level.
-- [RFC 6962 Merkle trees and proofs](../merkle/rfc6962-merkle-trees.md) — the standard's tree, with inclusion and consistency proofs (`Bodu.Collections.Merkle`).
+- [RFC 6962 Merkle trees and proofs](../core/rfc6962-merkle-trees.md) — the standard's tree, with inclusion and consistency proofs (`Bodu.Collections.Merkle`).
 
 > **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
