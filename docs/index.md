@@ -319,42 +319,37 @@ A family of focused primary libraries organized into **seven topics** — alongs
   <h3>Bodu.Formats.Outlook</h3>
   <p>The Outlook format readers: <code>Bodu.Formats.Outlook</code> is the shared MAPI value model (property tags and types, the tag-addressed <code>MapiPropertyCollection</code>, named-property identities); <code>Bodu.Formats.Outlook.Msg</code> opens a <code>.msg</code> message over <code>Bodu.IO.Compound</code> and <code>Bodu.Formats.Outlook.Pst</code> opens a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code> — folders, messages, recipients, attachments, embedded messages, named-property resolution, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation.</p>
   <div class="bodu-card-links">
+    <a href="docs/outlook/index.md">Introduction</a>
     <a href="guides/outlook/index.md">Guides</a>
-    <a href="docs/io-pst/index.md">PST mail store</a>
     <a href="xref:Bodu.Formats.Outlook">API reference</a>
   </div>
 </div>
 
 </div>
 
+## Companion packages
+
+<div class="bodu-topic">
+<p class="bodu-topic-lede">The cards above are the headline libraries. Four of them head a family of opt-in companions — serialization bridges, dependency-injection registrations, caching backends, data packs, and tooling — that ship as separate packages so the core library stays dependency-free. The <a href="docs/package-matrix.md">package matrix</a> lists every one of the 60 packages with its dependencies and install command.</p>
+</div>
+
+| Headline package | Its companions |
+|---|---|
+| `Bodu.Numerics` | [`Bodu.Numerics.Serialization.Json`](docs/numerics-serialization-json/index.md) — the `System.Text.Json` bridge. |
+| `Bodu.Financial` | [`Bodu.Financial.Serialization.Json`](docs/financial-serialization-json/index.md), [`Bodu.Financial.ExchangeRates`](docs/exchange-rates/index.md) with its eleven per-source provider packages and three caching backends, and `Bodu.Financial.DependencyInjection`. |
+| `Bodu.Globalization.Calendar` | [Builder](docs/calendar-builder/index.md), [Caching](docs/calendar-caching/index.md) (with SQLite and distributed backends), [dependency injection](docs/calendar-di/index.md), [Plugins](docs/calendar-plugins/index.md), [five regional data packs](docs/calendar-data/index.md), and the [rule-pack toolchain](docs/calendar-tooling/index.md). |
+| The serializers | [`Bodu.Text.Serialization`](docs/serialization/core/index.md) — the shared engine all six compile against — and [the source generator](docs/formats/generators.md) for reflection-free binding. |
+
 ## Install
 
 <div class="bodu-install">
 
-```bash
-dotnet add package Bodu.Core
-dotnet add package Bodu.Collections
-dotnet add package Bodu.Collections.Concurrent
-dotnet add package Bodu.IO.Hashing
-dotnet add package Bodu.Security.Cryptography
-dotnet add package Bodu.Globalization.Calendar
-dotnet add package Bodu.Text.Encoding
-dotnet add package Bodu.Text.Filtering
-dotnet add package Bodu.Text.Formats
-dotnet add package Bodu.Text.Toml
-dotnet add package Bodu.Text.Bencode
-dotnet add package Bodu.Text.Yaml
-dotnet add package Bodu.Text.Configuration
-dotnet add package Bodu.Extensions.Configuration.Text
-dotnet add package Bodu.Numerics
-dotnet add package Bodu.Financial
-dotnet add package Bodu.IO.Compound
-dotnet add package Bodu.IO.Biff
-dotnet add package Bodu.Formats.Excel.Binary
-dotnet add package Bodu.IO.Pst
-dotnet add package Bodu.Formats.Outlook.Msg
-dotnet add package Bodu.Formats.Outlook.Pst
-```
+Every package ships on NuGet. The
+[package matrix](docs/package-matrix.md#install-commands) carries the full
+`dotnet add package` list — all 60 packages, grouped by family, including the
+regional calendar data packs, the exchange-rate providers, the caching and
+dependency-injection companions, and the `dotnet tool install` command for the
+rule-pack toolchain.
 
 </div>
 

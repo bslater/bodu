@@ -32,6 +32,7 @@ dotnet add package Bodu.Security.Cryptography
 
 # Globalization & Calendars
 dotnet add package Bodu.Globalization.Calendar
+dotnet add package Bodu.Globalization.Recurrence
 
 # Optional region-specific calendar data packs:
 dotnet add package Bodu.Globalization.Calendar.Americas
@@ -223,6 +224,31 @@ foreach (NotableDate d in service.Resolve(2026, "AU-NSW"))
 For authoring rule documents, territory filtering, the observance-adjustment pipeline, working-day arithmetic, and the regional data packs, see the getting-started page below.
 
 → **[Introduction](calendar/index.md)** · **[Getting started](calendar/getting-started.md)** · **[Guides](../guides/calendar/index.md)**
+
+### Bodu.Globalization.Recurrence
+
+**Bodu.Globalization.Recurrence** answers *when does this repeat?* in four shapes — RFC 5545 `RRULE`, an `RDATE` / `EXDATE` composed `RecurrenceSet`, Vixie-style `CronExpression`, and the instant-anchored `AnchoredInterval`. It depends only on `Bodu.Core`, so it is a sibling of the calendar engine rather than a dependant, and it is pure in its arguments — no wall clock, no machine time zone.
+
+```csharp
+using Bodu.Globalization.Recurrence;
+
+RecurrenceRule rule = RecurrenceRule.Parse("FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR");
+
+var start = new DateTime(2026, 1, 5, 9, 0, 0);                      // Monday 5 Jan 2026, 09:00
+
+// Every form answers both directions, with inclusive flags.
+DateTime? next     = rule.GetNextOccurrence(start, after: new DateTime(2026, 1, 20));
+DateTime? previous = rule.GetPreviousOccurrence(start, before: new DateTime(2026, 1, 20));
+// next     = 2026-01-21 09:00 (Wednesday of the second fortnight)
+// previous = 2026-01-19 09:00 (Monday)
+
+foreach (DateTime occurrence in rule.GetOccurrences(start, new DateTime(2026, 2, 1), new DateTime(2026, 2, 28)))
+    Console.WriteLine(occurrence);                                  // 2, 4, 6, 16, 18, 20 Feb — all 09:00
+```
+
+Build rules fluently with `RecurrenceRuleBuilder`, compose exceptions into a `RecurrenceSet`, or swap the grammar for cron — every form carries a defect-naming `TryParse(s, out result, out failureMessage)` overload.
+
+→ **[Introduction](recurrence/index.md)** · **[Getting started](recurrence/getting-started.md)** · **[Guides](../guides/recurrence/index.md)**
 
 ## Text & Serialization
 
@@ -445,9 +471,89 @@ Open with `buffered: false` to read sectors on demand for large files; `OpenStre
 
 → **[Introduction](io-compound/index.md)** · **[Getting started](io-compound/getting-started.md)** · **[Guides](../guides/io-compound/index.md)**
 
+### Bodu.IO.Biff
+
+**Bodu.IO.Biff** is the record-stream codec beneath the `.xls` reader — a forward-only, allocation-free `ref struct` over a span. It frames every physical record, establishes the version from `BOF` and the code page from `CODEPAGE`, and decodes the structural and cell records through typed accessors. Unknown records are never an error.
+
+```csharp
+using Bodu.IO.Biff;
+using Bodu.IO.Compound;
+
+using CompoundFile container = CompoundFile.OpenRead("report.xls");
+using CompoundStream workbook = container.RootStorage.OpenStream("Workbook");
+byte[] bytes = new byte[workbook.Length];
+workbook.ReadExactly(bytes);
+
+var reader = new BiffReader(bytes);
+while (reader.Read())
+    Console.WriteLine($"{reader.RecordType,-14} id=0x{reader.RecordId:X4} length={reader.RecordLength}");
+```
+
+`BiffReaderState` resumes framing across buffers, `BiffSstReader` walks the shared string table over its `CONTINUE` records, and `BiffWriter` emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model — that is the next package up.
+
+→ **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)**
+
+### Bodu.Formats.Excel.Binary
+
+**Bodu.Formats.Excel.Binary** is the read-only workbook reader over those two layers: raw worksheet cell values — strings, numbers, booleans, errors, and a formula cell's cached result — with each sheet's declared used range. No formula evaluation, no styling.
+
+```csharp
+using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead("rates.xls");
+
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+    Console.WriteLine($"{sheet.Index}: {sheet.Name} — {sheet.Dimensions.RowCount} × {sheet.Dimensions.ColumnCount}");
+```
+
+`OpenWorksheet(name)` returns a forward-only `ExcelWorksheetReader` for streaming, and `ReadWorksheet(name)` materializes an addressable `ExcelWorksheet` when random access is easier.
+
+→ **[Introduction](excel/index.md)** · **[Getting started](excel/getting-started.md)** · **[Guides](../guides/excel/index.md)**
+
+### Bodu.IO.Pst
+
+**Bodu.IO.Pst** is the container layer for Outlook personal-folders files (Unicode and ANSI) — the node database and the LTP layer over it, with the block encodings decoded and the checksums verified. It exposes wire-typed values, not MAPI semantics, and never writes.
+
+```csharp
+using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead("archive.pst");
+
+PstNode store = file.GetNode(PstNodeId.MessageStore);
+foreach (PstPropertyValue value in store.ReadPropertyContext())
+    Console.WriteLine($"0x{value.PropertyId:X4} (wire 0x{value.WireType:X4}): {value.RawData.Length} bytes");
+```
+
+`EnumerateNodes()` walks the node B-tree, and each `PstNode` offers its raw bytes, its subnodes, and the two LTP views — `ReadPropertyContext()` and `ReadTableContext()`.
+
+→ **[Introduction](io-pst/index.md)** · **[Getting started](io-pst/getting-started.md)** · **[Guides](../guides/io-pst/index.md)**
+
+### Bodu.Formats.Outlook
+
+**Bodu.Formats.Outlook** is the shared MAPI value model; **Bodu.Formats.Outlook.Msg** reads a `.msg` message over `Bodu.IO.Compound`, and **Bodu.Formats.Outlook.Pst** reads a `.pst` mail store over `Bodu.IO.Pst`. Both are read-only and both surface the same recipient, attachment, and body types.
+
+```csharp
+using Bodu.Formats.Outlook;
+
+using var message = OutlookMessage.OpenRead("invoice.msg");
+
+Console.WriteLine(message.Subject);
+Console.WriteLine($"{message.SenderName} <{message.SenderEmailAddress}>");
+
+foreach (OutlookRecipient recipient in message.Recipients)
+    Console.WriteLine($"{recipient.RecipientType}: {recipient.DisplayName} <{recipient.EmailAddress}>");
+
+foreach (OutlookAttachment attachment in message.Attachments)
+    Console.WriteLine($"{attachment.Method}: {attachment.FileName} ({attachment.Size} bytes)");
+```
+
+`OutlookMailStore.OpenRead(path)` opens a store instead, giving `RootFolder` and streaming folder and message enumeration; `IsMsgFile` / `IsPstFile` sniff a stream when the format is not known up front.
+
+→ **[Introduction](outlook/index.md)** · **[Getting started](outlook/getting-started.md)** · **[Guides](../guides/outlook/index.md)**
+
 ## Where to go next
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Globalization.Recurrence](recurrence/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md) · [Bodu.Formats.Outlook](outlook/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook) · [Bodu.Globalization.Recurrence](xref:Bodu.Globalization.Recurrence).
