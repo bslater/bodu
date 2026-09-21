@@ -38,16 +38,31 @@ returns `A` then `B` (FIFO); the overwrite ring evicts `A` and `B`, leaving `C, 
 snapshot:
 
 ```text
---- ConcurrentCircularBuffer<T>: bounded FIFO ring ---
-TryAdd A         : True
-TryAdd B         : True
-TryAdd C         : True
-TryAdd D (full)  : False
-Count / Capacity : 3 / 3
-TryTake x2 (FIFO): A, B
+--- ConcurrentCircularBuffer<T> - bounded FIFO ring ---
+  What   : Fills a capacity-3 ring past its limit twice: once with allowOverwrite false, driven through the
+           IProducerConsumerCollection<T> surface, and once with allowOverwrite true, collecting the ItemEvicted
+           callbacks.
+  Why    : A bounded buffer has to do something when it fills, and the two sensible answers suit opposite jobs.
+           Reject-on-full applies back-pressure - the producer learns it is outrunning the consumer and can slow
+           down or shed load. Overwrite-oldest never blocks a producer and silently discards history, which is what
+           you want for a telemetry ring or a crash buffer holding the last N events. Choosing the wrong one is how
+           a queue either deadlocks or quietly loses data.
+  Expect : The first ring accepts A, B, C and refuses D, so TryAdd returns False and Count stays at the capacity of
+           3. The second ring accepts all five, evicting A and B - the two oldest - and keeps C, D, E in arrival
+           order.
 
-overwrite evicted: [A, B]
-survivors (FIFO) : [C, D, E]
+  Reject-on-full (allowOverwrite: false) - the back-pressure personality:
+    TryAdd A       : True  (expected True - one of three slots)
+    TryAdd B       : True  (expected True)
+    TryAdd C       : True  (expected True - the ring is now exactly full)
+    TryAdd D (full): False  (expected False - full, and no element is displaced)
+    Count/Capacity : 3 / 3  (expected 3 / 3 - the refusal left the contents untouched)
+    TryTake x2     : A, B  (expected A, B - FIFO, oldest first)
+
+  Overwrite-oldest (allowOverwrite: true) - the never-block personality:
+    evicted        : [A, B]  (expected [A, B] - the two oldest, in the order they were displaced)
+    survivors      : [C, D, E]  (expected [C, D, E] - the newest three, oldest first)
+    Count/Capacity : 3 / 3  (expected 3 / 3 - a full ring stays full; overwriting is not growth)
 ```
 
 **APIs demonstrated.** `ConcurrentCircularBuffer<T>(int, bool)`, `IProducerConsumerCollection<T>.TryAdd` /
@@ -69,21 +84,37 @@ Snapshots are sorted before printing because iteration order is unspecified.
 produce the expected sets, and all three predicates hold:
 
 ```text
---- ConcurrentHashSet<T>: lock-free set ---
-Add 1 (new)      : True
-Add 2 (new)      : True
-Add 1 (repeat)   : False
-Contains 2       : True
-Remove 2         : True
-Remove 2 (again) : False
-Count            : 1
+--- ConcurrentHashSet<T> - lock-free set ---
+  What   : Adds a duplicate and removes a missing element to show what the return values mean, then runs union,
+           except and intersect in place over a fresh {1,2,3,4}, and finishes with the predicates that answer
+           relationship questions without mutating.
+  Why    : Add returning a bool is what makes this set usable as a concurrency primitive rather than just a
+           container. The return value is the atomic answer to "did I win the race to insert this?", so it serves as
+           a lock-free claim check - exactly once semantics for a de-duplicating worker, for instance - which a
+           fire-and-forget Add followed by a separate Contains cannot give you: between those two calls another
+           thread may act.
+  Expect : Every first operation on an element succeeds and every repeat fails: Add 1 is True then False, Remove 2
+           is True then False. The algebra results are the arithmetic ones, and all three predicates are True. Sets
+           print sorted, so the order shown is the sort, not the storage order.
 
-union   {1,2,3,4} | {4,5,6} : {1,2,3,4,5,6}
-except  {1,2,3,4} - {2,4}   : {1,3}
-inter   {1,2,3,4} & {2,4,8} : {2,4}
-IsSupersetOf {2,3}       : True
-Overlaps     {9,4}       : True
-SetEquals    {4,3,2,1}   : True
+  Add / Contains / Remove - the return value is the claim check:
+    Add 1 (new)    : True  (expected True - this caller inserted it)
+    Add 2 (new)    : True  (expected True)
+    Add 1 (repeat) : False  (expected False - already present, set unchanged)
+    Contains 2     : True  (expected True)
+    Remove 2       : True  (expected True - this caller removed it)
+    Remove 2 again : False  (expected False - already gone, not an error)
+    Count          : 1  (expected 1 - only element 1 survives)
+
+  Set algebra (in place, so each line starts from a fresh {1,2,3,4}):
+    | {4,5,6}      : {1,2,3,4,5,6}  (expected {1,2,3,4,5,6} - 4 was already present and is not duplicated)
+    - {2,4}       : {1,3}  (expected {1,3})
+    & {2,4,8}     : {2,4}  (expected {2,4} - 8 is absent, so it contributes nothing)
+
+  Predicates (non-mutating, all against {1,2,3,4}):
+    IsSupersetOf {2,3}   : True  (expected True - both are present)
+    Overlaps {9,4}       : True  (expected True - one shared element is enough)
+    SetEquals {4,3,2,1}  : True  (expected True - a set has no order, so the sequence is irrelevant)
 ```
 
 **APIs demonstrated.** `ConcurrentHashSet<T>.Add` / `.Contains` / `.Remove` / `.Count` / `.ToArray`,
@@ -111,14 +142,31 @@ invariant: every inserted key is either still resident or was evicted exactly on
 order; the capacity-8 cache keeps 8 survivors and evicts 12, and both invariants report `True`:
 
 ```text
---- ConcurrentEvictingDictionary<TKey,TValue>: single-flight cache ---
-GetOrAdd(42) x5   : factory invoked 1 time(s)
+--- ConcurrentEvictingDictionary<TKey,TValue> - single-flight bounded cache ---
+  What   : Calls GetOrAdd for one key five times while counting factory invocations, watches a capacity-1 cache
+           report each eviction as it happens, then overflows a capacity-8 cache with 20 keys and checks the books
+           balance.
+  Why    : A cache without single-flight turns a miss into a thundering herd: every caller that misses runs the
+           expensive load, so the moment an entry expires the backing store takes N identical queries instead of
+           one. Running the factory inside the owning segment's lock collapses those to one. The ItemEvicted
+           callback matters for the opposite reason - a bounded cache discards silently by design, and the callback
+           is the only way to learn what it dropped.
+  Expect : The factory runs exactly once for five GetOrAdd calls. The capacity-1 cache evicts 1, 2, 3 in arrival
+           order and holds 4. After 20 inserts into 8 slots, survivors + evictions == 20 and the callback fired
+           exactly EvictionCount times - both True.
 
-cap 1, add 1..4   : evicted in order [1, 2, 3], resident 4
+  Single-flight GetOrAdd - five lookups of one cold key:
+    factory calls  : 1  (expected 1 - four lookups were served from the stored value)
 
-cap 8, add 20     : survivors 8, evictions 12
-accounting        : survivors + evictions == inserted -> True
-event fires match : ItemEvicted fired == EvictionCount -> True
+  Eviction order at capacity 1 (FIFO, so oldest goes first):
+    evicted        : [1, 2, 3]  (expected [1, 2, 3] - each displaced by its successor)
+    resident       : 4  (expected 4 - the last one in is the only survivor)
+
+  Accounting after 20 inserts into 8 slots:
+    survivors      : 8  (never exceeds the capacity of 8 - that is what bounded means)
+    evictions      : 12  (EvictionCount, the cache's own tally)
+    books balance  : True  (expected True - every key is resident or evicted exactly once, never both and never neither)
+    callback count : True  (expected True - ItemEvicted fired once per eviction, so no drop went unreported)
 ```
 
 The `survivors 8, evictions 12` split is the deterministic result of even key distribution across the
@@ -144,13 +192,24 @@ the factory runs inside the owning segment's lock, it fires exactly once despite
 count is a deterministic `1`:
 
 ```text
---- Parallel safety: deterministic aggregates only ---
-set add 0..999 in parallel:
-  Count            : 1000 (expected 1000)
-  sum of elements  : 499500 (expected 499500)
+--- Parallel safety - invariants that hold for any interleaving ---
+  What   : Adds 0..999 to a ConcurrentHashSet from a parallel loop and checks the count and the sum, then has 64
+           concurrent callers race to GetOrAdd the same missing key and counts factory invocations.
+  Why    : Lock-free is a claim about correctness under contention, and the only honest way to show it is to create
+           the contention and then assert something that cannot accidentally be true. A count proves no add was lost
+           to a torn update; a sum proves no element was corrupted or duplicated into the wrong slot. The
+           single-flight count is the sharpest of the three: the stampede is the exact condition a naive cache
+           fails, and the factory still runs once.
+  Expect : Count 1000 and sum 499500 - the closed form of 0+1+...+999, so a lost or duplicated element would show up
+           even if the count happened to look right. The factory is invoked exactly once across 64 racing callers.
+           These values are fixed; only the timing varies between runs.
 
-single-flight GetOrAdd, 64 concurrent callers, one key:
-  factory invoked  : 1 (expected 1)
+  Parallel add of 0..999 into one set:
+    Count          : 1000  (expected 1000 - a lost add under contention would show here)
+    sum            : 499500  (expected 499500 - catches a swap that the count alone would miss)
+
+  64 concurrent callers racing to load one missing key:
+    factory calls  : 1  (expected 1 - the other 63 waited and took the loaded value)
 ```
 
 The `Count`, the `sum`, and the factory count are invariant under thread scheduling, so the output is
@@ -165,6 +224,7 @@ byte-identical on every run even though the underlying operations interleave dif
 ```text
 Bodu.Collections.Concurrent.Samples.ThreadSafeCollections/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the what/why/expect banner every scenario opens with
   Scenarios/BoundedRingBuffer.cs
   Scenarios/LockFreeSet.cs
   Scenarios/SingleFlightCache.cs
