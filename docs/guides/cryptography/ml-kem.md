@@ -30,6 +30,7 @@ The shared secret is always 32 bytes (`MLKem.SharedSecretSizeInBytes`); the priv
 
 The receiver generates a key pair and publishes the encapsulation (public) key. The sender imports it, encapsulates, and transmits only the ciphertext. The receiver decapsulates to recover the matching secret.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -59,6 +60,7 @@ Both `Encapsulate` and `Decapsulate` have span overloads — `Encapsulate(cipher
 
 Export the decapsulation (private) key, or the compact 64-byte seed, to persist a receiver across runs. Importing the seed regenerates the full key pair; importing an encapsulation key onto an instance discards any decapsulation key it held, leaving an encapsulate-only instance.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

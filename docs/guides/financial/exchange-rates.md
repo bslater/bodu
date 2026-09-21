@@ -36,6 +36,7 @@ For unit tests, fixtures, and "current rate" lookups,
 `FixedRateTable` backed by a flat dictionary is the smallest
 implementation:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
@@ -145,6 +146,7 @@ Each has a `Try`-prefixed `bool` sibling. Bulk import uses `AddRange`
 dates; rejects in-batch duplicates). Both apply atomic rollback: a
 mid-batch validation failure leaves the builder unchanged.
 
+<!-- compile -->
 ```csharp
 CurrencyPair pair = new(CurrencyCode.USD, CurrencyCode.AUD);
 RateSeriesBuilder builder = new(pair, "RBA");
@@ -273,6 +275,7 @@ round is a build error rather than a runtime surprise. It pairs with
 the typed `Money<TCurrency>.Convert<TQuote>(ExchangeRate<TCurrency, TQuote>)`
 overload:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;

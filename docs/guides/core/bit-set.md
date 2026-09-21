@@ -20,6 +20,7 @@ A few contract points worth keeping in mind:
 
 ## Pattern 1 — set, query, enumerate
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Specialized;
 
@@ -43,6 +44,7 @@ foreach (int index in sieve)           // non-boxing struct enumerator
 
 `NextSetBit` / `NextClearBit` support the classic Java iteration idioms — finding the next allocated slot, the next free slot, or walking set bits from an arbitrary offset:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Specialized;
 
@@ -64,6 +66,7 @@ for (int i = slots.NextSetBit(0); i >= 0; i = slots.NextSetBit(i + 1))
 
 `And`, `Or`, `Xor`, and `AndNot` mutate the receiver in place with Java semantics: `Or`/`Xor` grow the receiver to cover the other operand's logical length, while `And`/`AndNot` never grow (the result cannot exceed the receiver's content). Use the copy constructor when the operand must be preserved:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Specialized;
 

@@ -22,6 +22,7 @@ title: Using Threefish-512
 
 ## Encrypt and decrypt — CBC + PKCS7
 
+<!-- compile -->
 ```csharp
 using System.Diagnostics;
 using System.Linq;

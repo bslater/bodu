@@ -25,6 +25,7 @@ In every case the counter-0 keystream block supplies the one-time Poly1305 key a
 
 This is the `draft-irtf-cfrg-xchacha` appendix A.3.1 vector; the tag reproduces the draft's `c0875924c1c7987947deafd8780acf49`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -50,6 +51,7 @@ byte[] recovered = dec.Decrypt(sealed_, associatedData: aad);        // throws C
 
 Every instance is stateful and single-use. A second `Encrypt` or `Decrypt` on the same instance throws `InvalidOperationException` — including after a failed tag check, so a "retry on the same transform" is impossible by construction. A modified ciphertext, tag, or AAD throws `CryptographicException` and writes no plaintext.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -75,6 +77,7 @@ try { dec.Decrypt(sealed_); } catch (InvalidOperationException) { /* the instanc
 
 <xref:Bodu.Security.Cryptography.XSalsa20Poly1305> reproduces the secretbox body byte for byte, but emits `ciphertext ‖ tag` like the rest of the library where libsodium's `crypto_secretbox_easy` emits `tag ‖ ciphertext`. Two static helpers swap the order at the boundary; both accept an aliased destination for in-place conversion.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -102,6 +105,7 @@ Secretbox authenticates no associated data: `Encrypt(plaintext, associatedData: 
 
 All three types are <xref:Bodu.Security.Cryptography.IStreamAeadTransform>, and through it <xref:Bodu.Security.Cryptography.IAeadTransform> — the same interface the block-cipher AEADs and `AsconAead128` implement — so one code path can serve any of them. The span-based members return the number of bytes written; the output must be at least `plaintext.Length + TagSize / 8`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -126,6 +130,7 @@ foreach (Func<IStreamAeadTransform> make in new Func<IStreamAeadTransform>[]
 
 Exact in-place operation is supported — the output span may start at the same address as the input — but any other overlap throws `ArgumentException`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -145,6 +150,7 @@ int plainLength = dec.Decrypt(buffer.AsSpan(0, written), buffer);
 
 `EncryptDetached` / `DecryptDetached` — the overloads that return an <xref:Bodu.Security.Cryptography.AuthenticationTag> separately from the ciphertext — are declared on <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> for <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> only. The stream AEADs do not have them; because their layout is always `ciphertext ‖ tag`, detaching is a slice:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;

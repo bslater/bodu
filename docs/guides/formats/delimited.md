@@ -8,6 +8,7 @@ title: Using delimited (CSV / TSV)
 
 ## Pattern 1 — query a document
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Delimited.Document;
 
@@ -87,6 +88,7 @@ writer.Flush();
 
 ## Pattern 5 — dirty input
 
+<!-- compile -->
 ```csharp
 var lenient = new DelimitedReaderOptions
 {

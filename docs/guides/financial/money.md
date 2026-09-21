@@ -30,6 +30,7 @@ Every currency ships as a sealed tag class in
 metadata `Money<TCurrency>` needs (the ISO 4217 code and minor-unit
 precision) — there is no instance to create:
 
+<!-- compile -->
 ```csharp
 public sealed class USD : ICurrency
 {
@@ -69,6 +70,7 @@ new Money<BHD>(12.3456m);            // 12.346m — BHD has 3 minor units
 
 For a different rounding rule, pass it explicitly:
 
+<!-- compile -->
 ```csharp
 new Money<USD>(1.235m, MidpointRounding.AwayFromZero);   // 1.24m
 new Money<USD>(1.225m, MidpointRounding.AwayFromZero);   // 1.23m
@@ -77,6 +79,7 @@ new Money<USD>(1.225m, MidpointRounding.AwayFromZero);   // 1.23m
 A non-generic helper class makes the syntax less noisy when you
 already have a `using` for the currency tag:
 
+<!-- compile -->
 ```csharp
 using static Bodu.Financial.Money;
 using Bodu.Financial.Currencies;
@@ -121,6 +124,7 @@ without parentheses — and `Clamp`, `Min`, and `Max` are plain static
 helpers on the typed class, because a two-operand comparison reads better
 unprefixed than as `a.Max(b)`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
@@ -188,6 +192,7 @@ The rate must be non-negative; the rounding rule defaults to
 shares whose sum equals the original — the residual minor units are
 distributed one per share from the start of the array:
 
+<!-- compile -->
 ```csharp
 Money<USD>[] shares = new Money<USD>(0.10m).Allocate(3);
 // [0.04, 0.03, 0.03]  — sums to exactly 0.10
@@ -196,6 +201,7 @@ Money<USD>[] shares = new Money<USD>(0.10m).Allocate(3);
 This is sign-stable: a negative amount distributes the residual in
 the same direction.
 
+<!-- compile -->
 ```csharp
 Money<USD>[] losses = new Money<USD>(-10m).Allocate(3);
 // [-3.34, -3.33, -3.33]  — sums to exactly -10
@@ -203,6 +209,7 @@ Money<USD>[] losses = new Money<USD>(-10m).Allocate(3);
 
 Ratio-based allocation handles weighted splits:
 
+<!-- compile -->
 ```csharp
 decimal[] ratios = { 1m, 1m, 2m };
 Money<USD>[] split = new Money<USD>(100m).Allocate(ratios);
@@ -241,6 +248,7 @@ library applies; it is not a per-call knob on these methods today.
 total distributes its leftover units the same way a positive one does, so the
 parts still sum exactly:
 
+<!-- compile -->
 ```csharp
 new Money<USD>(10m).Allocate(3);    // [3.34, 3.33, 3.33]  → 10.00
 new Money<USD>(-10m).Allocate(3);   // [-3.34, -3.33, -3.33] → -10.00
@@ -250,6 +258,7 @@ new Money<USD>(-10m).Allocate(3);   // [-3.34, -3.33, -3.33] → -10.00
 share and never receives a residual unit; a positive total with fewer minor
 units than parts fills the leading slots and leaves the rest at zero:
 
+<!-- compile -->
 ```csharp
 decimal[] ratios = { 0m, 1m, 1m };
 new Money<USD>(0.03m).Allocate(ratios);   // [0.00, 0.02, 0.01]
@@ -265,6 +274,7 @@ A <xref:Bodu.Financial.MoneyBag> tracks one balance per currency, so to split a
 multi-currency position you allocate each currency's slot independently — each
 `Allocate` call sums back exactly within its own currency:
 
+<!-- compile -->
 ```csharp
 MoneyBag bag = MoneyBag.Empty
     .Add(new Money<USD>(100m))
@@ -281,6 +291,7 @@ need a non-banker's rounding rule before splitting, apply it at the multiply ste
 and allocate the rounded result, which then sums back exactly under the fixed
 largest-remainder rule:
 
+<!-- compile -->
 ```csharp
 MonetaryContext awayFromZero = MonetaryContext.Default with
 {
@@ -332,6 +343,7 @@ tier. It is a runtime-tagged, high-precision amount that carries the
 full `decimal` precision through arithmetic and rounds **once**, at the
 settlement boundary:
 
+<!-- compile -->
 ```csharp
 CalculatedMoney running = new Money<USD>(100m).ToCalculated();
 running = running * 1.05m / 3m;                  // no rounding yet
@@ -498,6 +510,7 @@ For dashboards and summaries,
 amounts in abbreviated form (`1.2K`, `3.4M`, `5.6B`) directly on both
 `Money<TCurrency>` and `Money`:
 
+<!-- compile -->
 ```csharp
 new Money<USD>(1_234_567m).ToCompactString();   // "USD 1.2M" (default "C" specifier)
 ```
@@ -581,18 +594,20 @@ major unit, or `0m` when no special rounding applies). `RoundToCash()`
 snaps an amount to the nearest multiple of that increment using
 banker's rounding by default:
 
+<!-- compile -->
 ```csharp
-Money<CHF>(12.34m).RoundToCash();    // CHF 12.35
-Money<NZD>(5.07m).RoundToCash();     // NZD 5.10
-Money<USD>(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+new Money<CHF>(12.34m).RoundToCash();    // CHF 12.35
+new Money<NZD>(5.07m).RoundToCash();     // NZD 5.10
+new Money<USD>(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
 ```
 
 Pass `MidpointRounding.AwayFromZero` to round midpoints up instead of
 toward the nearest even denomination:
 
+<!-- compile -->
 ```csharp
-Money<NZD>(5.05m).RoundToCash();                                // NZD 5.00 (banker's down to even)
-Money<NZD>(5.05m).RoundToCash(MidpointRounding.AwayFromZero);   // NZD 5.10
+new Money<NZD>(5.05m).RoundToCash();                                // NZD 5.00 (banker's down to even)
+new Money<NZD>(5.05m).RoundToCash(MidpointRounding.AwayFromZero);   // NZD 5.10
 ```
 
 Cash rounding is for physical cash totals only — electronic
@@ -620,6 +635,7 @@ where the *sum* matters more than any one row. The draw comes from an injected
 sampler, so a test can pin the direction, and a seeded `Random` gives a
 reproducible sequence:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
@@ -706,6 +722,7 @@ Arithmetic semantics match `Money<T>` but cross-currency operations
 throw `InvalidOperationException` at runtime instead of failing the
 build:
 
+<!-- compile -->
 ```csharp
 Money usd = new Money(10m, CurrencyCode.USD);
 Money eur = new Money(10m, CurrencyCode.EUR);
@@ -716,10 +733,11 @@ total = usd + eur;                                     // throws InvalidOperatio
 
 Bridge to and from a typed `Money<T>` when the boundary is known:
 
+<!-- compile -->
 ```csharp
+Money runtime = new Money<USD>(19.99m).ToMoney();      // typed → runtime-tagged
 Money<USD> typed = runtime.As<USD>();                  // throws on mismatch
 bool ok = runtime.TryAs(out Money<USD> result);        // safe, returns false on mismatch
-Money runtime = new Money<USD>(19.99m).ToMoney();      // typed → runtime-tagged
 ```
 
 `Money` rounds to the `MinorUnits` resolved for its
@@ -789,6 +807,7 @@ itself), and the unrounded contribution to the total. Because the lookup
 result is carried whole, each line records which provider answered, which
 date actually resolved, and how far it was from the date you asked for:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;
@@ -843,6 +862,7 @@ each line to the target's minor units first. The two differ by at most a few
 minor units, but they differ, and a statement whose lines are shown rounded
 must add up to its total:
 
+<!-- compile -->
 ```csharp
 MoneyBag ledger = MoneyBag.Empty.Add(new Money<EUR>(10m)).Add(new Money<USD>(10m));
 IDatedRateProvider rates = new FixedDatedRateProvider(new[]

@@ -26,6 +26,7 @@ The private seed ξ accepted by `ImportPrivateSeed` is always 32 bytes (`MLDsa.P
 
 Generate a key pair, sign with <xref:Bodu.Security.Cryptography.MLDsa.SignData(System.ReadOnlySpan{System.Byte})>, and verify with <xref:Bodu.Security.Cryptography.MLDsa.VerifyData(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})>.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -67,6 +68,7 @@ bool ok = verifier.VerifyData(message, signature);
 
 ML-DSA signing accepts an optional **context** string of up to 255 bytes that domain-separates signatures across applications: a signature created with a context verifies **only** when the same context is supplied at verification. Use it to stop a signature minted for one purpose from being replayed in another.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;

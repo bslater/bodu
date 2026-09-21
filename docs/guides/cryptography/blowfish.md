@@ -19,6 +19,7 @@ title: Using Blowfish
 
 ## Encrypt and decrypt — CBC + PKCS7 (default 128-bit key)
 
+<!-- compile -->
 ```csharp
 using System.Diagnostics;
 using System.Linq;

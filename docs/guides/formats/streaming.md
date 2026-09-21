@@ -12,6 +12,7 @@ The readers are `ref struct` cursors over `ReadOnlySpan<byte>`: `Read()` advance
 
 ## Pattern 1 — walk delimited records one at a time
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Delimited;
 using Bodu.Text.Delimited.Reader;
@@ -42,6 +43,7 @@ while (reader.Read())
 
 For typed rows, skip the token loop:
 
+<!-- compile -->
 ```csharp
 await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync<Trade>(stream))
 {
@@ -53,6 +55,7 @@ await DelimitedSerializer.SerializeAsync(output, ProduceTradesAsync());  // IAsy
 
 ## Pattern 3 — scan a DotEnv source
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv;
 using Bodu.Text.DotEnv.Reader;
@@ -71,6 +74,7 @@ while (reader.Read())
 
 ## Pattern 4 — stream INI tokens as authored
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 using Bodu.Text.Ini.Reader;
@@ -93,6 +97,7 @@ Use the normalized `IniDocumentReader` when you want the logical object shape (g
 
 ## Pattern 5 — write tokens progressively
 
+<!-- compile -->
 ```csharp
 using System.Buffers;
 using Bodu.Text.Delimited.Writer;

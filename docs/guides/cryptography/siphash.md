@@ -31,6 +31,7 @@ Both derive from a shared <xref:Bodu.Security.Cryptography.SipHash> base, which 
 
 ## Pattern 1 — one-shot keyed hash
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using System.Text;

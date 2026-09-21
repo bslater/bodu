@@ -66,6 +66,7 @@ the same instance also throws. Construct a new instance for every message.
 
 ## Pattern 1 — encrypt with no associated data
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using System.Text;
@@ -155,6 +156,7 @@ The rate is 16 bytes (128 bits). Plaintexts longer than 16 bytes are automatical
 full blocks with Ascon-p8 applied between them; the API is unchanged regardless of plaintext
 length.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -196,6 +198,7 @@ This pattern is useful for authenticating metadata alone, with no payload.
 
 Keys must be generated from a cryptographically secure random source and kept secret:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -227,6 +230,7 @@ The primary constructor accepts `ReadOnlySpan<byte>` for zero-allocation key/non
 The array-based overload (`byte[]`, `byte[]`) is provided for convenience when you already have
 managed arrays:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

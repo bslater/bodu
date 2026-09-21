@@ -25,6 +25,7 @@ The wide variants take a key exactly as long as their block and a fixed 16-byte 
 
 <xref:Bodu.Security.Cryptography.Serpent128Cipher> is the primitive: one block in, one block out. The Serpent NESSIE set 1 vector 0 (all-zero key and plaintext) is the quickest way to confirm you have standard Serpent:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -48,6 +49,7 @@ An engine validates lengths strictly: a key that is not 16, 24, or 32 bytes thro
 
 `Serpent128` behaves like every other <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>: set `Key`, `IV`, `BlockMode`, and `Padding`, then use `CreateEncryptor` / `CryptoStream` or the one-shot extensions. `Serpent128.Create()` is the factory-style equivalent of `new Serpent128()`. The default key size is 128 bits; set `KeySize` **before** assigning or generating a longer key.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -72,6 +74,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 The three wide variants derive from <xref:Bodu.Security.Cryptography.Serpent>, itself a <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>. They add `Tweak` / `GenerateTweak()` and the three-argument `CreateEncryptor(key, iv, tweak)`, and carry their own `BlockMode` property (the inherited `Mode` is not synchronized). Each variant has a static `Create()`.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -97,6 +100,7 @@ The tweak is injected into the state after every fourth round together with a ro
 
 The raw engines take the key and tweak together and drop into `BlockCipherModeFactory` like any other `IBlockCipher`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

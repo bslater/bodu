@@ -37,6 +37,7 @@ into any API that accepts a standard .NET hash algorithm.
 `AsconHash256` is the conservative choice. It uses 12 permutation rounds at every stage, giving
 the widest cryptanalytic margin in the family.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -55,6 +56,7 @@ messages without being recreated — `ComputeHash` resets the state automaticall
 `AsconHashA256` uses 8 permutation rounds per absorbed block instead of 12. The API is
 identical; only the round count (and therefore the throughput and absorption-phase margin) differs.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -176,6 +178,7 @@ comparison result drives an authentication or integrity decision.
 
 Both types report their canonical NIST algorithm identifier through the `AlgorithmName` property:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

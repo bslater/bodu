@@ -110,6 +110,7 @@ weekdays.Contains(new DateTime(2026, 1, 12));        // True
 
 ### Set algebra
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -150,6 +151,7 @@ For workloads that are dominated by point lookups, the binary search is the head
 
 ## Worked example — version banding
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

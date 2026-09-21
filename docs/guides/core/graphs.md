@@ -12,6 +12,7 @@ Edge directedness is fixed at construction by `GraphKind`, weights are finite an
 
 `Graph<T>` is directed or undirected for its whole life, chosen with `GraphKind` at construction. Vertices referenced by `AddEdge` are created on demand; you only call `AddVertex` for an isolated vertex with no edges.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -29,6 +30,7 @@ Console.WriteLine(undirected.VertexCount);     // 4  -> 1, 2, 3, 20
 Console.WriteLine(undirected.EdgeCount);       // 2  -> each undirected edge counts once
 ```
 
+<!-- compile -->
 ```csharp
 // Directed: an edge does not imply its reverse.
 var directed = new Graph<string>(GraphKind.Directed);
@@ -42,6 +44,7 @@ Console.WriteLine(directed.IsDirected);               // true
 
 Weighted edges carry a finite, non-negative `double`. `AddEdge` adds or updates; `TryAddEdge` refuses to overwrite an existing edge.
 
+<!-- compile -->
 ```csharp
 var weighted = new Graph<string>(GraphKind.Directed);
 weighted.AddEdge("A", "B", 1.5);
@@ -58,6 +61,7 @@ bool added = weighted.TryAddEdge("A", "B", 99.0);  // false: edge already exists
 
 Use a comparer to control vertex identity — for example, case-insensitive string vertices:
 
+<!-- compile -->
 ```csharp
 var graph = new Graph<string>(GraphKind.Undirected, StringComparer.OrdinalIgnoreCase);
 graph.AddEdge("Node", "Other");
@@ -68,6 +72,7 @@ Console.WriteLine(graph.ContainsVertex("NODE"));   // true
 
 `GraphAlgorithms.BreadthFirstSearch` and `DepthFirstSearch` return lazily evaluated sequences of the vertices reachable from a source, beginning with the source itself. They accept any `IReadOnlyGraph<T>`, which `Graph<T>` implements.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -97,6 +102,7 @@ The shortest-path family runs Dijkstra's algorithm over non-negative weights and
 - `TryShortestPath` returns a `ShortestPathResult<T>` carrying `Found`, `Distance`, and `Path`.
 - `ShortestPathLengths` returns the distance from the source to every reachable vertex.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -139,6 +145,7 @@ Dijkstra relaxation here is backed by `IndexedPriorityQueue<TElement, TPriority>
 
 `TopologicalSort` orders the vertices of a directed acyclic graph so that every edge points from an earlier vertex to a later one, using Kahn's algorithm. It is directed-only: an undirected graph throws `InvalidOperationException`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -152,6 +159,7 @@ IReadOnlyList<string> order = GraphAlgorithms.TopologicalSort(graph);
 
 `TopologicalSort` throws `InvalidOperationException` on a cycle. When a cycle is possible, prefer the non-throwing `TryTopologicalSort`, which returns `false` and an empty list instead:
 
+<!-- compile -->
 ```csharp
 var cyclic = new Graph<string>(GraphKind.Directed);
 cyclic.AddEdge("a", "b");
@@ -172,6 +180,7 @@ else
 
 `ConnectedComponents` partitions the vertices into groups that are mutually reachable, treating every edge as undirected. For a directed graph this yields the weakly connected components.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -190,6 +199,7 @@ Console.WriteLine(components.Count);   // 3
 
 Sometimes you want the connectivity machinery without building a graph at all. `DisjointSet<T>` is an element-keyed union-find: each element starts in its own singleton set, `Union` merges two sets, and `Find` returns a set's canonical representative. Two elements are connected exactly when they share a representative.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Graphs;
 
@@ -208,6 +218,7 @@ Console.WriteLine(groups.Find("a").Equals(groups.Find("d")));   // true
 
 Add elements incrementally with `MakeSet` (or its alias `Add`), and probe membership with `Contains` / `TryFind`:
 
+<!-- compile -->
 ```csharp
 var ds = new DisjointSet<int>();
 ds.MakeSet(1);

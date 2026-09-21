@@ -18,6 +18,7 @@ A few contract points worth keeping in mind:
 
 Use the `Ordinal` instance wherever an `IComparer<string>` is accepted:
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -35,6 +36,7 @@ var ordered = names.OrderBy(n => n, NaturalStringComparer.OrdinalIgnoreCase);
 
 The culture modes compare the non-digit segments with the culture's collation rules and leave digit-run handling unchanged. `CurrentCulture` and `CurrentCultureIgnoreCase` read `CultureInfo.CurrentCulture` at compare time (mirroring `StringComparer.CurrentCulture`); `Create` captures a specific culture:
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu.Extensions;

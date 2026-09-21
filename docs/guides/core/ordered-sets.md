@@ -26,6 +26,7 @@ Both keep elements in the order they were first added, both reject `null` only w
 
 ### Pattern 1 — add, reject duplicates, look up by index
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -50,6 +51,7 @@ int inserted = tags.AddRange(new[] { "beta", "gamma", "delta" }); // 2 — "beta
 
 Because `IndexedSet<T>` is an `IList<T>`, it supports positional mutation. Inserting a value that already exists throws (use `TryInsert` for the non-throwing form), and the indexer setter replaces the element at a position:
 
+<!-- compile -->
 ```csharp
 var order = new IndexedSet<string> { "first", "third" };
 
@@ -62,6 +64,7 @@ order.RemoveAt(2);                  // removes "second"
 
 ### Pattern 3 — capacity management
 
+<!-- compile -->
 ```csharp
 var set = new IndexedSet<int>(capacity: 1024);
 set.EnsureCapacity(4096);   // pre-grow before a known burst
@@ -73,6 +76,7 @@ set.TrimExcess();           // release unused slots
 
 ### Pattern 4 — set operations preserve insertion order
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -87,6 +91,7 @@ a.SymmetricExceptWith(b);   // keeps members in exactly one set
 
 ### Pattern 5 — relationship tests
 
+<!-- compile -->
 ```csharp
 var roles  = new OrderedSet<string> { "reader", "writer" };
 var grant  = new OrderedSet<string> { "reader", "writer", "admin" };
@@ -102,6 +107,7 @@ bool equal    = roles.SetEquals(grant);         // false
 
 `OrderedSet<T>` records insertion order and exposes it through a **read-only** indexer and `IndexOf`; unlike `IndexedSet<T>`, there is no indexer setter or positional `Insert`:
 
+<!-- compile -->
 ```csharp
 var ordered = new OrderedSet<string> { "x", "y", "z" };
 int pos = ordered.IndexOf("y");   // 1
@@ -112,6 +118,7 @@ string first = ordered[0];        // "x" — read only
 
 Both types accept an `IEqualityComparer<T>` so uniqueness can be case-insensitive or structural:
 
+<!-- compile -->
 ```csharp
 var ci = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
 ci.Add("Alpha");

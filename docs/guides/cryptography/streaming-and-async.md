@@ -13,6 +13,7 @@ Everything in `Bodu.Security.Cryptography` that touches a `Stream` lives in `Bod
 
 `Encrypt(Stream, Stream)` / `Decrypt(Stream, Stream)` on any `SymmetricAlgorithm` create a transform with `CreateEncryptor()` / `CreateDecryptor()`, pump the source through it in `bufferSize`-byte reads, and return the number of bytes **read**. Neither stream is disposed. The default buffer is `SymmetricAlgorithmExtensions.DefaultBufferSize` = 81920 bytes (80 KiB); the overload with `bufferSize` overrides it and rejects values ≤ 0 with `ArgumentOutOfRangeException`.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -40,6 +41,7 @@ Because the transform is created from the algorithm's current `Key` / `IV` / `Bl
 
 `EncryptAsync` / `DecryptAsync` have the same signatures plus a `CancellationToken`, and delegate to `ICryptoTransformExtensions.TransformAsync`. Cancellation is honoured between reads and **before the final block is flushed**: a token that fires after the last read but before finalization throws and leaves the target stream partial. An already-cancelled token surfaces as `TaskCanceledException` (an `OperationCanceledException`).
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -70,6 +72,7 @@ The stream-cipher extension class has **no** `*Async` members. For an awaitable 
 
 `TransformAsync(sourceStream, targetStream, bufferSize, cancellationToken)` is the engine behind the cipher overloads and works on any `ICryptoTransform` — a Bodu <xref:Bodu.Security.Cryptography.BlockCipherTransform>, a stream-cipher transform, or a BCL one. It rents its read buffer from `ArrayPool<byte>.Shared` and returns it cleared on every exit path, wraps the target in a `CryptoStream` with `leaveOpen: true`, and disposes neither stream.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -105,6 +108,7 @@ Every Bodu hash is a `HashAlgorithm`, so the BCL's `ComputeHash(Stream)` and `Co
 | `VerifyHash(…)` / `VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory<byte>, CancellationToken)` | via `ComputeHash` / `ComputeHashAsync` | Yes | `bool` — constant-time compare |
 | `TryVerifyHash(…)` / `TryVerifyHashAsync(…)` | as above | Yes | `bool`; `false` for `null` arguments, malformed hex, or any exception |
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -142,6 +146,7 @@ bool empty = await blake.TryVerifyHashAsync(Stream.Null, expected);     // false
 
 `blockSize` is a per-call argument — the same tree can fold different inputs at different block sizes — and `fanOut` defaults to `2`, RFC 6962's binary tree.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -165,6 +170,7 @@ Use `ComputeBlocked` / `ComputeBlockedAsync` instead when you want the leaf hash
 
 <xref:Bodu.Security.Cryptography.HashAlgorithmHelper> hashes through an <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, creating and disposing the algorithm per call: `HashData(factory, ReadOnlySpan<byte>)`, `HashData(factory, Stream)`, `HashDataAsync(factory, Stream, CancellationToken)` (an 8 KiB pooled buffer), and `TryHashData(factory, input, destination, out bytesWritten)`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

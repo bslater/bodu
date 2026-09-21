@@ -12,6 +12,7 @@ Because `WeekPattern` is a value type, every operation that changes the selectio
 
 ## Pattern 1 — build a pattern with With / Without
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -29,6 +30,7 @@ Console.WriteLine(weekdays.Contains(DayOfWeek.Sunday)); // False
 
 ## Pattern 2 — use the built-in well-known patterns
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -46,6 +48,7 @@ WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon–Sat
 
 The `|`, `&`, and `~` operators compose or intersect patterns:
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -62,6 +65,7 @@ WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
 
 All four bitwise operators are defined: `|` (union), `&` (intersection), `^` (symmetric difference — days in exactly one operand), and `~` (complement within the seven-day week). Symmetric difference is handy for "which days changed" between two schedules:
 
+<!-- compile -->
 ```csharp
 WeekPattern oldShift = WeekPattern.Parse("_MTW___");
 WeekPattern newShift = WeekPattern.Parse("__TWT__");
@@ -76,6 +80,7 @@ WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that d
 
 `WeekPattern.Parse` accepts standard abbreviations (case-insensitive):
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -90,6 +95,7 @@ bool ok = WeekPattern.TryParse("MF", out WeekPattern result);
 
 `WeekPattern` implements `IEnumerable<DayOfWeek>`, always yielding selected days in `DayOfWeek` order (Sunday = 0 first, unless the first day of the week is configured otherwise):
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -103,6 +109,7 @@ foreach (DayOfWeek day in schedule)
 
 ## Pattern 6 — remove a day
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -114,6 +121,7 @@ Console.WriteLine(fourDays.Count);   // 4
 
 ## Pattern 7 — schedule a recurring date using WeekPattern
 
+<!-- compile -->
 ```csharp
 using Bodu;
 
@@ -136,6 +144,7 @@ for (DateOnly d = start; d <= end; d = d.AddDays(1))
 
 <xref:Bodu.WorkingDaysOfWeek> is the companion enum naming the common working-week presets (`MondayToFriday`, `SaturdayToThursday`, …). Convert between the two through the extension methods on <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> — useful when an API takes the named preset but you need the raw day set (or vice versa):
 
+<!-- compile -->
 ```csharp
 using Bodu;
 using Bodu.Extensions;

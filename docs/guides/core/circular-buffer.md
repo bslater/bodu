@@ -168,6 +168,7 @@ The concurrent type differs from the single-threaded one in several contractual 
 
 Both buffers can be seeded from an existing sequence. When the source is longer than the capacity, the **most recent** `capacity` elements are retained (the older ones are dropped before the buffer is even built) — unless overwrite is disabled, in which case an over-long seed throws `InvalidOperationException`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

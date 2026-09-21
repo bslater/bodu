@@ -42,6 +42,7 @@ Every type derives from <xref:System.Security.Cryptography.AsymmetricAlgorithm?d
 
 The lifecycle is uniform: **`Create()` → `GenerateKey()` (or `Import*`) → use → dispose.** "Use" is the one step that differs by role — sign/verify, agree, or encapsulate/decapsulate.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -64,6 +65,7 @@ Every type exposes the raw byte encodings defined by its specification — the f
 
 For the curve algorithms, `ImportPkcs8PrivateKey` / `ExportPkcs8PrivateKey` and `ImportSubjectPublicKeyInfo` / `ExportSubjectPublicKeyInfo` carry the RFC 8410 DER containers (OIDs `1.3.101.112` for Ed25519, `1.3.101.110` for X25519), and the **PEM** helpers inherited from the base (`ImportFromPem`, `ExportPkcs8PrivateKeyPem`, `ExportSubjectPublicKeyInfoPem`) work on top of them — so an Ed25519 or X25519 key round-trips through the `-----BEGIN PRIVATE KEY-----` / `-----BEGIN PUBLIC KEY-----` text that OpenSSL and `System.Security.Cryptography` interchange. Encrypted PKCS#8 is intentionally out of scope and throws.
 
+<!-- compile -->
 ```csharp
 using var ed25519 = new Ed25519();
 ed25519.GenerateKey();

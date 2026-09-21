@@ -78,6 +78,7 @@ byte[] GetOrLoad(string key)
 
 `Add` follows the strict BCL `Dictionary<TKey, TValue>.Add` contract and throws on a duplicate key. The indexer upserts: a new key is appended to the tail, and an existing key's value is updated in place (and, in access-order mode, moved to the tail).
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

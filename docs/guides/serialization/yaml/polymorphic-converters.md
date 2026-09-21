@@ -15,6 +15,7 @@ This guide builds on [Writing converters](converters.md); read that first for th
 
 Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the **runtime** type when writing, so a `Circle` held in a `Shape`-typed member serializes with `Circle`'s members — but with no discriminator, because nothing knows the family exists:
 
+<!-- compile -->
 ```csharp
 public abstract class Shape
 {

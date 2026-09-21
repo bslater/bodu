@@ -171,6 +171,7 @@ SettlementService settlement = host.Services.GetRequiredService<SettlementServic
 
 The consuming service depends only on the contract:
 
+<!-- compile -->
 ```csharp
 public sealed class SettlementService
 {
