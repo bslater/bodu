@@ -20,7 +20,20 @@ public static class ConfigurationValidation
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Validating a mixed configuration block ---");
+        SampleConsole.Scenario(
+            "Validating a mixed configuration block",
+            what: "Runs a block of configuration entries in several notations through the defect-naming "
+                + "TryParse overloads, reporting which are usable and, for the rest, exactly what is wrong.",
+            why: "Schedule text almost always arrives from configuration, which means it is written by someone "
+                + "who is not present when it fails. Validating at start-up rather than at first fire is the "
+                + "difference between a deploy that refuses and a job that silently never runs. The "
+                + "defect-naming overload matters more than it looks: a boolean false forces the host to invent "
+                + "an error message, and a host-written message is necessarily vaguer than the parser's, which "
+                + "knows which field was wrong and why. Returning the defect instead means the operator reads "
+                + "something actionable.",
+            expect: "Every entry is classified, and the invalid ones each carry a message naming the specific "
+                + "defect rather than a generic failure - which is what lets a deployment reject bad "
+                + "configuration with an error the author can act on.");
 
         var origin = new DateTime(2026, 1, 1, 0, 0, 0);
         var now = new DateTime(2026, 3, 10, 14, 32, 0);

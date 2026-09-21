@@ -43,6 +43,7 @@ returns it:
 
 ```text
 --- One adapter over four schedule forms ---
+
 origin : 2026-01-01 00:00   query instant : 2026-03-10 14:32
 
 kind      purpose                previous          next             
@@ -94,6 +95,8 @@ And the second tier catches what syntax checking cannot — an unreachable date 
 both parse, then never fire:
 
 ```text
+--- Validating a mixed configuration block ---
+
 accepted : 6
   [ ok ] backup.nightly     cron      next 2026-03-11 02:00
   [ ok ] backup.weekly      cron      next 2026-03-15 03:00
@@ -146,7 +149,8 @@ no time zone and so has nothing to convert with. Running one rule under three of
 same wall clock every time — the offset picks no different dates:
 
 ```text
---- Every form has a DateTimeOffset surface ---
+--- Offset-aware queries ---
+
 origin : 2026-01-05 09:00 +10:00
 query  : 2026-03-10 14:32 +10:00
 
@@ -207,7 +211,8 @@ decision is one backward query. The offset is preserved rather than converted, b
 has no zone database to convert with:
 
 ```text
---- Catching up after downtime ---
+--- Catching up after downtime, and why purity makes it possible ---
+
 last recorded run : 2026-03-09 18:00
 resumed at        : 2026-03-10 14:32
 
@@ -226,10 +231,39 @@ most recent scheduled run : 2026-03-10 02:00
 already ran?              : False
 => fire immediately       : True
 
+--- The purity contract ---
+  No type in this package calls DateTime.Now / UtcNow / Today, resolves a
+  TimeZoneInfo, or reads Environment.TickCount. A metadata scan over the compiled
+  assembly enforces that (PurityTests), so it cannot regress silently.
+
+  Consequences a host can rely on:
+    - every query is a pure function of its arguments, so schedules are testable
+      without a clock abstraction;
+    - the same inputs give the same answers on any machine, in any locale;
+    - and time zone policy stays where the host can see it.
+
 --- Offsets ride along; the wall clock is what recurs ---
   query 2026-03-10 14:32 +00:00 -> next 2026-03-11 09:00 +00:00
   query 2026-03-10 14:32 +10:00 -> next 2026-03-11 09:00 +10:00
   (09:00 local in each case -- the offset is preserved, never converted)
+
+--- Daylight saving is a hosting decision ---
+  A cron expression names a wall-clock time, so '0 2 * * *' means 02:00 local on
+  every calendar day -- including the day 02:00 does not exist, and the day it
+  happens twice. This library has no zone database and so takes no position on
+  either case.
+
+  A host that needs zone-correct firing converts at the boundary:
+    1. ask for the next wall-clock occurrence here;
+    2. resolve it against its zone with TimeZoneInfo (deciding skipped and
+       ambiguous times to its own policy);
+    3. wait on the resulting instant.
+
+  An anchored interval has no such problem: it is exact elapsed time, so 'PT6H'
+  is six hours regardless of what the local calendar does.
+
+  PT6H anchored 2026-03-08 00:00 (US spring-forward day):
+    03-08 06:00, 03-08 12:00, 03-08 18:00, 03-09 00:00, 03-09 06:00
 ```
 
 The scenario also prints the contract itself and the recommended daylight-saving pattern:
@@ -260,6 +294,7 @@ The scenario also prints the contract itself and the recommended daylight-saving
 ```text
 Bodu.Globalization.Recurrence.Samples.SchedulingHost/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Schedule.cs                         # the host-side adapter over all four forms
   Scenarios/UnifiedSchedules.cs
   Scenarios/ConfigurationValidation.cs

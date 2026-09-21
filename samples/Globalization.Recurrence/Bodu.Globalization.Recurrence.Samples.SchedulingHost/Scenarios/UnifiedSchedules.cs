@@ -20,7 +20,19 @@ public static class UnifiedSchedules
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- One adapter over four schedule forms ---");
+        SampleConsole.Scenario(
+            "One adapter over four schedule forms",
+            what: "Wraps a recurrence rule, a recurrence set, a cron expression and an anchored interval behind "
+                + "one adapter interface, and drives all four through the same next-occurrence call.",
+            why: "A host that supports several schedule notations should not branch on which one a job uses. "
+                + "The four forms exist because their authors are different people - an operator writes cron, a "
+                + "calendar integration produces a recurrence set, a deployment-relative job wants an interval "
+                + "- but the scheduler only ever needs one question answered, so the adapter is thin by design. "
+                + "It is possible because every form in this package answers the same pair of point queries "
+                + "with the same inclusive semantics; if one of them only supported enumeration, this interface "
+                + "could not exist and the host would carry a special case forever.",
+            expect: "Four notations, one loop, no branching on type. Each reports its own next occurrence from "
+                + "the same instant, which is all a scheduler ever needs to place a job on a queue.");
 
         // A host reads schedules from configuration, where the form is a field. After parsing,
         // nothing downstream needs to know which form it got.

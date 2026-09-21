@@ -20,7 +20,20 @@ public static class OffsetAwareQueries
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Every form has a DateTimeOffset surface ---");
+        SampleConsole.Scenario(
+            "Offset-aware queries",
+            what: "Answers the same schedule questions over DateTimeOffset as well as DateTime, across the "
+                + "schedule forms, and shows the offset being preserved through the query.",
+            why: "A scheduler that only speaks DateTime forces every caller to decide what its values mean, and "
+                + "the decision is usually made implicitly and inconsistently - some code treats them as UTC, "
+                + "some as local, and the disagreement surfaces as a job firing an hour out. Offering the same "
+                + "queries over DateTimeOffset lets a caller keep the offset it already has rather than "
+                + "flattening and reconstructing it. The package is deliberately pure in its arguments - no "
+                + "wall clock, no machine timezone, enforced by a metadata-scan test - so the offset in equals "
+                + "the offset out and the answer does not depend on where the code runs.",
+            expect: "Each query returns an instant carrying the offset it was asked about, rather than one "
+                + "normalized to the machine's zone - so the same call on two machines in different zones gives "
+                + "the same answer.");
 
         // A single offset used throughout, so the difference between forms is the only variable.
         var offset = TimeSpan.FromHours(10);
