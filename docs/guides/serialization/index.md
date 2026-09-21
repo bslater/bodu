@@ -29,12 +29,31 @@ If you are new to the family, start with the [introduction](../../docs/serializa
 
 </div>
 
+## Cross-format guides
+
+These guides apply to every serializer in the family — the three above and the three [line formats](../formats/index.md) — because they describe the shared `Bodu.Text.Serialization` layer and the options lifecycle all six implement.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="migrating-from-system-text-json.md">Migrating from System.Text.Json</a></h3>
+  <p>The rename table — attributes, options, converters, naming policies, callbacks, DOMs, <code>using</code> directives — followed by the behavioral differences: null handling per format, string-only line formats, YAML implicit typing, the two exception types.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="options-and-lifetime.md">Serializer options: freezing, caching, and thread safety</a></h3>
+  <p>First-use freeze and <code>MakeReadOnly</code>, <code>IsReadOnly</code>, the <code>InvalidOperationException</code> on a frozen instance, converter resolution order, what is cached, sharing one instance across threads, and the <code>&lt;Format&gt;SerializerDefaults</code> presets.</p>
+</div>
+
+</div>
+
 ## Suggested reading path
 
 1. **[Introduction](../../docs/serialization/index.md)** — the shared shape and how to choose a format.
 2. The **guide hub** for your library — [TOML](toml/index.md), [Bencode](bencode/index.md), or [YAML](yaml/index.md) — starting with its *Using…* walk-through.
 3. **Mapping attributes** and **naming policies** — declarative shaping covers most customization needs.
 4. **Writing converters** — when a type needs a wire form the defaults do not provide; check the **built-in catalog** first so you do not rewrite a provisioned one.
+5. **[Serializer options: freezing, caching, and thread safety](options-and-lifetime.md)** — once the options carry converters, learn when they freeze and how to share them. Coming from `System.Text.Json`? Start instead with the **[migration guide](migrating-from-system-text-json.md)**.
 
 ## Where to go next
 

@@ -31,8 +31,13 @@ types covering common but missing gaps in the .NET BCL:
   **[`MovingMinMax<T>`](xref:Bodu.Numerics.MovingMinMax`1)** —
   rolling-window companions reporting the sum/mean and min/max of the
   most recent N samples in amortized O(1).
+- **[`Complex<T>`](xref:Bodu.Numerics.Complex`1)** — an immutable
+  complex number over any `IFloatingPointIeee754<T>` component type
+  (`float`, `double`, `Half`); the generic counterpart of the
+  `double`-only `System.Numerics.Complex`, with the same arithmetic,
+  elementary functions, and `<real; imaginary>` text form.
 
-The value types (`Fraction<T>`, `Interval<T>`, `BigDecimal`) are
+The value types (`Fraction<T>`, `Interval<T>`, `BigDecimal`, `Complex<T>`) are
 `readonly struct`, value-equatable, and allocation-free in their
 common paths; the statistics accumulators are *mutable* structs (with
 class-based rolling windows). Everything integrates with the
@@ -66,6 +71,11 @@ generic-math interfaces that ship in .NET 8+.
 <div class="bodu-card">
   <h3><a href="bigdecimal.md">Working with <code>BigDecimal</code></a></h3>
   <p>Arbitrary-precision decimal arithmetic — the unscaled-value/scale model, exact add/subtract/multiply, division precision, rounding, and generic-math composition.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="complex.md">Working with <code>Complex&lt;T&gt;</code></a></h3>
+  <p>Construction and polar form, arithmetic, magnitude / phase / conjugate / reciprocal, the elementary functions pinned against <code>System.Numerics.Complex</code>, the <code>&lt;real; imaginary&gt;</code> text form, and the JSON wire shape.</p>
 </div>
 
 <div class="bodu-card">
@@ -106,7 +116,8 @@ generic-math interfaces that ship in .NET 8+.
 2. **[Formatting and parsing `Fraction<T>`](formatting-and-parsing.md)** — once values are flowing, control how they render and what text round-trips.
 3. **[Working with `Interval<T>`](interval.md)** — the interval type, independent of fractions; read in any order.
 4. **[Running and moving statistics](running-statistics.md)** — the stream accumulators and rolling windows; independent of the other types.
-5. **[JSON serialization](json-serialization.md)** — persist the value types; read last, after the value semantics are familiar.
+5. **[Working with `Complex<T>`](complex.md)** — the generic complex number; independent of the other types.
+6. **[JSON serialization](json-serialization.md)** — persist the value types; read last, after the value semantics are familiar.
 
 ## See also
 
@@ -117,6 +128,7 @@ generic-math interfaces that ship in .NET 8+.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`BigDecimal` API reference](xref:Bodu.Numerics.BigDecimal)
+- [`Complex<T>` API reference](xref:Bodu.Numerics.Complex`1)
 - [`RunningStatistics<T>` API reference](xref:Bodu.Numerics.RunningStatistics`1)
 - [`RunningQuantile<T>` API reference](xref:Bodu.Numerics.RunningQuantile`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)

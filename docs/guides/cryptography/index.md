@@ -8,7 +8,7 @@ Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the 
 
 Part of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? The introduction's *shape of the library* section maps the five families and explains how they differ.
+If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? Start with [Choosing a primitive](choosing-a-primitive.md) — decision tables for hashes, MACs, AEAD, KDFs, asymmetric algorithms, and block ciphers beside their BCL counterparts — or the introduction's *shape of the library* section, which maps the five families and explains how they differ.
 
 For the auto-generated API reference, see the [Bodu.Security.Cryptography namespace page](xref:Bodu.Security.Cryptography). For non-cryptographic checksums and fingerprints, see the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
@@ -17,7 +17,48 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 | Namespace | What lives here | Guide section |
 |---|---|---|
 | `Bodu.Security.Cryptography` | All cryptographic primitives — block ciphers, mode transforms, padding strategies, hash algorithms, AEAD constructions, helpers. | All sections below |
-| `Bodu.Security.Cryptography.Extensions` | Ergonomic one-shot, async, and verify helpers over `SymmetricAlgorithm`, `TweakableSymmetricAlgorithm`, `IBlockCipher` + AEAD transforms, `HashAlgorithm`, and `ICryptoTransform`. | (covered in the per-algorithm guides) |
+| `Bodu.Security.Cryptography.Extensions` | Ergonomic one-shot, async, and verify helpers over `SymmetricAlgorithm`, `TweakableSymmetricAlgorithm`, `IBlockCipher` + AEAD transforms, `HashAlgorithm`, and `ICryptoTransform`. | [Streams and async](streaming-and-async.md); the per-algorithm guides |
+
+## Choosing and combining
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="choosing-a-primitive.md">Choosing a primitive</a></h3>
+  <p>Decision tables — hashes, MACs, AEAD, KDFs, asymmetric algorithms, block ciphers — with sizes and defaults verified in source, and when the BCL is the better answer.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="bcl-interop.md">Interoperating with System.Security.Cryptography</a></h3>
+  <p><code>HashAlgorithm</code> one-shots and <code>TransformBlock</code>, <code>CryptoStream</code>, the AES-GCM wire-compatibility proof with <code>AesGcm</code>, PEM / PKCS#8 / SPKI for X25519 and Ed25519, <code>HashAlgorithmName</code>, and constant-time comparison.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="cipher-composition-reference.md">Modes, transforms, and factories</a></h3>
+  <p>The <code>CipherModeKind</code> support matrix — what <code>BlockMode</code> can build, what exists only as a direct transform, what is AEAD — plus <code>BlockCipherTransform</code>, <code>IBlockCipher</code>, the padding factories (block size in bits), and the dual padding properties.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="streaming-and-async.md">Streams and async</a></h3>
+  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>ParallelMerkleTreeHash.ComputeHashAsync</code> — buffer sizes, cancellation, and pooled-memory behaviour.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="value-types.md">Nonces, salts, tags, and secrets</a></h3>
+  <p><code>Nonce</code>, <code>Salt</code>, <code>SecretBytes</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code> — construction, constant-time equality, zeroization, and where each is accepted (detached AEAD, scrypt).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="security-posture.md">Security guarantees and limitations</a></h3>
+  <p>Audit status, constant-time claims per primitive, zeroization on dispose, SIMD determinism and the <code>DisableSimd</code> switch, the exception contract, single-use rules, and thread safety.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="extending.md">Extending the library</a></h3>
+  <p>A custom <code>BlockHashAlgorithm</code>, a custom <code>IBlockCipher</code> behind <code>BlockCipherTransform</code>, the hash-algorithm factories, and the contract-test bases that prove your type against the built-in contract.</p>
+</div>
+
+</div>
 
 ## Foundations
 
@@ -63,7 +104,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 | `Blowfish` | 64 bits (8 B) | 32–448 bits, 8-bit steps | [Using Blowfish](blowfish.md) |
 | `Camellia` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
 | `Twofish` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
-| `Serpent128` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) |
+| `Serpent128` | 128 bits (16 B) | 128 / 192 / 256 bits | [Using Serpent](serpent.md) · [AES-family block ciphers](aes-family.md) |
 | `AesBlockCipher` | 128 bits (16 B) | 128 / 192 / 256 bits | [AES-family block ciphers](aes-family.md) (raw `IBlockCipher` over the BCL `Aes`) |
 
 ## Symmetric ciphers — Tweakable
@@ -73,7 +114,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 | `Threefish256` | 256 bits (32 B) | 256 bits (32 B) | 128 bits (16 B) | [Using Threefish-256](threefish-256.md) |
 | `Threefish512` | 512 bits (64 B) | 512 bits (64 B) | 128 bits (16 B) | [Using Threefish-512](threefish-512.md) |
 | `Threefish1024` | 1024 bits (128 B) | 1024 bits (128 B) | 128 bits (16 B) | [Using Threefish-1024](threefish-1024.md) |
-| `Serpent256` / `Serpent512` / `Serpent1024` | 256 / 512 / 1024 bits | matching key | 128 bits | (no dedicated guide — non-standard wide-block constructions; see API reference) |
+| `Serpent256` / `Serpent512` / `Serpent1024` | 256 / 512 / 1024 bits | matching key | 128 bits | [Using Serpent](serpent.md) — non-standard, experimental wide-block constructions |
 
 ## Symmetric ciphers — Stream
 
@@ -95,6 +136,11 @@ Raw, confidentiality-only XOR keystream ciphers — **no authentication**; pair 
 <div class="bodu-card">
   <h3><a href="aead-modes.md">AEAD modes</a></h3>
   <p>GCM, CCM, OCB3, EAX, SIV, GCM-SIV — authenticated encryption with associated data using <code>AesBlockCipher</code> + the mode transforms, via the one-shot extension methods.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="stream-aead.md">Authenticated stream ciphers</a></h3>
+  <p><code>XChaCha20Poly1305</code>, the NaCl secretbox <code>XSalsa20Poly1305</code> (with the libsodium layout converters), and <code>XSalsa20Poly1305Aead</code> over <code>Poly1305AeadTransform</code> / <code>IStreamAeadTransform</code>; single-use, in-place, and detached-tag patterns.</p>
 </div>
 
 </div>

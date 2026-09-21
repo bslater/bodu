@@ -69,8 +69,8 @@ The `Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtension
 ```csharp
 using Bodu.Security.Cryptography.Extensions;
 
-byte[] cipherWithTag = aead.Encrypt(plaintext, associatedData);
-byte[] recovered     = aead.Decrypt(cipherWithTag, associatedData);
+byte[] cipherWithTag = aead.Encrypt(plaintext, associatedData: associatedData);
+byte[] recovered     = aead.Decrypt(cipherWithTag, associatedData: associatedData);
 ```
 
 The examples below all use those extension methods.
@@ -93,12 +93,12 @@ byte[] nonce = RandomNumberGenerator.GetBytes(12);        // 96-bit GCM nonce �
 // Encrypt — produces ciphertext || 16-byte tag
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, aad);
+    cipherWithTag = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, associatedData: aad);
 
 // Decrypt — throws CryptographicException if the ciphertext or AAD has been tampered with
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
-    recovered = new GcmModeTransform(cipher, nonce).Decrypt(cipherWithTag, aad);
+    recovered = new GcmModeTransform(cipher, nonce).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 > [!WARNING]
@@ -119,11 +119,11 @@ RandomNumberGenerator.Fill(iv.AsSpan(0, 12));  // first 12 bytes are the CCM non
 
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new CcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new CcmModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
-    recovered = new CcmModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+    recovered = new CcmModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 Only the first 12 bytes of the IV are consumed as the nonce; the remaining bytes are ignored.
@@ -141,11 +141,11 @@ byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
     // tagSize is in *bits*; default 128. Pass `tagSize: 96` or `tagSize: 64`
     // for the smaller RFC 7253 variants — it must be a multiple of 8 in [8, 128].
-    cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
-    recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+    recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 ## EAX — two-pass, FSE 2004
@@ -158,11 +158,11 @@ byte[] iv  = RandomNumberGenerator.GetBytes(16);  // EAX nonce — must equal th
 
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new EaxModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new EaxModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
-    recovered = new EaxModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+    recovered = new EaxModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 The nonce is the raw value `N`; the transform internally derives the initial CTR counter as `OMAC^0(N)` and the authentication tag as `OMAC^0(N) ⊕ OMAC^1(aad) ⊕ OMAC^2(ciphertext)`. The tag length is fixed at 16 bytes.
@@ -181,12 +181,12 @@ byte[] iv     = new byte[16];                        // accepted for interface c
 byte[] cipherWithTag;
 using (var s2v = new AesBlockCipher(s2vKey))
 using (var ctr = new AesBlockCipher(ctrKey))
-    cipherWithTag = new SivModeTransform(s2v, ctr, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new SivModeTransform(s2v, ctr, iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var s2v = new AesBlockCipher(s2vKey))
 using (var ctr = new AesBlockCipher(ctrKey))
-    recovered = new SivModeTransform(s2v, ctr, iv).Decrypt(cipherWithTag, aad);
+    recovered = new SivModeTransform(s2v, ctr, iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 The `iv` argument is kept for interface compatibility but is not used — SIV derives its synthetic IV from the AAD and plaintext.
@@ -205,14 +205,14 @@ using (var master = new AesBlockCipher(masterKey))
     cipherWithTag = new GcmSivModeTransform(
         master,
         static k => new AesBlockCipher(k),  // factory for the derived per-message cipher
-        iv).Encrypt(plaintext, aad);
+        iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var master = new AesBlockCipher(masterKey))
     recovered = new GcmSivModeTransform(
         master,
         static k => new AesBlockCipher(k),
-        iv).Decrypt(cipherWithTag, aad);
+        iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 The factory expression `static k => new AesBlockCipher(k)` is the canonical form — the `static` modifier avoids a closure allocation.
@@ -225,14 +225,14 @@ The pattern throughout these examples —
 
 ```csharp
 using (var cipher = new AesBlockCipher(key))
-    cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, aad);
+    cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 ```
 
 — constructs a fresh `AesBlockCipher` and a fresh `GcmModeTransform` inside the `using`, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching `Decrypt`:
 
 ```csharp
 using (var cipher = new AesBlockCipher(key))
-    recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, aad);
+    recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 ```
 
 Reusing the encrypting transform to decrypt the round-tripped output, or calling `Encrypt` a second time to encrypt a follow-up message, will throw:
@@ -241,8 +241,8 @@ Reusing the encrypting transform to decrypt the round-tripped output, or calling
 using var cipher = new AesBlockCipher(key);
 var aead = new GcmModeTransform(cipher, iv);
 
-byte[] first  = aead.Encrypt(plaintextA, aad);
-byte[] second = aead.Encrypt(plaintextB, aad); // throws InvalidOperationException
+byte[] first  = aead.Encrypt(plaintextA, associatedData: aad);
+byte[] second = aead.Encrypt(plaintextB, associatedData: aad); // throws InvalidOperationException
 ```
 
 The same enforcement applies to `Decrypt`. After a `CryptographicException` from a tag-mismatch, the instance is also burned — recover by constructing a fresh transform with the same `(key, nonce)`, never by retrying on the same one.
@@ -254,7 +254,7 @@ Decrypt throws <xref:System.Security.Cryptography.CryptographicException> if **a
 ```csharp
 try
 {
-    byte[] plaintext = aead.Decrypt(cipherWithTag, aad);
+    byte[] plaintext = aead.Decrypt(cipherWithTag, associatedData: aad);
     // …proceed with the plaintext
 }
 catch (CryptographicException)
@@ -284,12 +284,12 @@ byte[] aad       = System.Text.Encoding.UTF8.GetBytes("txn-id:7f3a");
 // Encrypt — ciphertext || 16-byte tag.
 byte[] sealed_;
 using (var cipher = new AesBlockCipher(key))
-    sealed_ = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, aad);
+    sealed_ = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, associatedData: aad);
 
 // Honest decrypt — recovers the original plaintext.
 using (var cipher = new AesBlockCipher(key))
 {
-    byte[] recovered = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, aad);
+    byte[] recovered = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, associatedData: aad);
     // recovered.SequenceEqual(plaintext) == true
 }
 
@@ -299,7 +299,7 @@ using (var cipher = new AesBlockCipher(key))
 {
     try
     {
-        _ = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, aad);
+        _ = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, associatedData: aad);
     }
     catch (CryptographicException)
     {

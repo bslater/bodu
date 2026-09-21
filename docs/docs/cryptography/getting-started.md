@@ -87,10 +87,10 @@ byte[] data  = "the quick brown fox"u8.ToArray();
 using var aes = new AesBlockCipher(key);
 using var gcm = new GcmModeTransform(aes, nonce);
 
-byte[] ciphertextWithTag = gcm.Encrypt(data, aad);
+byte[] ciphertextWithTag = gcm.Encrypt(data, associatedData: aad);
 
 using var verify = new GcmModeTransform(aes, nonce);   // fresh transform per message
-byte[] recovered = verify.Decrypt(ciphertextWithTag, aad);
+byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 ```
 
 Swap `GcmModeTransform` for `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, or `GcmSivModeTransform`. AEAD transforms are **single-use per message** — construct a fresh transform on the encrypt side and another on the decrypt side.
@@ -107,10 +107,10 @@ byte[] aad   = "header"u8.ToArray();
 byte[] data  = "the quick brown fox"u8.ToArray();
 
 using var aead = new AsconAead128(key, nonce);
-byte[] ciphertextWithTag = aead.Encrypt(data, aad);
+byte[] ciphertextWithTag = aead.Encrypt(data, associatedData: aad);
 
 using var verify = new AsconAead128(key, nonce);
-byte[] recovered = verify.Decrypt(ciphertextWithTag, aad);
+byte[] recovered = verify.Decrypt(ciphertextWithTag, associatedData: aad);
 ```
 
 ### Keyed hash (MAC) — SipHash-64

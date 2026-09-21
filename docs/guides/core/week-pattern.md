@@ -63,8 +63,8 @@ WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
 All four bitwise operators are defined: `|` (union), `&` (intersection), `^` (symmetric difference — days in exactly one operand), and `~` (complement within the seven-day week). Symmetric difference is handy for "which days changed" between two schedules:
 
 ```csharp
-WeekPattern oldShift = WeekPattern.Parse("MTuW");
-WeekPattern newShift = WeekPattern.Parse("TuWTh");
+WeekPattern oldShift = WeekPattern.Parse("_MTW___");
+WeekPattern newShift = WeekPattern.Parse("__TWT__");
 WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that differ
 ```
 
@@ -79,9 +79,9 @@ WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that d
 ```csharp
 using Bodu;
 
-WeekPattern mwf  = WeekPattern.Parse("MWF");          // Mon, Wed, Fri
-WeekPattern tuth = WeekPattern.Parse("TuTh");         // Tue, Thu
-WeekPattern all  = WeekPattern.Parse("MTuWThFSaSu"); // every day
+WeekPattern mwf  = WeekPattern.Parse("_M_W_F_");      // Mon, Wed, Fri (Sunday-first mask)
+WeekPattern tuth = WeekPattern.Parse("__T_T__");      // Tue, Thu
+WeekPattern all  = WeekPattern.Parse("SMTWTFS");      // every day
 
 bool ok = WeekPattern.TryParse("MF", out WeekPattern result);
 ```
@@ -93,7 +93,7 @@ bool ok = WeekPattern.TryParse("MF", out WeekPattern result);
 ```csharp
 using Bodu;
 
-WeekPattern schedule = WeekPattern.Parse("MTuWThF");
+WeekPattern schedule = WeekPattern.Parse("_MTWTF_");
 
 foreach (DayOfWeek day in schedule)
     Console.WriteLine(day);

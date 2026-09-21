@@ -27,8 +27,20 @@
               href: core/week-pattern.md
         - name: Bodu.Extensions
           items:
+            - name: String extensions
+              href: core/string-extensions.md
+            - name: Date and time extensions
+              href: core/date-extensions.md
+            - name: Fiscal quarters, working weeks, and weekend providers
+              href: core/calendar-shapes-and-providers.md
+            - name: Numeric, enum, array, span, and stream extensions
+              href: core/numeric-enum-stream-extensions.md
             - name: Natural string comparer
               href: core/natural-string-comparer.md
+        - name: Bodu.Collections.Generic.Extensions / Bodu.Sequences
+          items:
+            - name: Sequence operators and generators
+              href: core/sequence-operators.md
         - name: Bodu.Text (namespace)
           items:
             - name: Encoding helpers and BOM detection
@@ -43,6 +55,8 @@
               href: core/circular-buffer.md
             - name: Deque
               href: core/deque.md
+            - name: Extending RingBackedCollection<T>
+              href: core/ring-backed-collections.md
             - name: Evicting dictionary
               href: core/evicting-dictionary.md
             - name: Sequenced dictionary
@@ -87,10 +101,14 @@
           items:
             - name: Tries and text search
               href: core/trie.md
+            - name: N-ary tree
+              href: core/tree.md
     - name: Bodu.Collections.Concurrent
       items:
         - name: Concurrent collections
           href: core/concurrent-collections.md
+    - name: Thread-safety contracts
+      href: core/thread-safety.md
 - name: Hashing & Cryptography
   href: topics/hashing-and-cryptography.md
   items:
@@ -120,14 +138,22 @@
               href: io-hashing/fletcher.md
             - name: Using Adler
               href: io-hashing/adler.md
+            - name: Streaming, async, and resumable hashing
+              href: io-hashing/streaming-and-async.md
         - name: Bodu.IO.Hashing.CheckDigits
           items:
             - name: Check digits overview
               href: io-hashing/check-digits.md
+            - name: Alphanumeric and encoded check digits
+              href: io-hashing/alphanumeric-check-digits.md
     - name: Bodu.Security.Cryptography
       items:
         - name: Overview
           href: cryptography/index.md
+        - name: Choosing a primitive
+          href: cryptography/choosing-a-primitive.md
+        - name: Interoperating with System.Security.Cryptography
+          href: cryptography/bcl-interop.md
         - name: Foundations
           items:
             - name: Encryption basics
@@ -138,6 +164,8 @@
               href: cryptography/padding.md
             - name: Composing primitives
               href: cryptography/composing-primitives.md
+            - name: Modes, transforms, and factories
+              href: cryptography/cipher-composition-reference.md
             - name: Hardware acceleration and the SIMD switch
               href: cryptography/hardware-acceleration.md
         - name: Symmetric ciphers — Standard
@@ -156,6 +184,8 @@
               href: cryptography/threefish-512.md
             - name: Using Threefish-1024
               href: cryptography/threefish-1024.md
+            - name: Using Serpent
+              href: cryptography/serpent.md
         - name: Symmetric ciphers — Stream
           items:
             - name: Using stream ciphers
@@ -164,6 +194,8 @@
           items:
             - name: AEAD modes (AES + transform)
               href: cryptography/aead-modes.md
+            - name: Authenticated stream ciphers
+              href: cryptography/stream-aead.md
         - name: Cryptographic hashes
           items:
             - name: Hashing overview
@@ -226,6 +258,16 @@
               href: cryptography/ml-dsa.md
             - name: Hybrid public key encryption with HPKE
               href: cryptography/hpke.md
+        - name: Cross-cutting
+          items:
+            - name: Streams and async
+              href: cryptography/streaming-and-async.md
+            - name: Nonces, salts, tags, and secrets
+              href: cryptography/value-types.md
+            - name: Security guarantees and limitations
+              href: cryptography/security-posture.md
+            - name: Extending the library
+              href: cryptography/extending.md
 - name: Globalization & Calendars
   href: topics/globalization-and-calendars.md
   items:
@@ -277,6 +319,18 @@
               href: calendar/dependency-injection.md
             - name: Caching notable dates
               href: calendar/caching/notable-date-caching.md
+            - name: Cache backends and options
+              href: calendar/caching/backends-and-options.md
+            - name: Writing a cache backend
+              href: calendar/caching/custom-backend.md
+            - name: Async resolution, localized names, and typed catalogues
+              href: calendar/async-and-localization.md
+        - name: Bodu.Globalization.Calendar — Tooling
+          items:
+            - name: The bodu-calendar CLI
+              href: calendar/tooling/bodu-calendar-cli.md
+            - name: Compiling packs in MSBuild
+              href: calendar/tooling/msbuild-integration.md
         - name: Bodu.Globalization.Calendar.Algorithms
           items:
             - name: Date calculation algorithms
@@ -315,6 +369,16 @@
       items:
         - name: Recurrence and scheduling
           href: recurrence/index.md
+        - name: RFC 5545 recurrence rules
+          href: recurrence/rrule.md
+        - name: Cron expressions
+          href: recurrence/cron.md
+        - name: Anchored intervals
+          href: recurrence/anchored-intervals.md
+        - name: Recurrence sets
+          href: recurrence/recurrence-sets.md
+        - name: Hosting schedules
+          href: recurrence/scheduling-host.md
 - name: Text & Serialization
   href: topics/text-and-serialization.md
   items:
@@ -382,10 +446,18 @@
               href: formats/streaming.md
             - name: Reflection-free binding with the source generator
               href: formats/source-generator.md
+            - name: Writer options and DOM options
+              href: formats/writer-options-and-dom-options.md
+            - name: Errors across the line formats
+              href: formats/error-handling.md
     - name: Bodu serializers (Bencode · TOML · YAML)
       items:
         - name: Guides overview
           href: serialization/index.md
+        - name: Migrating from System.Text.Json
+          href: serialization/migrating-from-system-text-json.md
+        - name: Serializer options — freezing, caching, and thread safety
+          href: serialization/options-and-lifetime.md
         - name: Bodu.Text.Toml
           items:
             - name: TOML guides overview
@@ -428,6 +500,10 @@
               href: serialization/yaml/attributes.md
             - name: Writing converters
               href: serialization/yaml/converters.md
+            - name: Polymorphic converters
+              href: serialization/yaml/polymorphic-converters.md
+            - name: Serialization callbacks
+              href: serialization/yaml/callbacks.md
             - name: Built-in converter catalog
               href: serialization/yaml/builtin-converters.md
 - name: Configuration
@@ -470,6 +546,8 @@
           href: numerics/discrete-intervals.md
         - name: Working with BigDecimal
           href: numerics/bigdecimal.md
+        - name: Working with Complex<T>
+          href: numerics/complex.md
         - name: Running and moving statistics
           href: numerics/running-statistics.md
         - name: Generic math constraints
@@ -488,16 +566,22 @@
           href: financial/exchange-rates.md
         - name: Built-in exchange-rate providers
           href: financial/exchange-rate-providers.md
+        - name: Configuring providers from appsettings
+          href: financial/provider-configuration.md
         - name: Exchange-rate types (usage catalogue)
           href: financial/exchange-types.md
         - name: Exchange-rate lookups (worked dataset)
           href: financial/exchange-rate-lookups.md
         - name: Caching and aggregating exchange rates
           href: financial/exchange-rate-caching.md
+        - name: Configuring rate caching from appsettings
+          href: financial/caching-configuration.md
         - name: Dependency injection
           href: financial/dependency-injection.md
         - name: Testing your own provider
           href: financial/testing-providers.md
+        - name: Writing your own web provider
+          href: financial/custom-web-provider.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:
@@ -515,6 +599,10 @@
           href: io-compound/authoring-compound-files.md
         - name: Office format nuances
           href: io-compound/office-format-nuances.md
+        - name: Editing an existing container in place
+          href: io-compound/editing-in-place.md
+        - name: Authoring custom property sets
+          href: io-compound/custom-property-sets.md
     - name: Bodu.Formats.Excel.Binary
       items:
         - name: Overview
@@ -525,11 +613,23 @@
           href: excel/cell-values-and-dates.md
         - name: Streaming vs materialized
           href: excel/worksheets-and-rows.md
+    - name: Bodu.IO.Pst
+      items:
+        - name: Overview
+          href: io-pst/index.md
+        - name: Reading nodes and tables
+          href: io-pst/reading-nodes-and-tables.md
+        - name: Streaming and validation
+          href: io-pst/streaming-and-validation.md
     - name: Bodu.Formats.Outlook
       items:
         - name: Overview
           href: outlook/index.md
         - name: Reading .msg files
           href: outlook/reading-msg-files.md
+        - name: Reading .pst mail stores
+          href: outlook/reading-pst-mail-stores.md
         - name: Properties and named properties
           href: outlook/properties-and-named-properties.md
+        - name: Reader options and resource limits
+          href: outlook/reader-options-and-limits.md

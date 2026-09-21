@@ -29,14 +29,17 @@ Each format is a self-contained `System.Text.Json`-shaped library: a forward-onl
 - [Using DotEnv](dotenv.md) — literal values, quoting, export prefixes, typed settings.
 - [Using INI](ini.md) — global keys and sections, comment-preserving edits, duplicate policies.
 - [Streams and token-level I/O](streaming.md) — the forward-only readers/writers and the record-streaming serializer surface.
+- [Errors across the line formats](error-handling.md) — the `*FormatException` / `*SerializationException` pair per format, what each carries, and which reader policies tolerate dirty input.
+- [Writer options and DOM options](writer-options-and-dom-options.md) — every `*WriterOptions`, `*NodeOptions`, and `*DocumentOptions` struct across the line formats and the serializer DOMs, with the effect of each knob.
 
 ## Suggested reading path
 
 1. [Choosing a text format](choosing-a-format.md)
 2. The guide for your format
 3. [Streams and token-level I/O](streaming.md) for large inputs
+4. [Errors across the line formats](error-handling.md) before shipping a parser of untrusted files
 
 ## Where to go next
 
-- The [serializer guides](../serialization/index.md) for the shared attribute family, naming policies, and callbacks.
+- The [serializer guides](../serialization/index.md) for the shared attribute family, naming policies, and callbacks — including [Migrating from System.Text.Json](../serialization/migrating-from-system-text-json.md) and [Serializer options: freezing, caching, and thread safety](../serialization/options-and-lifetime.md), both of which cover the line formats too.
 - `Bodu.Text.Configuration` when you need EditorConfig-style layered configuration rather than raw INI.

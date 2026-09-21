@@ -33,3 +33,4 @@ StgCreateStorageEx
 IsTestProject
 MSTest.TestFramework
 MTuW
+JavaScriptEncoder.UnsafeRelaxedJsonEscaping   # System.Text.Encodings.Web member named in the Complex<T> JSON note
