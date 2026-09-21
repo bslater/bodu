@@ -17,4 +17,8 @@
     <EmbeddedResource Include="Text.Filtering\Fixtures\**\*.corpus" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

@@ -36,6 +36,7 @@ together make any fold order valid. The intersection narrows
 monotonically — each operand can only shrink the running result — and
 collapses to `Empty` the moment two constraints disagree:
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -66,6 +67,7 @@ To fold an arbitrary list of constraints, seed the accumulator with a
 range that contains everything you care about (or with the first element)
 and `Intersect` across the rest:
 
+<!-- compile -->
 ```csharp
 static Interval<int> IntersectAll(IEnumerable<Interval<int>> constraints)
 {
@@ -88,6 +90,7 @@ a single contiguous interval — that is, when they overlap *or* are
 adjacent. It never synthesizes a two-piece result; a true gap returns
 `false` and leaves `result` as `Empty`.
 
+<!-- compile -->
 ```csharp
 // Adjacent — the half-open seam at 5 belongs to the second interval.
 bool a = Interval<int>.ClosedOpen(1, 5)
@@ -111,6 +114,7 @@ of those endpoints is inclusive**. That single-inclusive requirement is
 why two half-open intervals that meet at a point still union, while two
 intervals that both *exclude* the meeting point do not:
 
+<!-- compile -->
 ```csharp
 // [1, 5) and [5, 10] — 5 is owned by the second interval → contiguous.
 Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out _);   // true
@@ -122,6 +126,7 @@ Interval<int>.Open(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out _);     /
 On endpoint ties the union keeps the looser side, so unioning a closed and
 an open interval over the same bounds yields the closed result:
 
+<!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).TryUnion(Interval<int>.Open(1, 5), out var u);
 // u == [1, 5] — inclusive wins on both ends
@@ -142,6 +147,7 @@ pair.
 shared value. The two answer different questions and a worked comparison
 makes the distinction concrete:
 
+<!-- compile -->
 ```csharp
 var outer = Interval<int>.Closed(0, 10);
 var inner = Interval<int>.Closed(2, 8);
@@ -169,6 +175,7 @@ and the gap between two disjoint intervals are derived from the public
 endpoint properties. The following helpers express both as small,
 self-documenting functions:
 
+<!-- compile -->
 ```csharp
 // Two intervals are adjacent when they do not overlap yet still union.
 static bool AreAdjacent(Interval<int> a, Interval<int> b) =>
@@ -214,6 +221,7 @@ Because `TryUnion` returns `false` exactly when the next interval neither
 overlaps nor abuts the current run, a `false` is the signal to close the
 run and start a new one:
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -356,6 +364,7 @@ line, so `set.Complement().Complement()` returns `set`.
 `&` is intersection and `|` is the contiguous union, for the common case
 where the two operands form a single interval:
 
+<!-- compile -->
 ```csharp
 var shared = Interval<int>.Closed(1, 5) & Interval<int>.Closed(3, 7);   // [3, 5]
 var merged = Interval<int>.ClosedOpen(1, 5) | Interval<int>.Closed(5, 10);   // [1, 10]

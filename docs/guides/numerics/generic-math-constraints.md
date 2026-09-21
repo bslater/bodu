@@ -47,6 +47,7 @@ written against the generic-math abstractions accepts it without a bespoke
 overload. A single constrained method works for `Fraction<int>`,
 `Fraction<BigInteger>`, and the built-in numeric types alike:
 
+<!-- compile -->
 ```csharp
 using System.Numerics;
 using Bodu.Numerics;
@@ -138,6 +139,7 @@ Every `Fraction<T>` arithmetic operation promotes its operands to
 then **narrows the canonical components back to `T`**. The intermediate is
 always exact; the narrowing step is where a fixed-width `T` can fail:
 
+<!-- compile -->
 ```csharp
 using System.Numerics;
 using Bodu.Numerics;
@@ -151,6 +153,7 @@ Switching the backing type to `BigInteger` removes the narrowing step
 entirely — the exact intermediate *is* the stored value, so overflow is
 impossible:
 
+<!-- compile -->
 ```csharp
 var hugeBig = Fraction<BigInteger>.Create(int.MaxValue, 1);
 var doubledBig = hugeBig + hugeBig;   // 4294967294/1 — no overflow
@@ -169,6 +172,7 @@ A generic algorithm can defer the decision to its caller by staying
 parameterised over the backing type, so the same routine runs in either
 mode:
 
+<!-- compile -->
 ```csharp
 // Works for Fraction<int> in the fast path and Fraction<BigInteger>
 // when the caller needs overflow safety.
@@ -190,6 +194,7 @@ To move an existing value between backing types without recomputing, use
 `As<TOther>()`, which re-validates the canonical components against the
 target type:
 
+<!-- compile -->
 ```csharp
 Fraction<int> half = Fraction<int>.Create(1, 2);
 Fraction<BigInteger> wide = half.As<BigInteger>();   // 1/2, now unbounded
@@ -203,6 +208,7 @@ written once and reused across endpoint types. The body relies only on
 the `INumber` surface (`T.Zero`, the comparison operators, subtraction
 for `Length`):
 
+<!-- compile -->
 ```csharp
 using System.Numerics;
 using Bodu.Numerics;

@@ -16,6 +16,7 @@ dotnet add package Bodu.Numerics.Serialization.Json
 
 Register the converters once per `JsonSerializerOptions` with `AddNumericsJsonConverters`, then serialize as normal:
 
+<!-- compile -->
 ```csharp
 using System.Text.Json;
 using Bodu.Numerics;
@@ -36,6 +37,7 @@ Fraction<int> value = JsonSerializer.Deserialize<Fraction<int>>(json, options);
 
 Pass a <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> to select the wire shape:
 
+<!-- compile -->
 ```csharp
 var compact = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
@@ -57,6 +59,7 @@ Under `Strict` and `Lenient`, property names compare case-insensitively, duplica
 
 ## Worked example — each policy
 
+<!-- compile -->
 ```csharp
 var options = new JsonSerializerOptions().AddNumericsJsonConverters();               // Strict
 var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
@@ -96,6 +99,7 @@ Two surfaces exist; pick the narrowest one that covers your need:
 
 <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> offers `ToJson()` / `FromJson<T>(string)` wrappers that configure a fresh options instance per call:
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics.Serialization.Json;
 
@@ -117,6 +121,7 @@ The converters are reflection-free at the value level: `AddNumericsJsonConverter
 
 The object-form converter writes each component as a *raw* JSON number — not through the writer's `Int64` / `decimal` primitives — so a `BigInteger`-backed fraction round-trips at any magnitude:
 
+<!-- compile -->
 ```csharp
 using System.Numerics;
 
