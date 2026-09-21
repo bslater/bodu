@@ -34,12 +34,27 @@ digit.
 **What to expect.**
 
 ```text
+--- SKU-731 - issuing and validating with a custom scheme ---
+  What   : Issues three SKUs by appending the computed check digit, validates an intact SKU against a
+           wrong-check-digit and a mistyped-payload variant, and reads a digit from a payload fed in two fragments.
+  Why    : A check digit turns a transcription error into a local, immediate failure. Without one, a mistyped SKU is
+           just a different SKU - the system happily looks it up, finds nothing or finds the wrong thing, and the
+           error surfaces somewhere far from where it was made. The point of implementing the library contract
+           rather than a loose helper is that issuing and validating then provably share one arithmetic definition:
+           the digit a validator recomputes cannot drift from the digit the issuer emitted.
+  Expect : Every issued SKU validates. Both corrupted variants are rejected - one altered digit is enough, with no
+           catalogue, database or network lookup involved. The streamed payload yields the same digit as the
+           one-shot call, because the base class carries position across Append calls rather than restarting the
+           weight cycle per fragment.
+
   payload 123456789 -> SKU 1234567893
   payload 000451    -> SKU 0004516
-  IsValid('1234567893')  = True
-  IsValid('1234567892') = False (wrong check digit)
-  IsValid('1235567893') = False (mistyped payload digit)
-  streamed 12345|6789 -> check '3' (SKU-731)
+  payload 998877    -> SKU 9988778
+  (000451 keeps its leading zeros: the weights are positional, so a zero still shifts every later digit's weight)
+  IsValid('1234567893')  = True  (expected True - validating is the same arithmetic the issuer ran, checked against the digit it emitted)
+  IsValid('1234567892') = False  (expected False - the check digit was altered, so it no longer brings the weighted sum to a multiple of ten)
+  IsValid('1235567893') = False  (expected False - one mistyped payload digit, caught locally without any lookup)
+  streamed 12345|6789 -> check '3' via SKU-731  (expected '3', matching the one-shot digit above - the fragment boundary is not observable)
 ```
 
 **APIs demonstrated.** Deriving `CheckDigitAlgorithm` (the four abstract members), the
@@ -57,9 +72,23 @@ An issuing harness typed against `CheckDigitAlgorithm` drives `SkuCheckDigit`, `
 **What to expect.**
 
 ```text
+--- CheckDigitAlgorithm polymorphism - a custom scheme beside the built-ins ---
+  What   : Drives SkuCheckDigit, Luhn and Damm through one loop typed against the abstract base class, printing each
+           scheme's name and the digit it issues for the same payload.
+  Why    : This is the reason for deriving the library's base class instead of writing a standalone helper. An
+           issuing pipeline, a validation middleware or a test harness can be written once against
+           CheckDigitAlgorithm and accept any scheme - including one the library has never heard of. It also means
+           the custom scheme inherits the streaming Append surface and the Reset lifecycle for free, and can be held
+           to the same contract tests as the built-in catalogue.
+  Expect : Three different digits for one payload, which is the correct outcome: each scheme is a different
+           function, so a value issued under one is not valid under another. The caller never branches on which
+           scheme it holds.
+
   SKU-731 : 31415926 -> check '9'
   Luhn    : 31415926 -> check '0'
   Damm    : 31415926 -> check '6'
+  (three schemes, three digits - a SKU-731 value is not a valid Luhn value, so the scheme travels with the identifier)
+  one issuing pipeline, any scheme - the same pattern the contract tests verify.
 ```
 
 **APIs demonstrated.** `CheckDigitAlgorithm` polymorphism, `AlgorithmName`, `Reset()`.
@@ -81,6 +110,7 @@ BVT tier.
 ```text
 Bodu.IO.Hashing.Samples.CustomCheckDigit/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect scenario banner
   SkuCheckDigit.cs                  # the CheckDigitAlgorithm implementation
   Scenarios/IssueAndValidate.cs
   Scenarios/BesideTheBuiltIns.cs
