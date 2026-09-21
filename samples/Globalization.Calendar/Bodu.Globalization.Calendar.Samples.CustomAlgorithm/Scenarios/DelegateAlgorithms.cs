@@ -22,7 +22,19 @@ public static class DelegateAlgorithms
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Delegate algorithms: a lambda as the calculation ---");
+        SampleConsole.Scenario(
+            "A lambda as the calculation",
+            what: "Registers a last-Friday-of-June calculation as a lambda through a five-line adapter, "
+                + "references it from an authored document, and resolves two years.",
+            why: "INotableDateAlgorithm is a single method, which makes the ceremony of a named class "
+                + "disproportionate when the calculation is two lines and belongs to one document. The adapter "
+                + "in this file is the whole bridge, and it is worth reading because it shows how little the "
+                + "interface asks for. The trade is testability: a lambda registered inline has no seam to test "
+                + "against, so once a calculation is worth pinning to published dates it deserves a named class "
+                + "like the previous scenario's - the registry accepts either, so that promotion costs nothing "
+                + "at the call site.",
+            expect: "Both years land on the last Friday of June, which is a different calendar date each year - "
+                + "the calculation is running per year rather than returning a stored answer.");
 
         // Last Friday of June - end-of-financial-year party (AU). Walk back from 30 June.
         var algorithms = new NotableDateAlgorithmRegistry()
@@ -46,8 +58,10 @@ public static class DelegateAlgorithms
         foreach (var year in new[] { 2024, 2025 })
         {
             NotableDate party = service.Resolve(year, "AU").Single();
-            Console.WriteLine($"  {year}: {party.Date:yyyy-MM-dd} ({party.Date.DayOfWeek}) {party.DisplayName}");
+            Console.WriteLine($"    {year}: {party.Date:yyyy-MM-dd} ({party.Date.DayOfWeek}) {party.DisplayName}");
         }
+
+        Console.WriteLine("  (both Fridays, both different calendar dates - the lambda runs per year rather than returning a stored answer)");
 
         Console.WriteLine();
     }

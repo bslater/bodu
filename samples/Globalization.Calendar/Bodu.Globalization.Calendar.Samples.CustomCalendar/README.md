@@ -29,10 +29,23 @@ resolves December 2023 → mid-2024 through a plain `NotableDateService`.
 
 **What to expect (excerpt).**
 
-```
-  2023-12-23 (Saturday ) Year-End Shutdown      Other, non-working: True, spans 16d (ends 2024-01-07)
-  2024-01-05 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-01-05)
-  2024-03-12 (Tuesday  ) Contoso Founding Day   Other, non-working: True, spans 1d (ends 2024-03-12)
+```text
+    2023-12-23 (Saturday ) Year-End Shutdown      Other, non-working: True, spans 16d (ends 2024-01-07)
+    2024-01-05 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-01-05)
+    2024-01-19 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-01-19)
+    2024-02-02 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-02-02)
+    2024-02-16 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-02-16)
+    2024-03-01 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-03-01)
+    2024-03-12 (Tuesday  ) Contoso Founding Day   Other, non-working: True, spans 1d (ends 2024-03-12)
+    2024-03-15 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-03-15)
+    2024-03-29 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-03-29)
+    ... 18 further rows omitted from this README; the sample prints them all ...
+    2024-12-20 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2024-12-20)
+    2024-12-21 (Saturday ) Year-End Shutdown      Other, non-working: True, spans 16d (ends 2025-01-05)
+    2025-01-03 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2025-01-03)
+    2025-01-17 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2025-01-17)
+    2025-01-31 (Friday   ) Fortnightly All-Hands  Other, non-working: False, spans 1d (ends 2025-01-31)
+  (three kinds of occurrence from one document: a fixed date, a recurring event repeating many times, and a multi-day span that reports its own duration)
 ```
 
 The shutdown's span is **calculated**, not a fixed day count — it is 16 days here but 9 in years
@@ -58,11 +71,28 @@ and a last-Friday Board Report (`MonthlyWeekday`) — then resolves the first qu
 
 **What to expect (excerpt).**
 
-```
-  2026-01-05 (Monday   ) Fortnightly All-Hands
-  2026-01-15 (Thursday ) Payroll Run
-  2026-01-30 (Friday   ) Board Report
-  2026-01-31 (Saturday ) Month-End Close
+```text
+    2026-01-02 (Friday   ) Maintenance Window
+    2026-01-05 (Monday   ) Fortnightly All-Hands
+    2026-01-05 (Monday   ) Maintenance Window
+    2026-01-09 (Friday   ) Maintenance Window
+    2026-01-12 (Monday   ) Maintenance Window
+    2026-01-15 (Thursday ) Monthly Payroll Run
+    2026-01-16 (Friday   ) Maintenance Window
+    2026-01-19 (Monday   ) Fortnightly All-Hands
+    2026-01-19 (Monday   ) Maintenance Window
+    2026-01-23 (Friday   ) Maintenance Window
+    2026-01-26 (Monday   ) Maintenance Window
+    2026-01-30 (Friday   ) Board Report
+    2026-01-30 (Friday   ) Maintenance Window
+    2026-01-31 (Saturday ) Month-End Close
+    ... 26 further rows omitted from this README; the sample prints them all ...
+    2026-03-27 (Friday   ) Maintenance Window
+    2026-03-30 (Monday   ) Fortnightly All-Hands
+    2026-03-30 (Monday   ) Maintenance Window
+    2026-03-31 (Tuesday  ) Month-End Close
+
+  February alone resolves 14 occurrences (the February subset of the quarter).  (query-window invariance - a different count for the same dates would mean the window was influencing the answer)
 ```
 
 Every occurrence flows through the normal pipeline (category, non-working flag, duration,
@@ -86,9 +116,10 @@ Saturday).
 
 **What to expect.**
 
-```
-  2024: 2024-03-12 (Tuesday  ) actual (no adjustment)
-  2022: 2022-03-14 (Monday   ) observed (actual 2022-03-12, In-lieu day (weekend substitution))
+```text
+    2024: 2024-03-12 (Tuesday  ) actual (no adjustment)
+    2022: 2022-03-14 (Monday   ) observed (actual 2022-03-12, In-lieu day (weekend substitution))
+  (one declared policy, two outcomes - and the observed row names the date it stands in for, so the nominal day is still recoverable)
 ```
 
 The 2022 occurrence keeps its lineage: the emitted (observed) Monday, the actual Saturday, and
@@ -110,11 +141,12 @@ company's own Founding Day, and builds with the catalogue resolver.
 
 **What to expect.**
 
-```
-  2024-03-12 (Tuesday  ) Contoso Founding Day   non-working: True
-  2024-03-29 (Friday   ) Good Friday            non-working: True
-  2024-03-31 (Sunday   ) Easter Sunday          non-working: False
-  2024-04-01 (Monday   ) Easter Monday          non-working: True
+```text
+    2024-03-12 (Tuesday  ) Contoso Founding Day   non-working: True
+    2024-03-29 (Friday   ) Good Friday            non-working: True
+    2024-03-31 (Sunday   ) Easter Sunday          non-working: False
+    2024-04-01 (Monday   ) Easter Monday          non-working: True
+  (the Easter dates came from the catalogue computus with nothing hand-coded, but carry this company's non-working flag rather than the catalogue's)
 ```
 
 The Easter dates came from the catalogue's algorithm — nothing was hand-coded. Note the
@@ -137,10 +169,10 @@ loader's copy, and compares the two resources' ids.
 
 **What to expect.**
 
-```
-Saved: contoso-holidays.xml (576 bytes)
-Reloaded and resolved: 2024-03-12 Contoso Founding Day
-Builder and loader agree: True
+```text
+  Saved: contoso-holidays.xml (576 bytes)  (the file on disk is the distributable artifact - the builder is only one way to produce it)
+  Reloaded and resolved: 2024-03-12 Contoso Founding Day  (loaded by the plain resource loader - the path a consumer without the Builder package takes)
+  Builder and loader agree: True  (expected True - authoring and consuming are two views of one document, not two representations to keep in sync)
 ```
 
 576 bytes is the entire distributable calendar. `.json` in the `Save` path switches to the
@@ -164,10 +196,10 @@ resources' ids.
 
 **What to expect.**
 
-```
-Saved: contoso-holidays.json (500 bytes)
-Reloaded and resolved: 2024-03-12 Contoso Founding Day
-Builder and loader agree: True
+```text
+  Saved: contoso-holidays.json (500 bytes)  (the file on disk is the distributable artifact - the builder is only one way to produce it)
+  Reloaded and resolved: 2024-03-12 Contoso Founding Day  (loaded by the plain resource loader - the path a consumer without the Builder package takes)
+  Builder and loader agree: True  (expected True - authoring and consuming are two views of one document, not two representations to keep in sync)
 ```
 
 The JSON form is 500 bytes to the XML form's 576 — the same distributable calendar, resolving to
@@ -177,6 +209,20 @@ builder's own `Load` infers the format from the file extension.
 **APIs demonstrated.** `Save(path)` (JSON format inferred from extension),
 `NotableDateDocumentBuilder.Load`, `NotableDateResourceLoader.LoadJson(string)`,
 `NotableDateResource.ResourceId`.
+
+## Layout
+
+```text
+Bodu.Globalization.Calendar.Samples.CustomCalendar/
+  Program.cs                               # runs the scenarios in order
+  SampleConsole.cs                         # the What / Why / Expect scenario banner
+  Scenarios/AuthoringCompanyHolidays.cs
+  Scenarios/FrequencyBasedSchedules.cs
+  Scenarios/AdjustmentsAndPolicies.cs
+  Scenarios/ImportingCatalogues.cs
+  Scenarios/XmlRoundTrip.cs
+  Scenarios/JsonRoundTrip.cs
+```
 
 ## NuGet equivalent
 

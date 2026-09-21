@@ -22,7 +22,21 @@ public static class DiRegistration
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AddCachedNotableDateService: decorating the registered service ---");
+        SampleConsole.Scenario(
+            "AddCachedNotableDateService - decorating the registered service",
+            what: "Registers a data-pack service, adds the caching decorator with a seven-day TTL, then resolves "
+                + "INotableDateService from the container and reports the concrete type that came back.",
+            why: "Caching is a deployment decision, not an application one - the same code should run "
+                + "uncached in a test, in-memory in a single instance, and against a shared distributed cache in "
+                + "a cluster. Registering it as a decorator over whatever is already registered keeps that "
+                + "choice in the composition root: consumers keep injecting the interface and never learn "
+                + "whether a cache exists. The TTL matters because the cache is holding computed rule output, "
+                + "and rule data can be republished - so the entry has to expire even though the underlying "
+                + "calculation is deterministic. The durable backends slot into the same call, which is why "
+                + "moving from in-memory to SQLite or Redis is a registration line rather than a refactor.",
+            expect: "The resolved type is the caching decorator, not the data-pack service - the registration "
+                + "wrapped what was already there. The query then works exactly as it did without the decorator, "
+                + "which is the point: nothing downstream changes.");
 
         var services = new ServiceCollection();
 
@@ -40,10 +54,12 @@ public static class DiRegistration
         using ServiceProvider provider = services.BuildServiceProvider();
 
         var service = provider.GetRequiredService<INotableDateService>();
-        Console.WriteLine($"Resolved service type: {service.GetType().Name}");
+        Console.WriteLine($"  Resolved service type: {service.GetType().Name}"
+            + "  (the decorator, not the data-pack service - the registration wrapped what was already there)");
 
         var anzac = service.Resolve(new DateOnly(2026, 4, 25), "AU");
-        Console.WriteLine($"AU 2026-04-25: {string.Join(", ", anzac.Select(n => n.DisplayName))}");
+        Console.WriteLine($"  AU 2026-04-25: {string.Join(", ", anzac.Select(n => n.DisplayName))}"
+            + "  (identical to the uncached result - consumers inject the interface and never learn a cache exists)");
 
         // ------------------------------------------------------------------------------------------------
         // Durable backends ship as add-on packages, each with its own one-line registration that slots in

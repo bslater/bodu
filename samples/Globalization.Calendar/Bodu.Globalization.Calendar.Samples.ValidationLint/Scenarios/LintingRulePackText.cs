@@ -20,7 +20,22 @@ public static class LintingRulePackText
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- NotableDateResourceLoader.TryLoad: linting rule-pack text ---");
+        SampleConsole.Scenario(
+            "TryLoad - linting rule-pack text from anywhere",
+            what: "Lints three inputs through the collecting loader: text that is not well-formed XML at all, a "
+                + "well-formed pack naming an algorithm that does not exist, and a valid pack.",
+            why: "This is the surface a build task or an editor integration needs, and the requirement that "
+                + "shapes it is that the input is arbitrary. A file being edited is malformed for most of the "
+                + "time it is being edited, so a loader that throws on bad XML cannot drive a linter - the first "
+                + "keystroke of a new element would be an exception. TryLoad accepts anything and reports "
+                + "everything as diagnostics, with syntax errors carrying codes in the same scheme as semantic "
+                + "ones, so a consumer has one thing to render rather than two. The codes match the ones the "
+                + "throwing overloads carry inside their exception, so a build and a runtime load agree about "
+                + "what is wrong.",
+            expect: "Nothing throws, including the input that is not XML. The malformed text reports a syntax "
+                + "diagnostic and no resource; the semantically broken pack reports the same code a throwing "
+                + "load would have raised, with a message naming the concept and rule; the valid pack reports "
+                + "nothing and hands back a resource ready to query.");
 
         // Malformed XML never throws from TryLoad; it becomes a BODU-CAL-SYNTAX error diagnostic.
         LintAndReport("malformed input", "<NotableDateResource but not xml");
@@ -62,8 +77,8 @@ public static class LintingRulePackText
     {
         bool loaded = NotableDateResourceLoader.TryLoad(content, _ => null, out NotableDateResource? resource, out var diagnostics);
 
-        Console.WriteLine($"{label}: loaded={loaded}, resource={(resource is null ? "none" : resource.ResourceId)}");
+        Console.WriteLine($"  {label}: loaded={loaded}, resource={(resource is null ? "none" : resource.ResourceId)}");
         foreach (NotableDateValidationDiagnostic diagnostic in diagnostics)
-            Console.WriteLine($"  {diagnostic}");
+            Console.WriteLine($"    {diagnostic}");
     }
 }

@@ -21,14 +21,15 @@ sources) and `IsWeekend` (week shape only).
 
 **What to expect.**
 
-```
-  2024-04-22 (Monday   ) working
-  2024-04-23 (Tuesday  ) working
-  2024-04-24 (Wednesday) working
-  2024-04-25 (Thursday ) public holiday
-  2024-04-26 (Friday   ) working
-  2024-04-27 (Saturday ) weekend
-  2024-04-28 (Sunday   ) weekend
+```text
+    2024-04-22 (Monday   ) working
+    2024-04-23 (Tuesday  ) working
+    2024-04-24 (Wednesday) working
+    2024-04-25 (Thursday ) public holiday
+    2024-04-26 (Friday   ) working
+    2024-04-27 (Saturday ) weekend
+    2024-04-28 (Sunday   ) weekend
+  (Thursday is a weekday by the calendar and still not a working day - the case a week-shape-only check gets wrong)
 ```
 
 Thursday is excluded by the holiday rules, the weekend by the week pattern — the classification
@@ -48,12 +49,12 @@ day, and three snaps (forward, backward, and a no-op on an already-valid date).
 
 **What to expect.**
 
-```
-Trade 2024-04-24 (Wed), T+2 settle: 2024-04-29 (Monday)
-Next working day after 04-24: 2024-04-26 (Friday)
-Contractual 04-25 snap forward : 2024-04-26
-Contractual 04-25 snap backward: 2024-04-24
-Valid date snap (no-op)        : 2024-04-23
+```text
+  Trade 2024-04-24 (Wed), T+2 settle: 2024-04-29 (Monday)  (four calendar days on, not two - the count skipped the Thursday holiday and the weekend)
+  Next working day after 04-24: 2024-04-26 (Friday)  (Thursday is Anzac Day, so the answer is Friday - strictly after, never the same day)
+  Contractual 04-25 snap forward : 2024-04-26
+  Contractual 04-25 snap backward: 2024-04-24  (a different answer from the same input - a payment due date rolls forward, a no-later-than clause rolls back)
+  Valid date snap (no-op)        : 2024-04-23  (unchanged, which is what makes snapping safe to apply unconditionally)
 ```
 
 T+2 from Wednesday lands on *Monday* — the count skipped the Anzac Day Thursday and the
@@ -73,9 +74,9 @@ Anzac week.
 
 **What to expect.**
 
-```
-Working days in April 2024 (AU): 20
-Anzac week working days: 04-22, 04-23, 04-24, 04-26
+```text
+  Working days in April 2024 (AU): 20  (30 days less 8 weekend days less the two weekday holidays - a weekend-only count would say 22)
+  Anzac week working days: 04-22, 04-23, 04-24, 04-26  (the holiday and the weekend are simply absent - enumerated lazily, so asking about a year does not materialize one)
 ```
 
 April 2024 has 30 days − 8 weekend days − 2 weekday holidays (Easter Monday 04-01 and Anzac Day
@@ -95,14 +96,14 @@ days` calculation.
 
 **What to expect.**
 
-```
-For 2024-08-15, AU fiscal year (starts July):
-  first working day of FY : 2024-07-01 (Monday)
-  last working day of FY  : 2025-06-30 (Monday)
-  first working day of Q  : 2024-07-01 (Monday)
-Default week   : Friday working: True, Sunday working: False
-Sun-Thu week   : Friday working: False, Sunday working: True
-Thu 08-15 + 3 working days: default 2024-08-20 (Tuesday), Sun-Thu 2024-08-20 (Tuesday)
+```text
+  For 2024-08-15, AU fiscal year (starts July):
+    first working day of FY : 2024-07-01 (Monday)  (the day business actually starts, which is not the nominal 1 July in a year when that is a weekend)
+    last working day of FY  : 2025-06-30 (Monday)
+    first working day of Q  : 2024-07-01 (Monday)  (August sits in the first fiscal quarter, so this coincides with the year start)
+  Default week   : Friday working: True, Sunday working: False
+  Sun-Thu week   : Friday working: False, Sunday working: True  (both answers flip against the row above - same service, same holiday rules, different week shape)
+  Thu 08-15 + 3 working days: default 2024-08-20 (Tuesday), Sun-Thu 2024-08-20 (Tuesday)  (the same answer here by coincidence - both patterns skip exactly two days in this window - but the arithmetic follows the pattern, not the calendar)
 ```
 
 The week-pattern lines flip Friday and Sunday exactly as a Gulf-region roster would. The final
@@ -113,6 +114,18 @@ Sun–Thu week — different paths, same landing day.
 **APIs demonstrated.** `FirstWorkingDayOfFiscalYear` / `LastWorkingDayOfFiscalYear` /
 `FirstWorkingDayOfFiscalQuarter` (with `fiscalYearStartMonth`), the `WeekPattern` parameter on
 `IsWorkingDay` / `AddWorkingDays`, `WeekPattern` construction from `DayOfWeek` values.
+
+## Layout
+
+```text
+Bodu.Globalization.Calendar.Samples.WorkingDays/
+  Program.cs                          # creates the AU service, runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/WorkingDayChecks.cs
+  Scenarios/PaymentScheduling.cs
+  Scenarios/RangeCounting.cs
+  Scenarios/FiscalAndWeekPatterns.cs
+```
 
 ## NuGet equivalent
 

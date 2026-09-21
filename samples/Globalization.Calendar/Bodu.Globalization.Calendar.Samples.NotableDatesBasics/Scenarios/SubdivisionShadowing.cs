@@ -20,7 +20,23 @@ public static class SubdivisionShadowing
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Subdivision shadowing: AU vs AU-NSW vs AU-VIC ---");
+        SampleConsole.Scenario(
+            "Subdivision shadowing - one resource, every state view",
+            what: "Creates national, Victorian and New South Wales services from the same country resource, "
+                + "compares their 2026 counts, pins each state's Labour Day, and lists the concepts that exist "
+                + "only in the Victorian view.",
+            why: "Holidays are not a country-level fact, and a library that pretends otherwise is wrong for most "
+                + "of the world. Australia is the clean example: Labour Day is a national concept observed on "
+                + "different dates in different states, so 'when is Labour Day in Australia' has no answer - only "
+                + "'when is Labour Day in Victoria' does. The model handles that with one country resource and a "
+                + "territory string that selects the view: a subdivision sees the national rules plus its own, "
+                + "and where both define the same concept the more specific rule shadows the general one. That "
+                + "shape matters because it means adding a state costs a rule, not a resource, and a consumer "
+                + "switches views by changing a string rather than a code path.",
+            expect: "The state views are supersets of the national one, not alternatives to it. The two Labour "
+                + "Days land seven months apart from the same concept - the clearest demonstration that the "
+                + "territory is part of the question rather than a filter applied after it. The concepts unique "
+                + "to Victoria simply do not exist in the national view.");
 
         // A subdivision territory selects the same country resource; filtering happens per query.
         NotableDateService au = AsiaPacificCalendarData.CreateService("AU");
@@ -32,22 +48,25 @@ public static class SubdivisionShadowing
         var newSouthWales = nsw.Resolve(2026, "AU-NSW");
 
         // The state views are supersets: national rules plus state-only concepts.
-        Console.WriteLine($"2026 notable dates - AU: {national.Count}, AU-VIC: {victorian.Count}, AU-NSW: {newSouthWales.Count}");
+        Console.WriteLine($"  2026 notable dates - AU: {national.Count}, AU-VIC: {victorian.Count}, AU-NSW: {newSouthWales.Count}"
+            + "  (the state views are supersets: national rules plus state-only concepts, from the one country resource)");
 
         // Labour Day is the classic shadowing example: one concept, a different rule per state.
         // Victoria observes the second Monday of March - 2026-03-09 is a published known-good date.
         NotableDate vicLabourDay = victorian.First(d => d.DisplayName.Contains("Labour", StringComparison.OrdinalIgnoreCase));
-        Console.WriteLine($"AU-VIC Labour Day 2026 : {vicLabourDay.Date:yyyy-MM-dd} ({vicLabourDay.Date.DayOfWeek})");
+        Console.WriteLine($"  AU-VIC Labour Day 2026 : {vicLabourDay.Date:yyyy-MM-dd} ({vicLabourDay.Date.DayOfWeek})");
 
         // New South Wales observes the first Monday of October - same concept, different date.
         NotableDate nswLabourDay = newSouthWales.First(d => d.DisplayName.Contains("Labour", StringComparison.OrdinalIgnoreCase));
-        Console.WriteLine($"AU-NSW Labour Day 2026 : {nswLabourDay.Date:yyyy-MM-dd} ({nswLabourDay.Date.DayOfWeek})");
+        Console.WriteLine($"  AU-NSW Labour Day 2026 : {nswLabourDay.Date:yyyy-MM-dd} ({nswLabourDay.Date.DayOfWeek})"
+            + "  (seven months from Victoria's, same concept - which is why \"Labour Day in Australia\" has no answer)");
 
         // State-only concepts simply do not exist in the national view.
         var vicOnly = victorian.Select(d => d.DisplayName)
             .Except(national.Select(d => d.DisplayName))
             .ToArray();
-        Console.WriteLine($"Concepts only in AU-VIC: {string.Join(", ", vicOnly)}");
+        Console.WriteLine($"  Concepts only in AU-VIC: {string.Join(", ", vicOnly)}"
+            + "  (absent from the national view entirely - adding a state costs a rule, not a resource)");
 
         Console.WriteLine();
     }

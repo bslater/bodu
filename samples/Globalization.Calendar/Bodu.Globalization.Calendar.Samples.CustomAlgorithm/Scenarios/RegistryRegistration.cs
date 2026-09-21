@@ -23,7 +23,23 @@ public static class RegistryRegistration
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Custom algorithm via NotableDateAlgorithmRegistry ---");
+        SampleConsole.Scenario(
+            "A custom algorithm through the registry",
+            what: "Registers a hand-written algorithm under a key, authors a document whose rule references that "
+                + "key, loads it with the registry and serves it with the same registry, then resolves three "
+                + "years including one that predates the founding date.",
+            why: "The engine is data-driven so that adding a holiday does not mean shipping code - but some "
+                + "dates cannot be expressed declaratively, because their calculation is genuinely arbitrary. "
+                + "The registry is the seam for exactly those: the rule stays data and references a key, and only "
+                + "the mathematics is code. Passing the registry to both the loader and the service is "
+                + "deliberate rather than redundant - the loader validates that the key exists, so a typo is a "
+                + "load-time diagnostic instead of a silent missing holiday at run time, and the service is what "
+                + "dispatches the calculation per year. The algorithm returning null is part of the contract, "
+                + "which is how a concept that does not exist in every year is expressed.",
+            expect: "The 2024 occurrence is shifted off the actual founding anniversary, because the algorithm "
+                + "itself decides that - the shifting is inside the code, not a declarative adjustment. The year "
+                + "before the company existed yields no occurrence at all rather than a nonsense date, which is "
+                + "the null return doing its job.");
 
         // 1. Register the algorithm under the key rules will reference.
         var algorithms = new NotableDateAlgorithmRegistry()
@@ -46,9 +62,11 @@ public static class RegistryRegistration
         {
             IReadOnlyList<NotableDate> dates = service.Resolve(year, "AU");
             Console.WriteLine(dates.Count == 0
-                ? $"  {year}: no occurrence (algorithm returned null)"
-                : $"  {year}: {dates[0].Date:yyyy-MM-dd} ({dates[0].Date.DayOfWeek}) {dates[0].DisplayName}");
+                ? $"    {year}: no occurrence (algorithm returned null)"
+                : $"    {year}: {dates[0].Date:yyyy-MM-dd} ({dates[0].Date.DayOfWeek}) {dates[0].DisplayName}");
         }
+
+        Console.WriteLine("  (the shift off the anniversary is inside the algorithm, not a declarative adjustment - and 1997 returns null rather than a nonsense date)");
 
         // --- To load algorithms from an external plugin assembly instead -------------------------
         // The Bodu.Globalization.Calendar.Plugins package adds trust-gated discovery, so operations

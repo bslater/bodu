@@ -26,7 +26,24 @@ public static class FrequencyBasedSchedules
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Frequency-based (recurring) schedules ---");
+        SampleConsole.Scenario(
+            "Recurring schedules and the clamping behaviour that makes them safe",
+            what: "Builds an operations calendar entirely from recurrence sources - a fortnightly interval, a "
+                + "twice-weekly window, a monthly day-of-month with an adjustment policy, a month-end close "
+                + "clamped to the last valid day, and a last-Friday report - resolves a quarter, then resolves "
+                + "one month alone and compares the count.",
+            why: "Most of what an operations calendar contains recurs, and the awkward cases are the ones worth "
+                + "designing for. Day 31 does not exist in most months, and the default of skipping it silently "
+                + "means a month-end close that never happens in February - clamping to the last day of the "
+                + "month is what the rule actually meant. The payroll rule shows the other half: a recurrence "
+                + "and an adjustment policy compose, so an occurrence landing on a weekend rolls back and still "
+                + "carries its lineage to the date it moved from. The final check is the invariant that makes "
+                + "any of this trustworthy: whether a date is an occurrence cannot depend on the window it was "
+                + "queried in.",
+            expect: "Occurrences from five different cadences interleaved in date order. The payroll rows that "
+                + "fell on a weekend report the date they moved from, so nothing is lost. Resolving February on "
+                + "its own returns exactly the February subset of the quarter - a different count for the same "
+                + "date would mean the window was influencing the answer.");
 
         // An operations calendar built entirely from recurrence sources - no single-date strategies. Each rule repeats
         // on its own cadence; the engine generates every occurrence in the requested window, and each occurrence flows
@@ -70,7 +87,7 @@ public static class FrequencyBasedSchedules
             // Observed rows carry their lineage back to the actual (unadjusted) date - here, the payroll runs that
             // fell on a weekend 15th and were rolled back to the previous working day.
             string lineage = date.IsObserved ? $"  <- moved from {date.ActualDate:yyyy-MM-dd}" : string.Empty;
-            Console.WriteLine($"  {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName}{lineage}");
+            Console.WriteLine($"    {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName}{lineage}");
         }
 
         Console.WriteLine();
@@ -78,7 +95,8 @@ public static class FrequencyBasedSchedules
         // Query-window invariance: the same date is or is not an occurrence regardless of the range it is queried in.
         // Resolving February alone yields exactly the February subset of the quarter above.
         int februaryCount = service.Resolve(new DateRange(new DateOnly(2026, 2, 1), new DateOnly(2026, 2, 28)), "XX").Count;
-        Console.WriteLine($"  February alone resolves {februaryCount} occurrences (the February subset of the quarter).");
+        Console.WriteLine($"  February alone resolves {februaryCount} occurrences (the February subset of the quarter)."
+            + "  (query-window invariance - a different count for the same dates would mean the window was influencing the answer)");
 
         Console.WriteLine();
     }

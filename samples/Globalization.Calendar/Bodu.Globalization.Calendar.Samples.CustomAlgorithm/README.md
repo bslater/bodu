@@ -27,10 +27,11 @@ Resolves 2024, 2026, and 1997.
 
 **What to expect.**
 
-```
-  2024: 2024-03-15 (Friday) Contoso Founding Day
-  2026: 2026-03-13 (Friday) Contoso Founding Day
-  1997: no occurrence (algorithm returned null)
+```text
+    2024: 2024-03-15 (Friday) Contoso Founding Day
+    2026: 2026-03-13 (Friday) Contoso Founding Day
+    1997: no occurrence (algorithm returned null)
+  (the shift off the anniversary is inside the algorithm, not a declarative adjustment - and 1997 returns null rather than a nonsense date)
 ```
 
 Both hits land on Fridays (the algorithm's contract); 1997 is silent because the algorithm
@@ -56,9 +57,10 @@ resolves two years through the same author-load-serve loop.
 
 **What to expect.**
 
-```
-  2024: 2024-06-28 (Friday) EOFY Party
-  2025: 2025-06-27 (Friday) EOFY Party
+```text
+    2024: 2024-06-28 (Friday) EOFY Party
+    2025: 2025-06-27 (Friday) EOFY Party
+  (both Fridays, both different calendar dates - the lambda runs per year rather than returning a stored answer)
 ```
 
 Prefer a named class (like `CompanyFoundingDayAlgorithm`) once the calculation deserves its own
@@ -67,12 +69,53 @@ tests — which is exactly what the companion test project then does.
 **APIs demonstrated.** The `INotableDateAlgorithm` contract's minimal surface, lambda adaption,
 registry + loader + service wiring reused from the first scenario.
 
+### ObservationBasedVariant (`Scenarios/ObservationBasedVariant.cs`)
+
+**Intent.** Not every custom calculation has to be written by the consumer. Show a built-in
+observation-based algorithm — `tehran-nowruz` — referenced from a document with nothing
+registered.
+
+**What it does.** Authors a rule over the built-in key and resolves three consecutive years across
+the March 20/21 boundary.
+
+**What to expect.**
+
+```text
+  Nowruz 2024: 2024-03-20
+  Nowruz 2025: 2025-03-21
+  Nowruz 2026: 2026-03-21
+  (the 20/21 March boundary reproduced from the equinox instant at the Tehran meridian - what a fixed date or a tabular approximation gets wrong)
+```
+
+Nowruz falls on the day containing the true vernal equinox measured at the Tehran standard
+meridian, so which calendar date it lands on depends on whether that instant falls before or after
+local apparent noon — which a tabular Persian calendar only approximates, disagreeing with the
+official date in some years. Shipping the astronomical computation as a built-in key means a
+document can carry the official rule without its author implementing celestial mechanics, and
+keeping it opt-in means nothing changes for documents anchored on the tabular calendar on purpose.
+
+**APIs demonstrated.** The built-in `tehran-nowruz` algorithm key via
+`NotableDateRuleBuilder.Algorithm`, resolved with no registry supplied.
+
 ## The contract-test project
 
 `../Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test/CompanyCalendarDataTests.cs`
 derives `CalendarDataTestsBase` — the same base every regional data-pack test derives — over the
 sample's authored calendar, plus known-answer rows pinning the algorithm's output for specific
 years. It runs in CI automatically alongside the library suites.
+
+## Layout
+
+```text
+Bodu.Globalization.Calendar.Samples.CustomAlgorithm/
+  Program.cs                              # runs the scenarios in order
+  SampleConsole.cs                        # the What / Why / Expect scenario banner
+  CompanyFoundingDayAlgorithm.cs          # the named INotableDateAlgorithm implementation
+  ContosoCalendarData.cs                  # the sample data-pack factory
+  Scenarios/RegistryRegistration.cs
+  Scenarios/DelegateAlgorithms.cs
+  Scenarios/ObservationBasedVariant.cs
+```
 
 ## NuGet equivalent
 
