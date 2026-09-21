@@ -149,4 +149,47 @@ public partial class OfxRateProviderOptionsTests
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
     }
+
+    /// <summary>
+    /// Verifies that a negative future-clamp skew is rejected, since it would push the capped end bound past the current
+    /// instant and reintroduce the future <c>ToDate</c> the cap exists to prevent.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenFutureClampSkewIsNegative_ShouldReturnFalse()
+    {
+        OfxRateProviderOptions options = new() { FutureClampSkew = TimeSpan.FromSeconds(-1) };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a zero future-clamp skew — the default, keeping maximum recency — is accepted.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenFutureClampSkewIsZero_ShouldReturnTrue()
+    {
+        OfxRateProviderOptions options = new() { FutureClampSkew = TimeSpan.Zero };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsTrue(valid);
+        Assert.IsNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a positive future-clamp skew, compensating for an endpoint clock behind UTC, is accepted.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenFutureClampSkewIsPositive_ShouldReturnTrue()
+    {
+        OfxRateProviderOptions options = new() { FutureClampSkew = TimeSpan.FromMinutes(10) };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsTrue(valid);
+        Assert.IsNull(error);
+    }
 }

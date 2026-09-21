@@ -46,20 +46,23 @@ public partial class OfxSpotRateHistorySourceTests
     }
 
     /// <summary>
-    /// Verifies that a request whose window lies entirely in the future is answered with an empty result and issues no
-    /// HTTP request at all, since the endpoint has nothing to return for it.
+    /// Verifies that a request whose window lies entirely in the future issues no HTTP request at all and reports no
+    /// data, rather than succeeding with an empty result — a success would let the provider mark the future range as
+    /// covered and keep serving nothing once those dates became real.
     /// </summary>
     [TestMethod]
-    public async Task LoadPairAsync_WhenWindowIsEntirelyInTheFuture_ShouldNotIssueRequest()
+    public async Task LoadPairAsync_WhenWindowIsEntirelyInTheFuture_ShouldNotIssueRequestAndReportNoData()
     {
         StubHttpMessageHandler handler = new(OfxFixtures.ReadBytes(OfxFixtures.AudUsd));
         using HttpClient client = new(handler);
         OfxRateProvider provider = new(client, new OfxRateProviderOptions(), logger: null, timeProvider: new MutableTimeProvider(ClampNow));
 
-        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 31));
+        await Assert.ThrowsExactlyAsync<ExchangeRateFormatException>(async () =>
+        {
+            await provider.LoadPairAsync("AUD", "USD", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 31));
+        });
 
         Assert.AreEqual(0, handler.RequestCount, "a wholly future window must not reach the endpoint");
-        Assert.AreEqual(0, provider.GetRates("AUD", "USD", new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 31)).Count);
     }
 
     /// <summary>
@@ -78,6 +81,28 @@ public partial class OfxSpotRateHistorySourceTests
         long expectedEnd = new DateTimeOffset(2026, 5, 31, 23, 59, 59, 999, TimeSpan.Zero).ToUnixTimeMilliseconds();
 
         Assert.AreEqual(1, handler.RequestCount);
+        Assert.IsNotNull(handler.LastRequestUri);
+        Assert.IsTrue(
+            handler.LastRequestUri!.AbsolutePath.EndsWith($"/{expectedEnd}", StringComparison.Ordinal),
+            handler.LastRequestUri.AbsolutePath);
+    }
+
+    /// <summary>
+    /// Verifies that a configured <see cref="OfxRateProviderOptions.FutureClampSkew" /> is subtracted from the current
+    /// instant when capping the end bound, compensating for an endpoint clock that trails UTC.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenFutureClampSkewIsConfigured_ShouldSubtractItFromTheEndBound()
+    {
+        StubHttpMessageHandler handler = new(OfxFixtures.ReadBytes(OfxFixtures.AudUsd));
+        using HttpClient client = new(handler);
+        OfxRateProviderOptions options = new() { FutureClampSkew = TimeSpan.FromMinutes(5) };
+        OfxRateProvider provider = new(client, options, logger: null, timeProvider: new MutableTimeProvider(ClampNow));
+
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 15));
+
+        long expectedEnd = ClampNow.AddMinutes(-5).ToUnixTimeMilliseconds();
+
         Assert.IsNotNull(handler.LastRequestUri);
         Assert.IsTrue(
             handler.LastRequestUri!.AbsolutePath.EndsWith($"/{expectedEnd}", StringComparison.Ordinal),

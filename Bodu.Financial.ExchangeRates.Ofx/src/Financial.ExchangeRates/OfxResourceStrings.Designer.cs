@@ -61,6 +61,15 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The OFX options future-clamp skew must not be negative..
+        /// </summary>
+        internal static string Arg_OutOfRange_OfxOptionsFutureClampSkew {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_OfxOptionsFutureClampSkew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The OFX response for {0}/{1} did not contain any historical rate data..
         /// </summary>
         internal static string Format_Invalid_OfxNoData {
