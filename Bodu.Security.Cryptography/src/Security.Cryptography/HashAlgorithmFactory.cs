@@ -20,9 +20,9 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The returned factory instances are typically passed into <see cref="HashAlgorithmHelper" /> methods to compute
-/// hashes from spans, streams, or buffers in a memory-safe and reusable way. The same factory works with
-/// <see cref="MerkleTreeHash" /> and <see cref="ParallelMerkleTreeHash" /> for tree-hashing pipelines that need a fresh
-/// leaf-hash instance per node.
+/// hashes from spans, streams, or buffers in a memory-safe and reusable way. The same factory's
+/// <see cref="IHashAlgorithmFactory{T}.Create" /> serves <see cref="MerkleTree" /> for tree-hashing pipelines that need
+/// a fresh leaf-hash instance per worker.
 /// </para>
 /// </remarks>
 /// <example>

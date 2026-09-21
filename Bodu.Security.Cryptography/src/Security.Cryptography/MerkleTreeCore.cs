@@ -25,9 +25,9 @@ namespace Bodu.Security.Cryptography;
 /// skipped that validation, not the primary contract.
 /// </para>
 /// <para>
-/// The level-by-level fold that <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c> reduce with is
-/// <c>MerkleLevelFold</c>, alongside this file: at a fan-out of two it produces this tree exactly, and the wider
-/// fan-outs it also offers are those types' own, non-RFC commitment.
+/// The level-by-level fold every root computation reduces with is <c>MerkleLevelFold</c>, alongside this file: at a
+/// fan-out of two it produces this tree exactly, and the wider fan-outs it also offers are the package's own, non-RFC
+/// commitment.
 /// </para>
 /// </remarks>
 internal static class MerkleTreeCore
