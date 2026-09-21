@@ -23,7 +23,18 @@ public static class NestedGraph
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- NestedGraph: numerics inside a POCO ---");
+        SampleConsole.Scenario(
+            "NestedGraph - numerics inside a POCO",
+            what: "Serializes an ordinary class holding a Fraction, an Interval and a list of intervals, then " +
+                  "reads the whole graph back and compares each member.",
+            why: "Registering converters on the options is what makes these types work anywhere in a graph, at " +
+                 "any depth, including inside collections - rather than only when serialized directly. That is " +
+                 "the practical difference between a converter package and a helper method: the POCO needs no " +
+                 "attributes, no custom converter of its own, and no awareness that its members are anything " +
+                 "unusual.",
+            expect: "The nested members emit exactly the shapes the standalone scenario produced, and the list " +
+                    "of intervals serializes element by element. Every member compares equal after the round " +
+                    "trip, which is what proves depth is irrelevant to the registration.");
 
         // Register the converters once; WriteIndented makes the composed shape easy to read.
         var options = new JsonSerializerOptions
@@ -45,10 +56,10 @@ public static class NestedGraph
 
         // Deserialize reconstructs every property, including the normalized interval set.
         var restored = JsonSerializer.Deserialize<Portfolio>(json, options)!;
-        Console.WriteLine($"re-read name          : {restored.Name}");
-        Console.WriteLine($"re-read target weight : {restored.TargetWeight}");
-        Console.WriteLine($"re-read price band    : {restored.PriceBand}");
-        Console.WriteLine($"re-read trading hours : {restored.TradingHours}");
+        Console.WriteLine($"  re-read name          : {restored.Name}  (an ordinary property, serialized the ordinary way)");
+        Console.WriteLine($"  re-read target weight : {restored.TargetWeight}  (a Fraction nested one level down - the POCO needs no attribute and no converter of its own)");
+        Console.WriteLine($"  re-read price band    : {restored.PriceBand}  (an Interval, with its inclusivity preserved through the round trip)");
+        Console.WriteLine($"  re-read trading hours : {restored.TradingHours}  (inside a collection, which is the case a helper method cannot reach and a registered converter handles for free)");
 
         Console.WriteLine();
     }
