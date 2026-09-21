@@ -26,8 +26,11 @@ public static class StreamCiphers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Stream ciphers (fixed key + nonce) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "Stream ciphers (fixed key + nonce)",
+            what: "Encrypts and decrypts one buffer with ChaCha20, XChaCha20 and Salsa20 under a fixed key and nonce, printing each cipher's nonce width.",
+            why: "A stream cipher generates a keystream and XORs it over the data, so encrypting and decrypting are the same operation and the output is exactly as long as the input. The nonce width is the detail to take away: the X-variants take 24 bytes, wide enough to pick at random and never worry about a repeat, while 8- and 12-byte nonces have to be managed by a counter - reusing one under the same key loses all confidentiality.",
+            expect: "All three round-trip True with no length change. None of them authenticates on its own; pairing one with Poly1305 - the last block of the Further ciphers scenario - is what adds tamper detection.");
 
         // Nonce widths differ per cipher: ChaCha20 96-bit, XChaCha20 192-bit, Salsa20 64-bit.
         RoundTrip("ChaCha20", () => new ChaCha20(), nonceBytes: 12);

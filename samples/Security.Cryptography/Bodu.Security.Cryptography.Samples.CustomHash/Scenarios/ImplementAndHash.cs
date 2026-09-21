@@ -21,7 +21,11 @@ public static class ImplementAndHash
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AdditiveDigest: a custom BlockHashAlgorithm ---");
+        SampleConsole.Scenario(
+            "AdditiveDigest: a custom BlockHashAlgorithm",
+            what: "Hashes four inputs - empty, \"abc\", the pangram, and 32 repeated bytes - with AdditiveDigest, a deliberately simple hash written for this sample on the shipped BlockHashAlgorithm base.",
+            why: "The base class owns the parts every block hash needs and most hand-rolled ones get wrong: buffering partial blocks, running the final block, encoding the length and resetting cleanly. What a consumer supplies is the compression step and the finalization. AdditiveDigest is a teaching device to show that seam - it is not a secure hash and must not be used as one.",
+            expect: "Four 128-bit digests, identical on every run. The empty input still yields a digest rather than zeros, because finalization runs over the padded final block - an implementation that returns zeros there has got its finalization wrong.");
 
         // The custom hash is created and consumed exactly like any shipped HashAlgorithm.
         using var digest = new AdditiveDigest();

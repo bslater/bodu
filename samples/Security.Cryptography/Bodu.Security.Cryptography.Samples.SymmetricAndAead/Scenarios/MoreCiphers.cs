@@ -25,7 +25,11 @@ public static class MoreCiphers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Further ciphers ---");
+        SampleConsole.Scenario(
+            "Further ciphers",
+            what: "Covers the rest of the surface: the wide-block tweakable Serpent variants, the Rabbit, HC-128 and XSalsa20 stream ciphers, and the extended-nonce Poly1305 AEADs including the libsodium secretbox byte order.",
+            why: "A tweak is a second, non-secret input that makes one key encrypt differently per sector or record, which is how disk and record encryption avoid re-keying. The secretbox block shows two interoperability details that bite in practice: secretbox has no associated-data input at all, and libsodium places the tag in front of the ciphertext where this API appends it.",
+            expect: "Every round-trip prints True, and two tweaks differing by a single bit give unrelated ciphertexts (True). Passing associated data to secretbox is rejected with ArgumentException - a deliberate refusal that matches the construction, not a missing feature - and the libsodium conversion moves the tag to the front and back again.");
 
         RunWideSerpent();
         RunStreamCiphers();

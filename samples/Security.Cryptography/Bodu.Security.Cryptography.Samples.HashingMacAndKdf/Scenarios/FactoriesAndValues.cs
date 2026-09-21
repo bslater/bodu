@@ -102,6 +102,6 @@ public static class FactoriesAndValues
 
         // A different message gives a different value, and the inequality operator agrees.
         var other = HashValue.FromBytes(algorithm.ComputeHash(Encoding.ASCII.GetBytes("something else")));
-        Console.WriteLine($"    different message : {value != other}");
+        Console.WriteLine($"    different message : {value != other}  (a different message gives an unequal HashValue)");
     }
 }

@@ -24,7 +24,11 @@ public static class ModeTransforms
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Mode transforms over a block cipher ---");
+        SampleConsole.Scenario(
+            "Mode transforms over a block cipher",
+            what: "Encrypts two identical plaintext blocks under ECB, CBC, CFB, OFB and CTR, driving each mode transform directly over an IBlockCipher, then composes a padding strategy with a mode over a 21-byte message.",
+            why: "This is the layer beneath SymmetricAlgorithm.Mode, where the mode is an object you hold rather than an enum you set. The plaintext is deliberately two identical blocks, because a mode's job is to stop structure in the plaintext showing through to the ciphertext - and ECB does not do that job.",
+            expect: "Every mode round-trips True. ECB prints the same ciphertext twice (identical blocks leak: True); every other mode prints False. CFB, OFB and CTR share their first ciphertext block and diverge from the second - expected, since all three start by encrypting the same IV. In the composed run a 21-byte message pads to 32, an unpadded 21 bytes is rejected with CryptographicException, and CTR encrypts 21 bytes to 21 with no padding at all.");
 
         // TwofishBlockCipher is a public IBlockCipher with a plain constructor, which is what makes the mode
         // infrastructure usable directly. Most callers should configure a mode through SymmetricAlgorithm.Mode

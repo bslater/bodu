@@ -30,7 +30,11 @@ public static class SpecialistModes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Specialist modes ---");
+        SampleConsole.Scenario(
+            "Specialist modes",
+            what: "Runs ciphertext stealing at five message lengths, XTS over one plaintext at two sector numbers, and the three nonce-misuse-resistant AEADs - CCM, SIV and GCM-SIV - including a measurement of how much of the output moves when a single plaintext byte changes.",
+            why: "Each mode here exists for a property the general-purpose ones lack. CTS encrypts a non-block-multiple without growing the ciphertext, which is what lets it sit on a disk sector that has no room for padding. XTS gives one key a per-sector tweak, so identical sectors do not encrypt alike. SIV and GCM-SIV derive their keystream from the plaintext itself, so repeating a nonce costs far less than it does under GCM.",
+            expect: "CTS never expands the ciphertext and rejects anything shorter than one block. The same plaintext at sectors 0 and 1 gives unrelated ciphertext (differ: True). The byte-change measurement is the one to read closely: under CCM about 17 of 48 bytes move, because its keystream does not depend on the plaintext, while SIV and GCM-SIV move all 48 - that whole-output change is precisely what misuse resistance buys. All three are deterministic by construction, so sealing one plaintext twice prints same output: True.");
 
         RunCiphertextStealing();
         RunXts();

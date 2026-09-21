@@ -101,7 +101,7 @@ public static class MoreHashFamilies
         Console.WriteLine($"    \"invoice-signing/v1\": {Hex.ToHex(first)}");
         Console.WriteLine($"    \"audit-log/v1\"      : {Hex.ToHex(second)}");
         Console.WriteLine($"    differ             : {Hex.ToHex(first) != Hex.ToHex(second)} (same message, different domain)");
-        Console.WriteLine($"    reproducible       : {Hex.ToHex(first) == Hex.ToHex(repeat)}");
+        Console.WriteLine($"    reproducible       : {Hex.ToHex(first) == Hex.ToHex(repeat)} (the same domain string hashes the same way twice)");
 
         Console.WriteLine();
     }

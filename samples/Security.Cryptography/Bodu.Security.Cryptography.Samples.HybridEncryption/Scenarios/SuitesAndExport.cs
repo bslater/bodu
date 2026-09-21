@@ -17,7 +17,11 @@ public static class SuitesAndExport
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Suites and secret export ---");
+        SampleConsole.Scenario(
+            "Suites and secret export",
+            what: "Prints the key, nonce and tag geometry of the three preset suites, assembles a custom KDF and AEAD pairing, exports secrets at three lengths under two labels, and asks an export-only suite to seal.",
+            why: "A suite is a KEM, KDF and AEAD triple, and the geometry below is what picking one commits you to. Export is HPKE's way of handing out keying material for something other than its own AEAD - a record protocol, a further KDF - with the label and the requested length bound into the derivation, which is why a short export is not simply a prefix of a longer one.",
+            expect: "Both sides derive identical exported bytes (True), a different label yields a different secret (True), and the 16, 32 and 64-byte exports are independent rather than prefixes (True) yet repeatable (True). The export-only suite reports IsExportOnly=True with a 0-byte key and tag, exports normally, and refuses Seal with NotSupportedException - a suite that was never meant to encrypt.");
 
         using var recipient = Parties.CreateRecipient();
         var recipientPublicKey = recipient.ExportPublicKey();

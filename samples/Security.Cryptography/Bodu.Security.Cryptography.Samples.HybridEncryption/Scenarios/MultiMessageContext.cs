@@ -17,7 +17,11 @@ public static class MultiMessageContext
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Multi-message contexts (HpkeSender / HpkeReceiver) ---");
+        SampleConsole.Scenario(
+            "Multi-message contexts (HpkeSender / HpkeReceiver)",
+            what: "Establishes one context, seals four frames through it, opens them in order, then tries to open a frame out of order and to replay a frame that has already been opened.",
+            why: "The single-shot API performs a whole key establishment per message. A context does it once and then keeps a sequence number that both ends advance per frame, folding it into each nonce - which is what turns reordering and replay into decryption failures instead of silent acceptance.",
+            expect: "One 32-byte encapsulation covers all four frames, and every frame round-trips True. Sealing the same plaintext twice gives different bytes (True) because the sequence advanced between them. The out-of-order and replayed frames are both rejected with CryptographicException, since the receiver's nonce for that position no longer matches.");
 
         using var recipient = Parties.CreateRecipient();
         var recipientPublicKey = recipient.ExportPublicKey();
