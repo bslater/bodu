@@ -22,7 +22,22 @@ public static class AuthoringCompanyHolidays
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Authoring company holidays with the fluent builder ---");
+        SampleConsole.Scenario(
+            "Authoring a calendar from scratch",
+            what: "Builds a company calendar with three concepts - a fixed founding day, a fortnightly all-hands "
+                + "from a recurrence source, and a year-end shutdown whose span is calculated - then resolves "
+                + "thirteen months so the cross-year shutdown is visible whole.",
+            why: "The engine exists to answer questions about holidays nobody tabulated, and that has to include "
+                + "a company's own. The point of the builder is that it produces the same document a data pack "
+                + "ships: rules are data, so this calendar could equally have been hand-written as XML and "
+                + "committed, and the resulting service is the same type the regional packs return. The shutdown "
+                + "is the interesting concept because its length is not a constant - it runs from the last "
+                + "working day before Boxing Day to the day before business resumes, so its duration changes "
+                + "every year and it crosses the year boundary. Expressing that declaratively rather than as code "
+                + "is what the calculated-duration strategies are for.",
+            expect: "One document, three concepts, and occurrences that differ in kind: a single fixed date, a "
+                + "recurring event appearing many times, and a multi-day span reporting its own duration and end "
+                + "date. The shutdown spans December into January from one occurrence rather than two.");
 
         // A company calendar: a fixed founding day, a fortnightly all-hands (a recurrence source), and a year-end
         // shutdown authored as a single concept whose span is calculated. The shutdown starts the Friday before Boxing
@@ -51,8 +66,10 @@ public static class AuthoringCompanyHolidays
 
         // Resolve December 2024 into January 2025 so the cross-year shutdown span is visible in full.
         foreach (NotableDate date in service.Resolve(new DateRange(new DateOnly(2024, 1, 1), new DateOnly(2025, 1, 31)), "AU"))
-            Console.WriteLine($"  {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName,-22} " +
-                $"{date.Category}, non-working: {date.IsNonWorkingDay}, spans {date.DurationDays}d (ends {date.EndDate:yyyy-MM-dd})");
+            Console.WriteLine($"    {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName,-22} "
+                + $"{date.Category}, non-working: {date.IsNonWorkingDay}, spans {date.DurationDays}d (ends {date.EndDate:yyyy-MM-dd})");
+
+        Console.WriteLine("  (three kinds of occurrence from one document: a fixed date, a recurring event repeating many times, and a multi-day span that reports its own duration)");
 
         Console.WriteLine();
     }
