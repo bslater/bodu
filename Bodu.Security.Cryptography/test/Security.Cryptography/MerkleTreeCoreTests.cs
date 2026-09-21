@@ -190,4 +190,128 @@ public sealed class MerkleTreeCoreTests
     /// <param name="value">The bytes to convert.</param>
     /// <returns>The lowercase hex encoding.</returns>
     private static string Hex(ReadOnlySpan<byte> value) => Convert.ToHexString(value).ToLowerInvariant();
+
+    /// <summary>
+    /// Verifies that the parallel stream loop hands out exactly the leaf sequence and byte count the sequential loop
+    /// produces, at every degree of parallelism and across a batch boundary.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The degree of parallelism to request.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(-1)]
+    public void ForEachLeafHashParallel_WhenComparedWithTheSequentialLoop_ShouldReportTheSameLeavesInOrder(int maxDegreeOfParallelism)
+    {
+        byte[] input = SeededInput(300 * 64 + 37);
+        using HashAlgorithm hasher = SHA256.Create();
+        int hashLength = hasher.HashSize / 8;
+
+        List<byte[]> expected = [];
+        long expectedLength = MerkleTreeCore.ForEachLeafHash(new MemoryStream(input), 64, hasher, hashLength, expected.Add, CancellationToken.None);
+
+        List<byte[]> actual = [];
+        long actualLength = MerkleTreeCore.ForEachLeafHashParallel(
+            new MemoryStream(input), 64, SHA256.Create, hashLength, maxDegreeOfParallelism, actual.Add, CancellationToken.None);
+
+        Assert.AreEqual(expectedLength, actualLength);
+        Assert.AreEqual(input.Length, actualLength);
+        CollectionAssert.AreEqual(expected.Select(h => Hex(h)).ToList(), actual.Select(h => Hex(h)).ToList());
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous loops, sequential and parallel, hand out the same leaf sequence and byte count as
+    /// the synchronous sequential loop.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The degree of parallelism to request, or zero for the sequential loop.</param>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(-1)]
+    public async Task ForEachLeafHashAsync_WhenComparedWithTheSequentialLoop_ShouldReportTheSameLeavesInOrder(int maxDegreeOfParallelism)
+    {
+        byte[] input = SeededInput(300 * 64 + 37);
+        using HashAlgorithm hasher = SHA256.Create();
+        int hashLength = hasher.HashSize / 8;
+
+        List<byte[]> expected = [];
+        long expectedLength = MerkleTreeCore.ForEachLeafHash(new MemoryStream(input), 64, hasher, hashLength, expected.Add, CancellationToken.None);
+
+        List<byte[]> actual = [];
+        long actualLength = maxDegreeOfParallelism == 0
+            ? await MerkleTreeCore.ForEachLeafHashAsync(new MemoryStream(input), 64, hasher, hashLength, actual.Add, CancellationToken.None)
+            : await MerkleTreeCore.ForEachLeafHashParallelAsync(
+                new MemoryStream(input), 64, SHA256.Create, hashLength, maxDegreeOfParallelism, actual.Add, CancellationToken.None);
+
+        Assert.AreEqual(expectedLength, actualLength);
+        CollectionAssert.AreEqual(expected.Select(h => Hex(h)).ToList(), actual.Select(h => Hex(h)).ToList());
+    }
+
+    /// <summary>
+    /// Verifies that hashing a buffer's blocks in parallel yields the same leaves as the sequential stream loop, and
+    /// that an empty buffer yields no leaves.
+    /// </summary>
+    [TestMethod]
+    public void HashLeavesParallel_WhenGivenABuffer_ShouldReportTheSameLeavesAsTheStreamLoop()
+    {
+        byte[] input = SeededInput(300 * 64 + 37);
+        using HashAlgorithm hasher = SHA256.Create();
+        int hashLength = hasher.HashSize / 8;
+
+        List<byte[]> expected = [];
+        _ = MerkleTreeCore.ForEachLeafHash(new MemoryStream(input), 64, hasher, hashLength, expected.Add, CancellationToken.None);
+
+        byte[][] actual = MerkleTreeCore.HashLeavesParallel(input, 64, SHA256.Create, hashLength, -1, CancellationToken.None);
+
+        CollectionAssert.AreEqual(expected.Select(h => Hex(h)).ToList(), actual.Select(h => Hex(h)).ToList());
+        Assert.AreEqual(0, MerkleTreeCore.HashLeavesParallel(ReadOnlyMemory<byte>.Empty, 64, SHA256.Create, hashLength, -1, CancellationToken.None).Length);
+    }
+
+    /// <summary>
+    /// Verifies that a leaf algorithm faulting inside a parallel worker surfaces its own exception rather than an
+    /// <see cref="AggregateException" />.
+    /// </summary>
+    [TestMethod]
+    public void HashLeavesParallel_WhenAWorkerFaults_ShouldSurfaceTheInnerException()
+    {
+        byte[] input = SeededInput(8 * 64);
+
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = MerkleTreeCore.HashLeavesParallel(input, 64, static () => new FaultingAlgorithm(), 32, -1, CancellationToken.None);
+        });
+
+        Assert.AreEqual("faulted leaf", ex.Message);
+    }
+
+    /// <summary>
+    /// Returns a deterministic pseudo-random input of the given length.
+    /// </summary>
+    /// <param name="length">The number of bytes.</param>
+    /// <returns>The bytes.</returns>
+    private static byte[] SeededInput(int length)
+    {
+        byte[] bytes = new byte[length];
+        new Random(0x6962).NextBytes(bytes);
+        return bytes;
+    }
+
+    /// <summary>
+    /// A hash algorithm whose every computation faults, standing in for a broken leaf hasher.
+    /// </summary>
+    private sealed class FaultingAlgorithm : HashAlgorithm
+    {
+        /// <inheritdoc />
+        public override void Initialize()
+        {
+        }
+
+        /// <inheritdoc />
+        protected override void HashCore(byte[] array, int ibStart, int cbSize) =>
+            throw new InvalidOperationException("faulted leaf");
+
+        /// <inheritdoc />
+        protected override byte[] HashFinal() =>
+            throw new InvalidOperationException("faulted leaf");
+    }
 }

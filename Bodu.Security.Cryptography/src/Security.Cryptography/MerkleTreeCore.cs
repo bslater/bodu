@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Numerics;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -435,23 +436,14 @@ internal static class MerkleTreeCore
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                int filled = 0;
-                while (filled < blockSize)
-                {
-                    int read = source.Read(rented, 1 + filled, blockSize - filled);
-                    if (read <= 0)
-                        break;
-
-                    filled += read;
-                }
-
+                int filled = FillBlock(source, rented, blockSize);
                 if (filled == 0)
                     break;
 
                 inputLength += filled;
                 onLeafHash(HashBuffer(hasher, hashLength, rented.AsSpan(0, 1 + filled)));
 
-                // A partially-filled block can only be the last: the inner loop exits early solely on end of stream.
+                // A partially-filled block can only be the last: the fill exits early solely on end of stream.
                 if (filled < blockSize)
                     break;
             }
@@ -462,5 +454,483 @@ internal static class MerkleTreeCore
         }
 
         return inputLength;
+    }
+
+    /// <summary>
+    /// Reads a stream forward in fixed-size blocks asynchronously, invoking <paramref name="onLeafHash" /> with each
+    /// block's leaf hash in order.
+    /// </summary>
+    /// <param name="source">The stream to read.</param>
+    /// <param name="blockSize">The size, in bytes, of each block.</param>
+    /// <param name="hasher">The algorithm to hash with.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="onLeafHash">Invoked once per block, in block order, on the continuation thread.</param>
+    /// <param name="cancellationToken">A token observed between blocks and by every read.</param>
+    /// <returns>The total number of bytes read.</returns>
+    /// <remarks>
+    /// The asynchronous twin of <see cref="ForEachLeafHash" />: the same buffer layout, the same short-read top-up and
+    /// the same end-of-stream rule, with <see cref="Stream.ReadAsync(Memory{byte}, CancellationToken)" /> in place of
+    /// the blocking read.
+    /// </remarks>
+    internal static async ValueTask<long> ForEachLeafHashAsync(
+        Stream source,
+        int blockSize,
+        HashAlgorithm hasher,
+        int hashLength,
+        Action<byte[]> onLeafHash,
+        CancellationToken cancellationToken)
+    {
+        long inputLength = 0;
+        byte[] rented = ArrayPool<byte>.Shared.Rent(blockSize + 1);
+        try
+        {
+            rented[0] = MerkleTreeFormat.LeafPrefix;
+
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                int filled = await FillBlockAsync(source, rented, blockSize, cancellationToken).ConfigureAwait(false);
+                if (filled == 0)
+                    break;
+
+                inputLength += filled;
+                onLeafHash(HashBuffer(hasher, hashLength, rented.AsSpan(0, 1 + filled)));
+
+                if (filled < blockSize)
+                    break;
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented, clearArray: true);
+        }
+
+        return inputLength;
+    }
+
+    /// <summary>
+    /// Reads a stream forward in fixed-size blocks, hashing each batch of blocks concurrently and invoking
+    /// <paramref name="onLeafHash" /> with every leaf hash in block order.
+    /// </summary>
+    /// <param name="source">The stream to read.</param>
+    /// <param name="blockSize">The size, in bytes, of each block.</param>
+    /// <param name="algorithmFactory">Supplies one fresh algorithm per worker.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of blocks to hash concurrently, or <c>-1</c> for the processor count.
+    /// </param>
+    /// <param name="onLeafHash">Invoked once per block, in block order, on the calling thread.</param>
+    /// <param name="cancellationToken">A token observed between batches and by the parallel loop.</param>
+    /// <returns>The total number of bytes read.</returns>
+    /// <remarks>
+    /// The stream is read sequentially into a batch of <c>min(maxDegreeOfParallelism, 256)</c> buffers, the batch is
+    /// hashed by <see cref="Parallel" /> with one algorithm per worker, and the hashes are then handed to
+    /// <paramref name="onLeafHash" /> in order from the calling thread, so a fold or an observer downstream never sees
+    /// concurrent or out-of-order calls. A worker fault surfaces as itself rather than as an
+    /// <see cref="AggregateException" />.
+    /// </remarks>
+    internal static long ForEachLeafHashParallel(
+        Stream source,
+        int blockSize,
+        Func<HashAlgorithm> algorithmFactory,
+        int hashLength,
+        int maxDegreeOfParallelism,
+        Action<byte[]> onLeafHash,
+        CancellationToken cancellationToken)
+    {
+        var batch = new LeafBatch(blockSize, maxDegreeOfParallelism, cancellationToken);
+        long inputLength = 0;
+        try
+        {
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                int filledBlocks = batch.Fill(source);
+                if (filledBlocks == 0)
+                    break;
+
+                inputLength += batch.HashAndReport(filledBlocks, algorithmFactory, hashLength, onLeafHash);
+                if (batch.EndedInPartialBlock(filledBlocks))
+                    break;
+            }
+        }
+        finally
+        {
+            batch.Return();
+        }
+
+        return inputLength;
+    }
+
+    /// <summary>
+    /// Reads a stream forward in fixed-size blocks asynchronously, hashing each batch of blocks concurrently and
+    /// invoking <paramref name="onLeafHash" /> with every leaf hash in block order.
+    /// </summary>
+    /// <param name="source">The stream to read.</param>
+    /// <param name="blockSize">The size, in bytes, of each block.</param>
+    /// <param name="algorithmFactory">Supplies one fresh algorithm per worker.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of blocks to hash concurrently, or <c>-1</c> for the processor count.
+    /// </param>
+    /// <param name="onLeafHash">Invoked once per block, in block order, on the continuation thread.</param>
+    /// <param name="cancellationToken">
+    /// A token observed between batches, by every read and by the parallel loop.
+    /// </param>
+    /// <returns>The total number of bytes read.</returns>
+    /// <remarks>
+    /// The asynchronous twin of <see cref="ForEachLeafHashParallel" />: reads are awaited, and each filled batch is
+    /// hashed on the thread pool before the continuation reports its hashes in order.
+    /// </remarks>
+    internal static async ValueTask<long> ForEachLeafHashParallelAsync(
+        Stream source,
+        int blockSize,
+        Func<HashAlgorithm> algorithmFactory,
+        int hashLength,
+        int maxDegreeOfParallelism,
+        Action<byte[]> onLeafHash,
+        CancellationToken cancellationToken)
+    {
+        var batch = new LeafBatch(blockSize, maxDegreeOfParallelism, cancellationToken);
+        long inputLength = 0;
+        try
+        {
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                int filledBlocks = await batch.FillAsync(source).ConfigureAwait(false);
+                if (filledBlocks == 0)
+                    break;
+
+                inputLength += batch.HashAndReport(filledBlocks, algorithmFactory, hashLength, onLeafHash);
+                if (batch.EndedInPartialBlock(filledBlocks))
+                    break;
+            }
+        }
+        finally
+        {
+            batch.Return();
+        }
+
+        return inputLength;
+    }
+
+    /// <summary>
+    /// Hashes the fixed-size blocks of a buffer concurrently, one leaf hash per block index.
+    /// </summary>
+    /// <param name="source">The bytes to divide into blocks.</param>
+    /// <param name="blockSize">The size, in bytes, of each block.</param>
+    /// <param name="algorithmFactory">Supplies one fresh algorithm per worker.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of blocks to hash concurrently, or <c>-1</c> for the processor count.
+    /// </param>
+    /// <param name="cancellationToken">A token the parallel loop observes.</param>
+    /// <returns>The leaf hashes in block order; empty for an empty input.</returns>
+    /// <remarks>
+    /// Every block is sliced and hashed inside its own worker, so the whole per-block cost parallelizes — the reason
+    /// this scales closer to the core count than the stream loops, which must copy each block on the calling thread.
+    /// </remarks>
+    internal static byte[][] HashLeavesParallel(
+        ReadOnlyMemory<byte> source,
+        int blockSize,
+        Func<HashAlgorithm> algorithmFactory,
+        int hashLength,
+        int maxDegreeOfParallelism,
+        CancellationToken cancellationToken)
+    {
+        long count = BlockCount(source.Length, blockSize);
+        if (count == 0)
+            return [];
+
+        byte[][] leafHashes = new byte[count][];
+        RunParallel(() => Parallel.For(
+            0L,
+            count,
+            CreateOptions(maxDegreeOfParallelism, cancellationToken),
+            algorithmFactory,
+            (index, _, hasher) =>
+            {
+                int offset = (int)BlockOffset(index, blockSize);
+                int length = BlockLength(source.Length, index, blockSize);
+                leafHashes[index] = HashWithPrefix(hasher, hashLength, MerkleTreeFormat.LeafPrefix, source.Slice(offset, length).Span);
+                return hasher;
+            },
+            static hasher => hasher.Dispose()));
+
+        return leafHashes;
+    }
+
+    /// <summary>
+    /// Hashes an ordered sequence of entries concurrently, one leaf hash per entry.
+    /// </summary>
+    /// <param name="entries">The entries, in order.</param>
+    /// <param name="algorithmFactory">Supplies one fresh algorithm per worker.</param>
+    /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+    /// <param name="maxDegreeOfParallelism">
+    /// The greatest number of entries to hash concurrently, or <c>-1</c> for the processor count.
+    /// </param>
+    /// <param name="cancellationToken">A token the parallel loop observes.</param>
+    /// <returns>The leaf hashes in entry order; empty for no entries.</returns>
+    internal static byte[][] HashLeavesParallel(
+        IReadOnlyList<ReadOnlyMemory<byte>> entries,
+        Func<HashAlgorithm> algorithmFactory,
+        int hashLength,
+        int maxDegreeOfParallelism,
+        CancellationToken cancellationToken)
+    {
+        if (entries.Count == 0)
+            return [];
+
+        byte[][] leafHashes = new byte[entries.Count][];
+        RunParallel(() => Parallel.For(
+            0,
+            entries.Count,
+            CreateOptions(maxDegreeOfParallelism, cancellationToken),
+            algorithmFactory,
+            (index, _, hasher) =>
+            {
+                leafHashes[index] = HashWithPrefix(hasher, hashLength, MerkleTreeFormat.LeafPrefix, entries[index].Span);
+                return hasher;
+            },
+            static hasher => hasher.Dispose()));
+
+        return leafHashes;
+    }
+
+    /// <summary>
+    /// Fills one block buffer from a stream, topping up short reads until the block is full or the stream ends.
+    /// </summary>
+    /// <param name="source">The stream to read.</param>
+    /// <param name="buffer">
+    /// The buffer, holding the leaf prefix at index zero; the block is read from index one.
+    /// </param>
+    /// <param name="blockSize">The size, in bytes, of a full block.</param>
+    /// <returns>The number of payload bytes read; zero at end of stream.</returns>
+    private static int FillBlock(Stream source, byte[] buffer, int blockSize)
+    {
+        int filled = 0;
+        while (filled < blockSize)
+        {
+            int read = source.Read(buffer, 1 + filled, blockSize - filled);
+            if (read <= 0)
+                break;
+
+            filled += read;
+        }
+
+        return filled;
+    }
+
+    /// <summary>
+    /// Fills one block buffer from a stream asynchronously, topping up short reads until the block is full or the
+    /// stream ends.
+    /// </summary>
+    /// <param name="source">The stream to read.</param>
+    /// <param name="buffer">
+    /// The buffer, holding the leaf prefix at index zero; the block is read from index one.
+    /// </param>
+    /// <param name="blockSize">The size, in bytes, of a full block.</param>
+    /// <param name="cancellationToken">A token every read observes.</param>
+    /// <returns>The number of payload bytes read; zero at end of stream.</returns>
+    private static async ValueTask<int> FillBlockAsync(Stream source, byte[] buffer, int blockSize, CancellationToken cancellationToken)
+    {
+        int filled = 0;
+        while (filled < blockSize)
+        {
+            int read = await source
+                .ReadAsync(buffer.AsMemory(1 + filled, blockSize - filled), cancellationToken)
+                .ConfigureAwait(false);
+            if (read <= 0)
+                break;
+
+            filled += read;
+        }
+
+        return filled;
+    }
+
+    /// <summary>
+    /// Builds the options for a parallel leaf loop.
+    /// </summary>
+    /// <param name="maxDegreeOfParallelism">The degree limit, or <c>-1</c> for no limit.</param>
+    /// <param name="cancellationToken">The token the loop observes.</param>
+    /// <returns>The options.</returns>
+    private static ParallelOptions CreateOptions(int maxDegreeOfParallelism, CancellationToken cancellationToken) =>
+        new() { MaxDegreeOfParallelism = maxDegreeOfParallelism, CancellationToken = cancellationToken };
+
+    /// <summary>
+    /// Runs a parallel loop and surfaces a worker fault as itself rather than wrapped in an
+    /// <see cref="AggregateException" />, so a faulting leaf algorithm is reported the way a sequential computation
+    /// reports it.
+    /// </summary>
+    /// <param name="loop">The parallel loop to run.</param>
+    /// <remarks>
+    /// Cancellation surfaces as the <see cref="OperationCanceledException" /> the loop itself throws. Every worker's
+    /// algorithm is disposed by the loop's local finalizer whether the loop completes, faults or is cancelled. Several
+    /// workers can fault on the same input at once; the first fault is the one a sequential computation would have
+    /// raised, and the others are its echoes.
+    /// </remarks>
+    private static void RunParallel(Action loop)
+    {
+        try
+        {
+            loop();
+        }
+        catch (AggregateException ex) when (ex.InnerExceptions.Count > 0)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerExceptions[0]).Throw();
+        }
+    }
+
+    /// <summary>
+    /// The rented block buffers, lengths and hashes of one parallel batch, with the fill, hash and return steps the
+    /// synchronous and asynchronous stream loops share.
+    /// </summary>
+    private sealed class LeafBatch
+    {
+        /// <summary>The size, in bytes, of a full block.</summary>
+        private readonly int _blockSize;
+
+        /// <summary>The options every batch's parallel loop runs under.</summary>
+        private readonly ParallelOptions _options;
+
+        /// <summary>The rented buffers, each holding the leaf prefix at index zero once first used.</summary>
+        private readonly byte[]?[] _buffers;
+
+        /// <summary>The number of payload bytes in each buffer.</summary>
+        private readonly int[] _lengths;
+
+        /// <summary>Each block's leaf hash at its own position within the batch.</summary>
+        private readonly byte[][] _hashes;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LeafBatch" /> class.
+        /// </summary>
+        /// <param name="blockSize">The size, in bytes, of a full block.</param>
+        /// <param name="maxDegreeOfParallelism">The degree limit, which also sizes the batch.</param>
+        /// <param name="cancellationToken">The token the parallel loop observes.</param>
+        internal LeafBatch(int blockSize, int maxDegreeOfParallelism, CancellationToken cancellationToken)
+        {
+            int batchSize = ResolveBatchSize(maxDegreeOfParallelism);
+            _blockSize = blockSize;
+            _options = CreateOptions(maxDegreeOfParallelism, cancellationToken);
+            _buffers = new byte[]?[batchSize];
+            _lengths = new int[batchSize];
+            _hashes = new byte[batchSize][];
+        }
+
+        /// <summary>
+        /// Fills the batch sequentially from a stream until it is full, the stream ends, or a block comes up short.
+        /// </summary>
+        /// <param name="source">The stream to read.</param>
+        /// <returns>The number of buffers holding a block; zero at end of stream.</returns>
+        internal int Fill(Stream source)
+        {
+            int filledBlocks = 0;
+            while (filledBlocks < _buffers.Length)
+            {
+                int filled = FillBlock(source, Rent(filledBlocks), _blockSize);
+                if (filled == 0)
+                    break;
+
+                _lengths[filledBlocks++] = filled;
+                if (filled < _blockSize)
+                    break;
+            }
+
+            return filledBlocks;
+        }
+
+        /// <summary>
+        /// Fills the batch sequentially from a stream asynchronously until it is full, the stream ends, or a block
+        /// comes up short.
+        /// </summary>
+        /// <param name="source">The stream to read.</param>
+        /// <returns>The number of buffers holding a block; zero at end of stream.</returns>
+        internal async ValueTask<int> FillAsync(Stream source)
+        {
+            int filledBlocks = 0;
+            while (filledBlocks < _buffers.Length)
+            {
+                int filled = await FillBlockAsync(source, Rent(filledBlocks), _blockSize, _options.CancellationToken).ConfigureAwait(false);
+                if (filled == 0)
+                    break;
+
+                _lengths[filledBlocks++] = filled;
+                if (filled < _blockSize)
+                    break;
+            }
+
+            return filledBlocks;
+        }
+
+        /// <summary>
+        /// Hashes the filled blocks concurrently, one algorithm per worker, then reports the hashes in block order from
+        /// the calling thread.
+        /// </summary>
+        /// <param name="filledBlocks">The number of buffers holding a block.</param>
+        /// <param name="algorithmFactory">Supplies one fresh algorithm per worker.</param>
+        /// <param name="hashLength">The algorithm's digest length, in bytes.</param>
+        /// <param name="onLeafHash">Receives each leaf hash in block order.</param>
+        /// <returns>The number of payload bytes the batch holds.</returns>
+        internal long HashAndReport(int filledBlocks, Func<HashAlgorithm> algorithmFactory, int hashLength, Action<byte[]> onLeafHash)
+        {
+            RunParallel(() => Parallel.For(
+                0,
+                filledBlocks,
+                _options,
+                algorithmFactory,
+                (offset, _, hasher) =>
+                {
+                    _hashes[offset] = HashBuffer(hasher, hashLength, _buffers[offset].AsSpan(0, 1 + _lengths[offset]));
+                    return hasher;
+                },
+                static hasher => hasher.Dispose()));
+
+            long bytes = 0;
+            for (int offset = 0; offset < filledBlocks; offset++)
+            {
+                bytes += _lengths[offset];
+                onLeafHash(_hashes[offset]);
+            }
+
+            return bytes;
+        }
+
+        /// <summary>
+        /// Returns whether the last filled block was short, which only the end of the stream can cause.
+        /// </summary>
+        /// <param name="filledBlocks">The number of buffers holding a block.</param>
+        /// <returns><see langword="true" /> when the stream is exhausted.</returns>
+        internal bool EndedInPartialBlock(int filledBlocks) =>
+            _lengths[filledBlocks - 1] < _blockSize;
+
+        /// <summary>
+        /// Returns every rented buffer to the pool, clearing its contents.
+        /// </summary>
+        internal void Return()
+        {
+            foreach (byte[]? buffer in _buffers)
+            {
+                if (buffer is not null)
+                    ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+            }
+        }
+
+        /// <summary>
+        /// Rents the buffer at a batch position on first use and stamps the leaf prefix into it.
+        /// </summary>
+        /// <param name="offset">The position within the batch.</param>
+        /// <returns>The buffer, ready to receive a block from index one.</returns>
+        private byte[] Rent(int offset)
+        {
+            byte[] buffer = _buffers[offset] ??= ArrayPool<byte>.Shared.Rent(_blockSize + 1);
+            buffer[0] = MerkleTreeFormat.LeafPrefix;
+            return buffer;
+        }
     }
 }
