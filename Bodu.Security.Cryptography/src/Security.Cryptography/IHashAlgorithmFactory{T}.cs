@@ -28,9 +28,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>How it is consumed.</strong> Pass the factory to the static helpers on <see cref="HashAlgorithmHelper" />,
-/// <see cref="MerkleTreeHash" />, or <see cref="ParallelMerkleTreeHash" />. Each call gets a fresh, fully configured
-/// algorithm instance — the callers do not need to manage <see cref="System.IDisposable" /> lifecycles or
-/// thread-safety.
+/// or its <see cref="Create" /> method to <see cref="MerkleTree" />. Each call gets a fresh, fully configured algorithm
+/// instance — the callers do not need to manage <see cref="System.IDisposable" /> lifecycles or thread-safety.
 /// </para>
 /// <para>
 /// The type argument <typeparamref name="T" /> must derive from <see cref="HashAlgorithm" />.

@@ -18,8 +18,7 @@ This page is the cross-cutting overview — what guarantee a cryptographic hash 
 - [Using Skein](skein.md) — Threefish-based UBI digests with a MAC mode.
 - [Using SHAKE](shake.md) — Keccak extendable-output function (FIPS 202).
 - [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) — NIST SP 800-232 sponge digests; two variants trading margin for throughput.
-- [Using Merkle trees](merkle-trees.md) — tree-structured streaming integrity, level by level.
-- [RFC 6962 Merkle trees and proofs](../core/rfc6962-merkle-trees.md) — the standard's tree, with inclusion and consistency proofs (`Bodu.Collections.Specialized`).
+- [Merkle trees and proofs](merkle-trees.md) — the RFC 6962 tree over any inner `HashAlgorithm`: roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.
 
 > **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/index.md).
 
@@ -41,7 +40,7 @@ The cryptographic hashes here share the <xref:System.Security.Cryptography.HashA
 |---|---|---|---|
 | **Plain digest** | Fixed width chosen at construction | <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.Whirlpool>, <xref:Bodu.Security.Cryptography.CubeHash>, <xref:Bodu.Security.Cryptography.Snefru128>, <xref:Bodu.Security.Cryptography.Blake2b>, <xref:Bodu.Security.Cryptography.Skein512>, <xref:Bodu.Security.Cryptography.AsconHash256> | Content addressing, signature inputs, fingerprints. |
 | **Extendable output (XOF)** | Any requested length | <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128> | Squeeze arbitrary-length key material or deterministic randomness from a seed. |
-| **Tree** | Root digest over parallel leaves | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Verifiable per-chunk inclusion proofs; partial re-verification. |
+| **Tree** | Root digest over hashed leaves | <xref:Bodu.Security.Cryptography.MerkleTree> | Verifiable per-chunk inclusion proofs; partial re-verification. |
 
 Two families on this page take a **secret key** in addition to the message and produce an authentication tag — and they split on a critical axis:
 
@@ -68,7 +67,7 @@ The <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> helpers
 | A hash-table key or short fingerprint, resistant to collision-DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
 | A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or `System.Security.Cryptography.SHA256` (BCL) | Collision-resistant against active attackers. |
 | A NIST-standardized 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> | Two variants: max margin (`ASCON-HASH256`) or higher throughput (`ASCON-HASHA256`). |
-| A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Subtree recomputation without rehashing the whole input. |
+| A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTree> | Per-block inclusion proofs without rehashing the whole input. |
 | An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum | <xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | Non-cryptographic, `System.IO.Hashing` contract — see the [Bodu.IO.Hashing guides](../io-hashing/index.md). |
 
 ## Pattern 1 — a classic non-cryptographic fingerprint
@@ -192,29 +191,26 @@ For a larger file where you want partial verifiability — "the first megabyte's
 
 ## Pattern 6 — Merkle trees
 
-<xref:Bodu.Security.Cryptography.MerkleTreeHash> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and reducing the leaves level-by-level. The intermediate hashes can later prove integrity of an individual chunk without rehashing the whole stream.
+<xref:Bodu.Security.Cryptography.MerkleTree> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and folding the leaves into RFC 6962's Merkle Tree Hash. The root is the one any RFC 6962 implementation computes over the same blocks, so an inclusion proof from the same type can later prove the integrity of an individual chunk without rehashing the whole stream.
 
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-using var merkle = new MerkleTreeHash(
-    algorithmFactory: () => SHA256.Create(),
-    blockSize: 4096,
-    fanOut: 2);
+var merkle = new MerkleTree(SHA256.Create);      // immutable; share it across threads
 
 using var stream = File.OpenRead("archive.bin");
-byte[] root = merkle.ComputeHash(stream);
+byte[] root = merkle.ComputeRootOfBlocks(stream, blockSize: 4096);
 ```
 
-Each leaf is a SHA-256 of a 4 KiB block; each internal node is a SHA-256 of two concatenated child hashes. The root changes if any byte of the input changes.
+Each leaf is a SHA-256 of `0x00` and a 4 KiB block; each internal node is a SHA-256 of `0x01` and two concatenated child hashes; a lone node is promoted unchanged. The root changes if any byte of the input changes.
 
-For large inputs where you want to overlap leaf hashing with tree reduction, use <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — see the class documentation for the swim-lane diagram of how its dispatcher and level-workers interact.
+For large inputs where leaf hashing dominates, construct the tree with `maxDegreeOfParallelism: -1` to hash leaves on several cores and fold them in order into the same tree; to build the root from the same write calls that feed a flat digest, use `CreateBlockAccumulator` — see [Merkle trees and proofs](merkle-trees.md).
 
 ## Where to go next
 
 - [Encryption basics](encryption-basics.md) — symmetric encryption in this library.
 - [Cipher block modes](cipher-modes.md) — ECB / CBC / CFB / OFB / CTR with worked examples.
 - [Bodu.IO.Hashing guides](../io-hashing/index.md) — CRC, Fletcher, Adler, FNV, CityHash, and the classic string hashes on `System.IO.Hashing.NonCryptographicHashAlgorithm`.
-- <xref:Bodu.Security.Cryptography.MerkleTreeHash> · <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>.
+- <xref:Bodu.Security.Cryptography.MerkleTree> · <xref:Bodu.Security.Cryptography.MerkleBlockAccumulator>.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

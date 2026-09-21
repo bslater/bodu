@@ -235,9 +235,6 @@
   <data name="Op_Invalid_MemoryStreamBufferInaccessible" xml:space="preserve">
     <value>The MemoryStream does not expose its underlying buffer.</value>
   </data>
-  <data name="Op_Invalid_NoInputData" xml:space="preserve">
-    <value>No input data was provided.</value>
-  </data>
   <data name="Op_Invalid_PropertySetAfterStreamWrite" xml:space="preserve">
     <value>The property '{0}' cannot be changed after the first write to the stream.</value>
   </data>
@@ -309,9 +306,6 @@
   </data>
   <data name="Op_Invalid_GcmTransformCompleted" xml:space="preserve">
     <value>This GCM transform has already completed and cannot be reused. Create a new instance per message.</value>
-  </data>
-  <data name="Op_Invalid_MerkleChannelCompleted" xml:space="preserve">
-    <value>Write to level-{0} channel failed. The channel was completed before all nodes were submitted.</value>
   </data>
   <data name="Arg_OutOfRange_Argon2Parallelism" xml:space="preserve">
     <value>Argon2 parallelism must be between 1 and {0}.</value>
@@ -427,6 +421,9 @@
   <data name="Arg_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
     <value>The hash algorithm factory returned null.</value>
   </data>
+  <data name="Op_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
+    <value>The hash algorithm factory returned null.</value>
+  </data>
   <data name="Arg_Invalid_MerkleHashLengthNotPositive" xml:space="preserve">
     <value>The hash algorithm reported a digest length that is not positive.</value>
   </data>
@@ -441,5 +438,14 @@
   </data>
   <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
     <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
+  </data>
+  <data name="Op_Invalid_MerkleAccumulatorFinished" xml:space="preserve">
+    <value>The accumulator has been finished; call Reset before appending further input.</value>
+  </data>
+  <data name="Op_Invalid_MerkleLeafHashesNotRetained" xml:space="preserve">
+    <value>Leaf hashes were not retained; create the accumulator with retainLeafHashes set to true to obtain a MerkleBlockComputation.</value>
+  </data>
+  <data name="Op_NotSupported_MerkleProofsRequireBinaryTree" xml:space="preserve">
+    <value>Authentication paths, consistency proofs and their verifiers are defined only for RFC 6962's binary tree; this instance was created with a fan-out of {0}.</value>
   </data>
 </root>

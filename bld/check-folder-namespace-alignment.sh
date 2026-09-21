@@ -38,7 +38,7 @@ is_asset_path() {
 }
 
 # Prints the namespace a file takes in the project that physically owns it. Source compiled into more
-# than one project switches namespace with '#if <SYMBOL>' (Bodu.Collections/shared/**, the Outlook shared
+# than one project switches namespace with '#if <SYMBOL>' (the Outlook shared
 # test sources under Bodu.Formats.Outlook.Msg/test/). The owning project does not define the symbol, so
 # its namespace is the declaration in an '#else' branch or outside any conditional; the '#if' branch is
 # what the file becomes when linked into the other project. Falls back to the first declaration when

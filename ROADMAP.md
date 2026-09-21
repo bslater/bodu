@@ -40,9 +40,10 @@ step 3, the **running-statistics aggregates**, has landed as well
 (`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
 rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
 **completing the Numerics growth wave** (see Active focus).
-`Bodu.Security.Cryptography` also gained **Merkle
-tree hashing** (`MerkleTreeHash` / `ParallelMerkleTreeHash` with
-RFC 6962-style leaf/node domain separation and length binding), an
+`Bodu.Security.Cryptography` also gained the **RFC 6962 Merkle
+tree** (`MerkleTree` — roots over entries, blocks, or a write-time
+`MerkleBlockAccumulator`, inclusion and consistency proofs, length-bound
+roots, parallel leaf hashing as a constructor option), an
 untrusted-input **hardening pass** swept the parsers and AEAD
 transforms (bounds validation in the calendar-document and CFB-sector
 readers, a constant-time GCM-SIV GF multiply, EAX CMAC zeroing on
@@ -599,12 +600,12 @@ the asymmetric family (X25519, Ed25519, ML-KEM 512/768/1024, ML-DSA
 (RFC 9180)** with the DH-KEM-X25519 KEM and preset suites.
 
 Also shipped: **one-time-password codes** — `Hotp` (RFC 4226) and `Totp`
-(RFC 6238) sit in the flat namespace beside the KDFs — and **Merkle tree
-hashing** — `MerkleTreeHash` and the multi-core `ParallelMerkleTreeHash`
-(configurable hash algorithm, block size, and fan-out) with RFC 6962-style
-leaf/node domain separation and length binding, plus a
-`MerkleTreeDiagnostics` inspection surface and a dedicated docs guide
-(`docs/guides/cryptography/merkle-trees.md`).
+(RFC 6238) sit in the flat namespace beside the KDFs — and the **RFC 6962
+Merkle tree** — the single `MerkleTree` type (configurable hash algorithm,
+block size, fan-out, and degree of parallelism) with roots over entries,
+fixed-size blocks, or the write-time `MerkleBlockAccumulator`, inclusion and
+consistency proofs, length-bound roots, a `MerkleTreeDiagnostics` inspection
+surface, and a dedicated docs guide (`docs/guides/cryptography/merkle-trees.md`).
 
 Forward-looking:
 

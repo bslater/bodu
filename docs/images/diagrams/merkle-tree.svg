@@ -1,7 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 500" role="img" aria-labelledby="merkle-title merkle-desc">
-  <title id="merkle-title">Merkle tree hash construction</title>
-  <desc id="merkle-desc">Input bytes are divided into fixed-size blocks; each block is hashed to a leaf; leaves are grouped by fan-out and combined level-by-level until a single root hash remains. The diagram shows block size (B), fan-out (F = 3), leaf-level hashing, internal-level reduction, the tail-block promotion for inputs that are not a multiple of block size, and the final root.</desc>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 570" role="img" aria-labelledby="merkle-title merkle-desc">
+  <title id="merkle-title">Merkle tree hash construction over fixed-size blocks</title>
+  <desc id="merkle-desc">Input bytes are divided into fixed-size blocks; each block is hashed to a leaf under the 0x00 prefix; leaves are paired and hashed level by level under the 0x01 prefix until a single root hash remains. The diagram shows block size (B), the default fan-out of two, a short final block hashed at its actual length, and a lone leaf promoted to the next level unchanged rather than re-hashed — the RFC 6962 shape.</desc>
   <defs>
     <style>
       .bg { fill: #0F172A; }
@@ -16,8 +15,8 @@
 
       .block { fill: #F59E0B; stroke: #FBBF24; stroke-width: 1; }
       .tail  { fill: #F59E0B; stroke: #EF4444; stroke-width: 1.5; stroke-dasharray: 4 3; }
-      .padding { fill: #0F172A; stroke: #EF4444; stroke-width: 1.2; stroke-dasharray: 3 3; }
       .leaf  { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .promoted { fill: #14B8A6; stroke: #EF4444; stroke-width: 1.5; stroke-dasharray: 4 3; }
       .node  { fill: #3B82F6; stroke: #60A5FA; stroke-width: 1; }
       .root  { fill: #F43F5E; stroke: #FDA4AF; stroke-width: 1.5; }
 
@@ -28,21 +27,21 @@
     </style>
   </defs>
 
-  <rect class="bg" width="820" height="500"/>
+  <rect class="bg" width="820" height="570"/>
 
   <g transform="translate(10 10)">
-    <rect class="panel" width="800" height="480" rx="8"/>
+    <rect class="panel" width="800" height="550" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Merkle Tree — block size B, fan-out F = 3</text>
-    <text class="formula" x="784" y="38" text-anchor="end">leaves: H(Bₖ) · internal: H(child₁ ‖ child₂ ‖ … ‖ child_F) · root: single surviving node</text>
+    <text class="title" x="16" y="20">Merkle Tree — block size B, fan-out F = 2 (RFC 6962)</text>
+    <text class="formula" x="784" y="38" text-anchor="end">leaves: H(0x00 ‖ Bₖ) · internal: H(0x01 ‖ left ‖ right) · lone node: promoted unchanged</text>
 
     <!-- ========================================================== -->
     <!-- Row 1: Input stream sliced into blocks B₁..B₇ (tail B₇ short) -->
     <!-- ========================================================== -->
     <g transform="translate(0 60)">
       <text class="level" x="16" y="12">Input bytes</text>
-      <!-- 6 full blocks + 1 short tail -->
+      <!-- 6 full blocks + 1 short tail, hashed at its actual length -->
       <g font-family="Segoe UI, Arial">
         <rect class="block" x="100" y="0" width="70" height="22" rx="3"/>
         <text class="label" x="135" y="15" fill="#0F172A">B₁</text>
@@ -62,21 +61,18 @@
         <rect class="block" x="500" y="0" width="70" height="22" rx="3"/>
         <text class="label" x="535" y="15" fill="#0F172A">B₆</text>
 
-        <!-- Short tail B₇ (partial) with dashed zero-padding segment -->
+        <!-- Short tail B₇: hashed as-is, never padded to B -->
         <rect class="tail" x="580" y="0" width="40" height="22" rx="3"/>
         <text class="label" x="600" y="15" fill="#0F172A">B₇</text>
-        <rect class="padding" x="620" y="0" width="30" height="22" rx="3"/>
-        <text class="sub-muted" x="635" y="15" text-anchor="middle">0-pad</text>
       </g>
       <text class="sub-muted" x="660" y="15">block size B</text>
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 2: Leaf-level hashing H(Bₖ) -->
+    <!-- Row 2: Leaf-level hashing H(0x00 ‖ Bₖ) -->
     <!-- ========================================================== -->
     <g transform="translate(0 130)">
       <text class="level" x="16" y="12">Level 0 (leaves)</text>
-      <!-- leaves positioned to align with input blocks -->
       <g>
         <circle class="leaf" cx="135" cy="12" r="15"/>
         <text class="hash" x="135" y="16">L₁</text>
@@ -90,10 +86,10 @@
         <text class="hash" x="455" y="16">L₅</text>
         <circle class="leaf" cx="535" cy="12" r="15"/>
         <text class="hash" x="535" y="16">L₆</text>
-        <circle class="leaf" cx="625" cy="12" r="15"/>
-        <text class="hash" x="625" y="16">L₇</text>
+        <circle class="leaf" cx="600" cy="12" r="15"/>
+        <text class="hash" x="600" y="16">L₇</text>
       </g>
-      <!-- Edges from input blocks down to leaves (short vertical) -->
+      <!-- Edges from input blocks down to leaves -->
       <g>
         <line class="edge" x1="135" y1="-38" x2="135" y2="-3"/>
         <line class="edge" x1="215" y1="-38" x2="215" y2="-3"/>
@@ -101,85 +97,98 @@
         <line class="edge" x1="375" y1="-38" x2="375" y2="-3"/>
         <line class="edge" x1="455" y1="-38" x2="455" y2="-3"/>
         <line class="edge" x1="535" y1="-38" x2="535" y2="-3"/>
-        <line class="edge-tail" x1="615" y1="-38" x2="622" y2="-3"/>
+        <line class="edge-tail" x1="600" y1="-38" x2="600" y2="-3"/>
       </g>
-      <text class="sub-muted" x="660" y="16">Lₖ = H(Bₖ)</text>
+      <text class="sub-muted" x="660" y="16">Lₖ = H(0x00 ‖ Bₖ)</text>
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 3: Internal level 1 (fan-out 3) -->
-    <!--   Group (L₁,L₂,L₃) → N₁, (L₄,L₅,L₆) → N₂, (L₇) → N₃ (short group promoted) -->
+    <!-- Row 3: Level 1 — pairs (L₁,L₂) → N₁, (L₃,L₄) → N₂, (L₅,L₆) → N₃; L₇ promoted -->
     <!-- ========================================================== -->
-    <g transform="translate(0 230)">
-      <text class="level" x="16" y="12">Level 1 (fan-out F)</text>
-      <!-- Nodes N₁, N₂, N₃ -->
+    <g transform="translate(0 220)">
+      <text class="level" x="16" y="12">Level 1</text>
       <g>
-        <circle class="node" cx="215" cy="12" r="17"/>
-        <text class="hash" x="215" y="16">N₁</text>
-
-        <circle class="node" cx="455" cy="12" r="17"/>
-        <text class="hash" x="455" y="16">N₂</text>
-
-        <circle class="node" cx="625" cy="12" r="17"/>
-        <text class="hash" x="625" y="16">N₃</text>
+        <circle class="node" cx="175" cy="12" r="17"/>
+        <text class="hash" x="175" y="16">N₁</text>
+        <circle class="node" cx="335" cy="12" r="17"/>
+        <text class="hash" x="335" y="16">N₂</text>
+        <circle class="node" cx="495" cy="12" r="17"/>
+        <text class="hash" x="495" y="16">N₃</text>
+        <!-- L₇ has no sibling: it is carried up as itself, not re-hashed -->
+        <circle class="promoted" cx="600" cy="12" r="15"/>
+        <text class="hash" x="600" y="16">L₇</text>
       </g>
-      <!-- Edges from leaves to these nodes -->
       <g>
-        <!-- N₁ pulls L₁, L₂, L₃ -->
-        <line class="edge" x1="135" y1="-88" x2="207" y2="-2"/>
-        <line class="edge" x1="215" y1="-88" x2="215" y2="-5"/>
-        <line class="edge" x1="295" y1="-88" x2="223" y2="-2"/>
-        <!-- N₂ pulls L₄, L₅, L₆ -->
-        <line class="edge" x1="375" y1="-88" x2="447" y2="-2"/>
-        <line class="edge" x1="455" y1="-88" x2="455" y2="-5"/>
-        <line class="edge" x1="535" y1="-88" x2="463" y2="-2"/>
-        <!-- N₃ pulls only L₇ (short group; promoted as-is when only one leaf lands in the last group) -->
-        <line class="edge-tail" x1="625" y1="-88" x2="625" y2="-5"/>
+        <line class="edge" x1="135" y1="-63" x2="167" y2="-3"/>
+        <line class="edge" x1="215" y1="-63" x2="183" y2="-3"/>
+        <line class="edge" x1="295" y1="-63" x2="327" y2="-3"/>
+        <line class="edge" x1="375" y1="-63" x2="343" y2="-3"/>
+        <line class="edge" x1="455" y1="-63" x2="487" y2="-3"/>
+        <line class="edge" x1="535" y1="-63" x2="503" y2="-3"/>
+        <line class="edge-tail" x1="600" y1="-63" x2="600" y2="-3"/>
       </g>
-      <text class="sub-muted" x="660" y="16">Nᵢ = H(child₁ ‖ … ‖ child_F)</text>
+      <text class="sub-muted" x="660" y="16">Nᵢ = H(0x01 ‖ left ‖ right)</text>
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 4: Internal level 2 → single root -->
-    <!--   Group (N₁, N₂, N₃) → Root -->
+    <!-- Row 4: Level 2 — (N₁,N₂) → M₁, (N₃,L₇) → M₂ -->
     <!-- ========================================================== -->
-    <g transform="translate(0 340)">
-      <text class="level" x="16" y="12">Level 2 (root)</text>
+    <g transform="translate(0 310)">
+      <text class="level" x="16" y="12">Level 2</text>
+      <g>
+        <circle class="node" cx="255" cy="12" r="17"/>
+        <text class="hash" x="255" y="16">M₁</text>
+        <circle class="node" cx="548" cy="12" r="17"/>
+        <text class="hash" x="548" y="16">M₂</text>
+      </g>
+      <g>
+        <line class="edge" x1="175" y1="-61" x2="247" y2="-3"/>
+        <line class="edge" x1="335" y1="-61" x2="263" y2="-3"/>
+        <line class="edge" x1="495" y1="-61" x2="540" y2="-3"/>
+        <line class="edge-tail" x1="600" y1="-63" x2="556" y2="-3"/>
+      </g>
+      <text class="sub-muted" x="660" y="16">M₂ = H(0x01 ‖ N₃ ‖ L₇)</text>
+    </g>
+
+    <!-- ========================================================== -->
+    <!-- Row 5: Root — (M₁,M₂) → Root -->
+    <!-- ========================================================== -->
+    <g transform="translate(0 400)">
+      <text class="level" x="16" y="12">Level 3 (root)</text>
       <g>
         <circle class="root" cx="410" cy="16" r="22"/>
         <text class="hash" x="410" y="20">Root</text>
       </g>
-      <!-- Edges from N₁, N₂, N₃ to Root -->
       <g>
-        <line class="edge" x1="215" y1="-98" x2="395" y2="0"/>
-        <line class="edge" x1="455" y1="-98" x2="417" y2="-6"/>
-        <line class="edge" x1="625" y1="-98" x2="428" y2="0"/>
+        <line class="edge" x1="255" y1="-61" x2="395" y2="-2"/>
+        <line class="edge" x1="548" y1="-61" x2="425" y2="-2"/>
       </g>
-      <text class="sub-muted" x="660" y="20">Root = final surviving hash</text>
+      <text class="sub-muted" x="660" y="20">Root = MTH(D[7]) = H(0x01 ‖ M₁ ‖ M₂)</text>
     </g>
 
     <!-- ========================================================== -->
     <!-- Legend and notes -->
     <!-- ========================================================== -->
-    <g transform="translate(20 420)">
+    <g transform="translate(20 480)">
       <text class="level" x="0" y="0">Legend</text>
       <rect class="block" x="70" y="-10" width="18" height="14" rx="2"/>
       <text class="sub" x="94" y="0">input block</text>
       <rect class="tail" x="170" y="-10" width="18" height="14" rx="2"/>
-      <text class="sub" x="194" y="0">partial tail</text>
-      <rect class="padding" x="270" y="-10" width="18" height="14" rx="2"/>
-      <text class="sub" x="294" y="0">zero-pad</text>
-      <circle class="leaf" cx="368" cy="-3" r="9"/>
-      <text class="sub" x="384" y="0">leaf hash</text>
-      <circle class="node" cx="445" cy="-3" r="10"/>
-      <text class="sub" x="462" y="0">internal node</text>
-      <circle class="root" cx="542" cy="-3" r="11"/>
-      <text class="sub" x="560" y="0">root</text>
+      <text class="sub" x="194" y="0">short tail</text>
+      <circle class="leaf" cx="268" cy="-3" r="9"/>
+      <text class="sub" x="284" y="0">leaf hash</text>
+      <circle class="promoted" cx="358" cy="-3" r="9"/>
+      <text class="sub" x="374" y="0">promoted</text>
+      <circle class="node" cx="450" cy="-3" r="10"/>
+      <text class="sub" x="467" y="0">internal node</text>
+      <circle class="root" cx="547" cy="-3" r="11"/>
+      <text class="sub" x="565" y="0">root</text>
     </g>
 
-    <g transform="translate(20 450)">
-      <text class="sub-muted" x="0" y="0">• A short tail block is zero-padded to B before hashing, so every leaf is the same width.</text>
-      <text class="sub-muted" x="0" y="16">• Nodes are reduced level-by-level with fan-out F = 3; a short final group is promoted with its surviving children.</text>
+    <g transform="translate(20 510)">
+      <text class="sub-muted" x="0" y="0">• A short tail block is hashed at its actual length, never zero-padded, so the input length is bound into its leaf.</text>
+      <text class="sub-muted" x="0" y="16">• Seven leaves split 4 + 3 and the three split 2 + 1: the lone L₇ is promoted unchanged, exactly as RFC 6962 §2.1 defines MTH.</text>
+      <text class="sub-muted" x="0" y="32">• A wider fan-out F groups F children per node and promotes a lone leftover the same way; only F = 2 is RFC 6962's tree.</text>
     </g>
   </g>
 </svg>

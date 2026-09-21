@@ -241,51 +241,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The hash algorithm factory returned null..
-        /// </summary>
-        internal static string Arg_Invalid_MerkleAlgorithmFactoryNull {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MerkleAlgorithmFactoryNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A hash of {0} bytes was expected, but {1} bytes were supplied..
-        /// </summary>
-        internal static string Arg_Invalid_MerkleHashLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MerkleHashLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The hash algorithm reported a digest length that is not positive..
-        /// </summary>
-        internal static string Arg_Invalid_MerkleHashLengthNotPositive {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MerkleHashLengthNotPositive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The leaf hash at index {0} must be {1} bytes, but is {2} bytes..
-        /// </summary>
-        internal static string Arg_Invalid_MerkleLeafHashLengthAtIndex {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MerkleLeafHashLengthAtIndex", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The leaf hash at index {0} is null..
-        /// </summary>
-        internal static string Arg_Invalid_MerkleLeafHashNullAtIndex {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_MerkleLeafHashNullAtIndex", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The collection cannot contain null elements..
         /// </summary>
         internal static string Arg_Invalid_NullCollectionElement {
@@ -331,15 +286,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Specified block size must be greater than {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_BlockSizeMustBeGreaterThan {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_BlockSizeMustBeGreaterThan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The imported hash count ({0}) exceeds the maximum supported value ({1})..
         /// </summary>
         internal static string Arg_OutOfRange_BloomFilterImportHashCount {
@@ -375,15 +321,6 @@ namespace Bodu {
             }
         }
 
-        /// <summary>
-        ///   Looks up a localized string similar to The degree of parallelism must be -1 or a positive number of workers, but was {0}..
-        /// </summary>
-        internal static string Arg_OutOfRange_MerkleParallelism {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_MerkleParallelism", resourceCulture);
-            }
-        }
-        
         /// <summary>
         ///   Looks up a localized string similar to The given key &apos;{0}&apos; was not present in the dictionary..
         /// </summary>

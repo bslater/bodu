@@ -23,12 +23,12 @@ The foundation every other package builds on — collections, buffers, extension
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
 
-Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, and KDFs on the other. A third capability sits on the adversarial side while depending on neither: the RFC 6962 Merkle tree, for commitments and proofs, which ships in the [`Bodu.Collections`](collections/index.md) package because `Bodu.Core` is all it needs.
+Two packages split by a single question — *is there an adversary?* Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, KDFs, and the RFC 6962 Merkle tree with its inclusion and consistency proofs on the other.
 
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
-| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
+| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, and the full ASCON family. | `net8.0` |
 
 ### [Globalization & Calendars](topics/globalization-and-calendars.md)
 

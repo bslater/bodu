@@ -157,19 +157,28 @@ byte[] same = AsconXof128.HashData(data, outputLength: 64);
 
 `Squeeze(Span<byte>)` writes directly into a caller buffer, and `Initialize()` resets the sponge for the next message.
 
-### Merkle tree — verifiable inclusion proofs
+### Merkle tree — an RFC 6962 root over fixed-size blocks, with a proof
 
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// The tree hash owns its inner digests, so it takes a factory rather than an instance.
-using var tree = new MerkleTreeHash(SHA256.Create, blockSize: 1024, fanOut: 3);
+// The tree creates and disposes its own inner digests, so it takes a factory rather than an instance.
+var tree = new MerkleTree(SHA256.Create);          // immutable; share it across threads
 
-byte[] root = tree.ComputeHash(largeFile);          // Stream, ReadOnlySpan<byte>, or byte[]
+byte[] root = tree.ComputeRootOfBlocks(largeFile, blockSize: 1024);   // Stream, ReadOnlySpan<byte>, or byte[]
+
+// Keep the leaf hashes when a proof will be needed later.
+MerkleBlockComputation blocks = tree.ComputeBlocked(largeFile, blockSize: 1024);
+byte[][] path = tree.AuthenticationPath(blocks.LeafHashes, leafIndex: 3);
+
+bool included = tree.VerifyInclusionOfLeafHash(
+    blocks.Root, treeSize: blocks.LeafHashes.Count, leafIndex: 3,
+    leafHash: blocks.LeafHashes[3],
+    path: path.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
 ```
 
-`ComputeHash` is one-shot: the tree is rebuilt per call, so a `MerkleTreeHash` can be reused across inputs.
+The root is RFC 6962's Merkle Tree Hash over the blocks, whichever way the bytes arrive: `ComputeRootOfBlocks` folds as it reads, `CreateBlockAccumulator` builds the same root from incremental `Append` calls, and `new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1)` hashes leaves across cores without changing the tree.
 
 ### Digital signature — Ed25519
 

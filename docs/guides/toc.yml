@@ -75,8 +75,6 @@
           items:
             - name: Bit set
               href: core/bit-set.md
-            - name: RFC 6962 Merkle trees and proofs
-              href: core/rfc6962-merkle-trees.md
         - name: Bodu.Collections.Probabilistic
           items:
             - name: Probabilistic collections (sketches)
@@ -184,7 +182,7 @@
               href: cryptography/whirlpool.md
             - name: Using SHAKE (XOF)
               href: cryptography/shake.md
-            - name: Using Merkle trees
+            - name: Merkle trees and proofs
               href: cryptography/merkle-trees.md
         - name: Keyed hashes (MAC)
           items:

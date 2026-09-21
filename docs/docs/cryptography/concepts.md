@@ -129,7 +129,7 @@ Cryptographic digests in this library come in three structural shapes:
 
 - **Plain digest** — fixed-length output. <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.Whirlpool>, <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024>, <xref:Bodu.Security.Cryptography.Blake2b> / <xref:Bodu.Security.Cryptography.Blake2s>, <xref:Bodu.Security.Cryptography.CubeHash>, <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256>, <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256>.
 - **Extendable-output function (XOF)** — caller chooses the output length at finalize time. <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128>, and <xref:Bodu.Security.Cryptography.AsconCxof128>. (<xref:Bodu.Security.Cryptography.Blake3> is tree-structured internally but exposes only its fixed 256-bit digest here.)
-- **Tree** — input split into leaves, leaves hashed in parallel, levels reduced to a root. <xref:Bodu.Security.Cryptography.Blake3> uses an internal tree; <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> expose an explicit tree over any inner `HashAlgorithm`.
+- **Tree** — input split into leaves, leaves hashed in parallel, levels reduced to a root. <xref:Bodu.Security.Cryptography.Blake3> uses an internal tree; <xref:Bodu.Security.Cryptography.MerkleTree> exposes an explicit RFC 6962 tree over any inner `HashAlgorithm`, with inclusion and consistency proofs.
 
 ## MAC vs. one-time authenticator
 
@@ -148,15 +148,24 @@ The ASCON family (NIST SP 800-232) is sponge-based, which is why <xref:Bodu.Secu
 
 ## Merkle tree
 
-A **Merkle tree** is a hash construction that produces a single root digest covering many leaves, and can also support **verifiable inclusion proofs**: given the root and a logarithmically sized sibling path, anyone can verify that a specific leaf participated in the tree.
+A **Merkle tree** turns an ordered list of entries into a single root hash, and — because it is built bottom-up — lets anyone prove that one entry sits under that root using a logarithmic number of hashes rather than the whole input. That **inclusion proof** is the only reason to pay for a tree instead of a flat digest.
 
 ![Merkle tree — leaf hashing, level reduction, fan-out, root](../../images/diagrams/merkle-tree.svg)
 
-Input is split into fixed-size **leaves**; each leaf is hashed; pairs of digests are concatenated and re-hashed at each level until a single root remains. **Fan-out** is the number of children per internal node (typically 2). Bodu's <xref:Bodu.Security.Cryptography.MerkleTreeHash> wraps any inner `HashAlgorithm` (SHA-256, Blake2b, …) as the leaf / node compressor; <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> processes leaves concurrently for high-throughput hashing of large inputs.
+<xref:Bodu.Security.Cryptography.MerkleTree> implements [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) precisely over any inner <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> the caller supplies as a `Func<HashAlgorithm>` (SHA-256, a Bodu digest, anything else). Precision matters because several plausible-looking constructions give different roots for the same input, and a divergent root verifies nowhere:
 
-Both types borrow RFC 6962's **domain separation** (`0x00` for leaves, `0x01` for internal nodes) but not its **tree shape**, and neither produces a proof — see the [Merkle trees guide](../../guides/cryptography/merkle-trees.md) for the construction, the parallel pipeline, and how to assemble a proof by hand from the diagnostics.
+- a tree of *n* entries splits at `k`, the largest power of two **strictly** below *n* — three entries split 2 + 1, never 1 + 2;
+- a subtree holding one entry contributes its **leaf hash unchanged**, never re-hashed as a one-child node;
+- leaves are `H(0x00 ‖ entry)` and internal nodes `H(0x01 ‖ left ‖ right)` — the **domain separation** that stops a leaf preimage colliding with a node preimage (the second-preimage attack), and the reason RFC 6962 needs no padding step and is immune by shape to the duplicate-last-leaf forgery of CVE-2012-2459;
+- the empty tree's root is `H()`, the hash of zero bytes, not an exception.
 
-For the standard's tree, and for one-call inclusion and consistency proofs, use <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> — in `Bodu.Collections.Specialized`, from the **[Bodu.Collections](../collections/index.md)** package, which depends on `Bodu.Core` alone, so reaching for it costs you no cryptography dependency. The [Merkle commitments](../collections/concepts.md) section covers the split point, the proof protocols, and the tree-size ambiguity that length-bound roots close; the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md) has the full walk-through.
+The same tree is reached from three input shapes — a list of entries, a stream or buffer cut into fixed-size **blocks**, or a write-time **accumulator** (<xref:Bodu.Security.Cryptography.MerkleBlockAccumulator>) fed from the same `Append` calls that feed a flat digest — and the root is the same however the bytes arrive. Leaf hashing can be spread across cores with the `maxDegreeOfParallelism` constructor option without changing the tree. **Fan-out** is the number of children per internal node; 2 is RFC 6962's tree, and a wider fan-out is an explicit non-RFC mode on which the proof members throw.
+
+Two proof shapes answer different questions. An **inclusion (audit) proof** answers *"is this entry in this tree?"*; a **consistency proof** answers *"is this earlier tree a prefix of this later one?"* — the property an append-only log must have. Every verifier is **total**: malformed input returns `false` rather than throwing, because a verifier sits directly behind bytes an adversary chose.
+
+One sharp edge is worth knowing before you use it. `VerifyInclusion`'s `treeSize` is **trusted input** — a four-entry tree's path for entry 0 walks to the same head a three-entry tree's first path does, so a verifier told either size accepts, and a party being examined can understate its size to exempt its last entries from challenge. That is RFC 6962 as specified. `BindRoot` closes it by folding the length into the published root as `H(0x02 ‖ uint64_be(length) ‖ root)`, and `VerifyInclusionBound` / `VerifyBlockInclusion` derive the size from that instead of accepting one.
+
+See the [Merkle trees and proofs guide](../../guides/cryptography/merkle-trees.md) for entry and block modes, the accumulator, the logarithmic streaming fold, parallel leaf hashing, and the diagnostics recorder.
 
 ## Public-key (asymmetric) cryptography
 

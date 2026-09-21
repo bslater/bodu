@@ -73,8 +73,8 @@ Primitives with a formal adversary model, on the BCL `SymmetricAlgorithm` / `Has
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../core/rfc6962-merkle-trees.md">RFC 6962 Merkle trees and proofs</a></h3>
-  <p>The standard&#39;s tree, inclusion and consistency proofs, and length-bound roots — <code>Bodu.Collections.Generic</code>, which depends on <code>Bodu.Core</code> alone.</p>
+  <h3><a href="../cryptography/merkle-trees.md">Merkle trees and proofs</a></h3>
+  <p>The RFC 6962 tree over any inner <code>HashAlgorithm</code> — roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</p>
 </div>
 
 <div class="bodu-card">

@@ -943,24 +943,6 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Write to level-{0} channel failed. The channel was completed before all nodes were submitted..
-        /// </summary>
-        internal static string Op_Invalid_MerkleChannelCompleted {
-            get {
-                return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No input data was provided..
-        /// </summary>
-        internal static string Op_Invalid_NoInputData {
-            get {
-                return ResourceManager.GetString("Op_Invalid_NoInputData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The property &apos;{0}&apos; cannot be changed after the first write to the stream..
         /// </summary>
         internal static string Op_Invalid_PropertySetAfterStreamWrite {
@@ -1167,6 +1149,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm factory returned null..
+        /// </summary>
+        internal static string Op_Invalid_MerkleAlgorithmFactoryNull {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleAlgorithmFactoryNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The hash algorithm reported a digest length that is not positive..
         /// </summary>
         internal static string Arg_Invalid_MerkleHashLengthNotPositive {
@@ -1208,6 +1199,33 @@ namespace Bodu {
         internal static string Arg_OutOfRange_MerkleParallelism {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_MerkleParallelism", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The accumulator has been finished; call Reset before appending further input..
+        /// </summary>
+        internal static string Op_Invalid_MerkleAccumulatorFinished {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleAccumulatorFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leaf hashes were not retained; create the accumulator with retainLeafHashes set to true to obtain a MerkleBlockComputation..
+        /// </summary>
+        internal static string Op_Invalid_MerkleLeafHashesNotRetained {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleLeafHashesNotRetained", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication paths, consistency proofs and their verifiers are defined only for RFC 6962's binary tree; this instance was created with a fan-out of {0}..
+        /// </summary>
+        internal static string Op_NotSupported_MerkleProofsRequireBinaryTree {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_MerkleProofsRequireBinaryTree", resourceCulture);
             }
         }
         

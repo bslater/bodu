@@ -90,7 +90,7 @@ byte[] hash = hasher.Hash!;
 
 ## Configuration parameters not exposed
 
-The Skein specification defines optional configuration parameters — personalisation strings, key derivation identifiers, nonce input, and tree-hashing modes. **This implementation does not expose them.** For tree hashing, reach for [`MerkleTreeHash`](merkle-trees.md). For personalised hashing or HKDF-like key derivation, reach for the BCL `HKDF` class.
+The Skein specification defines optional configuration parameters — personalisation strings, key derivation identifiers, nonce input, and tree-hashing modes. **This implementation does not expose them.** For tree hashing, reach for [`MerkleTree`](merkle-trees.md). For personalised hashing or HKDF-like key derivation, reach for the BCL `HKDF` class.
 
 ## Security caveats
 

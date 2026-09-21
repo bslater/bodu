@@ -28,8 +28,8 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to choose this over the BCL.</strong> Pick <see cref="HashAlgorithmHelper" /> when the algorithm
 /// requires per-call configuration (a key, round counts, a variant flag) — the factory consistently applies it to every
 /// fresh instance. For stateless one-shot hashing of unconfigured algorithms (SHA-256, SHA-512) the BCL's static
-/// <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads pass the same factory into
-/// <see cref="MerkleTreeHash" /> or <see cref="ParallelMerkleTreeHash" />.
+/// <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads pass the factory's
+/// <see cref="IHashAlgorithmFactory{T}.Create" /> to <see cref="MerkleTree" />.
 /// </para>
 /// </remarks>
 /// <example>

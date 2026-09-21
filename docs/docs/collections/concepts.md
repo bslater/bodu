@@ -105,23 +105,6 @@ The `Bodu.Collections.Probabilistic` types are **sketches**: fixed-size summarie
 
 The one-sided contracts are what make sketches composable into exact systems: a Bloom filter can safely *skip* work (a "no" is definitive), a count-min sketch can safely *throttle* (it never lets a heavy hitter hide). All three support parameter-compatible merging (`UnionWith` / `MergeWith`) and version-checked export/import for cross-process aggregation.
 
-## Merkle commitments
-
-The Merkle types live in `Bodu.Collections.Specialized` because nothing in them is a container. A **Merkle tree** turns an ordered list of entries into a single root hash, and — because it is built bottom-up — lets anyone prove that one entry sits under that root using a logarithmic number of hashes rather than the whole input. That proof is the only reason to pay for a tree instead of a flat digest.
-
-<xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> implements [RFC 6962 §2.1](https://www.rfc-editor.org/rfc/rfc6962#section-2.1) precisely, which matters because several plausible-looking constructions give different roots for the same input and a divergent root verifies nowhere:
-
-- a tree of *n* entries splits at `k`, the largest power of two **strictly** below *n* — three entries split 2 + 1, never 1 + 2;
-- a subtree holding one entry contributes its **leaf hash unchanged**, never re-hashed as a one-child node;
-- leaves are `H(0x00 ‖ entry)` and internal nodes `H(0x01 ‖ left ‖ right)`, so no leaf preimage can collide with a node preimage — the defence against the second-preimage attack, and the reason RFC 6962 needs no padding step and is immune by shape to the duplicate-last-leaf forgery of CVE-2012-2459;
-- the empty tree's root is `H()`, the hash of zero bytes, not an exception.
-
-Two proof shapes answer different questions. An **inclusion (audit) proof** answers *"is this entry in this tree?"*; a **consistency proof** answers *"is this earlier tree a prefix of this later one?"* — the property an append-only log must have. Every verifier is **total**: malformed input returns `false` rather than throwing, because a verifier sits directly behind bytes an adversary chose.
-
-One sharp edge is worth knowing before you use it. `VerifyInclusion`'s `treeSize` is **trusted input** — a four-entry tree's path for entry 0 walks to the same head a three-entry tree's first path does, so a verifier told either size accepts, and a party being examined can understate its size to exempt its last entries from challenge. That is RFC 6962 as specified. `BindRoot` closes it by folding the length into the published root as `H(0x02 ‖ uint64_be(length) ‖ root)`, and `VerifyInclusionBound` / `VerifyBlockInclusion` derive the size from that instead of accepting one.
-
-The hash is supplied by the caller as a `Func<HashAlgorithm>`, so this package needs no cryptography dependency: `SHA256.Create`, a Bodu digest, or anything else deriving from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> all work. See the [RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md) guide for entry and block modes, the logarithmic streaming fold, and parallel leaf hashing.
-
 ## Bidirectional one-to-one mapping
 
 A <xref:Bodu.Collections.Generic.BiDictionary`2> maintains a strict **one-to-one** correspondence: keys are unique *and values are unique*, so lookup is O(1) in both directions. The `Inverse` property is a live view sharing the same storage — writes through either face are visible through the other, with no copy and no synchronisation step. Because a value insert can collide with an existing value, the construction-time <xref:Bodu.Collections.Generic.BiDictionaryDuplicateValuePolicy> decides the outcome: `Throw` treats a duplicate value as a bug; `Replace` evicts the pair that previously held the value. Use it wherever two identifier spaces alias the same entities (id ↔ code, name ↔ handle) and a second reverse dictionary would inevitably drift.

@@ -13,7 +13,7 @@ The BLAKE family is the modern alternative to SHA-2 and SHA-3 for general-purpos
 > [!NOTE]
 > All three ship an AVX-512 fast path that engages automatically on supporting hardware. See [Hardware acceleration & SIMD opt-out](hardware-acceleration.md) for when it runs and how to force the scalar path.
 
-This guide covers all three on one page. For the broader "which hash do I pick?" framing, see [Hashing](hashing.md). For Merkle-tree hashing built on BLAKE3, see [Merkle trees](merkle-trees.md).
+This guide covers all three on one page. For the broader "which hash do I pick?" framing, see [Hashing](hashing.md). For an RFC 6962 Merkle tree over BLAKE3 leaves, see [Merkle trees and proofs](merkle-trees.md).
 
 ## At a glance
 
@@ -141,7 +141,7 @@ The BLAKE3 spec defines a keyed-hash mode and a key-derivation mode. Both requir
 ## See also
 
 - [Hashing overview](hashing.md) — the framework's overall hash story.
-- [Merkle trees](merkle-trees.md) — BLAKE3-style tree hashing for verifiable commitments.
+- [Merkle trees and proofs](merkle-trees.md) — the RFC 6962 tree over any inner digest, for verifiable commitments.
 - [Tiger](tiger.md), [Skein](skein.md), [Whirlpool](whirlpool.md) — other digests in the package.
 - [SHAKE](shake.md) — extendable output function.
 - [`Bodu.Security.Cryptography.Blake2b` API reference](xref:Bodu.Security.Cryptography.Blake2b)
