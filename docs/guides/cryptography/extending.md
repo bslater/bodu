@@ -13,12 +13,12 @@ title: Extending the library
 
 | To add a… | Derive from / implement | Then it works with |
 |---|---|---|
-| Hash | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> (Merkle–Damgård style, padded final block); <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm> (BLAKE-style, last block held back); <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> / <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> (adds `Key`); or <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm> for a sponge or other non-block shape | every `HashAlgorithm` consumer: `ComputeHash`, `CryptoStream`, `AppendData` / `VerifyHash`, `MerkleTreeHash`, `HashAlgorithmHelper` |
+| Hash | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> (Merkle–Damgård style, padded final block); <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm> (BLAKE-style, last block held back); <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> / <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> (adds `Key`); or <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm> for a sponge or other non-block shape | every `HashAlgorithm` consumer: `ComputeHash`, `CryptoStream`, `AppendData` / `VerifyHash`, `MerkleTree`, `HashAlgorithmHelper` |
 | Block cipher | <xref:Bodu.Security.Cryptography.IBlockCipher> | `BlockCipherModeFactory` (ECB / CBC / CFB / OFB / CTR), `CtsModeTransform`, `XtsModeTransform`; the AEAD transforms only if the block is 128 bits |
 | `ICryptoTransform` for that cipher | <xref:Bodu.Security.Cryptography.BlockCipherTransform> (its constructors are `protected internal`) | `CryptoStream`, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> |
 | Poly1305 AEAD over a keystream | <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> + your own <xref:Bodu.Security.Cryptography.IStreamCipher> | `AeadTransformExtensions`, anything typed `IStreamAeadTransform` / `IAeadTransform` |
 | Padding scheme | <xref:Bodu.Security.Cryptography.IPaddingStrategy> | hand composition (the factories only know the built-in schemes) |
-| Algorithm factory | <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> / <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | `MerkleTreeHash`, `ParallelMerkleTreeHash`, `HashAlgorithmHelper` |
+| Algorithm factory | <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1> / <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | `HashAlgorithmHelper`; and `MerkleTree`, whose constructor takes a `Func<HashAlgorithm>` — pass `factory.Create` |
 
 ## Pattern 1 — a custom `BlockHashAlgorithm`
 
@@ -211,13 +211,13 @@ byte[] b = HashAlgorithmHelper.HashData(custom, message);           // E64FA35F1
 Span<byte> destination = stackalloc byte[32];
 bool ok = HashAlgorithmHelper.TryHashData(factory, message, destination, out int written);   // true, 32
 
-using var merkle = new MerkleTreeHash(factory, blockSize: 1024, fanOut: 2);
-byte[] root = merkle.ComputeHash(new byte[5000]);
+MerkleTree merkle = new(factory.Create, fanOut: 2);                 // Func<HashAlgorithm>: Create is covariant
+byte[] root = merkle.ComputeRootOfBlocks(new byte[5000], blockSize: 1024);
 
 IHashAlgorithmFactory<HashAlgorithm> general = factory;             // covariant: IHashAlgorithmFactory<out T>
 ```
 
-A factory must return a new instance every time; the parallel Merkle pipeline calls it from several workers and never shares an algorithm between them.
+A factory must return a new instance every time: `MerkleTree` creates one per computation, and a parallel instance creates one per worker, never sharing an algorithm between them. `MerkleTree` itself is immutable and holds no algorithm, so it is not `IDisposable` and needs no `using`.
 
 ## Pattern 5 — proving it with the contract-test bases
 

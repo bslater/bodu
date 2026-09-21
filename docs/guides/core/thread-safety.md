@@ -69,7 +69,7 @@ Every mutable collection in this package is **single-threaded by design**: none 
 | <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Read-only safe | Fail-fast | [Guide](range-dictionary.md) |
 | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Read-only safe | Fail-fast, including `QueryPoint` / `QueryOverlaps` results while they are being iterated | [Guide](interval-tree.md) |
 | <xref:Bodu.Collections.Generic.SegmentedBuffer`1> | Read-only safe | Fail-fast | Append-only. [Guide](segmented-buffer.md) |
-| <xref:Bodu.Collections.Generic.BitSet> | Read-only safe | Fail-fast | The in-place logical operators (`And`, `Or`, …) are writes. [Guide](bit-set.md) |
+| <xref:Bodu.Collections.Specialized.BitSet> | Read-only safe | Fail-fast | The in-place logical operators (`And`, `Or`, …) are writes. [Guide](bit-set.md) |
 | <xref:Bodu.Collections.Probabilistic.BloomFilter`1>, <xref:Bodu.Collections.Probabilistic.CountMinSketch`1>, <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Read-only safe | — (no element enumeration) | `Add` / `Merge` / `Import` are writes; `Export` produces a versioned snapshot. [Guide](probabilistic-collections.md) |
 | <xref:Bodu.Collections.Generic.Graphs.Graph`1> | Read-only safe | **Undefined** — no version counter; do not mutate while iterating `Vertices` or `Neighbors` | Algorithms in `GraphAlgorithms` only read. [Guide](graphs.md) |
 | <xref:Bodu.Collections.Generic.Graphs.IReadOnlyGraph`1>, <xref:Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph`1> | As the implementation | — | Read-only *interfaces*, not immutable views — the underlying graph may still be mutated by its owner. |

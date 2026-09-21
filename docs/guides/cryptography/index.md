@@ -40,7 +40,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 
 <div class="bodu-card">
   <h3><a href="streaming-and-async.md">Streams and async</a></h3>
-  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>ParallelMerkleTreeHash.ComputeHashAsync</code> — buffer sizes, cancellation, and pooled-memory behaviour.</p>
+  <p><code>Encrypt(Stream, Stream)</code> / <code>EncryptAsync</code>, <code>AppendDataAsync</code> / <code>VerifyHashAsync</code>, <code>MerkleTree.ComputeRootOfBlocksAsync</code> — buffer sizes, cancellation, and pooled-memory behaviour.</p>
 </div>
 
 <div class="bodu-card">

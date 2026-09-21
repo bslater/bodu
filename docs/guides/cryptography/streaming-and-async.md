@@ -4,7 +4,7 @@ title: Streams and async
 
 # Streams and async
 
-Everything in `Bodu.Security.Cryptography` that touches a `Stream` lives in `Bodu.Security.Cryptography.Extensions`, layered over the BCL abstractions the types already implement: <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> and <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions> for ciphers, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> for the transforms underneath them, and <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> for hashes — plus <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash.ComputeHashAsync(System.IO.Stream,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)> and <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>. This page lists every stream and `Task` member, the buffer sizes they default to, how they react to cancellation, and what they do with memory.
+Everything in `Bodu.Security.Cryptography` that touches a `Stream` lives in `Bodu.Security.Cryptography.Extensions`, layered over the BCL abstractions the types already implement: <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> and <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions> for ciphers, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> for the transforms underneath them, and <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> for hashes — plus the <xref:Bodu.Security.Cryptography.MerkleTree> block and root members and <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>. This page lists every stream and `Task` member, the buffer sizes they default to, how they react to cancellation, and what they do with memory.
 
 > [!NOTE]
 > `Bodu.Security.Cryptography` is not independently audited and offers best-effort, not guaranteed, side-channel resistance.
@@ -138,7 +138,9 @@ bool empty = await blake.TryVerifyHashAsync(Stream.Null, expected);     // false
 
 ## Pattern 5 — Merkle roots over a stream, in parallel
 
-<xref:Bodu.Security.Cryptography.MerkleTreeHash> hashes a `Stream` synchronously. <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> is the awaitable, pipelined variant: `ComputeHashAsync(Stream, MerkleTreeDiagnostics? = null, CancellationToken = default)` reads eight leaf blocks per `ReadAsync`, hands leaves to per-level workers, and drains those workers before propagating a cancellation. The two produce the same root for the same `blockSize` and `fanOut`, but note the defaults differ: `MerkleTreeHash` defaults to `blockSize: 1024, fanOut: 3`, `ParallelMerkleTreeHash` to `blockSize: 4096, fanOut: 2`.
+<xref:Bodu.Security.Cryptography.MerkleTree> covers both the synchronous and the awaitable path. `ComputeRootOfBlocks(Stream, int blockSize, MerkleTreeDiagnostics? = null, CancellationToken = default)` folds a stream block by block; `ComputeRootOfBlocksAsync(…)` is the same computation over `ReadAsync`. Parallelism is a property of the instance rather than a separate type: `maxDegreeOfParallelism` is `1` (the calling thread) by default, `-1` for unbounded, or an explicit worker count. The tree shape never changes with the setting, so a parallel instance and a sequential one produce the same root and the same proofs.
+
+`blockSize` is a per-call argument — the same tree can fold different inputs at different block sizes — and `fanOut` defaults to `2`, RFC 6962's binary tree.
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -146,16 +148,18 @@ using Bodu.Security.Cryptography;
 byte[] payload = new byte[300_000];
 for (int i = 0; i < payload.Length; i++) payload[i] = (byte)(i * 31);
 
-using var sequential = new MerkleTreeHash(HashAlgorithmFactory.From(() => new Blake2b(256)), blockSize: 4096, fanOut: 2);
-byte[] expected = sequential.ComputeHash(payload);
+var sequential = new MerkleTree(() => new Blake2b(256));
+byte[] expected = sequential.ComputeRootOfBlocks(payload, blockSize: 4096);
 
-using var parallel = new ParallelMerkleTreeHash(() => new Blake2b(256), blockSize: 4096, fanOut: 2);
+var parallel = new MerkleTree(() => new Blake2b(256), maxDegreeOfParallelism: -1);
 using var source = new MemoryStream(payload);
-byte[] root = await parallel.ComputeHashAsync(source, diagnostics: null, cancellationToken: CancellationToken.None);
-// root == expected: B643CFC0…C8A7179B
+byte[] root = await parallel.ComputeRootOfBlocksAsync(source, blockSize: 4096);
+// root == expected: 15BB6566…297F7C4F
 ```
 
-The factory delegate must return a fresh `HashAlgorithm` per call — workers never share an instance. `ComputeHashAsync` throws `InvalidOperationException` for an empty stream.
+The factory delegate must return a **fresh** `HashAlgorithm` per call — workers never share an instance, and a factory handing back one shared instance cannot serve a parallel tree at all. An empty input is not an error: it yields the empty tree's root, `H()` over zero bytes, which for `Blake2b(256)` is `0E5751C0…F12FE3A8`.
+
+Use `ComputeBlocked` / `ComputeBlockedAsync` instead when you want the leaf hashes and block arithmetic alongside the root; they return a <xref:Bodu.Security.Cryptography.MerkleBlockComputation> carrying `Root`, `InputLength`, `BlockSize`, `BlockCount`, and the retained `LeafHashes`.
 
 ## Pattern 6 — factory-driven one-shots
 
@@ -171,11 +175,11 @@ byte[] digest = await HashAlgorithmHelper.HashDataAsync(HashAlgorithmFactory.Fro
 
 ## Buffers, cancellation, and memory — the rules
 
-- **Buffer sizes.** Cipher stream overloads default to 80 KiB; `AppendDataAsync` to 4 KiB; `HashAlgorithmHelper` to 8 KiB; `ParallelMerkleTreeHash` reads `8 × blockSize`. Every `bufferSize` parameter must be > 0.
-- **Pooled buffers are cleared.** `TransformAsync`, `AppendData`, `AppendDataAsync`, `ComputeHashAsync` (Merkle), and the helper all rent from `ArrayPool<byte>.Shared` and return with `clearArray: true`, on success, cancellation, and exception paths alike, so plaintext never lingers in a pool.
+- **Buffer sizes.** Cipher stream overloads default to 80 KiB; `AppendDataAsync` to 4 KiB; `HashAlgorithmHelper` to 8 KiB; `MerkleTree` reads one `blockSize` block at a time, batching them per worker when run in parallel. Every `bufferSize` parameter must be > 0.
+- **Pooled buffers are cleared.** `TransformAsync`, `AppendData`, `AppendDataAsync`, the `MerkleTree` block and leaf loops, and the helper all rent from `ArrayPool<byte>.Shared` and return with `clearArray: true`, on success, cancellation, and exception paths alike, so plaintext never lingers in a pool.
 - **Streams are never disposed** by these members; the caller owns both ends.
 - **Cancellation is cooperative.** It is checked per read and, for `TransformAsync`, before the final block; a partially written target is the caller's to discard. Already-cancelled tokens fail fast before any I/O.
-- **Instances are not thread-safe.** Hashes, transforms, and `ParallelMerkleTreeHash` are single-caller objects; parallelism inside the Merkle pipeline is internal.
+- **Instances are not thread-safe — with one exception.** Hashes and transforms are single-caller objects. `MerkleTree` is immutable and safe to share across threads, provided its factory returns a fresh `HashAlgorithm` on each call; a parallel instance spreads leaf hashing across workers *inside* one call and folds them in order on the calling thread.
 
 ## API summary
 
@@ -186,7 +190,7 @@ byte[] digest = await HashAlgorithmHelper.HashDataAsync(HashAlgorithmFactory.Fro
 | <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> | `Transform(Stream, Stream, int)`, `TransformAsync(Stream, Stream, int, CancellationToken)` |
 | <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> | `AppendData`, `AppendDataAsync`, `VerifyHash`, `VerifyHashAsync`, `TryVerifyHash`, `TryVerifyHashAsync` |
 | `System.Security.Cryptography.HashAlgorithm` (inherited) | `ComputeHash(Stream)`, `ComputeHashAsync(Stream, CancellationToken)` |
-| <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | `ComputeHashAsync(Stream, MerkleTreeDiagnostics?, CancellationToken)` |
+| <xref:Bodu.Security.Cryptography.MerkleTree> | `ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)`, `ComputeRootOfBlocksAsync(…)`, `ComputeBlocked(…)`, `ComputeBlockedAsync(…)` |
 | <xref:Bodu.Security.Cryptography.HashAlgorithmHelper> | `HashData(factory, Stream)`, `HashDataAsync(factory, Stream, CancellationToken)` |
 
 ## Where to go next
