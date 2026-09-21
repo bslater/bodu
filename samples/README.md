@@ -72,7 +72,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | Domain | Samples |
 |---|---|
 | Core | [`samples/Core/`](Core/README.md) — the functional railway (Option/Result/Either/Memoizer), the utility toolbox (sequences, pooled buffers, enumerable/string/numeric extensions, WeekPattern, async primitives), and text-encoding detection/transcoding |
-| Collections | [`samples/Collections/`](Collections/README.md) — the specialized collection catalogue, ranges/graphs/trees/Aho-Corasick, and the probabilistic sketches (Bloom, count-min, HyperLogLog) |
+| Collections | [`samples/Collections/`](Collections/README.md) — the specialized collection catalogue (including the expiring cache, the dictionary decorators, and the two-key table), ranges/graphs/trees/Aho-Corasick, the probabilistic sketches (Bloom, count-min, HyperLogLog), and the packed `BitSet` |
 | Collections.Concurrent | [`samples/Collections.Concurrent/`](Collections.Concurrent/README.md) — the thread-safe variants with single-flight GetOrAdd and a deterministic parallel-safety demo |
 | Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, JSON serialization, the live-provider exception |
 | Formats.Excel | [`samples/Formats.Excel/`](Formats.Excel/README.md) — the read-only BIFF8 `.xls` reader: sheet directory, forward-only streaming, materialized worksheets, serial-date decoding |
@@ -82,7 +82,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | IO.Pst | [`samples/IO.Pst/`](IO.Pst/README.md) — the PST node database: detection, raw property/table contexts, streaming under strict validation, and the `OutlookMailStore` folder/message/attachment walk |
 | IO.Hashing | [`samples/IO.Hashing/`](IO.Hashing/README.md) — the CRC catalogue, checksum families, streaming/resumable digests, identifier check digits, and a custom scheme with contract tests |
 | Numerics | [`samples/Numerics/`](Numerics/README.md) — Fraction rational arithmetic and continued fractions, the interval algebra, streaming statistics, and the JSON converters |
-| Security.Cryptography | [`samples/Security.Cryptography/`](Security.Cryptography/README.md) — hashes/MAC/XOF/KDF/OTP, block/stream ciphers and AEAD, asymmetric key agreement/signatures/KEM, RFC 9180 HPKE, and a custom hash with contract tests |
+| Security.Cryptography | [`samples/Security.Cryptography/`](Security.Cryptography/README.md) — hashes/MAC/XOF/KDF/OTP, block/stream ciphers and AEAD, asymmetric key agreement/signatures/KEM, the RFC 6962 Merkle-tree family (proofs, length binding, write-time accumulation, diagnostics), and a custom hash with contract tests |
 | Text.Bencode | [`samples/Text.Bencode/`](Text.Bencode/README.md) — a real torrent file end to end: DOM inspection, canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping |
 | Text.Configuration | [`samples/Text.Configuration/`](Text.Configuration/README.md) — the parse/resolve/save cascade with diagnostics and `unset` dialects, plus the Microsoft.Extensions.Configuration bridge into `IOptions<T>` |
 | Text.Encoding | [`samples/Text.Encoding/`](Text.Encoding/README.md) — the base-encoding catalogue and variants, formatting/style knobs, checksummed schemes, the runtime registry, and a custom Base36 codec with contract tests |
