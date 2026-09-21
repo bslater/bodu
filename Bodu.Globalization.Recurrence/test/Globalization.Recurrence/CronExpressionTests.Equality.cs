@@ -102,4 +102,27 @@ public partial class CronExpressionTests
 
         Assert.IsFalse(standard.Equals(withSeconds));
     }
+
+    /// <summary>
+    /// Verifies that two expressions whose day fields select the same days but differ in restricted-ness are not
+    /// equal, because the restriction chooses the union or intersection branch and so the two select different
+    /// instants.
+    /// </summary>
+    /// <param name="left">The expression with an unrestricted day field.</param>
+    /// <param name="right">The expression whose equivalent day field is restricted.</param>
+    [TestMethod]
+    [DataRow("0 0 */2 * MON", "0 0 1-31/2 * MON", DisplayName = "day-of-month star-step versus its explicit range")]
+    [DataRow("0 0 * * MON", "0 0 1-31 * MON", DisplayName = "day-of-month star versus its full explicit range")]
+    [DataRow("0 0 13 * *", "0 0 13 * 0-6", DisplayName = "weekday star versus its full explicit range")]
+    public void Equals_WhenDayFieldRestrictednessDiffers_ShouldReturnFalse(string left, string right)
+    {
+        CronExpression first = CronExpression.Parse(left);
+        CronExpression second = CronExpression.Parse(right);
+
+        // Guard the premise: these really do select different instants.
+        var from = new DateTime(2026, 3, 10, 14, 32, 0);
+        Assert.AreNotEqual(first.GetNextOccurrence(from), second.GetNextOccurrence(from));
+
+        Assert.IsFalse(first.Equals(second));
+    }
 }
