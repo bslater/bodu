@@ -370,6 +370,21 @@ public sealed class CachingNotableDateService
             _ => new Lazy<IReadOnlyList<NotableDate>>(
                 () =>
                 {
+                    // Double-check the cache before computing a genuine miss: because a completed flight is removed as
+                    // soon as its creator returns, a caller that observed the miss before that store — but reached
+                    // GetOrAdd after the removal — would otherwise create a fresh flight and recompute a year already
+                    // cached. This re-read closes that stampede window, serving the just-stored year instead of running
+                    // the wrapped service a second time; such a late joiner is counted as neither a hit nor a miss,
+                    // matching the accounting of a caller that joins an in-flight computation. A background
+                    // refresh-ahead recompute skips the re-read: its whole purpose is to recompute an entry that is
+                    // still cached, so a re-read would find that entry and wrongly suppress the refresh.
+                    if (!refreshAhead)
+                    {
+                        NotableDateCacheEntry? cached = ReadCachedYear(territory, year, version, ttl, now);
+                        if (cached is not null)
+                            return cached.Occurrences;
+                    }
+
                     IReadOnlyList<NotableDate> occurrences =
                         _inner.Resolve(new DateRange(new DateOnly(year, 1, 1), new DateOnly(year, 12, 31)), territory);
 
@@ -400,6 +415,24 @@ public sealed class CachingNotableDateService
             _inFlight.TryRemove(key, out _);
         }
     }
+
+    /// <summary>
+    /// Reads a single civil year's cached entry through the same seam the miss originated from — the batch reader when
+    /// the backend supports it, or the per-year lookup otherwise — so the single-flight stampede re-check never
+    /// introduces a per-year read on a batch-capable backend.
+    /// </summary>
+    /// <param name="territory">
+    /// The requested territory code, passed through unmodified; the cache normalizes it.
+    /// </param>
+    /// <param name="year">The civil year to read.</param>
+    /// <param name="version">The resource version token entries are keyed by.</param>
+    /// <param name="ttl">The time-to-live freshness is evaluated against.</param>
+    /// <param name="now">The lookup instant.</param>
+    /// <returns>The fresh, version-matching entry for the year, or <see langword="null" /> when it misses.</returns>
+    private NotableDateCacheEntry? ReadCachedYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now) =>
+        _cache is INotableDateCacheBatchReader batchReader
+            ? batchReader.GetYears(territory, year, year, version, ttl, now)[0]
+            : _cache.GetYear(territory, year, version, ttl, now);
 
     /// <summary>
     /// Schedules a background refresh-ahead recompute of a served year when refresh-ahead is enabled and the served
