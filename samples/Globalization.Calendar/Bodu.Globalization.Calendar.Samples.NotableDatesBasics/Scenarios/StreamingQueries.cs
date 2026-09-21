@@ -20,7 +20,20 @@ public static class StreamingQueries
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- ResolveAsync: streaming a multi-year range ---");
+        SampleConsole.Scenario(
+            "ResolveAsync - streaming a multi-year range",
+            what: "Streams a decade of non-working occurrences a civil year at a time, counting them per year, "
+                + "then streams the same range again and cancels partway through.",
+            why: "Resolving a range means running every rule for every year in it, so a decade is ten times the "
+                + "work of one year. Materializing that up front makes the caller wait for the last year before "
+                + "seeing the first, which is the wrong shape for a report that renders as it goes or a query "
+                + "the user may abandon. A civil year is the natural granularity because that is the unit the "
+                + "rules are evaluated in - there is no partial year to yield. Cancellation is observed at the "
+                + "same boundary, which is what makes an abandoned query actually stop rather than finish "
+                + "quietly in the background.",
+            expect: "The streamed results are element-for-element what the synchronous call returns - streaming "
+                + "changes when you get them, not what they are. The cancelled run stops after the first year "
+                + "rather than completing the decade, so the remaining years were never computed.");
 
         RunAsync().GetAwaiter().GetResult();
 
@@ -41,7 +54,8 @@ public static class StreamingQueries
         await foreach (NotableDate occurrence in service.ResolveAsync(decade, "AU", NotableDateFilter.IsNonWorkingDay()))
             perYear[occurrence.Date.Year] = perYear.GetValueOrDefault(occurrence.Date.Year) + 1;
 
-        Console.WriteLine($"Streamed {perYear.Values.Sum()} non-working occurrences across {perYear.Count} years");
+        Console.WriteLine($"  Streamed {perYear.Values.Sum()} non-working occurrences across {perYear.Count} years"
+            + "  (element-for-element what the synchronous Resolve returns - streaming changes when, not what)");
         Console.WriteLine($"  first year 2020: {perYear[2020]}, last year 2029: {perYear[2029]}");
 
         // Cancellation is observed between years, so an early consumer stops the remaining computation.
@@ -60,7 +74,8 @@ public static class StreamingQueries
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine($"Cancelled after streaming {streamedBeforeCancel} occurrences - later years never resolved.");
+            Console.WriteLine($"  Cancelled after streaming {streamedBeforeCancel} occurrences - later years never resolved."
+                + "  (cancellation is observed between years, so an abandoned query stops rather than finishing in the background)");
         }
     }
 }

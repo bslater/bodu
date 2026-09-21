@@ -22,7 +22,22 @@ public static class ExpandedTimeline
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Expanded timeline: WithActualOccurrences ---");
+        SampleConsole.Scenario(
+            "Expanding an observed-only result into a full timeline",
+            what: "Resolves the 2021 Christmas window, prints the raw observed-only result, expands it with "
+                + "WithActualOccurrences, prints the expanded timeline, and expands once more to show the "
+                + "operation is idempotent.",
+            why: "A pack has to choose what a substituted holiday emits, and the AU pack emits it once, on the "
+                + "observed day. That is the right default, because that is the day that matters operationally "
+                + "and emitting both would double-count every substituted holiday in a payroll sum. But a "
+                + "calendar rendering December needs the nominal day visible too - 25 December is Christmas even "
+                + "in a year when nobody gets it off then. This expansion is the consumer-side answer, "
+                + "synthesizing the missing actual occurrences rather than making the pack emit a shape that is "
+                + "wrong for the other half of its callers.",
+            expect: "The raw result has two occurrences on the observed weekdays, with the weekend days present "
+                + "only as ActualDate. After expanding there are four, in date order, each labelled as the "
+                + "nominal day or the day in lieu. Expanding again changes nothing, so it is safe to apply "
+                + "without tracking whether it has already run.");
 
         NotableDateService service = AsiaPacificCalendarData.CreateService("AU");
 
@@ -31,7 +46,7 @@ public static class ExpandedTimeline
         var resolved = service.Resolve(
             new DateRange(new DateOnly(2021, 12, 25), new DateOnly(2021, 12, 28)), "AU");
 
-        Console.WriteLine("  Raw observed-only result:");
+        Console.WriteLine("  Raw observed-only result (each holiday emitted once, on the day off - the weekend days survive only as ActualDate):");
         foreach (NotableDate date in resolved)
             Console.WriteLine($"    {date.Date:yyyy-MM-dd} ({date.Date.DayOfWeek,-9}) {date.DisplayName,-18} actual {date.ActualDate:yyyy-MM-dd}");
 
@@ -39,7 +54,7 @@ public static class ExpandedTimeline
         // occurrence, and the result is re-sorted - the consumer-side ActualAndObserved view.
         var timeline = resolved.WithActualOccurrences();
 
-        Console.WriteLine("  Expanded timeline:");
+        Console.WriteLine("  Expanded timeline (the nominal days synthesized back in and re-sorted - what a calendar rendering December needs):");
         foreach (NotableDate date in timeline)
         {
             var detail = date.IsObserved
@@ -49,7 +64,8 @@ public static class ExpandedTimeline
         }
 
         // The expansion is idempotent, and a no-op when nothing was substituted.
-        Console.WriteLine($"  Expanding again adds nothing: {timeline.WithActualOccurrences().Count} occurrences either way.");
+        Console.WriteLine($"  Expanding again adds nothing: {timeline.WithActualOccurrences().Count} occurrences either way."
+            + "  (idempotent, so it is safe to apply without tracking whether it already ran)");
 
         Console.WriteLine();
     }
