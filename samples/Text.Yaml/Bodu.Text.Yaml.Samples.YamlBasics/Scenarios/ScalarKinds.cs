@@ -29,7 +29,23 @@ public static class ScalarKinds
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Implicit scalar typing and YamlNumberHandling ---");
+        SampleConsole.Scenario(
+            "Implicit scalar typing and float-to-integer handling",
+            what: "Binds a document of plain and quoted scalars to a loose dictionary and reports the runtime "
+                + "type each one resolved to, then binds a non-integral float to an int property under the "
+                + "strict default and again with float-to-integer coercion allowed.",
+            why: "This is what makes YAML different from every other format here, and the source of most "
+                + "surprises in it. An unquoted scalar has no declared type - the spec resolution rules decide "
+                + "whether null, true and 3 are a null, a boolean and an integer or just text, and quoting is "
+                + "how an author opts out. That is why this library keeps its scalar converters format-local "
+                + "rather than sharing the token-strict ones its siblings use: they have to coerce across kinds, "
+                + "which the shared converters cannot express. Number handling is the same question one layer "
+                + "up - 3.7 into an int is either an error or a truncation, and choosing truncation silently is "
+                + "how a configured value quietly becomes 3.",
+            expect: "Five plain scalars resolve to five different runtime types with nothing declaring them, "
+                + "while the quoted value stays a string despite looking like a number - the quotes are the "
+                + "author type annotation. The strict binding then rejects 3.7 rather than truncating, and "
+                + "truncation happens only when asked for explicitly.");
 
         // Binding to object surfaces the resolved runtime type of each plain scalar; a quoted
         // scalar stays a string even when its content looks like a number or a boolean.
@@ -49,6 +65,8 @@ public static class ScalarKinds
             Console.WriteLine($"  {pair.Key,-8}-> {typeName,-8}: {pair.Value ?? "(null)"}");
         }
 
+        Console.WriteLine("  (nothing declared these types - the spec resolution rules did, and the quoted value opted out by being quoted)");
+
         // NumberHandling gates float-to-integer coercion. Strict (default) rejects a non-integral
         // float bound to an int; AllowFloatToInteger truncates it toward zero. Both option sets
         // carry the snake_case policy so the wire key 'count' binds to the Count member.
@@ -59,7 +77,8 @@ public static class ScalarKinds
         }
         catch (YamlSerializationException ex)
         {
-            Console.WriteLine($"  Strict             : 3.7 -> int rejected -> {ex.Message}");
+            Console.WriteLine($"  Strict             : 3.7 -> int rejected -> {ex.Message}"
+                + "  (the default refuses rather than truncating, because a configured value quietly becoming 3 is the worse failure)");
         }
 
         var lenient = new YamlSerializerOptions
@@ -68,7 +87,8 @@ public static class ScalarKinds
             NumberHandling = YamlNumberHandling.AllowFloatToInteger,
         };
         var truncated = YamlSerializer.Deserialize<Threshold>("count: 3.7", lenient)!;
-        Console.WriteLine($"  AllowFloatToInteger: 3.7 -> int accepted -> {truncated.Count}");
+        Console.WriteLine($"  AllowFloatToInteger: 3.7 -> int accepted -> {truncated.Count}"
+            + "  (truncated toward zero, and only because it was asked for explicitly)");
 
         Console.WriteLine();
     }

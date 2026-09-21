@@ -34,7 +34,23 @@ public static class NamingAndAttributes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Naming policies, attributes, and enum output ---");
+        SampleConsole.Scenario(
+            "Naming policies, attributes, and enum output",
+            what: "Serializes one POCO under three naming policies, shows a property renamed by attribute and "
+                + "another excluded entirely, provokes the missing-required-key failure, then emits an enum as "
+                + "a name and as a number.",
+            why: "The wire name and the C# name answer to different audiences. YAML files are hand-edited, so "
+                + "their keys follow the format conventions rather than .NET ones, and a policy settles that "
+                + "for a whole type instead of an attribute per property. Attributes cover what a convention "
+                + "cannot reach: a key whose spelling is fixed by an external contract, a computed property that "
+                + "should never appear in an editable file, and a key whose absence is an error rather than a "
+                + "default. The last is the one that earns its place - without it a missing service_name "
+                + "deserializes to an empty string and fails somewhere unrelated, long after the config was "
+                + "read.",
+            expect: "One type produces three key spellings with no change to the class. The renamed property "
+                + "appears under its wire name, the ignored one is absent entirely, and the missing required "
+                + "key is rejected by name at deserialize time. The enum rows show why the string form is the "
+                + "default: the name survives a renumbering of the enum, the number does not.");
 
         // 1. The same POCO, three policies - only the key spelling changes.
         var spec = new JobSpec();
@@ -51,6 +67,8 @@ public static class NamingAndAttributes
             Console.WriteLine($"  {label}: {line}");
         }
 
+        Console.WriteLine("  (one class, three key spellings - the convention belongs to the file, not to the C# type)");
+
         // 2. Attributes override the policy: EndpointConfig.Address writes as "url",
         //    and AppConfig.DisplayLabel ([Ignore]) never reaches the wire.
         var options = new YamlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
@@ -58,8 +76,10 @@ public static class NamingAndAttributes
         AppConfig config = YamlSerializer.Deserialize<AppConfig>(yaml, options)!;
         var emitted = YamlSerializer.Serialize(config, options);
 
-        Console.WriteLine($"  [PropertyName] : endpoints write 'url:' -> {emitted.Contains("url: ", StringComparison.Ordinal)}");
-        Console.WriteLine($"  [Ignore]       : 'display_label' absent -> {!emitted.Contains("display_label", StringComparison.Ordinal)}");
+        Console.WriteLine($"  [PropertyName] : endpoints write 'url:' -> {emitted.Contains("url: ", StringComparison.Ordinal)}"
+            + "  (expected True - the attribute overrides the policy where an external contract fixes the spelling)");
+        Console.WriteLine($"  [Ignore]       : 'display_label' absent -> {!emitted.Contains("display_label", StringComparison.Ordinal)}"
+            + "  (expected True - a computed property in an editable file looks like something a reader may change)");
 
         // 3. [Required]: a document missing service_name is rejected up front,
         //    instead of silently deserializing an empty string.
@@ -69,7 +89,8 @@ public static class NamingAndAttributes
         }
         catch (YamlSerializationException ex)
         {
-            Console.WriteLine($"  [Required]     : missing key rejected -> {ex.Message}");
+            Console.WriteLine($"  [Required]     : missing key rejected -> {ex.Message}"
+                + "  (without this the field would bind to an empty string and fail somewhere unrelated, much later)");
         }
 
         // 4. Enums serialize as their .NET member name by default; setting WriteEnumsAsStrings
@@ -83,7 +104,8 @@ public static class NamingAndAttributes
         var numericForm = YamlSerializer.Serialize(spec, asNumber);
 
         Console.WriteLine($"  enum as string : {asName.Split('\n').First(l => l.StartsWith("run_day", StringComparison.Ordinal)).TrimEnd()}");
-        Console.WriteLine($"  enum as number : {numericForm.Split('\n').First(l => l.StartsWith("run_day", StringComparison.Ordinal)).TrimEnd()}");
+        Console.WriteLine($"  enum as number : {numericForm.Split('\n').First(l => l.StartsWith("run_day", StringComparison.Ordinal)).TrimEnd()}"
+            + "  (why the string form is the default: the name survives a renumbering of the enum, the number does not)");
 
         Console.WriteLine();
     }
