@@ -27,6 +27,11 @@ jobs:
           # 'yaml-test-suite' git submodule; check it out so those tests have their vectors.
           submodules: recursive
 
+      # Bash-only and seconds to run, so it gates before the SDK setup: a namespace/folder violation
+      # fails the same way locally and here, without waiting on a full restore and build.
+      - name: Check folder / namespace alignment
+        run: bash bld/check-folder-namespace-alignment.sh
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:

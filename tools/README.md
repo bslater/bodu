@@ -96,3 +96,36 @@ pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -ExcludeProjectPattern @()
 When the target is a solution, the script drops projects that don't exercise the XML-documentation analyzer — by default any `/bench/` project — by generating a temporary solution filter (`.slnf`) listing only the kept projects and restoring/building that. `-ExcludeProjectPattern` takes one or more regexes tested against each project path; pass `@()` to build the whole solution unfiltered, or add patterns to skip more. The parameter is ignored when `-Target` is a single project.
 
 The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin — each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
+
+## Remote branch cleanup (PowerShell 7+)
+
+| Script | Purpose |
+| --- | --- |
+| `Remove-StaleRemoteBranches.ps1` | Lists stale remote branches, groups them by prefix, and optionally deletes the groups you select. Dry-run unless `-Delete` is supplied. |
+
+```pwsh
+# Report only: what would be considered stale
+pwsh ./tools/Remove-StaleRemoteBranches.ps1
+
+# Delete the groups you pick from the prompt
+pwsh ./tools/Remove-StaleRemoteBranches.ps1 -Delete
+
+# Widen or narrow the age filter
+pwsh ./tools/Remove-StaleRemoteBranches.ps1 -OlderThanDays 7
+```
+
+**Requires the `gh` CLI, authenticated.** A branch counts as landed when it is an ancestor of the base
+branch, *or* when its pull request is merged and nothing was pushed to it afterwards. The pull request is
+the load-bearing half: `git branch --merged` answers by ancestry, and this repository squash-merges, so
+the squash commit is not a descendant of the branch it came from and ancestry recognises none of them.
+Comparing file content instead does not work either — the base branch legitimately changes those files
+afterwards, and branches predating the history rewrite share no merge base at all.
+
+The "nothing pushed afterwards" half matters just as much: a branch can be pushed to after its pull
+request merged, and those commits are work nobody reviewed. Three such branches existed here, one of them
+carrying nine later commits that added 46 documentation guides.
+
+Without `gh` on `PATH`, or when `gh pr list` fails, only ancestry is available. The script warns, prints
+`PR lookup: UNAVAILABLE`, and reports squash-merged branches as unmerged — so it finds nothing to delete
+rather than guessing. Never reach for `-IncludeUnmerged` to work around that: it disables the landed test
+altogether and will offer up branches whose work exists nowhere else.
