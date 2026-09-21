@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
@@ -7,8 +7,8 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Cryptography</Title>
-    <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only — see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
-    <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;ed25519;ml-kem;ml-dsa</PackageTags>
+    <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, the RFC 6962 Merkle tree with inclusion and consistency proofs, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only — see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
+    <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;merkle-tree;rfc6962;ed25519;ml-kem;ml-dsa</PackageTags>
   </PropertyGroup>
 
   <!-- Grant the companion test project access to internal members. -->
@@ -39,18 +39,5 @@
     </Compile>
   </ItemGroup>
 
-
-  <!-- Namespace selector for the shared Merkle domain-separation prefixes compiled in below. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);SECURITY_CRYPTOGRAPHY</DefineConstants>
-  </PropertyGroup>
-
-  <!-- MerkleTreeHash and ParallelMerkleTreeHash share RFC 6962's leaf and node prefixes with
-       Bodu.Collections' conforming Rfc6962MerkleTree, though not its tree shape. The values are compiled from source
-       rather than duplicated, so they cannot drift apart; this creates no package dependency. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Collections\shared\MerkleTreeFormat.cs"
-             Link="shared\MerkleTreeFormat.cs" />
-  </ItemGroup>
 
 </Project>

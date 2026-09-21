@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Shared test fixtures, data generators, and hand-computation helpers used by both
-/// <see cref="MerkleTreeHashTests" /> and <see cref="ParallelMerkleTreeHashTests" />.
+/// the <see cref="MerkleTreeTests" /> partials.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="uint" />. This choice makes expected values hand-computable and keeps the tests
 /// independent of any real cipher. The trade-off is that an additive hash is commutative, so
 /// tests that need to catch ordering bugs should use a real non-commutative algorithm (see
-/// <c>MerkleTreeHashTestsBase.RealAlgorithm.cs</c>).
+/// <c>MerkleTreeTests.RealAlgorithm.cs</c>).
 /// </para>
 /// </remarks>
 internal static class MerkleTestData
@@ -68,12 +68,12 @@ internal static class MerkleTestData
 
     /// <summary>
     /// Computes the expected Merkle root hash for <paramref name="data" /> using an additive
-    /// hash, exactly replicating the zero-padding and tree-reduction strategy used by both
-    /// <see cref="MerkleTreeHash" /> and <see cref="ParallelMerkleTreeHash" />.
+    /// hash, exactly replicating the tree-reduction strategy used by both
+    /// <see cref="MerkleTree" />.
     /// </summary>
     /// <param name="data">The raw input bytes to hash. Must not be empty.</param>
     /// <param name="blockSize">
-    /// The number of bytes per leaf block. Partial final blocks are zero-padded to this length.
+    /// The number of bytes per leaf block. A partial final block is hashed at its actual length.
     /// </param>
     /// <param name="fanOut">The maximum number of child nodes combined into each parent node.</param>
     /// <returns>The Merkle root hash as a 4-byte little-endian <see cref="uint" />.</returns>
@@ -93,7 +93,7 @@ internal static class MerkleTestData
     /// The additive hash is commutative and blind to the <c>0x00</c> leaf prefix and to dropped zero padding (both
     /// add 0 to the byte-sum); it is sensitive only to the <c>0x01</c> internal-node prefix, which adds 1 per node.
     /// Order- and format-sensitive coverage lives in the SHA-256 tests
-    /// (<c>MerkleTreeHashTestsBase{T}.RealAlgorithm.cs</c> and the domain-separation partial).
+    /// (<c>MerkleTreeTests.RealAlgorithm.cs</c> and the domain-separation partial).
     /// </para>
     /// </remarks>
     internal static byte[] ComputeAdditiveRoot(byte[] data, int blockSize, int fanOut)
@@ -109,15 +109,16 @@ internal static class MerkleTestData
             level.Add(AdditiveHash(data.AsSpan(offset, len)));
         }
 
-        // Reduce each level by grouping nodes in slices of fanOut until only the root remains.
-        // The final group in a level may be partial when node count is not a multiple of fanOut.
+        // Reduce each level by grouping nodes in slices of fanOut until only the root remains. The final group in a
+        // level may be partial when the node count is not a multiple of fanOut: two or more nodes are hashed like any
+        // other group, and a lone leftover is promoted unchanged - never re-hashed as a one-child node.
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
             for (int i = 0; i < level.Count; i += fanOut)
             {
                 int groupSize = Math.Min(fanOut, level.Count - i);
-                next.Add(AdditiveHashConcat(level.GetRange(i, groupSize)));
+                next.Add(groupSize == 1 ? level[i] : AdditiveHashConcat(level.GetRange(i, groupSize)));
             }
             level = next;
         }
@@ -133,7 +134,7 @@ internal static class MerkleTestData
     internal static byte[] AdditiveHash(ReadOnlySpan<byte> block)
     {
         // Leaf-domain prefix contributes 0x00 → adds nothing to the byte-sum.
-        uint sum = MerkleTreeFormat.LeafPrefix;
+        uint sum = MerkleTree.LeafPrefix;
         foreach (byte b in block)
             sum += b;
         return BitConverter.GetBytes(sum);
@@ -151,7 +152,7 @@ internal static class MerkleTestData
     /// </remarks>
     internal static byte[] AdditiveHashConcat(List<byte[]> hashes)
     {
-        uint sum = MerkleTreeFormat.InternalNodePrefix;
+        uint sum = MerkleTree.InternalNodePrefix;
         foreach (byte[] h in hashes)
             foreach (byte b in h)
                 sum += b;

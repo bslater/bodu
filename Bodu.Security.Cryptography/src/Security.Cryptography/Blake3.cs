@@ -64,8 +64,8 @@ namespace Bodu.Security.Cryptography;
 /// tree structure is naturally parallel-friendly and outperforms <see cref="Blake2b" />, SHA-2, and SHA-3 on
 /// multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is fine. Use
 /// <see cref="Blake2b" /> if a configurable output size or RFC 7693-compatible MAC mode is required; use
-/// <see cref="MerkleTreeHash" /> or <see cref="ParallelMerkleTreeHash" /> if you want explicit control over the tree
-/// shape and the underlying leaf hash.
+/// <see cref="MerkleTree" /> if you want RFC 6962's tree, its proofs, and explicit control over the block size and the
+/// underlying leaf hash.
 /// </para>
 /// </remarks>
 /// <example>

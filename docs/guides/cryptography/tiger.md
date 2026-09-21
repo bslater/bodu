@@ -89,7 +89,7 @@ using var stream = File.OpenRead("archive.bin");
 byte[] digest = tiger.ComputeHash(stream);
 ```
 
-For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <xref:Bodu.Security.Cryptography.MerkleTreeHash> to build a Tiger Tree Hash — see the [Merkle trees guide](merkle-trees.md).
+For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <xref:Bodu.Security.Cryptography.MerkleTree> to build a Tiger Tree Hash — see the [Merkle trees guide](merkle-trees.md).
 
 To feed several discontiguous spans into one digest, use the `TransformBlock` / `TransformFinalBlock` pair, or the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> `AppendData` helper (which takes a `ReadOnlySpan<byte>`):
 
@@ -130,7 +130,7 @@ A plain `SequenceEqual` leaks timing information and is unsafe when the result d
 ## When to use Tiger
 
 - **Interoperability** with systems that already use Tiger — Direct Connect, the `tth:` URN scheme, older archive formats.
-- **Tiger Tree Hash** (Merkle tree of Tiger leaves) for content-addressable stores — pair with <xref:Bodu.Security.Cryptography.MerkleTreeHash>.
+- **Tiger Tree Hash** (Merkle tree of Tiger leaves) for content-addressable stores — pair with <xref:Bodu.Security.Cryptography.MerkleTree>.
 - **Educational** or research settings where the round structure and S-boxes are the object of study.
 
 For new work without an interoperability constraint, prefer SHA-2 or SHA-3 from the BCL — both are hardware-accelerated on modern CPUs and have broader analysis behind them.

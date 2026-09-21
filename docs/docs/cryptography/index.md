@@ -57,8 +57,7 @@ A compact decision table for the most common requirements. The "BCL alternative"
 | **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL — preferred where available) |
 | **Keyed hash / MAC** (reusable PRF) | `SipHash64`, `SipHash128` | 64 / 128 bits | Aumasson & Bernstein SipHash paper | `HMACSHA256` (BCL) |
 | **One-time message authenticator** (key + message — never reuse key) | `Poly1305` | 128 bits | RFC 8439 | None — paired with `ChaCha20` in BCL `ChaCha20Poly1305` |
-| **Streaming tree hashing** (level-by-level Merkle root, no proofs) | `MerkleTreeHash`, `ParallelMerkleTreeHash` | Configurable leaf hash | Merkle 1979 | None |
-| **Verifiable tree hashing** (RFC 6962 root + inclusion / consistency proofs) | `Rfc6962MerkleTree` — `Bodu.Collections.Specialized`, in the `Bodu.Collections` package | Configurable leaf hash | RFC 6962 / Certificate Transparency | None |
+| **Verifiable tree hashing** (RFC 6962 root over entries, fixed-size blocks, or a write-time accumulator, plus inclusion / consistency proofs and length-bound roots; wider fan-out as an explicit non-RFC mode) | `MerkleTree`, `MerkleBlockAccumulator` | Configurable leaf hash | RFC 6962 §2.1 / Certificate Transparency | None |
 | **Digital signature** (classical, sign / verify) | `Ed25519` | 64-byte deterministic signature | RFC 8032 | None on `net8.0` |
 | **Digital signature** (post-quantum) | `MLDsa44`, `MLDsa65`, `MLDsa87` | 2420 – 4627-byte signature | FIPS 204 | None on `net8.0` |
 | **Key agreement** (derive a shared secret from two public keys) | `X25519` | 32-byte shared secret | RFC 7748 | None on `net8.0` |
@@ -151,9 +150,9 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.Shake> | Variable | Keccak XOF (FIPS 202). |
 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | 256 bits | NIST SP 800-232 sponge digest; 12 / 8 round variants. |
 | <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customizable XOF. **Not** a `HashAlgorithm` — a sponge surface: `Absorb`, `Squeeze`, `GetHash(outputLength)`, static `HashData`. |
-| <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Inner digest width | Tree hashing over any inner `HashAlgorithm` supplied through a factory (`Func<HashAlgorithm>` or `IHashAlgorithmFactory<HashAlgorithm>`); one-shot `ComputeHash` over a stream, span, or array. |
+| <xref:Bodu.Security.Cryptography.MerkleTree> / <xref:Bodu.Security.Cryptography.MerkleBlockAccumulator> | Inner digest width | The RFC 6962 Merkle Tree Hash over any inner `HashAlgorithm` supplied as a `Func<HashAlgorithm>`: roots over entries (`ComputeRoot`), over fixed-size blocks of a stream, memory, or span (`ComputeBlocked` / `ComputeRootOfBlocks`, with async twins), or fed incrementally through `CreateBlockAccumulator`; inclusion and consistency proofs; `BindRoot` length-bound roots. Parallel leaf hashing and a non-RFC fan-out are constructor options; every root computation accepts an optional `MerkleTreeDiagnostics` recorder. |
 | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm>, <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> | — | Abstract bases for block-oriented digests (extension points). |
-| <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | — | Factory abstraction over `HashAlgorithm` for keyed / Merkle constructions. |
+| <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | — | Factory abstraction over `HashAlgorithm` for keyed constructions. |
 
 ### Keyed hashes / MACs
 *`HashAlgorithm` with a required `Key` property.*
@@ -236,8 +235,8 @@ Random key/IV/tweak generation, padding helpers, and secure-clear helpers ship a
 | One-time authenticator (e.g. paired with `ChaCha20`) | `Poly1305` |
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
 | Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake` |
-| Streaming tree digest inside a system you control | `MerkleTreeHash`, `ParallelMerkleTreeHash` |
-| Tree hashing with verifiable inclusion or consistency proofs | `Rfc6962MerkleTree` (`Bodu.Collections.Specialized`, in [Bodu.Collections](../collections/index.md)) |
+| Tree hashing with verifiable inclusion or consistency proofs | `MerkleTree` |
+| A Merkle root computed from the same writes that feed a flat digest | `MerkleTree.CreateBlockAccumulator` |
 | Sign a message and verify it with a distributed public key | `Ed25519` (classical), `MLDsa65` (post-quantum) |
 | Establish a shared secret between two parties | `X25519` (classical), `MLKem768` (post-quantum) |
 | Encrypt a payload so only a given public key can read it | `Hpke` |
