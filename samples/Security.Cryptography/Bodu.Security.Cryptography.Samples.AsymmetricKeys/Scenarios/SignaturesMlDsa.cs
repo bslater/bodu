@@ -27,8 +27,11 @@ public static class SignaturesMlDsa
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- ML-DSA sign / verify (FIPS 204) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "ML-DSA sign / verify (FIPS 204)",
+            what: "At each of the three parameter sets: generates a key pair, signs a message, then verifies the signature against the genuine message and against a tampered one.",
+            why: "ML-DSA is the post-quantum counterpart to Ed25519, and the same sign/verify shape applies - what changes is the size. Keys are generated per run, so, as with ML-KEM, only the booleans and the byte sizes are deterministic and the signature hex is deliberately not printed.",
+            expect: "verify(genuine)=True and verify(tampered)=False at all three parameter sets, with signatures of 2420, 3309 and 4627 bytes at 44, 65 and 87 - two to four kilobytes per signature is the cost of post-quantum security, next to Ed25519's 64 bytes.");
 
         RunParameterSet("ML-DSA-44", () => MLDsa44.Create());
         RunParameterSet("ML-DSA-65", () => MLDsa65.Create());

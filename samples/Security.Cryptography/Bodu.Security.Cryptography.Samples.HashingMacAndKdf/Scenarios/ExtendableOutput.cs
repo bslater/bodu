@@ -22,7 +22,11 @@ public static class ExtendableOutput
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Extendable-output functions (XOFs) ---");
+        SampleConsole.Scenario(
+            "Extendable-output functions (XOFs)",
+            what: "Squeezes SHAKE128 and Ascon-XOF128 from the same message at two output lengths each, then checks the longer output against the shorter one.",
+            why: "A XOF is not a fixed-width digest: the caller asks for as many bytes as it needs, which is what makes XOFs useful for deriving several keys or a stream of mask bytes from one secret. The defining property is that the output is a prefix-extension - a longer squeeze begins with the shorter one.",
+            expect: "The 48-byte squeeze starts with exactly the 16-byte squeeze, so the extension check prints True. Note the contrast with truncating a fixed-width hash, which gives you a shorter digest but no such relationship between lengths.");
         Console.WriteLine($"message: \"extend me to any length\"");
         Console.WriteLine();
 

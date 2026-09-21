@@ -26,8 +26,11 @@ public static class OneTimePasswords
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- HOTP / TOTP (fixed key, fixed counter/time) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "HOTP / TOTP (fixed key, fixed counter/time)",
+            what: "Generates the HOTP codes at counters 0, 1 and 2 from the RFC 4226 test key and verifies each, then generates a TOTP code at a fixed instant and re-verifies that same code 30 seconds later.",
+            why: "HOTP is counter-based and TOTP is the same construction over a time step, which is why a TOTP code expires. Both the key and the clock are passed in here rather than read from the environment, so the codes are reproducible; production code uses the real clock and usually accepts a small window of neighbouring steps.",
+            expect: "755224, 287082 and 359152 - the first three rows of RFC 4226 appendix D - each verifying True. The TOTP code verifies at its own instant and then prints False one time step later with window 0, which is the expiry working rather than a failure.");
 
         // HOTP is counter-based: each counter yields a distinct code (the RFC 4226 Appendix D vectors).
         Console.WriteLine("  HOTP (RFC 4226 test key):");

@@ -24,8 +24,11 @@ public static class KemMlKem
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- ML-KEM key encapsulation (FIPS 203) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "ML-KEM key encapsulation (FIPS 203)",
+            what: "At each of the three parameter sets: the receiver generates a key pair and publishes its encapsulation key, the sender encapsulates a fresh shared secret to it, the receiver decapsulates, and a corrupted ciphertext is decapsulated as well.",
+            why: "ML-KEM is the post-quantum replacement for Diffie-Hellman key transport, and its keys are generated fresh, so nothing here can be pinned to a published vector - the sample prints only the facts that must hold on every run. Implicit rejection is the design point of the tampered case: a corrupted ciphertext yields an unrelated secret rather than an error, which denies an attacker a decryption oracle.",
+            expect: "Every parameter set prints secrets agree=True and implicit rejection True. The sizes are fixed by FIPS 203: a 32-byte secret with a 768, 1088 or 1568-byte ciphertext at 512, 768 and 1024. No key or secret hex is printed, because it would differ on every run.");
 
         RunParameterSet("ML-KEM-512", () => MLKem512.Create());
         RunParameterSet("ML-KEM-768", () => MLKem768.Create());
