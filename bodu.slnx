@@ -336,6 +336,7 @@
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.AsymmetricKeys/Bodu.Security.Cryptography.Samples.AsymmetricKeys.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash.Test/Bodu.Security.Cryptography.Samples.CustomHash.Test.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash/Bodu.Security.Cryptography.Samples.CustomHash.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HybridEncryption/Bodu.Security.Cryptography.Samples.HybridEncryption.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf/Bodu.Security.Cryptography.Samples.HashingMacAndKdf.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees/Bodu.Security.Cryptography.Samples.MerkleTrees.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.SymmetricAndAead/Bodu.Security.Cryptography.Samples.SymmetricAndAead.csproj" />
