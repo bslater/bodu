@@ -20,7 +20,18 @@ public static class IntervalBasics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AnchoredInterval: construction ---");
+        SampleConsole.Scenario(
+            "AnchoredInterval - construction",
+            what: "Builds anchored intervals from the RFC 5545 duration grammar and from TimeSpan values, and "
+                + "reports what each one represents.",
+            why: "Not every schedule is calendar-shaped. 'Every six hours from whenever this deployment "
+                + "started' has no fixed clock time and no day-of-week - it is an offset from an instant, which "
+                + "neither a recurrence rule nor a cron expression can express without inventing one. This form "
+                + "fills that gap, and it is deliberately the smallest of the four: an interval and nothing "
+                + "else. The anchor is supplied per query rather than stored, which keeps the interval a pure "
+                + "value and lets one interval serve many differently-anchored schedules.",
+            expect: "Two spellings of the same idea - the iCalendar duration text and a TimeSpan - produce "
+                + "equivalent intervals, so a schedule can be stored in whichever form its source uses.");
 
         // An anchored interval is the simplest recurrence form there is: a fixed spacing, with no
         // calendar semantics at all. It stores ONLY the interval -- the anchor is supplied per

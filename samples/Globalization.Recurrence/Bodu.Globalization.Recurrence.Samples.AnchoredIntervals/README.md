@@ -27,7 +27,8 @@ equality and hash agreement before a round trip.
 Equality is by elapsed time, so every spelling of one duration compares equal:
 
 ```text
---- AnchoredInterval: construction ---
+--- AnchoredInterval - construction ---
+
 new AnchoredInterval(TimeSpan.FromHours(6)) : PT6H
 AnchoredInterval.Parse("PT6H")              : PT6H
 Interval property                           : 06:00:00
@@ -83,7 +84,8 @@ therefore has no answer. A query five years from its anchor lands on the grid ex
 position is computed arithmetically rather than by stepping:
 
 ```text
---- Occurrences fall at anchor + k x interval, for k >= 1 ---
+--- Anchored queries - occurrences at anchor plus k intervals ---
+
 interval : PT6H
 anchor   : 2026-04-01 00:00
 first 5  : 04-01 06:00, 04-01 12:00, 04-01 18:00, 04-02 00:00, 04-02 06:00
@@ -138,7 +140,8 @@ duration is rejected on *meaning* rather than syntax: it parses as a valid durat
 valid interval:
 
 ```text
---- Accepted duration text ---
+--- The RFC 5545 duration grammar ---
+
   P1W            -> P1W          (weeks)
   P3D            -> P3D          (days)
   PT2H           -> PT2H         (hours)
@@ -187,6 +190,7 @@ valid interval:
 ```text
 Bodu.Globalization.Recurrence.Samples.AnchoredIntervals/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/IntervalBasics.cs
   Scenarios/AnchoredQueries.cs
   Scenarios/DurationGrammar.cs

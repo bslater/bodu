@@ -17,7 +17,20 @@ public static class DurationGrammar
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Accepted duration text ---");
+        SampleConsole.Scenario(
+            "The RFC 5545 duration grammar",
+            what: "Parses the accepted duration forms - weeks, days, and time components in combination - and "
+                + "shows what the grammar rejects.",
+            why: "Using the iCalendar duration grammar rather than inventing one means a duration copied out of "
+                + "a calendar feed parses unchanged, and a duration written here is valid in one. The grammar "
+                + "has a quirk worth knowing: weeks cannot be combined with other components, so there is no "
+                + "way to write one week and two days as a single term - that is the spec's rule, not a "
+                + "limitation here, and reproducing it faithfully matters more than being conveniently lenient, "
+                + "because a duration this library accepts and a real calendar rejects is a worse outcome than "
+                + "a rejection.",
+            expect: "The accepted forms cover the combinations the spec allows. The rejected input is refused "
+                + "with an explanation rather than silently reinterpreted, which is what keeps output "
+                + "interoperable with calendar software.");
 
         // The full production: [sign] "P" (weeks / days [time] / time), where time is
         // "T" followed by at least one of hours, minutes, seconds.

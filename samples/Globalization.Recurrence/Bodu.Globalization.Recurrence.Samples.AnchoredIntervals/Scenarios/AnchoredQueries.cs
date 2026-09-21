@@ -20,7 +20,20 @@ public static class AnchoredQueries
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Occurrences fall at anchor + k x interval, for k >= 1 ---");
+        SampleConsole.Scenario(
+            "Anchored queries - occurrences at anchor plus k intervals",
+            what: "Enumerates occurrences from an anchor, then answers next and previous at various instants "
+                + "including the anchor itself and an exact occurrence, with the inclusive flag both ways.",
+            why: "The anchor is excluded from its own series, which is the decision worth being explicit about: "
+                + "'every six hours starting now' means the first run is six hours from now, not immediately. "
+                + "Occurrences are therefore at k from one rather than k from zero. Passing the anchor per "
+                + "query rather than storing it is what makes the interval reusable - a host with fifty jobs on "
+                + "the same cadence holds one interval and fifty anchors, and no query can accidentally read "
+                + "another job's start time.",
+            expect: "The anchor itself is not an occurrence even with the inclusive flag set, because it is "
+                + "k equals zero. An instant that is a genuine occurrence is returned by the inclusive query "
+                + "and skipped by the exclusive one, the same contract every other schedule form in this "
+                + "package follows.");
 
         AnchoredInterval sixHourly = AnchoredInterval.Parse("PT6H");
         var anchor = new DateTime(2026, 4, 1, 0, 0, 0);
