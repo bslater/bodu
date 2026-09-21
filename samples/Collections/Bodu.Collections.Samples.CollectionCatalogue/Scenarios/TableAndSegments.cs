@@ -13,6 +13,12 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// <see cref="SegmentedBuffer{T}" />, an append-only list that grows by adding fixed-size segments instead of
 /// reallocating and copying.
 /// </summary>
+/// <remarks>
+/// Both types exist to avoid a cost that is invisible until it is not. A table stores only the cells that exist,
+/// so a sparse grid costs what it holds rather than rows × columns; a segmented buffer never copies what it
+/// already holds, so appending stays O(1) with no doubling pause and no large-object-heap churn — at the price of
+/// a two-step index and no contiguous span.
+/// </remarks>
 public static class TableAndSegments
 {
     /// <summary>
@@ -20,7 +26,21 @@ public static class TableAndSegments
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Table / SegmentedBuffer ---");
+        SampleConsole.Scenario(
+            "Table / SegmentedBuffer",
+            what: "Builds a sparse city-by-month rainfall table, reads it by row and by column, removes a whole " +
+                  "row and column, then appends past several segment boundaries of a segmented buffer.",
+            why: "A two-key map done by hand is a Dictionary of Dictionaries, where every read needs two " +
+                 "null-checks and a column view means walking every row. Table makes the column a first-class " +
+                 "view and stores only occupied cells, so an absent reading costs nothing rather than a null " +
+                 "slot. SegmentedBuffer addresses the other classic cost: List<T> grows by allocating a bigger " +
+                 "array and copying everything across, which for a large log means repeated large-object " +
+                 "allocations and a copy pause. Adding a segment does neither - the trade is that indexing is a " +
+                 "division rather than an offset, and there is no contiguous span to hand out.",
+            expect: "Only the cells actually recorded are counted, so the column views are ragged - Jan has all " +
+                    "three cities while Feb has one. Removing a column and a row drops exactly their cells. The " +
+                    "buffer indexes across segment boundaries as if it were flat, and Clear plus TrimExcess " +
+                    "releases the segments.");
 
         RunTable();
         RunSegmentedBuffer();
@@ -46,13 +66,13 @@ public static class TableAndSegments
         rainfall["Perth", "Mar"] = 19;       // no February reading for Perth - the cell simply does not exist
         rainfall.Add("Darwin", "Jan", 468);
 
-        Console.WriteLine($"    cells        : {rainfall.Count} across {rainfall.RowKeys.Count} rows and {rainfall.ColumnKeys.Count} columns");
+        Console.WriteLine($"    cells        : {rainfall.Count} across {rainfall.RowKeys.Count} rows and {rainfall.ColumnKeys.Count} columns  (fewer than rows x columns - only recorded cells exist, which is what sparse means)");
 
         // TryAdd is the non-throwing counterpart of Add; Add rejects an occupied cell.
-        Console.WriteLine($"    TryAdd occupied cell : {rainfall.TryAdd("Sydney", "Jan", 999)} (Sydney/Jan is taken)");
-        Console.WriteLine($"    TryGetValue Perth/Feb: {rainfall.TryGetValue("Perth", "Feb", out var perthFeb)} (value {perthFeb})");
+        Console.WriteLine($"    TryAdd occupied cell : {rainfall.TryAdd("Sydney", "Jan", 999)}  (expected False - TryAdd refuses rather than overwriting; the indexer is the way to replace)");
+        Console.WriteLine($"    TryGetValue Perth/Feb: {rainfall.TryGetValue("Perth", "Feb", out var perthFeb)}  (value {perthFeb} - one call answers both keys, with no intermediate row lookup to null-check)");
         Console.WriteLine($"    Contains Perth/Feb   : {rainfall.Contains("Perth", "Feb")}");
-        Console.WriteLine($"    ContainsRow/Column   : Perth={rainfall.ContainsRow("Perth")}, Feb={rainfall.ContainsColumn("Feb")}");
+        Console.WriteLine($"    ContainsRow/Column   : Perth={rainfall.ContainsRow("Perth")}, Feb={rainfall.ContainsColumn("Feb")}  (a row or column exists exactly when some cell uses it)");
 
         // Row(row) and Column(column) are read-only *views* over one slice, so a caller can hand out a single city's
         // series or a single month's cross-section without materializing a copy.
@@ -64,13 +84,13 @@ public static class TableAndSegments
         }
 
         // A column view is the cross-section: every city that reported that month, and only those.
-        Console.WriteLine($"      col Jan    : {RenderColumn(rainfall, "Jan")} (all three cities)");
-        Console.WriteLine($"      col Feb    : {RenderColumn(rainfall, "Feb")} (Perth and Darwin never reported)");
+        Console.WriteLine($"      col Jan    : {RenderColumn(rainfall, "Jan")}  (all three cities reported - a column view, not a filtered copy of every row)");
+        Console.WriteLine($"      col Feb    : {RenderColumn(rainfall, "Feb")}  (ragged by design - the missing cities have no cell, as distinct from having a zero)");
 
         // RemoveColumn drops one column across every row in a single call - the operation a nested-dictionary layout
         // makes the caller write a loop for.
-        Console.WriteLine($"    RemoveColumn(\"Mar\"): {rainfall.RemoveColumn("Mar")} -> {rainfall.Count} cells remain");
-        Console.WriteLine($"    RemoveRow(\"Darwin\"): {rainfall.RemoveRow("Darwin")} -> {rainfall.Count} cells remain");
+        Console.WriteLine($"    RemoveColumn(\"Mar\"): {rainfall.RemoveColumn("Mar")} -> {rainfall.Count} cells remain  (one call drops the column across every row)");
+        Console.WriteLine($"    RemoveRow(\"Darwin\"): {rainfall.RemoveRow("Darwin")} -> {rainfall.Count} cells remain  (and the symmetric operation on a row)");
 
         // Enumeration yields a ((row, column), value) pair per populated cell; order is unspecified, so sort to print.
         var remaining = rainfall
@@ -93,25 +113,25 @@ public static class TableAndSegments
 
         for (var value = 1; value <= 10; value++) buffer.Add(value);
 
-        Console.WriteLine($"    count        : {buffer.Count} (segment size 4, so three segments are in use)");
+        Console.WriteLine($"    count        : {buffer.Count}  (segment size 4, so three segments are in use - and none of the earlier ones were copied to get here)");
 
         // Indexed access stays O(1) - the index divides into a segment number and an offset.
-        Console.WriteLine($"    [0] / [3] / [4] / [9]: {buffer[0]} / {buffer[3]} / {buffer[4]} / {buffer[9]} (4 -> 5 crosses a boundary)");
+        Console.WriteLine($"    [0] / [3] / [4] / [9]: {buffer[0]} / {buffer[3]} / {buffer[4]} / {buffer[9]}  (indices 3 and 4 sit in different segments, yet the indexer reads as if the storage were flat)");
 
         // Enumeration walks the segments in order, so the logical sequence is the insertion sequence.
-        Console.WriteLine($"    enumerated   : {string.Join(", ", buffer)}");
+        Console.WriteLine($"    enumerated   : {string.Join(", ", buffer)}  (enumeration walks the segments in order, so append order is preserved)");
 
         // The indexer is settable, so the buffer works as a write-through backing store for computed values.
         buffer[9] = 100;
-        Console.WriteLine($"    after [9] = 100: last item {buffer[buffer.Count - 1]}");
+        Console.WriteLine($"    after [9] = 100: last item {buffer[buffer.Count - 1]}  (append-only refers to length: existing slots are still writable)");
 
         // CopyTo and ToArray flatten the segments into one contiguous array when an API demands one.
-        Console.WriteLine($"    ToArray()    : [{string.Join(", ", buffer.ToArray())}]");
+        Console.WriteLine($"    ToArray()    : [{string.Join(", ", buffer.ToArray())}]  (the one operation that does copy - the price of wanting a contiguous array back)");
 
         // Clear() empties the buffer; TrimExcess() then releases the segments the buffer no longer needs.
         buffer.Clear();
         buffer.TrimExcess();
-        Console.WriteLine($"    after Clear + TrimExcess: count {buffer.Count}");
+        Console.WriteLine($"    after Clear + TrimExcess: count {buffer.Count}  (expected 0 - Clear empties, TrimExcess releases the segments rather than holding them for reuse)");
     }
 
     /// <summary>
