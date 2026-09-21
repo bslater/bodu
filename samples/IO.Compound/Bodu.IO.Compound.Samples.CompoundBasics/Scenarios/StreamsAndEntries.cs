@@ -21,7 +21,20 @@ public static class StreamsAndEntries
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Walk a real .doc's storage tree ---");
+        SampleConsole.Scenario(
+            "Walking a real document's storage tree",
+            what: "Opens a committed .doc file and walks its storage hierarchy, reporting each entry's name, "
+                + "type, size and colour, then reads one named stream.",
+            why: "A compound file is a filesystem inside a file - directories, named streams, a FAT - and the "
+                + "reason to have a reader for it is that .xls, .doc and .msg are all applications of it. "
+                + "Separating the container from the application format is what lets one implementation serve "
+                + "all three, and it means this layer can be correct about the envelope without knowing anything "
+                + "about what the streams contain. The entry colour is exposed because the directory is a "
+                + "red-black tree and a malformed colouring is a real corruption signal, not an implementation "
+                + "detail.",
+            expect: "The tree structure and the stream names come out of the container with no knowledge of Word "
+                + "at all - the reader sees named streams, not a document. Reading one stream is a stream read, "
+                + "so a large embedded object does not have to be materialized to inspect the file.");
 
         using var file = CompoundFile.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample1.doc"));
 
@@ -52,12 +65,12 @@ public static class StreamsAndEntries
             // Well-known stream names start with control chars (\x05SummaryInformation,
             // \x01CompObj) - render them printably.
             var name = string.Concat(entry.Name.Select(c => char.IsControl(c) ? $"\\x{(int)c:X2}" : c.ToString()));
-            Console.WriteLine($"{new string(' ', indent * 2)}{name} ({entry.EntryType}{(entry.EntryType == CompoundEntryType.Stream ? $", {entry.Length} bytes" : string.Empty)})");
+            Console.WriteLine($"  {new string(' ', indent * 2)}{name} ({entry.EntryType}{(entry.EntryType == CompoundEntryType.Stream ? $", {entry.Length} bytes" : string.Empty)})");
         }
 
         foreach (var child in storage.EnumerateStorages())
         {
-            Console.WriteLine($"{new string(' ', indent * 2)}[{child.Name}]");
+            Console.WriteLine($"  {new string(' ', indent * 2)}[{child.Name}]");
             Dump(child, indent + 1);
         }
     }
