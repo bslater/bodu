@@ -27,10 +27,12 @@ AUD/USD (both quote it), AUD/EUR (only BankA), and AUD/JPY (only BankB).
 
 **What to expect.**
 
-```
-AUD/USD: 0.6568  served by BankA  (both quote it; priority wins)
-AUD/EUR: 0.6028  served by BankA
-AUD/JPY: 102.02  served by BankB  (fallback)
+```text
+--- Priority fallback - first source that answers wins ---
+
+  AUD/USD: 0.6568  served by BankA  (both quote it; priority wins)
+  AUD/EUR: 0.6028  served by BankA
+  AUD/JPY: 102.02  served by BankB  (fallback)
 ```
 
 AUD/USD comes from BankA even though BankB also quotes it — priority order decides, not data
@@ -52,11 +54,13 @@ AUD/JPY (a single-contributor pair) to show averaging degrades gracefully.
 
 **What to expect.**
 
-```
-BankA fix : 0.6568
-BankB fix : 0.6533
-Averaged  : 0.65505  provider label "Average" (synthetic - not for audit)
-AUD/JPY   : 102.02  (single contributor)
+```text
+--- Averaging across sources ---
+
+  BankA fix : 0.6568
+  BankB fix : 0.6533
+  Averaged  : 0.65505  provider label "Average" (synthetic - not for audit)
+  AUD/JPY   : 102.02  (single contributor)
 ```
 
 0.65505 is the arithmetic mean of the two fixes, and its provider label is the synthetic
@@ -79,10 +83,12 @@ follows the default order.
 
 **What to expect.**
 
-```
-AUD/USD: 0.6533  served by BankB  (routed to BankB first)
-AUD/EUR: 0.6028  served by BankA  (routed to BankA)
-AUD/JPY: 102.02  served by BankB  (no route, default order)
+```text
+--- Per-pair routing ---
+
+  AUD/USD: 0.6533  served by BankB  (routed to BankB first)
+  AUD/EUR: 0.6028  served by BankA  (routed to BankA)
+  AUD/JPY: 102.02  served by BankB  (no route, default order)
 ```
 
 Compare the first line with PriorityFallback's: same aggregator children, same date, but the
@@ -104,9 +110,11 @@ aggregate as `IDatedRateProvider` and one child directly as a keyed service.
 
 **What to expect.**
 
-```
-AUD/USD via aggregate : 0.6533  served by BankB
-AUD/USD via "BankA"   : 0.6568  served by BankA (keyed child)
+```text
+--- Composing an aggregate through dependency injection ---
+
+  AUD/USD via aggregate : 0.6533  served by BankB
+  AUD/USD via "BankA"   : 0.6568  served by BankA (keyed child)
 ```
 
 The aggregate obeys the `MapPair` route (BankB first); the keyed lookup bypasses routing
@@ -125,6 +133,18 @@ registration (see the commented block in `Program.cs`).
 `Data/central-bank-a.csv` (AUD/USD, AUD/EUR) and `Data/central-bank-b.csv` (AUD/USD, AUD/JPY)
 hold illustrative Q1 2024 business-day rates (synthetic; see the file headers). BankB's USD fix
 is deliberately offset from BankA's so strategy choices are visible.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.AggregatedRates/
+  Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/PriorityFallback.cs
+  Scenarios/Averaging.cs
+  Scenarios/PerPairRouting.cs
+  Scenarios/DiComposition.cs
+```
 
 ## NuGet equivalent
 

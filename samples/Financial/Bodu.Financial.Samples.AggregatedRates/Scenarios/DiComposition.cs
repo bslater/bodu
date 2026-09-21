@@ -24,7 +24,17 @@ public static class DiComposition
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- DI: AddAggregatedRateProvider builder ---");
+        SampleConsole.Scenario(
+            "Composing an aggregate through dependency injection",
+            what: "Builds the same aggregate through the registration builder, resolves it from the container by "
+                + "interface, and queries it.",
+            why: "Which feeds a deployment uses, and in what order, is configuration - it differs between "
+                + "environments and changes without the calling code changing. Registering the aggregate keeps "
+                + "that in the composition root and leaves consumers depending on the plain provider interface, "
+                + "so a test substitutes a fixed table and the code under test is unaware there was ever an "
+                + "aggregate.",
+            expect: "The container hands back something indistinguishable from a single provider at the call "
+                + "site, which is what lets the aggregation strategy change without touching consumers.");
 
         var services = new ServiceCollection();
 
@@ -50,12 +60,12 @@ public static class DiComposition
         var date = new DateOnly(2024, 2, 14);
 
         RateLookupResult usd = rates.GetRate("AUD", "USD", date);
-        Console.WriteLine($"AUD/USD via aggregate : {usd.Rate.Rate}  served by {usd.Rate.Provider}");
+        Console.WriteLine($"  AUD/USD via aggregate : {usd.Rate.Rate}  served by {usd.Rate.Provider}");
 
         // A specific child (with its cache) remains addressable as a keyed service.
         var bankAOnly = provider.GetRequiredKeyedService<IDatedRateProvider>(StaticSources.BankA);
         RateLookupResult direct = bankAOnly.GetRate("AUD", "USD", date);
-        Console.WriteLine($"AUD/USD via \"BankA\"   : {direct.Rate.Rate}  served by {direct.Rate.Provider} (keyed child)");
+        Console.WriteLine($"  AUD/USD via \"BankA\"   : {direct.Rate.Rate}  served by {direct.Rate.Provider} (keyed child)");
 
         Console.WriteLine();
     }

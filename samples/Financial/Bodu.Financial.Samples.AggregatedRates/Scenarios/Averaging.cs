@@ -22,7 +22,18 @@ public static class Averaging
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Averaging across sources ---");
+        SampleConsole.Scenario(
+            "Averaging across sources",
+            what: "Asks the same aggregate under the averaging strategy, where several sources answer, and shows "
+                + "the combined rate against the individual ones.",
+            why: "Priority order says one feed is authoritative; averaging says none of them is, which is the "
+                + "right model when the sources are independent quotes rather than a hierarchy. It also dampens "
+                + "the single-feed outlier - a stale or mistaken quote moves an average far less than it moves a "
+                + "first-success answer. The trade is that an average is not a rate anyone published, so it is "
+                + "appropriate for valuation and indicative pricing and not for settling a trade at a quoted "
+                + "price.",
+            expect: "The aggregate sits between the individual quotes rather than equalling any of them, which "
+                + "is both the value and the caveat of the strategy.");
 
         var bankA = StaticSources.LoadBankA();
         var bankB = StaticSources.LoadBankB();
@@ -45,13 +56,13 @@ public static class Averaging
         var b = bankB.GetRate("AUD", "USD", date).Rate.Rate;
         RateLookupResult averaged = aggregate.GetRate("AUD", "USD", date);
 
-        Console.WriteLine($"BankA fix : {a}");
-        Console.WriteLine($"BankB fix : {b}");
-        Console.WriteLine($"Averaged  : {averaged.Rate.Rate}  provider label \"{averaged.Rate.Provider}\" (synthetic - not for audit)");
+        Console.WriteLine($"  BankA fix : {a}");
+        Console.WriteLine($"  BankB fix : {b}");
+        Console.WriteLine($"  Averaged  : {averaged.Rate.Rate}  provider label \"{averaged.Rate.Provider}\" (synthetic - not for audit)");
 
         // Pairs only one bank quotes still resolve - an average of one contribution is that value.
         RateLookupResult jpy = aggregate.GetRate("AUD", "JPY", date);
-        Console.WriteLine($"AUD/JPY   : {jpy.Rate.Rate}  (single contributor)");
+        Console.WriteLine($"  AUD/JPY   : {jpy.Rate.Rate}  (single contributor)");
 
         Console.WriteLine();
     }
