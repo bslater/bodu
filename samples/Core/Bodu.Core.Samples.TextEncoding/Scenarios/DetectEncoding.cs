@@ -25,7 +25,18 @@ public static class DetectEncoding
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- EncodingDetection: byte-order-mark sniffing ---");
+        SampleConsole.Scenario(
+            "EncodingDetection - byte-order-mark sniffing",
+            what: "Writes the same phrase four ways - UTF-8, UTF-16LE and UTF-16BE with byte-order marks, and " +
+                  "plain UTF-8 without one - then detects each and decodes it.",
+            why: "A byte stream carries no declaration of its encoding, so something has to decide. A BOM is the " +
+                 "one reliable in-band signal, and reading it is cheap and unambiguous. Getting this wrong is not " +
+                 "subtle: decode UTF-16LE as UTF-8 and every character comes back interleaved with nulls, or leave " +
+                 "a UTF-8 BOM in place and the first field of a CSV silently begins with an invisible character " +
+                 "that breaks an exact-match comparison.",
+            expect: "All four decode to the identical string, which is the point - the difference lives in the " +
+                    "bytes, not the text. The BOM lengths differ (3 for UTF-8, 2 for either UTF-16), and the " +
+                    "unmarked file falls back to UTF-8 rather than failing.");
 
         // The three BOM-carrying fixtures plus one deliberately BOM-less file to show the negative case.
         foreach (var name in new[] { "utf8-bom.txt", "utf16le-bom.txt", "utf16be-bom.txt", "plain-utf8.txt" })
@@ -38,14 +49,14 @@ public static class DetectEncoding
                 // StripPreamble returns the payload with the BOM removed; decode that to recover the text.
                 var payload = encoding.StripPreamble(bytes);
                 var text = encoding.GetString(payload);
-                Console.WriteLine($"{name,-16}: {encoding.GetDisplayName(),-22} BOM={encoding.GetPreambleLength()}B  text=\"{text}\"");
+                Console.WriteLine($"  {name,-16}: {encoding.GetDisplayName(),-22} BOM={encoding.GetPreambleLength()}B  text=\"{text}\"  (detected from the leading bytes alone, before any decoding was attempted)");
             }
             else
             {
                 // No recognized BOM. There is no content heuristic in EncodingDetection, so the caller decides
                 // the default - UTF-8 is the modern, safe assumption for a BOM-less byte stream.
                 var text = Encoding.UTF8.GetString(bytes);
-                Console.WriteLine($"{name,-16}: (no BOM)               fallback UTF-8   text=\"{text}\"");
+                Console.WriteLine($"  {name,-16}: (no BOM)               fallback UTF-8   text=\"{text}\"  (no signal to read, so the caller\u0027s fallback decides - UTF-8 is the safe modern default)");
             }
         }
 
