@@ -26,7 +26,22 @@ public static class StreamingReaderWriter
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Streaming: Utf8DelimitedReader -> filter -> Utf8DelimitedWriter ---");
+        SampleConsole.Scenario(
+            "Streaming - reader to filter to writer, with no document in between",
+            what: "Walks the trades file one token at a time, accumulating each row's fields, and writes only the "
+                + "Buy rows through to a new CSV while accumulating their notional - then prints the filtered "
+                + "output.",
+            why: "This is the shape for a file bigger than memory, and the reason the reader and writer share a "
+                + "token model rather than each having their own. Only one row is held at a time, so the cost of "
+                + "the pipeline is fixed regardless of how long the file is - which is the difference between a "
+                + "job that runs on a large export and one that runs out of memory partway through. The writer "
+                + "re-applies the quoting rules independently on the way out, so a field that needed quotes in "
+                + "the source still has them in the output even though the pipeline only ever saw its unquoted "
+                + "value.",
+            expect: "Fewer rows out than in, because only Buy rows pass the filter, with the notional accumulated "
+                + "during the same single pass. The reader reports the line it finished on, which is what makes "
+                + "a failure mid-stream diagnosable. In the output, the symbol containing a comma is quoted "
+                + "again - the writer decided that, not the reader.");
 
         var csvBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "trades.csv"));
         var reader = new Utf8DelimitedReader(csvBytes);
@@ -84,10 +99,11 @@ public static class StreamingReaderWriter
         writer.WriteEndArray();
         writer.Flush();
 
-        Console.WriteLine($"streamed {seen} rows, kept {kept} buys (notional {buyNotional:N2}); reader stopped at line {reader.LineNumber}");
+        Console.WriteLine($"  streamed {seen} rows, kept {kept} buys (notional {buyNotional:N2}); reader stopped at line {reader.LineNumber}"
+            + "  (one row held at a time, so the cost is fixed no matter how long the file is)");
 
         // The writer re-quotes on the way out - note 'F, ordinary' kept its quotes.
-        Console.WriteLine("filtered output:");
+        Console.WriteLine("  filtered output (note 'F, ordinary' was re-quoted by the writer, which never saw the source quotes):");
         foreach (var line in Encoding.UTF8.GetString(buffer.WrittenSpan).TrimEnd().Split('\n'))
         {
             Console.WriteLine($"  | {line.TrimEnd()}");

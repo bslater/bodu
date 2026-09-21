@@ -24,7 +24,25 @@ public static class PolicyBehaviors
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Policy knobs for dirty input ---");
+        SampleConsole.Scenario(
+            "Policy knobs for input that breaks the contract",
+            what: "Parses a file with a short row and a long row under the strict defaults and again with ragged "
+                + "field counts allowed, then does the same for a structurally malformed quoted field, first "
+                + "strictly and then with the malformed record skipped.",
+            why: "Real CSV files arrive with rows the header does not describe and quotes that do not close, and "
+                + "there is no universally right response - which is why this is a policy rather than a "
+                + "behaviour. A file from a known generator should fail loudly, because a ragged row there means "
+                + "a bug upstream and continuing past it imports wrong data. A one-off file exported by hand is "
+                + "the opposite case, where stopping on row 4,000 of 50,000 is not a service to anybody. Making "
+                + "the strict behaviour the default matters: a reader that is quietly permissive turns a broken "
+                + "file into a plausible-looking import, and the damage surfaces much later.",
+            expect: "Both strict parses throw. The second reports a field-count mismatch rather than a quoting "
+                + "error, because the stray characters after the closing quote collapse that row to two fields "
+                + "and the count check fires first - the message names the symptom the reader reached, not the "
+                + "root cause. The lenient parses accept the same input and keep the rows, with the field counts "
+                + "showing exactly what was preserved. Note that skipping a malformed record keeps the fields "
+                + "already parsed, leaving a short row - which is why that policy is paired with ragged rather "
+                + "than used alone.");
 
         // Row 2 is short (2 fields), row 3 is long (4 fields).
         var ragged = Encoding.UTF8.GetBytes("sku,name,stock\nA1,Widget,12\nB2,Bolt\nC3,Nut,40,extra\n");
@@ -37,7 +55,8 @@ public static class PolicyBehaviors
         }
         catch (DelimitedFormatException ex)
         {
-            Console.WriteLine($"Strict (default) : {ex.Message}");
+            Console.WriteLine($"  Strict (default) : {ex.Message}"
+                + "  (the default fails loudly - a ragged row from a known generator means a bug upstream, not data to import)");
         }
 
         using (var raggedDoc = DelimitedDocument.Parse(ragged, new DelimitedReaderOptions
@@ -46,7 +65,8 @@ public static class PolicyBehaviors
             FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
         }))
         {
-            Console.WriteLine($"Ragged           : accepted {raggedDoc.RootElement.GetArrayLength()} rows with field counts [{string.Join(", ", FieldCounts(raggedDoc))}]");
+            Console.WriteLine($"  Ragged           : accepted {raggedDoc.RootElement.GetArrayLength()} rows with field counts [{string.Join(", ", FieldCounts(raggedDoc))}]"
+                + "  (the counts differ per row and are visible - the policy accepts the variance rather than hiding it)");
         }
 
         // A quoted field followed by stray characters is structurally malformed.
@@ -58,7 +78,8 @@ public static class PolicyBehaviors
         }
         catch (DelimitedFormatException ex)
         {
-            Console.WriteLine($"Throw (default)  : {ex.Message}");
+            Console.WriteLine($"  Throw (default)  : {ex.Message}"
+                + "  (the stray characters after the closing quote collapse the row to two fields, so the field-count check is what rejects it first)");
         }
 
         // SkipRecord discards the rest of the malformed record but keeps the fields parsed so
@@ -70,7 +91,8 @@ public static class PolicyBehaviors
             FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
         }))
         {
-            Console.WriteLine($"SkipRecord+Ragged: kept {skipped.RootElement.GetArrayLength()} rows, field counts [{string.Join(", ", FieldCounts(skipped))}] (malformed row truncated)");
+            Console.WriteLine($"  SkipRecord+Ragged: kept {skipped.RootElement.GetArrayLength()} rows, field counts [{string.Join(", ", FieldCounts(skipped))}] (malformed row truncated)"
+                + "  (skipping keeps the fields already parsed, so the row comes out short - which is why this policy is paired with Ragged)");
         }
 
         Console.WriteLine();
