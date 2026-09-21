@@ -43,7 +43,7 @@ public partial class MerkleBlockComputationTests
 
     /// <summary>
     /// Verifies that a block index at or beyond the block count is rejected, unlike the pure arithmetic in
-    /// <see cref="MerkleBlocks" />, because the computation knows how many blocks its input has.
+    /// <see cref="MerkleTree.BlockOffset(long, int)" />, because the computation knows how many blocks its input has.
     /// </summary>
     /// <param name="inputLength">The input length in bytes.</param>
     /// <param name="blockIndex">The zero-based block index, equal to or beyond the block count.</param>

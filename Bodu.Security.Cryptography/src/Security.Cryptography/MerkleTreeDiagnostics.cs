@@ -43,14 +43,13 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-public sealed class MerkleTreeDiagnostics
-    : IMerkleTreeObserver
+public sealed partial class MerkleTreeDiagnostics
 {
     /// <summary>The thread-safe collection of recorded leaf and internal nodes captured during the tree computation.</summary>
-    private readonly ConcurrentBag<MerkleTreeDiagnosticNode> _nodes = new();
+    private readonly ConcurrentBag<Node> _nodes = new();
 
     // -----------------------------------------------------------------------------------------
-    // Internal recording — reached through IMerkleTreeObserver by every Merkle computation
+    // Internal recording — called by MerkleTree.LevelFold, which every Merkle computation reduces through
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
@@ -59,7 +58,7 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="index">The zero-based leaf index.</param>
     /// <param name="hash">The computed leaf hash bytes.</param>
     internal void RecordLeaf(long index, byte[] hash) =>
-        _nodes.Add(new MerkleTreeDiagnosticNode(
+        _nodes.Add(new Node(
             Level: 0,
             Index: index,
             IsLeaf: true,
@@ -74,20 +73,12 @@ public sealed class MerkleTreeDiagnostics
     /// <param name="childHashes">Snapshots of the child hash values used as input.</param>
     /// <param name="hash">The resulting parent hash.</param>
     internal void RecordInternal(int level, long index, byte[][] childHashes, byte[] hash) =>
-        _nodes.Add(new MerkleTreeDiagnosticNode(
+        _nodes.Add(new Node(
             Level: level,
             Index: index,
             IsLeaf: false,
             Hash: (byte[])hash.Clone(),
             ChildHashes: childHashes));
-
-    /// <inheritdoc />
-    void IMerkleTreeObserver.OnLeaf(long index, byte[] hash) =>
-        RecordLeaf(index, hash);
-
-    /// <inheritdoc />
-    void IMerkleTreeObserver.OnNode(int level, long index, byte[][] children, byte[] hash) =>
-        RecordInternal(level, index, children, hash);
 
     // -----------------------------------------------------------------------------------------
     // Inspection
@@ -96,10 +87,8 @@ public sealed class MerkleTreeDiagnostics
     /// <summary>
     /// Returns all recorded nodes sorted by level ascending, then by index ascending.
     /// </summary>
-    /// <returns>
-    /// A list of all <see cref="MerkleTreeDiagnosticNode" /> instances recorded during the computation.
-    /// </returns>
-    public IReadOnlyList<MerkleTreeDiagnosticNode> GetAllNodes() =>
+    /// <returns>A list of all <see cref="Node" /> instances recorded during the computation.</returns>
+    public IReadOnlyList<Node> GetAllNodes() =>
         _nodes.OrderBy(n => n.Level).ThenBy(n => n.Index).ToList();
 
     /// <summary>
@@ -114,14 +103,14 @@ public sealed class MerkleTreeDiagnostics
     /// </summary>
     /// <param name="level">The zero-based tree level to retrieve. Level 0 is the leaf level.</param>
     /// <returns>A list of nodes at <paramref name="level" />, or an empty list if none exist.</returns>
-    public IReadOnlyList<MerkleTreeDiagnosticNode> GetLevel(int level) =>
+    public IReadOnlyList<Node> GetLevel(int level) =>
         _nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
 
     /// <summary>
     /// Gets the root node — the sole node at the highest recorded level — or <see langword="null" /> if no nodes have
     /// been recorded.
     /// </summary>
-    public MerkleTreeDiagnosticNode? Root =>
+    public Node? Root =>
         _nodes.IsEmpty ? null : _nodes.MaxBy(n => n.Level);
 
     // -----------------------------------------------------------------------------------------
@@ -161,7 +150,7 @@ public sealed class MerkleTreeDiagnostics
 
         var issues = new List<string>();
 
-        foreach (MerkleTreeDiagnosticNode? node in _nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
+        foreach (Node? node in _nodes.Where(n => !n.IsLeaf).OrderBy(n => n.Level).ThenBy(n => n.Index))
         {
             byte[] recomputed = CombineHashes(node.ChildHashes, algorithmFactory);
             if (!recomputed.SequenceEqual(node.Hash))
@@ -198,9 +187,9 @@ public sealed class MerkleTreeDiagnostics
     {
         ArgumentNullException.ThrowIfNull(writer);
 
-        IReadOnlyList<MerkleTreeDiagnosticNode> allNodes = GetAllNodes();
+        IReadOnlyList<Node> allNodes = GetAllNodes();
         int levelCount = GetLevelCount();
-        MerkleTreeDiagnosticNode? root = Root;
+        Node? root = Root;
 
         // Build a reverse lookup from hex-encoded hash to node, used to annotate child
         // references in the tree display. Duplicate hashes resolve to the lowest-level match.
@@ -228,7 +217,7 @@ public sealed class MerkleTreeDiagnostics
 
         for (int level = 0; level < levelCount; level++)
         {
-            IReadOnlyList<MerkleTreeDiagnosticNode> levelNodes = GetLevel(level);
+            IReadOnlyList<Node> levelNodes = GetLevel(level);
             bool isRoot = level == levelCount - 1;
             string label = level == 0 ? "leaf" : "internal";
             string rootTag = isRoot ? "  ★  root" : string.Empty;
@@ -237,7 +226,7 @@ public sealed class MerkleTreeDiagnostics
             writer.WriteLine($"  Level {level}  —  {levelNodes.Count} {label} node{(levelNodes.Count == 1 ? string.Empty : "s")}{rootTag}");
             writer.WriteLine($"  {light}");
 
-            foreach (MerkleTreeDiagnosticNode node in levelNodes)
+            foreach (Node node in levelNodes)
             {
                 if (node.ChildHashes.Count == 0)
                 {
@@ -249,7 +238,7 @@ public sealed class MerkleTreeDiagnostics
                         .Select(ch =>
                         {
                             string hex = ToHex(ch);
-                            return byHash.TryGetValue(hex, out MerkleTreeDiagnosticNode? childNode)
+                            return byHash.TryGetValue(hex, out Node? childNode)
                                 ? $"[{childNode.Level}:{childNode.Index}] {hex}"
                                 : hex;
                         });
@@ -291,8 +280,8 @@ public sealed class MerkleTreeDiagnostics
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Recomputes an internal node from its children through the shared core, so validation and every producer use the
-    /// same node hash.
+    /// Recomputes an internal node from its children through the tree's own node hash, so validation and every producer
+    /// agree.
     /// </summary>
     /// <param name="hashes">The ordered child hashes to re-hash.</param>
     /// <param name="factory">A factory producing a fresh <see cref="HashAlgorithm" /> for this combination.</param>
@@ -301,7 +290,7 @@ public sealed class MerkleTreeDiagnostics
     {
         using HashAlgorithm hasher = factory();
 
-        return MerkleTreeCore.HashChildren(hasher, hasher.HashSize >> 3, [.. hashes]);
+        return MerkleTree.HashChildren(hasher, hasher.HashSize >> 3, [.. hashes]);
     }
 
     /// <summary>

@@ -73,7 +73,7 @@ Two conventions differ from padding-based schemes, and both are deliberate:
 - a **zero-length input has no blocks at all**, not one empty block, so its root is `H()`;
 - a **final short block is hashed at its actual length**, never zero-padded — padding would let a shorter input collide with a zero-extended longer one.
 
-The same computation is available over a `ReadOnlyMemory<byte>`, a `ReadOnlySpan<byte>` or a `byte[]` already in memory, and asynchronously over a stream with `ComputeBlockedAsync`, which awaits its reads. <xref:Bodu.Security.Cryptography.MerkleBlocks> exposes the arithmetic (`BlockCount`, `BlockOffset`, `BlockLength`) in 64-bit form, so blocks of a multi-gigabyte object can be addressed without overflow, and the computation answers the same questions for its own input.
+The same computation is available over a `ReadOnlyMemory<byte>`, a `ReadOnlySpan<byte>` or a `byte[]` already in memory, and asynchronously over a stream with `ComputeBlockedAsync`, which awaits its reads. The static `MerkleTree.BlockCount`, `MerkleTree.BlockOffset` and `MerkleTree.BlockLength` members expose the same arithmetic in 64-bit form, so blocks of a multi-gigabyte object can be addressed without overflow, and the computation answers the same questions for its own input.
 
 ### Root only, in logarithmic memory
 
@@ -269,5 +269,5 @@ For a single end-to-end digest where partial verification is not a requirement, 
 - **[Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md)** · **[core concepts](../../docs/cryptography/concepts.md#merkle-tree)** · **[getting started](../../docs/cryptography/getting-started.md)** — the package these types ship in.
 - **[Hashing overview](hashing.md)** — where tree hashing sits alongside the other families.
 - **[Using Tiger](tiger.md)** — a common leaf-hash choice for content-addressed systems.
-- <xref:Bodu.Security.Cryptography.MerkleTree> · <xref:Bodu.Security.Cryptography.MerkleBlockAccumulator> · <xref:Bodu.Security.Cryptography.MerkleBlockComputation> · <xref:Bodu.Security.Cryptography.MerkleBlocks> · <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics>.
+- <xref:Bodu.Security.Cryptography.MerkleTree> · <xref:Bodu.Security.Cryptography.MerkleBlockAccumulator> · <xref:Bodu.Security.Cryptography.MerkleBlockComputation> · <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics>.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic.

@@ -33,7 +33,7 @@ public partial class MerkleTreeTests
         {
             int length = Math.Min(blockSize, data.Length - offset);
             byte[] leaf = new byte[1 + length];
-            leaf[0] = MerkleTreeFormat.LeafPrefix;
+            leaf[0] = MerkleTree.LeafPrefix;
             Array.Copy(data, offset, leaf, 1, length);
             level.Add(hasher.ComputeHash(leaf));
         }
@@ -50,7 +50,7 @@ public partial class MerkleTreeTests
                     continue;
                 }
 
-                byte[] combined = [MerkleTreeFormat.InternalNodePrefix, .. level.GetRange(start, groupSize).SelectMany(h => h)];
+                byte[] combined = [MerkleTree.InternalNodePrefix, .. level.GetRange(start, groupSize).SelectMany(h => h)];
                 next.Add(hasher.ComputeHash(combined));
             }
 

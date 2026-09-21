@@ -34,7 +34,7 @@ public partial class MerkleTreeTests
 
             Assert.AreEqual(kat.Expected, Hex(computation.Root), $"degree {degree}");
             Assert.AreEqual(kat.Input, computation.InputLength, $"degree {degree}");
-            Assert.AreEqual(MerkleBlocks.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
+            Assert.AreEqual(MerkleTree.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
         }
     }
 

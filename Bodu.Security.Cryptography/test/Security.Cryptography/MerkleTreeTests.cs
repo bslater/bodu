@@ -79,22 +79,22 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Cuts <see cref="BlockModeInput(int)" /> into <see cref="VectorBlockSize" />-byte blocks using
-    /// <see cref="MerkleBlocks" />, so the block arithmetic under test is the shipped one.
+    /// Cuts <see cref="BlockModeInput(int)" /> into <see cref="VectorBlockSize" />-byte blocks using the tree's own
+    /// block arithmetic, so the arithmetic under test is the shipped one.
     /// </summary>
     /// <param name="length">The number of input bytes.</param>
     /// <returns>The blocks, in order.</returns>
     private static IReadOnlyList<ReadOnlyMemory<byte>> BlockModeEntries(int length)
     {
         byte[] input = BlockModeInput(length);
-        long count = MerkleBlocks.BlockCount(length, VectorBlockSize);
+        long count = MerkleTree.BlockCount(length, VectorBlockSize);
 
         ReadOnlyMemory<byte>[] blocks = new ReadOnlyMemory<byte>[count];
         for (long index = 0; index < count; index++)
         {
             blocks[index] = input.AsMemory(
-                (int)MerkleBlocks.BlockOffset(index, VectorBlockSize),
-                MerkleBlocks.BlockLength(length, index, VectorBlockSize));
+                (int)MerkleTree.BlockOffset(index, VectorBlockSize),
+                MerkleTree.BlockLength(length, index, VectorBlockSize));
         }
 
         return blocks;

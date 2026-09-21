@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -33,7 +34,7 @@ public sealed partial class MerkleTree
 
         byte[][] leafHashes = new byte[entries.Count][];
         for (int index = 0; index < entries.Count; index++)
-            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entries[index].Span);
+            leafHashes[index] = HashWithPrefix(hasher, HashLength, LeafPrefix, entries[index].Span);
 
         return BuildPath(leafHashes, leafIndex, hasher);
     }
@@ -52,10 +53,10 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="leafIndex" /> is negative or is not less than the number of leaf hashes.
     /// </exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     /// <remarks>
     /// The leaf hashes of a streamed computation are available from <see cref="MerkleBlockComputation.LeafHashes" />.
     /// </remarks>
-    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public byte[][] AuthenticationPath(IReadOnlyList<byte[]> leafHashes, long leafIndex)
     {
         ThrowIfNotBinary();
@@ -78,6 +79,7 @@ public sealed partial class MerkleTree
     /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     /// <remarks>
     /// <para>
     /// <strong><paramref name="treeSize" /> is trusted input.</strong> RFC 6962's verifier takes the tree size from its
@@ -99,7 +101,6 @@ public sealed partial class MerkleTree
     /// untrusted input and an exception where a <see langword="false" /> belongs is a denial of service.
     /// </para>
     /// </remarks>
-    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusion(
         ReadOnlySpan<byte> root,
         long treeSize,
@@ -114,9 +115,9 @@ public sealed partial class MerkleTree
             return false;
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        byte[] leafHash = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entry);
+        byte[] leafHash = HashWithPrefix(hasher, HashLength, LeafPrefix, entry);
 
-        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher);
+        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher, HashLength);
         return head is not null && CryptographicOperations.FixedTimeEquals(head, root);
     }
 
@@ -133,6 +134,7 @@ public sealed partial class MerkleTree
     /// otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     /// <remarks>
     /// <para>
     /// Prefer
@@ -145,7 +147,6 @@ public sealed partial class MerkleTree
     /// entry overload.
     /// </para>
     /// </remarks>
-    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusionOfLeafHash(
         ReadOnlySpan<byte> root,
         long treeSize,
@@ -160,7 +161,7 @@ public sealed partial class MerkleTree
             return false;
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher);
+        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher, HashLength);
         return head is not null && CryptographicOperations.FixedTimeEquals(head, root);
     }
 
@@ -179,12 +180,12 @@ public sealed partial class MerkleTree
     /// <paramref name="boundRoot" /> under <paramref name="boundValue" />; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     /// <remarks>
     /// This is the overload to use when the tree size comes from the party being examined. Because the bound value is
     /// hashed into the commitment, a claimed size that disagrees with the published one produces a different root and
     /// the check fails closed.
     /// </remarks>
-    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusionBound(
         ReadOnlySpan<byte> boundRoot,
         long boundValue,
@@ -200,16 +201,16 @@ public sealed partial class MerkleTree
             return false;
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        byte[] leafHash = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entry);
+        byte[] leafHash = HashWithPrefix(hasher, HashLength, LeafPrefix, entry);
 
-        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher);
+        byte[]? head = WalkToHead(treeSize, leafIndex, leafHash, path, hasher, HashLength);
         if (head is null)
             return false;
 
         Span<byte> bound = stackalloc byte[BoundValueLength];
-        System.Buffers.Binary.BinaryPrimitives.WriteUInt64BigEndian(bound, (ulong)boundValue);
+        BinaryPrimitives.WriteUInt64BigEndian(bound, (ulong)boundValue);
 
-        byte[] actual = HashWithPrefix(hasher, MerkleTreeFormat.RootPrefix, bound, head);
+        byte[] actual = HashWithPrefix(hasher, HashLength, RootPrefix, bound, head);
         return CryptographicOperations.FixedTimeEquals(actual, boundRoot);
     }
 
@@ -227,12 +228,13 @@ public sealed partial class MerkleTree
     /// <see langword="true" /> when the block is where it is claimed to be; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     /// <remarks>
     /// <para>
     /// This is the possession-check shape: the tree size is <em>derived</em> from the bound length and block size
     /// rather than supplied, so there is no size for a holder to misstate. It additionally requires
-    /// <paramref name="block" /> to be exactly <see cref="MerkleBlocks.BlockLength(long, long, int)" /> bytes — a check
-    /// the entry-mode overloads cannot make, because a variable-length entry has no expected length.
+    /// <paramref name="block" /> to be exactly <see cref="BlockLength(long, long, int)" /> bytes — a check the
+    /// entry-mode overloads cannot make, because a variable-length entry has no expected length.
     /// </para>
     /// <para>
     /// The block's <em>bytes</em> are the proof. A party that retained the authentication path but discarded the block
@@ -240,7 +242,6 @@ public sealed partial class MerkleTree
     /// have cached on receipt.
     /// </para>
     /// </remarks>
-    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyBlockInclusion(
         ReadOnlySpan<byte> boundRoot,
         long inputLength,
@@ -268,48 +269,6 @@ public sealed partial class MerkleTree
     }
 
     /// <summary>
-    /// Returns the largest number of steps any authentication path in a tree of the given size can carry.
-    /// </summary>
-    /// <param name="treeSize">The number of entries in the tree. Must be positive.</param>
-    /// <returns><c>ceil(log2(treeSize))</c>.</returns>
-    /// <remarks>
-    /// This is an upper bound across <em>all</em> leaf indices, and is deliberately not the length expected of any
-    /// particular index. Path length varies by index — in a seven-leaf tree leaves 0 to 5 have three steps and leaf 6
-    /// has two — so a guard tightened to a per-index length would reject valid proofs. Only a path longer than this
-    /// bound can be discarded before it is walked; a path that is too short is caught by the walk itself.
-    /// </remarks>
-    private static int MaximumPathLength(long treeSize) => MerkleTreeCore.MaximumPathLength(treeSize);
-
-    /// <summary>
-    /// Walks an authentication path from a leaf hash to the tree head, following RFC 6962 §2.1.1.
-    /// </summary>
-    /// <param name="treeSize">The number of entries the tree is claimed to hold.</param>
-    /// <param name="leafIndex">The zero-based index the leaf is claimed to occupy.</param>
-    /// <param name="leafHash">The leaf's hash.</param>
-    /// <param name="path">The authentication path, leaf-upward.</param>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    /// <returns>The computed head, or <see langword="null" /> when the proof is structurally invalid.</returns>
-    /// <remarks>
-    /// <para>
-    /// The <c>sn</c> bookkeeping alone rejects a path that is too short or too long; the only length check applied
-    /// before the walk is the strict upper bound of <see cref="MaximumPathLength(long)" />, which cannot reject a valid
-    /// proof.
-    /// </para>
-    /// <para>
-    /// The inner shift loop terminates on <c>sn = 0</c>, which is RFC 6962's own wording. An implementation that
-    /// terminates on <c>fn = 0</c> instead has been shown to accept and reject exactly the same proofs, but using the
-    /// RFC's wording means a reader comparing this code with the standard is never asked to prove an equivalence.
-    /// </para>
-    /// </remarks>
-    private byte[]? WalkToHead(
-        long treeSize,
-        long leafIndex,
-        ReadOnlySpan<byte> leafHash,
-        IReadOnlyList<ReadOnlyMemory<byte>> path,
-        HashAlgorithm hasher) =>
-        MerkleTreeCore.WalkToHead(treeSize, leafIndex, leafHash, path, hasher, HashLength);
-
-    /// <summary>
     /// Builds the authentication path for one leaf of a validated leaf-hash array.
     /// </summary>
     /// <param name="leafHashes">The ordered leaf hashes.</param>
@@ -325,17 +284,7 @@ public sealed partial class MerkleTree
         ThrowHelper.ThrowIfGreaterThanOrEqual(leafIndex, leafHashes.Length);
 
         List<byte[]> path = [];
-        AppendPath(leafHashes, (int)leafIndex, path, hasher);
+        AppendPath(leafHashes, (int)leafIndex, path, hasher, HashLength);
         return [.. path];
     }
-
-    /// <summary>
-    /// Appends the sibling subtree roots on the way from a leaf to the root, leaf-upward.
-    /// </summary>
-    /// <param name="leafHashes">The subtree's leaf hashes.</param>
-    /// <param name="index">The index within this subtree of the leaf being proved.</param>
-    /// <param name="path">The path being built.</param>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    private void AppendPath(ReadOnlySpan<byte[]> leafHashes, int index, List<byte[]> path, HashAlgorithm hasher) =>
-        MerkleTreeCore.AppendPath(leafHashes, index, path, hasher, HashLength);
 }

@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Direct unit tests for <see cref="MerkleTreeDiagnostics" /> and
-/// <see cref="MerkleTreeDiagnosticNode" />. The diagnostic recorder is exercised indirectly
+/// <see cref="MerkleTreeDiagnostics.Node" />. The diagnostic recorder is exercised indirectly
 /// via the producers' own test suites, but its inspection, validation, and
 /// formatting APIs deserve targeted coverage that does not depend on the parallel pipeline
 /// being correct.
@@ -86,7 +86,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(index: 0, hash: [0x11]);
         diagnostics.RecordLeaf(index: 1, hash: [0x22]);
 
-        IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetAllNodes();
+        IReadOnlyList<MerkleTreeDiagnostics.Node> nodes = diagnostics.GetAllNodes();
         var ordered = nodes.Select(n => (n.Level, n.Index)).ToList();
 
         var expected = new List<(int Level, long Index)>
@@ -111,9 +111,9 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x01]], hash: [0xAA]);
         diagnostics.RecordLeaf(index: 0, hash: [0x10]);
 
-        IReadOnlyList<MerkleTreeDiagnosticNode> level0 = diagnostics.GetLevel(0);
-        IReadOnlyList<MerkleTreeDiagnosticNode> level1 = diagnostics.GetLevel(1);
-        IReadOnlyList<MerkleTreeDiagnosticNode> level2 = diagnostics.GetLevel(2);
+        IReadOnlyList<MerkleTreeDiagnostics.Node> level0 = diagnostics.GetLevel(0);
+        IReadOnlyList<MerkleTreeDiagnostics.Node> level1 = diagnostics.GetLevel(1);
+        IReadOnlyList<MerkleTreeDiagnostics.Node> level2 = diagnostics.GetLevel(2);
 
         Assert.HasCount(2, level0);
         Assert.AreEqual(0, level0[0].Index);
@@ -302,7 +302,7 @@ public sealed class MerkleTreeDiagnosticsTests
     }
 
     /// <summary>
-    /// Verifies <see cref="MerkleTreeDiagnosticNode" /> record equality: two records with the same
+    /// Verifies <see cref="MerkleTreeDiagnostics.Node" /> record equality: two records with the same
     /// fields are equal even though <see cref="byte" />[] uses reference equality by default. This
     /// is the documented record-with-init behaviour for value-equality.
     /// </summary>
@@ -315,9 +315,9 @@ public sealed class MerkleTreeDiagnosticsTests
         byte[] hashA = new byte[] { 0x01 };
         byte[] hashB = new byte[] { 0x01 };
 
-        var nodeA = new MerkleTreeDiagnosticNode(
+        var nodeA = new MerkleTreeDiagnostics.Node(
             Level: 0, Index: 0, IsLeaf: true, Hash: hashA, ChildHashes: Array.Empty<byte[]>());
-        var nodeB = new MerkleTreeDiagnosticNode(
+        var nodeB = new MerkleTreeDiagnostics.Node(
             Level: 0, Index: 0, IsLeaf: true, Hash: hashB, ChildHashes: Array.Empty<byte[]>());
 
         Assert.AreNotEqual(nodeA, nodeB,
@@ -325,7 +325,7 @@ public sealed class MerkleTreeDiagnosticsTests
     }
 
     /// <summary>
-    /// Verifies <see cref="MerkleTreeDiagnosticNode" /> record equality with the same array reference.
+    /// Verifies <see cref="MerkleTreeDiagnostics.Node" /> record equality with the same array reference.
     /// </summary>
     [TestMethod]
     public void DiagnosticNode_RecordsSharingByteArrayReferences_ShouldBeEqual()
@@ -333,8 +333,8 @@ public sealed class MerkleTreeDiagnosticsTests
         byte[] hash = new byte[] { 0x01 };
         IReadOnlyList<byte[]> children = Array.Empty<byte[]>();
 
-        var nodeA = new MerkleTreeDiagnosticNode(0, 0, true, hash, children);
-        var nodeB = new MerkleTreeDiagnosticNode(0, 0, true, hash, children);
+        var nodeA = new MerkleTreeDiagnostics.Node(0, 0, true, hash, children);
+        var nodeB = new MerkleTreeDiagnostics.Node(0, 0, true, hash, children);
 
         Assert.AreEqual(nodeA, nodeB);
     }
@@ -355,7 +355,7 @@ public sealed class MerkleTreeDiagnosticsTests
     private static byte[] ComputeInternalNode(byte[] a, byte[] b)
     {
         byte[] prefixed = new byte[1 + a.Length + b.Length];
-        prefixed[0] = MerkleTreeFormat.InternalNodePrefix;
+        prefixed[0] = MerkleTree.InternalNodePrefix;
         Buffer.BlockCopy(a, 0, prefixed, 1, a.Length);
         Buffer.BlockCopy(b, 0, prefixed, 1 + a.Length, b.Length);
         return ComputeSha256(prefixed);

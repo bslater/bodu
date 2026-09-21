@@ -1,16 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleBlocks.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTree.BlockArithmetic.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the block arithmetic shared by every consumer of <see cref="MerkleTree" />'s block mode — the number of
-/// blocks a byte length divides into, and the offset and length of each one.
+/// The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the
+/// offset and length of each one.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,11 +25,13 @@ namespace Bodu.Security.Cryptography;
 /// the hash of zero bytes — rather than the hash of one empty leaf.
 /// </para>
 /// <para>
-/// These three functions are trivial and are nonetheless centralized here, because a consumer that computes the final
-/// block's length incorrectly does not fail loudly — it produces a different, wrong root.
+/// These three functions are trivial and are nonetheless published, because a consumer that computes the final block's
+/// length incorrectly does not fail loudly — it produces a different, wrong root. A
+/// <see cref="MerkleBlockComputation" /> answers the same questions for its own input and additionally rejects a block
+/// that does not exist.
 /// </para>
 /// </remarks>
-public static class MerkleBlocks
+public sealed partial class MerkleTree
 {
     /// <summary>
     /// Returns the number of blocks that an input of the specified length divides into.
@@ -108,7 +111,7 @@ public static class MerkleBlocks
     /// </exception>
     internal static void ThrowIfBlockSizeInvalid(
         int blockSize,
-        [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(blockSize))] string? paramName = null)
+        [CallerArgumentExpression(nameof(blockSize))] string? paramName = null)
     {
         if (blockSize <= 0)
         {

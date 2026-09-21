@@ -77,7 +77,7 @@ public partial class MerkleTreeTests
         Assert.AreEqual(kat.Expected, Hex(computation.Root));
         Assert.AreEqual(kat.Input, computation.InputLength);
         Assert.AreEqual(VectorBlockSize, computation.BlockSize);
-        Assert.AreEqual(MerkleBlocks.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count);
+        Assert.AreEqual(MerkleTree.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count);
     }
 
     /// <summary>

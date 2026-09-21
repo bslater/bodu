@@ -57,8 +57,8 @@ public partial class MerkleTreeTests
         byte[][] path = tree.AuthenticationPath(computation.LeafHashes, kat.LeafIndex);
         CollectionAssert.AreEqual(kat.Path, path.Select(step => Hex(step)).ToArray(), "path steps must match in order");
 
-        int offset = (int)MerkleBlocks.BlockOffset(kat.LeafIndex, OneMebibyteBlock);
-        int length = MerkleBlocks.BlockLength(PathVectorLength, kat.LeafIndex, OneMebibyteBlock);
+        int offset = (int)MerkleTree.BlockOffset(kat.LeafIndex, OneMebibyteBlock);
+        int length = MerkleTree.BlockLength(PathVectorLength, kat.LeafIndex, OneMebibyteBlock);
 
         Assert.IsTrue(
             tree.VerifyBlockInclusion(
@@ -82,8 +82,8 @@ public partial class MerkleTreeTests
         IReadOnlyList<ReadOnlyMemory<byte>> path = kat.Path
             .Select(step => (ReadOnlyMemory<byte>)Convert.FromHexString(step)).ToArray();
 
-        int offset = (int)MerkleBlocks.BlockOffset(kat.LeafIndex, OneMebibyteBlock);
-        int length = MerkleBlocks.BlockLength(PathVectorLength, kat.LeafIndex, OneMebibyteBlock);
+        int offset = (int)MerkleTree.BlockOffset(kat.LeafIndex, OneMebibyteBlock);
+        int length = MerkleTree.BlockLength(PathVectorLength, kat.LeafIndex, OneMebibyteBlock);
 
         byte[] tampered = preimage.AsSpan(offset, length).ToArray();
         tampered[^1] ^= 0x01;

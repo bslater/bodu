@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleBlocksTests.BlockOffset.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.BlockOffset.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,9 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="MerkleBlocks.BlockOffset(long, int)" />.
+/// Tests for <see cref="MerkleTree.BlockOffset(long, int)" />.
 /// </summary>
-public partial class MerkleBlocksTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that a block's offset is its index multiplied by the block size.
@@ -26,7 +26,7 @@ public partial class MerkleBlocksTests
     [DataRow(4L, 1048576, 4194304L)]
     public void BlockOffset_WhenGivenAnIndex_ShouldReturnIndexTimesBlockSize(
         long blockIndex, int blockSize, long expected) =>
-        Assert.AreEqual(expected, MerkleBlocks.BlockOffset(blockIndex, blockSize));
+        Assert.AreEqual(expected, MerkleTree.BlockOffset(blockIndex, blockSize));
 
     /// <summary>
     /// Verifies that an offset beyond <see cref="int.MaxValue" /> is computed in 64-bit arithmetic rather than
@@ -35,8 +35,8 @@ public partial class MerkleBlocksTests
     [TestMethod]
     public void BlockOffset_WhenOffsetExceedsInt32Range_ShouldNotOverflow()
     {
-        Assert.AreEqual(2_147_483_648L, MerkleBlocks.BlockOffset(2048, OneMebibyte));
-        Assert.AreEqual(1_099_511_627_776L, MerkleBlocks.BlockOffset(1_048_576, OneMebibyte));
+        Assert.AreEqual(2_147_483_648L, MerkleTree.BlockOffset(2048, OneMebibyteBlock));
+        Assert.AreEqual(1_099_511_627_776L, MerkleTree.BlockOffset(1_048_576, OneMebibyteBlock));
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockOffset(-1, 4);
+            _ = MerkleTree.BlockOffset(-1, 4);
         });
 
         Assert.AreEqual("blockIndex", ex.ParamName);
@@ -64,7 +64,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockOffset(1, blockSize);
+            _ = MerkleTree.BlockOffset(1, blockSize);
         });
 
         Assert.AreEqual("blockSize", ex.ParamName);

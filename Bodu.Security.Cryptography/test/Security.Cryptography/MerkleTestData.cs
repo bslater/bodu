@@ -134,7 +134,7 @@ internal static class MerkleTestData
     internal static byte[] AdditiveHash(ReadOnlySpan<byte> block)
     {
         // Leaf-domain prefix contributes 0x00 → adds nothing to the byte-sum.
-        uint sum = MerkleTreeFormat.LeafPrefix;
+        uint sum = MerkleTree.LeafPrefix;
         foreach (byte b in block)
             sum += b;
         return BitConverter.GetBytes(sum);
@@ -152,7 +152,7 @@ internal static class MerkleTestData
     /// </remarks>
     internal static byte[] AdditiveHashConcat(List<byte[]> hashes)
     {
-        uint sum = MerkleTreeFormat.InternalNodePrefix;
+        uint sum = MerkleTree.InternalNodePrefix;
         foreach (byte[] h in hashes)
             foreach (byte b in h)
                 sum += b;

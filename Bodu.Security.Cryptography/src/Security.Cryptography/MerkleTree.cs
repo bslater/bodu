@@ -76,11 +76,13 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Large inputs: the same tree, leaves hashed on every core.
 /// var parallel = new MerkleTree(SHA256.Create, maxDegreeOfParallelism: -1);
-/// byte[] sameRoot = parallel.ComputeRootOfBlocks(File.OpenRead(path), blockSize: 1 << 20);
+/// using var stream = File.OpenRead("archive.bin");
+/// byte[] sameRoot = parallel.ComputeRootOfBlocks(stream, blockSize: 1 << 20);
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="MerkleBlockComputation" /> <seealso cref="MerkleBlockAccumulator" /> <seealso cref="MerkleBlocks" />
+/// <seealso cref="MerkleBlockComputation" /> <seealso cref="MerkleBlockAccumulator" />
+/// <seealso cref="MerkleTreeDiagnostics" />
 public sealed partial class MerkleTree
 {
     /// <summary>The fan-out at which the tree is RFC 6962's.</summary>
@@ -192,23 +194,8 @@ public sealed partial class MerkleTree
     /// <param name="hasher">The algorithm to hash nodes with.</param>
     /// <param name="diagnostics">The recorder that receives every leaf and node, or <see langword="null" />.</param>
     /// <returns>The fold.</returns>
-    private MerkleLevelFold CreateFold(HashAlgorithm hasher, MerkleTreeDiagnostics? diagnostics) =>
+    private LevelFold CreateFold(HashAlgorithm hasher, MerkleTreeDiagnostics? diagnostics) =>
         new(hasher, HashLength, FanOut, diagnostics);
-
-    /// <summary>
-    /// Hashes a domain-separation prefix followed by one or two payload segments.
-    /// </summary>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    /// <param name="prefix">The domain-separation byte.</param>
-    /// <param name="first">The first payload segment.</param>
-    /// <param name="second">The second payload segment, or empty.</param>
-    /// <returns>The resulting hash, <see cref="HashLength" /> bytes long.</returns>
-    private byte[] HashWithPrefix(
-        HashAlgorithm hasher,
-        byte prefix,
-        ReadOnlySpan<byte> first,
-        ReadOnlySpan<byte> second = default) =>
-        MerkleTreeCore.HashWithPrefix(hasher, HashLength, prefix, first, second);
 
     /// <summary>
     /// Throws when a proof member is called on an instance whose fan-out is not two.

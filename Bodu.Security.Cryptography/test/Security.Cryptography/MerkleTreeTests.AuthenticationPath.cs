@@ -150,8 +150,8 @@ public partial class MerkleTreeTests
         for (long blockIndex = 0; blockIndex < computation.LeafHashes.Count; blockIndex++)
         {
             byte[][] path = tree.AuthenticationPath(computation.LeafHashes, blockIndex);
-            int offset = (int)MerkleBlocks.BlockOffset(blockIndex, VectorBlockSize);
-            int length = MerkleBlocks.BlockLength(input.Length, blockIndex, VectorBlockSize);
+            int offset = (int)MerkleTree.BlockOffset(blockIndex, VectorBlockSize);
+            int length = MerkleTree.BlockLength(input.Length, blockIndex, VectorBlockSize);
 
             Assert.IsTrue(
                 tree.VerifyInclusion(

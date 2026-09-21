@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleBlocksTests.BlockLength.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.BlockLength.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,9 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="MerkleBlocks.BlockLength(long, long, int)" />.
+/// Tests for <see cref="MerkleTree.BlockLength(long, long, int)" />.
 /// </summary>
-public partial class MerkleBlocksTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that every block but the last is full and the last is short whenever the input length is not a whole
@@ -29,7 +29,7 @@ public partial class MerkleBlocksTests
     [DataRow(32L, 7L, 4)]
     public void BlockLength_WhenGivenABlockIndex_ShouldReturnFullLengthExceptForAShortFinalBlock(
         long inputLength, long blockIndex, int expected) =>
-        Assert.AreEqual(expected, MerkleBlocks.BlockLength(inputLength, blockIndex, 4));
+        Assert.AreEqual(expected, MerkleTree.BlockLength(inputLength, blockIndex, 4));
 
     /// <summary>
     /// Verifies that a block beginning at or beyond the input length has zero length rather than a negative one.
@@ -42,7 +42,7 @@ public partial class MerkleBlocksTests
     [DataRow(5L, 2L)]
     [DataRow(8L, 99L)]
     public void BlockLength_WhenBlockBeginsAtOrBeyondTheInput_ShouldReturnZero(long inputLength, long blockIndex) =>
-        Assert.AreEqual(0, MerkleBlocks.BlockLength(inputLength, blockIndex, 4));
+        Assert.AreEqual(0, MerkleTree.BlockLength(inputLength, blockIndex, 4));
 
     /// <summary>
     /// Verifies the final block's length at a one-mebibyte leaf size, including the 4096-byte tail the FallbackPlan
@@ -60,7 +60,7 @@ public partial class MerkleBlocksTests
     [DataRow(2109497L, 2L, 12345)]
     public void BlockLength_WhenBlockSizeIsOneMebibyte_ShouldMatchTheRepositoryFormat(
         long inputLength, long blockIndex, int expected) =>
-        Assert.AreEqual(expected, MerkleBlocks.BlockLength(inputLength, blockIndex, OneMebibyte));
+        Assert.AreEqual(expected, MerkleTree.BlockLength(inputLength, blockIndex, OneMebibyteBlock));
 
     /// <summary>
     /// Verifies that the block lengths sum to the input length, so no byte is covered twice or left out.
@@ -76,9 +76,9 @@ public partial class MerkleBlocksTests
     public void BlockLength_WhenSummedOverEveryBlock_ShouldEqualTheInputLength(long inputLength)
     {
         long total = 0;
-        long count = MerkleBlocks.BlockCount(inputLength, 4);
+        long count = MerkleTree.BlockCount(inputLength, 4);
         for (long index = 0; index < count; index++)
-            total += MerkleBlocks.BlockLength(inputLength, index, 4);
+            total += MerkleTree.BlockLength(inputLength, index, 4);
 
         Assert.AreEqual(inputLength, total);
     }
@@ -95,10 +95,10 @@ public partial class MerkleBlocksTests
     [DataRow(33L)]
     public void BlockLength_WhenAddedToTheBlockOffset_ShouldNeverExceedTheInputLength(long inputLength)
     {
-        long count = MerkleBlocks.BlockCount(inputLength, 4);
+        long count = MerkleTree.BlockCount(inputLength, 4);
         for (long index = 0; index < count; index++)
         {
-            long end = MerkleBlocks.BlockOffset(index, 4) + MerkleBlocks.BlockLength(inputLength, index, 4);
+            long end = MerkleTree.BlockOffset(index, 4) + MerkleTree.BlockLength(inputLength, index, 4);
             Assert.IsTrue(end <= inputLength, $"block {index} ends at {end}, past {inputLength}");
         }
     }
@@ -111,7 +111,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockLength(-1, 0, 4);
+            _ = MerkleTree.BlockLength(-1, 0, 4);
         });
 
         Assert.AreEqual("inputLength", ex.ParamName);
@@ -125,7 +125,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockLength(16, -1, 4);
+            _ = MerkleTree.BlockLength(16, -1, 4);
         });
 
         Assert.AreEqual("blockIndex", ex.ParamName);
@@ -142,7 +142,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockLength(16, 0, blockSize);
+            _ = MerkleTree.BlockLength(16, 0, blockSize);
         });
 
         Assert.AreEqual("blockSize", ex.ParamName);

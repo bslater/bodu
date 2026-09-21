@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleBlocksTests.BlockCount.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.BlockCount.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -7,9 +7,9 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="MerkleBlocks.BlockCount(long, int)" />.
+/// Tests for <see cref="MerkleTree.BlockCount(long, int)" />.
 /// </summary>
-public partial class MerkleBlocksTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that the block count is the input length divided by the block size, rounded up.
@@ -29,7 +29,7 @@ public partial class MerkleBlocksTests
     [DataRow(1L, 1, 1L)]
     [DataRow(7L, 1, 7L)]
     public void BlockCount_WhenGivenALengthAndBlockSize_ShouldRoundUp(long inputLength, int blockSize, long expected) =>
-        Assert.AreEqual(expected, MerkleBlocks.BlockCount(inputLength, blockSize));
+        Assert.AreEqual(expected, MerkleTree.BlockCount(inputLength, blockSize));
 
     /// <summary>
     /// Verifies that a zero-length input has zero blocks rather than one empty block, so its root is the empty
@@ -37,7 +37,7 @@ public partial class MerkleBlocksTests
     /// </summary>
     [TestMethod]
     public void BlockCount_WhenInputLengthIsZero_ShouldReturnZeroRatherThanOne() =>
-        Assert.AreEqual(0L, MerkleBlocks.BlockCount(0, OneMebibyte));
+        Assert.AreEqual(0L, MerkleTree.BlockCount(0, OneMebibyteBlock));
 
     /// <summary>
     /// Verifies that the count is exact at and either side of a one-mebibyte leaf boundary.
@@ -53,7 +53,7 @@ public partial class MerkleBlocksTests
     [DataRow(4198400L, 5L)]
     [DataRow(536870912L, 512L)]
     public void BlockCount_WhenBlockSizeIsOneMebibyte_ShouldMatchTheRepositoryFormat(long inputLength, long expected) =>
-        Assert.AreEqual(expected, MerkleBlocks.BlockCount(inputLength, OneMebibyte));
+        Assert.AreEqual(expected, MerkleTree.BlockCount(inputLength, OneMebibyteBlock));
 
     /// <summary>
     /// Verifies that a count beyond <see cref="int.MaxValue" /> blocks is returned without overflowing, because the
@@ -61,7 +61,7 @@ public partial class MerkleBlocksTests
     /// </summary>
     [TestMethod]
     public void BlockCount_WhenCountExceedsInt32Range_ShouldNotOverflow() =>
-        Assert.AreEqual(3_000_000_000L, MerkleBlocks.BlockCount(3_000_000_000L, 1));
+        Assert.AreEqual(3_000_000_000L, MerkleTree.BlockCount(3_000_000_000L, 1));
 
     /// <summary>
     /// Verifies that a negative input length is rejected with <see cref="ArgumentOutOfRangeException" />.
@@ -71,7 +71,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockCount(-1, 4);
+            _ = MerkleTree.BlockCount(-1, 4);
         });
 
         Assert.AreEqual("inputLength", ex.ParamName);
@@ -88,7 +88,7 @@ public partial class MerkleBlocksTests
     {
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = MerkleBlocks.BlockCount(16, blockSize);
+            _ = MerkleTree.BlockCount(16, blockSize);
         });
 
         Assert.AreEqual("blockSize", ex.ParamName);

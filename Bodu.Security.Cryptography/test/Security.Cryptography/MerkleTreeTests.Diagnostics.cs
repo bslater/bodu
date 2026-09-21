@@ -23,7 +23,7 @@ public partial class MerkleTreeTests
         var diagnostics = new MerkleTreeDiagnostics();
         _ = CreateAdditiveTree().ComputeRootOfBlocks(MakeData(8), 4, diagnostics);
 
-        IReadOnlyList<MerkleTreeDiagnosticNode> leaves = diagnostics.GetLevel(0);
+        IReadOnlyList<MerkleTreeDiagnostics.Node> leaves = diagnostics.GetLevel(0);
         var internals = diagnostics.GetAllNodes().Where(n => !n.IsLeaf).ToList();
 
         Assert.HasCount(2, leaves);

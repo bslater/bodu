@@ -74,7 +74,7 @@ public sealed class MerkleBlockAccumulator
     private readonly bool _retainLeafHashes;
 
     /// <summary>The fold that reduces completed leaves; replaced by <see cref="Reset" />.</summary>
-    private MerkleLevelFold _fold;
+    private MerkleTree.LevelFold _fold;
 
     /// <summary>The retained leaf hashes, or <see langword="null" /> when they are not kept.</summary>
     private List<byte[]>? _leafHashes;
@@ -113,7 +113,7 @@ public sealed class MerkleBlockAccumulator
         BlockSize = blockSize;
 
         _buffer = new byte[blockSize + 1];
-        _buffer[0] = MerkleTreeFormat.LeafPrefix;
+        _buffer[0] = MerkleTree.LeafPrefix;
         _fold = CreateFold();
         _leafHashes = retainLeafHashes ? [] : null;
     }
@@ -285,7 +285,7 @@ public sealed class MerkleBlockAccumulator
     /// </summary>
     private void EmitLeaf()
     {
-        byte[] leaf = MerkleTreeCore.HashBuffer(_hasher, HashLength, _buffer.AsSpan(0, 1 + _filled));
+        byte[] leaf = MerkleTree.HashBuffer(_hasher, HashLength, _buffer.AsSpan(0, 1 + _filled));
         _filled = 0;
 
         _leafHashes?.Add(leaf);
@@ -296,7 +296,7 @@ public sealed class MerkleBlockAccumulator
     /// Creates a fresh fold over the owned algorithm and the optional recorder, at the tree's fan-out.
     /// </summary>
     /// <returns>The fold.</returns>
-    private MerkleLevelFold CreateFold() =>
+    private MerkleTree.LevelFold CreateFold() =>
         new(_hasher, HashLength, _tree.FanOut, _diagnostics);
 
     /// <summary>

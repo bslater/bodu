@@ -68,14 +68,14 @@ public sealed partial class MerkleTree
         CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
 
         List<byte[]> leafHashes = [];
         long inputLength = IsParallel
-            ? MerkleTreeCore.ForEachLeafHashParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, leafHashes.Add, cancellationToken)
-            : MerkleTreeCore.ForEachLeafHash(source, blockSize, hasher, HashLength, leafHashes.Add, cancellationToken);
+            ? ForEachLeafHashParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, leafHashes.Add, cancellationToken)
+            : ForEachLeafHash(source, blockSize, hasher, HashLength, leafHashes.Add, cancellationToken);
 
         byte[] root = Reduce(CollectionsMarshal.AsSpan(leafHashes), hasher, diagnostics);
         return new MerkleBlockComputation(root, inputLength, blockSize, leafHashes);
@@ -109,7 +109,7 @@ public sealed partial class MerkleTree
         CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
 
@@ -118,8 +118,8 @@ public sealed partial class MerkleTree
         try
         {
             inputLength = IsParallel
-                ? await MerkleTreeCore.ForEachLeafHashParallelAsync(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, leafHashes.Add, cancellationToken).ConfigureAwait(false)
-                : await MerkleTreeCore.ForEachLeafHashAsync(source, blockSize, hasher, HashLength, leafHashes.Add, cancellationToken).ConfigureAwait(false);
+                ? await ForEachLeafHashParallelAsync(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, leafHashes.Add, cancellationToken).ConfigureAwait(false)
+                : await ForEachLeafHashAsync(source, blockSize, hasher, HashLength, leafHashes.Add, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)
         {
@@ -154,11 +154,11 @@ public sealed partial class MerkleTree
         MerkleTreeDiagnostics? diagnostics = null,
         CancellationToken cancellationToken = default)
     {
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
         byte[][] leafHashes = IsParallel
-            ? MerkleTreeCore.HashLeavesParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken)
+            ? HashLeavesParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken)
             : HashBlocks(source.Span, blockSize, hasher, cancellationToken);
 
         return new MerkleBlockComputation(Reduce(leafHashes, hasher, diagnostics), source.Length, blockSize, leafHashes);
@@ -183,7 +183,7 @@ public sealed partial class MerkleTree
     /// </remarks>
     public MerkleBlockComputation ComputeBlocked(ReadOnlySpan<byte> source, int blockSize, MerkleTreeDiagnostics? diagnostics = null)
     {
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         if (IsParallel)
             return WithPooledCopy(source, (memory, tree) => tree.ComputeBlocked(memory, blockSize, diagnostics));
@@ -257,15 +257,15 @@ public sealed partial class MerkleTree
         CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
         var fold = CreateFold(hasher, diagnostics);
 
         if (IsParallel)
-            _ = MerkleTreeCore.ForEachLeafHashParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, fold.Add, cancellationToken);
+            _ = ForEachLeafHashParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, fold.Add, cancellationToken);
         else
-            _ = MerkleTreeCore.ForEachLeafHash(source, blockSize, hasher, HashLength, fold.Add, cancellationToken);
+            _ = ForEachLeafHash(source, blockSize, hasher, HashLength, fold.Add, cancellationToken);
 
         return fold.Finish();
     }
@@ -299,7 +299,7 @@ public sealed partial class MerkleTree
         CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
         var fold = CreateFold(hasher, diagnostics);
@@ -307,9 +307,9 @@ public sealed partial class MerkleTree
         try
         {
             if (IsParallel)
-                _ = await MerkleTreeCore.ForEachLeafHashParallelAsync(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, fold.Add, cancellationToken).ConfigureAwait(false);
+                _ = await ForEachLeafHashParallelAsync(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, fold.Add, cancellationToken).ConfigureAwait(false);
             else
-                _ = await MerkleTreeCore.ForEachLeafHashAsync(source, blockSize, hasher, HashLength, fold.Add, cancellationToken).ConfigureAwait(false);
+                _ = await ForEachLeafHashAsync(source, blockSize, hasher, HashLength, fold.Add, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)
         {
@@ -339,11 +339,11 @@ public sealed partial class MerkleTree
         MerkleTreeDiagnostics? diagnostics = null,
         CancellationToken cancellationToken = default)
     {
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         using HashAlgorithm hasher = CreateAlgorithm();
         if (IsParallel)
-            return Reduce(MerkleTreeCore.HashLeavesParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken), hasher, diagnostics);
+            return Reduce(HashLeavesParallel(source, blockSize, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken), hasher, diagnostics);
 
         return FoldBlocks(source.Span, blockSize, hasher, diagnostics, cancellationToken);
     }
@@ -367,7 +367,7 @@ public sealed partial class MerkleTree
     /// </remarks>
     public byte[] ComputeRootOfBlocks(ReadOnlySpan<byte> source, int blockSize, MerkleTreeDiagnostics? diagnostics = null)
     {
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         if (IsParallel)
             return WithPooledCopy(source, (memory, tree) => tree.ComputeRootOfBlocks(memory, blockSize, diagnostics));
@@ -433,7 +433,7 @@ public sealed partial class MerkleTree
         bool retainLeafHashes = false,
         MerkleTreeDiagnostics? diagnostics = null)
     {
-        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+        ThrowIfBlockSizeInvalid(blockSize);
 
         return new MerkleBlockAccumulator(this, CreateAlgorithm(), blockSize, retainLeafHashes, diagnostics);
     }
@@ -448,15 +448,15 @@ public sealed partial class MerkleTree
     /// <returns>The leaf hashes in block order; empty for an empty span.</returns>
     private byte[][] HashBlocks(ReadOnlySpan<byte> source, int blockSize, HashAlgorithm hasher, CancellationToken cancellationToken)
     {
-        long count = MerkleBlocks.BlockCount(source.Length, blockSize);
+        long count = BlockCount(source.Length, blockSize);
         byte[][] leafHashes = new byte[count][];
         for (long index = 0; index < count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            int offset = (int)MerkleBlocks.BlockOffset(index, blockSize);
-            int length = MerkleBlocks.BlockLength(source.Length, index, blockSize);
-            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, source.Slice(offset, length));
+            int offset = (int)BlockOffset(index, blockSize);
+            int length = BlockLength(source.Length, index, blockSize);
+            leafHashes[index] = HashWithPrefix(hasher, HashLength, LeafPrefix, source.Slice(offset, length));
         }
 
         return leafHashes;
@@ -475,14 +475,14 @@ public sealed partial class MerkleTree
     private byte[] FoldBlocks(ReadOnlySpan<byte> source, int blockSize, HashAlgorithm hasher, MerkleTreeDiagnostics? diagnostics, CancellationToken cancellationToken)
     {
         var fold = CreateFold(hasher, diagnostics);
-        long count = MerkleBlocks.BlockCount(source.Length, blockSize);
+        long count = BlockCount(source.Length, blockSize);
         for (long index = 0; index < count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            int offset = (int)MerkleBlocks.BlockOffset(index, blockSize);
-            int length = MerkleBlocks.BlockLength(source.Length, index, blockSize);
-            fold.Add(HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, source.Slice(offset, length)));
+            int offset = (int)BlockOffset(index, blockSize);
+            int length = BlockLength(source.Length, index, blockSize);
+            fold.Add(HashWithPrefix(hasher, HashLength, LeafPrefix, source.Slice(offset, length)));
         }
 
         return fold.Finish();

@@ -82,11 +82,11 @@ public sealed class MerkleBlockComputation
     /// Gets the number of blocks the input divided into, which is also the number of leaves.
     /// </summary>
     /// <value>
-    /// <see cref="MerkleBlocks.BlockCount(long, int)" /> over <see cref="InputLength" /> and <see cref="BlockSize" />;
+    /// <see cref="MerkleTree.BlockCount(long, int)" /> over <see cref="InputLength" /> and <see cref="BlockSize" />;
     /// zero for an empty input.
     /// </value>
     public long BlockCount =>
-        MerkleBlocks.BlockCount(InputLength, BlockSize);
+        MerkleTree.BlockCount(InputLength, BlockSize);
 
     /// <summary>
     /// Returns the byte offset at which the specified block of this computation's input begins.
@@ -97,15 +97,15 @@ public sealed class MerkleBlockComputation
     /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
     /// </exception>
     /// <remarks>
-    /// <see cref="MerkleBlocks.BlockOffset(long, int)" /> is pure arithmetic over any index; this member knows the
-    /// input it belongs to and rejects a block that does not exist.
+    /// <see cref="MerkleTree.BlockOffset(long, int)" /> is pure arithmetic over any index; this member knows the input
+    /// it belongs to and rejects a block that does not exist.
     /// </remarks>
     public long BlockOffset(long blockIndex)
     {
         ThrowHelper.ThrowIfNegative(blockIndex);
         ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
 
-        return MerkleBlocks.BlockOffset(blockIndex, BlockSize);
+        return MerkleTree.BlockOffset(blockIndex, BlockSize);
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public sealed class MerkleBlockComputation
     /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
     /// </exception>
     /// <remarks>
-    /// <see cref="MerkleBlocks.BlockLength(long, long, int)" /> returns zero for a block beyond the input; this member
+    /// <see cref="MerkleTree.BlockLength(long, long, int)" /> returns zero for a block beyond the input; this member
     /// knows the input it belongs to and rejects such a block instead.
     /// </remarks>
     public int BlockLength(long blockIndex)
@@ -126,6 +126,6 @@ public sealed class MerkleBlockComputation
         ThrowHelper.ThrowIfNegative(blockIndex);
         ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
 
-        return MerkleBlocks.BlockLength(InputLength, blockIndex, BlockSize);
+        return MerkleTree.BlockLength(InputLength, blockIndex, BlockSize);
     }
 }

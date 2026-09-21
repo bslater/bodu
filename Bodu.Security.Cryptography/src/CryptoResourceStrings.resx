@@ -421,6 +421,9 @@
   <data name="Arg_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
     <value>The hash algorithm factory returned null.</value>
   </data>
+  <data name="Op_Invalid_MerkleAlgorithmFactoryNull" xml:space="preserve">
+    <value>The hash algorithm factory returned null.</value>
+  </data>
   <data name="Arg_Invalid_MerkleHashLengthNotPositive" xml:space="preserve">
     <value>The hash algorithm reported a digest length that is not positive.</value>
   </data>

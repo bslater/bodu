@@ -1149,6 +1149,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm factory returned null..
+        /// </summary>
+        internal static string Op_Invalid_MerkleAlgorithmFactoryNull {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleAlgorithmFactoryNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The hash algorithm reported a digest length that is not positive..
         /// </summary>
         internal static string Arg_Invalid_MerkleHashLengthNotPositive {

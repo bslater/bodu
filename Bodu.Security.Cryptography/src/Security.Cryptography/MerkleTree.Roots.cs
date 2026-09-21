@@ -15,9 +15,6 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 public sealed partial class MerkleTree
 {
-    /// <summary>The width, in bytes, of the big-endian value bound into a root.</summary>
-    private const int BoundValueLength = MerkleTreeCore.BoundValueLength;
-
     /// <summary>
     /// Computes the leaf hash of an entry as <c>H(0x00 || entry)</c>.
     /// </summary>
@@ -30,7 +27,7 @@ public sealed partial class MerkleTree
     public byte[] HashLeaf(ReadOnlySpan<byte> entry)
     {
         using HashAlgorithm hasher = CreateAlgorithm();
-        return HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entry);
+        return HashWithPrefix(hasher, HashLength, LeafPrefix, entry);
     }
 
     /// <summary>
@@ -51,7 +48,7 @@ public sealed partial class MerkleTree
         ThrowIfNotHashLength(right.Length, nameof(right));
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        return HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, left, right);
+        return HashWithPrefix(hasher, HashLength, InternalNodePrefix, left, right);
     }
 
     /// <summary>
@@ -81,7 +78,7 @@ public sealed partial class MerkleTree
 
         using HashAlgorithm hasher = CreateAlgorithm();
         byte[][] leafHashes = IsParallel
-            ? MerkleTreeCore.HashLeavesParallel(entries, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken)
+            ? HashLeavesParallel(entries, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken)
             : HashEntries(entries, hasher, cancellationToken);
 
         return Reduce(leafHashes, hasher, diagnostics);
@@ -148,7 +145,7 @@ public sealed partial class MerkleTree
         BinaryPrimitives.WriteUInt64BigEndian(bound, (ulong)boundValue);
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        return HashWithPrefix(hasher, MerkleTreeFormat.RootPrefix, bound, root);
+        return HashWithPrefix(hasher, HashLength, RootPrefix, bound, root);
     }
 
     /// <summary>
@@ -164,18 +161,11 @@ public sealed partial class MerkleTree
         for (int index = 0; index < entries.Count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entries[index].Span);
+            leafHashes[index] = HashWithPrefix(hasher, HashLength, LeafPrefix, entries[index].Span);
         }
 
         return leafHashes;
     }
-
-    /// <summary>
-    /// Computes the empty tree's root, <c>H()</c>.
-    /// </summary>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    /// <returns>The hash of zero bytes.</returns>
-    private byte[] HashEmpty(HashAlgorithm hasher) => MerkleTreeCore.HashEmpty(hasher, HashLength);
 
     /// <summary>
     /// Creates a hash algorithm for one operation.
@@ -184,7 +174,7 @@ public sealed partial class MerkleTree
     /// <exception cref="InvalidOperationException">The factory returned <see langword="null" />.</exception>
     private HashAlgorithm CreateAlgorithm() =>
         _algorithmFactory()
-            ?? throw new InvalidOperationException(CryptoResourceStrings.Arg_Invalid_MerkleAlgorithmFactoryNull);
+            ?? throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_MerkleAlgorithmFactoryNull);
 
     /// <summary>
     /// Copies and validates a caller-supplied list of leaf hashes.

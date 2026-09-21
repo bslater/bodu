@@ -44,7 +44,7 @@ public partial class MerkleBlockComputationTests
     }
 
     /// <summary>
-    /// Verifies that the block count agrees with the block arithmetic in <see cref="MerkleBlocks" /> for the
+    /// Verifies that the block count agrees with <see cref="MerkleTree.BlockCount(long, int)" /> for the
     /// computation's own input length and block size.
     /// </summary>
     [TestMethod]
@@ -52,6 +52,6 @@ public partial class MerkleBlockComputationTests
     {
         MerkleBlockComputation computation = Compute(2109, blockSize: 64);
 
-        Assert.AreEqual(MerkleBlocks.BlockCount(2109, 64), computation.BlockCount);
+        Assert.AreEqual(MerkleTree.BlockCount(2109, 64), computation.BlockCount);
     }
 }

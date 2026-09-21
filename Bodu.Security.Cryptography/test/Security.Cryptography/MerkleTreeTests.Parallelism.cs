@@ -54,7 +54,7 @@ public partial class MerkleTreeTests
 
             Assert.AreEqual(kat.Expected, Hex(computation.Root), $"degree {degree}");
             Assert.AreEqual(kat.Input, computation.InputLength, $"degree {degree}");
-            Assert.AreEqual(MerkleBlocks.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
+            Assert.AreEqual(MerkleTree.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
         }
     }
 
@@ -155,7 +155,7 @@ public partial class MerkleTreeTests
 
             Assert.AreEqual(kat.Expected, Hex(computation.Root), $"degree {degree}");
             Assert.AreEqual(kat.Input, computation.InputLength, $"degree {degree}");
-            Assert.AreEqual(MerkleBlocks.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
+            Assert.AreEqual(MerkleTree.BlockCount(kat.Input, VectorBlockSize), computation.LeafHashes.Count, $"degree {degree}");
         }
     }
 
@@ -249,8 +249,8 @@ public partial class MerkleTreeTests
         for (long blockIndex = 0; blockIndex < computation.LeafHashes.Count; blockIndex++)
         {
             byte[][] path = tree.AuthenticationPath(computation.LeafHashes, blockIndex);
-            int offset = (int)MerkleBlocks.BlockOffset(blockIndex, VectorBlockSize);
-            int length = MerkleBlocks.BlockLength(input.Length, blockIndex, VectorBlockSize);
+            int offset = (int)MerkleTree.BlockOffset(blockIndex, VectorBlockSize);
+            int length = MerkleTree.BlockLength(input.Length, blockIndex, VectorBlockSize);
 
             Assert.IsTrue(
                 tree.VerifyBlockInclusion(boundRoot, computation.InputLength, VectorBlockSize, blockIndex, input.AsSpan(offset, length), ToPath(path)),

@@ -37,7 +37,7 @@ public sealed partial class MerkleTree
 
         byte[][] leafHashes = new byte[entries.Count][];
         for (int index = 0; index < entries.Count; index++)
-            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entries[index].Span);
+            leafHashes[index] = HashWithPrefix(hasher, HashLength, LeafPrefix, entries[index].Span);
 
         return BuildConsistencyProof(leafHashes, firstSize, hasher);
     }
@@ -165,8 +165,8 @@ public sealed partial class MerkleTree
 
             if ((fn & 1) == 1 || fn == sn)
             {
-                firstRunning = HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, sibling, firstRunning);
-                secondRunning = HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, sibling, secondRunning);
+                firstRunning = HashWithPrefix(hasher, HashLength, InternalNodePrefix, sibling, firstRunning);
+                secondRunning = HashWithPrefix(hasher, HashLength, InternalNodePrefix, sibling, secondRunning);
 
                 if ((fn & 1) == 0)
                 {
@@ -181,7 +181,7 @@ public sealed partial class MerkleTree
             }
             else
             {
-                secondRunning = HashWithPrefix(hasher, MerkleTreeFormat.InternalNodePrefix, secondRunning, sibling);
+                secondRunning = HashWithPrefix(hasher, HashLength, InternalNodePrefix, secondRunning, sibling);
             }
 
             fn >>= 1;
@@ -193,13 +193,6 @@ public sealed partial class MerkleTree
             && CryptographicOperations.FixedTimeEquals(firstRunning, firstRoot)
             && CryptographicOperations.FixedTimeEquals(secondRunning, secondRoot);
     }
-
-    /// <summary>
-    /// Returns whether a value is an exact power of two.
-    /// </summary>
-    /// <param name="value">The value to test.</param>
-    /// <returns><see langword="true" /> when <paramref name="value" /> is a positive power of two.</returns>
-    private static bool IsPowerOfTwo(long value) => MerkleTreeCore.IsPowerOfTwo(value);
 
     /// <summary>
     /// Builds the consistency proof over a validated leaf-hash array.
@@ -220,26 +213,7 @@ public sealed partial class MerkleTree
             return [];
 
         List<byte[]> proof = [];
-        AppendSubProof(leafHashes, (int)firstSize, onBoundary: true, proof, hasher);
+        AppendSubProof(leafHashes, (int)firstSize, onBoundary: true, proof, hasher, HashLength);
         return [.. proof];
     }
-
-    /// <summary>
-    /// Appends the subproof for a prefix of <paramref name="leafHashes" />, per RFC 6962 §2.1.
-    /// </summary>
-    /// <param name="leafHashes">The subtree's leaf hashes.</param>
-    /// <param name="first">The prefix length within this subtree.</param>
-    /// <param name="onBoundary">
-    /// Whether the prefix ends exactly on this subtree's boundary, in which case its root is already implied and is not
-    /// carried in the proof.
-    /// </param>
-    /// <param name="proof">The proof being built.</param>
-    /// <param name="hasher">The algorithm to hash with.</param>
-    private void AppendSubProof(
-        ReadOnlySpan<byte[]> leafHashes,
-        int first,
-        bool onBoundary,
-        List<byte[]> proof,
-        HashAlgorithm hasher) =>
-        MerkleTreeCore.AppendSubProof(leafHashes, first, onBoundary, proof, hasher, HashLength);
 }

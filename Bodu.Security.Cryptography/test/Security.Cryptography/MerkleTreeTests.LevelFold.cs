@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="MerkleLevelFoldTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.LevelFold.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,31 +9,17 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Holds the internal <c>MerkleLevelFold</c> to RFC 6962 at a fan-out of two and to a batch level-by-level
-/// reference at wider fan-outs, and verifies what it reports to an observer.
+/// Holds the internal <see cref="MerkleTree.LevelFold" /> to RFC 6962 at a fan-out of two and to a batch
+/// level-by-level reference at wider fan-outs, and verifies what it records.
 /// </summary>
 /// <remarks>
-/// The fold is the one reduction every Merkle type in the solution now shares, so these tests are what make "a
-/// fan-out of two is RFC 6962's tree" a checked statement rather than a documented intention: the fold is compared
-/// with the recursive <c>Mth</c> definition for every leaf count up to sixty-four, and with the published reference
-/// roots for the eight-entry suite.
+/// The fold is the one reduction every root computation and the accumulator share, so these tests are what make "a
+/// fan-out of two is RFC 6962's tree" a checked statement rather than a documented intention: the fold is compared with
+/// the recursive <c>Mth</c> definition for every leaf count up to sixty-four, and with the published reference roots
+/// for the eight-entry suite.
 /// </remarks>
-[TestClass]
-public sealed class MerkleLevelFoldTests
+public partial class MerkleTreeTests
 {
-    /// <summary>The eight RFC 6962 reference entries, in order.</summary>
-    private static readonly byte[][] ReferenceEntries =
-    [
-        [],
-        [0x00],
-        [0x10],
-        [0x20, 0x21],
-        [0x30, 0x31],
-        [0x40, 0x41, 0x42, 0x43],
-        [0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57],
-        [0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f],
-    ];
-
     /// <summary>
     /// Verifies that a fan-out of two folds the reference entries to the published RFC 6962 roots.
     /// </summary>
@@ -49,14 +35,14 @@ public sealed class MerkleLevelFoldTests
     [DataRow(6, "76e67dadbcdf1e10e1b74ddc608abd2f98dfb16fbce75277b5232a127f2087ef")]
     [DataRow(7, "ddb89be403809e325750d3d263cd78929c2942b7942a34b77e122c9594a74c8c")]
     [DataRow(8, "5dc9da79a70659a9ad559cb701ded9a2ab9d823aad2f4960cfe370eff4604328")]
-    public void Finish_WhenFanOutIsTwo_ShouldReproduceRfc6962ReferenceRoots(int entryCount, string expectedRoot)
+    public void LevelFold_WhenFanOutIsTwo_ShouldReproduceRfc6962ReferenceRoots(int entryCount, string expectedRoot)
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
-        var fold = new MerkleLevelFold(hasher, hashLength, fanOut: 2);
+        var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut: 2);
 
         foreach (byte[] entry in ReferenceEntries.Take(entryCount))
-            fold.Add(MerkleTreeCore.HashWithPrefix(hasher, hashLength, MerkleTreeFormat.LeafPrefix, entry));
+            fold.Add(MerkleTree.HashWithPrefix(hasher, hashLength, MerkleTree.LeafPrefix, entry));
 
         Assert.AreEqual(expectedRoot, Hex(fold.Finish()));
     }
@@ -66,7 +52,7 @@ public sealed class MerkleLevelFoldTests
     /// sixty-four, so the level-by-level walk with promotion is RFC 6962's tree and not merely close to it.
     /// </summary>
     [TestMethod]
-    public void Finish_WhenFanOutIsTwo_ShouldEqualMthForEveryLeafCountUpToSixtyFour()
+    public void LevelFold_WhenFanOutIsTwo_ShouldEqualMthForEveryLeafCountUpToSixtyFour()
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
@@ -75,10 +61,10 @@ public sealed class MerkleLevelFoldTests
         {
             byte[][] leaves = SyntheticLeaves(hasher, hashLength, leafCount);
             string expected = leafCount == 0
-                ? Hex(MerkleTreeCore.HashEmpty(hasher, hashLength))
-                : Hex(MerkleTreeCore.Mth(leaves, hasher, hashLength));
+                ? Hex(MerkleTree.HashEmpty(hasher, hashLength))
+                : Hex(MerkleTree.Mth(leaves, hasher, hashLength));
 
-            var fold = new MerkleLevelFold(hasher, hashLength, fanOut: 2);
+            var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut: 2);
             foreach (byte[] leaf in leaves)
                 fold.Add(leaf);
 
@@ -95,7 +81,7 @@ public sealed class MerkleLevelFoldTests
     [DataRow(3)]
     [DataRow(4)]
     [DataRow(7)]
-    public void Finish_WhenFanOutIsWider_ShouldEqualBatchReductionWithPromotion(int fanOut)
+    public void LevelFold_WhenFanOutIsWider_ShouldEqualBatchReductionWithPromotion(int fanOut)
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
@@ -105,7 +91,7 @@ public sealed class MerkleLevelFoldTests
             byte[][] leaves = SyntheticLeaves(hasher, hashLength, leafCount);
             string expected = Hex(BatchReduce(hasher, hashLength, leaves, fanOut));
 
-            var fold = new MerkleLevelFold(hasher, hashLength, fanOut);
+            var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut);
             foreach (byte[] leaf in leaves)
                 fold.Add(leaf);
 
@@ -118,66 +104,65 @@ public sealed class MerkleLevelFoldTests
     /// fan-out of two hash the first pair, then hash that parent with the third <em>leaf</em>.
     /// </summary>
     [TestMethod]
-    public void Finish_WhenALevelHasALoneLeftover_ShouldPromoteItUnchanged()
+    public void LevelFold_WhenALevelHasALoneLeftover_ShouldPromoteItUnchanged()
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
         byte[][] leaves = SyntheticLeaves(hasher, hashLength, 3);
 
-        var fold = new MerkleLevelFold(hasher, hashLength, fanOut: 2);
+        var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut: 2);
         foreach (byte[] leaf in leaves)
             fold.Add(leaf);
 
-        byte[] pair = MerkleTreeCore.HashChildren(hasher, hashLength, leaves[..2]);
-        byte[] expected = MerkleTreeCore.HashChildren(hasher, hashLength, [pair, leaves[2]]);
+        byte[] pair = MerkleTree.HashChildren(hasher, hashLength, leaves[..2]);
+        byte[] expected = MerkleTree.HashChildren(hasher, hashLength, [pair, leaves[2]]);
 
         Assert.AreEqual(Hex(expected), Hex(fold.Finish()));
     }
 
     /// <summary>
-    /// Verifies that the observer receives every leaf in order, one hashed node per group with its children, and
+    /// Verifies that the recorder receives every leaf in order, one hashed node per group with its children, and
     /// nothing for a promoted node.
     /// </summary>
     [TestMethod]
-    public void Finish_WhenObserved_ShouldReportLeavesAndHashedNodesButNotPromotions()
+    public void LevelFold_WhenRecorded_ShouldReportLeavesAndHashedNodesButNotPromotions()
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
         byte[][] leaves = SyntheticLeaves(hasher, hashLength, 3);
-        var observer = new RecordingObserver();
+        var diagnostics = new MerkleTreeDiagnostics();
 
-        var fold = new MerkleLevelFold(hasher, hashLength, fanOut: 2, observer);
+        var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut: 2, diagnostics);
         foreach (byte[] leaf in leaves)
             fold.Add(leaf);
         byte[] root = fold.Finish();
 
-        CollectionAssert.AreEqual(new long[] { 0, 1, 2 }, observer.LeafIndices);
-        Assert.AreEqual(
-            2,
-            observer.Nodes.Count,
-            "one node for the first pair, one for the root — none for the promoted leaf");
+        CollectionAssert.AreEqual(new long[] { 0, 1, 2 }, diagnostics.GetLevel(0).Select(node => node.Index).ToArray());
 
-        (int level, long index, byte[][] children, byte[] hash) = observer.Nodes[0];
-        Assert.AreEqual((1, 0L), (level, index));
-        Assert.AreEqual(Hex(leaves[0]) + Hex(leaves[1]), Hex(children[0]) + Hex(children[1]));
+        List<MerkleTreeDiagnostics.Node> hashed = diagnostics.GetAllNodes().Where(node => !node.IsLeaf).ToList();
+        Assert.HasCount(2, hashed, "one node for the first pair, one for the root — none for the promoted leaf");
 
-        (level, index, children, hash) = observer.Nodes[1];
-        Assert.AreEqual((2, 0L), (level, index));
-        Assert.AreEqual(Hex(observer.Nodes[0].Hash), Hex(children[0]), "the root's left child is the hashed pair");
-        Assert.AreEqual(Hex(leaves[2]), Hex(children[1]), "the root's right child is the promoted third leaf itself");
-        Assert.AreEqual(Hex(root), Hex(hash));
+        MerkleTreeDiagnostics.Node pair = hashed[0];
+        Assert.AreEqual((1, 0L), (pair.Level, pair.Index));
+        Assert.AreEqual(Hex(leaves[0]) + Hex(leaves[1]), Hex(pair.ChildHashes[0]) + Hex(pair.ChildHashes[1]));
+
+        MerkleTreeDiagnostics.Node top = hashed[1];
+        Assert.AreEqual((2, 0L), (top.Level, top.Index));
+        Assert.AreEqual(Hex(pair.Hash), Hex(top.ChildHashes[0]), "the root's left child is the hashed pair");
+        Assert.AreEqual(Hex(leaves[2]), Hex(top.ChildHashes[1]), "the root's right child is the promoted third leaf itself");
+        Assert.AreEqual(Hex(root), Hex(top.Hash));
     }
 
     /// <summary>
     /// Verifies that folding nothing yields the empty tree's root, the hash of zero bytes.
     /// </summary>
     [TestMethod]
-    public void Finish_WhenNoLeafWasAdded_ShouldReturnTheEmptyTreeRoot()
+    public void LevelFold_WhenNoLeafWasAdded_ShouldReturnTheEmptyTreeRoot()
     {
         using HashAlgorithm hasher = SHA256.Create();
         int hashLength = hasher.HashSize / 8;
 
-        var fold = new MerkleLevelFold(hasher, hashLength, fanOut: 3);
+        var fold = new MerkleTree.LevelFold(hasher, hashLength, fanOut: 3);
 
         Assert.AreEqual(Hex(SHA256.HashData([])), Hex(fold.Finish()));
     }
@@ -193,7 +178,7 @@ public sealed class MerkleLevelFoldTests
     {
         byte[][] leaves = new byte[count][];
         for (int i = 0; i < count; i++)
-            leaves[i] = MerkleTreeCore.HashWithPrefix(hasher, hashLength, MerkleTreeFormat.LeafPrefix, [(byte)i]);
+            leaves[i] = MerkleTree.HashWithPrefix(hasher, hashLength, MerkleTree.LeafPrefix, [(byte)i]);
 
         return leaves;
     }
@@ -209,7 +194,7 @@ public sealed class MerkleLevelFoldTests
     private static byte[] BatchReduce(HashAlgorithm hasher, int hashLength, byte[][] leaves, int fanOut)
     {
         if (leaves.Length == 0)
-            return MerkleTreeCore.HashEmpty(hasher, hashLength);
+            return MerkleTree.HashEmpty(hasher, hashLength);
 
         List<byte[]> level = [.. leaves];
         while (level.Count > 1)
@@ -220,41 +205,12 @@ public sealed class MerkleLevelFoldTests
                 int size = Math.Min(fanOut, level.Count - i);
                 next.Add(size == 1
                     ? level[i]
-                    : MerkleTreeCore.HashChildren(hasher, hashLength, level.GetRange(i, size).ToArray()));
+                    : MerkleTree.HashChildren(hasher, hashLength, level.GetRange(i, size).ToArray()));
             }
 
             level = next;
         }
 
         return level[0];
-    }
-
-    /// <summary>
-    /// Formats a hash as lowercase hex.
-    /// </summary>
-    /// <param name="hash">The hash.</param>
-    /// <returns>The lowercase hex string.</returns>
-    private static string Hex(byte[] hash) =>
-        Convert.ToHexString(hash).ToLowerInvariant();
-
-    /// <summary>
-    /// Records everything the fold reports.
-    /// </summary>
-    private sealed class RecordingObserver
-        : IMerkleTreeObserver
-    {
-        /// <summary>The leaf indices, in report order.</summary>
-        public List<long> LeafIndices { get; } = [];
-
-        /// <summary>The hashed nodes, in report order.</summary>
-        public List<(int Level, long Index, byte[][] Children, byte[] Hash)> Nodes { get; } = [];
-
-        /// <inheritdoc />
-        public void OnLeaf(long index, byte[] hash) =>
-            LeafIndices.Add(index);
-
-        /// <inheritdoc />
-        public void OnNode(int level, long index, byte[][] children, byte[] hash) =>
-            Nodes.Add((level, index, children, hash));
     }
 }
