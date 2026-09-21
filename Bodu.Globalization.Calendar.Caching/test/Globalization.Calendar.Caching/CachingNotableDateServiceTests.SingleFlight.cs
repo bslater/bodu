@@ -70,4 +70,38 @@ public sealed partial class CachingNotableDateServiceTests
         Assert.AreEqual(2, gated.ResolveCount, "the failed flight must be evicted so the next call recomputes");
         Assert.HasCount(1, occurrences);
     }
+
+    /// <summary>
+    /// Verifies that a caller which observed a miss before the winning computation stored its entry, but reached the
+    /// coalescing dictionary after that flight was retired, is served the freshly cached year instead of recomputing
+    /// it — the inner service still runs exactly once.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenLateJoinerMissesTheCompletedFlight_ShouldServeCachedYearWithoutRecomputing()
+    {
+        var inner = new CountingNotableDateService();
+        using var cache = new LateJoinerNotableDateCache(new InMemoryNotableDateCache());
+        var service = new CachingNotableDateService(
+            inner,
+            cache,
+            new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(30), ResourceVersion = "fixed" },
+            timeProvider: new MutableTimeProvider(Now));
+
+        var date = new DateOnly(2026, 1, 1);
+
+        // The late joiner parks inside its lookup holding the miss it just observed.
+        Task<IReadOnlyList<NotableDate>> lateJoiner = Task.Run(() => service.Resolve(date, "US"));
+        Assert.IsTrue(cache.WaitUntilParked(TimeSpan.FromSeconds(30)), "the late joiner never parked");
+
+        // The winner computes, stores, and retires its flight while the late joiner is still parked.
+        IReadOnlyList<NotableDate> winner = service.Resolve(date, "US");
+
+        // Released, the late joiner now finds no flight to join even though the year is cached.
+        cache.Release();
+        Assert.IsTrue(lateJoiner.Wait(TimeSpan.FromSeconds(30)), "the late joiner never completed");
+
+        Assert.AreEqual(1, inner.ResolveCount, "a late joiner must serve the cached year rather than recompute it");
+        Assert.HasCount(1, winner);
+        Assert.HasCount(1, lateJoiner.Result);
+    }
 }
