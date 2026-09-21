@@ -13,10 +13,18 @@ namespace Bodu.Financial.ExchangeRates;
 /// response.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The request addresses the history window through inclusive Unix-millisecond range bounds in the path, and the parser
 /// additionally restricts the parsed observations to the request's inclusive range as a defensive measure. The
 /// <c>User-Agent</c> the OFX endpoint requires is configured on the <see cref="HttpClient" /> (by the provider when it
 /// owns the client, or by the caller when the client is supplied), not per request.
+/// </para>
+/// <para>
+/// OFX rejects a <c>ToDate</c> that lies in its future, so the end bound is capped at the current instant (less
+/// <see cref="OfxRateProviderOptions.FutureClampSkew" />). This keeps the request timezone-agnostic: whatever calendar
+/// date a caller derived from its local clock, the source never asks OFX for anything past "now". A request whose whole
+/// window begins after the current instant is answered with an empty result without issuing an HTTP call.
+/// </para>
 /// </remarks>
 internal sealed class OfxSpotRateHistorySource
     : IPairRateSource<OfxSeriesInfo>
@@ -27,41 +35,60 @@ internal sealed class OfxSpotRateHistorySource
     /// <summary>The provider options supplying the base address, history path, and query parameters.</summary>
     private readonly OfxRateProviderOptions _options;
 
+    /// <summary>The time source resolving the current instant the request's end bound is capped at.</summary>
+    private readonly TimeProvider _timeProvider;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="OfxSpotRateHistorySource" /> class.
     /// </summary>
     /// <param name="httpClient">The HTTP client used to issue history requests.</param>
     /// <param name="options">The provider options.</param>
-    internal OfxSpotRateHistorySource(HttpClient httpClient, OfxRateProviderOptions options)
+    /// <param name="timeProvider">
+    /// The time source. <see langword="null" /> selects <see cref="TimeProvider.System" />.
+    /// </param>
+    internal OfxSpotRateHistorySource(HttpClient httpClient, OfxRateProviderOptions options, TimeProvider? timeProvider = null)
     {
         ThrowHelper.ThrowIfNull(httpClient);
         ThrowHelper.ThrowIfNull(options);
 
         _httpClient = httpClient;
         _options = options;
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     /// <inheritdoc />
     public async ValueTask<PairRateData<OfxSeriesInfo>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
-        Uri url = BuildRequestUri(request);
+        // OFX rejects a ToDate in its future, so cap the end bound at the current instant less any configured skew
+        // margin. The start of the requested day and that capped end delimit what is actually fetched.
+        long nowMs = (_timeProvider.GetUtcNow() - _options.FutureClampSkew).ToUnixTimeMilliseconds();
+        long startMs = ToUnixMilliseconds(request.StartDate, TimeOnly.MinValue);
+        long endMs = Math.Min(ToUnixMilliseconds(request.EndDate, TimeOnly.MaxValue), nowMs);
+
+        // The whole requested window begins after "now", so OFX has nothing to return. Fail the way any range with no
+        // data fails rather than answering with an empty success: the provider marks a range covered after every
+        // successful fetch, so an empty success here would pin the future range as loaded and keep serving nothing once
+        // those dates became real. Skipping the call costs a request the endpoint would reject anyway.
+        if (startMs > nowMs)
+            throw NoDataForFutureWindow(request);
+
+        Uri url = BuildRequestUri(request, startMs, endMs);
         byte[] json = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
 
         return OfxSpotRateHistoryResponseParser.Parse(json, request, _options);
     }
 
     /// <summary>
-    /// Builds the absolute history request URI from the options and request.
+    /// Builds the absolute history request URI from the options, request, and computed Unix-millisecond range bounds.
     /// </summary>
     /// <param name="request">The pair request.</param>
+    /// <param name="startMs">The inclusive range start, as Unix milliseconds.</param>
+    /// <param name="endMs">
+    /// The inclusive range end, as Unix milliseconds, already capped at the current instant.
+    /// </param>
     /// <returns>The absolute request URI.</returns>
-    private Uri BuildRequestUri(CurrencyPairRequest request)
+    private Uri BuildRequestUri(CurrencyPairRequest request, long startMs, long endMs)
     {
-        // OFX addresses the range through inclusive Unix-millisecond path bounds: the start at the beginning of the
-        // start date and the end at the last millisecond of the end date, both interpreted in UTC.
-        long startMs = ToUnixMilliseconds(request.StartDate, TimeOnly.MinValue);
-        long endMs = ToUnixMilliseconds(request.EndDate, TimeOnly.MaxValue);
-
         // The path is built from validated ISO letters and numeric bounds substituted into a fixed template, so it is composed directly.
         string path = _options.BuildPath(request.Pair.From.ToString(), request.Pair.To.ToString(), startMs, endMs);
 
@@ -76,6 +103,19 @@ internal sealed class OfxSpotRateHistorySource
 
         return builder.Uri;
     }
+
+    /// <summary>
+    /// Builds the no-data exception for a window lying entirely in the future, matching what the endpoint itself
+    /// produces for such a request.
+    /// </summary>
+    /// <param name="request">The pair request.</param>
+    /// <returns>The exception to throw.</returns>
+    private static ExchangeRateFormatException NoDataForFutureWindow(CurrencyPairRequest request) =>
+        new(string.Format(
+            CultureInfo.CurrentCulture,
+            OfxResourceStrings.Format_Invalid_OfxNoData,
+            request.Pair.From.ToString(),
+            request.Pair.To.ToString()));
 
     /// <summary>
     /// Converts a date and time-of-day to a Unix-millisecond timestamp interpreted in UTC.
