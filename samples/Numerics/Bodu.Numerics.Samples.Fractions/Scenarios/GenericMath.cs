@@ -21,11 +21,22 @@ public static class GenericMath
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Fraction<T>: generic math (INumber<T>) ---");
+        SampleConsole.Scenario(
+            "Fraction<T> - generic math (INumber<T>)",
+            what: "Runs one generic Sum<T> over ints and then over fractions, summing the first five terms of the " +
+                  "harmonic series, and converts the result to double.",
+            why: "Implementing INumber<T> means Fraction<T> is not a special case to be handled separately - the " +
+                 "same generic algorithm, written once against the interface, accepts it alongside the built-in " +
+                 "numeric types. The harmonic series is the example that earns it: every term has a different " +
+                 "denominator, so summing in double accumulates rounding at each step while the rational sum is " +
+                 "exact and only converts at the end, where the caller can see it happen.",
+            expect: "One Sum implementation serves both element types. The harmonic sum is exactly 137/60; the " +
+                    "double conversion is where precision is deliberately given up, and it happens once, at the " +
+                    "boundary, rather than silently at every addition.");
 
         // The same generic Sum below works for any INumber<T> - here plain integers.
         var ints = new[] { 1, 2, 3, 4, 5 };
-        Console.WriteLine($"Sum<int>(1..5)          : {Sum(ints)}");
+        Console.WriteLine($"  Sum<int>(1..5)          : {Sum(ints)}  (expected 15 - one generic implementation, written against INumber<T>)");
 
         // ...and here the exact harmonic series 1/1 + 1/2 + 1/3 + 1/4 + 1/5, with no rounding.
         var unitFractions = new[]
@@ -38,8 +49,8 @@ public static class GenericMath
         };
 
         var harmonic = Sum(unitFractions);
-        Console.WriteLine($"Sum<Fraction>(H_5)      : {harmonic}");
-        Console.WriteLine($"H_5 as double           : {harmonic.ToDouble().ToString("F6", System.Globalization.CultureInfo.InvariantCulture)}");
+        Console.WriteLine($"  Sum<Fraction>(H_5)      : {harmonic}  (expected 137/60 - the SAME Sum, now over rationals: exact, where summing in double would round at every term)");
+        Console.WriteLine($"  H_5 as double           : {harmonic.ToDouble().ToString("F6", System.Globalization.CultureInfo.InvariantCulture)}  (precision is given up once, here at the boundary, rather than silently at each addition)");
 
         Console.WriteLine();
     }
