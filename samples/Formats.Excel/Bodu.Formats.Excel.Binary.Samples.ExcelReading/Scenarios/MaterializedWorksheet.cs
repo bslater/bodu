@@ -21,17 +21,27 @@ public static class MaterializedWorksheet
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- ExcelWorksheet: the materialized convenience surface ---");
+        SampleConsole.Scenario(
+            "The materialized worksheet",
+            what: "Loads a whole worksheet into memory and indexes into it by row and cell, showing the "
+                + "convenience surface over the same data the streaming reader exposes.",
+            why: "Streaming is the right default and the wrong shape for a small sheet you need to look at twice "
+                + "- a lookup table, a configuration block, a sheet you have to index into by position. "
+                + "Materializing is a deliberate trade of memory for random access, and offering both means the "
+                + "choice is visible rather than being forced by the only available API. The values are "
+                + "identical either way; only the access pattern differs.",
+            expect: "The same values the streaming reader produced, now addressable by index. Empty cells are "
+                + "represented rather than silently collapsing the row, so positions stay meaningful.");
 
         using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
         var sheet = workbook.ReadWorksheet(0);
 
-        Console.WriteLine($"'{sheet.Name}': {sheet.Rows.Count} rows, {sheet.Cells.Count} cells materialized");
+        Console.WriteLine($"  '{sheet.Name}': {sheet.Rows.Count} rows, {sheet.Cells.Count} cells materialized");
 
         // Random access by coordinates - no streaming position to manage.
         if (sheet.TryGetCell(0, 0, out var a1))
         {
-            Console.WriteLine($"A1 = {(a1.Kind == ExcelCellKind.String ? $"'{a1.StringValue}'" : a1.NumberValue?.ToString())} ({a1.Kind})");
+            Console.WriteLine($"  A1 = {(a1.Kind == ExcelCellKind.String ? $"'{a1.StringValue}'" : a1.NumberValue?.ToString())} ({a1.Kind})");
         }
 
         // LINQ over the cell collection: aggregate every numeric cell.
@@ -40,12 +50,12 @@ public static class MaterializedWorksheet
         var numbers = sheet.Cells.Where(c => c.Kind == ExcelCellKind.Number && !c.IsDateFormatted).ToList();
         if (numbers.Count > 0)
         {
-            Console.WriteLine($"numeric cells: {numbers.Count}, sum = {numbers.Sum(c => c.NumberValue ?? 0):G6}, max = {numbers.Max(c => c.NumberValue ?? 0):G6}");
+            Console.WriteLine($"  numeric cells: {numbers.Count}, sum = {numbers.Sum(c => c.NumberValue ?? 0):G6}, max = {numbers.Max(c => c.NumberValue ?? 0):G6}");
         }
 
         // Rows are sparse: only rows with content appear, each holding only its populated cells.
         var widest = sheet.Rows.MaxBy(r => r.Cells.Count);
-        Console.WriteLine($"widest row   : row {widest?.RowIndex} with {widest?.Cells.Count} cells");
+        Console.WriteLine($"  widest row   : row {widest?.RowIndex} with {widest?.Cells.Count} cells");
 
         Console.WriteLine();
     }

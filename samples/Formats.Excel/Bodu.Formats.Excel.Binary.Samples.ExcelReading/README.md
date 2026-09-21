@@ -31,9 +31,11 @@ the sheet's claim, not a promise of populated cells — Scenario 2 shows actual 
 at row 874:
 
 ```text
-date system : Excel1900
-properties  : title='', author='', app='Microsoft Excel'
-worksheets  : 2
+--- Opening a workbook - sheets, visibility, and used ranges ---
+
+  date system : Excel1900
+  properties  : title='', author='', app='Microsoft Excel'
+  worksheets  : 2
   [0] 'Data' (Worksheet, Visible) used range A1:BP2186 (2186 rows x 68 cols)
   [1] 'Notes' (Worksheet, Visible) used range A1:L28 (28 rows x 12 cols)
 ```
@@ -55,10 +57,14 @@ and classifying every cell without buffering any; then reopens the sheet and use
 **What to expect.**
 
 ```text
-cells read  : 17937 across rows 0..874
-kinds       : String=170, Number=17767
+--- The forward-only worksheet reader ---
+
+  streaming 'Data'...
+  cells read  : 17937 across rows 0..874
+  kinds       : String=170, Number=17767
   row 0: A1='F11.1  EXCHANGE RATES '
-  row 1: A2='Title' | B2='A$1=USD' | ...
+  row 1: A2='Title' | B2='A$1=USD' | C2='Trade-weighted Index May 1970 = 100' | D2='A$1=CNY'
+  row 2: A3='Description' | B3='AUD/USD Exchange Rate; see notes for further detail.' | C3='Australian Dollar Trade-weighted Index' | D3='AUD/CNY Exchange Rate'
 ```
 
 **APIs demonstrated.** `ExcelBinaryWorkbook.OpenWorksheet(index)`,
@@ -79,10 +85,12 @@ cells).
 **What to expect.**
 
 ```text
-'Data': 873 rows, 17937 cells materialized
-A1 = 'F11.1  EXCHANGE RATES ' (String)
-numeric cells: 16880, sum = 2.46213E+07, max = 19126
-widest row   : row 1 with 24 cells
+--- The materialized worksheet ---
+
+  'Data': 873 rows, 17937 cells materialized
+  A1 = 'F11.1  EXCHANGE RATES ' (String)
+  numeric cells: 16880, sum = 2.46213E+07, max = 19126
+  widest row   : row 1 with 24 cells
 ```
 
 **APIs demonstrated.** `ExcelBinaryWorkbook.ReadWorksheet(index)`, `ExcelWorksheet.Rows` /
@@ -105,10 +113,14 @@ and scans for error cells (this workbook has none; a `#DIV/0!` would surface as
 **What to expect.**
 
 ```text
+--- Cell kinds, spreadsheet errors, and serial dates ---
+
   'Data': String=170, Number=17767, date-formatted=887
   'Notes': String=45, Number=18
-date decoding (Excel1900):
+  date decoding (Excel1900):
   B10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
+  C10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
+  D10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
 error cells  : none in this workbook
 ```
 
@@ -121,6 +133,7 @@ error cells  : none in this workbook
 ```text
 Bodu.Formats.Excel.Binary.Samples.ExcelReading/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect scenario banner
   Data/sample-biff8.xls             # committed 464 KB BIFF8 fixture (2 sheets, ~18k cells)
   Scenarios/WorkbookAndSheets.cs
   Scenarios/ForwardOnlyReader.cs

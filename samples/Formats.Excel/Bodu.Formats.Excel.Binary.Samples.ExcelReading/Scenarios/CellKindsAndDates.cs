@@ -22,7 +22,19 @@ public static class CellKindsAndDates
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Cell kinds and serial dates ---");
+        SampleConsole.Scenario(
+            "Cell kinds, spreadsheet errors, and serial dates",
+            what: "Reads cells of each kind - text, number, boolean, error, a formula's cached result - and "
+                + "converts a numeric cell to a date under both of the workbook's possible epochs.",
+            why: "Two things here are easy to get wrong and both are silent. A formula cell stores its last "
+                + "computed result, and since this reader does not evaluate formulas, reporting that cached value "
+                + "as the cell's value is the honest answer - it is what Excel last wrote, which may be stale but "
+                + "is not invented. The other is dates: Excel has no date type, only a number plus a workbook-"
+                + "level epoch flag, and the 1900 and 1904 systems are four years apart. Reading the flag rather "
+                + "than assuming one is the difference between a correct date and a plausible wrong one.",
+            expect: "Each kind is distinguished rather than flattened to text, including the spreadsheet error "
+                + "code, which is a value and not a failure. The same serial number yields dates four years "
+                + "apart under the two epochs - which is why the workbook's own flag has to be consulted.");
 
         using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
 
@@ -45,7 +57,7 @@ public static class CellKindsAndDates
 
         if (dates.Count > 0)
         {
-            Console.WriteLine($"date decoding ({workbook.DateSystem}):");
+            Console.WriteLine($"  date decoding ({workbook.DateSystem}):");
             foreach (var cell in dates)
             {
                 // ExcelSerialDate.ToDateTime is the manual path; workbook.GetDateTime(cell) is the
@@ -56,7 +68,7 @@ public static class CellKindsAndDates
         }
         else
         {
-            Console.WriteLine("no date-formatted cells in the first sheet.");
+            Console.WriteLine("  no date-formatted cells in the first sheet.");
         }
 
         // Error cells carry the spreadsheet error code, not an exception.
