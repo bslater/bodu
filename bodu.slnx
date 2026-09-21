@@ -333,6 +333,7 @@
   </Folder>
   <Folder Name="/Samples/Security.Cryptography/">
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.AsymmetricKeys/Bodu.Security.Cryptography.Samples.AsymmetricKeys.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CipherModesAndPadding/Bodu.Security.Cryptography.Samples.CipherModesAndPadding.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash.Test/Bodu.Security.Cryptography.Samples.CustomHash.Test.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.CustomHash/Bodu.Security.Cryptography.Samples.CustomHash.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf/Bodu.Security.Cryptography.Samples.HashingMacAndKdf.csproj" />
