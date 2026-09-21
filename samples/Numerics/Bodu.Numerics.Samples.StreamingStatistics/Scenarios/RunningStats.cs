@@ -21,7 +21,18 @@ public static class RunningStats
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- RunningStatistics<T>: single-pass summary ---");
+        SampleConsole.Scenario(
+            "RunningStatistics<T> - single-pass summary",
+            what: "Feeds eight values through a single-pass accumulator, reads count, min, max, mean and both " +
+                  "variances, then combines two independently computed halves.",
+            why: "The textbook variance formula subtracts two large, nearly equal numbers and loses most of its " +
+                 "significant digits when the values are far from zero - it can even report a negative variance. " +
+                 "This uses Welford's method, which is numerically stable and needs one pass and constant memory, " +
+                 "so it suits a stream you cannot store. Combining two accumulators is what makes it parallelizable: " +
+                 "partition the data, summarize each part independently, then merge exactly.",
+            expect: "Population and sample variance differ - 4.0 against 4.5714 - because the sample form divides " +
+                    "by n-1 to correct for estimating the mean from the same data. Merging two halves reproduces " +
+                    "the mean and count of the whole, which is the property that permits parallel summarization.");
 
         // A fixed, hand-picked stream so the printed statistics are reproducible.
         var stream = new[] { 2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0 };
@@ -35,13 +46,13 @@ public static class RunningStats
         }
 
         // Every statistic is read straight off the accumulator after a single pass.
-        Console.WriteLine($"count                       : {stats.Count}");
-        Console.WriteLine($"min / max                   : {Fmt(stats.Minimum)} / {Fmt(stats.Maximum)}");
-        Console.WriteLine($"mean                        : {Fmt(stats.Mean)}");
+        Console.WriteLine($"  count                       : {stats.Count}  (accumulated in one pass; none of the eight values is retained)");
+        Console.WriteLine($"  min / max                   : {Fmt(stats.Minimum)} / {Fmt(stats.Maximum)}");
+        Console.WriteLine($"  mean                        : {Fmt(stats.Mean)}");
 
         // The population variant divides by N; the sample variant divides by N-1 (Bessel's correction).
-        Console.WriteLine($"population variance / stddev: {Fmt(stats.PopulationVariance)} / {Fmt(stats.PopulationStandardDeviation)}");
-        Console.WriteLine($"sample variance / stddev    : {Fmt(stats.SampleVariance)} / {Fmt(stats.SampleStandardDeviation)}");
+        Console.WriteLine($"  population variance / stddev: {Fmt(stats.PopulationVariance)} / {Fmt(stats.PopulationStandardDeviation)}  (divides by n - correct when these eight ARE the whole population)");
+        Console.WriteLine($"  sample variance / stddev    : {Fmt(stats.SampleVariance)} / {Fmt(stats.SampleStandardDeviation)}  (divides by n-1, correcting for the mean having been estimated from the same data - the larger value is not an error)");
 
         // Combine merges two independently accumulated halves into one exact summary - handy for
         // parallel or sharded aggregation.
@@ -53,7 +64,7 @@ public static class RunningStats
         }
 
         var combined = RunningStatistics<double>.Combine(first, second);
-        Console.WriteLine($"combined mean (2 halves)    : {Fmt(combined.Mean)} (count {combined.Count})");
+        Console.WriteLine($"  combined mean (2 halves)    : {Fmt(combined.Mean)} (count {combined.Count})  (two independently summarized halves merged exactly; this is what makes the statistic parallelizable)");
 
         Console.WriteLine();
     }
