@@ -27,7 +27,11 @@ public static class BesideTheBuiltIns
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AdditiveDigest beside a shipped hash ---");
+        SampleConsole.Scenario(
+            "AdditiveDigest beside a shipped hash",
+            what: "Hashes one message with the consumer-authored AdditiveDigest and with the shipped Tiger/192, then feeds the same message to AdditiveDigest in two chunks through AppendData.",
+            why: "The point is composability: a hash written outside the library presents the same HashAlgorithm surface as one inside it, so it drops into any code that takes a hash. Streaming comes with the base class rather than being re-implemented, which is what the chunked run checks.",
+            expect: "The two digests differ in width - 128 bits against Tiger's 192 - because they are different functions, not because either is wrong. The chunked and one-shot digests are identical (True), the property the base class's buffering exists to guarantee.");
 
         // A single loop over base-class-typed instances drives the custom hash and a shipped one alike.
         var algorithms = new (string Label, HashAlgorithm Algorithm)[]

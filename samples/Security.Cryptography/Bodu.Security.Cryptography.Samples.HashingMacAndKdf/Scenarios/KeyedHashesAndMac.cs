@@ -34,7 +34,11 @@ public static class KeyedHashesAndMac
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Keyed hashes and a one-time MAC (fixed keys) ---");
+        SampleConsole.Scenario(
+            "Keyed hashes and a one-time MAC (fixed keys)",
+            what: "Authenticates one message under fixed keys with SipHash-64, SipHash-128, keyed BLAKE2b-256 and Poly1305.",
+            why: "An unkeyed digest proves only what the bytes were - anyone can recompute it. A keyed hash proves the tag was produced by a holder of the key, which is what makes it a message authentication code. Poly1305 is a one-time MAC: its key must never authenticate a second message, so real use derives a fresh key per message from a cipher.",
+            expect: "Four tags at each family's natural width - 8, 16, 32 and 16 bytes - all reproducible, because both the keys and the message are fixed. Change one bit of either and every tag changes completely.");
         Console.WriteLine($"message: \"authenticate me\"");
         Console.WriteLine();
 

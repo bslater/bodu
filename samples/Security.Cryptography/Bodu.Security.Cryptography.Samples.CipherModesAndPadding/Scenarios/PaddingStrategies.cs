@@ -33,7 +33,11 @@ public static class PaddingStrategies
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Padding strategies ---");
+        SampleConsole.Scenario(
+            "Padding strategies",
+            what: "Pads a 5-byte and an already-aligned 8-byte message with each of the seven IPaddingStrategy implementations at an 8-byte block, prints the trailer bytes each one actually writes, unpads them, then shows the two rejections and what PaddingFactory maps every PaddingMode onto.",
+            why: "A block cipher only consumes whole blocks, so a message has to be extended - and the scheme decides whether the original length survives the trip. That is what the StripsPaddingOnUnpad flag names: PKCS#7, ANSI X9.23, ISO 7816-4 and ISO 10126 all record the count or a marker, while zero padding records nothing, so a 5-byte and an 8-byte message can pad to the same bytes.",
+            expect: "The aligned 8-byte case still gains a whole extra block under every counted scheme - padding is never skipped, or unpadding could not tell data from filler. ISO 10126's fill is random, so it prints as ?? and changes on every run while every other trailer is fixed. Zeros prints no recovery line because it cannot recover the length; NoPadding rejects a misaligned input with ArgumentException, and a corrupted PKCS#7 count is rejected with CryptographicException.");
 
         // A block-oriented mode can only transform whole blocks, so a message of arbitrary length has to be extended
         // first. Padding is deliberately *not* part of IBlockCipherModeTransform: the two are composed by the caller,

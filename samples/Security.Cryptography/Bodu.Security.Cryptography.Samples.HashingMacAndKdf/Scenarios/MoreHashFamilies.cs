@@ -23,7 +23,11 @@ public static class MoreHashFamilies
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Further hash families ---");
+        SampleConsole.Scenario(
+            "Further hash families",
+            what: "Prints the four BLAKE2s sizes, both Snefru sizes, the two Ascon hashes, three CubeHash configurations, Ascon-CXOF128 under two customization strings, and the variant-selected Tiger and Whirlpool.",
+            why: "Some hashes are one function; others are a family selected by parameters. CubeHash is chosen by rounds and block size, Tiger and Whirlpool by version, Ascon-CXOF128 by a customization string. Changing any of them yields a different function - not a faster or slower version of the same one - which is why domain separation by customization string is a design tool rather than a tweak.",
+            expect: "Every configuration prints a different digest, and that is the point rather than a mismatch. The two CXOF domain strings differ (True) while repeating a domain reproduces its digest (True), and Tiger vs Tiger2 and the three Whirlpool versions diverge because they are separate specifications.");
 
         // BLAKE2s is the 32-bit sibling of BLAKE2b: a smaller state and word size, which makes it the better fit on
         // 32-bit and embedded targets. Its output size is chosen at construction, in bits.
@@ -97,7 +101,7 @@ public static class MoreHashFamilies
         Console.WriteLine($"    \"invoice-signing/v1\": {Hex.ToHex(first)}");
         Console.WriteLine($"    \"audit-log/v1\"      : {Hex.ToHex(second)}");
         Console.WriteLine($"    differ             : {Hex.ToHex(first) != Hex.ToHex(second)} (same message, different domain)");
-        Console.WriteLine($"    reproducible       : {Hex.ToHex(first) == Hex.ToHex(repeat)}");
+        Console.WriteLine($"    reproducible       : {Hex.ToHex(first) == Hex.ToHex(repeat)} (the same domain string hashes the same way twice)");
 
         Console.WriteLine();
     }

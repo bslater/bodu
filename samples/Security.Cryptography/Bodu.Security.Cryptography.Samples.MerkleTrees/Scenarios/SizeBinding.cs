@@ -22,7 +22,11 @@ public static class SizeBinding
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Length-bound roots (closing the tree-size ambiguity) ---");
+        SampleConsole.Scenario(
+            "Length-bound roots (closing the tree-size ambiguity)",
+            what: "Cuts a 16-byte payload into four 4-byte blocks, verifies block 0's path against the true tree size and against an understated one, then repeats the same claims against a root bound to the byte length.",
+            why: "VerifyInclusion's treeSize is trusted input - the root does not authenticate it. A holder that has lost its last block could declare a smaller object, never be challenged for the missing block, and pass every audit for ever. BindRoot closes that by hashing the length into the commitment as H(0x02 || u64_be(length) || root).",
+            expect: "Both unbound verifications print True, the understated one included: that is RFC 6962's verifier working as specified, not a defect. The bound verifier prints True only for the truth (len=16, size=4) and False for all three misstatements. 13 and 14 bytes are both 4 blocks yet bind to different roots, so the byte length is pinned too.");
 
         var tree = new MerkleTree(SHA256.Create);
 

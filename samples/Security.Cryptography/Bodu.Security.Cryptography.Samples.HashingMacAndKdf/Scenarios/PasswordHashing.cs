@@ -35,7 +35,11 @@ public static class PasswordHashing
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Password hashing (Argon2 variants and encoded hashes) ---");
+        SampleConsole.Scenario(
+            "Password hashing (Argon2 variants and encoded hashes)",
+            what: "Hashes one password with all three Argon2 variants at identical parameters, produces the PHC-encoded string you would actually store, verifies a correct and a wrong password against it, and shows reusable ScryptParameters at two costs.",
+            why: "The variant is not a tuning knob: Argon2d, Argon2i and Argon2id are three different functions, and a stored hash is only verifiable by the one that produced it. The encoded string is what makes that workable - it carries the variant, version, parameters and salt, so a verifier needs nothing but the stored value and the password.",
+            expect: "The three variants print three different digests for one password. The stored value reads $argon2id$v=19$m=64,t=2,p=1$<salt>$<hash>; the correct password verifies True and the wrong one False, with no parameters passed to Verify. Doubling scrypt's N yields a different key, as a changed cost parameter must.");
 
         // Argon2 has three variants, and the choice is about what the attacker is assumed to have.
         //   Argon2d  - data-dependent memory access: strongest against GPU cracking, but its access pattern leaks

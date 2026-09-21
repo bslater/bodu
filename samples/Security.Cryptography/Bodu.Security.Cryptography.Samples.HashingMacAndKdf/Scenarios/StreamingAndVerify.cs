@@ -24,7 +24,11 @@ public static class StreamingAndVerify
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Incremental hashing and constant-time verify ---");
+        SampleConsole.Scenario(
+            "Incremental hashing and constant-time verify",
+            what: "Hashes one message in three uneven chunks through AppendData, compares the result with the one-shot digest of the same bytes, then runs VerifyHash against a correct and a tampered expected digest.",
+            why: "Streaming is how data too large to hold - a file, a socket - gets hashed, and it is only usable if the chunk boundaries cannot change the answer. VerifyHash compares in constant time, so a rejected digest does not leak through timing how many leading bytes were right.",
+            expect: "The streamed and one-shot digests are identical (True) even though the message was split 10/15/15. VerifyHash prints True for the correct expectation and False for the tampered one.");
 
         // Feed the message to BLAKE2b in three fragments via the AppendData extension.
         using var streaming = new Blake2b(256);

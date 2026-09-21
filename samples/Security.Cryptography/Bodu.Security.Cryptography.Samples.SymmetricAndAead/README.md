@@ -12,6 +12,11 @@ dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Sa
 > Fixed keys/IVs/nonces are a determinism device for the sample only. Real encryption uses a random key and
 > a unique nonce per message — nonce reuse under one key is catastrophic for every cipher shown here.
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — BlockCiphers
 
 **Intent.** Show the raw block-cipher primitives — the keyed permutation on a single block, before any mode
@@ -230,6 +235,7 @@ interoperability failure rather than an error.
 ```text
 Bodu.Security.Cryptography.Samples.SymmetricAndAead/
   Program.cs                    # runs the scenarios in order
+  SampleConsole.cs              # the What / Why / Expect banner every scenario prints through
   Hex.cs                        # shared lowercase-hex + fixed-key-material helpers
   Scenarios/BlockCiphers.cs
   Scenarios/CipherModes.cs

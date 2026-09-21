@@ -30,6 +30,11 @@ construction — printing a ciphertext here would document output that could nev
 variability itself an assertion: it seals the same plaintext twice and confirms both the encapsulation and the
 ciphertext differ.
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — SingleShot
 
 **Intent.** Show the base-mode single-shot API and the property that makes HPKE worth having: the sender needs no
@@ -189,6 +194,7 @@ using HPKE purely as a key-agreement and key-derivation step while the applicati
 ```text
 Bodu.Security.Cryptography.Samples.HybridEncryption/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect banner every scenario prints through
   Hex.cs                              # lowercase-hex encode/decode
   Parties.cs                          # the fixed RFC 7748 keys, info, and PSK material
   Scenarios/SingleShot.cs

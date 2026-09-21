@@ -17,7 +17,11 @@ public static class SingleShot
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Single-shot base mode (Seal / Open) ---");
+        SampleConsole.Scenario(
+            "Single-shot base mode (Seal / Open)",
+            what: "Seals one message to a recipient's public key with Hpke.Seal and opens it again, then re-runs Open against a tampered ciphertext, tampered AAD, a wrong info string, a tampered encapsulation and the wrong recipient key - and finally seals the same message twice.",
+            why: "HPKE is the standard way to encrypt to a public key with no session and no round trip: the sender makes an ephemeral key pair, derives a shared secret against the recipient's public key, and ships that ephemeral public key - the encapsulation - alongside the ciphertext. info is bound into the key schedule and AAD into the tag, so a message cannot be lifted into another context and still open.",
+            expect: "A 40-byte plaintext seals to 56 bytes, the 16-byte difference being the AEAD tag, and round-trips True. All five corruptions are rejected with CryptographicException rather than yielding wrong plaintext. Sealing twice gives a different encapsulation and a different ciphertext (True, True) because the ephemeral key is fresh each time - which is also why this sample prints sizes and booleans rather than fixed hex.");
 
         // The recipient's long-term key pair. Only its *public* key has to reach the sender, and it travels as a raw
         // 32-byte value - the on-the-wire form.

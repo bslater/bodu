@@ -26,8 +26,11 @@ public static class CipherModes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Cipher modes over Twofish (fixed key + IV) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "Cipher modes over Twofish (fixed key + IV)",
+            what: "Encrypts a 31-byte plaintext with CBC/PKCS7 and a 32-byte plaintext with CTR under one fixed key and IV, then decrypts both.",
+            why: "The mode decides how a one-block permutation covers a whole message, and these two differ in what they cost. CBC needs whole blocks, so it pads and the ciphertext grows; CTR turns the cipher into a keystream, so the ciphertext is exactly the plaintext length - at the price that a key and IV pair must never encrypt twice.",
+            expect: "CBC turns 31 bytes into 32, because PKCS#7 always adds between one byte and a full block; CTR leaves 32 bytes as 32. Both round-trip True. Neither mode authenticates: a flipped ciphertext byte here decrypts to garbage rather than raising an error, which is exactly what the AEAD scenarios below fix.");
 
         // CBC pads to the block boundary, so an arbitrary-length message is accepted.
         var cbcMessage = Encoding.ASCII.GetBytes("thirty-one byte message here!!!"); // 31 bytes

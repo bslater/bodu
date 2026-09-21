@@ -15,6 +15,11 @@ dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Sa
 > ciphertext / secret / signature bytes differ every run. Those scenarios therefore print only what *is*
 > deterministic: the agreement and verification booleans and the fixed byte sizes, never the secret bytes.
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — KeyAgreementX25519
 
 **Intent.** Show a Diffie-Hellman key agreement: two parties who have only exchanged public keys arrive at
@@ -34,8 +39,8 @@ public key.
 
   Alice derives: 4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742
   Bob derives  : 4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742
-  secrets agree: True
-  matches RFC  : True
+  secrets agree: True  (expected True - neither party sent the secret)
+  matches RFC  : True  (expected True - RFC 7748 6.1 publishes this exact secret)
 ```
 
 Both parties compute the identical secret, and it equals the published RFC value — the whole point of the
@@ -60,8 +65,8 @@ one message byte is flipped.
   public key : 03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8
   signature  : 6c35aa8bfb6658934c4d47d2a90de806777c8dc7599519efed9441927b5bf589f95b3080ac185ec6ada22166ebafadc0ba1d7a3617187b6635f2e7536690ae03
 
-  verify (genuine message)  = True
-  verify (tampered message) = False
+  verify (genuine message)  = True   (expected True)
+  verify (tampered message) = False  (expected False - one flipped byte is enough)
 ```
 
 Ed25519 key generation and signing are deterministic, so the public key and signature are fixed functions of
@@ -129,6 +134,7 @@ randomness, so the signature bytes vary per run — only the verification outcom
 ```text
 Bodu.Security.Cryptography.Samples.AsymmetricKeys/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect banner every scenario prints through
   Hex.cs                            # shared lowercase-hex encode/decode helpers
   Scenarios/KeyAgreementX25519.cs
   Scenarios/SignaturesEd25519.cs

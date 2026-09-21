@@ -24,7 +24,11 @@ public static class FactoriesAndValues
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Hash factories and hash values ---");
+        SampleConsole.Scenario(
+            "Hash factories and hash values",
+            what: "Creates algorithm instances through IHashAlgorithmFactory<T>, then compares two identical digests first as byte[] and then as HashValue, and round-trips a digest through hex including two malformed inputs.",
+            why: "Hash algorithms are stateful and not thread-safe, so what a container shares is a factory that makes them, not an instance. HashValue exists for the line below it: byte[] == byte[] is reference equality, so two identical digests compare unequal - a trap that silently breaks a comparison that looks correct.",
+            expect: "The factory yields two independent instances that produce the same digest. byte[] == byte[] prints False for identical bytes while HashValue equality prints True; hex round-trips exactly; and TryParseHex returns False for an odd-length and a non-hex string rather than throwing.");
 
         RunFactories();
         RunHashValues();
@@ -98,6 +102,6 @@ public static class FactoriesAndValues
 
         // A different message gives a different value, and the inequality operator agrees.
         var other = HashValue.FromBytes(algorithm.ComputeHash(Encoding.ASCII.GetBytes("something else")));
-        Console.WriteLine($"    different message : {value != other}");
+        Console.WriteLine($"    different message : {value != other}  (a different message gives an unequal HashValue)");
     }
 }

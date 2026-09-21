@@ -17,7 +17,11 @@ public static class EstablishmentModes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- The four establishment modes ---");
+        SampleConsole.Scenario(
+            "The four establishment modes",
+            what: "Runs one message through all four modes - base, PSK, auth and auth-PSK - then supplies a wrong PSK, a wrong PSK identifier and a wrong sender key, and reads a message under a mode other than the one that sealed it.",
+            why: "The modes differ in what the recipient learns about the sender: base authenticates nothing, PSK proves possession of a pre-shared key, auth binds the sender's static key, and auth-PSK does both. Whatever a mode adds is folded into the key schedule rather than carried as a header flag, which is what makes it authenticated instead of advisory.",
+            expect: "All four modes round-trip True. Every mismatched input is rejected with CryptographicException, and the modes are not interchangeable: an auth message read as base, and a base message read as PSK, both fail - the mode byte 0x00-0x03 is part of the schedule.");
 
         using var recipient = Parties.CreateRecipient();
         using var sender = Parties.CreateSender();

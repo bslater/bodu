@@ -28,4 +28,6 @@ generated fresh inside every setup by design. The `CustomHash.Test` project runs
 | `Bodu.Security.Cryptography.Samples.CustomHash` (+ `.Test`) | A consumer-authored `AdditiveDigest` subclassing the `BlockHashAlgorithm` base and composing identically to the built-ins; the test project derives the shared `BlockHashAlgorithmTests<AdditiveDigestTests, AdditiveDigest, AdditiveDigest.Variant>` contract base with a `HashAlgorithmSpecification` and known-answer rows | `Bodu.Security.Cryptography` |
 
 Each sample project has its own README with the four-part per-scenario breakdown (Intent /
-What it does / What to expect / APIs demonstrated).
+What it does / What to expect / APIs demonstrated), and every scenario prints the same
+narration on screen — a **What / Why / Expect** banner ahead of its values — so a captured
+transcript can be read without the source beside it.

@@ -26,8 +26,11 @@ public static class KeyAgreementX25519
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- X25519 key agreement (RFC 7748 6.1 vectors) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "X25519 key agreement (RFC 7748 6.1 vectors)",
+            what: "Two parties import the published RFC 7748 6.1 private scalars, exchange public keys, and each derives the shared secret from the other party's public key.",
+            why: "X25519 lets two parties agree a secret over a channel anyone can read, without either of them ever sending it. The private scalars are the RFC's own vectors rather than generated keys, so every value below is reproducible and can be checked against the RFC by eye - a real deployment generates a fresh key pair instead.",
+            expect: "Both public keys and the shared secret print matches RFC: True, and the two independently derived secrets are byte-identical. That agreement, reached without the secret crossing the wire, is the whole point of the exchange.");
 
         // Each party imports its fixed private scalar rather than generating a random key pair.
         using var alice = X25519.Create();
@@ -49,8 +52,8 @@ public static class KeyAgreementX25519
 
         Console.WriteLine($"  Alice derives: {Hex.ToHex(aliceShared)}");
         Console.WriteLine($"  Bob derives  : {Hex.ToHex(bobShared)}");
-        Console.WriteLine($"  secrets agree: {aliceShared.AsSpan().SequenceEqual(bobShared)}");
-        Console.WriteLine($"  matches RFC  : {Hex.ToHex(aliceShared) == ExpectedSharedHex}");
+        Console.WriteLine($"  secrets agree: {aliceShared.AsSpan().SequenceEqual(bobShared)}  (expected True - neither party sent the secret)");
+        Console.WriteLine($"  matches RFC  : {Hex.ToHex(aliceShared) == ExpectedSharedHex}  (expected True - RFC 7748 6.1 publishes this exact secret)");
 
         Console.WriteLine();
     }

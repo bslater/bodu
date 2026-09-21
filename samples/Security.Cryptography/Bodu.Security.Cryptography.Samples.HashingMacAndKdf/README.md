@@ -10,6 +10,11 @@ files.
 dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf
 ```
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — CryptographicHashes
 
 **Intent.** Show that a spread of the library's unkeyed hashes are all ordinary `HashAlgorithm`
@@ -75,7 +80,7 @@ than by the caller prepending a label and hoping it cannot be confused with the 
     "invoice-signing/v1": f95f28b1f1950d057796ca6c1d212f17963e83a46a29c6c2ce002a175f6a53cd
     "audit-log/v1"      : 1e96b3ade5e5dc9e130eafb579f2f53223267c23006e7d1a03179cee60193339
     differ             : True (same message, different domain)
-    reproducible       : True
+    reproducible       : True (the same domain string hashes the same way twice)
 
   Variant-selected behaviour:
     Tiger (Tiger)   : 6d12a41e72e644f017b6f0e2f7b44c6285f06dd5d2c5b075
@@ -209,7 +214,7 @@ message are not `==` to each other, while `HashValue` compares structurally:
     TryParseHex valid : True -> matches: True
     TryParseHex odd   : False (odd length rejected without throwing)
     TryParseHex junk  : False (non-hex rejected without throwing)
-    different message : True
+    different message : True  (a different message gives an unequal HashValue)
 ```
 
 `TryParseHex` rejects odd-length and non-hex input by returning `false` rather than throwing, so it is safe on
@@ -327,6 +332,7 @@ with an injected timestamp.
 ```text
 Bodu.Security.Cryptography.Samples.HashingMacAndKdf/
   Program.cs                       # runs the scenarios in order
+  SampleConsole.cs                 # the What / Why / Expect banner every scenario prints through
   Hex.cs                           # shared lowercase-hex helper
   Scenarios/CryptographicHashes.cs
   Scenarios/MoreHashFamilies.cs

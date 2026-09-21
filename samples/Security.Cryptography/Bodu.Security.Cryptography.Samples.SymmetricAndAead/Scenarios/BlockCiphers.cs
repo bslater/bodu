@@ -20,8 +20,11 @@ public static class BlockCiphers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Block ciphers: single-block ECB round trip ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "Block ciphers: single-block ECB round trip",
+            what: "Encrypts exactly one block with each block cipher under a fixed key and decrypts it back, printing the key and block widths beside the ciphertext.",
+            why: "A block cipher is a keyed permutation over one fixed-size block and nothing more - the mode is what turns it into something that can encrypt a message. ECB over a single block is used here precisely because it adds nothing, so the line shows the bare permutation and its inverse. Beyond one block ECB leaks: identical plaintext blocks encrypt to identical ciphertext, which the CipherModesAndPadding sample demonstrates.",
+            expect: "Every cipher round-trips True and each ciphertext is exactly as wide as its block - a block cipher neither grows nor shrinks its input. The widths differ by family: Threefish's block equals its key, while Skipjack still carries the 10-byte key and 8-byte block of its era.");
 
         // Each row is (label, factory, key length, block length) in bytes.
         RoundTrip("Threefish-256", () => new Threefish256(), keyBytes: 32, blockBytes: 32);

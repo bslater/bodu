@@ -29,8 +29,11 @@ public static class AeadAscon
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AEAD: Ascon-AEAD128 (fixed key + nonce + AD) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "AEAD: Ascon-AEAD128 (fixed key + nonce + AD)",
+            what: "Seals a short plaintext with Ascon-AEAD128 under a fixed key, nonce and associated data, opens it again, then flips one ciphertext byte and tries to open that.",
+            why: "AEAD is encryption and authentication in one step, and the tag covers the associated data as well as the ciphertext - so a routing header can be authenticated without being encrypted. Ascon is the NIST lightweight-cryptography winner, aimed at constrained devices where AES-GCM is expensive.",
+            expect: "The sealed output is the plaintext plus a 16-byte tag, the intact ciphertext opens back to the original text (matches: True), and the flipped byte is rejected (rejected = True) instead of decrypting to garbage. That refusal, rather than garbage, is the whole difference between AEAD and the raw modes above.");
 
         // Encrypt: the output is ciphertext (same length as plaintext) followed by the 16-byte tag.
         var sealedData = new byte[Plaintext.Length + 16];

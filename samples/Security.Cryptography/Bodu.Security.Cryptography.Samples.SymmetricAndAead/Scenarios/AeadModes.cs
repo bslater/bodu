@@ -26,8 +26,11 @@ public static class AeadModes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AEAD modes over AES (fixed key + nonce + AD) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "AEAD modes over AES (fixed key + nonce + AD)",
+            what: "Runs the same seal, open and tamper cycle over AES in three AEAD modes - GCM, EAX and OCB - at one fixed key, nonce and associated data.",
+            why: "These are three ways to build one guarantee on top of a block cipher, and they differ in shape rather than in what they promise: GCM is the ubiquitous standard, EAX a conservative two-pass construction, OCB a single-pass design that is now freely licensed. The choice is normally made on interoperability and speed.",
+            expect: "Each mode prints round-trips=True and tamper-rejected=True, and each sealed output is the plaintext plus a 16-byte tag. The three ciphertexts differ from each other despite sharing a key and nonce, because the constructions differ - that is expected, not a mismatch.");
 
         // Nonce sizing differs per mode: this GCM implementation — like the BCL's AesGcm and every TLS/IPsec
         // deployment — accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte

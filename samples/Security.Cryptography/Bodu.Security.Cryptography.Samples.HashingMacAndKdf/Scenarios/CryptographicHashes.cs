@@ -25,7 +25,11 @@ public static class CryptographicHashes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Cryptographic hashes over a fixed message ---");
+        SampleConsole.Scenario(
+            "Cryptographic hashes over a fixed message",
+            what: "Hashes one fixed message with seven hash families - BLAKE2b-512, BLAKE3-256, Tiger/192, the three Skein sizes and Whirlpool - printing each digest beside its configured size.",
+            why: "Each is a drop-in HashAlgorithm, so the same message flows through all of them and only the family and the digest width change. The message is the classic pangram used by most published test vectors, so every value here can be checked against the algorithm's own documentation rather than taken on trust.",
+            expect: "Seven digests whose hex width follows the bit size in the label: 512 bits is 64 bytes, so 128 hex characters. Nothing is random - re-running prints exactly the same seven lines.");
         Console.WriteLine($"message: \"The quick brown fox jumps over the lazy dog\"");
         Console.WriteLine();
 

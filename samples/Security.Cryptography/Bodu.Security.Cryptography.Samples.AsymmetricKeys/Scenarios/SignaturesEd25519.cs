@@ -26,8 +26,11 @@ public static class SignaturesEd25519
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Ed25519 sign / verify (fixed seed) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "Ed25519 sign / verify (fixed seed)",
+            what: "Imports a fixed 32-byte seed, signs a message, and verifies the signature twice: against the genuine message, then against the same message with one byte flipped.",
+            why: "The verifier holds only the 32-byte public key - the seed never leaves the signer. Ed25519 signing is deterministic (RFC 8032), so one seed and one message always yield the same 64-byte signature, which is why the value below is fixed rather than different on every run.",
+            expect: "The genuine message verifies True and the tampered one False. Nothing else changes between the two calls, so the False is the signature refusing to cover a message it did not sign.");
 
         // The signer imports the fixed seed and produces the 64-byte signature.
         using var signer = Ed25519.Create();
@@ -50,8 +53,8 @@ public static class SignaturesEd25519
         tampered[0] ^= 0x01;
         var forged = verifier.VerifyData(tampered, signature);
 
-        Console.WriteLine($"  verify (genuine message)  = {genuine}");
-        Console.WriteLine($"  verify (tampered message) = {forged}");
+        Console.WriteLine($"  verify (genuine message)  = {genuine}   (expected True)");
+        Console.WriteLine($"  verify (tampered message) = {forged}  (expected False - one flipped byte is enough)");
 
         Console.WriteLine();
     }

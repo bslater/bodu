@@ -28,7 +28,11 @@ public static class BlockedInputs
     /// <returns>A task that completes when the scenario has finished.</returns>
     public static async Task RunAsync()
     {
-        Console.WriteLine("--- Blocked and streaming inputs ---");
+        SampleConsole.Scenario(
+            "Blocked and streaming inputs",
+            what: "Treats one 3372-byte payload as four 1024-byte leaves (the last one short), computes its root in memory, from a Stream, asynchronously, and from pre-computed leaf hashes, then answers a possession challenge for block 2.",
+            why: "This is how a large object is committed without holding it in memory or padding it: the block arithmetic is static on MerkleTree, so a caller slicing the input computes exactly the offsets the library does. VerifyBlockInclusion is the fail-closed possession check - it takes the bound root, so a prover cannot restate the object's size.",
+            expect: "All four routes print the same root 9e8b5c08..., and the final block is 300 bytes rather than padded to 1024. The honest challenge answers True; a single flipped byte in the block, and an understated payload length, both print False.");
 
         var tree = new MerkleTree(SHA256.Create);
         var payload = SampleLog.Payload(PayloadLength);
@@ -90,7 +94,8 @@ public static class BlockedInputs
         Console.WriteLine($"  bound root    : {Hex.ToShortHex(boundRoot)}");
         Console.WriteLine($"  challenge     : block {Challenge} ({length} bytes at offset {offset}), path of {path.Count} steps");
         Console.WriteLine(
-            $"  answer        : {tree.VerifyBlockInclusion(boundRoot, PayloadLength, BlockSize, Challenge, payload.AsSpan(offset, length), path)}");
+            $"  answer        : {tree.VerifyBlockInclusion(boundRoot, PayloadLength, BlockSize, Challenge, payload.AsSpan(offset, length), path)}" +
+            "  (expected True - the prover still holds block 2)");
 
         // The path alone is not the answer: a holder that kept the proof but discarded the block cannot pass, because
         // the block is re-hashed as part of verification.
@@ -101,7 +106,8 @@ public static class BlockedInputs
 
         // And a holder who understates the length gets a different derived tree - the ambiguity stays closed.
         Console.WriteLine(
-            $"  wrong length  : {tree.VerifyBlockInclusion(boundRoot, PayloadLength - BlockSize, BlockSize, Challenge, payload.AsSpan(offset, length), path)}");
+            $"  wrong length  : {tree.VerifyBlockInclusion(boundRoot, PayloadLength - BlockSize, BlockSize, Challenge, payload.AsSpan(offset, length), path)}" +
+            "  (expected False - the bound root names a 3372-byte object and no other)");
 
         Console.WriteLine();
     }

@@ -26,8 +26,11 @@ public static class KeyDerivation
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Key derivation (fixed salt) ---");
-        Console.WriteLine();
+        SampleConsole.Scenario(
+            "Key derivation (fixed salt)",
+            what: "Derives a 32-byte key from the same input three ways - HKDF-SHA256, Argon2id and scrypt - at fixed salt and fixed cost parameters.",
+            why: "The three solve different problems. HKDF spreads an already-high-entropy secret into one or more keys and is deliberately fast; Argon2id and scrypt are deliberately slow and memory-hard, because their input is a password an attacker can guess. Picking the fast one for a password is the classic mistake this pairing is meant to prevent.",
+            expect: "Three different 32-byte keys, identical on every run because the salt and parameters are fixed. The cost parameters here (64 KiB, t=2; N=1024, r=8) are kept small so the sample finishes quickly - production values are much higher and should be tuned to the hardware.");
 
         // HKDF: a two-step extract-then-expand KDF over a chosen HMAC hash. Cheap and deterministic.
         var hkdf = Hkdf.DeriveKey(HashAlgorithmName.SHA256, Password, outputLength: 32, salt: Salt, info: Info);
