@@ -30,13 +30,27 @@ little-endian convention (the published CRC-32 check `0xCBF43926` appears as byt
 **What to expect.**
 
 ```text
-catalogue: 112 standards, CRC-3 to CRC-64
+--- The CRC catalogue - one engine, every standard ---
+  What   : Reports the catalogue size, then computes the published check value for five standards across four
+           widths, showing each one's polynomial and reflection settings, and resolves a standard by name.
+  Why    : "CRC-32" names a family, not an algorithm. The width, polynomial, initial value, reflection and final XOR
+           all vary between standards, and two implementations that disagree on any of them produce different
+           digests for the same bytes - which is why interoperating with a device or format means matching its exact
+           standard rather than reaching for whatever CRC is nearest. One parameterised engine plus a catalogue
+           makes that a lookup instead of a reimplementation.
+  Expect : Each standard reproduces its published check value over the canonical "123456789" input, which is how a
+           CRC implementation is conventionally verified. Note the digest bytes are little-endian, so
+           CRC-32/ISO-HDLC prints 2639F4CB for the published 0xCBF43926.
+
+  catalogue: 112 standards, CRC-3 to CRC-64  (every entry is a parameter row, not a code path - supporting a new protocol adds no implementation)
   CRC-8/SMBUS        width  8, poly 0x7, reflect --/--- -> F4
   CRC-16/MODBUS      width 16, poly 0x8005, reflect in/out -> 374B
+  CRC-16/XMODEM      width 16, poly 0x1021, reflect --/--- -> C331
   CRC-32/ISO-HDLC    width 32, poly 0x4C11DB7, reflect in/out -> 2639F4CB
   CRC-64/XZ          width 64, poly 0x42F0E1EBA9EA3693, reflect in/out -> FA3919DFBBC95D99
-(digest bytes are little-endian: 26 39 F4 CB above == the published check 0xCBF43926)
-FromName("CRC-32/ISO-HDLC") == CRC32_ISOHDLC -> True
+  (every digest above is that standard's published check value - reproducing them is how a CRC implementation is conventionally verified)
+  (digest bytes are little-endian: 26 39 F4 CB above == the published check 0xCBF43926)
+  FromName("CRC-32/ISO-HDLC") == CRC32_ISOHDLC -> True  (expected True - a spec naming its CRC in prose resolves to the same value as the named constant)
 ```
 
 **APIs demonstrated.** `Crc(CrcStandard)`, `Crc.ComputeHash`, the `CrcStandard` static
@@ -57,12 +71,25 @@ flips one bit of the input and shows the CRC digest change.
 **What to expect.**
 
 ```text
-input: 199 bytes
+--- Checksum families over one input ---
+  What   : Runs CRC-32, Adler-32, Fletcher-32 and Fletcher-64 over the same file, then flips a single bit and
+           recomputes.
+  Why    : These are error-detection codes, not hashes - they exist to catch accidental corruption on a wire or a
+           disk, and they are cheap enough to run on every frame. None of them is a security primitive: an attacker
+           can construct a colliding message trivially, so a checksum tells you a message arrived intact, never that
+           it came from who you think. Adler and Fletcher trade detection strength for speed against CRC, which is
+           why all three still ship in real protocols.
+  Expect : Four different digests over identical bytes, because each algorithm is a different function rather than a
+           different encoding of one answer. A single flipped bit changes the CRC completely - that avalanche is
+           exactly the property that makes corruption detectable.
+
+  input: 199 bytes  (one committed file, so every digest below is reproducible on any machine)
   CRC-32/ISO-HDLC: 2CE47BF8
   Adler-32       : E82B4775
   Fletcher-32    : E5EA4774
   Fletcher-64    : 001BE5CF00004774
-one flipped bit  : 2CE47BF8 -> EEE51E0D (detected: True)
+  (identical bytes in, four unrelated digests out - these are different functions, not different encodings of one answer)
+  one flipped bit  : 2CE47BF8 -> EEE51E0D (detected: True)  (expected True, and note the digest changes wholesale rather than in one bit - that avalanche is what makes small corruptions loud)
 ```
 
 **APIs demonstrated.** `Adler32`, `Fletcher32`, `Fletcher64`, the shared
@@ -85,10 +112,22 @@ the whole log.
 **What to expect.**
 
 ```text
-one-shot        : 2CE47BF8
-chunked Append  : 2CE47BF8
-HashingStream   : 2CE47BF8
-resumable       : stored+day2 7F945ED5 == full replay 7F945ED5 -> True
+--- Streaming and resumable hashing ---
+  What   : Computes one digest four ways: a one-shot call, chunked Append calls, through a HashingStream, and by
+           saving state after day one and resuming on day two.
+  Why    : Feeding a hash in pieces has to give the same answer as feeding it whole, or the API is unusable for
+           anything that does not fit in memory. Resumability goes further and is rarer: saving the internal state
+           lets a digest span a process restart, so an append-only log can be checksummed incrementally forever
+           instead of re-reading it from the beginning each night. HashingStream is the same capability shaped as a
+           pass-through, so bytes can be hashed while they are being copied rather than in a separate pass.
+  Expect : The first three routes produce byte-identical digests. The resumed digest equals a full replay over both
+           days' data, which is the property that makes stored state trustworthy - not merely that it produced some
+           stable value.
+
+  one-shot        : 2CE47BF8  (the reference digest the next three routes must match)
+  chunked Append  : 2CE47BF8  (expected to equal the one-shot digest - the split points are arbitrary and must not be observable)
+  HashingStream   : 2CE47BF8  (same digest again - the bytes were hashed while being copied, not in a second pass over the file)
+  resumable       : stored+day2 7F945ED5 == full replay 7F945ED5 -> True  (expected True - day one's bytes were never re-read, so the stored digest alone carried the history forward)
 ```
 
 **APIs demonstrated.** Chunked `Append`/`GetHashAndReset`,
@@ -111,13 +150,24 @@ digest as hex. FNV lives in `Bodu.IO.Hashing`; the Adler variants in `Bodu.IO.Ha
 **What to expect.**
 
 ```text
-input: 43 bytes
+--- FNV-1a and Adler width variants over one input ---
+  What   : Hashes the same input with FNV-1a at 32 and 64 bits, and with Adler-32, Adler-32C and Adler-64.
+  Why    : Width is a collision-probability decision. By the birthday bound a 32-bit digest reaches a 50% chance of
+           some collision at roughly 77,000 items - fine for a hash-table bucket, not fine as a content identifier
+           for a large corpus. Moving to 64 bits pushes that to billions. Adler-32C is the worked example of why the
+           variant matters: same width, different parameters, and the digests differ - so two systems must agree on
+           the exact variant, not just the family and size.
+  Expect : Five different digests from one input. Adler-32 and Adler-32C differ despite sharing a width, and the
+           64-bit forms visibly carry the 32-bit halves in their structure.
+
+  input: 43 bytes  (a fixed in-code string, so the digests below are stable across runs and machines)
   FNV-1a/32 : 048FFF90
   FNV-1a/64 : F3F9B7F5E7E47110
   Adler-32  : 5BDC0FDA
   Adler-32C : 5BCD0FDA
   Adler-64  : 00015BCD00000FDA
-wider digests spread the same input over more state - fewer accidental collisions.
+  (Adler-32 and Adler-32C share a width yet disagree - the variant is part of the contract, not just the family and size)
+  wider digests spread the same input over more state - fewer accidental collisions.
 ```
 
 The two Adler-32 forms differ only in their combining modulus — `Adler32` uses the RFC 1950
@@ -144,10 +194,23 @@ coordination.
 **What to expect.**
 
 ```text
-  FNV-1a/32   : alpha->1 bravo->2 charlie->0 delta->3 ...
-  Murmur3/32  : alpha->1 bravo->0 charlie->3 delta->0 ...
-  CityHash/32 : alpha->0 bravo->3 charlie->3 delta->0 ...
-same keys, same shard, every run - deterministic routing without coordination.
+--- Non-cryptographic hashes - bucket assignment (NOT security) ---
+  What   : Routes the same eight keys to four buckets through FNV-1a, Murmur3 and CityHash, printing each key's
+           destination.
+  Why    : This is what a non-cryptographic hash is for: mapping keys to shards or buckets, fast, with a spread that
+           avoids hot spots. Determinism is the load-bearing property - every node computes the same destination for
+           a key with no coordination, which is what makes sharding work at all. What these must never do is
+           authenticate. They are not one-way and not collision-resistant, so using one for a token, a signature or
+           a password is a vulnerability rather than a shortcut.
+  Expect : The three algorithms disagree on where a given key lands - which is fine and expected, since a system
+           only needs one of them, applied consistently. Each is stable across runs, so the same key reaches the
+           same shard every time.
+
+  FNV-1a/32   : alpha->1 bravo->2 charlie->0 delta->3 echo->0 foxtrot->2 golf->2 hotel->1
+  Murmur3/32  : alpha->1 bravo->0 charlie->3 delta->0 echo->2 foxtrot->3 golf->0 hotel->1
+  CityHash/32 : alpha->0 bravo->3 charlie->3 delta->0 echo->1 foxtrot->0 golf->1 hotel->3
+  (the three rows disagree on where a key lands, which is fine - a system needs one function applied consistently, not the same one everywhere)
+  same keys, same shard, every run - deterministic routing without coordination.
 ```
 
 **APIs demonstrated.** `Fnv1a32`, `MurmurHash3_32`, `CityHash32`, digest-to-`uint` bucket
@@ -158,6 +221,7 @@ mapping.
 ```text
 Bodu.IO.Hashing.Samples.ChecksumTour/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect scenario banner
   Data/pangrams.txt                 # committed 199-byte input
   Scenarios/CrcCatalogue.cs
   Scenarios/ChecksumFamilies.cs
