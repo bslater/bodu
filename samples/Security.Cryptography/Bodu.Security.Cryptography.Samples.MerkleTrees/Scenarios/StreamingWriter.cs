@@ -26,7 +26,11 @@ public static class StreamingWriter
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Write-time accumulation (MerkleBlockAccumulator) ---");
+        SampleConsole.Scenario(
+            "Write-time accumulation (MerkleBlockAccumulator)",
+            what: "Feeds one 1371-byte payload through the accumulator under six different Append chunk patterns - one call, one byte at a time, exact blocks, 100-byte, 1000-byte and irregular chunks - then shows Finish, Reset, the bound root, and a path issued from the retained leaf hashes.",
+            why: "A writer already streaming bytes to storage gets the commitment for free, with no second pass over the input. That only holds if the root is independent of how the bytes were chopped up, which is what the six patterns prove.",
+            expect: "All six patterns print the same root b03aee96... with Length=1371 and LeafCount=6, matching ComputeRootOfBlocks. Finish is idempotent, Append after Finish throws InvalidOperationException by design, Reset returns the accumulator to empty, and FinishBound equals BindRoot(root, 1371).");
 
         var tree = new MerkleTree(SHA256.Create);
         var payload = SampleLog.Payload(PayloadLength);

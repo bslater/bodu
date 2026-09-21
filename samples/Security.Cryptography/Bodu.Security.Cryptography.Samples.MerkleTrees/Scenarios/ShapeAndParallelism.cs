@@ -20,7 +20,11 @@ public static class ShapeAndParallelism
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Fan-out and parallelism ---");
+        SampleConsole.Scenario(
+            "Fan-out and parallelism",
+            what: "Computes the same two commitments at four degrees of parallelism, then computes the entry root at fan-outs 2, 3, 4 and 8, and asks a wide tree for a proof.",
+            why: "The two constructor knobs differ in kind. MaxDegreeOfParallelism is an optimisation that must never change the answer - leaves hash in parallel while the fold stays ordered on the caller thread. FanOut changes the tree's shape, so it changes the root, and a fan-out above two is no longer RFC 6962's tree.",
+            expect: "Every degree of parallelism agrees on both roots - a differing row would be a defect. Each fan-out prints a different root, and that is correct, not a mismatch: they are different trees. Proof members on a wide tree throw NotSupportedException, because the proofs are defined for the binary tree only.");
 
         var entries = SampleLog.AsEntries();
         var payload = SampleLog.Payload(64 * 1024);

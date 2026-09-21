@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+
 using Bodu.Security.Cryptography.Samples.MerkleTrees.Scenarios;
 
 namespace Bodu.Security.Cryptography.Samples.MerkleTrees;
@@ -22,6 +24,13 @@ public static class Program
     /// <returns>A task that completes when every scenario has finished.</returns>
     public static async Task Main()
     {
+        // The diagnostics trace renders box-drawing and arrow glyphs. A Windows console left on a legacy code page
+        // maps the '\u2190' arrow onto 0x1B (ESC), and the terminal then swallows it together with the text that
+        // follows as an escape sequence - so ask for UTF-8 before anything is written. A redirected stream may refuse
+        // the change, which is harmless: only the glyphs suffer, never the values.
+        try { Console.OutputEncoding = Encoding.UTF8; }
+        catch (IOException) { }
+
         Console.WriteLine("Bodu.Security.Cryptography.Samples.MerkleTrees");
         Console.WriteLine("=============================================");
         Console.WriteLine();
