@@ -13,6 +13,11 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// many values), <see cref="Multiset{T}" /> (elements with multiplicities), and the two insertion-ordered
 /// sets — <see cref="OrderedSet{T}" /> and the index-addressable <see cref="IndexedSet{T}" />.
 /// </summary>
+/// <remarks>
+/// Each of these replaces a hand-rolled shape that is easy to write badly: a <c>Dictionary&lt;K, List&lt;V&gt;&gt;</c>
+/// whose empty lists are never cleaned up, a <c>Dictionary&lt;T, int&gt;</c> used as a counter with the
+/// decrement-to-zero case forgotten, or a <c>HashSet</c> beside a <c>List</c> kept in sync by hand.
+/// </remarks>
 public static class MultiMapsAndSets
 {
     /// <summary>
@@ -20,7 +25,20 @@ public static class MultiMapsAndSets
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- MultiValueDictionary / Multiset / OrderedSet / IndexedSet ---");
+        SampleConsole.Scenario(
+            "MultiValueDictionary / Multiset / OrderedSet / IndexedSet",
+            what: "Files values under keys with both a List and a Set backing, counts element frequencies through " +
+                  "a multiset, then shows insertion-ordered and index-addressable sets.",
+            why: "Every one of these is a shape people otherwise build by hand out of a Dictionary and get subtly " +
+                  "wrong. The multimap's backing choice is a real decision rather than a preference: List keeps " +
+                  "duplicates and appends in O(1), Set deduplicates per key at the cost of a scan on every add. " +
+                  "The ordered sets exist because HashSet deliberately has no order, so pairing one with a List to " +
+                  "recover insertion order means keeping two structures in step - which is exactly the code that " +
+                  "drifts.",
+            expect: "With the List backing, apple appears twice under fruit; with the Set backing the repeat is " +
+                    "dropped and apple keeps the position of its first occurrence rather than moving to the end. " +
+                    "The ordered set reports insertion order (gamma, alpha, beta), not sorted order, and answers " +
+                    "index queries against that same order.");
 
         RunMultiValueDictionary();
         RunMultiset();

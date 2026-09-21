@@ -25,7 +25,19 @@ public static class ExpiringCache
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- EvictingDictionary<TKey, TValue>: time-based expiration ---");
+        SampleConsole.Scenario(
+            "EvictingDictionary<TKey,TValue> - time-based expiration",
+            what: "Runs the same cache under an absolute time-to-live, a sliding one, and a per-entry override, " +
+                  "advancing a manual clock rather than sleeping.",
+            why: "Expiration is a second, independent dimension from the capacity policy: capacity answers \"which " +
+                 "key goes when I am full\", time-to-live answers \"which key is too stale to trust\". The choice " +
+                 "between absolute and sliding is the whole decision. Absolute caps how stale a value can ever be, " +
+                 "which is what a cached credential or price needs. Sliding keeps a value alive as long as it is " +
+                 "being used, which is what a session needs - and means a busy entry may never expire at all.",
+            expect: "Under absolute, a read at +8m hits and the same key misses at +12m however often it was read. " +
+                    "Under sliding, reads at +8m, +16m and +24m all hit because each one restarts the countdown, " +
+                    "and only 11 idle minutes kill it. Expired entries linger in Count until something touches " +
+                    "them - enumeration skips them, and RemoveExpired is what actually reclaims the space.");
 
         RunAbsolute();
         RunSliding();

@@ -14,6 +14,12 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees.Scenarios;
 /// <see cref="IntervalTree{TKey, TValue}" /> indexes arbitrary overlapping intervals for point-stabbing and
 /// overlap queries.
 /// </summary>
+/// <remarks>
+/// The distinction between the two families is the one to get right. A range set or dictionary <em>coalesces</em>:
+/// it assumes ranges do not meaningfully overlap and merges them, so it models a partition such as a grade band or
+/// an IP allocation. An interval tree keeps every interval distinct and expects overlap, so it models bookings,
+/// reservations and spans that genuinely coexist. Using the first where you needed the second silently merges data.
+/// </remarks>
 public static class RangesAndIntervalTree
 {
     /// <summary>
@@ -21,7 +27,20 @@ public static class RangesAndIntervalTree
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- RangeSet / RangeDictionary / IntervalTree ---");
+        SampleConsole.Scenario(
+            "RangeSet / RangeDictionary / IntervalTree",
+            what: "Adds touching and overlapping ranges to a set and watches them coalesce, maps score bands to " +
+                  "grades through a range dictionary, then indexes a day of overlapping meetings and asks what is " +
+                  "active at an instant and what overlaps a window.",
+            why: "Range keys turn a chain of if-else boundary comparisons into a lookup, and boundary comparisons " +
+                 "written by hand are where off-by-one bugs live. The critical choice is coalescing versus not: a " +
+                 "range set merges adjacent and overlapping ranges, which is right for a partition like a grade " +
+                 "band and wrong for anything that legitimately overlaps. An interval tree keeps every interval " +
+                 "distinct and answers point-stabbing and window queries in log time rather than by scanning.",
+            expect: "[0,10) and [10,20) coalesce into [0,20) because half-open ranges that touch have no gap " +
+                    "between them, while [30,40) stays separate. 15 is inside the merged range and 25 falls in the " +
+                    "gap. The meeting queries return several overlapping entries at once, which is exactly what " +
+                    "the coalescing containers could not represent.");
 
         RunRangeSet();
         RunRangeDictionary();
@@ -43,10 +62,10 @@ public static class RangesAndIntervalTree
 
         // Iterate by index to print the coalesced ranges in ascending order.
         var ranges = Enumerable.Range(0, set.Count).Select(i => $"[{set[i].StartInclusive},{set[i].EndExclusive})");
-        Console.WriteLine($"  coalesced ranges : {string.Join(", ", ranges)}");
+        Console.WriteLine($"  coalesced ranges : {string.Join(", ", ranges)}  (expected [0,20) and [30,40) - the touching pair merged, since half-open ranges that meet leave no gap; [30,40) is disjoint and survives)");
 
         // 15 falls inside the coalesced [0,20); 25 sits in the uncovered gap before [30,40).
-        Console.WriteLine($"  contains 15 / 25 : {set.Contains(15)} / {set.Contains(25)}");
+        Console.WriteLine($"  contains 15 / 25 : {set.Contains(15)} / {set.Contains(25)}  (expected True / False - 15 sits inside the merged range, 25 in the gap between them)");
     }
 
     /// <summary>
@@ -61,12 +80,12 @@ public static class RangesAndIntervalTree
         grades.Add(65, 85, "Credit");
         grades.Add(85, 101, "Distinction");
 
-        Console.WriteLine($"  score 60 -> {grades[60]}");
-        Console.WriteLine($"  score 90 -> {grades[90]}");
+        Console.WriteLine($"  score 60 -> {grades[60]}  (a band lookup, not a chain of >= comparisons - the boundary lives in the data)");
+        Console.WriteLine($"  score 90 -> {grades[90]}  (the top band; note each band is half-open, so 90 belongs to this one and not the one below)");
 
         // TryGetValue is the non-throwing lookup for keys that may not be covered by any range; the
         // indexer above would throw for an uncovered key.
-        Console.WriteLine($"  score 47 -> {(grades.TryGetValue(47, out var g) ? g : "(none)")}");
+        Console.WriteLine($"  score 47 -> {(grades.TryGetValue(47, out var g) ? g : "(none)")}  (TryGetValue is the safe form when a score might fall outside every band)");
     }
 
     /// <summary>
@@ -83,10 +102,10 @@ public static class RangesAndIntervalTree
 
         // QueryPoint(10) returns every interval whose span contains the point 10 - order is unspecified, so sort.
         var atTen = meetings.QueryPoint(10).Select(m => m.Value).OrderBy(v => v, StringComparer.Ordinal);
-        Console.WriteLine($"  active at 10:00       : {string.Join(", ", atTen)}");
+        Console.WriteLine($"  active at 10:00       : {string.Join(", ", atTen)}  (point stabbing - two meetings overlap this instant, which a coalescing range set would have merged into one)");
 
         // QueryOverlaps(12, 13) returns intervals overlapping the window [12,13].
         var window = meetings.QueryOverlaps(12, 13).Select(m => m.Value).OrderBy(v => v, StringComparer.Ordinal);
-        Console.WriteLine($"  overlapping [12..13]  : {string.Join(", ", window)}");
+        Console.WriteLine($"  overlapping [12..13]  : {string.Join(", ", window)}  (a window query returns every interval touching it, however they overlap each other)");
     }
 }
