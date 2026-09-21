@@ -22,7 +22,18 @@ public static class NonCryptoHashes
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Non-cryptographic hashes: bucket assignment (NOT security) ---");
+        SampleConsole.Scenario(
+            "Non-cryptographic hashes - bucket assignment (NOT security)",
+            what: "Routes the same eight keys to four buckets through FNV-1a, Murmur3 and CityHash, printing each " +
+                  "key's destination.",
+            why: "This is what a non-cryptographic hash is for: mapping keys to shards or buckets, fast, with a " +
+                 "spread that avoids hot spots. Determinism is the load-bearing property - every node computes " +
+                 "the same destination for a key with no coordination, which is what makes sharding work at all. " +
+                 "What these must never do is authenticate. They are not one-way and not collision-resistant, so " +
+                 "using one for a token, a signature or a password is a vulnerability rather than a shortcut.",
+            expect: "The three algorithms disagree on where a given key lands - which is fine and expected, since " +
+                    "a system only needs one of them, applied consistently. Each is stable across runs, so the " +
+                    "same key reaches the same shard every time.");
 
         string[] keys = ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel"];
         const int shards = 4;
@@ -48,7 +59,9 @@ public static class NonCryptoHashes
             Console.WriteLine($"  {name}: {string.Join(' ', assignment)}");
         }
 
-        Console.WriteLine("same keys, same shard, every run - deterministic routing without coordination.");
+        Console.WriteLine("  (the three rows disagree on where a key lands, which is fine - a system needs one function applied consistently, not the same one everywhere)");
+
+        Console.WriteLine("  same keys, same shard, every run - deterministic routing without coordination.");
 
         Console.WriteLine();
     }
