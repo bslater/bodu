@@ -20,6 +20,8 @@ public partial class CronExpressionTests
     [DataRow("*/30 * * * *", "0,30 * * * *", DisplayName = "a step equals the list it expands to")]
     [DataRow("@hourly", "0 * * * *", DisplayName = "a macro equals its long form")]
     [DataRow("0 0 * * 0", "0 0 * * 7", DisplayName = "Sunday is both 0 and 7")]
+    [DataRow("* * * * *", "* * 1-31 * *", DisplayName = "one restricted day field alone does not change the combination")]
+    [DataRow("* * * * *", "* * * * 0-6", DisplayName = "a restricted weekday alone does not change the combination")]
     public void Equals_WhenSchedulesMatch_ShouldReturnTrueAndHashAlike(string left, string right)
     {
         CronExpression first = CronExpression.Parse(left);

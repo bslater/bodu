@@ -98,8 +98,8 @@ DateTime? starStep = CronExpression.Parse("0 0 */2 * MON").GetNextOccurrence(now
 DateTime? rangeStep = CronExpression.Parse("0 0 1-31/2 * MON").GetNextOccurrence(now); // 2026-03-11 Wed
 ```
 
-> [!WARNING]
-> `ToString()` renders every field as `*` or an explicit numeric list, so `0 0 */2 * MON` renders as `0 0 1,3,5,…,31 * 1` — and that text re-parses with a *restricted* day-of-month, which flips the combination from intersection to union (23 March above becomes 11 March). `Equals` compares field sets only, so the two expressions still compare equal. Persist the **original** text for a `*`-leading day step that is combined with a restricted day-of-week (or the reverse); the canonical form is safe for every other expression.
+> [!NOTE]
+> Because the combination is chosen by the leading character rather than by the days a field selects, it is part of the expression's meaning. `ToString()` preserves it — `0 0 */2 * MON` renders as `0 0 */2 * 1`, keeping the star — so the canonical text always re-parses to the same schedule, and `Equals` treats the intersection and union readings as different values. Where the plain rendering cannot change the combination, it is used unchanged: `* * */10 * *` still renders as `* * 1,11,21,31 * *`, because the day-of-week `*` keeps that expression on the intersection branch either way.
 
 ## The `@` macros
 
@@ -181,7 +181,7 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 
 ## Canonical text and equality
 
-`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list — names, ranges, and steps are expanded, and `7` becomes `0`. `Equals` compares the six field sets and the layout, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5`. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>. See the warning under [Field syntax](#field-syntax) for the one case where the canonical text is not a faithful round-trip.
+`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list — names, ranges, and steps are expanded, and `7` becomes `0`. The two day fields are the exception: where the plain rendering would flip the union / intersection combination, the field keeps a spelling that preserves it (`*/2` stays `*/2`, a restricted but complete field stays `1-31`), so the canonical text always re-parses to an equal expression. `Equals` compares the six field sets, the layout, and that combination, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5` while `0 0 */2 * MON` does **not** equal `0 0 1-31/2 * MON` — the two select instants two weeks apart. A single restricted day field is not observable on its own, so `* * * * *` and `* * 1-31 * *` remain equal. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>.
 
 ## API summary
 

@@ -263,12 +263,25 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <param name="other">The expression to compare with this instance.</param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="other" /> is non-null and every field set is equal; otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when <paramref name="other" /> is non-null and every field set, together with the
+    /// day-field combination mode, is equal; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The day fields' restricted-ness participates through <see cref="DaysCombineByUnion" />, because that is what
+    /// selects the union or intersection branch in <see cref="DayMatches" />: <c>0 0 */2 * MON</c> and
+    /// <c>0 0 1-31/2 * MON</c> carry identical masks yet select instants two weeks apart, so they are not equal values.
+    /// </para>
+    /// <para>
+    /// Only the combination mode is compared, not each flag, because a single restricted day field is not observable:
+    /// <c>* * 1-31 * *</c> restricts the day-of-month while <c>* * * * *</c> does not, yet both fall to the
+    /// intersection branch and select every day, so the two remain equal.
+    /// </para>
+    /// </remarks>
     public bool Equals(CronExpression? other) =>
         other is not null
         && Format == other.Format
+        && DaysCombineByUnion == other.DaysCombineByUnion
         && _seconds.AsSpan().SequenceEqual(other._seconds)
         && _minutes.AsSpan().SequenceEqual(other._minutes)
         && _hours.AsSpan().SequenceEqual(other._hours)
@@ -292,14 +305,16 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(CronExpression)" />.</returns>
     /// <remarks>
-    /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares.
-    /// Mixing only each mask's cardinality would satisfy the equality contract but collapse the common case — a
-    /// schedule selecting one value per field, such as <c>0 2 * * *</c> — onto a single bucket.
+    /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares,
+    /// as does the day-field combination mode. Mixing only each mask's cardinality would satisfy the
+    /// equality contract but collapse the common case — a schedule selecting one value per field, such as
+    /// <c>0 2 * * *</c> — onto a single bucket.
     /// </remarks>
     public override int GetHashCode()
     {
         var hash = default(HashCode);
         hash.Add(Format);
+        hash.Add(DaysCombineByUnion);
         AddMask(ref hash, _seconds);
         AddMask(ref hash, _minutes);
         AddMask(ref hash, _hours);
@@ -341,6 +356,20 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     }
 
     /// <summary>
+    /// Gets a value indicating whether the two day fields combine by union rather than by intersection.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when both day fields are restricted, in which case a day matches if it satisfies either
+    /// field; otherwise <see langword="false" />, in which case it must satisfy both.
+    /// </value>
+    /// <remarks>
+    /// This is the only way either restriction flag is observable, so it — rather than the two flags — is what
+    /// <see cref="Equals(CronExpression)" /> compares and <see cref="GetHashCode" /> mixes.
+    /// </remarks>
+    private bool DaysCombineByUnion =>
+        _domRestricted && _dowRestricted;
+
+    /// <summary>
     /// Determines whether the day component of <paramref name="candidate" /> matches the day-of-month and day-of-week
     /// fields under the Vixie combination rule.
     /// </summary>
@@ -354,7 +383,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         // Both field masks always apply; the restriction flags select only how they combine. Vixie takes the union
         // when neither day field begins with '*', and the intersection otherwise — so a stepped star such as "*/2"
         // still narrows the days it matches even though it does not make the field "restricted".
-        return _domRestricted && _dowRestricted
+        return DaysCombineByUnion
             ? domMatch || dowMatch
             : domMatch && dowMatch;
     }
