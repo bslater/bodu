@@ -23,7 +23,19 @@ public static class WorkingDayChecks
     /// <param name="service">The notable-date service supplying holiday knowledge.</param>
     public static void Run(INotableDateService service)
     {
-        Console.WriteLine("--- Working-day checks across a holiday week ---");
+        SampleConsole.Scenario(
+            "Working-day checks across a holiday week",
+            what: "Classifies each day of the week containing Anzac Day 2024 as working, weekend, or public "
+                + "holiday, using one predicate for the first and a second to separate the other two.",
+            why: "A working day is defined by two independent things - the shape of the week and the holiday "
+                + "rules - and code that consults only one of them is wrong in a way that shows up rarely enough "
+                + "to reach production. IsWorkingDay answers using both, so a caller cannot forget the holidays; "
+                + "IsWeekend answers using the week pattern alone, which is what lets the two together say not "
+                + "just that a day is off but why. That distinction matters downstream, because a weekend and a "
+                + "public holiday often have different consequences in payroll and SLA rules even though both "
+                + "are non-working.",
+            expect: "Three kinds of day in one week. Thursday is a working weekday by the calendar and still "
+                + "comes back as a public holiday, which is the case a week-shape-only check gets wrong.");
 
         // 2024-04-25 (Anzac Day, Thursday) sits inside this window, flanked by a normal weekend.
         // IsWorkingDay consults both sources (week shape + holiday rules); IsWeekend is purely the
@@ -33,8 +45,10 @@ public static class WorkingDayChecks
             var kind = day.IsWorkingDay(service, "AU") ? "working"
                 : day.IsWeekend(WeekPattern.Weekdays) ? "weekend"
                 : "public holiday";
-            Console.WriteLine($"  {day:yyyy-MM-dd} ({day.DayOfWeek,-9}) {kind}");
+            Console.WriteLine($"    {day:yyyy-MM-dd} ({day.DayOfWeek,-9}) {kind}");
         }
+
+        Console.WriteLine("  (Thursday is a weekday by the calendar and still not a working day - the case a week-shape-only check gets wrong)");
 
         Console.WriteLine();
     }
