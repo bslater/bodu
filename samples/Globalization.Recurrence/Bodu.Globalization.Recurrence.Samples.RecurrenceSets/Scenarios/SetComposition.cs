@@ -19,7 +19,21 @@ public static class SetComposition
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- A set from a single rule ---");
+        SampleConsole.Scenario(
+            "Composing a set from rules, dates, and exceptions",
+            what: "Builds a set from a single rule, adds explicit RDATE occurrences, removes EXDATE ones, and "
+                + "combines several rules into one series.",
+            why: "A real schedule is rarely one rule. A term timetable is a weekly pattern minus the public "
+                + "holidays; a release cadence is a monthly rule plus the two dates someone moved. Expressing "
+                + "that as rule-plus-exceptions is what RFC 5545 does, and following it means a set round-trips "
+                + "through any calendar system rather than needing a custom representation. The precedence rule "
+                + "is the part that has to be unambiguous: an exception date wins over a rule that generates "
+                + "it, because the exception is the more specific statement and the alternative - order "
+                + "dependence - would make the same set mean different things depending on how it was "
+                + "assembled.",
+            expect: "The composed series is the union of the rules and explicit dates with the exception dates "
+                + "removed, regardless of the order the parts were added. An exception removes an occurrence a "
+                + "rule generated, which is the precedence that makes rule-plus-exception composition usable.");
 
         var start = new DateTime(2026, 1, 5, 9, 0, 0);   // a Monday
         RecurrenceRule weekly = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=MO;COUNT=6");

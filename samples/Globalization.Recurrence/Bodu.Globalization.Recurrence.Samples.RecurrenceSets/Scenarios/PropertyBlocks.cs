@@ -21,7 +21,19 @@ public static class PropertyBlocks
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Rendering a set to an iCalendar property block ---");
+        SampleConsole.Scenario(
+            "Round-tripping a set through an iCalendar property block",
+            what: "Renders a composed set as the canonical RRULE / RDATE / EXDATE property lines, parses that "
+                + "text back, and compares the two sets.",
+            why: "The property block is the interchange format - it is what lives in a .ics file and what "
+                + "another calendar system will hand you. A set that can be built in code but not written out, "
+                + "or written out but not read back, is only half of an integration. Canonical rendering also "
+                + "makes a set diffable and storable as text, which is what a configuration file or a review "
+                + "needs; and value equality across the round trip is the assertion that the text is a complete "
+                + "description rather than a lossy summary of the object.",
+            expect: "The rendered block carries every part of the set, and parsing it back yields a set equal "
+                + "to the original - so the text form is a faithful representation rather than an "
+                + "approximation.");
 
         var start = new DateTime(2026, 3, 2, 14, 30, 0);
         var set = new RecurrenceSet(
