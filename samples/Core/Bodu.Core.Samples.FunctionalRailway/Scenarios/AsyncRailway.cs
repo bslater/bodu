@@ -23,14 +23,25 @@ public static class AsyncRailway
     /// <returns>A task that completes when the scenario has printed its output.</returns>
     public static async Task RunAsync()
     {
-        Console.WriteLine("--- Result<T> async: awaitable railway ---");
+        SampleConsole.Scenario(
+            "Result<T> async - awaitable railway",
+            what: "Runs a good and a bad input through the same pipeline as the synchronous railway, except every " +
+                  "step is awaitable and composed with MapAsync and BindAsync.",
+            why: "Real pipelines call out - a database, an HTTP service - so the railway is only useful if it " +
+                 "survives async. Without the async companions each await forces the chain to be unwound into " +
+                 "statements with an explicit check between them, which is the shape the railway existed to " +
+                 "remove. With them the composition is unchanged and short-circuiting still holds: a failed step " +
+                 "means the next one is never awaited, so no wasted call is made.",
+            expect: "The same two outcomes as the synchronous version - 21 doubles to 42, and 'nope' reports the " +
+                    "parse failure. The awaited tasks complete synchronously here so the transcript stays " +
+                    "reproducible; nothing about the composition depends on that.");
 
         // Each row starts from a Task<Result<string>> and threads through async Map/Bind steps.
         var good = await Pipeline("21");
         var bad = await Pipeline("nope");
 
-        Console.WriteLine($"'21'  : {good.Match(v => $"ok {v}", e => $"error: {e.Message}")}");
-        Console.WriteLine($"'nope': {bad.Match(v => $"ok {v}", e => $"error: {e.Message}")}");
+        Console.WriteLine($"  \u002721\u0027  : {good.Match(v => $"ok {v}", e => $"error: {e.Message}")}  (expected ok 42 - every awaited step ran in order)");
+        Console.WriteLine($"  \u0027nope\u0027: {bad.Match(v => $"ok {v}", e => $"error: {e.Message}")}  (the parse failed, so the doubling step was never awaited - short-circuiting saves the call, not just the result)");
 
         Console.WriteLine();
     }

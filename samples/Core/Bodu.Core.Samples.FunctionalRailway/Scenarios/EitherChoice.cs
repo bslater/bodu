@@ -20,7 +20,18 @@ public static class EitherChoice
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Either<TLeft, TRight>: a typed choice ---");
+        SampleConsole.Scenario(
+            "Either<TLeft, TRight> - a typed choice",
+            what: "Parses payment identifiers that are either a card or a bank account, then renders each through " +
+                  "Match so both shapes are handled at the point of use.",
+            why: "Either is for a value that is legitimately one of two things, where neither is a failure. That " +
+                 "is what separates it from Result: Result privileges one side as the error, and its operators " +
+                 "short-circuit on it. Either privileges neither, so nothing is skipped and Match forces both " +
+                 "cases to be written. The alternative in practice is a class with two nullable fields and an " +
+                 "informal rule that exactly one is set - which the compiler cannot check and which drifts.",
+            expect: "Three inputs resolve to two different shapes, and IsLeft distinguishes them. Each renders " +
+                    "with the vocabulary of its own side - a masked card number or a bank identifier - because " +
+                    "Match receives the correctly typed value rather than a common base.");
 
         // A payment is either a card token (left) or a raw bank account (right); both are valid.
         foreach (var input in new[] { "card:4111", "iban:DE89", "card:5500" })
@@ -34,7 +45,7 @@ public static class EitherChoice
 
             // Match collapses both branches into one display string.
             var rendered = masked.Match(onLeft: card => card, onRight: bank => bank);
-            Console.WriteLine($"{input,-10} -> isLeft={method.IsLeft,-5} {rendered}");
+            Console.WriteLine($"  {input,-10} -> isLeft={method.IsLeft,-5} {rendered}  (Match supplied the correctly typed side, so neither branch needs a cast or a null check)");
         }
 
         Console.WriteLine();

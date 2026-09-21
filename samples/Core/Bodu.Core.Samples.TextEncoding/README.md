@@ -29,10 +29,22 @@ bytes for UTF-8, 2 for UTF-16), and every payload decodes back to the original p
 file reports `(no BOM)` and takes the UTF-8 fallback:
 
 ```text
-utf8-bom.txt    : UTF-8-BOM              BOM=3B  text="Hello, Bodu café"
-utf16le-bom.txt : UTF-16LE-BOM           BOM=2B  text="Hello, Bodu café"
-utf16be-bom.txt : UTF-16BE-BOM           BOM=2B  text="Hello, Bodu café"
-plain-utf8.txt  : (no BOM)               fallback UTF-8   text="Hello, Bodu café"
+--- EncodingDetection - byte-order-mark sniffing ---
+  What   : Writes the same phrase four ways - UTF-8, UTF-16LE and UTF-16BE with byte-order marks, and plain UTF-8
+           without one - then detects each and decodes it.
+  Why    : A byte stream carries no declaration of its encoding, so something has to decide. A BOM is the one
+           reliable in-band signal, and reading it is cheap and unambiguous. Getting this wrong is not subtle:
+           decode UTF-16LE as UTF-8 and every character comes back interleaved with nulls, or leave a UTF-8 BOM in
+           place and the first field of a CSV silently begins with an invisible character that breaks an exact-match
+           comparison.
+  Expect : All four decode to the identical string, which is the point - the difference lives in the bytes, not the
+           text. The BOM lengths differ (3 for UTF-8, 2 for either UTF-16), and the unmarked file falls back to
+           UTF-8 rather than failing.
+
+  utf8-bom.txt    : UTF-8-BOM              BOM=3B  text="Hello, Bodu café"  (detected from the leading bytes alone, before any decoding was attempted)
+  utf16le-bom.txt : UTF-16LE-BOM           BOM=2B  text="Hello, Bodu café"  (detected from the leading bytes alone, before any decoding was attempted)
+  utf16be-bom.txt : UTF-16BE-BOM           BOM=2B  text="Hello, Bodu café"  (detected from the leading bytes alone, before any decoding was attempted)
+  plain-utf8.txt  : (no BOM)               fallback UTF-8   text="Hello, Bodu café"  (no signal to read, so the caller's fallback decides - UTF-8 is the safe modern default)
 ```
 
 > Note: `EncodingDetection` exposes only BOM-based detection (`TryDetectByPreamble`) — there is no
@@ -57,13 +69,25 @@ bytes); the round-trip is exact. The preamble adds 3 bytes and strips cleanly. T
 yields `caf?`; the exception policy throws on the `é`:
 
 ```text
-UTF-16 bytes     : 32
--> UTF-8 bytes   : 17 (é is 2 bytes in UTF-8)
--> back to UTF-16: 32  round-trips: True
-UTF-8 +preamble  : 20 bytes (HasPreamble=True, preamble=3B)
-after StripPreamble: 17 bytes
-ASCII replacement: "Hello, Bodu caf?"
-ASCII exception  : threw EncoderFallbackException on 'é' (UsesExceptionFallbacks=True)
+--- EncodingExtensions - transcode, preamble, fallback ---
+  What   : Transcodes a phrase between UTF-16 and UTF-8 and back, adds and strips a preamble, then encodes a
+           non-ASCII character to ASCII under both the replacement and the exception fallback.
+  Why    : The fallback choice is the one that matters, because the two behaviours fail in opposite directions.
+           Replacement never throws and silently substitutes '?' - fine for a log line, catastrophic for a name, an
+           identifier or anything that will be compared or stored. The exception fallback refuses instead, telling
+           you which character it could not represent. Defaulting to replacement is how mojibake gets written to a
+           database and only noticed later.
+  Expect : UTF-16 takes 32 bytes to UTF-8's 17 for the same 16 characters, because ASCII costs one byte in UTF-8 and
+           two in UTF-16, and the round trip is byte-identical. Under ASCII, the same input either becomes "caf?" or
+           throws EncoderFallbackException naming the character.
+
+  UTF-16 bytes     : 32  (expected 32 - two bytes per character, whether or not the character needs them)
+  -> UTF-8 bytes   : 17  (expected 17 - one byte per ASCII character plus two for the é; almost half the size for this text)
+  -> back to UTF-16: 32  round-trips: True  (expected True - both encodings cover the whole of Unicode, so transcoding between them loses nothing)
+  UTF-8 +preamble  : 20 bytes  (3 more than the text: the preamble is data, and it is why an unstripped file starts with an invisible character)
+  after StripPreamble: 17 bytes  (back to 17 - strip before comparing or parsing, never after)
+  ASCII replacement: "Hello, Bodu caf?"  (the é became ? and nothing was raised - silent, irreversible, and the default)
+  ASCII exception  : threw EncoderFallbackException on 'é'  (the same input, refused rather than mangled, and it names the offending character)
 ```
 
 **APIs demonstrated.** `EncodingExtensions.Transcode`, `.GetBytesWithPreamble`, `.StripPreamble`,
@@ -83,12 +107,24 @@ whose rented storage is returned by `using`.
 span, allocated, and pooled encodings all agree byte-for-byte:
 
 ```text
-Phrase length    : 16 chars
-UTF-8 byte count : 17
-UTF-16 byte count: 32
-TryEncodeUtf8To  : ok=True, bytesWritten=17
-ToUtf8Bytes match: True
-GetUtf8BytesPooled: WrittenCount=17, matches=True
+--- StringEncodingExtensions - sizing, span, and pooled encoding ---
+  What   : Measures a phrase in both encodings, encodes it into a stack buffer through a Try pattern, and again into
+           a pooled buffer, checking all three agree byte for byte.
+  Why    : Encoding a string normally allocates a byte array per call, which on a hot path is garbage generated for
+           data that is consumed and discarded immediately. Sizing first lets the caller supply the memory: a stack
+           buffer when the bound is small and known, a pooled one when it is not. The Try form matters because it
+           reports a buffer too small rather than throwing, which is the difference between a fallback path and an
+           exception on a hot loop.
+  Expect : 17 UTF-8 bytes against 32 UTF-16 for 16 characters. All three routes produce identical bytes - that
+           equality is the claim, since a pooled buffer is longer than its content and only WrittenSpan is
+           meaningful.
+
+  Phrase length    : 16 chars  (characters, not bytes - the two differ the moment the text leaves ASCII)
+  UTF-8 byte count : 17  (expected 17 - measured before encoding, which is what lets the caller own the buffer)
+  UTF-16 byte count: 32  (expected 32 - the same text costs nearly twice as much in the encoding .NET uses in memory)
+  TryEncodeUtf8To  : ok=True, bytesWritten=17  (expected True and 17 - a short buffer would return False here rather than throw, so a caller can fall back)
+  ToUtf8Bytes match: True  (expected True - the allocating convenience form and the stack form must not diverge)
+  GetUtf8BytesPooled: WrittenCount=17, matches=True  (the rented array is longer than the content, so read WrittenSpan and never the whole buffer)
 ```
 
 **APIs demonstrated.** `StringEncodingExtensions.GetUtf8ByteCount`, `.GetEncodedByteCount`,
@@ -99,6 +135,7 @@ GetUtf8BytesPooled: WrittenCount=17, matches=True
 ```text
 Bodu.Core.Samples.TextEncoding/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the what/why/expect banner every scenario opens with
   Data/utf8-bom.txt                 # "Hello, Bodu café" — UTF-8 with BOM
   Data/utf16le-bom.txt              #                    — UTF-16LE with BOM
   Data/utf16be-bom.txt              #                    — UTF-16BE with BOM

@@ -22,7 +22,18 @@ public static class PooledBuffers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- PooledBufferBuilder<T>: pooled, growable buffers ---");
+        SampleConsole.Scenario(
+            "PooledBufferBuilder<T> - pooled, growable buffers",
+            what: "Appends single values and spans into a pooled builder past its initial size, reads back the " +
+                  "written region, and takes an independent snapshot.",
+            why: "This is the array-pool pattern with the two mistakes designed out. A rented buffer is longer " +
+                 "than what you wrote, so reading the whole array yields stale data from a previous tenant - " +
+                 "WrittenSpan exists so that cannot happen by accident. And the span is a view over memory that " +
+                 "returns to the pool on dispose, so anything outliving the builder must be copied out. Getting " +
+                 "either wrong produces corruption that appears only under load, when buffers are actually reused.",
+            expect: "Nine elements written, and the sum is taken over the written region rather than the rented " +
+                    "capacity. The snapshot is an independent copy whose trailing zeros are its own, not leftovers " +
+                    "from the pool.");
 
         // A small initial capacity deliberately forces at least one internal grow so the sample exercises the
         // rent / copy / return path rather than a single fixed rental.
@@ -40,19 +51,19 @@ public static class PooledBuffers
         // AddMany repeats a single value - handy for padding or fills.
         builder.AddMany(value: 0, count: 2);
 
-        Console.WriteLine($"WrittenCount     : {builder.WrittenCount}");
-        Console.WriteLine($"IsEmpty          : {builder.IsEmpty}");
+        Console.WriteLine($"  WrittenCount     : {builder.WrittenCount}  (expected 9 - what was written, which is smaller than the rented array behind it)");
+        Console.WriteLine($"  IsEmpty          : {builder.IsEmpty}  (expected False - reports on written content, not on whether a buffer is rented)");
 
         // WrittenSpan is a zero-copy view over exactly the written region (no trailing free capacity).
         var sum = 0;
         foreach (var value in builder.WrittenSpan)
             sum += value;
-        Console.WriteLine($"WrittenSpan sum  : {sum}");
+        Console.WriteLine($"  WrittenSpan sum  : {sum}  (expected 28 - summed over the written region only; summing the whole rented array would add stale values from a previous tenant)");
 
         // ToArrayAndDispose snapshots the written region into a right-sized array AND returns the rented
         // buffer to the pool in one step, so there is no separate Dispose call afterwards.
         var snapshot = builder.ToArrayAndDispose();
-        Console.WriteLine($"Snapshot         : [{string.Join(", ", snapshot)}]");
+        Console.WriteLine($"  Snapshot         : [{string.Join(", ", snapshot)}]  (an independent copy - safe to keep after the builder is disposed, where WrittenSpan would dangle over returned memory)");
 
         Console.WriteLine();
     }
