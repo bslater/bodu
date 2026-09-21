@@ -29,6 +29,7 @@ public static class Program
         AeadAscon.Run();
         AeadModes.Run();
         StreamCiphers.Run();
+        MoreCiphers.Run();
 
         Console.WriteLine("Done.");
     }

@@ -168,6 +168,63 @@ variant exists precisely so a random nonce can be chosen safely without a counte
 **APIs demonstrated.** `ChaCha20`, `XChaCha20`, `Salsa20`, `SymmetricStreamAlgorithm.Key` / `Nonce`, the
 `Encrypt` / `Decrypt` extensions.
 
+## Scenario 6 — MoreCiphers
+
+**Intent.** Cover the ciphers the other scenarios do not reach, and draw out the distinctions that matter when
+choosing between near-siblings: what a *tweak* buys, why an extended nonce matters, and the fact that the two
+Poly1305 constructions are not interchangeable.
+
+**What it does.** Round-trips the wide-block tweakable Serpent variants (256/512/1024) under CBC/PKCS#7 and shows
+that changing only the tweak changes the ciphertext. Round-trips Rabbit, HC-128 and XSalsa20, reading each cipher's
+key and nonce width from the instance rather than assuming it. Then seals and opens under XChaCha20-Poly1305 and
+XSalsa20-Poly1305, shows the latter rejecting associated data, and converts a sealed message to libsodium's byte
+order and back.
+
+**What to expect.** `Serpent128` (Scenario 1) is the familiar 128-bit-block cipher; the 256/512/1024 variants widen
+the **block** as well as the key and are tweakable, so one key can be domain-separated per use without a separate
+key schedule. The stream ciphers preserve length exactly. The load-bearing line is the `secretbox + AAD` rejection:
+
+```text
+--- Further ciphers ---
+  Wide-block tweakable Serpent:
+    Serpent256 : block  256 bits, key 256 bits, tweak 128 bits -> 96B ciphertext, round-trip True
+    Serpent512 : block  512 bits, key 512 bits, tweak 128 bits -> 128B ciphertext, round-trip True
+    Serpent1024: block 1024 bits, key 1024 bits, tweak 128 bits -> 128B ciphertext, round-trip True
+    same key and IV, tweak 0x30 vs 0x31 differ: True
+
+  Remaining stream ciphers:
+    Rabbit   : key 128 bits, nonce  64 bits -> 65B (no expansion), round-trip True
+    Hc128    : key 128 bits, nonce 128 bits -> 65B (no expansion), round-trip True
+    XSalsa20 : key 256 bits, nonce 192 bits -> 65B (no expansion), round-trip True
+
+  Extended-nonce Poly1305 AEAD:
+    XChaCha20Poly1305: nonce 192 bits, 65B -> 81B (+16 tag), round-trip True, tampered rejected (CryptographicException)
+    XSalsa20Poly1305 : nonce 192 bits, 65B -> 81B (+16 tag), round-trip True, tampered rejected (CryptographicException)
+    secretbox + AAD  : rejected (ArgumentException) - secretbox has no AAD input
+    libsodium order : tag moves to the front: True
+    converts back   : True
+```
+
+`XSalsa20Poly1305` is NaCl/libsodium's **secretbox**, which has no associated-data input at all — so it requires an
+empty span and raises `ArgumentException` for anything else. That is the right behaviour: a construction that
+quietly dropped the associated data would leave a caller believing a header was authenticated when it was not.
+`XChaCha20Poly1305` is the IETF-style AEAD and does authenticate it. Both use a 192-bit nonce, wide enough to choose
+at random per message without tracking a counter.
+
+The ciphertext lengths follow from the block size and PKCS#7: a 65-byte plaintext pads to 96 bytes under Serpent256
+(32-byte blocks) and to 128 bytes under both Serpent512 and Serpent1024, because one 128-byte block already holds
+it.
+
+This library appends the tag after the ciphertext; libsodium's combined format puts it first, so
+`XSalsa20Poly1305` ships `ToLibsodiumCombined` / `FromLibsodiumCombined` — getting that order wrong is a silent
+interoperability failure rather than an error.
+
+**APIs demonstrated.** `Serpent256` / `Serpent512` / `Serpent1024` over `TweakableSymmetricAlgorithm`
+(`.Tweak` / `.TweakSize` / `.CreateEncryptor(key, iv, tweak)`), `Rabbit`, `Hc128`, `XSalsa20` over
+`SymmetricStreamAlgorithm` (`.KeySize` / `.NonceSize` / `.Nonce` / `.Encrypt` / `.Decrypt`),
+`XChaCha20Poly1305` / `XSalsa20Poly1305` (`.KeySize` / `.NonceSize` consts,
+`ToLibsodiumCombined` / `FromLibsodiumCombined`), `IAeadTransform`, `AeadTransformExtensions.Encrypt` / `.Decrypt`.
+
 ## Layout
 
 ```text
@@ -179,6 +236,7 @@ Bodu.Security.Cryptography.Samples.SymmetricAndAead/
   Scenarios/AeadAscon.cs
   Scenarios/AeadModes.cs
   Scenarios/StreamCiphers.cs
+  Scenarios/MoreCiphers.cs
 ```
 
 ## Related

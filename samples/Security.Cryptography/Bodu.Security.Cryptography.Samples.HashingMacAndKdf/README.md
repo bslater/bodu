@@ -40,7 +40,64 @@ sample against the canonical value.
 **APIs demonstrated.** `Blake2b`, `Blake3`, `Tiger`, `Skein256` / `Skein512` / `Skein1024`, `Whirlpool`,
 all through `HashAlgorithm.ComputeHash`.
 
-## Scenario 2 — KeyedHashesAndMac
+## Scenario 2 — MoreHashFamilies
+
+**Intent.** Cover the hash families Scenario 1 does not reach, and show the two ways this library varies a hash
+without introducing a new type: constructor parameters, and a variant property.
+
+**What it does.** Prints BLAKE2s at four output sizes, both Snefru digests, and the two Ascon hashes. Then CubeHash
+at its default, at a narrower output, and with its round and block parameters tuned; `AsconCxof128` squeezing under
+two different customization strings; and Tiger/Tiger2 and the three Whirlpool revisions selected by property.
+
+**What to expect.** BLAKE2s is the 32-bit sibling of BLAKE2b — a smaller state and word size, so the better fit on
+32-bit and embedded targets — and its size is chosen at construction. `AsconHashA256` is the reduced-round variant
+and must differ from `AsconHash256`. The customizable XOF is the interesting one: the same message under two
+different customization strings yields unrelated output, which is domain separation done by the primitive rather
+than by the caller prepending a label and hoping it cannot be confused with the data:
+
+```text
+--- Further hash families ---
+  Blake2s-128   : 96fd07258925748a0d2fb1c8a1167a73
+  Blake2s-160   : 5a604fec9713c369e84b0ed68daed7d7504ef240
+  Blake2s-224   : e4e5cb6c7cae41982b397bf7b7d2d9d1949823ae78435326e8db4912
+  Blake2s-256   : 606beeec743ccbeff6cbcdf5d5302aa855c256c29b88c8ed331ea1a6bf3c8812
+  Snefru-128    : 59d9539d0dd96d635b5bdbd1395bb86c
+  Snefru-256    : 674caa75f9d8fd2089856b95e93a4fb42fa6c8702f8980e11d97a142d76cb358
+  AsconHash256  : 23414503bf4bde7ad0e85aec94c22ae2d7cd807996b537f9564fc2974053f139
+  AsconHashA256 : ffda0fa068a0ce9a89488aa405b440653c15f94469bf56888d5067d8560c6537 (reduced rounds - differs)
+
+  CubeHash is parameterised rather than fixed:
+    default (512b): a9ba7b8c6b4ecc6660bb3b35f076db7fce4930296491922744c67ef08dc1217ce5eb26bb25247e3bc8904b46d468455e6807c21410c1fb95e44824dc7d57c7ff
+    256-bit out  : 01c2917df4eb1da3af412da9c9322f1d5e576f25cefc45648cff98c654d02084
+    8/1 tuned    : 5785cc435babeb93fdf55a7fb4b70d5cd5992ca967f80805419cc65846a17047 (a different function, not a faster one)
+
+  AsconCxof128 - a customizable XOF:
+    "invoice-signing/v1": f95f28b1f1950d057796ca6c1d212f17963e83a46a29c6c2ce002a175f6a53cd
+    "audit-log/v1"      : 1e96b3ade5e5dc9e130eafb579f2f53223267c23006e7d1a03179cee60193339
+    differ             : True (same message, different domain)
+    reproducible       : True
+
+  Variant-selected behaviour:
+    Tiger (Tiger)   : 6d12a41e72e644f017b6f0e2f7b44c6285f06dd5d2c5b075
+    Tiger (Tiger2)  : 976abff8062a2e9dcea3a1ace966ed9c19cb85558b4976d8
+    WhirlpoolInfo1  : 4f8f5cb531e3d49a61cf417cd133792ccfa501fd8da53ee368fed20e5fe0248c3a0b64f98a6533cee1da614c3a8ddec791ff05fee6d971d57c1348320f4eb42d
+    WhirlpoolInfo2  : 3ccf8252d8bbb258460d9aa999c06ee38e67cb546cffcf48e91f700f6fc7c183ac8cc3d3096dd30a35b01f4620a1e3a20d79cd5168544d9e1b7cdf49970e87f1
+    WhirlpoolInfo3  : b97de512e91e3828b40d2b0fdce9ceb3c4a71f9bea8d88e75c4fa854df36725fd2b52eb6544edcacd6f8beddfea403cb55ae31f03ad62a5ef54e42ee82c3fb35
+```
+
+Two details worth noting. `WhirlpoolInfo1` is Whirlpool-0; the earlier revisions remain implemented because data
+hashed under them still exists, but only `WhirlpoolInfo3` should be used for new work. And Tiger and Tiger2 differ
+only in the padding byte that starts the final block — one byte of specification, an entirely different digest.
+
+CubeHash's parameters are a design space, not a performance dial: changing the rounds or block size produces a
+different function, and a narrower output is not a truncation of a wider one.
+
+**APIs demonstrated.** `Blake2s(int hashSize)`, `Snefru128`, `Snefru256`, `AsconHash256`, `AsconHashA256`,
+`CubeHash()` / `CubeHash(int)` / `CubeHash(int, int, int, int, int)` / `.HashSize`, `AsconCxof128.Customize` /
+`.Absorb` / `.Squeeze`, `Tiger.Variant` with `TigerHashingVariant.Tiger` / `.Tiger2`, `Whirlpool.Version` with
+`WhirlpoolVersion.WhirlpoolInfo1` / `.WhirlpoolInfo2` / `.WhirlpoolInfo3`.
+
+## Scenario 3 — KeyedHashesAndMac
 
 **Intent.** Distinguish the keyed constructions from the plain hashes: the tag now depends on a key. Show
 SipHash (a keyed PRF), BLAKE2b's keyed-MAC mode, and Poly1305 (a one-time authenticator).
@@ -67,7 +124,7 @@ instance and key per message.
 **APIs demonstrated.** `SipHash64`, `SipHash128`, keyed `Blake2b`, `Poly1305`, the `KeyedHashAlgorithm.Key`
 initializer.
 
-## Scenario 3 — ExtendableOutput
+## Scenario 4 — ExtendableOutput
 
 **Intent.** Show extendable-output functions, whose output length is a caller choice rather than a fixed
 digest size, and the prefix property that makes them a stream.
@@ -94,7 +151,7 @@ is one output stream read to whatever length you ask for.
 **APIs demonstrated.** `Shake` (output length chosen at construction), `AsconXof128.Absorb` / `Squeeze` /
 `Initialize`.
 
-## Scenario 4 — StreamingAndVerify
+## Scenario 5 — StreamingAndVerify
 
 **Intent.** Show incremental hashing across arbitrary fragment boundaries and the constant-time comparison
 helper used to check a digest without a timing side channel.
@@ -121,7 +178,48 @@ Streaming and one-shot agree because the algorithm buffers fragments into whole 
 **APIs demonstrated.** The `AppendData(ReadOnlySpan<byte>)` and `VerifyHash(byte[], string)` extensions,
 `TransformFinalBlock` / `Hash`.
 
-## Scenario 5 — KeyDerivation
+## Scenario 6 — FactoriesAndValues
+
+**Intent.** Show the two supporting surfaces a consumer composing hashes reaches for, and the reason each exists: a
+`HashAlgorithm` is stateful, and a `byte[]` digest compares by reference.
+
+**What it does.** Builds algorithms through `HashAlgorithmFactory.From`, confirms each `Create()` yields an
+independent instance producing the same digest, and shows a factory carrying configuration. Then wraps a digest in
+`HashValue` and exercises equality, `ParseHex`, and `TryParseHex` against valid, odd-length and non-hex input.
+
+**What to expect.** The factory seam is why `MerkleTree`'s constructor takes `Func<HashAlgorithm>` rather than a
+`HashAlgorithm`: a component that hashes on behalf of its caller cannot hold one instance, because two concurrent
+calls would corrupt each other. On the value side, the first line is the trap — two `byte[]` digests of the same
+message are not `==` to each other, while `HashValue` compares structurally:
+
+```text
+--- Hash factories and hash values ---
+  IHashAlgorithmFactory<T>:
+    two independent instances: True
+    same digest from each     : True
+    factory type              : DelegateHashAlgorithmFactory<Blake2s>
+    Blake2s-256 via factory   : 84384fe8e05c1387a7a77fb6fdcb0f6bf9f1968b1ecc1bd528b534785acb7e2f
+    configured Tiger2         : edd2815a70c70a744a1a98bf00a13b9a229543c2c74a56c5
+
+  HashValue:
+    byte[] == byte[]  : False (reference comparison - the trap)
+    HashValue equality: True
+    length            : 64 bytes, IsEmpty=False
+    round-trips hex   : True
+    TryParseHex valid : True -> matches: True
+    TryParseHex odd   : False (odd length rejected without throwing)
+    TryParseHex junk  : False (non-hex rejected without throwing)
+    different message : True
+```
+
+`TryParseHex` rejects odd-length and non-hex input by returning `false` rather than throwing, so it is safe on
+untrusted text — useful when an expected digest arrives from a manifest or a config file.
+
+**APIs demonstrated.** `HashAlgorithmFactory.From<T>`, `IHashAlgorithmFactory<T>.Create`,
+`DelegateHashAlgorithmFactory<T>`, `HashValue.FromBytes` / `.ParseHex` / `.TryParseHex` / `.Length` / `.IsEmpty` /
+`operator ==` / `operator !=`.
+
+## Scenario 7 — KeyDerivation
 
 **Intent.** Show the three key-derivation functions the library ships, all producing a stable 32-byte key
 from a fixed password and salt.
@@ -145,7 +243,56 @@ higher.
 
 **APIs demonstrated.** `Hkdf.DeriveKey`, `Argon2id.DeriveKey` with `Argon2Parameters`, `Scrypt.DeriveKey`.
 
-## Scenario 6 — OneTimePasswords
+## Scenario 8 — PasswordHashing
+
+**Intent.** Cover the password-hashing surface Scenario 7 does not reach: the three Argon2 variants and what
+separates them, the PHC string format that is what you actually store, and `ScryptParameters` as a bound parameter
+set.
+
+**What it does.** Derives under Argon2d, Argon2i and Argon2id over one password and salt. Then produces a PHC
+encoded hash with `Argon2id.Hash`, verifies it against the right and wrong password, and shows the variant being
+part of the encoded value. Finally binds a `ScryptParameters` to a `Scrypt` instance, derives twice, and compares
+against the positional static overload and against a higher cost.
+
+**What to expect.** The three variants give three different values — the variant is not a tuning knob. The encoded
+value carries the variant, version, parameters and salt inside itself, which is what lets old credentials keep
+verifying after the cost parameters are raised for new ones:
+
+```text
+--- Password hashing (Argon2 variants and encoded hashes) ---
+  parameters    : 64 KiB, 2 iterations, parallelism 1, 32-byte tag
+  Argon2d       : cdb8ab7b1331663989b4271ea42a63b2be277bf041067072906920e5b374de06
+  Argon2i       : 6318ae4b25876f0cb0f7e3f6c4aed296268d5fa6612b5f809753a3f538a44df9
+  Argon2id      : 4218258ec7a86e150698e643766f12bfbd9e96c0bb8f7ce481bb95356c1c1e05 (the default choice)
+  ^ three different functions over one password - the variant is not a tuning knob.
+
+  Encoded hashes (what you actually store):
+    stored value: $argon2id$v=19$m=64,t=2,p=1$Zml4ZWQtcGFzc3dvcmQtc2FsdA$QhgljseobhUGmOZDdm8Sv72elsC7j3zkgbuVNWwcHgU
+    correct password: True
+    wrong password  : False
+    Argon2i value   : $argon2i$v=19$m=64,t=2,p=1$Zml4ZWQtcGFzc3dvcmQtc2FsdA$YxiuSyWHbwyw9+P2xK7SliaNX6ZhK1+Al1Oj9TikTfk
+    verified by Argon2i : True
+
+  ScryptParameters:
+    bound parameters: N=1024, r=8, p=1
+    derived key     : 882d073ef5fedc3abfe97aeed04442c972f668d22a2879ba7a2d178a15ac88d7
+    reusable        : True, matches static overload: True
+    N=2048 (2x cost): 28f3b4dcb0b258bebb2e982dde2f4896438c6b0303e68c4ad708b5512ed69b85 (a different value, as it must be)
+```
+
+The variant choice is about what the attacker is assumed to have. Argon2d uses data-dependent memory access:
+strongest against GPU cracking, but its access pattern leaks through timing. Argon2i is data-independent:
+side-channel resistant, weaker against time-memory trade-offs. Argon2id is the hybrid and RFC 9106's
+recommendation — reach for it by default.
+
+Cost parameters are deliberately small here so the sample stays fast; real deployments should be tuned to the
+hardware.
+
+**APIs demonstrated.** `Argon2d.DeriveKey`, `Argon2i.DeriveKey` / `.Hash` / `.Verify`, `Argon2id.DeriveKey` /
+`.Hash` / `.Verify`, `Argon2Parameters`, `ScryptParameters` (`CostN` / `BlockSizeR` / `Parallelization`),
+`Scrypt(ScryptParameters)` / `.Parameters` / `.GetBytes`, `Scrypt.DeriveKey`.
+
+## Scenario 9 — OneTimePasswords
 
 **Intent.** Show counter-based (HOTP) and time-based (TOTP) one-time passwords generated and verified from a
 fixed secret, using the canonical RFC test key so the codes are the published reference values.
@@ -182,10 +329,13 @@ Bodu.Security.Cryptography.Samples.HashingMacAndKdf/
   Program.cs                       # runs the scenarios in order
   Hex.cs                           # shared lowercase-hex helper
   Scenarios/CryptographicHashes.cs
+  Scenarios/MoreHashFamilies.cs
   Scenarios/KeyedHashesAndMac.cs
   Scenarios/ExtendableOutput.cs
   Scenarios/StreamingAndVerify.cs
+  Scenarios/FactoriesAndValues.cs
   Scenarios/KeyDerivation.cs
+  Scenarios/PasswordHashing.cs
   Scenarios/OneTimePasswords.cs
 ```
 
