@@ -238,6 +238,10 @@ The factories are `Interval<T>.AtLeast(a)` = `[a, +∞)`, `GreaterThan(a)` = `(a
 
 `Interval<T>` is a **continuous** interval over ordered coordinates: `Interval<int>.Open(1, 2)` is non-empty even though no *integer* lies strictly between 1 and 2. When the domain is the representable integers, use <xref:Bodu.Numerics.DiscreteInterval`1> (constrained to `IBinaryInteger<T>`). It canonicalizes every shape to closed integer bounds, so `DiscreteInterval<int>.Open(1, 2)` **is** empty and successor-adjacent runs — `[1, 2]` and `[3, 4]` — union into `[1, 4]`. Its binary `Difference` / `SymmetricDifference` return a <xref:Bodu.Numerics.DiscreteIntervalPair`1>, and `ToInterval()` / `FromInterval(...)` convert to and from the continuous type.
 
+## Complex numbers (`Complex<T>`)
+
+<xref:Bodu.Numerics.Complex`1> is the fourth value type, and the one that is *not* exact: an immutable pair of `Real` / `Imaginary` components over any <xref:System.Numerics.IFloatingPointIeee754`1> (`float`, `double`, `Half`, …). It generalizes <xref:System.Numerics.Complex> — which is fixed to `double` — and deliberately reproduces its arithmetic rules (four-multiply product, Smith's division, `Reciprocal(Zero) == Zero`, NaN and infinity propagation) so that `Complex<double>` is a drop-in. Because complex numbers have no total order it implements `INumberBase<Complex<T>>` and `ISignedNumber<Complex<T>>` but **not** `INumber<T>`; `Magnitude`, `Phase`, and `Abs` return `T` rather than widening to `double`. The canonical text form is the BCL's `<real; imaginary>` — the `;` separator is fixed regardless of culture so a decimal comma cannot collide with it — and a bare real number is accepted on parse as a convenience. See [Working with `Complex<T>`](../../guides/numerics/complex.md).
+
 ## Where to go next
 
 - **[Introduction](index.md)** — the high-level shape of the library.
@@ -246,6 +250,7 @@ The factories are `Interval<T>.AtLeast(a)` = `[a, +∞)`, `GreaterThan(a)` = `(a
 - **[Working with `Interval<T>`](../../guides/numerics/interval.md)** — endpoint inclusivity, membership, intersection, union, adjacency.
 - **[Interval algebra](../../guides/numerics/interval-algebra.md)** — unbounded endpoints, difference / symmetric difference, operators, and `IntervalSet<T>`.
 - **[Discrete integer intervals](../../guides/numerics/discrete-intervals.md)** — the integer-domain `DiscreteInterval<T>`.
+- **[Working with `Complex<T>`](../../guides/numerics/complex.md)** — the generic complex number and its relationship to `System.Numerics.Complex`.
 - **[Numerics & Financial topic overview](../topics/numerics-and-financial.md)** — how this package and `Bodu.Financial` fit together.
 - **[Numerics & Financial topic concepts](../topics/numerics-and-financial-concepts.md)** — the vocabulary shared across both libraries.
 - **[Bodu.Numerics API reference](xref:Bodu.Numerics)** — full type-by-type docs.

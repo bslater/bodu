@@ -64,22 +64,28 @@ The IV and tweak are *not* secret — they travel with the ciphertext. The key i
 
 ## Encrypt and decrypt — CTR (stream mode, parallelisable)
 
-CTR gives you variable-length output, random-access seeking, and no padding:
+CTR gives you random-access seeking and no padding expansion. Through the `Threefish256`
+wrapper, `PaddingMode.None` still requires block-aligned input (a multiple of 32 bytes); for
+arbitrary lengths drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly, which
+accepts a trailing partial block (see [Modes, transforms, and factories](cipher-composition-reference.md)):
 
 ```csharp
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,    // CTR doesn't pad
+    Padding   = PaddingMode.None,    // CTR doesn't pad — input must be block-aligned here
 };
 alg.GenerateKey();
 alg.GenerateIV();     // initial counter block
 alg.GenerateTweak();
 
-byte[] ciphertext = alg.Encrypt(plaintext);   // same length as plaintext
+byte[] aligned = new byte[64];       // two 32-byte blocks
+RandomNumberGenerator.Fill(aligned);
+
+byte[] ciphertext = alg.Encrypt(aligned);   // same length as the input
 byte[] recovered  = alg.Decrypt(ciphertext);
 
-Debug.Assert(plaintext.SequenceEqual(recovered));
+Debug.Assert(aligned.SequenceEqual(recovered));
 ```
 
 **Do not reuse an `(IV, Key)` pair** across messages in CTR. <xref:Bodu.Security.Cryptography.CtrModeTransform> detects counter wrap-around and throws, but it cannot prevent you from using the same initial counter twice.

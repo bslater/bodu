@@ -26,7 +26,7 @@ Every sample below needs only `Bodu.Core`. For collection samples (`CircularBuff
 ```csharp
 using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse("MTuWThF");
+WeekPattern weekdays = WeekPattern.Parse("_MTWTF_");
 WeekPattern weekend  = WeekPattern.Parse("SaSu");
 WeekPattern allDays  = weekdays | weekend;
 

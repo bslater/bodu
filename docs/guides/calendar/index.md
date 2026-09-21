@@ -22,13 +22,13 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Globalization.Calendar` | Service, resource/definition/rule model, loader, adjustment policies, validation — the resolution pipeline. | [Using NotableDateService](notable-dates.md) · [Authoring notable date rules](rule-authoring.md) · [Territories and regional composition](territories.md) |
+| `Bodu.Globalization.Calendar` | Service, resource/definition/rule model, loader, adjustment policies, validation — the resolution pipeline. | [Using NotableDateService](notable-dates.md) · [Authoring notable date rules](rule-authoring.md) · [Territories and regional composition](territories.md) · [Async resolution, localized names, and typed catalogues](async-and-localization.md) |
 | `Bodu.Globalization.Calendar.Algorithms` | The date-calculation strategies, the `<Algorithm key="…">` keys and bundled calculators, and the `INotableDateAlgorithm` / `NotableDateAlgorithmRegistry` custom-algorithm contract. | [Date calculation algorithms](algorithms.md) |
 | `Bodu.Globalization.Calendar.RangeResolution` | Duplicate / collision / priority / observed-date policies on `ResolutionPolicy`. | [The resolution pipeline](resolution-pipeline.md) · [Identity, priority, observed dates](identity-and-resolution.md) |
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external algorithm assemblies — `NotableDatePluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | [Building and extending the service — Plugin system](building-the-service.md#plugin-system) |
 | `Bodu.Extensions` | Working-day arithmetic over `DateOnly`, `DateTime`, and `DateTimeOffset` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … | [Working-day arithmetic](working-days.md) |
 | `Bodu.Globalization.Calendar` (data packs) | Region-specific public-holiday resources shipped in the `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`, `.MiddleEast`, and `.Africa` companion packages — each a `<Region>CalendarData` factory in the runtime's namespace. | [Calendar data packs](data-packs.md) |
-| `Bodu.Globalization.Calendar.Caching` | The read-through `CachingNotableDateService` decorator, the `INotableDateCache` contract, and the in-memory / TOML / JSON backends (SQLite and `IDistributedCache` backends in the `.Sqlite` / `.Distributed` add-ons; DI registration in `Bodu.Globalization.Calendar`). | [Caching notable dates](caching/notable-date-caching.md) |
+| `Bodu.Globalization.Calendar.Caching` | The read-through `CachingNotableDateService` decorator, the `INotableDateCache` contract, and the in-memory / TOML / JSON backends (SQLite and `IDistributedCache` backends in the `.Sqlite` / `.Distributed` add-ons; DI registration in `Bodu.Globalization.Calendar`). | [Caching notable dates](caching/notable-date-caching.md) · [Cache backends and options](caching/backends-and-options.md) · [Writing a cache backend](caching/custom-backend.md) |
 | `Bodu.Globalization.Calendar` (DI) | `IServiceCollection.AddNotableDateService(...)` / `AddReloadableNotableDateService(...)` from the DI companion package. | [Calendar dependency injection](dependency-injection.md) |
 | `Bodu.Globalization.Calendar.Builder` | Fluent C# authoring of notable-date documents — `NotableDateDocumentBuilder`, XML / JSON serialization, and load/save. | [Authoring with the notable-date builder](notable-date-builder.md) |
 
@@ -99,6 +99,16 @@ A **rule document** is authored on the notable-date schema and loaded into an im
   <p>Compiling a validated document to a sealed <code>.bcal</code> pack — the trim- and AOT-friendly load path — with the <code>bodu-calendar</code> tool and the <code>Bodu.Globalization.Calendar.Build</code> MSBuild integration.</p>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="tooling/bodu-calendar-cli.md">The bodu-calendar CLI</a></h3>
+  <p>Every verb and option of the <code>bodu-calendar</code> tool — <code>lint</code>, <code>compile</code>, <code>info</code>, <code>-o</code>, <code>--resolver-dir</code> — the exit codes, the diagnostic line format with real output, CI usage, and loading a compiled pack.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="tooling/msbuild-integration.md">Compiling packs in MSBuild</a></h3>
+  <p>The <code>Bodu.Globalization.Calendar.Build</code> package — <code>NotableDatePack</code> items, the <code>CompileNotableDatePack</code> task parameters, the override properties, incremental build behaviour, and consuming the compiled pack at run time.</p>
+</div>
+
 </div>
 
 ### `Bodu.Globalization.Calendar` — Patterns
@@ -133,6 +143,21 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 <div class="bodu-card">
   <h3><a href="caching/notable-date-caching.md">Caching notable dates</a></h3>
   <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator — per-territory, per-civil-year cache entries, the in-memory / TOML / JSON / SQLite / distributed backends, warm-up, observability, and the DI registration.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="caching/backends-and-options.md">Cache backends and options</a></h3>
+  <p>Every option on the decorator, the file, SQLite, and distributed backends, and the warm-up; the on-disk TOML / JSON schema with a real file; the SQLite table; the distributed key format; <code>NotableDateCacheWriteStatus</code>; and the <code>cacheFactory</code> composition rule.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="caching/custom-backend.md">Writing a cache backend</a></h3>
+  <p>The <code>INotableDateCache</code> contract and the ordering / merge invariants a backend must honour, deriving <code>NotableDateCacheBase&lt;TOptions&gt;</code> versus implementing the interface directly, a complete in-memory backend, registration, and testing.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="async-and-localization.md">Async resolution, localized names, and typed catalogues</a></h3>
+  <p><code>ResolveAsync</code> streaming a range year by year with cancellation, <code>NotableDateNameLocalizer</code> and how names fall back through the culture chain, <code>CommonNotableDateCatalog</code> with <code>CommonNotableDateResources.Load</code>, and the rule duration and <code>RuleApplicability</code> model.</p>
 </div>
 
 <div class="bodu-card">

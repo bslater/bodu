@@ -20,9 +20,11 @@ Both packages share the flattened `Bodu.Formats.Outlook` namespace: the value mo
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| <xref:Bodu.Formats.Outlook> | The `OutlookMessage` session with its recipient/attachment/body surfaces, the shared MAPI value model, and the `OutlookFormatException` family. | [Reading .msg files](reading-msg-files.md) · [Properties and named properties](properties-and-named-properties.md) |
+| <xref:Bodu.Formats.Outlook> | The `OutlookMessage` and `OutlookMailStore` sessions with their folder/recipient/attachment/body surfaces, the two reader-options types, the shared MAPI value model, and the `OutlookFormatException` family. | [Reading .msg files](reading-msg-files.md) · [Reading .pst mail stores](reading-pst-mail-stores.md) · [Properties and named properties](properties-and-named-properties.md) · [Reader options and resource limits](reader-options-and-limits.md) |
 
 ## Guides
 
 - **[Reading .msg files](reading-msg-files.md)** — opening a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.
+- **[Reading .pst mail stores](reading-pst-mail-stores.md)** — opening a mail store, walking the folder hierarchy, message conveniences and bodies, recipients, attachments and embedded messages, store-wide named properties, and the two exception families.
 - **[Properties and named properties](properties-and-named-properties.md)** — the raw property surface, typed accessors, tags and wire types, and resolving named properties.
+- **[Reader options and resource limits](reader-options-and-limits.md)** — every option on both readers, what `Strict` changes, and what surfaces when a limit trips.

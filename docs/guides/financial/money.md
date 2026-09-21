@@ -109,6 +109,64 @@ Note that scalar division rounds at every call. For splitting an
 amount into shares while preserving the original total exactly, use
 `Allocate` instead (see below).
 
+## Money extension helpers
+
+The `Bodu.Financial.Extensions` namespace adds the small predicates and
+helpers that arithmetic alone does not give you. On both `Money<TCurrency>`
+(<xref:Bodu.Financial.Extensions.MoneyOfTCurrencyExtensions>) and the
+runtime-tagged `Money` (<xref:Bodu.Financial.Extensions.MoneyExtensions>),
+`Abs`, `Sign`, `IsZero`, `IsNegative`, and `IsPositive` are **extension
+properties** — the library is built with the C# 14 compiler, so they read
+without parentheses — and `Clamp`, `Min`, and `Max` are plain static
+helpers on the typed class, because a two-operand comparison reads better
+unprefixed than as `a.Max(b)`:
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.Extensions;
+
+var balance = new Money<USD>(-42.50m);
+
+// Extension properties (C# 14): no parentheses.
+Console.WriteLine(balance.Abs);            // USD 42.50
+Console.WriteLine(balance.Sign);           // -1
+Console.WriteLine(balance.IsNegative);     // True
+Console.WriteLine(balance.IsPositive);     // False
+Console.WriteLine(Money<USD>.Zero.IsZero); // True
+
+// Clamp / Min / Max are plain static helpers (two-operand comparisons read better unprefixed).
+var floor = new Money<USD>(0m);
+var ceiling = new Money<USD>(25m);
+Money<USD> fee = MoneyOfTCurrencyExtensions.Clamp(new Money<USD>(31.20m), floor, ceiling);   // USD 25.00
+Money<USD> larger = MoneyOfTCurrencyExtensions.Max(new Money<USD>(3m), new Money<USD>(7m));   // USD 7.00
+Money<USD> smaller = MoneyOfTCurrencyExtensions.Min(new Money<USD>(3m), new Money<USD>(7m));  // USD 3.00
+
+// The runtime-tagged Money has the same predicates.
+var runtime = new Money(-9.99m, CurrencyCode.EUR);
+Console.WriteLine(runtime.Abs.IsPositive);   // True
+```
+
+| Helper | `Money<TCurrency>` | `Money` | Notes |
+|---|---|---|---|
+| `Abs` | property | property | `|Amount|`, same currency. |
+| `Sign` | property | property | `-1`, `0`, or `1`, as `Math.Sign`. |
+| `IsZero` / `IsNegative` / `IsPositive` | property | property | Strict comparisons against zero. |
+| `Clamp(value, min, max)` | static | — | Inclusive range; `ArgumentException` when `min` exceeds `max`. |
+| `Min(left, right)` / `Max(left, right)` | static | — | The smaller / larger of two amounts. |
+| `ToCompactString(format, provider, precision)` | method | method | Abbreviated `K` / `M` / `B` rendering — see [Compact formatting](#compact-formatting). |
+
+> [!NOTE]
+> A build of the library made with an SDK older than .NET 10 compiles the same members as
+> classic extension *methods* (`balance.Abs()`, `balance.IsZero()`); the shipped packages use
+> the property form. `Clamp`, `Min`, and `Max` are static in both.
+
+The typed conversion helpers that pair `Money<TCurrency>` with a rate provider —
+`ConvertTo<TSource, TTarget>` and `ConvertToWithRate<TSource, TTarget>` in
+<xref:Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions> — live in the same
+namespace; see [Audit-grade conversion](exchange-rates.md#audit-grade-conversion-through-moneytcurrency)
+in the exchange-rates guide.
+
 ## Cross-currency conversion
 
 There is no implicit conversion. To cross currencies, call
@@ -542,6 +600,62 @@ transactions retain the full `MinorUnits` precision. Use the method at
 the point where the total becomes a cash payment, not at every
 intermediate step.
 
+## Stochastic rounding
+
+Every rounding rule that always resolves a midpoint the same way — banker's,
+away from zero, toward zero — is deterministic and therefore *biased* over a
+long series of operations in one direction: a fee schedule that rounds a
+million half-cents down loses half a cent a million times. `MonetaryContext`
+carries the rounding rule as an `IRoundingStrategy`, and
+<xref:Bodu.Financial.StochasticRoundingStrategy> is the alternative to
+<xref:Bodu.Financial.MidpointRoundingStrategy>: it rounds *up* with probability
+equal to the discarded fraction and *down* otherwise, so the expected value of
+each rounding equals the raw amount and the drift cancels out in aggregate.
+
+That property costs determinism. Two roundings of the same input may differ,
+which is exactly what makes the strategy unsuitable for anything a reader must
+be able to recompute — an invoice line, a tax figure, a ledger posting — and
+suitable for statistical allocations, simulations, and internal rebalancing
+where the *sum* matters more than any one row. The draw comes from an injected
+sampler, so a test can pin the direction, and a seeded `Random` gives a
+reproducible sequence:
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+// Production: unbiased rounding drawn from Random.Shared.
+var context = new MonetaryContext { Rounding = StochasticRoundingStrategy.Shared };
+
+var unitPrice = new Money<USD>(0.10m);
+Money<USD> lineTotal = unitPrice.Multiply(0.35m, context);   // 0.035 rounds to 0.03 or 0.04 — 50/50 here
+
+// Over many roundings the mean converges on the raw amount; a fixed midpoint rule would drift.
+decimal raw = 0.035m;
+decimal sum = 0m;
+for (int i = 0; i < 10_000; i++)
+    sum += context.Round(raw, 2);
+Console.WriteLine($"{lineTotal}; mean {sum / 10_000m:0.0000} vs raw {raw}");   // mean ≈ 0.0350
+
+// Tests: inject a sampler so the direction is deterministic.
+var alwaysUp = new StochasticRoundingStrategy(() => 0.0);     // draw < fraction ⇒ round up
+var alwaysDown = new StochasticRoundingStrategy(() => 0.999); // draw ≥ fraction ⇒ round down
+Console.WriteLine(alwaysUp.Round(1.001m, 2));    // 1.01
+Console.WriteLine(alwaysDown.Round(1.999m, 2));  // 1.99
+
+// Seeded: reproducible sequence without being a fixed direction.
+var random = new Random(42);
+var seeded = new StochasticRoundingStrategy(random.NextDouble);
+Console.WriteLine(seeded.Round(2.345m, 2));
+```
+
+The rule is applied on the number line — "up" is toward positive infinity —
+so negative amounts are unbiased in the same way as positive ones, and a value
+already exact at the target scale is returned unchanged. `Shared` is backed by
+`Random.Shared` and safe for concurrent use; a strategy over your own `Random`
+instance is only as thread-safe as that instance. The sampler must return a
+value in `[0, 1)`; the scale must be between `0` and `28`.
+
 ## Historic currencies
 
 The shipped catalogue includes 29 demonetized currencies — the
@@ -661,6 +775,91 @@ Money<USD> totalInUsd = wallet.ConvertTo<USD>(table);
 and falls back to the inverse rate `1 / rate` when only the reverse
 pair is in the table, so a typical "USD → X" set of rates is enough
 to convert in both directions.
+
+### Auditable bag conversion
+
+`ConvertTo<TTarget>` answers "what is this bag worth in AUD?" and nothing
+else. When the answer has to be *explained* — a month-end revaluation, a
+customer statement, a reconciliation — `ConvertToWithAudit<TTarget>` returns
+the same total together with one
+<xref:Bodu.Financial.MoneyBagConversionLine> per source currency: the raw
+balance, the exact <xref:Bodu.Financial.ExchangeRates.RateLookupResult> that
+was used (or `null` for the identity pass-through of the target currency
+itself), and the unrounded contribution to the total. Because the lookup
+result is carried whole, each line records which provider answered, which
+date actually resolved, and how far it was from the date you asked for:
+
+```csharp
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+
+MoneyBag ledger = MoneyBag.Empty
+    .Add(new Money<AUD>(1_000m))
+    .Add(new Money<EUR>(250m))
+    .Add(new Money<USD>(400m));
+
+IDatedRateProvider rates = new FixedDatedRateProvider(new[]
+{
+    new ExchangeRate(CurrencyCode.EUR, CurrencyCode.AUD, new DateOnly(2024, 3, 14), 1.6520m, "Treasury"),
+    new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 3, 15), 1.5180m, "Treasury"),
+});
+
+MoneyBagConversionAudit<AUD> audit = ledger.ConvertToWithAudit<AUD>(
+    rates, new DateOnly(2024, 3, 15), RateLookupOptions.PreviousWithin(3));
+
+Console.WriteLine(audit.Total);   // AUD 2,020.20 = 1000 + 250×1.6520 + 400×1.5180
+
+foreach (MoneyBagConversionLine line in audit.Lines)   // ISO-lexicographic: AUD, EUR, USD
+{
+    if (line.Rate is null)
+    {
+        Console.WriteLine($"{line.SourceIsoCode} {line.SourceAmount} -> identity");
+        continue;
+    }
+
+    RateLookupResult lookup = line.Rate.Value;
+    Console.WriteLine(
+        $"{line.SourceIsoCode} {line.SourceAmount} × {lookup.Rate.Rate} ({lookup.Rate.Provider}, " +
+        $"{lookup.Resolution} {lookup.Rate.Date:yyyy-MM-dd}, offset {lookup.OffsetDays}d) = {line.RawConvertedAmount}");
+}
+// AUD 1000 -> identity
+// EUR 250 × 1.6520 (Treasury, PreviousOnOrBefore 2024-03-14, offset 1d) = 413.0000
+// USD 400 × 1.5180 (Treasury, PreviousOnOrBefore 2024-03-15, offset 0d) = 607.2000
+```
+
+The audit is a `readonly record struct` of `(Total, Lines)`; `Lines` is in
+ISO-lexicographic order, the same order the bag itself enumerates, so a
+report built from it is stable across runs. The dated
+<xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> is required — an
+audit without a resolved date is not one — and any date-resolution policy the
+provider accepts can be passed; `null` means `RateLookupOptions.Exact`.
+
+The optional last argument, a
+<xref:Bodu.Financial.MoneyBagConversionRoundingPolicy>, decides *where* the
+target currency's rounding happens. `SumRawThenRound` (the default) adds the
+unrounded contributions and rounds once; `RoundEachCurrencyThenSum` rounds
+each line to the target's minor units first. The two differ by at most a few
+minor units, but they differ, and a statement whose lines are shown rounded
+must add up to its total:
+
+```csharp
+MoneyBag ledger = MoneyBag.Empty.Add(new Money<EUR>(10m)).Add(new Money<USD>(10m));
+IDatedRateProvider rates = new FixedDatedRateProvider(new[]
+{
+    new ExchangeRate(CurrencyCode.EUR, CurrencyCode.AUD, new DateOnly(2024, 3, 15), 1.6505m, "Treasury"),   // 16.505 raw
+    new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, new DateOnly(2024, 3, 15), 1.5005m, "Treasury"),   // 15.005 raw
+});
+
+Money<AUD> sumThenRound = ledger.ConvertToWithAudit<AUD>(rates, new DateOnly(2024, 3, 15), null).Total;
+Money<AUD> roundEachThenSum = ledger.ConvertToWithAudit<AUD>(
+    rates, new DateOnly(2024, 3, 15), null, MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum).Total;
+
+Console.WriteLine($"{sumThenRound} vs {roundEachThenSum}");   // AUD 31.51 vs AUD 31.50 — the half-cents round away separately
+```
+
+The same policy parameter is accepted by the plain `ConvertTo<TTarget>` overloads,
+so a bag can be totalled line-rounded without producing the audit.
 
 ## Currencies outside the shipped catalogue
 
