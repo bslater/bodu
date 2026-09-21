@@ -61,19 +61,35 @@ public static class PocoTorrent
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Typed layer: BencodeSerializer -> POCO graph ---");
+        SampleConsole.Scenario(
+            "Typed layer - BencodeSerializer onto a POCO graph",
+            what: "Deserializes the same torrent into a two-class object graph, reads the fields as ordinary "
+                + "properties, and serializes the graph back to compare against the original file.",
+            why: "Once the shape is known, a typed model beats cursor-walking: the keys are validated in one "
+                + "place, the values arrive as the right CLR types, and the rest of the program is ordinary C#. "
+                + "Two things are worth noticing in the model. Torrent keys contain spaces, so they cannot be C# "
+                + "identifiers - [PropertyName] carries the wire name, which is the mechanism for every format "
+                + "whose keys are not identifiers. And 'pieces' binds to byte[] rather than string, because "
+                + "Bencode byte strings are not text; choosing string there would corrupt the hashes on the way "
+                + "in and again on the way out.",
+            expect: "The re-serialized bytes equal the original file. That is a stronger result than it looks - "
+                + "it means the serializer emitted the same canonical key order and preserved the binary value "
+                + "intact, so a torrent can be deserialized, inspected, and written back without changing its "
+                + "info-hash.");
 
         var bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "sample.torrent"));
         var torrent = BencodeSerializer.Deserialize<TorrentMeta>(bytes);
 
-        Console.WriteLine($"announce   : {torrent.Announce}");
-        Console.WriteLine($"created by : {torrent.CreatedBy} at {DateTimeOffset.FromUnixTimeSeconds(torrent.CreationDate):yyyy-MM-dd}");
-        Console.WriteLine($"payload    : {torrent.Info.Name} ({torrent.Info.Length} bytes, {torrent.Info.Pieces.Length / 20} pieces)");
+        Console.WriteLine($"  announce   : {torrent.Announce}");
+        Console.WriteLine($"  created by : {torrent.CreatedBy} at {DateTimeOffset.FromUnixTimeSeconds(torrent.CreationDate):yyyy-MM-dd}");
+        Console.WriteLine($"  payload    : {torrent.Info.Name} ({torrent.Info.Length} bytes, {torrent.Info.Pieces.Length / 20} pieces)"
+            + "  (Pieces bound to byte[], so the 20-byte SHA-1 hashes survive the trip through the object model)");
 
         // Canonical encoding means the POCO round trip is also byte-exact: the serializer
         // re-emits the same sorted keys and the same binary 'pieces' value.
         var reEncoded = BencodeSerializer.Serialize(torrent);
-        Console.WriteLine($"round trip : {reEncoded.Length} bytes, byte-identical -> {reEncoded.AsSpan().SequenceEqual(bytes)}");
+        Console.WriteLine($"  round trip : {reEncoded.Length} bytes, byte-identical -> {reEncoded.AsSpan().SequenceEqual(bytes)}"
+            + "  (expected True - deserialize, inspect and re-serialize without changing the torrent's identity)");
 
         Console.WriteLine();
     }
