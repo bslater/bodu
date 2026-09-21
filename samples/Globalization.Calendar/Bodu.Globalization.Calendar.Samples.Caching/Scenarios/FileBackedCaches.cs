@@ -21,7 +21,21 @@ public static class FileBackedCaches
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- JsonNotableDateCache / TomlNotableDateCache: durable file backends ---");
+        SampleConsole.Scenario(
+            "Durable file backends - starting warm in a new process",
+            what: "Resolves a year through a JSON-file cache and lists the files written, then builds a "
+                + "completely fresh service over the same directory and resolves the same range, counting engine "
+                + "work each time - and finally writes the same data through the TOML backend.",
+            why: "An in-memory cache is empty at every process start, which is exactly when a service is least "
+                + "able to absorb the work - a deployment restarts every instance at once, and each one "
+                + "re-resolves every year it serves. A file-backed cache survives the restart, so the cost is "
+                + "paid once per data version rather than once per process. Two file formats ship because the "
+                + "choice is about who reads the file: JSON is the default, while TOML is worth having when the "
+                + "cache is committed or inspected, since it diffs legibly. The second service instance here "
+                + "stands in for the new process, which is what makes the claim testable offline.",
+            expect: "The first instance does the engine work and leaves files behind. The second - a brand-new "
+                + "service with its own counter - serves the same range with zero engine resolutions, having "
+                + "read only what the first wrote. The TOML backend is a constructor swap, nothing more.");
 
         string cacheDirectory = Path.Combine(Path.GetTempPath(), "bodu-calendar-cache-sample");
         if (Directory.Exists(cacheDirectory))
@@ -37,16 +51,20 @@ public static class FileBackedCaches
             _ = first.Resolve(range, "NZ");
         }
 
-        Console.WriteLine($"First instance resolved from the engine: {firstEngine.RangeResolutions} resolution(s)");
+        Console.WriteLine($"  First instance resolved from the engine: {firstEngine.RangeResolutions} resolution(s)"
+            + "  (the cold path, and the only time the rules run)");
         foreach (string file in Directory.EnumerateFiles(cacheDirectory, "*", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
-            Console.WriteLine($"  cache file: {Path.GetFileName(file)}");
+            Console.WriteLine($"    cache file: {Path.GetFileName(file)}");
+
+        Console.WriteLine("  (one file per territory, holding its cached years - this is what survives the process exit)");
 
         // Second "process": a brand-new service over the same directory starts warm - the engine is never hit.
         var secondEngine = new CountingNotableDateService(AsiaPacificCalendarData.CreateService("NZ"));
         using (var second = new CachingNotableDateService(secondEngine, new JsonNotableDateCache(options), new NotableDateCachingOptions()))
         {
             var occurrences = second.Resolve(range, "NZ");
-            Console.WriteLine($"Second instance served {occurrences.Count} occurrences with {secondEngine.RangeResolutions} engine resolution(s)");
+            Console.WriteLine($"  Second instance served {occurrences.Count} occurrences with {secondEngine.RangeResolutions} engine resolution(s)"
+                + "  (expected 0 - a brand-new service with its own counter, standing in for a new process, starts warm)");
         }
 
         // The TOML backend is a drop-in swap when human-readable/diffable cache files are preferred.
@@ -58,7 +76,9 @@ public static class FileBackedCaches
         }
 
         foreach (string file in Directory.EnumerateFiles(tomlDirectory).OrderBy(f => f, StringComparer.Ordinal))
-            Console.WriteLine($"  toml cache file: {Path.GetFileName(file)}");
+            Console.WriteLine($"    toml cache file: {Path.GetFileName(file)}");
+
+        Console.WriteLine("  (a constructor swap and nothing else - worth it when the cache is committed or inspected, since TOML diffs legibly)");
 
         Directory.Delete(cacheDirectory, recursive: true);
         Console.WriteLine();
