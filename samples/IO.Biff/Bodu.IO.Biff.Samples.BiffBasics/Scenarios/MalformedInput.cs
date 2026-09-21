@@ -21,7 +21,19 @@ public static class MalformedInput
     /// <param name="stream">A well-formed workbook stream to damage.</param>
     public static void Run(byte[] stream)
     {
-        Console.WriteLine("--- Malformed input ---");
+        SampleConsole.Scenario(
+            "Malformed input",
+            what: "Feeds the reader truncated and structurally invalid streams and reports how each failure is "
+                + "classified.",
+            why: "A codec reading untrusted binary has to fail predictably, and the distinction that matters is "
+                + "between a stream this codec cannot represent - an unsupported version, which is a different "
+                + "conversation - and one that is simply broken. Separating those into distinct exception types "
+                + "lets a consumer retry, report or reject appropriately instead of treating every failure as "
+                + "corruption. Carrying the byte offset matters for the same reason: 'this file is bad' is not "
+                + "actionable, 'this file is bad at offset 4,120' is.",
+            expect: "Each malformed input produces a specific exception rather than an out-of-range or a null "
+                + "reference, with a byte offset locating the problem - and an unsupported version is "
+                + "distinguished from corruption rather than conflated with it.");
 
         int cut = FindLongRecord(stream);
 

@@ -19,7 +19,19 @@ public static class CellsAndSharedStrings
     /// <param name="stream">The workbook stream bytes.</param>
     public static void Run(byte[] stream)
     {
-        Console.WriteLine("--- Cells and shared strings ---");
+        SampleConsole.Scenario(
+            "Cells and the shared string table",
+            what: "Decodes the cell records through their typed accessors and resolves label cells through the "
+                + "shared string table, which is walked across its continuation records.",
+            why: "BIFF8 stores most strings once in a shared table and has cells reference them by index, which "
+                + "is why a label cell on its own is meaningless. The table itself is the awkward part: it can be "
+                + "longer than the format's maximum record size, so it spans continuation records, and a string "
+                + "can be split across that boundary mid-character. Handling that in the codec rather than "
+                + "leaving it to consumers is the difference between a reader that works on small files and one "
+                + "that works.",
+            expect: "Label cells resolve to their text through the table rather than reporting an index, and the "
+                + "table is read correctly across its continuation boundaries - the fragmentation is reported but "
+                + "does not need handling by the caller.");
 
         var reader = new BiffReader(stream);
         var sheets = new List<(string Name, uint Offset)>();
