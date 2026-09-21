@@ -21,7 +21,21 @@ public static class SaveRoundTrip
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Save: mutate + write, comments preserved ---");
+        SampleConsole.Scenario(
+            "Saving - mutate, append, write, and re-resolve",
+            what: "Edits a value in an existing section, composes a new document with an extra section appended, "
+                + "saves it, counts the comment lines that survived, and resolves a path from the written file.",
+            why: "A configuration file a program writes back is usually a file a person also edits, and the "
+                + "failure mode is a tool that reformats or silently strips the comments explaining why a setting "
+                + "is there. This document model is trivia-preserving underneath, so an edit changes the value it "
+                + "was asked to change and leaves everything else - including comments and spacing - as the "
+                + "author wrote it. The read-only surface deliberately does not grow sections: adding one is a "
+                + "structural change, so it goes through composing a document rather than mutating in place, "
+                + "which keeps accidental structural edits out of the common path.",
+            expect: "The comment lines are still in the saved file - the edit touched one value, not the "
+                + "formatting around it. Re-loading the written file and resolving a path that only the appended "
+                + "section matches proves the round trip produced a file the parser accepts, not just text that "
+                + "looks right.");
 
         var document = ConfigurationDocument.Load(Path.Combine(AppContext.BaseDirectory, "Data", "sample.boduconfig"));
 
@@ -42,12 +56,14 @@ public static class SaveRoundTrip
 
         var savedText = File.ReadAllText(savedPath);
         var commentLines = savedText.Split('\n').Count(l => l.TrimStart().StartsWith('#'));
-        Console.WriteLine($"saved {savedText.Length} chars to {Path.GetFileName(savedPath)}; comment lines preserved: {commentLines}");
+        Console.WriteLine($"  saved {savedText.Length} chars to {Path.GetFileName(savedPath)}; comment lines preserved: {commentLines}"
+            + "  (the comments the author wrote survive the edit - a config writer that strips them is a config writer people turn off)");
 
         // The saved file resolves like the original, plus the new section.
         var reloaded = ConfigurationDocument.Load(savedPath);
         var view = reloaded.Resolve("docs/guide/intro.md");
-        Console.WriteLine($"re-resolved docs/guide/intro.md: max_line_length = {view.GetInt32("max_line_length")}");
+        Console.WriteLine($"  re-resolved docs/guide/intro.md: max_line_length = {view.GetInt32("max_line_length")}"
+            + "  (the value comes from the appended section, so the written file really parses - not just looks right)");
 
         File.Delete(savedPath);
 
