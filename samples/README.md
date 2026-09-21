@@ -72,7 +72,7 @@ change to the libraries alters it, the README review catches the drift alongside
 | Domain | Samples |
 |---|---|
 | Core | [`samples/Core/`](Core/README.md) — the functional railway (Option/Result/Either/Memoizer), the utility toolbox (sequences, pooled buffers, enumerable/string/numeric extensions, WeekPattern, async primitives), and text-encoding detection/transcoding |
-| Collections | [`samples/Collections/`](Collections/README.md) — the specialized collection catalogue, ranges/graphs/trees/Aho-Corasick, and the probabilistic sketches (Bloom, count-min, HyperLogLog) |
+| Collections | [`samples/Collections/`](Collections/README.md) — the specialized collection catalogue (including the expiring cache, the dictionary decorators, and the two-key table), ranges/graphs/trees/Aho-Corasick, the probabilistic sketches (Bloom, count-min, HyperLogLog), and the packed `BitSet` |
 | Collections.Concurrent | [`samples/Collections.Concurrent/`](Collections.Concurrent/README.md) — the thread-safe variants with single-flight GetOrAdd and a deterministic parallel-safety demo |
 | Financial | [`samples/Financial/`](Financial/README.md) — money arithmetic, offline exchange rates, caching, aggregation, DI, custom providers, JSON serialization, the live-provider exception |
 | Formats.Excel | [`samples/Formats.Excel/`](Formats.Excel/README.md) — the read-only BIFF8 `.xls` reader: sheet directory, forward-only streaming, materialized worksheets, serial-date decoding |

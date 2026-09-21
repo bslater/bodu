@@ -42,8 +42,22 @@ public static class MultiMapsAndSets
         map.Add("fruit", "apple"); // duplicate value is kept with a List backing
 
         // Indexing a key returns the read-only value list; keys are printed sorted for stable output.
+        Console.WriteLine($"  backing {map.Backing}:");
         foreach (var key in map.Keys.OrderBy(k => k, StringComparer.Ordinal))
             Console.WriteLine($"  {key,-6}: [{string.Join(", ", map[key])}]");
+
+        // MultiValueBacking.Set switches the same type from a list multimap to an order-preserving set multimap:
+        // values are deduplicated per key using ValueComparer, and each value keeps the position of its first
+        // occurrence. The trade-off is a linear scan of the key's values on every add.
+        var deduplicating = new MultiValueDictionary<string, string>(MultiValueBacking.Set, StringComparer.Ordinal);
+        deduplicating.Add("fruit", "apple");
+        deduplicating.Add("fruit", "banana");
+        deduplicating.Add("veg", "carrot");
+        deduplicating.Add("fruit", "apple"); // dropped - "apple" is already filed under "fruit"
+
+        Console.WriteLine($"  backing {deduplicating.Backing}:");
+        foreach (var key in deduplicating.Keys.OrderBy(k => k, StringComparer.Ordinal))
+            Console.WriteLine($"  {key,-6}: [{string.Join(", ", deduplicating[key])}]");
     }
 
     /// <summary>
