@@ -23,7 +23,19 @@ public static class CalculatedMoneyScenario
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- CalculatedMoney: deferred arithmetic, settle once ---");
+        SampleConsole.Scenario(
+            "CalculatedMoney - deferring rounding until settlement",
+            what: "Runs a multi-step calculation through CalculatedMoney, keeping full precision across the "
+                + "intermediate values, and settles the result once at the end.",
+            why: "An intermediate value in a pricing or interest calculation is not an amount anybody holds, so "
+                + "rounding it to the currency's minor unit asserts something untrue and loses precision for "
+                + "nothing. Making that a distinct type rather than an option on Money is the important part: "
+                + "an unrounded value cannot be mistaken for a settled one, cannot be stored in a ledger by "
+                + "accident, and has to be explicitly settled before it becomes an amount - so the rounding "
+                + "point is visible in the code rather than implied by the absence of a call.",
+            expect: "The settled result differs from what per-step rounding would produce, and the settlement "
+                + "is a single explicit call. The type will not silently become a Money - the conversion is "
+                + "where the rounding decision is made and recorded.");
 
         // Three line items enter the calculation as full-precision carriers. Adding CalculatedMoney
         // values keeps every digit - nothing is rounded to cents yet.
@@ -44,9 +56,9 @@ public static class CalculatedMoneyScenario
         Money banker = perPerson.RoundToMoney();
         Money awayFromZero = perPerson.RoundToMoney(MidpointRounding.AwayFromZero);
 
-        Console.WriteLine($"Settle (banker's)     : {banker}");
-        Console.WriteLine($"Settle (away-from-0)  : {awayFromZero}");
-        Console.WriteLine("13.465 is a half-cent midpoint: banker's takes the even neighbour, away-from-zero rounds up.");
+        Console.WriteLine($"  Settle (banker's)     : {banker}");
+        Console.WriteLine($"  Settle (away-from-0)  : {awayFromZero}");
+        Console.WriteLine("  13.465 is a half-cent midpoint: banker's takes the even neighbour, away-from-zero rounds up.");
 
         Console.WriteLine();
     }

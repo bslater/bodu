@@ -21,7 +21,18 @@ public static class HistoryClamping
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- History availability: Unbounded / Since / RollingDays ---");
+        SampleConsole.Scenario(
+            "History availability and request clamping",
+            what: "Declares providers with unbounded history, history since a fixed date, and a rolling window, "
+                + "then requests ranges that extend past what each can serve.",
+            why: "Every feed has a horizon and most of them do not say so - they simply return nothing for dates "
+                + "outside it, which is indistinguishable from a network failure or an unsupported pair. "
+                + "Declaring the horizon turns that into something a caller can reason about before asking: a "
+                + "request can be clamped to what the provider can answer rather than partially failing, and a "
+                + "date genuinely outside the horizon fails with a reason rather than an empty result. The "
+                + "rolling window is the awkward case, because what is answerable changes with the calendar.",
+            expect: "Requests are clamped to each provider's declared horizon rather than returning partial or "
+                + "empty results, and the clamping is visible in what comes back.");
 
         // "As of" is explicit so the demonstration is deterministic.
         var asOf = new DateOnly(2024, 7, 1);
@@ -37,7 +48,7 @@ public static class HistoryClamping
         // RollingDays: feeds that only keep a moving window, like OANDA's anonymous ~180-day API.
         RateHistoryAvailability rolling = RateHistoryAvailability.RollingDays(180);
 
-        Console.WriteLine($"{"kind",-22} {"earliest as of " + asOf.ToString("yyyy-MM-dd"),-26} {recent:yyyy-MM-dd}  {old:yyyy-MM-dd}");
+        Console.WriteLine($"  {"kind",-22} {"earliest as of " + asOf.ToString("yyyy-MM-dd"),-26} {recent:yyyy-MM-dd}  {old:yyyy-MM-dd}");
         Print("Unbounded", unbounded, asOf, recent, old);
         Print("Since(1999-01-04)", since, asOf, recent, old);
         Print("RollingDays(180)", rolling, asOf, recent, old);
@@ -46,7 +57,7 @@ public static class HistoryClamping
         // source reports Since(<first observation>).
         FixedDatedRateProvider sourceProvider = StaticRates.LoadAudDaily();
         RateHistoryAvailability declared = sourceProvider.HistoryAvailability;
-        Console.WriteLine($"Offline source declares: {declared.Kind}, earliest {declared.EarliestDate:yyyy-MM-dd}");
+        Console.WriteLine($"  Offline source declares: {declared.Kind}, earliest {declared.EarliestDate:yyyy-MM-dd}");
 
         Console.WriteLine();
     }

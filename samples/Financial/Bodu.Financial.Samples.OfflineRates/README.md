@@ -31,12 +31,14 @@ the end of the data with a 3-day tolerance to show the bound holding.
 
 **What to expect.**
 
-```
-Exact              2024-03-16 -> no observation (Saturday)
+```text
+--- Date-resolution modes ---
+
+  Exact              2024-03-16 -> no observation (Saturday)
 PreviousWithin(3)  2024-03-16 -> 2024-03-15 (PreviousOnOrBefore, offset 1d): 0.6508 [SampleData]
-NextWithin(3)      2024-03-16 -> 2024-03-18 (NextOnOrAfter, offset 2d): 0.6517 [SampleData]
-NearestWithin(3)   2024-03-16 -> 2024-03-15 (NearestPreferPrevious, offset 1d): 0.6508 [SampleData]
-PreviousWithin(3)  2024-07-15 -> outside tolerance, no result
+NextWithin(3)     2024-03-16 -> 2024-03-18 (NextOnOrAfter, offset 2d): 0.6517 [SampleData]
+NearestWithin(3)  2024-03-16 -> 2024-03-15 (NearestPreferPrevious, offset 1d): 0.6508 [SampleData]
+  PreviousWithin(3)  2024-07-15 -> outside tolerance, no result
 ```
 
 Each resolved line shows *how* the date was resolved (the resolution kind and the offset in
@@ -62,8 +64,10 @@ currency is a string. All use `PreviousWithin(5)` to tolerate weekends.
 
 **What to expect.**
 
-```
-Invoice: AUD 2,499.95 (value date 2024-03-15)
+```text
+--- Converting money with dated rates ---
+
+  Invoice: AUD 2,499.95 (value date 2024-03-15)
   -> USD 1,626.97  (ConvertTo extension)
   -> EUR 1,548.97  (typed rate 0.6196, observed 2024-03-15)
   -> JPY 244,945  (runtime Money, target chosen at run time)
@@ -82,6 +86,16 @@ prints the rate and its observation date — the two facts the typed bridge pres
 (AUD/USD, AUD/EUR, AUD/JPY — synthetic values approximating published levels; see the file
 header). The natural weekend gaps in business-day data are exactly what the LookupModes scenario
 exercises.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.OfflineRates/
+  Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/LookupModes.cs
+  Scenarios/ConvertMoney.cs
+```
 
 ## NuGet equivalent
 

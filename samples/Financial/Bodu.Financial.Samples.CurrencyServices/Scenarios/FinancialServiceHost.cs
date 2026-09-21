@@ -25,7 +25,17 @@ public static class FinancialServiceHost
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AddFinancialService host wiring ---");
+        SampleConsole.Scenario(
+            "Host wiring with AddFinancialService",
+            what: "Registers the financial services in a container, resolves them by interface, and uses them "
+                + "the way an application class would.",
+            why: "The registration exists so that currency lookup and monetary context are injected rather than "
+                + "reached for statically, which is what makes them substitutable in a test - a fixed catalogue "
+                + "and a pinned context turn a currency-dependent calculation into a deterministic one. It also "
+                + "puts the policy choices in the composition root, where they are visible once, instead of "
+                + "being rediscovered at each call site.",
+            expect: "Everything downstream depends on interfaces and none of it constructs a catalogue or a "
+                + "context itself, so a test can substitute either without touching the code under test.");
 
         var services = new ServiceCollection();
 
@@ -51,16 +61,16 @@ public static class FinancialServiceHost
         // ICurrencyLookup: resolve by ISO or ISO-4217 numeric code over the registry.
         var lookup = provider.GetRequiredService<ICurrencyLookup>();
         if (lookup.TryByNumericCode(36, out CurrencyInfo byNumber))
-            Console.WriteLine($"Numeric 036   : {byNumber.IsoCode} ({byNumber.EnglishName})");
+            Console.WriteLine($"  Numeric 036   : {byNumber.IsoCode} ({byNumber.EnglishName})");
 
         // The keyed JsonSerializerOptions carry the configured financial policy (Compact here).
         var json = provider.GetRequiredKeyedService<JsonSerializerOptions>(FinancialJsonServiceCollectionExtensions.JsonOptionsKey);
-        Console.WriteLine($"Financial JSON: {JsonSerializer.Serialize(Money.Of<USD>(19.99m), json)}  (Compact policy)");
+        Console.WriteLine($"  Financial JSON: {JsonSerializer.Serialize(Money.Of<USD>(19.99m), json)}  (Compact policy)");
 
         // The registered provider serves rate lookups for consumers depending on IDatedRateProvider.
         var rates = provider.GetRequiredService<IDatedRateProvider>();
         RateLookupResult rate = rates.GetRate("AUD", "USD", new DateOnly(2024, 3, 15));
-        Console.WriteLine($"AUD/USD       : {rate.Rate.Rate} [{rate.Rate.Provider}]");
+        Console.WriteLine($"  AUD/USD       : {rate.Rate.Rate} [{rate.Rate.Provider}]");
 
         Console.WriteLine();
     }

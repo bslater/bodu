@@ -24,7 +24,18 @@ public static class TieredStacking
     /// <param name="cacheDirectory">The directory used for file-backed caches in this run.</param>
     public static void Run(string cacheDirectory)
     {
-        Console.WriteLine("--- Tiered stacking: in-memory L1 over durable file L2 ---");
+        SampleConsole.Scenario(
+            "Tiered caching - in-memory over a durable file cache",
+            what: "Stacks an in-memory cache over a file-backed one over the provider, and traces which tier "
+                + "answers each of a series of lookups.",
+            why: "The two caches solve different problems and neither replaces the other. In-memory is fastest "
+                + "and empty at every process start; a file cache survives the restart but costs disk I/O per "
+                + "read. Stacking them means a warm process pays neither the disk nor the network, a cold process "
+                + "pays disk rather than network, and only a genuinely new date reaches the feed. Because each "
+                + "tier is the same decorator over the same interface, the stack is a composition rather than a "
+                + "special case.",
+            expect: "Each lookup reports the tier that served it, and the underlying provider is reached only "
+                + "for data neither cache held.");
 
         var source = new CountingRateProvider(StaticRates.LoadAudDaily());
 
@@ -43,11 +54,11 @@ public static class TieredStacking
 
             // Miss everywhere: the call falls through L1 -> L2 -> source, and both tiers store it.
             l1.GetRate("AUD", "USD", date);
-            Console.WriteLine($"Cold lookup     : source calls {source.CallCount} (filled L1 and L2)");
+            Console.WriteLine($"  Cold lookup     : source calls {source.CallCount} (filled L1 and L2)");
 
             // L1 hit: nothing below is touched.
             l1.GetRate("AUD", "USD", date);
-            Console.WriteLine($"Warm lookup     : source calls {source.CallCount} (served by L1)");
+            Console.WriteLine($"  Warm lookup     : source calls {source.CallCount} (served by L1)");
         }
 
         // A "new process": fresh L1 memory, same durable L2 directory. The lookup misses L1 but is
@@ -55,7 +66,7 @@ public static class TieredStacking
         using (var l1Rebuilt = new CachingRateProvider(l2, new InMemoryRateCache(StaticRates.ProviderName), new CachingRateOptions()))
         {
             RateLookupResult result = l1Rebuilt.GetRate("AUD", "USD", new DateOnly(2024, 5, 20));
-            Console.WriteLine($"After 'restart' : source calls {source.CallCount} (served by L2, origin {result.Provenance.Origin})");
+            Console.WriteLine($"  After 'restart' : source calls {source.CallCount} (served by L2, origin {result.Provenance.Origin})");
         }
 
         Console.WriteLine();

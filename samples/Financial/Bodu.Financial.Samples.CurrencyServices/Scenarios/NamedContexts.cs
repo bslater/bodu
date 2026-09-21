@@ -21,7 +21,18 @@ public static class NamedContexts
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Named monetary contexts ---");
+        SampleConsole.Scenario(
+            "Named monetary contexts",
+            what: "Registers several named contexts with different rounding and currency settings and resolves "
+                + "amounts under each.",
+            why: "One process often needs more than one monetary policy: a trading desk and a retail ledger in "
+                + "the same service round differently and settle in different currencies, and neither should "
+                + "have to know about the other. Naming the contexts keeps each policy in one place and makes "
+                + "the choice at the call site a name rather than a bundle of options - which matters because "
+                + "options passed individually drift apart, and two code paths that were meant to share a "
+                + "rounding rule quietly stop doing so.",
+            expect: "The same amount resolves differently under each named context, with the difference coming "
+                + "from the named policy rather than from arguments at the call site.");
 
         // Contexts are records: derive variants from Default with `with` overrides. Retail settles
         // away-from-zero (customer-friendly cash totals); Treasury keeps banker's rounding.
@@ -33,9 +44,9 @@ public static class NamedContexts
 
         // The same computed amount settles differently under each policy.
         var computed = new CalculatedMoney(19.985m, CurrencyCode.USD);
-        Console.WriteLine($"Computed value : {computed.Amount} USD (unrounded)");
-        Console.WriteLine($"Retail  settle : {computed.RoundToMoney(retail)}   (away from zero)");
-        Console.WriteLine($"Treasury settle: {computed.RoundToMoney(treasury)}   (banker's rounding)");
+        Console.WriteLine($"  Computed value : {computed.Amount} USD (unrounded)");
+        Console.WriteLine($"  Retail  settle : {computed.RoundToMoney(retail)}   (away from zero)");
+        Console.WriteLine($"  Treasury settle: {computed.RoundToMoney(treasury)}   (banker's rounding)");
 
         // Register the contexts by name; consumers take [FromKeyedServices("Retail")] MonetaryContext
         // (or resolve keyed, as here) instead of hard-coding policy at each call site.
@@ -47,7 +58,7 @@ public static class NamedContexts
         using ServiceProvider provider = services.BuildServiceProvider();
 
         var resolved = provider.GetRequiredKeyedService<MonetaryContext>("Retail");
-        Console.WriteLine($"Keyed \"Retail\" : {computed.RoundToMoney(resolved)}   (resolved from DI)");
+        Console.WriteLine($"  Keyed \"Retail\" : {computed.RoundToMoney(resolved)}   (resolved from DI)");
 
         Console.WriteLine();
     }

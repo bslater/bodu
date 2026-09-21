@@ -21,7 +21,18 @@ public static class LookupModes
     /// <param name="source">The dated provider to query.</param>
     public static void Run(IDatedRateProvider source)
     {
-        Console.WriteLine("--- RateLookupOptions: date-resolution modes ---");
+        SampleConsole.Scenario(
+            "Date-resolution modes",
+            what: "Asks for a rate on a date with no published fixing under each resolution mode - exact, "
+                + "previous within a tolerance, and the others - and reports what each returns.",
+            why: "Markets are closed on weekends and holidays, so a rate for a given calendar date frequently "
+                + "does not exist, and what should happen is a business question rather than a technical one. A "
+                + "valuation may legitimately use the prior business day; a settlement at a contractually named "
+                + "date may not. Making the mode explicit stops the library from choosing on the caller's behalf, "
+                + "and the result reports the date it actually resolved to along with the offset - so a "
+                + "substitution is recorded rather than silent, which is what makes it auditable.",
+            expect: "The same request gives different answers per mode, including no answer under the exact "
+                + "mode. Where a substitution happened the result names the date used and how far it moved.");
 
         // 2024-03-16 is a Saturday: the series has observations on Friday the 15th and Monday the 18th,
         // but nothing on the requested date itself.
@@ -30,7 +41,7 @@ public static class LookupModes
         // Exact (the default): only the requested date satisfies the lookup. TryGetRate reports the
         // miss instead of throwing; GetRate would throw KeyNotFoundException.
         if (!source.TryGetRate("AUD", "USD", saturday, RateLookupOptions.Exact, out _))
-            Console.WriteLine($"Exact              {saturday:yyyy-MM-dd} -> no observation (Saturday)");
+            Console.WriteLine($"  Exact              {saturday:yyyy-MM-dd} -> no observation (Saturday)");
 
         // PreviousWithin(n): walk backwards up to n days — the classic "most recent published rate"
         // rule used for valuations.
@@ -45,7 +56,7 @@ public static class LookupModes
         // A tolerance is a hard bound: three days beyond the end of the data set finds nothing.
         var afterData = new DateOnly(2024, 7, 15);
         if (!source.TryGetRate("AUD", "USD", afterData, RateLookupOptions.PreviousWithin(3), out _))
-            Console.WriteLine($"PreviousWithin(3)  {afterData:yyyy-MM-dd} -> outside tolerance, no result");
+            Console.WriteLine($"  PreviousWithin(3)  {afterData:yyyy-MM-dd} -> outside tolerance, no result");
 
         Console.WriteLine();
     }

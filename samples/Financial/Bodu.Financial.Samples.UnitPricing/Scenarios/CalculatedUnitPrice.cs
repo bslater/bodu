@@ -24,7 +24,18 @@ public static class CalculatedUnitPrice
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- CalculatedMoney: unrounded unit price on the wire ---");
+        SampleConsole.Scenario(
+            "CalculatedMoney - carrying an unrounded unit price",
+            what: "Derives a unit price by division, keeps it unrounded through the line-item arithmetic, and "
+                + "settles once at the invoice total.",
+            why: "A unit price obtained by dividing a total by a quantity almost never lands on a payable "
+                + "amount, and rounding it there is the classic invoice bug: the rounded unit price times the "
+                + "quantity no longer equals the total it came from. Keeping it as a calculated value means the "
+                + "division is exact until the one place a settled amount is actually needed. That the type is "
+                + "distinct from Money is what prevents the intermediate value being stored or displayed as "
+                + "though it were an amount someone owes.",
+            expect: "The line extension reconciles to the original total, which it would not if the unit price "
+                + "had been rounded to the currency's minor unit first.");
 
         var options = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Strict);
 
@@ -35,7 +46,7 @@ public static class CalculatedUnitPrice
         CalculatedMoney restored = JsonSerializer.Deserialize<CalculatedMoney>(json, options);
 
         Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Unit price (unrounded) : {0} USD", unitPrice.Amount));
-        Console.WriteLine($"Serialized             : {json}");
+        Console.WriteLine($"  Serialized             : {json}");
         Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Deserialized           : {0} USD", restored.Amount));
 
         // Multiply by a quantity while still unrounded, then settle to the currency's minor units exactly once - the
@@ -45,7 +56,7 @@ public static class CalculatedUnitPrice
         Money settled = lineTotal.RoundToMoney();
 
         Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "x {0:N0} units (unrounded): {1} USD", quantity, lineTotal.Amount));
-        Console.WriteLine($"Settled line total     : {settled.ToString("R")}");
+        Console.WriteLine($"  Settled line total     : {settled.ToString("R")}");
 
         Console.WriteLine();
     }

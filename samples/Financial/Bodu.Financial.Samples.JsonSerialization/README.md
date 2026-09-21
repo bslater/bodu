@@ -26,13 +26,11 @@ amount), a `Money` (runtime-typed amount carrying its `CurrencyCode`), and a two
 **What to expect.**
 
 ```text
---- Register converters: Money, Money<TCurrency>, MoneyBag ---
-Money<USD> : {"amount":19.99,"currency":"USD"}
-           -> USD 19.99 (round-trips equal: True)
-Money      : {"amount":12.34,"currency":"EUR"}
-           -> EUR 12.34 (round-trips equal: True)
-MoneyBag   : {"balances":{"EUR":12.34,"USD":19.99}}
-           -> USD 19.99, EUR 12.34
+--- Registering the converters ---
+
+  Money<USD> : {"amount":19.99,"currency":"USD"}
+  Money      : {"amount":12.34,"currency":"EUR"}
+  MoneyBag   : {"balances":{"EUR":12.34,"USD":19.99}}
 ```
 
 `Money` and `Money<USD>` are value types, so a failed round-trip would show `False`; both report
@@ -57,10 +55,9 @@ prints the reconstructed fields.
 
 ```text
 --- ExchangeRate and CurrencyPair round-trips ---
-ExchangeRate : {"from":"USD","to":"JPY","date":"2024-03-15","rate":148.25,"provider":"SampleFeed","isInverted":false}
-             -> USD/JPY @ 148.25 on 2024-03-15 [SampleFeed]
-CurrencyPair : {"from":"EUR","to":"USD"}
-             -> EUR/USD (round-trips equal: True)
+
+  ExchangeRate : {"from":"USD","to":"JPY","date":"2024-03-15","rate":148.25,"provider":"SampleFeed","isInverted":false}
+  CurrencyPair : {"from":"EUR","to":"USD"}
 ```
 
 The Strict `ExchangeRate` shape is the full canonical object (`from`/`to`/`date`/`rate`/`provider`/
@@ -84,16 +81,17 @@ Finally it deserializes `{"amount":12.34,"currency":"  usd  "}` under the Lenien
 **What to expect.**
 
 ```text
---- Policy shapes: Strict vs Lenient vs Compact ---
-Strict :
+--- Policy shapes - Strict, Lenient, and Compact ---
+
+  Strict :
   Money<USD>   {"amount":19.99,"currency":"USD"}
   MoneyBag     {"balances":{"EUR":12.34,"USD":19.99}}
   ExchangeRate {"from":"USD","to":"JPY","date":"2024-03-15","rate":148.25,"provider":"SampleFeed","isInverted":false}
-Compact :
+  Compact :
   Money<USD>   "19.99 USD"
   MoneyBag     {"EUR":12.34,"USD":19.99}
   ExchangeRate {"pair":"USD/JPY","date":"2024-03-15","rate":148.25,"provider":"SampleFeed"}
-Lenient :
+  Lenient :
   read {"currency":"  usd  "} -> USD 12.34
 ```
 
@@ -121,11 +119,12 @@ the same singleton comes back.
 **What to expect.**
 
 ```text
---- DI keyed JsonSerializerOptions (key "Financial") ---
-Resolved key : "Financial"
-Money<USD>   : "19.99 USD"
-MoneyBag     : {"EUR":12.34,"USD":19.99}
-Same instance: True
+--- Keyed JsonSerializerOptions in a container ---
+
+  Resolved key : "Financial"
+  Money<USD>   : "19.99 USD"
+  MoneyBag     : {"EUR":12.34,"USD":19.99}
+  Same instance: True
 ```
 
 The serialized output is the Compact shape because the *keyed options* carry the policy passed at
@@ -143,6 +142,7 @@ lives in the serialization companion and does not require the core `AddFinancial
 ```text
 Bodu.Financial.Samples.JsonSerialization/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/RegisterConverters.cs
   Scenarios/ExchangeRateJson.cs
   Scenarios/PolicyShapes.cs

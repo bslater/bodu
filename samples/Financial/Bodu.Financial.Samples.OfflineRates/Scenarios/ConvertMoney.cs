@@ -23,11 +23,22 @@ public static class ConvertMoney
     /// <param name="source">The dated provider supplying the rates.</param>
     public static void Run(IDatedRateProvider source)
     {
-        Console.WriteLine("--- Converting money with dated rates ---");
+        SampleConsole.Scenario(
+            "Converting money with dated rates",
+            what: "Converts amounts using rates resolved for specific dates, including a cross-currency "
+                + "conversion, and shows the provenance travelling with the result.",
+            why: "A conversion is only meaningful as of a date and a source, so an API that takes just an amount "
+                + "and two currencies is hiding the two facts that make the answer defensible. Carrying the "
+                + "rate's date and origin through the conversion is what lets a figure be explained months later "
+                + "during a reconciliation, which is the point at which nobody remembers which feed was "
+                + "configured. Rounding happens once at the end, on the converted amount, rather than on the "
+                + "rate.",
+            expect: "Each converted amount can be traced to the rate that produced it, its date and its source - "
+                + "the conversion result is an explanation rather than just a number.");
 
         var valueDate = new DateOnly(2024, 3, 15);
         Money<AUD> invoice = Money.Of<AUD>(2499.95m);
-        Console.WriteLine($"Invoice: {invoice} (value date {valueDate:yyyy-MM-dd})");
+        Console.WriteLine($"  Invoice: {invoice} (value date {valueDate:yyyy-MM-dd})");
 
         // One call: look up the (AUD -> USD) rate for the value date and convert, rounding to the
         // target currency's minor units. PreviousWithin(5) tolerates weekends and holidays.

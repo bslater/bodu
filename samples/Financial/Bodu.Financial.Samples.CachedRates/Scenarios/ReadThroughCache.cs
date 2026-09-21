@@ -22,7 +22,18 @@ public static class ReadThroughCache
     /// <param name="cacheDirectory">The directory used for file-backed caches in this run.</param>
     public static void Run(string cacheDirectory)
     {
-        Console.WriteLine("--- CachingRateProvider: read-through caching ---");
+        SampleConsole.Scenario(
+            "Read-through caching over a rate provider",
+            what: "Wraps a provider in the caching decorator, asks for the same rate twice, and counts how many "
+                + "requests reached the underlying provider.",
+            why: "A rate feed is usually a network call, often a metered one, and a published historical rate "
+                + "cannot change once published - which makes it close to ideal to cache. The decorator shape "
+                + "matters as much as the caching: consumers keep depending on the plain provider interface, so "
+                + "whether a deployment caches is a registration decision rather than something the calling code "
+                + "knows about. The hit is proved by counting calls rather than by timing, so the assertion is "
+                + "deterministic.",
+            expect: "One underlying request serves both lookups. The count not moving on the second call is the "
+                + "assertion - a timing measurement would prove much less.");
 
         // The counting wrapper stands in for "an expensive source" - with a live provider each
         // recorded call would be an HTTP fetch.
@@ -70,6 +81,6 @@ public static class ReadThroughCache
         var served = provenance.Origin == RateOrigin.Cache
             ? $"cache ({provenance.Backend}, age {provenance.Age?.TotalSeconds:F0}s)"
             : "source (live)";
-        Console.WriteLine($"{label}: {result.Rate.Rate} served from {served}; source calls so far: {sourceCalls}");
+        Console.WriteLine($"  {label}: {result.Rate.Rate} served from {served}; source calls so far: {sourceCalls}");
     }
 }

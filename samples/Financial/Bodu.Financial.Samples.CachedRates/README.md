@@ -26,9 +26,11 @@ provenance alongside the cumulative source-call count.
 
 **What to expect.**
 
-```
-1st lookup: 0.6568 served from source (live); source calls so far: 1
-2nd lookup: 0.6568 served from cache (TomlFileRateCache, age 0s); source calls so far: 1
+```text
+--- Read-through caching over a rate provider ---
+
+  1st lookup: 0.6568 served from source (live); source calls so far: 1
+  2nd lookup: 0.6568 served from cache (TomlFileRateCache, age 0s); source calls so far: 1
 ```
 
 The count staying at 1 is the proof: the second lookup never touched the source. The provenance
@@ -53,13 +55,15 @@ reached the source.
 
 **What to expect.**
 
-```
-March          : 21 observations; source calls: 1
-March again    : 21 observations; source calls: 1
-March..April   : 43 observations; source calls: 2
-Weekend (cov.) : 0 observations; source calls: 2
-June wknd x2   : 0 observations; source calls: 3
-Calls that reached the source:
+```text
+--- Coverage-based range serving ---
+
+  March          : 21 observations; source calls: 1
+  March again    : 21 observations; source calls: 1
+  March..April   : 43 observations; source calls: 2
+  Weekend (cov.) : 0 observations; source calls: 2
+  June wknd x2   : 0 observations; source calls: 3
+  Calls that reached the source:
   GetRates AUD/EUR 2024-03-01..2024-03-31
   GetRates AUD/EUR 2024-03-01..2024-04-30
   GetRates AUD/EUR 2024-06-08..2024-06-09
@@ -87,10 +91,12 @@ fresh one* (simulating a process restart) and looks up again.
 
 **What to expect.**
 
-```
-Cold lookup     : source calls 1 (filled L1 and L2)
-Warm lookup     : source calls 1 (served by L1)
-After 'restart' : source calls 1 (served by L2, origin Cache)
+```text
+--- Tiered caching - in-memory over a durable file cache ---
+
+  Cold lookup     : source calls 1 (filled L1 and L2)
+  Warm lookup     : source calls 1 (served by L1)
+  After 'restart' : source calls 1 (served by L2, origin Cache)
 ```
 
 The source-call counter never passes 1: the cold call fell through L1 → L2 → source and filled
@@ -117,12 +123,14 @@ clamp or skip fetches that cannot possibly succeed.
 
 **What to expect.**
 
-```
-kind                   earliest as of 2024-07-01  2024-06-03  1990-01-15
+```text
+--- History availability and request clamping ---
+
+  kind                   earliest as of 2024-07-01  2024-06-03  1990-01-15
 Unbounded              (no limit)                 True       True
 Since(1999-01-04)      1999-01-04                 True       False
 RollingDays(180)       2024-01-03                 True       False
-Offline source declares: Since, earliest 2024-01-02
+  Offline source declares: Since, earliest 2024-01-02
 ```
 
 `RollingDays(180)`'s earliest date is computed from the as-of instant — the window slides. Both
@@ -139,6 +147,18 @@ deriving its own `Since(first observation)` declaration.
 `Data/aud-daily-2024H1.csv` — the same illustrative AUD business-day rates as the OfflineRates
 sample (synthetic values; see the file header). The cache files are derived at runtime and never
 committed.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.CachedRates/
+  Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/ReadThroughCache.cs
+  Scenarios/CoverageRanges.cs
+  Scenarios/HistoryClamping.cs
+  Scenarios/TieredStacking.cs
+```
 
 ## NuGet equivalent
 

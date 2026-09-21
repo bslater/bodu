@@ -25,13 +25,15 @@ name, symbol, and minor-unit count. It closes with the `CurrencyCode` enum bridg
 
 **What to expect.**
 
-```
-Registry: 184 currencies shipped
+```text
+--- The currency catalogue - registry, metadata, and lookup ---
+
+  Registry: 184 currencies shipped
   USD (840) US Dollar  symbol (none)  2 minor unit(s)
   JPY (392) Yen  symbol (none)  0 minor unit(s)
   BHD ( 48) Bahraini Dinar  symbol (none)  3 minor unit(s)
-JPY carries 0 minor units (whole yen); BHD carries 3 (thousandths of a dinar).
-Enum bridge: CurrencyCode.USD -> USD #840
+  JPY carries 0 minor units (whole yen); BHD carries 3 (thousandths of a dinar).
+  Enum bridge: CurrencyCode.USD -> USD #840
 ```
 
 JPY settles in whole yen and BHD in thousandths — the same reason `Money` reads its scale from
@@ -59,12 +61,14 @@ inside the scope USD parses but THB is rejected; after disposing the scope THB p
 
 **What to expect.**
 
-```
-AUD: Australian Dollar, 2 minor units, cash increment 0.05
-Parse "THB 25.00" (default lookup)   : THB 25.00
-Parse "USD 10.00" (restricted scope) : USD 10.00
+```text
+--- Ambient currency resolution ---
+
+  AUD: Australian Dollar, 2 minor units, cash increment 0.05
+  Parse "THB 25.00" (default lookup)   : THB 25.00
+  Parse "USD 10.00" (restricted scope) : USD 10.00
 Parse "THB 25.00" (restricted scope) : rejected - not an allowed currency
-Parse "THB 25.00" (scope disposed)   : THB 25.00
+  Parse "THB 25.00" (scope disposed)   : THB 25.00
 ```
 
 The same parse call gives three different outcomes purely from the ambient scope — that is the
@@ -90,11 +94,13 @@ resolves the Retail context back out of the container as a keyed service.
 
 **What to expect.**
 
-```
-Computed value : 19.985 USD (unrounded)
-Retail  settle : USD 19.99   (away from zero)
-Treasury settle: USD 19.98   (banker's rounding)
-Keyed "Retail" : USD 19.99   (resolved from DI)
+```text
+--- Named monetary contexts ---
+
+  Computed value : 19.985 USD (unrounded)
+  Retail  settle : USD 19.99   (away from zero)
+  Treasury settle: USD 19.98   (banker's rounding)
+  Keyed "Retail" : USD 19.99   (resolved from DI)
 ```
 
 19.985 is a midpoint: away-from-zero pushes it up to 19.99, banker's rounding takes the even
@@ -120,10 +126,12 @@ consumes each registration — the `ICurrencyLookup` (numeric-code query), the k
 
 **What to expect.**
 
-```
-Numeric 036   : AUD (Australian Dollar)
-Financial JSON: "19.99 USD"  (Compact policy)
-AUD/USD       : 0.6580 [Config]
+```text
+--- Host wiring with AddFinancialService ---
+
+  Numeric 036   : AUD (Australian Dollar)
+  Financial JSON: "19.99 USD"  (Compact policy)
+  AUD/USD       : 0.6580 [Config]
 ```
 
 The JSON line prints the compact string shape because the *keyed options* carry the policy the
@@ -136,6 +144,18 @@ registration with its `Add<Source>ExchangeRates()` and nothing else changes.
 `AddDatedExchangeRateProvider(instance)`, `ServiceProviderExtensions.UseCurrencyResolution`,
 `ICurrencyLookup.TryByNumericCode`, keyed `JsonSerializerOptions` resolution,
 `IDatedRateProvider` consumption.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.CurrencyServices/
+  Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/CurrencyCatalogue.cs
+  Scenarios/AmbientResolution.cs
+  Scenarios/NamedContexts.cs
+  Scenarios/FinancialServiceHost.cs
+```
 
 ## NuGet equivalent
 

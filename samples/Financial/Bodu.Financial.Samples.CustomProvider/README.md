@@ -28,11 +28,13 @@ provider's self-declared history availability.
 
 **What to expect.**
 
-```
-AUD/USD exact    : 0.6660 [CustomFeed]
-USD/AUD inverse  : 1.5015015015015015015015015015 (derived from the AUD/USD observation)
-Saturday lookup  : 0.6663 resolved to 2024-01-12
-Declared history : Since, earliest 2024-01-02
+```text
+  AUD/USD exact    : 0.6660 [CustomFeed]
+  USD/AUD inverse  : 1.5015015015015015015015015015 (derived from the AUD/USD observation)  (the CSV holds only AUD/USD - the delegated provider derived this, so the custom code never implements inversion)
+  Saturday lookup  : 0.6663 resolved to 2024-01-12  (a date with no fixing, resolved back to the prior business day and reporting the date it used)
+  Declared history : Since, earliest 2024-01-02  (the horizon is declared, so a caller can tell an unanswerable date from a failure before asking)
+  Convert          : AUD 2,499.95 -> USD 1,664.97
+  Cached wrapper   : second lookup served from Cache (InMemoryRateCache)  (the shipped decorator accepts the custom provider through the plain interface - the payoff for implementing it)
 ```
 
 The inverse line is the reciprocal of the stored AUD/USD observation, unrounded — rounding
@@ -49,8 +51,8 @@ the loaded observations.
 
 **What it does / what to expect.** Converts a 2,499.95 AUD invoice through the custom provider:
 
-```
-Convert          : AUD 2,499.95 -> USD 1,664.97
+```text
+  Convert          : AUD 2,499.95 -> USD 1,664.97
 ```
 
 **APIs demonstrated.** `MoneyOfTCurrencyExchangeRateExtensions.ConvertTo<AUD, USD>(provider,
@@ -64,8 +66,8 @@ like a live web provider.
 **What it does / what to expect.** Wraps the provider in an in-memory read-through cache and
 looks up twice:
 
-```
-Cached wrapper   : second lookup served from Cache (InMemoryRateCache)
+```text
+  Cached wrapper   : second lookup served from Cache (InMemoryRateCache)  (the shipped decorator accepts the custom provider through the plain interface - the payoff for implementing it)
 ```
 
 **APIs demonstrated.** `CachingRateProvider` over a consumer-written inner provider,
@@ -92,6 +94,16 @@ driven by `bodu.slnx` membership).
 `Data/custom-feed.csv` — 22 business days of illustrative AUD/USD rates for January 2024
 (synthetic; see the file header). The test project links the same file, so the provider and its
 contract tests share one fixture.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.CustomProvider/
+  Program.cs                          # the whole demonstration, top to bottom
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  CsvFileRateProvider.cs              # the custom IDatedRateProvider over a CSV file
+  Data/custom-feed.csv                # the committed rate observations
+```
 
 ## NuGet equivalent
 

@@ -24,7 +24,18 @@ public static class ExplicitScaleMoney
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Explicit-scale Money: a 6-dp share price ---");
+        SampleConsole.Scenario(
+            "Explicit-scale Money - a six-decimal share price",
+            what: "Creates amounts at a scale wider than the currency's own minor units and shows arithmetic "
+                + "preserving that scale rather than snapping to two decimals.",
+            why: "A currency's minor unit is the granularity of a payment, not of a price. A share price, a fuel "
+                + "price per litre and a per-unit wholesale rate all quote to more decimals than anyone can pay "
+                + "in, and rounding them to the payable unit destroys the number before it is ever multiplied by "
+                + "a quantity. Allowing the scale to be stated explicitly keeps the price exact and the payment "
+                + "rounding where it belongs - at the point the total is settled, not at the point the price is "
+                + "read.",
+            expect: "The amounts keep six decimals through the arithmetic instead of collapsing to the "
+                + "currency's two, so the price a supplier quoted is still the price being multiplied.");
 
         // A quoted equity price with six decimal places.
         decimal quoted = 145.678912m;
@@ -32,18 +43,18 @@ public static class ExplicitScaleMoney
         // A plain Money is settlement-grade: it rounds to the currency's registered minor units (USD = 2) on
         // construction, so the extra four places are lost immediately.
         Money settled = new Money(quoted, CurrencyCode.USD);
-        Console.WriteLine($"Plain Money (settles to 2 dp) : {settled.ToString("R")}  (MinorUnits = {settled.MinorUnits})");
+        Console.WriteLine($"  Plain Money (settles to 2 dp) : {settled.ToString("R")}  (MinorUnits = {settled.MinorUnits})");
 
         // To keep six places, construct with an explicit scale. The resulting Money reports six minor units, formats
         // to six places, and rounds arithmetic at its own precision.
         Money unitPrice = Money.FromExplicitScale(quoted, CurrencyCode.USD, 6);
-        Console.WriteLine($"Unit-price Money (6 dp)       : {unitPrice.ToString("R")}  (MinorUnits = {unitPrice.MinorUnits})");
+        Console.WriteLine($"  Unit-price Money (6 dp)       : {unitPrice.ToString("R")}  (MinorUnits = {unitPrice.MinorUnits})");
 
         // The settlement route produces the same explicit-scale value: defer rounding in a CalculatedMoney and settle
         // once through a context that requests a custom scale - preferred when the amount is computed, not quoted.
         var priceContext = MonetaryContext.Default with { ScalePolicy = ScalePolicy.Custom, CustomScale = 6 };
         Money settledPrice = new CalculatedMoney(quoted, CurrencyCode.USD).RoundToMoney(priceContext);
-        Console.WriteLine($"Same via settlement route     : {settledPrice.ToString("R")}  (equal: {unitPrice == settledPrice})");
+        Console.WriteLine($"  Same via settlement route     : {settledPrice.ToString("R")}  (equal: {unitPrice == settledPrice})");
 
         // Register the converters and serialize. The Strict object shape adds a "scale" property whenever a value's
         // precision differs from its currency's registered minor units, so the six places are recorded on the wire.
@@ -51,31 +62,31 @@ public static class ExplicitScaleMoney
 
         string settledJson = JsonSerializer.Serialize(settled, options);
         string unitPriceJson = JsonSerializer.Serialize(unitPrice, options);
-        Console.WriteLine($"Plain Money JSON              : {settledJson}");
-        Console.WriteLine($"Unit-price JSON               : {unitPriceJson}");
+        Console.WriteLine($"  Plain Money JSON              : {settledJson}");
+        Console.WriteLine($"  Unit-price JSON               : {unitPriceJson}");
 
         // Deserialize and confirm the six-place precision came back intact.
         Money restored = JsonSerializer.Deserialize<Money>(unitPriceJson, options);
-        Console.WriteLine($"Deserialized unit price       : {restored.ToString("R")}  (MinorUnits = {restored.MinorUnits})");
+        Console.WriteLine($"  Deserialized unit price       : {restored.ToString("R")}  (MinorUnits = {restored.MinorUnits})");
 
         // Trailing zeros are part of "how many decimal places": a price of exactly 12.5 held at six places round-trips
         // so that it still reports six fractional digits, even though the stored decimal has none to spare.
         Money halfDollar = new CalculatedMoney(12.5m, CurrencyCode.USD).RoundToMoney(priceContext);
         Money halfDollarRestored = JsonSerializer.Deserialize<Money>(JsonSerializer.Serialize(halfDollar, options), options);
-        Console.WriteLine($"Trailing zeros preserved      : {JsonSerializer.Serialize(halfDollar, options)} -> {halfDollarRestored.ToString("R")}");
+        Console.WriteLine($"  Trailing zeros preserved      : {JsonSerializer.Serialize(halfDollar, options)} -> {halfDollarRestored.ToString("R")}");
 
         // Scale transforms are explicit instance operations: Rescale re-expresses the value at a new precision
         // (coarser rounds - a one-value settlement; finer pads losslessly), and TrimScale drops trailing-zero
         // precision down to - never below - the currency's registered minor units.
-        Console.WriteLine($"Rescale(2) settles            : {unitPrice.Rescale(2).ToString("R")}  (MinorUnits = {unitPrice.Rescale(2).MinorUnits})");
-        Console.WriteLine($"TrimScale() drops zero scale  : {halfDollar.TrimScale().ToString("R")}  (MinorUnits = {halfDollar.TrimScale().MinorUnits})");
+        Console.WriteLine($"  Rescale(2) settles            : {unitPrice.Rescale(2).ToString("R")}  (MinorUnits = {unitPrice.Rescale(2).MinorUnits})");
+        Console.WriteLine($"  TrimScale() drops zero scale  : {halfDollar.TrimScale().ToString("R")}  (MinorUnits = {halfDollar.TrimScale().MinorUnits})");
 
         // The terse Compact string form round-trips the scale too: the amount is written with the value's minor-unit
         // precision, and the reader infers the scale from the number of fractional digits printed.
         var compact = new JsonSerializerOptions().AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
         string compactJson = JsonSerializer.Serialize(unitPrice, compact);
         Money compactRestored = JsonSerializer.Deserialize<Money>(compactJson, compact);
-        Console.WriteLine($"Compact form (scale kept)     : {compactJson} -> {compactRestored.ToString("R")}  (MinorUnits = {compactRestored.MinorUnits})");
+        Console.WriteLine($"  Compact form (scale kept)     : {compactJson} -> {compactRestored.ToString("R")}  (MinorUnits = {compactRestored.MinorUnits})");
 
         Console.WriteLine();
     }
