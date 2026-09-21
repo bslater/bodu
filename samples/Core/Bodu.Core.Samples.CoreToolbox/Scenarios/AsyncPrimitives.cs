@@ -26,7 +26,18 @@ public static class AsyncPrimitives
     /// <returns>A task that completes when the scenario has finished.</returns>
     public static async Task RunAsync()
     {
-        Console.WriteLine("--- Bodu.Threading: async coordination primitives ---");
+        SampleConsole.Scenario(
+            "Bodu.Threading - async coordination primitives",
+            what: "Exercises the async coordination primitives - waits that are awaited rather than blocked on - " +
+                  "with every wait completing deterministically.",
+            why: "The BCL's coordination types predate async and block a thread while waiting, which on a thread " +
+                 "pool is the shape that produces starvation: threads sitting idle inside a wait cannot run the " +
+                 "work that would release them. These primitives suspend the continuation instead, so a waiting " +
+                 "operation costs no thread at all. That is the entire reason to prefer them over a lock or a " +
+                 "ManualResetEventSlim in asynchronous code.",
+            expect: "Every wait completes and each primitive reports the state a correct run produces. Nothing " +
+                    "here depends on timing - the scenario signals before it waits where it can, so the " +
+                    "transcript is the same on every run rather than merely usually.");
 
         // AsyncLazy<T> defers the factory until the first await, then caches the completed Task<T>. Awaiting the
         // same instance repeatedly returns the cached value without re-running the factory.
@@ -38,16 +49,16 @@ public static class AsyncPrimitives
 
         var first = await lazy;
         var second = await lazy;
-        Console.WriteLine($"AsyncLazy value  : {first} (second await: {second})");
-        Console.WriteLine($"  factory runs   : {s_factoryRuns} (initialized once, then cached)");
+        Console.WriteLine($"  AsyncLazy value  : {first} (second await: {second})  (both awaits see the same value - AsyncLazy caches the completed task, not just the result)");
+        Console.WriteLine($"  factory runs   : {s_factoryRuns} (initialized once, then cached)  (expected 1 - two awaits, one initialization; concurrent awaiters join the in-flight task rather than racing)");
 
         // AsyncManualResetEvent is an awaitable gate. Once Set, it stays signalled, so a WaitAsync on an
         // already-set event completes immediately - the pattern for "publish once, many awaiters proceed".
         var gate = new AsyncManualResetEvent(initialState: false);
-        Console.WriteLine($"gate IsSet       : {gate.IsSet}");
+        Console.WriteLine($"  gate IsSet       : {gate.IsSet}  (expected False - nothing has signalled it yet)");
         gate.Set();
         await gate.WaitAsync(); // completes synchronously because the gate is already open
-        Console.WriteLine($"gate IsSet       : {gate.IsSet} (WaitAsync passed through)");
+        Console.WriteLine($"  gate IsSet       : {gate.IsSet} (WaitAsync passed through)  (expected True - the awaiting continuation resumed on the signal, having held no thread while it waited)");
 
         // AsyncLock is an async-friendly mutex: LockAsync yields a releaser disposed by 'await using', so the
         // critical section is bounded by scope. Here it guards a simple increment loop.
@@ -63,7 +74,7 @@ public static class AsyncPrimitives
                 counter++;
             }
         }
-        Console.WriteLine($"guarded counter  : {counter} (5 lock/increment/release cycles)");
+        Console.WriteLine($"  guarded counter  : {counter} (5 lock/increment/release cycles)  (expected 5 - AsyncLock serialises the increments without blocking a thread while waiting for the lock)");
 
         Console.WriteLine();
     }

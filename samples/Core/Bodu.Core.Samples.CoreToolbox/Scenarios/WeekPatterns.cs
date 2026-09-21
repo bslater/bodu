@@ -22,11 +22,21 @@ public static class WeekPatterns
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- WeekPattern: seven-day selection sets ---");
+        SampleConsole.Scenario(
+            "WeekPattern - seven-day selection sets",
+            what: "Builds weekday patterns, formats each through the four format specifiers, and parses the text " +
+                  "back to confirm the round trip.",
+            why: "A set of weekdays is otherwise a bool[7] or a flags enum, and both lose to the same problem: " +
+                 "nobody agrees which day index zero is. WeekPattern fixes the order and makes the text form " +
+                 "canonical, so a pattern written in configuration, stored in a database and parsed back is the " +
+                 "same pattern. The round trip is the property worth demonstrating, because that is what makes " +
+                 "the text form safe to persist.",
+            expect: "One pattern renders four ways - masked, binary, and two annotated forms - all describing the " +
+                    "same five days. Parsing any of them returns an equal pattern, so the round trip is True.");
 
         // Presets cover the common working weeks around the world.
         var week = WeekPattern.MondayToFriday;
-        Console.WriteLine($"MondayToFriday   : Count={week.Count}, S-format='{week}'");
+        Console.WriteLine($"  MondayToFriday   : Count={week.Count}, S-format='{week}'  (five days selected; the S format marks unselected days with an underscore so position is unambiguous)");
 
         // ToString accepts a format character: 'M' = Monday-first ordering, 'B' = binary, 'A' = asterisk fill.
         Console.WriteLine($"  ToString(\"M\")   : {week.ToString("M")}");
