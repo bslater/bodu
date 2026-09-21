@@ -15,7 +15,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Reset_WhenReusedAfterAFinish_ShouldReproduceAFreshAccumulatorsRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] first = SeededInput((2 * SmallBlock) + 1, seed: 1);
         byte[] second = SeededInput((4 * SmallBlock) + 6, seed: 2);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
@@ -40,7 +40,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Reset_WhenCalledMidBlock_ShouldDiscardThePartialBlock()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput(SmallBlock + 2);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 

@@ -72,7 +72,7 @@ public partial class MerkleBlockComputationTests
     [TestMethod]
     public void BlockOffset_WhenPairedWithBlockLength_ShouldAddressTheBytesEachLeafWasHashedFrom()
     {
-        var tree = new Rfc6962MerkleTree(SHA256.Create);
+        var tree = new MerkleTree(SHA256.Create);
 
         for (var inputLength = 0; inputLength <= 40; inputLength++)
         {

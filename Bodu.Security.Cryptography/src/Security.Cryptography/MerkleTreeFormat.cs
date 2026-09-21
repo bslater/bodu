@@ -27,8 +27,8 @@ namespace Bodu.Security.Cryptography;
 /// largest power of two strictly below <em>n</em>, and promoting a lone subtree root unchanged. The hashers in
 /// <c>Bodu.Security.Cryptography</c> fold leaves level by level through the shared <c>MerkleLevelFold</c>, which at its
 /// default fan-out of two visits exactly the nodes of that recursion, so their roots are RFC 6962's and
-/// <c>Rfc6962MerkleTree</c>'s proofs verify against them. A wider fan-out is an explicit non-RFC mode of the same fold.
-/// For inclusion and consistency proofs, use <c>Rfc6962MerkleTree</c>.
+/// <c>MerkleTree</c>'s proofs verify against them. A wider fan-out is an explicit non-RFC mode of the same fold. For
+/// inclusion and consistency proofs, use <c>MerkleTree</c>.
 /// </para>
 /// <para>
 /// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size in both
@@ -45,8 +45,8 @@ internal static class MerkleTreeFormat
 
     /// <summary>The domain-separation prefix byte prepended to a length-bound root's big-endian value and tree head, as <c>H(0x02 || u64_be(boundValue) || treeHead)</c>.</summary>
     /// <remarks>
-    /// Used only by <c>Rfc6962MerkleTree</c>'s bound-root mode, which is an addition to RFC 6962 rather than part of
-    /// it. The <c>Bodu.Security.Cryptography</c> hashers compile this constant without using it.
+    /// Used only by <c>MerkleTree</c>'s bound-root mode, which is an addition to RFC 6962 rather than part of it. The
+    /// <c>Bodu.Security.Cryptography</c> hashers compile this constant without using it.
     /// </remarks>
     internal const byte RootPrefix = 0x02;
 }

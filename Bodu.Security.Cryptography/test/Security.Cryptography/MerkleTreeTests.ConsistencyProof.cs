@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.ConsistencyProof.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.ConsistencyProof.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,10 +9,10 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.ConsistencyProof(IReadOnlyList{ReadOnlyMemory{byte}}, long)" /> and its
+/// Tests for <see cref="MerkleTree.ConsistencyProof(IReadOnlyList{ReadOnlyMemory{byte}}, long)" /> and its
 /// leaf-hash overload.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Gets the published consistency proofs between sizes of the reference tree (requirements appendix A4).
@@ -37,7 +37,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ConsistencyProof_WhenGivenReferenceEntries_ShouldReproducePublishedProofs(MerkleConsistencyKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         byte[][] proof = tree.ConsistencyProof(TakeEntries(kat.SecondSize), kat.FirstSize);
 
@@ -56,7 +56,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(8)]
     public void ConsistencyProof_WhenSizesAreEqual_ShouldReturnAnEmptyProof(int size)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(0, tree.ConsistencyProof(TakeEntries(size), size).Length);
     }
@@ -67,7 +67,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ConsistencyProof_WhenFirstSizeIsZero_ShouldReturnAnEmptyProof()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(0, tree.ConsistencyProof(TakeEntries(8), 0).Length);
     }
@@ -86,7 +86,7 @@ public partial class Rfc6962MerkleTreeTests
     public void ConsistencyProofOfLeafHashes_WhenBuiltFromLeafHashes_ShouldAgreeWithTheEntryOverload(
         int firstSize, int secondSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         byte[][] leafHashes = new byte[secondSize][];
         for (int index = 0; index < secondSize; index++)
@@ -108,7 +108,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(long.MaxValue)]
     public void ConsistencyProof_WhenFirstSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(long firstSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -123,7 +123,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ConsistencyProof_WhenEntriesIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

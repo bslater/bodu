@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.HashLeaf.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.HashLeaf.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,9 +9,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.HashLeaf(ReadOnlySpan{byte})" />.
+/// Tests for <see cref="MerkleTree.HashLeaf(ReadOnlySpan{byte})" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that a leaf hash is the digest of the <c>0x00</c> prefix followed by the entry, and never the
@@ -20,7 +20,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashLeaf_WhenGivenAnEntry_ShouldPrefixWithTheLeafDomainByte()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] entry = [0x61, 0x62, 0x63];
 
         Assert.AreEqual("609f6e36d2405585188d5cfd761f407c7cc46a7d3f314c88270469dde315fcd1", Hex(tree.HashLeaf(entry)));
@@ -35,7 +35,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashLeaf_WhenEntryIsEmpty_ShouldDifferFromTheEmptyTreeRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual("6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d", Hex(tree.HashLeaf([])));
         Assert.AreNotEqual(Hex(SHA256.HashData([])), Hex(tree.HashLeaf([])));
@@ -47,7 +47,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashLeaf_WhenGivenAnEntry_ShouldReturnDigestWidthBytes()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(tree.HashLength, tree.HashLeaf([0x01, 0x02]).Length);
     }
@@ -59,7 +59,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashLeaf_WhenEntriesDifferByTrailingZeros_ShouldProduceDifferentHashes()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreNotEqual(Hex(tree.HashLeaf([0x01])), Hex(tree.HashLeaf([0x01, 0x00])));
     }

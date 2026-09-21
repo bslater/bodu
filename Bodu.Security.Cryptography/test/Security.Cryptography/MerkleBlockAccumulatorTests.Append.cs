@@ -20,7 +20,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestCategory("Regression")]
     public void Append_WhenChunkedAcrossEveryBlockBoundary_ShouldReproduceTheBlockRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 
         for (int length = 0; length <= (2 * SmallBlock) + 3; length++)
@@ -51,7 +51,7 @@ public partial class MerkleBlockAccumulatorTests
     [DataRow(int.MaxValue)]
     public void Append_WhenChunked_ShouldReproduceTheBlockRoot(int chunkSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput((2 * SmallBlock) + 3);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 
@@ -92,7 +92,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Append_WhenSpanIsEmpty_ShouldChangeNothing()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 
         accumulator.Append([]);
@@ -108,7 +108,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Append_WhenInputEndsOnABlockBoundary_ShouldNotEmitAnEmptyLeaf()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput(3 * SmallBlock);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 

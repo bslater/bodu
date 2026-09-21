@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Unit tests for <see cref="Rfc6962MerkleTree" />.
+/// Unit tests for <see cref="MerkleTree" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 [TestClass]
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>The block size used by the block-mode vectors.</summary>
     private const int VectorBlockSize = 4;
@@ -45,8 +45,8 @@ public partial class Rfc6962MerkleTreeTests
     ];
 
     /// <summary>Creates a SHA-256 tree, the configuration under which every published vector was computed.</summary>
-    /// <returns>A new <see cref="Rfc6962MerkleTree" /> over SHA-256.</returns>
-    private static Rfc6962MerkleTree CreateTree() => new(SHA256.Create);
+    /// <returns>A new <see cref="MerkleTree" /> over SHA-256.</returns>
+    private static MerkleTree CreateTree() => new(SHA256.Create);
 
     /// <summary>
     /// Returns the first <paramref name="length" /> entries of <see cref="ReferenceEntries" /> as the read-only

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.VerifyInclusion.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.VerifyInclusion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for
-/// <see cref="Rfc6962MerkleTree.VerifyInclusion(ReadOnlySpan{byte}, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />
+/// <see cref="MerkleTree.VerifyInclusion(ReadOnlySpan{byte}, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />
 /// and its leaf-hash overload.
 /// </summary>
 /// <remarks>
@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// the index, the tree size, the root, the leaf, and every position of the path — rather than a fixed handful of
 /// scenarios, because a verifier's failures hide in the cases nobody thought to enumerate.
 /// </remarks>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that a published path carries its leaf to the published root.
@@ -29,7 +29,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyInclusion_WhenGivenAPublishedPath_ShouldAccept(MerkleInclusionKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(TakeEntries(kat.TreeSize));
         IReadOnlyList<ReadOnlyMemory<byte>> path = kat.Path.Select(step => (ReadOnlyMemory<byte>)Convert.FromHexString(step)).ToArray();
 
@@ -43,7 +43,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyInclusion_WhenPathIsGeneratedForAnyLeaf_ShouldRoundTrip()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int treeSize = 1; treeSize <= 64; treeSize++)
         {
@@ -70,7 +70,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenTreeHasOneEntryAndPathIsEmpty_ShouldAccept()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] entry = [0x61, 0x62, 0x63];
 
         Assert.IsTrue(tree.VerifyInclusion(tree.HashLeaf(entry), 1, 0, entry, []));
@@ -82,7 +82,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenTreeHasOneEntryAndRootIsWrong_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusion(tree.HashLeaf([0x61]), 1, 0, [0x62], []));
     }
@@ -94,7 +94,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenPathIsShortBecauseTheTreeIsNotPerfect_ShouldAccept()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(7);
         IReadOnlyList<ReadOnlyMemory<byte>> path = ToPath(tree.AuthenticationPath(entries, 6));
 
@@ -125,7 +125,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(8)]
     public void VerifyInclusion_WhenProofIsCorrupted_ShouldRejectWithoutThrowing(int treeSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(treeSize);
         byte[] root = tree.ComputeRoot(entries);
 
@@ -158,7 +158,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenPathIsCorrectButEntryIsAnotherLeafs_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(8);
         byte[] root = tree.ComputeRoot(entries);
         IReadOnlyList<ReadOnlyMemory<byte>> path = ToPath(tree.AuthenticationPath(entries, 3));
@@ -178,7 +178,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(-1L)]
     public void VerifyInclusion_WhenTreeSizeIsZero_ShouldReject(long leafIndex)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusion(new byte[32], 0, leafIndex, [0x61], []));
     }
@@ -195,7 +195,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(64)]
     public void VerifyInclusion_WhenRootIsNotDigestWidth_ShouldReject(int rootLength)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusion(new byte[rootLength], 1, 0, [0x61], []));
     }
@@ -207,7 +207,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenEntryIsAnInternalNodePreimage_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(4);
         byte[] root = tree.ComputeRoot(entries);
 
@@ -228,7 +228,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusion_WhenPathIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -242,7 +242,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionOfLeafHash_WhenGivenAValidProof_ShouldAgreeWithTheEntryOverload()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(7);
         byte[] root = tree.ComputeRoot(entries);
 
@@ -263,7 +263,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionOfLeafHash_WhenLeafHashIsNotDigestWidth_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusionOfLeafHash(new byte[32], 1, 0, new byte[16], []));
     }
@@ -278,7 +278,7 @@ public partial class Rfc6962MerkleTreeTests
     /// <param name="valid">The correct path.</param>
     /// <returns>The labelled probes, each of which must return <see langword="false" />.</returns>
     private static IEnumerable<(string Label, Func<bool> Probe)> CorruptInclusionProbes(
-        Rfc6962MerkleTree tree,
+        MerkleTree tree,
         byte[] root,
         int treeSize,
         int leafIndex,

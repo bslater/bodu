@@ -44,7 +44,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Dispose_WhenCalledAfterAFinish_ShouldNotDisturbTheReturnedRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput(SmallBlock + 4);
         MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
         accumulator.Append(data);

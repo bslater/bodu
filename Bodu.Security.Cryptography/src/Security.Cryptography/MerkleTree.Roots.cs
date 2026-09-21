@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTree.Roots.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTree.Roots.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Leaf and node hashing, the Merkle Tree Hash over entries or leaf hashes, and the length-bound root.
 /// </summary>
-public sealed partial class Rfc6962MerkleTree
+public sealed partial class MerkleTree
 {
     /// <summary>The width, in bytes, of the big-endian value bound into a root.</summary>
     private const int BoundValueLength = MerkleTreeCore.BoundValueLength;
@@ -58,30 +58,42 @@ public sealed partial class Rfc6962MerkleTree
     /// Computes the Merkle Tree Hash over an ordered sequence of variable-length entries.
     /// </summary>
     /// <param name="entries">The entries, in order. May be empty; individual entries may be empty.</param>
+    /// <param name="diagnostics">
+    /// The recorder that receives the tree's nodes as they are produced, or <see langword="null" /> to record nothing.
+    /// </param>
+    /// <param name="cancellationToken">A token observed while hashing.</param>
     /// <returns>
     /// The tree's root: <c>H()</c> when <paramref name="entries" /> is empty, the single entry's leaf hash when it
     /// holds one, and the recursive node hash otherwise.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <see langword="null" />.</exception>
-    public byte[] ComputeRoot(IReadOnlyList<ReadOnlyMemory<byte>> entries)
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <remarks>
+    /// On a parallel instance the entries are hashed concurrently, which is worthwhile only when they are individually
+    /// large; for a log of short entries the thread coordination outweighs the leaf hashing.
+    /// </remarks>
+    public byte[] ComputeRoot(
+        IReadOnlyList<ReadOnlyMemory<byte>> entries,
+        MerkleTreeDiagnostics? diagnostics = null,
+        CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(entries);
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        if (entries.Count == 0)
-            return HashEmpty(hasher);
+        byte[][] leafHashes = IsParallel
+            ? MerkleTreeCore.HashLeavesParallel(entries, CreateAlgorithm, HashLength, MaxDegreeOfParallelism, cancellationToken)
+            : HashEntries(entries, hasher, cancellationToken);
 
-        byte[][] leafHashes = new byte[entries.Count][];
-        for (int index = 0; index < entries.Count; index++)
-            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entries[index].Span);
-
-        return Mth(leafHashes, hasher);
+        return Reduce(leafHashes, hasher, diagnostics);
     }
 
     /// <summary>
     /// Computes the Merkle Tree Hash over leaf hashes that have already been computed.
     /// </summary>
     /// <param name="leafHashes">The ordered leaf hashes, each <see cref="HashLength" /> bytes long.</param>
+    /// <param name="diagnostics">
+    /// The recorder that receives the tree's nodes as they are produced, or <see langword="null" /> to record nothing.
+    /// </param>
     /// <returns>The tree's root, or <c>H()</c> when <paramref name="leafHashes" /> is empty.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="leafHashes" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
@@ -89,14 +101,15 @@ public sealed partial class Rfc6962MerkleTree
     /// </exception>
     /// <remarks>
     /// This is the entry point for a caller that streamed the underlying bytes past itself and kept only the leaf
-    /// hashes, and so cannot supply the entries again.
+    /// hashes, and so cannot supply the entries again. The reduction alone is never parallel; there is nothing in it
+    /// worth spreading.
     /// </remarks>
-    public byte[] ComputeRootOfLeafHashes(IReadOnlyList<byte[]> leafHashes)
+    public byte[] ComputeRootOfLeafHashes(IReadOnlyList<byte[]> leafHashes, MerkleTreeDiagnostics? diagnostics = null)
     {
         byte[][] copy = ValidateLeafHashes(leafHashes);
 
         using HashAlgorithm hasher = CreateAlgorithm();
-        return copy.Length == 0 ? HashEmpty(hasher) : Mth(copy, hasher);
+        return Reduce(copy, hasher, diagnostics);
     }
 
     /// <summary>
@@ -139,18 +152,23 @@ public sealed partial class Rfc6962MerkleTree
     }
 
     /// <summary>
-    /// Computes the Merkle Tree Hash over a non-empty span of leaf hashes.
+    /// Hashes every entry on the calling thread, one leaf hash per entry index.
     /// </summary>
-    /// <param name="leafHashes">The leaf hashes, in order. Must not be empty.</param>
+    /// <param name="entries">The entries, in order.</param>
     /// <param name="hasher">The algorithm to hash with.</param>
-    /// <returns>The subtree's root.</returns>
-    /// <remarks>
-    /// Recursion depth is logarithmic in the entry count, so no stack guard is required. A single leaf's hash is
-    /// returned unchanged — a subtree root is promoted, never re-hashed, which is the rule that makes the
-    /// level-by-level <see cref="MerkleLevelFold" /> visit exactly this recursion's nodes.
-    /// </remarks>
-    private byte[] Mth(ReadOnlySpan<byte[]> leafHashes, HashAlgorithm hasher) =>
-        MerkleTreeCore.Mth(leafHashes, hasher, HashLength);
+    /// <param name="cancellationToken">A token observed between entries.</param>
+    /// <returns>The leaf hashes in entry order; empty for no entries.</returns>
+    private byte[][] HashEntries(IReadOnlyList<ReadOnlyMemory<byte>> entries, HashAlgorithm hasher, CancellationToken cancellationToken)
+    {
+        byte[][] leafHashes = new byte[entries.Count][];
+        for (int index = 0; index < entries.Count; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            leafHashes[index] = HashWithPrefix(hasher, MerkleTreeFormat.LeafPrefix, entries[index].Span);
+        }
+
+        return leafHashes;
+    }
 
     /// <summary>
     /// Computes the empty tree's root, <c>H()</c>.

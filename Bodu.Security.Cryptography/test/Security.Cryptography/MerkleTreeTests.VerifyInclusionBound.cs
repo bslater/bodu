@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.VerifyInclusionBound.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.VerifyInclusionBound.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,10 +8,10 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for
-/// <see cref="Rfc6962MerkleTree.VerifyInclusionBound(ReadOnlySpan{byte}, long, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />,
+/// <see cref="MerkleTree.VerifyInclusionBound(ReadOnlySpan{byte}, long, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />,
 /// including the tree-size ambiguity it exists to close.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that the unbound verifier accepts an <em>understated</em> tree size against a four-block tree's
@@ -33,7 +33,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionBound_WhenTreeSizeIsUnderstated_ShouldRejectWhereTheUnboundVerifierAccepts()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(16);
         IReadOnlyList<ReadOnlyMemory<byte>> entries = BlockModeEntries(16);
 
@@ -76,7 +76,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionBound_WhenComparedAcrossLengths_ShouldProduceDistinctBoundRoots()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         string boundSixteen = Hex(tree.BindRoot(tree.ComputeRoot(BlockModeEntries(16)), 16));
         string boundTwelve = Hex(tree.BindRoot(tree.ComputeRoot(BlockModeEntries(12)), 12));
@@ -94,7 +94,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyInclusionBound_WhenBindingTheEntryCount_ShouldRoundTrip()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int treeSize = 1; treeSize <= 32; treeSize++)
         {
@@ -125,7 +125,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionBound_WhenBoundValueIsNegative_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusionBound(new byte[32], -1, 1, 0, [0x61], []));
     }
@@ -136,7 +136,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionBound_WhenBoundRootIsNotDigestWidth_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyInclusionBound(new byte[16], 1, 1, 0, [0x61], []));
     }
@@ -147,7 +147,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyInclusionBound_WhenPathIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

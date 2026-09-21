@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.ComputeRootOfLeafHashes.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.ComputeRootOfLeafHashes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,9 +10,9 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.ComputeRootOfLeafHashes(IReadOnlyList{byte[]})" />.
+/// Tests for <see cref="MerkleTree.ComputeRootOfLeafHashes(IReadOnlyList{byte[]})" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Gets the pinned tree heads over the synthetic leaf hashes <c>leaf(0x00)</c> … <c>leaf(0x07)</c>, as the
@@ -38,7 +38,7 @@ public partial class Rfc6962MerkleTreeTests
     /// <returns>The leaf hashes, in order.</returns>
     private static byte[][] SyntheticLeafHashes(int count)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         byte[][] leafHashes = new byte[count][];
         for (int index = 0; index < count; index++)
@@ -58,7 +58,7 @@ public partial class Rfc6962MerkleTreeTests
     public void ComputeRootOfLeafHashes_WhenGivenSyntheticLeafHashes_ShouldReproducePublishedHeads(
         ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(kat.Expected, Hex(tree.ComputeRootOfLeafHashes(SyntheticLeafHashes(kat.Input))));
     }
@@ -78,7 +78,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(8)]
     public void ComputeRootOfLeafHashes_WhenGivenTheEntriesOwnLeafHashes_ShouldAgreeWithComputeRoot(int entryCount)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         byte[][] leafHashes = new byte[entryCount][];
         for (int index = 0; index < entryCount; index++)
@@ -95,7 +95,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenListIsEmpty_ShouldReturnHashOfEmptyInput()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(Hex(SHA256.HashData([])), Hex(tree.ComputeRootOfLeafHashes([])));
     }
@@ -106,7 +106,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenListHasOneElement_ShouldReturnThatLeafHashUnchanged()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] leafHash = tree.HashLeaf([0x61, 0x62, 0x63]);
 
         Assert.AreEqual(Hex(leafHash), Hex(tree.ComputeRootOfLeafHashes([leafHash])));
@@ -119,7 +119,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenCallerMutatesTheListAfterwards_ShouldNotAffectTheComputedRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[][] leafHashes = SyntheticLeafHashes(3);
 
         string before = Hex(tree.ComputeRootOfLeafHashes(leafHashes));
@@ -135,7 +135,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenListIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -150,7 +150,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenAnElementIsNull_ShouldThrowArgumentException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[][] leafHashes = [tree.HashLeaf([0x00]), null!, tree.HashLeaf([0x02])];
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
@@ -169,7 +169,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfLeafHashes_WhenAnElementIsNotDigestWidth_ShouldThrowArgumentException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[][] leafHashes = [tree.HashLeaf([0x00]), new byte[16]];
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>

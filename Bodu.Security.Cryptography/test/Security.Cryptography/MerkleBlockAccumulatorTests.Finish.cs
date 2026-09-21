@@ -49,7 +49,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void Finish_WhenFinalBlockIsShort_ShouldHashItAtItsActualLength()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] shortInput = SeededInput(SmallBlock - 1);
         byte[] padded = new byte[SmallBlock];
         shortInput.CopyTo(padded, 0);

@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Proves that <see cref="MerkleTreeHash" /> and <see cref="ParallelMerkleTreeHash" /> at a fan-out of two produce
-/// bit-identical roots to <see cref="Rfc6962MerkleTree" /> over the same blocks, for every leaf count up to
+/// bit-identical roots to <see cref="MerkleTree" /> over the same blocks, for every leaf count up to
 /// sixty-four with and without a short tail — so an inclusion proof from the RFC 6962 type verifies against a root
 /// from either hasher.
 /// </summary>
@@ -30,9 +30,9 @@ public partial class MerkleTreeHashTests
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void ComputeHash_WhenFanOutIsTwo_ShouldEqualRfc6962MerkleTreeForEveryLeafCountUpToSixtyFour()
+    public void ComputeHash_WhenFanOutIsTwo_ShouldEqualMerkleTreeForEveryLeafCountUpToSixtyFour()
     {
-        var tree = new Rfc6962MerkleTree(SHA256.Create);
+        var tree = new MerkleTree(SHA256.Create);
         using var hasher = new MerkleTreeHash(SHA256.Create, ParityBlockSize, fanOut: 2);
 
         foreach ((byte[] input, string label) in ParityInputs())
@@ -49,9 +49,9 @@ public partial class MerkleTreeHashTests
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public async Task ParallelComputeHash_WhenFanOutIsTwo_ShouldEqualRfc6962MerkleTreeForEveryLeafCountUpToSixtyFour()
+    public async Task ParallelComputeHash_WhenFanOutIsTwo_ShouldEqualMerkleTreeForEveryLeafCountUpToSixtyFour()
     {
-        var tree = new Rfc6962MerkleTree(SHA256.Create);
+        var tree = new MerkleTree(SHA256.Create);
         using var hasher = new ParallelMerkleTreeHash(SHA256.Create, ParityBlockSize, fanOut: 2);
 
         foreach ((byte[] input, string label) in ParityInputs())
@@ -70,7 +70,7 @@ public partial class MerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenFanOutIsTwo_ShouldProduceRootsThatRfc6962InclusionProofsVerifyAgainst()
     {
-        var tree = new Rfc6962MerkleTree(SHA256.Create);
+        var tree = new MerkleTree(SHA256.Create);
         using var hasher = new MerkleTreeHash(SHA256.Create, ParityBlockSize, fanOut: 2);
         byte[] input = ParityInput(7 * ParityBlockSize + 1);   // eight leaves, the last a single byte
 

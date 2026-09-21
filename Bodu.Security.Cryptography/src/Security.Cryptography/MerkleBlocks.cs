@@ -9,8 +9,8 @@ using System.Globalization;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the block arithmetic shared by every consumer of <see cref="Rfc6962MerkleTree" />'s block mode — the number
-/// of blocks a byte length divides into, and the offset and length of each one.
+/// Provides the block arithmetic shared by every consumer of <see cref="MerkleTree" />'s block mode — the number of
+/// blocks a byte length divides into, and the offset and length of each one.
 /// </summary>
 /// <remarks>
 /// <para>

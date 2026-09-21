@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The leaf hashes cost <c>leafCount × hashLength</c> bytes to retain — for a 512 MiB input at one-mebibyte blocks that
 /// is 512 hashes, or 16 KiB. A caller that needs only the root and not a path should use
-/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(System.IO.Stream, int, System.Threading.CancellationToken)" />,
+/// <see cref="MerkleTree.ComputeRootOfBlocks(System.IO.Stream, int, MerkleTreeDiagnostics, System.Threading.CancellationToken)" />,
 /// which folds the tree as it reads and never holds more than a logarithmic number of hashes.
 /// </para>
 /// </remarks>
@@ -49,7 +49,7 @@ public sealed class MerkleBlockComputation
     /// </value>
     /// <remarks>
     /// To publish a commitment that also pins the input's length, pass this value and <see cref="InputLength" /> to
-    /// <see cref="Rfc6962MerkleTree.BindRoot(ReadOnlySpan{byte}, long)" />.
+    /// <see cref="MerkleTree.BindRoot(ReadOnlySpan{byte}, long)" />.
     /// </remarks>
     public byte[] Root { get; }
 
@@ -73,7 +73,7 @@ public sealed class MerkleBlockComputation
     /// rather than one empty block.
     /// </value>
     /// <remarks>
-    /// Pass this list to <see cref="Rfc6962MerkleTree.AuthenticationPath(IReadOnlyList{byte[]}, long)" /> to produce an
+    /// Pass this list to <see cref="MerkleTree.AuthenticationPath(IReadOnlyList{byte[]}, long)" /> to produce an
     /// authentication path without re-reading the input.
     /// </remarks>
     public IReadOnlyList<byte[]> LeafHashes { get; }

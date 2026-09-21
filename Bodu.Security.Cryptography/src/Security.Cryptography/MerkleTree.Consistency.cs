@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTree.Consistency.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTree.Consistency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Consistency proofs: evidence that one published tree is a prefix of a later one.
 /// </summary>
-public sealed partial class Rfc6962MerkleTree
+public sealed partial class MerkleTree
 {
     /// <summary>
     /// Produces the consistency proof that the first <paramref name="firstSize" /> entries of
@@ -27,8 +27,10 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="firstSize" /> is negative or exceeds the number of entries.
     /// </exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public byte[][] ConsistencyProof(IReadOnlyList<ReadOnlyMemory<byte>> entries, long firstSize)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(entries);
 
         using HashAlgorithm hasher = CreateAlgorithm();
@@ -53,8 +55,10 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="firstSize" /> is negative or exceeds the number of leaf hashes.
     /// </exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public byte[][] ConsistencyProofOfLeafHashes(IReadOnlyList<byte[]> leafHashes, long firstSize)
     {
+        ThrowIfNotBinary();
         byte[][] copy = ValidateLeafHashes(leafHashes);
 
         using HashAlgorithm hasher = CreateAlgorithm();
@@ -92,6 +96,7 @@ public sealed partial class Rfc6962MerkleTree
     /// throwing, and only a null proof throws.
     /// </para>
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyConsistency(
         ReadOnlySpan<byte> firstRoot,
         long firstSize,
@@ -99,6 +104,7 @@ public sealed partial class Rfc6962MerkleTree
         long secondSize,
         IReadOnlyList<ReadOnlyMemory<byte>> proof)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(proof);
 
         if (firstRoot.Length != HashLength || secondRoot.Length != HashLength)

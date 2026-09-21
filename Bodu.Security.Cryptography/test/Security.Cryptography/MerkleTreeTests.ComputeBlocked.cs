@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.ComputeBlocked.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.ComputeBlocked.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,11 +11,11 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.ComputeBlocked(Stream, int, CancellationToken)" />,
-/// <see cref="Rfc6962MerkleTree.ComputeBlocked(ReadOnlySpan{byte}, int)" /> and
-/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(Stream, int, CancellationToken)" />.
+/// Tests for <see cref="MerkleTree.ComputeBlocked(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />,
+/// <see cref="MerkleTree.ComputeBlocked(ReadOnlySpan{byte}, int)" /> and
+/// <see cref="MerkleTree.ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>One mebibyte — the leaf size the FallbackPlan repository format fixes.</summary>
     internal const int OneMebibyteBlock = 1024 * 1024;
@@ -69,7 +69,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeBlocked_WhenReadingAStream_ShouldReproduceRfc6962MerkleTreeHash(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(kat.Input));
 
         MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
@@ -93,7 +93,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeRootOfBlocks_WhenFoldingIncrementally_ShouldAgreeWithTheLeafRetainingPass()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int leafCount = 0; leafCount <= 64; leafCount++)
         {
@@ -136,7 +136,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(65537)]
     public void ComputeRootOfBlocks_WhenLeafCountIsLarge_ShouldAgreeWithTheLeafRetainingPass(int leafCount)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(leafCount);
 
         using var retaining = new MemoryStream(input);
@@ -158,7 +158,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeRootOfBlocks_WhenReadingAStream_ShouldReproduceRfc6962MerkleTreeHash(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(kat.Input));
 
         Assert.AreEqual(kat.Expected, Hex(tree.ComputeRootOfBlocks(stream, VectorBlockSize)));
@@ -177,7 +177,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(7)]
     public void ComputeBlocked_WhenStreamReturnsShortReads_ShouldProduceTheSameRoot(int maxBytesPerRead)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(33);
 
         using var whole = new MemoryStream(input);
@@ -198,7 +198,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfBlocks_WhenStreamReturnsShortReads_ShouldProduceTheSameRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         using var throttled = new ThrottledStream(BlockModeInput(33), maxBytesPerRead: 3);
 
@@ -219,7 +219,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(33)]
     public void ComputeBlocked_WhenGivenASpan_ShouldAgreeWithTheStreamOverload(int length)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(length);
 
         using var stream = new MemoryStream(input);
@@ -239,7 +239,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeBlocked_WhenBlockSizeIsOneMebibyte_ShouldReproducePublishedBoundRoots(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(CounterStream(kat.Input));
 
         MerkleBlockComputation computation = tree.ComputeBlocked(stream, OneMebibyteBlock);
@@ -254,7 +254,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeBlocked_WhenStreamIsEmpty_ShouldProduceNoLeavesAndTheEmptyTreeRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream([]);
 
         MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
@@ -271,7 +271,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeBlocked_WhenInputHasSeveralBlocks_ShouldRetainEachBlocksLeafHashInOrder()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(9);
         using var stream = new MemoryStream(input);
 
@@ -285,7 +285,7 @@ public partial class Rfc6962MerkleTreeTests
 
     /// <summary>
     /// Verifies that the retained leaf hashes fold to the same root through
-    /// <see cref="Rfc6962MerkleTree.ComputeRootOfLeafHashes(IReadOnlyList{byte[]})" />, so a caller can reuse them
+    /// <see cref="MerkleTree.ComputeRootOfLeafHashes(IReadOnlyList{byte[]})" />, so a caller can reuse them
     /// without recomputing.
     /// </summary>
     /// <param name="length">The number of input bytes.</param>
@@ -296,7 +296,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(28)]
     public void ComputeBlocked_WhenRetainedLeafHashesAreRefolded_ShouldProduceTheSameRoot(int length)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(length));
 
         MerkleBlockComputation computation = tree.ComputeBlocked(stream, VectorBlockSize);
@@ -312,7 +312,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeBlocked_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -329,7 +329,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(-1)]
     public void ComputeBlocked_WhenBlockSizeIsNotPositive_ShouldThrowArgumentOutOfRangeException(int blockSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream([1, 2, 3]);
 
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -346,14 +346,14 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeBlocked_WhenCancellationIsRequested_ShouldThrowOperationCanceledException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using var stream = new MemoryStream(BlockModeInput(64));
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
         _ = Assert.ThrowsExactly<OperationCanceledException>(() =>
         {
-            _ = tree.ComputeBlocked(stream, VectorBlockSize, cts.Token);
+            _ = tree.ComputeBlocked(stream, VectorBlockSize, cancellationToken: cts.Token);
         });
     }
 
@@ -438,7 +438,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRootOfBlocks_WhenDiagnosticsAreSupplied_ShouldRecordAValidatingTraceEndingAtTheRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int leafCount = 0; leafCount <= 16; leafCount++)
         {

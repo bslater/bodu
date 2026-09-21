@@ -442,4 +442,7 @@
   <data name="Op_Invalid_MerkleLeafHashesNotRetained" xml:space="preserve">
     <value>Leaf hashes were not retained; create the accumulator with retainLeafHashes set to true to obtain a MerkleBlockComputation.</value>
   </data>
+  <data name="Op_NotSupported_MerkleProofsRequireBinaryTree" xml:space="preserve">
+    <value>Authentication paths, consistency proofs and their verifiers are defined only for RFC 6962's binary tree; this instance was created with a fan-out of {0}.</value>
+  </data>
 </root>

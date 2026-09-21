@@ -39,7 +39,10 @@ public class MerkleParallelBenchmarks
     private const int BlockSize = 1024 * 1024;
 
     private byte[] _payload = Array.Empty<byte>();
-    private Rfc6962MerkleTree _tree = null!;
+    private MerkleTree _tree = null!;
+
+    /// <summary>The same tree configured to hash leaves on every core.</summary>
+    private MerkleTree _parallelTree = null!;
 
     /// <summary>The leaf hash under test. Named rather than typed so the report rows are readable.</summary>
     [Params("SHA-256", "SHA-512", "Tiger", "BLAKE2b")]
@@ -53,7 +56,8 @@ public class MerkleParallelBenchmarks
     {
         _payload = new byte[PayloadSize];
         Random.Shared.NextBytes(_payload);
-        _tree = new Rfc6962MerkleTree(CreateFactory(LeafHash));
+        _tree = new MerkleTree(CreateFactory(LeafHash));
+        _parallelTree = new MerkleTree(CreateFactory(LeafHash), maxDegreeOfParallelism: -1);
     }
 
     /// <summary>
@@ -76,7 +80,7 @@ public class MerkleParallelBenchmarks
     public byte[] ParallelFromStream()
     {
         using var stream = new MemoryStream(_payload, writable: false);
-        return _tree.ComputeBlockedParallel(stream, BlockSize).Root;
+        return _parallelTree.ComputeBlocked(stream, BlockSize).Root;
     }
 
     /// <summary>
@@ -86,7 +90,7 @@ public class MerkleParallelBenchmarks
     /// <returns>The Merkle Tree Hash of the payload, bit-identical to <see cref="Sequential" />.</returns>
     [Benchmark]
     public byte[] ParallelFromMemory() =>
-        _tree.ComputeBlockedParallel(_payload.AsMemory(), BlockSize).Root;
+        _parallelTree.ComputeBlocked(_payload.AsMemory(), BlockSize).Root;
 
     /// <summary>
     /// Returns a fresh-instance factory for the named leaf hash.

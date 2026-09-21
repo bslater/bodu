@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.VerifyBlockInclusion.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.VerifyBlockInclusion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,10 +10,10 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for
-/// <see cref="Rfc6962MerkleTree.VerifyBlockInclusion(ReadOnlySpan{byte}, long, int, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />,
+/// <see cref="MerkleTree.VerifyBlockInclusion(ReadOnlySpan{byte}, long, int, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />,
 /// the possession-check shape in which the tree size is derived rather than supplied.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>The preimage length of the published authentication-path vector.</summary>
     private const int PathVectorLength = 4_198_400;
@@ -44,7 +44,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyBlockInclusion_WhenGivenAPublishedBlobPath_ShouldReproduceItAndAccept(MerkleInclusionKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] preimage = CounterStream(PathVectorLength);
         byte[] boundRoot = Convert.FromHexString(PathVectorRoot);
 
@@ -76,7 +76,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyBlockInclusion_WhenBlockIsTamperedButPathIsIntact_ShouldReject(MerkleInclusionKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] preimage = CounterStream(PathVectorLength);
         byte[] boundRoot = Convert.FromHexString(PathVectorRoot);
         IReadOnlyList<ReadOnlyMemory<byte>> path = kat.Path
@@ -104,7 +104,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(0)]
     public void VerifyBlockInclusion_WhenBlockLengthDisagreesWithItsPosition_ShouldReject(int suppliedLength)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(17);
         IReadOnlyList<ReadOnlyMemory<byte>> entries = BlockModeEntries(17);
         byte[] boundRoot = tree.BindRoot(tree.ComputeRoot(entries), 17);
@@ -123,7 +123,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyBlockInclusion_WhenFinalBlockIsPaddedToFullWidth_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(17);
         IReadOnlyList<ReadOnlyMemory<byte>> entries = BlockModeEntries(17);
         byte[] boundRoot = tree.BindRoot(tree.ComputeRoot(entries), 17);
@@ -147,7 +147,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(long.MaxValue)]
     public void VerifyBlockInclusion_WhenBlockIndexIsOutsideTheDerivedTree_ShouldReject(long blockIndex)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] boundRoot = tree.BindRoot(tree.ComputeRoot(BlockModeEntries(17)), 17);
 
         Assert.IsFalse(tree.VerifyBlockInclusion(boundRoot, 17, VectorBlockSize, blockIndex, [0x00], []));
@@ -165,7 +165,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(16L, -4)]
     public void VerifyBlockInclusion_WhenLengthOrBlockSizeIsNotPositive_ShouldReject(long inputLength, int blockSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyBlockInclusion(new byte[32], inputLength, blockSize, 0, [0x00], []));
     }
@@ -183,7 +183,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyInclusion_WhenGivenArbitraryMalformedInput_ShouldReturnFalseAndNeverThrow()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         var random = new Random(Seed: 20260919);
 
         long[] sizes = [-1, 0, 1, 2, 3, 7, 8, long.MaxValue];

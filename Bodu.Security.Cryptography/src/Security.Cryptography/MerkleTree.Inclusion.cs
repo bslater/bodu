@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTree.Inclusion.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTree.Inclusion.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Authentication paths and inclusion-proof verification.
 /// </summary>
-public sealed partial class Rfc6962MerkleTree
+public sealed partial class MerkleTree
 {
     /// <summary>
     /// Produces the authentication path for one entry of a tree: the sibling subtree roots from the leaf upward.
@@ -23,8 +23,10 @@ public sealed partial class Rfc6962MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="leafIndex" /> is negative or is not less than the number of entries.
     /// </exception>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public byte[][] AuthenticationPath(IReadOnlyList<ReadOnlyMemory<byte>> entries, long leafIndex)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(entries);
 
         using HashAlgorithm hasher = CreateAlgorithm();
@@ -53,8 +55,10 @@ public sealed partial class Rfc6962MerkleTree
     /// <remarks>
     /// The leaf hashes of a streamed computation are available from <see cref="MerkleBlockComputation.LeafHashes" />.
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public byte[][] AuthenticationPath(IReadOnlyList<byte[]> leafHashes, long leafIndex)
     {
+        ThrowIfNotBinary();
         byte[][] copy = ValidateLeafHashes(leafHashes);
 
         using HashAlgorithm hasher = CreateAlgorithm();
@@ -95,6 +99,7 @@ public sealed partial class Rfc6962MerkleTree
     /// untrusted input and an exception where a <see langword="false" /> belongs is a denial of service.
     /// </para>
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusion(
         ReadOnlySpan<byte> root,
         long treeSize,
@@ -102,6 +107,7 @@ public sealed partial class Rfc6962MerkleTree
         ReadOnlySpan<byte> entry,
         IReadOnlyList<ReadOnlyMemory<byte>> path)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(path);
 
         if (root.Length != HashLength)
@@ -139,6 +145,7 @@ public sealed partial class Rfc6962MerkleTree
     /// entry overload.
     /// </para>
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusionOfLeafHash(
         ReadOnlySpan<byte> root,
         long treeSize,
@@ -146,6 +153,7 @@ public sealed partial class Rfc6962MerkleTree
         ReadOnlySpan<byte> leafHash,
         IReadOnlyList<ReadOnlyMemory<byte>> path)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(path);
 
         if (root.Length != HashLength || leafHash.Length != HashLength)
@@ -176,6 +184,7 @@ public sealed partial class Rfc6962MerkleTree
     /// hashed into the commitment, a claimed size that disagrees with the published one produces a different root and
     /// the check fails closed.
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyInclusionBound(
         ReadOnlySpan<byte> boundRoot,
         long boundValue,
@@ -184,6 +193,7 @@ public sealed partial class Rfc6962MerkleTree
         ReadOnlySpan<byte> entry,
         IReadOnlyList<ReadOnlyMemory<byte>> path)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(path);
 
         if (boundRoot.Length != HashLength || boundValue < 0)
@@ -230,6 +240,7 @@ public sealed partial class Rfc6962MerkleTree
     /// have cached on receipt.
     /// </para>
     /// </remarks>
+    /// <exception cref="NotSupportedException">This instance's <see cref="FanOut" /> is not two.</exception>
     public bool VerifyBlockInclusion(
         ReadOnlySpan<byte> boundRoot,
         long inputLength,
@@ -238,6 +249,7 @@ public sealed partial class Rfc6962MerkleTree
         ReadOnlySpan<byte> block,
         IReadOnlyList<ReadOnlyMemory<byte>> path)
     {
+        ThrowIfNotBinary();
         ThrowHelper.ThrowIfNull(path);
 
         if (boundRoot.Length != HashLength || inputLength <= 0 || blockSize <= 0 || blockIndex < 0)

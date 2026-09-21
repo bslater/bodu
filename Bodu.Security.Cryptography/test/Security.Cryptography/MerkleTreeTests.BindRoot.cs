@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.BindRoot.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.BindRoot.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,9 +11,9 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.BindRoot(ReadOnlySpan{byte}, long)" />.
+/// Tests for <see cref="MerkleTree.BindRoot(ReadOnlySpan{byte}, long)" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that binding the input's byte length into the block-mode root reproduces the published bound roots.
@@ -24,7 +24,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void BindRoot_WhenBindingTheInputByteLength_ShouldReproducePublishedBoundRoots(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(BlockModeEntries(kat.Input));
 
         Assert.AreEqual(kat.Expected, Hex(tree.BindRoot(root, kat.Input)));
@@ -37,7 +37,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void BindRoot_WhenGivenARoot_ShouldHashPrefixLengthAndHeadInOrder()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(TakeEntries(5));
 
         byte[] expectedPreimage = new byte[1 + sizeof(ulong) + root.Length];
@@ -55,7 +55,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void BindRoot_WhenBoundValuesDiffer_ShouldProduceDifferentRoots()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(BlockModeEntries(16));
 
         Assert.AreNotEqual(Hex(tree.BindRoot(root, 16)), Hex(tree.BindRoot(root, 12)));
@@ -68,7 +68,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void BindRoot_WhenBindingAnyValue_ShouldDifferFromTheUnboundHead()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(TakeEntries(4));
 
         Assert.AreNotEqual(Hex(root), Hex(tree.BindRoot(root, 4)));
@@ -80,7 +80,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void BindRoot_WhenRootIsNotDigestWidth_ShouldThrowArgumentException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -96,7 +96,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void BindRoot_WhenBoundValueIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(TakeEntries(2));
 
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

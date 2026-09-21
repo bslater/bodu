@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>At the default fan-out of two, this is RFC 6962's tree.</strong> The level-by-level walk with promotion
 /// visits exactly the nodes of RFC 6962's recursive definition, so the root is bit-identical to
-/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(Stream, int, CancellationToken)" /> over the same blocks, and that
+/// <see cref="MerkleTree.ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" /> over the same blocks, and that
 /// type's inclusion and consistency proofs verify against roots produced here. The two types share this construction:
 /// the fold and the prefixes are one implementation, not duplicated. A wider fan-out is a sound level-by-level
 /// commitment of its own — shallower, with wider internal nodes — but RFC 6962 has no k-ary form, so such roots
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to choose MerkleTreeHash.</strong> Pick this when you want a <c>HashAlgorithm</c>-shaped, reusable tree
 /// hasher over a leaf algorithm of your choosing — content-addressed storage, chunked integrity over a stream, or a
 /// root that must match a transparency-log or other RFC 6962 implementation. For proofs, length-bound roots and the
-/// full RFC 6962 surface, use <c>Rfc6962MerkleTree</c>; for maximum throughput over very large inputs use
+/// full RFC 6962 surface, use <c>MerkleTree</c>; for maximum throughput over very large inputs use
 /// <see cref="ParallelMerkleTreeHash" />; if a fixed tree shape with a fixed leaf hash is acceptable,
 /// <see cref="Blake3" /> is faster and ships its own tree mode internally.
 /// </para>

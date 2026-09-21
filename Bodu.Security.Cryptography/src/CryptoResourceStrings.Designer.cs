@@ -1211,5 +1211,14 @@ namespace Bodu {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication paths, consistency proofs and their verifiers are defined only for RFC 6962's binary tree; this instance was created with a fan-out of {0}..
+        /// </summary>
+        internal static string Op_NotSupported_MerkleProofsRequireBinaryTree {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_MerkleProofsRequireBinaryTree", resourceCulture);
+            }
+        }
+        
 }
 }

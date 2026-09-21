@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.HashNode.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.HashNode.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,9 +9,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.HashNode(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
+/// Tests for <see cref="MerkleTree.HashNode(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that a node hash is the digest of the <c>0x01</c> prefix followed by the two child hashes in order.
@@ -19,7 +19,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashNode_WhenGivenTwoChildren_ShouldPrefixWithTheNodeDomainByte()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] left = tree.HashLeaf([0x61, 0x62, 0x63]);
         byte[] right = tree.HashLeaf([0x64, 0x65, 0x66]);
 
@@ -33,7 +33,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashNode_WhenGivenThePinnedLeafPair_ShouldReproduceThePublishedNodeHash()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(
             "75c0b5328c14ebdab04b24f779011d375a1b54e89a3fd0f842d7ef449735c92f",
@@ -46,7 +46,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashNode_WhenChildrenAreSwapped_ShouldProduceADifferentHash()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] left = tree.HashLeaf([0x61]);
         byte[] right = tree.HashLeaf([0x62]);
 
@@ -60,7 +60,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void HashNode_WhenComparedWithALeafOverTheSameBytes_ShouldDiffer()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] left = tree.HashLeaf([0x61]);
         byte[] right = tree.HashLeaf([0x62]);
 
@@ -82,7 +82,7 @@ public partial class Rfc6962MerkleTreeTests
     public void HashNode_WhenAChildIsNotDigestWidth_ShouldThrowArgumentException(
         int leftLength, int rightLength, string expectedParamName)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

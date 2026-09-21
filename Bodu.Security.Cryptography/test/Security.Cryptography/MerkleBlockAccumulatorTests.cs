@@ -17,7 +17,7 @@ public partial class MerkleBlockAccumulatorTests
     /// <summary>The block size the boundary sweeps use: small enough that every shape appears within a few bytes.</summary>
     private const int SmallBlock = 8;
 
-    private static Rfc6962MerkleTree CreateTree() => new(SHA256.Create);
+    private static MerkleTree CreateTree() => new(SHA256.Create);
 
     private static string Hex(ReadOnlySpan<byte> value) => Convert.ToHexString(value).ToLowerInvariant();
 
@@ -46,7 +46,7 @@ public partial class MerkleBlockAccumulatorTests
         }
     }
 
-    private static byte[] ExpectedRoot(Rfc6962MerkleTree tree, byte[] data, int blockSize) =>
+    private static byte[] ExpectedRoot(MerkleTree tree, byte[] data, int blockSize) =>
         tree.ComputeRootOfBlocks(new MemoryStream(data), blockSize);
 
     /// <summary>
@@ -57,7 +57,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestCategory("Smoke")]
     public void CreateBlockAccumulator_WhenCreated_ShouldExposeItsConfigurationAndAnEmptyState()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 
         Assert.AreEqual(SmallBlock, accumulator.BlockSize);
@@ -89,7 +89,7 @@ public partial class MerkleBlockAccumulatorTests
     [DataRow(int.MinValue)]
     public void CreateBlockAccumulator_WhenBlockSizeIsNotPositive_ShouldThrowArgumentOutOfRangeException(int blockSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

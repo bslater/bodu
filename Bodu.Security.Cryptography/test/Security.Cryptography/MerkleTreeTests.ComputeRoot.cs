@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.ComputeRoot.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.ComputeRoot.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,9 +10,9 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.ComputeRoot(IReadOnlyList{ReadOnlyMemory{byte}})" />.
+/// Tests for <see cref="MerkleTree.ComputeRoot(IReadOnlyList{ReadOnlyMemory{byte}})" />.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that the root over the RFC 6962 reference entries reproduces the published Merkle Tree Hash for
@@ -24,7 +24,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeRoot_WhenGivenReferenceEntries_ShouldReproduceRfc6962MerkleTreeHash(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(kat.Expected, Hex(tree.ComputeRoot(TakeEntries(kat.Input))));
     }
@@ -39,7 +39,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeRoot_WhenGivenFixedSizeBlocks_ShouldReproduceRfc6962MerkleTreeHash(ValidKat<int, string> kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(kat.Expected, Hex(tree.ComputeRoot(BlockModeEntries(kat.Input))));
     }
@@ -51,7 +51,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenEntriesAreEmpty_ShouldReturnHashOfEmptyInput()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(Hex(SHA256.HashData([])), Hex(tree.ComputeRoot([])));
     }
@@ -63,7 +63,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenGivenOneEntry_ShouldReturnLeafHashAndNotTheBareDigest()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] entry = [0x61, 0x62, 0x63];
 
         string root = Hex(tree.ComputeRoot([entry]));
@@ -79,7 +79,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenGivenThreeEntries_ShouldSplitAtTheLargestPowerOfTwoBelowTheCount()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] a = [0x61];
         byte[] b = [0x62];
         byte[] c = [0x63];
@@ -101,7 +101,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenASubtreeIsLone_ShouldPromoteItUnchangedRatherThanReHashIt()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] a = [0x61];
         byte[] b = [0x62];
         byte[] c = [0x63];
@@ -134,7 +134,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenTrailingLeafIsOdd_ShouldNotDuplicateItAgainstItself()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] a = [0x61];
         byte[] b = [0x62];
         byte[] c = [0x63];
@@ -166,7 +166,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenAnInternalNodePreimageIsOfferedAsAnEntry_ShouldNotCollideWithTheTwoLeafRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] first = [0x61];
         byte[] second = [0x62];
 
@@ -184,7 +184,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenEntriesIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -199,7 +199,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void ComputeRoot_WhenAlgorithmIsSha512_ShouldProduceDigestWidthRoots()
     {
-        var tree = new Rfc6962MerkleTree(SHA512.Create);
+        var tree = new MerkleTree(SHA512.Create);
 
         Assert.AreEqual(64, tree.HashLength);
         Assert.AreEqual(64, tree.ComputeRoot(TakeEntries(5)).Length);

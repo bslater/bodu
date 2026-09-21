@@ -15,7 +15,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void FinishComputation_WhenLeafHashesAreRetained_ShouldMatchThePullStyleComputation()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput((5 * SmallBlock) + 2);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock, retainLeafHashes: true);
         AppendInRandomChunks(accumulator, data, seed: 7);
@@ -38,7 +38,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void FinishComputation_WhenPathsAreBuiltFromTheRetainedLeaves_ShouldVerifyEveryBlockAgainstTheBoundRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput((6 * SmallBlock) + 5);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock, retainLeafHashes: true);
         AppendInRandomChunks(accumulator, data, seed: 11);

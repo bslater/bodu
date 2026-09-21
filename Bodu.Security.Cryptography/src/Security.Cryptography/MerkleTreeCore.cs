@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the stateless RFC 6962 primitives — the split point, the Merkle Tree Hash, the authentication-path and
-/// consistency walks, the block arithmetic, and the streaming fold — behind the public <c>Rfc6962MerkleTree</c> and
+/// consistency walks, the block arithmetic, and the streaming fold — behind the public <c>MerkleTree</c> and
 /// <c>MerkleBlocks</c> facades.
 /// </summary>
 /// <remarks>

@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for <see cref="MerkleBlockComputation" />, the result of a block-mode pass over
-/// <see cref="Rfc6962MerkleTree" />.
+/// <see cref="MerkleTree" />.
 /// </summary>
 [TestClass]
 public partial class MerkleBlockComputationTests
@@ -25,7 +25,7 @@ public partial class MerkleBlockComputationTests
     /// <param name="blockSize">The block size to divide the input by.</param>
     /// <returns>The computation, with its input available through <see cref="Input(int)" />.</returns>
     private static MerkleBlockComputation Compute(int inputLength, int blockSize = TestBlockSize) =>
-        new Rfc6962MerkleTree(SHA256.Create).ComputeBlocked(Input(inputLength), blockSize);
+        new MerkleTree(SHA256.Create).ComputeBlocked(Input(inputLength), blockSize);
 
     /// <summary>
     /// Synthesizes the deterministic input <see cref="Compute(int, int)" /> hashes: byte <c>i</c> is <c>i</c> modulo

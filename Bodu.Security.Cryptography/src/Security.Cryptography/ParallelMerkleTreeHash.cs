@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Same tree, same roots.</strong> For a given algorithm, block size and fan-out this type produces exactly the
 /// root <see cref="MerkleTreeHash" /> produces; the two are facades over one shared fold. At the default fan-out of two
-/// that is RFC 6962's Merkle Tree Hash, bit-identical to <c>Rfc6962MerkleTree.ComputeRootParallel</c> from the
+/// that is RFC 6962's Merkle Tree Hash, bit-identical to <c>MerkleTree.ComputeRootParallel</c> from the
 /// <c>Bodu.Collections</c> package, whose inclusion and consistency proofs verify against roots produced here. A wider
 /// fan-out is a sound commitment of its own but is not RFC 6962's, which is binary by definition. A short tail block is
 /// hashed at its actual length, never zero-padded, and an empty input yields the empty tree's root, <c>H()</c>.
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <b>When to choose ParallelMerkleTreeHash.</b> Large inputs where leaf hashing dominates — multi-gigabyte files or
 /// streams — with a leaf algorithm of your choosing. For proofs and the full RFC 6962 surface, use
-/// <c>Rfc6962MerkleTree</c>; for small inputs <see cref="MerkleTreeHash" /> avoids the parallel scheduling overhead.
+/// <c>MerkleTree</c>; for small inputs <see cref="MerkleTreeHash" /> avoids the parallel scheduling overhead.
 /// </para>
 /// </remarks>
 /// <example>

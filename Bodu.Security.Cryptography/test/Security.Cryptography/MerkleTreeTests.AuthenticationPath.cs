@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.AuthenticationPath.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.AuthenticationPath.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,10 +9,10 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Tests for <see cref="Rfc6962MerkleTree.AuthenticationPath(IReadOnlyList{ReadOnlyMemory{byte}}, long)" /> and its
+/// Tests for <see cref="MerkleTree.AuthenticationPath(IReadOnlyList{ReadOnlyMemory{byte}}, long)" /> and its
 /// leaf-hash overload.
 /// </summary>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Gets the published authentication paths for every leaf of the seven- and eight-entry reference trees
@@ -46,7 +46,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void AuthenticationPath_WhenGivenReferenceEntries_ShouldReproducePublishedPaths(MerkleInclusionKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         byte[][] path = tree.AuthenticationPath(TakeEntries(kat.TreeSize), kat.LeafIndex);
 
@@ -60,7 +60,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void AuthenticationPath_WhenTreeIsNotPerfect_ShouldVaryPathLengthByLeafIndex()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(7);
 
         Assert.AreEqual(2, tree.AuthenticationPath(entries, 6).Length);
@@ -75,7 +75,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void AuthenticationPath_WhenTreeHasOneEntry_ShouldReturnAnEmptyPath()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.AreEqual(0, tree.AuthenticationPath(TakeEntries(1), 0).Length);
     }
@@ -88,7 +88,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void AuthenticationPath_WhenGeneratedForAnyLeaf_ShouldNeverExceedCeilingLog2OfTreeSize()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int treeSize = 1; treeSize <= 64; treeSize++)
         {
@@ -118,7 +118,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(8)]
     public void AuthenticationPath_WhenBuiltFromLeafHashes_ShouldAgreeWithTheEntryOverload(int treeSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         IReadOnlyList<ReadOnlyMemory<byte>> entries = TakeEntries(treeSize);
 
         byte[][] leafHashes = new byte[treeSize][];
@@ -141,7 +141,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void AuthenticationPath_WhenBuiltFromAStreamedComputation_ShouldVerifyAgainstItsRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] input = BlockModeInput(17);
         using var stream = new MemoryStream(input);
 
@@ -171,7 +171,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void AuthenticationPath_WhenEntriesIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -195,7 +195,7 @@ public partial class Rfc6962MerkleTreeTests
     public void AuthenticationPath_WhenLeafIndexIsOutsideTheTree_ShouldThrowArgumentOutOfRangeException(
         int treeSize, long leafIndex)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

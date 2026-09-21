@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// Merkle root the same shape: <see cref="Append" /> takes bytes in whatever sizes they arrive, re-blocks them into
 /// <see cref="BlockSize" />-byte leaves internally, and folds each completed leaf into the tree at once. The root is
 /// therefore independent of how the input was split across calls, and equals the root
-/// <c>Rfc6962MerkleTree.ComputeRootOfBlocks</c> computes over the same bytes at the same block size.
+/// <c>MerkleTree.ComputeRootOfBlocks</c> computes over the same bytes at the same block size.
 /// </para>
 /// <para>
 /// Memory is one block plus one pending hash per tree level — logarithmic in the leaf count — unless
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// var tree = new Rfc6962MerkleTree(SHA256.Create);
+/// var tree = new MerkleTree(SHA256.Create);
 /// using MerkleBlockAccumulator merkle = tree.CreateBlockAccumulator(blockSize: 1 << 20);
 /// using IncrementalHash digest = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 ///
@@ -54,12 +54,12 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="Rfc6962MerkleTree.CreateBlockAccumulator(int, bool, MerkleTreeDiagnostics)" />
+/// <seealso cref="MerkleTree.CreateBlockAccumulator(int, bool, MerkleTreeDiagnostics)" />
 public sealed class MerkleBlockAccumulator
     : IDisposable
 {
     /// <summary>The tree whose construction and hash the accumulator follows.</summary>
-    private readonly Rfc6962MerkleTree _tree;
+    private readonly MerkleTree _tree;
 
     /// <summary>The algorithm every leaf and node is hashed with, owned for the accumulator's lifetime.</summary>
     private readonly HashAlgorithm _hasher;
@@ -100,7 +100,7 @@ public sealed class MerkleBlockAccumulator
     /// <param name="retainLeafHashes">Whether to keep every leaf hash for <see cref="FinishComputation" />.</param>
     /// <param name="diagnostics">The recorder that receives every node, or <see langword="null" />.</param>
     internal MerkleBlockAccumulator(
-        Rfc6962MerkleTree tree,
+        MerkleTree tree,
         HashAlgorithm hasher,
         int blockSize,
         bool retainLeafHashes,
@@ -191,7 +191,7 @@ public sealed class MerkleBlockAccumulator
     /// <exception cref="ObjectDisposedException">The accumulator has been disposed.</exception>
     /// <remarks>
     /// The first call completes the computation; later calls return the same root without further work. The root is
-    /// identical to <c>Rfc6962MerkleTree.ComputeRootOfBlocks</c> over the same bytes at <see cref="BlockSize" />.
+    /// identical to <c>MerkleTree.ComputeRootOfBlocks</c> over the same bytes at <see cref="BlockSize" />.
     /// </remarks>
     public byte[] Finish()
     {
@@ -216,9 +216,9 @@ public sealed class MerkleBlockAccumulator
     /// <exception cref="ObjectDisposedException">The accumulator has been disposed.</exception>
     /// <remarks>
     /// This is the commitment to publish when a verifier will later be told the input's length by a party it does not
-    /// trust: <see cref="Rfc6962MerkleTree.VerifyBlockInclusion" /> derives the tree size from the bound length, so a
-    /// misstated length fails closed. It is exactly <see cref="Rfc6962MerkleTree.BindRoot" /> applied to
-    /// <see cref="Finish" /> and <see cref="Length" />.
+    /// trust: <see cref="MerkleTree.VerifyBlockInclusion" /> derives the tree size from the bound length, so a
+    /// misstated length fails closed. It is exactly <see cref="MerkleTree.BindRoot" /> applied to <see cref="Finish" />
+    /// and <see cref="Length" />.
     /// </remarks>
     public byte[] FinishBound() =>
         _tree.BindRoot(Finish(), _length);
@@ -233,7 +233,7 @@ public sealed class MerkleBlockAccumulator
     /// The accumulator was created without <c>retainLeafHashes</c>, so no leaf hashes were kept.
     /// </exception>
     /// <remarks>
-    /// The result is what <c>Rfc6962MerkleTree.ComputeBlocked</c> would have returned over the same bytes. A subsequent
+    /// The result is what <c>MerkleTree.ComputeBlocked</c> would have returned over the same bytes. A subsequent
     /// <see cref="Reset" /> does not disturb it: the returned computation keeps its own list.
     /// </remarks>
     public MerkleBlockComputation FinishComputation()
@@ -293,11 +293,11 @@ public sealed class MerkleBlockAccumulator
     }
 
     /// <summary>
-    /// Creates a fresh fold over the owned algorithm and the optional recorder.
+    /// Creates a fresh fold over the owned algorithm and the optional recorder, at the tree's fan-out.
     /// </summary>
     /// <returns>The fold.</returns>
     private MerkleLevelFold CreateFold() =>
-        new(_hasher, HashLength, fanOut: 2, _diagnostics);
+        new(_hasher, HashLength, _tree.FanOut, _diagnostics);
 
     /// <summary>
     /// Throws when a <c>Finish</c> member has already completed the computation.

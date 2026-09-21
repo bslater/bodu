@@ -16,10 +16,9 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// An instance is passed to any Merkle computation in the solution that accepts one — the block-mode root of
-/// <c>Rfc6962MerkleTree</c>, or a <c>ComputeHash</c> call on <c>MerkleTreeHash</c> or <c>ParallelMerkleTreeHash</c>. As
-/// the tree is built, each leaf and each hashed internal node is recorded; a node promoted to a higher level unchanged
-/// is recorded once, at the level that produced it. Once the call returns, the complete trace is available for
-/// inspection.
+/// <c>MerkleTree</c>, or a <c>ComputeHash</c> call on <c>MerkleTreeHash</c> or <c>ParallelMerkleTreeHash</c>. As the
+/// tree is built, each leaf and each hashed internal node is recorded; a node promoted to a higher level unchanged is
+/// recorded once, at the level that produced it. Once the call returns, the complete trace is available for inspection.
 /// </para>
 /// <para>
 /// Storing child hash snapshots for every internal node incurs additional allocation proportional to the number of

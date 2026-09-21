@@ -16,7 +16,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void FinishBound_WhenFinished_ShouldBindTheAppendedLengthIntoTheRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] data = SeededInput((3 * SmallBlock) + 5);
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
         accumulator.Append(data);
@@ -35,11 +35,11 @@ public partial class MerkleBlockAccumulatorTests
     /// <param name="kat">The input length and the published bound root.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DynamicData(nameof(Rfc6962MerkleTreeTests.WholePreimageBoundRoots), typeof(Rfc6962MerkleTreeTests), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    [DynamicData(nameof(MerkleTreeTests.WholePreimageBoundRoots), typeof(MerkleTreeTests), DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
     public void FinishBound_WhenTheCounterStreamIsAppendedInRandomChunks_ShouldReproducePublishedBoundRoots(ValidKat<int, string> kat)
     {
-        byte[] preimage = Rfc6962MerkleTreeTests.CounterStream(kat.Input);
-        using MerkleBlockAccumulator accumulator = CreateTree().CreateBlockAccumulator(Rfc6962MerkleTreeTests.OneMebibyteBlock);
+        byte[] preimage = MerkleTreeTests.CounterStream(kat.Input);
+        using MerkleBlockAccumulator accumulator = CreateTree().CreateBlockAccumulator(MerkleTreeTests.OneMebibyteBlock);
 
         var random = new Random(kat.Input);
         int offset = 0;
@@ -60,7 +60,7 @@ public partial class MerkleBlockAccumulatorTests
     [TestMethod]
     public void FinishBound_WhenNothingWasAppended_ShouldBindZeroToTheEmptyTreeRoot()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         using MerkleBlockAccumulator accumulator = tree.CreateBlockAccumulator(SmallBlock);
 
         Assert.AreEqual(Hex(tree.BindRoot(tree.ComputeRootOfBlocks(new MemoryStream(), SmallBlock), 0)), Hex(accumulator.FinishBound()));

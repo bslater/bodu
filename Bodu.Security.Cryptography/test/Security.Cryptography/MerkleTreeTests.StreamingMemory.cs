@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.StreamingMemory.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.StreamingMemory.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -14,10 +14,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(Stream, int, CancellationToken)" /> is documented as folding the
+/// <see cref="MerkleTree.ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" /> is documented as folding the
 /// tree as it reads, holding one subtree per set bit of the leaf count — so its peak is
 /// <c>O(blockSize + log n · HashLength)</c> and does not grow with the input.
-/// <see cref="Rfc6962MerkleTree.ComputeBlocked(Stream, int, CancellationToken)" /> deliberately retains every leaf
+/// <see cref="MerkleTree.ComputeBlocked(Stream, int, MerkleTreeDiagnostics, CancellationToken)" /> deliberately retains every leaf
 /// hash instead, which is what makes a later authentication path possible. Those are memory claims, and the rest of
 /// the suite only checks that both produce the same root.
 /// </para>
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// taken in the same process, the spread across repeated runs is a few dozen bytes rather than a few megabytes.
 /// </para>
 /// </remarks>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>The block size used by the memory probe. Small, so a modest input yields many leaves.</summary>
     private const int ProbeBlockSize = 1024;
@@ -61,7 +61,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void ComputeRootOfBlocks_WhenFoldingALargerStream_ShouldNotRetainMoreThanTheSmallerOne()
     {
-        var tree = new Rfc6962MerkleTree(SHA256.Create);
+        var tree = new MerkleTree(SHA256.Create);
 
         long foldSmall = MeasureLiveBytesMidStream(ProbeSmallLeafCount, folding: true, tree);
         long foldLarge = MeasureLiveBytesMidStream(ProbeLargeLeafCount, folding: true, tree);
@@ -96,7 +96,7 @@ public partial class Rfc6962MerkleTreeTests
     /// </param>
     /// <param name="tree">The tree to compute with.</param>
     /// <returns>The live managed heap size, in bytes, at the sampling point.</returns>
-    private static long MeasureLiveBytesMidStream(int leafCount, bool folding, Rfc6962MerkleTree tree)
+    private static long MeasureLiveBytesMidStream(int leafCount, bool folding, MerkleTree tree)
     {
         long sampled = 0;
         long length = (long)leafCount * ProbeBlockSize;

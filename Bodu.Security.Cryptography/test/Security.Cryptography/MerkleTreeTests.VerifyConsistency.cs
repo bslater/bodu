@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Rfc6962MerkleTreeTests.VerifyConsistency.cs" company="Bodu Pty. Ltd.">
+// <copyright file="MerkleTreeTests.VerifyConsistency.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,13 +10,13 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for
-/// <see cref="Rfc6962MerkleTree.VerifyConsistency(ReadOnlySpan{byte}, long, ReadOnlySpan{byte}, long, IReadOnlyList{ReadOnlyMemory{byte}})" />.
+/// <see cref="MerkleTree.VerifyConsistency(ReadOnlySpan{byte}, long, ReadOnlySpan{byte}, long, IReadOnlyList{ReadOnlyMemory{byte}})" />.
 /// </summary>
 /// <remarks>
 /// The negative cases follow the same systematic mutation approach as the inclusion tests, plus the three failures
 /// specific to consistency: a shrinking log, swapped roots, and a non-empty proof between equal sizes.
 /// </remarks>
-public partial class Rfc6962MerkleTreeTests
+public partial class MerkleTreeTests
 {
     /// <summary>
     /// Verifies that each published consistency proof reconstructs both published roots.
@@ -27,7 +27,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyConsistency_WhenGivenAPublishedProof_ShouldAccept(MerkleConsistencyKat kat)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] firstRoot = tree.ComputeRoot(TakeEntries(kat.FirstSize));
         byte[] secondRoot = tree.ComputeRoot(TakeEntries(kat.SecondSize));
         IReadOnlyList<ReadOnlyMemory<byte>> proof = kat.Proof
@@ -44,7 +44,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyConsistency_WhenProofIsGeneratedForAnySizePair_ShouldRoundTrip()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int secondSize = 1; secondSize <= 32; secondSize++)
         {
@@ -73,7 +73,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenSecondSizeIsBelowTheFirst_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] smallRoot = tree.ComputeRoot(TakeEntries(3));
         byte[] largeRoot = tree.ComputeRoot(TakeEntries(7));
         IReadOnlyList<ReadOnlyMemory<byte>> proof = ToPath(tree.ConsistencyProof(TakeEntries(7), 3));
@@ -88,7 +88,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenRootsAreSwapped_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] firstRoot = tree.ComputeRoot(TakeEntries(3));
         byte[] secondRoot = tree.ComputeRoot(TakeEntries(7));
         IReadOnlyList<ReadOnlyMemory<byte>> proof = ToPath(tree.ConsistencyProof(TakeEntries(7), 3));
@@ -103,7 +103,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenSizesAreEqual_ShouldRequireIdenticalRootsAndAnEmptyProof()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] root = tree.ComputeRoot(TakeEntries(5));
         byte[] other = tree.ComputeRoot(TakeEntries(4));
 
@@ -121,7 +121,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenFirstSizeIsZero_ShouldRequireAnEmptyProof()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         byte[] emptyRoot = tree.ComputeRoot([]);
         byte[] secondRoot = tree.ComputeRoot(TakeEntries(7));
 
@@ -135,7 +135,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenTreesDoNotShareAPrefix_ShouldReject()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         // A second tree whose first three entries differ from the reference tree's.
         ReadOnlyMemory<byte>[] divergent = new ReadOnlyMemory<byte>[7];
@@ -157,7 +157,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyConsistency_WhenProofIsCorrupted_ShouldRejectWithoutThrowing()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         for (int secondSize = 2; secondSize <= 16; secondSize++)
         {
@@ -203,7 +203,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(0, 0)]
     public void VerifyConsistency_WhenARootIsNotDigestWidth_ShouldReject(int firstRootLength, int secondRootLength)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(
             tree.VerifyConsistency(new byte[firstRootLength], 1, new byte[secondRootLength], 2, [new byte[32]]));
@@ -220,7 +220,7 @@ public partial class Rfc6962MerkleTreeTests
     [DataRow(-2L, -1L)]
     public void VerifyConsistency_WhenASizeIsNegative_ShouldReject(long firstSize, long secondSize)
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         Assert.IsFalse(tree.VerifyConsistency(new byte[32], firstSize, new byte[32], secondSize, []));
     }
@@ -231,7 +231,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestMethod]
     public void VerifyConsistency_WhenProofIsNull_ShouldThrowArgumentNullException()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -250,7 +250,7 @@ public partial class Rfc6962MerkleTreeTests
     [TestCategory("Regression")]
     public void VerifyConsistency_WhenGivenArbitraryMalformedInput_ShouldReturnFalseAndNeverThrow()
     {
-        Rfc6962MerkleTree tree = CreateTree();
+        MerkleTree tree = CreateTree();
         var random = new Random(Seed: 20260920);
 
         long[] sizes = [-1, 0, 1, 2, 3, 4, 7, 8, 16, long.MaxValue];
@@ -298,7 +298,7 @@ public partial class Rfc6962MerkleTreeTests
     /// <param name="valid">The correct proof.</param>
     /// <returns>The labelled probes, each of which must return <see langword="false" />.</returns>
     private static IEnumerable<(string Label, Func<bool> Probe)> CorruptConsistencyProbes(
-        Rfc6962MerkleTree tree,
+        MerkleTree tree,
         byte[] firstRoot,
         int firstSize,
         byte[] secondRoot,
