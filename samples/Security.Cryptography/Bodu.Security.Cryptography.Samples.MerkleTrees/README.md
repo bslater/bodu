@@ -332,28 +332,28 @@ method that returns `true` unconditionally:
 ```
 
 `WriteTo` then renders the full trace. Its real output carries every node's full 64-character hash plus its child
-hashes on one line, so the excerpt below **elides the child columns** (`←  …`) for width — run the sample to see
-them:
+hashes on one line, so the excerpt below **elides the child columns** (`<-  ...`) for width — run the sample to
+see them:
 
 ```text
   WriteTo(Console.Out):
-    ════════════════════════════════════════════════════════════════════
+    ====================================================================
       Merkle Tree Diagnostic
       Levels: 3    Nodes: 7    Root: B41A66FE6C9B9DB1143A942CDFE56559B0C54A58619564C3517BACABDE234BAA
-    ════════════════════════════════════════════════════════════════════
-      Level 0  —  4 leaf nodes
-      ────────────────────────────────────────────────────────────────────
-        [0:0]  720EA60B…0CBEB9
-        …
-      Level 1  —  2 internal nodes
-      ────────────────────────────────────────────────────────────────────
-        [1:0]  B8CD573E…23CDC7  ←  …
-      Level 2  —  1 internal node  ★  root
-      ────────────────────────────────────────────────────────────────────
-        [2:0]  B41A66FE…234BAA  ←  …
-    ════════════════════════════════════════════════════════════════════
+    ====================================================================
+      Level 0  -  4 leaf nodes
+      --------------------------------------------------------------------
+        [0:0]  720EA60B...0CBEB9
+        ...
+      Level 1  -  2 internal nodes
+      --------------------------------------------------------------------
+        [1:0]  B8CD573E...23CDC7  <-  ...
+      Level 2  -  1 internal node  *  root
+      --------------------------------------------------------------------
+        [2:0]  B41A66FE...234BAA  <-  ...
+    ====================================================================
       Validation: PASS  (3 internal nodes verified)
-    ════════════════════════════════════════════════════════════════════
+    ====================================================================
 ```
 
 One caveat worth knowing: leaf hashes are *not* re-validated against the original bytes, because the raw blocks are
@@ -361,10 +361,9 @@ not retained. A trace therefore proves the fold's internal consistency, not that
 input you think. Recording also costs memory proportional to the node count, so it is a diagnostic aid rather than
 something to leave enabled in production.
 
-The trace renders with box-drawing and arrow glyphs, so `Program` asks for UTF-8 output before writing
-anything: a Windows console left on a legacy code page maps `←` onto `0x1B` (ESC) and then swallows the
-text that follows it as an escape sequence. Set `Console.OutputEncoding = Encoding.UTF8` the same way if
-you call `WriteTo` from your own program on Windows.
+`WriteTo` writes ASCII only — the rules are `=` and `-`, a child list reads `parent <- child + child`, and
+the root level is marked `*` — so the trace survives a console on any code page and a paste into a bug
+report unchanged.
 
 **APIs demonstrated.** `MerkleTreeDiagnostics()`, `.GetLevelCount`, `.GetLevel`, `.GetAllNodes`, `.Root`,
 `.Validate`, `.WriteTo`, `MerkleTreeDiagnostics.Node` (`.Level` / `.Index` / `.IsLeaf` / `.Hash` /

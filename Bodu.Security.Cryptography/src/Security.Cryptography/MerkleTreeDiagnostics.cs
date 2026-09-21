@@ -156,7 +156,7 @@ public sealed partial class MerkleTreeDiagnostics
             if (!recomputed.SequenceEqual(node.Hash))
             {
                 issues.Add(
-                    $"[{node.Level}:{node.Index}] hash mismatch — " +
+                    $"[{node.Level}:{node.Index}] hash mismatch - " +
                     $"expected {ToHex(node.Hash)}, recomputed {ToHex(recomputed)}");
             }
         }
@@ -174,8 +174,14 @@ public sealed partial class MerkleTreeDiagnostics
     /// child references, and a validation summary.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The output is for diagnostic use only. Child references are resolved by matching recorded hash values, so an
     /// ambiguous match may occur if two nodes share the same hash.
+    /// </para>
+    /// <para>
+    /// Every character written is ASCII, so the trace survives a console on any code page and a paste into a bug
+    /// report unchanged. A child list reads <c>parent &lt;- child + child</c>, and the root level is marked <c>*</c>.
+    /// </para>
     /// </remarks>
     /// <param name="writer">The destination writer. Must not be <see langword="null" />.</param>
     /// <param name="algorithmFactory">
@@ -197,8 +203,12 @@ public sealed partial class MerkleTreeDiagnostics
             .GroupBy(n => ToHex(n.Hash))
             .ToDictionary(g => g.Key, g => g.OrderBy(n => n.Level).First(), StringComparer.OrdinalIgnoreCase);
 
-        const string heavy = "════════════════════════════════════════════════════════════════════";
-        const string light = "────────────────────────────────────────────────────────────────────";
+        // The rule and marker characters are deliberately plain ASCII: a trace is most often read from a console
+        // or pasted into a bug report, and a box-drawing or arrow glyph survives neither reliably. On a Windows
+        // console left on a legacy code page the left arrow encodes as 0x1B (ESC), which the terminal then
+        // consumes together with the text that follows it as an escape sequence.
+        const string heavy = "====================================================================";
+        const string light = "--------------------------------------------------------------------";
 
         writer.WriteLine();
         writer.WriteLine(heavy);
@@ -220,10 +230,10 @@ public sealed partial class MerkleTreeDiagnostics
             IReadOnlyList<Node> levelNodes = GetLevel(level);
             bool isRoot = level == levelCount - 1;
             string label = level == 0 ? "leaf" : "internal";
-            string rootTag = isRoot ? "  ★  root" : string.Empty;
+            string rootTag = isRoot ? "  *  root" : string.Empty;
 
             writer.WriteLine();
-            writer.WriteLine($"  Level {level}  —  {levelNodes.Count} {label} node{(levelNodes.Count == 1 ? string.Empty : "s")}{rootTag}");
+            writer.WriteLine($"  Level {level}  -  {levelNodes.Count} {label} node{(levelNodes.Count == 1 ? string.Empty : "s")}{rootTag}");
             writer.WriteLine($"  {light}");
 
             foreach (Node node in levelNodes)
@@ -243,7 +253,7 @@ public sealed partial class MerkleTreeDiagnostics
                                 : hex;
                         });
 
-                    writer.WriteLine($"    [{node.Level}:{node.Index}]  {ToHex(node.Hash)}  ←  {string.Join("  ·  ", childRefs)}");
+                    writer.WriteLine($"    [{node.Level}:{node.Index}]  {ToHex(node.Hash)}  <-  {string.Join("  +  ", childRefs)}");
                 }
             }
         }
@@ -266,7 +276,7 @@ public sealed partial class MerkleTreeDiagnostics
             {
                 writer.WriteLine($"  Validation: FAIL  ({validationErrors.Count} error{(validationErrors.Count == 1 ? string.Empty : "s")})");
                 foreach (string error in validationErrors)
-                    writer.WriteLine($"    ✗  {error}");
+                    writer.WriteLine($"    x  {error}");
             }
 
             writer.WriteLine(heavy);
