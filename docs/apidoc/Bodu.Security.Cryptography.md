@@ -73,7 +73,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.Blake2b>, <xref:Bodu.Security.Cryptography.Blake2s>, <xref:Bodu.Security.Cryptography.Blake3> — modern high-throughput digests; BLAKE3 is parallel and tree-structured.
 - <xref:Bodu.Security.Cryptography.Skein256>, <xref:Bodu.Security.Cryptography.Skein512>, <xref:Bodu.Security.Cryptography.Skein1024> — Skein UBI-mode digests built on Threefish.
 - <xref:Bodu.Security.Cryptography.Shake> — Keccak XOF (FIPS 202).
-- <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — level-by-level Merkle root hashing over chunked input, with a configurable fan-out. They borrow RFC 6962's domain separation but **not** its tree shape, and produce no proofs; see <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> for the standard's tree and its inclusion and consistency proofs.
+- <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — Merkle root hashing over fixed-size blocks, sequentially or with leaves hashed in parallel, as facades over the shared RFC 6962 fold: at the default fan-out of two the root is RFC 6962's, bit-identical to <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree>'s over the same blocks, whose inclusion and consistency proofs verify against it. A wider fan-out is an explicit non-RFC mode. Neither produces proofs; both accept an optional <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics> that records every node built.
 
 **Keyed hashes / MACs**
 

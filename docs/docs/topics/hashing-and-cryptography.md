@@ -58,7 +58,7 @@ Cross the line the moment the trust assumption changes. A CRC that guards a down
 
 - **Symmetric ciphers** — standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only — pair with a MAC or prefer AEAD).
 - **AEAD** — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via `AsconAead128`, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (`XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and the libsodium-compatible `XSalsa20Poly1305`).
-- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the level-by-level `MerkleTreeHash` / `ParallelMerkleTreeHash`; RFC 6962's tree lives in `Bodu.Collections.Specialized`).
+- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the RFC 6962-shaped `MerkleTreeHash` / `ParallelMerkleTreeHash`; the tree itself, with its proofs, lives in `Bodu.Collections.Specialized`).
 - **Keyed hashes / MACs** — the reusable PRF (SipHash) and the one-time authenticator (Poly1305).
 - **Public-key** — signatures (`Ed25519`, the post-quantum `MLDsa44/65/87`), key agreement (`X25519`), key encapsulation (the post-quantum `MLKem512/768/1024`), and `Hpke` (RFC 9180), which seals a message to a recipient's public key.
 - **KDFs** — memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand `Hkdf` for high-entropy secrets.
@@ -94,7 +94,7 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 | Stream encryption of arbitrary-length data (no padding) | `ChaCha20`, `XChaCha20` (Cryptography) | Confidentiality only — pair with `Poly1305` or prefer AEAD. |
 | Deduplication / cache bucketing inside a trust boundary | `CityHash64` / `CityHash128` (IO.Hashing) | SIMD-friendly; fastest on long inputs. If dedup keys cross a trust boundary, switch to a cryptographic digest. |
 | Verifiable inclusion proofs over many leaves | `Rfc6962MerkleTree` (Collections) | Root plus logarithmic sibling paths, with a one-call prover and verifier — and the only shape that interoperates with a transparency log. |
-| Streaming tree digest inside a system you control | `MerkleTreeHash`, `ParallelMerkleTreeHash` (Cryptography) | Level-by-level reduction with a configurable fan-out. A sound commitment, but **not** RFC 6962's tree — do not cross-check its roots. |
+| Streaming tree digest over fixed-size blocks, no proofs needed | `MerkleTreeHash`, `ParallelMerkleTreeHash` (Cryptography) | RFC 6962's tree at the default fan-out of two — roots verify against `Rfc6962MerkleTree`'s proofs. A wider fan-out is an explicit non-RFC mode. |
 
 Two BCL notes that both introductions make: for xxHash, use `System.IO.Hashing.XxHash32/64/3/128` directly — Bodu does not duplicate them; and prefer the BCL's hardware-accelerated `Aes`, `AesGcm`, and SHA-2/3 where they cover your case — reach for Bodu when you need an algorithm the BCL does not ship.
 

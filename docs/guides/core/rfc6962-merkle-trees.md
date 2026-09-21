@@ -13,7 +13,7 @@ dotnet add package Bodu.Collections
 ```
 
 > [!IMPORTANT]
-> `Bodu.Security.Cryptography` also ships <xref:Bodu.Security.Cryptography.MerkleTreeHash> and <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>. Those two borrow RFC 6962's **domain separation** but not its **tree shape**: they reduce level by level with a configurable `fanOut` and re-hash a lone leftover child, so their roots agree with RFC 6962's only when the leaf count is a power of two, and must not be cross-checked against a transparency log. See [Using Merkle trees](../cryptography/merkle-trees.md) for those, and the table there for the choice between all three.
+> `Bodu.Security.Cryptography` also ships <xref:Bodu.Security.Cryptography.MerkleTreeHash> and <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>. Those two are facades over the same construction — the fold and the domain-separation prefixes are compiled from this package's shared source — so at their default `fanOut` of two they produce exactly the roots `ComputeRootOfBlocks` produces over the same blocks, and the proofs here verify against them. They produce no proofs themselves, and a wider `fanOut` is an explicit non-RFC mode whose roots interoperate with nothing. See [Using Merkle trees](../cryptography/merkle-trees.md) for those, and the table there for the choice between all three.
 
 ![RFC 6962 Merkle tree over seven leaves — the split at the largest power of two strictly below n, and the lone subtree root promoted unchanged](../../images/diagrams/rfc6962-merkle-tree.svg)
 
@@ -30,7 +30,7 @@ MTH(D[n])     = H(0x01 || MTH(D[0:k]) || MTH(D[k:n]))    for n > 1
 with `k` the largest power of two **strictly** below *n*. Two details are where plausible-looking implementations diverge, and both matter because a divergent root simply does not verify anywhere else:
 
 - **Three leaves split 2 + 1**, not 1 + 2 and not a rounded half. For `n = 8`, `k = 4` — the case where "strictly below" and "at or below" disagree, and where getting it wrong produces a tree one level too deep.
-- **A subtree with one leaf contributes its leaf hash unchanged.** It is not re-hashed as a one-child node. This is precisely where the two `Bodu.Security.Cryptography` types differ.
+- **A subtree with one leaf contributes its leaf hash unchanged.** It is not re-hashed as a one-child node. Folding level by level and promoting a lone node visits exactly the nodes of this recursion, which is why the two `Bodu.Security.Cryptography` hashers can share it.
 
 The tree is binary by definition, so there is no `fanOut` to choose, and an empty tree's root is `H()` rather than an exception.
 

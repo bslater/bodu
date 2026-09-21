@@ -55,7 +55,7 @@ public partial class ParallelMerkleTreeHashTests
     /// </summary>
     [TestMethod]
     [DataRow(1, 2, 1)]    // single byte — only a tail block
-    [DataRow(4, 2, 1)]    // one byte zero-padded into one full leaf
+    [DataRow(4, 2, 1)]    // one byte — a single short leaf, hashed at its actual length
     [DataRow(4, 2, 4)]    // exactly one block
     [DataRow(4, 2, 5)]    // 1 full + 1 partial
     [DataRow(4, 2, 8)]    // 2 exact blocks

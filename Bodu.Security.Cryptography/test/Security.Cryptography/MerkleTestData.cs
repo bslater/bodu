@@ -73,7 +73,7 @@ internal static class MerkleTestData
     /// </summary>
     /// <param name="data">The raw input bytes to hash. Must not be empty.</param>
     /// <param name="blockSize">
-    /// The number of bytes per leaf block. Partial final blocks are zero-padded to this length.
+    /// The number of bytes per leaf block. A partial final block is hashed at its actual length.
     /// </param>
     /// <param name="fanOut">The maximum number of child nodes combined into each parent node.</param>
     /// <returns>The Merkle root hash as a 4-byte little-endian <see cref="uint" />.</returns>

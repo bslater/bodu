@@ -71,7 +71,7 @@ public partial class ParallelMerkleTreeHashTests
     // ─── Worker-pool factory concurrency ──────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that concurrent level workers each receive a distinct factory-produced
+    /// Verifies that concurrent leaf workers each receive a distinct factory-produced
     /// <see cref="HashAlgorithm" /> instance — confirms a simple <c>new T()</c> factory is
     /// sufficient and that the implementation imposes no additional thread-safety
     /// requirements on the factory beyond re-entrancy.
@@ -99,6 +99,6 @@ public partial class ParallelMerkleTreeHashTests
         Assert.HasCount(
             list.Count,
             list.Distinct(System.Collections.Generic.ReferenceEqualityComparer.Instance),
-            "Factory returned a shared instance — concurrent level workers must receive distinct objects.");
+            "Factory returned a shared instance — concurrent leaf workers must receive distinct objects.");
     }
 }

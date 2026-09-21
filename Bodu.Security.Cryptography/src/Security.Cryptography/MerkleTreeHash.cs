@@ -15,15 +15,15 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains."/>
+/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are paired and reduced level by level with a lone node promoted unchanged, until a single root hash remains."/>
 /// </para>
 /// <para>
 /// Input bytes are divided into fixed-size blocks — the top row of the diagram above, with <c>blockSize</c> labeled <b>B</b>.
 /// Each block is hashed independently to form a leaf (<em>Level 0</em>). Leaves are then grouped by <c>fanOut</c>
-/// (labeled <b>F</b>, shown as 3 in the diagram) and combined into parent nodes, repeating level by level until a
-/// single root remains. When a level's final group holds two or more nodes it is hashed like any other; a lone leftover
-/// node is <em>promoted</em> to the next level unchanged rather than re-hashed — shown in the diagram as <b>L₇</b>
-/// passing through to the next level as itself.
+/// (labeled <b>F</b>, shown at its default of 2 in the diagram) and combined into parent nodes, repeating level by
+/// level until a single root remains. When a level's final group holds two or more nodes it is hashed like any other; a
+/// lone leftover node is <em>promoted</em> to the next level unchanged rather than re-hashed — shown in the diagram as
+/// <b>L₇</b> passing through to the next level as itself.
 /// </para>
 /// <para>
 /// <strong>Domain separation and length binding.</strong> Following RFC 6962 §2.1, a leaf is hashed as

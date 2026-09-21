@@ -22,9 +22,10 @@ namespace Bodu.Collections.Specialized;
 /// <c>SECURITY_CRYPTOGRAPHY</c> preprocessor symbol, following the <c>Bodu.IO.Hashing/shared</c> pattern.
 /// </para>
 /// <para>
-/// Sharing one declaration is what makes prefix drift structurally impossible rather than merely test-detected. The two
-/// tree shapes are <em>not</em> shared and deliberately so — see below — but a leaf hashed under one prefix in one
-/// library and a different prefix in the other would be a silent interoperability break, and that can no longer happen.
+/// Sharing one declaration is what makes prefix drift structurally impossible rather than merely test-detected. The
+/// tree shape is shared the same way — <c>MerkleTreeCore</c> and <c>MerkleLevelFold</c> sit beside this file — so a
+/// leaf hashed under one prefix in one library and a different prefix in the other, or a node placed differently, would
+/// be a silent interoperability break, and neither can happen.
 /// </para>
 /// <para>
 /// <strong>The prefixes are not decoration.</strong> Following
@@ -35,13 +36,12 @@ namespace Bodu.Collections.Specialized;
 /// third prefix keeps a length-bound root from being confused with either.
 /// </para>
 /// <para>
-/// <strong>Domain separation only — not one shared tree.</strong> What the two libraries share is this prefix scheme
-/// and nothing more. RFC 6962 reduces a tree of <em>n</em> leaves by splitting at <c>k</c>, the largest power of two
-/// strictly below <em>n</em>, and promoting a lone subtree root unchanged; the level-by-level types in
-/// <c>Bodu.Security.Cryptography</c> reduce level by level with a configurable fan-out and re-hash a lone leftover
-/// child as a one-child node. Their roots agree only when the leaf count is a power of two, so a root from those types
-/// must not be cross-checked against a transparency log. For RFC 6962's actual tree, and for inclusion and consistency
-/// proofs, use <c>Rfc6962MerkleTree</c> in <c>Bodu.Collections.Specialized</c>.
+/// <strong>One tree, shared.</strong> RFC 6962 reduces a tree of <em>n</em> leaves by splitting at <c>k</c>, the
+/// largest power of two strictly below <em>n</em>, and promoting a lone subtree root unchanged. The hashers in
+/// <c>Bodu.Security.Cryptography</c> fold leaves level by level through the shared <c>MerkleLevelFold</c>, which at its
+/// default fan-out of two visits exactly the nodes of that recursion, so their roots are RFC 6962's and
+/// <c>Rfc6962MerkleTree</c>'s proofs verify against them. A wider fan-out is an explicit non-RFC mode of the same fold.
+/// For inclusion and consistency proofs, use <c>Rfc6962MerkleTree</c> in <c>Bodu.Collections.Specialized</c>.
 /// </para>
 /// <para>
 /// The final partial leaf is hashed at its actual byte length rather than being zero-padded to the block size in both
@@ -59,7 +59,7 @@ internal static class MerkleTreeFormat
     /// <summary>The domain-separation prefix byte prepended to a length-bound root's big-endian value and tree head, as <c>H(0x02 || u64_be(boundValue) || treeHead)</c>.</summary>
     /// <remarks>
     /// Used only by <c>Rfc6962MerkleTree</c>'s bound-root mode, which is an addition to RFC 6962 rather than part of
-    /// it. The level-by-level types compile this constant without using it.
+    /// it. The <c>Bodu.Security.Cryptography</c> hashers compile this constant without using it.
     /// </remarks>
     internal const byte RootPrefix = 0x02;
 }

@@ -31,11 +31,13 @@ namespace Bodu.Collections.Specialized;
 /// still has a head to sign.
 /// </para>
 /// <para>
-/// <strong>Relationship to the other Merkle types.</strong> <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c>
-/// share this type's domain separation but reduce level by level with a configurable fan-out, re-hashing a lone
-/// leftover child as a one-child node. Their roots agree with this type's only when the leaf count is a power of two.
-/// This type is the one to use when a root must interoperate with a transparency log or any other RFC 6962
-/// implementation; the other two are unchanged and their roots are stable.
+/// <strong>Relationship to the other Merkle types.</strong> <c>MerkleTreeHash</c> and <c>ParallelMerkleTreeHash</c> in
+/// <c>Bodu.Security.Cryptography</c> are facades over the same construction — the fold and the prefixes are compiled
+/// from this package's shared source — so at their default fan-out of two their roots are bit-identical to
+/// <see cref="ComputeRootOfBlocks(Stream, int, CancellationToken)" />'s over the same blocks, and this type's proofs
+/// verify against them. They produce no proofs, and a wider fan-out is an explicit non-RFC mode. This type is the one
+/// to use when a root must interoperate with a transparency log or any other RFC 6962 implementation, and whenever a
+/// proof is needed.
 /// </para>
 /// <para>
 /// <strong>Thread safety.</strong> Instances are immutable and every operation is safe for concurrent use, provided the

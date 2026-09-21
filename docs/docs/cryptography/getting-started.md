@@ -157,19 +157,19 @@ byte[] same = AsconXof128.HashData(data, outputLength: 64);
 
 `Squeeze(Span<byte>)` writes directly into a caller buffer, and `Initialize()` resets the sponge for the next message.
 
-### Merkle tree — verifiable inclusion proofs
+### Merkle tree — an RFC 6962 root over fixed-size blocks
 
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
 // The tree hash owns its inner digests, so it takes a factory rather than an instance.
-using var tree = new MerkleTreeHash(SHA256.Create, blockSize: 1024, fanOut: 3);
+using var tree = new MerkleTreeHash(SHA256.Create, blockSize: 1024);
 
 byte[] root = tree.ComputeHash(largeFile);          // Stream, ReadOnlySpan<byte>, or byte[]
 ```
 
-`ComputeHash` is one-shot: the tree is rebuilt per call, so a `MerkleTreeHash` can be reused across inputs.
+`ComputeHash` is one-shot: the tree is rebuilt per call, so a `MerkleTreeHash` can be reused across inputs. At the default fan-out of two the root is RFC 6962's Merkle Tree Hash over the blocks, so inclusion and consistency proofs from `Rfc6962MerkleTree` in `Bodu.Collections.Specialized` verify against it.
 
 ### Digital signature — Ed25519
 

@@ -192,7 +192,7 @@ For a larger file where you want partial verifiability — "the first megabyte's
 
 ## Pattern 6 — Merkle trees
 
-<xref:Bodu.Security.Cryptography.MerkleTreeHash> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and reducing the leaves level-by-level. The intermediate hashes can later prove integrity of an individual chunk without rehashing the whole stream.
+<xref:Bodu.Security.Cryptography.MerkleTreeHash> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and folding the leaves into RFC 6962's Merkle Tree Hash. The root is the one any RFC 6962 implementation computes over the same blocks, so an inclusion proof from <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> can later prove the integrity of an individual chunk without rehashing the whole stream.
 
 ```csharp
 using System.Security.Cryptography;
@@ -200,16 +200,15 @@ using Bodu.Security.Cryptography;
 
 using var merkle = new MerkleTreeHash(
     algorithmFactory: () => SHA256.Create(),
-    blockSize: 4096,
-    fanOut: 2);
+    blockSize: 4096);
 
 using var stream = File.OpenRead("archive.bin");
 byte[] root = merkle.ComputeHash(stream);
 ```
 
-Each leaf is a SHA-256 of a 4 KiB block; each internal node is a SHA-256 of two concatenated child hashes. The root changes if any byte of the input changes.
+Each leaf is a SHA-256 of `0x00` and a 4 KiB block; each internal node is a SHA-256 of `0x01` and two concatenated child hashes; a lone node is promoted unchanged. The root changes if any byte of the input changes.
 
-For large inputs where you want to overlap leaf hashing with tree reduction, use <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> — see the class documentation for the swim-lane diagram of how its dispatcher and level-workers interact.
+For large inputs where leaf hashing dominates, use <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash>, which hashes each batch of leaves on several cores and folds them in order into the same tree — see [Using Merkle trees](merkle-trees.md).
 
 ## Where to go next
 

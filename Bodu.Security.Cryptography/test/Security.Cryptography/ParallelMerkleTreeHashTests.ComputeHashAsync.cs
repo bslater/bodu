@@ -299,7 +299,7 @@ public partial class ParallelMerkleTreeHashTests
     /// <summary>
     /// Verifies that an <see cref="IOException" /> from a <see cref="FaultingStream" />
     /// propagates out of <see cref="ParallelMerkleTreeHash.ComputeHashAsync" /> without
-    /// deadlocking the level workers.
+    /// leaving the leaf workers hung.
     /// </summary>
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamThrowsIOExceptionMidRead_ShouldPropagateException()
@@ -497,7 +497,7 @@ public partial class ParallelMerkleTreeHashTests
     }
 
     /// <summary>
-    /// Verifies that cancellation does not leave level workers deadlocked — a subsequent call
+    /// Verifies that cancellation does not leave leaf workers hung — a subsequent call
     /// after a cancelled operation must complete successfully within a reasonable time.
     /// </summary>
     [TestMethod]

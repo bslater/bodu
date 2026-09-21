@@ -943,24 +943,6 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Write to level-{0} channel failed. The channel was completed before all nodes were submitted..
-        /// </summary>
-        internal static string Op_Invalid_MerkleChannelCompleted {
-            get {
-                return ResourceManager.GetString("Op_Invalid_MerkleChannelCompleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No input data was provided..
-        /// </summary>
-        internal static string Op_Invalid_NoInputData {
-            get {
-                return ResourceManager.GetString("Op_Invalid_NoInputData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The property &apos;{0}&apos; cannot be changed after the first write to the stream..
         /// </summary>
         internal static string Op_Invalid_PropertySetAfterStreamWrite {

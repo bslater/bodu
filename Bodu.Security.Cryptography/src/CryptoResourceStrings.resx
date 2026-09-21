@@ -235,9 +235,6 @@
   <data name="Op_Invalid_MemoryStreamBufferInaccessible" xml:space="preserve">
     <value>The MemoryStream does not expose its underlying buffer.</value>
   </data>
-  <data name="Op_Invalid_NoInputData" xml:space="preserve">
-    <value>No input data was provided.</value>
-  </data>
   <data name="Op_Invalid_PropertySetAfterStreamWrite" xml:space="preserve">
     <value>The property '{0}' cannot be changed after the first write to the stream.</value>
   </data>
@@ -309,9 +306,6 @@
   </data>
   <data name="Op_Invalid_GcmTransformCompleted" xml:space="preserve">
     <value>This GCM transform has already completed and cannot be reused. Create a new instance per message.</value>
-  </data>
-  <data name="Op_Invalid_MerkleChannelCompleted" xml:space="preserve">
-    <value>Write to level-{0} channel failed. The channel was completed before all nodes were submitted.</value>
   </data>
   <data name="Arg_OutOfRange_Argon2Parallelism" xml:space="preserve">
     <value>Argon2 parallelism must be between 1 and {0}.</value>

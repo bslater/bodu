@@ -146,8 +146,8 @@ public sealed partial class Rfc6962MerkleTree
     /// <returns>The subtree's root.</returns>
     /// <remarks>
     /// Recursion depth is logarithmic in the entry count, so no stack guard is required. A single leaf's hash is
-    /// returned unchanged — a subtree root is promoted, never re-hashed, which is the single point on which this
-    /// construction differs from a level-by-level reduction.
+    /// returned unchanged — a subtree root is promoted, never re-hashed, which is the rule that makes the
+    /// level-by-level <see cref="MerkleLevelFold" /> visit exactly this recursion's nodes.
     /// </remarks>
     private byte[] Mth(ReadOnlySpan<byte[]> leafHashes, HashAlgorithm hasher) =>
         MerkleTreeCore.Mth(leafHashes, hasher, HashLength);
