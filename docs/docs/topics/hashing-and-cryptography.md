@@ -4,13 +4,13 @@ title: Hashing & Cryptography — Overview
 
 # Hashing & Cryptography
 
-Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, and the line between them is a single question: **is there an adversary?** A third capability sits on the adversarial side of that line while depending on neither — the RFC 6962 Merkle tree, which ships in [`Bodu.Collections`](../collections/index.md) precisely because it needs nothing more than `Bodu.Core`.
+Two Bodu packages turn bytes into fixed-size summaries or protected ciphertext, and the line between them is a single question: **is there an adversary?**
 
 **Bodu.IO.Hashing** is the non-cryptographic library — fast fingerprints for hash-table keys and caches, error-detecting checksums (CRC, Fletcher, Adler) for transmission and storage channels, and check digits (Luhn, Damm, IBAN, ISBN, …) for human-typed identifiers. Nothing in it carries a security guarantee: every algorithm is trivially forgeable by anyone who controls the bytes, and that is by design — it buys speed, portability, and characterized error coverage on *trusted* input.
 
 **Bodu.Security.Cryptography** is the adversarial-setting library — block, tweakable, and stream ciphers, AEAD constructions (block-cipher modes, ASCON, and the Poly1305 stream-cipher pairings), keyed hashes (MACs), cryptographic digests and XOFs, Merkle trees, public-key schemes (Ed25519, X25519, ML-DSA, ML-KEM, HPKE), key-derivation functions (memory-hard Argon2 and scrypt, plus HKDF), and one-time passwords (HOTP / TOTP). Every algorithm is designed against a formal **adversary model**: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge, invert, or find collisions.
 
-The commitment types live in **`Bodu.Collections.Specialized`**, a namespace of the [`Bodu.Collections`](../collections/index.md) package: the RFC 6962 Merkle tree, inclusion and consistency proofs, and length-bound roots, over whatever `HashAlgorithm` the caller supplies. It belongs on the adversarial side (its whole purpose is proving something to a party who does not trust you), but it depends only on `Bodu.Core`, so a consumer who needs commitments does not take a catalogue of ciphers with them. See the [RFC 6962 guide](../../guides/core/rfc6962-merkle-trees.md).
+The commitment types sit on the same adversarial side, in the same package: `MerkleTree` is the RFC 6962 Merkle tree — inclusion and consistency proofs, length-bound roots, and a write-time accumulator — over whatever `HashAlgorithm` the caller supplies. Its whole purpose is proving something to a party who does not trust you. See the [Merkle trees and proofs guide](../../guides/cryptography/merkle-trees.md).
 
 ![Algorithm taxonomy across both libraries](../../images/diagrams/algorithm-taxonomy.svg)
 
@@ -58,7 +58,7 @@ Cross the line the moment the trust assumption changes. A CRC that guards a down
 
 - **Symmetric ciphers** — standard block ciphers, tweakable block ciphers (Threefish, with a public tweak for domain separation), and raw-keystream stream ciphers (confidentiality only — pair with a MAC or prefer AEAD).
 - **AEAD** — authenticated encryption with associated data: ciphertext plus an authentication tag in a single pass, via `AsconAead128`, AES paired with the GCM / CCM / OCB / EAX / SIV / GCM-SIV mode transforms, or the Poly1305 stream-cipher constructions (`XChaCha20Poly1305`, `XSalsa20Poly1305Aead`, and the libsodium-compatible `XSalsa20Poly1305`).
-- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the RFC 6962-shaped `MerkleTreeHash` / `ParallelMerkleTreeHash`; the tree itself, with its proofs, lives in `Bodu.Collections.Specialized`).
+- **Cryptographic hashes** — plain digests, extendable-output functions (XOFs), and tree hashes (BLAKE3, and the RFC 6962 `MerkleTree` with its inclusion and consistency proofs).
 - **Keyed hashes / MACs** — the reusable PRF (SipHash) and the one-time authenticator (Poly1305).
 - **Public-key** — signatures (`Ed25519`, the post-quantum `MLDsa44/65/87`), key agreement (`X25519`), key encapsulation (the post-quantum `MLKem512/768/1024`), and `Hpke` (RFC 9180), which seals a message to a recipient's public key.
 - **KDFs** — memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand `Hkdf` for high-entropy secrets.
@@ -93,8 +93,8 @@ byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never
 | Per-record / per-sector encryption without re-keying | `Threefish256/512/1024` with `Tweak`, `XtsModeTransform` (Cryptography) | Tweakable ciphers give public domain separation. |
 | Stream encryption of arbitrary-length data (no padding) | `ChaCha20`, `XChaCha20` (Cryptography) | Confidentiality only — pair with `Poly1305` or prefer AEAD. |
 | Deduplication / cache bucketing inside a trust boundary | `CityHash64` / `CityHash128` (IO.Hashing) | SIMD-friendly; fastest on long inputs. If dedup keys cross a trust boundary, switch to a cryptographic digest. |
-| Verifiable inclusion proofs over many leaves | `Rfc6962MerkleTree` (Collections) | Root plus logarithmic sibling paths, with a one-call prover and verifier — and the only shape that interoperates with a transparency log. |
-| Streaming tree digest over fixed-size blocks, no proofs needed | `MerkleTreeHash`, `ParallelMerkleTreeHash` (Cryptography) | RFC 6962's tree at the default fan-out of two — roots verify against `Rfc6962MerkleTree`'s proofs. A wider fan-out is an explicit non-RFC mode. |
+| Verifiable inclusion proofs over many leaves | `MerkleTree` (Cryptography) | Root plus logarithmic sibling paths, with a one-call prover and verifier — and the only shape that interoperates with a transparency log. |
+| A Merkle root from the same writes that feed a flat digest | `MerkleTree.CreateBlockAccumulator` (Cryptography) | Push-style: `Append` the bytes as they arrive, `FinishBound()` for the length-bound root. Same root as `ComputeRootOfBlocks` over the whole input. |
 
 Two BCL notes that both introductions make: for xxHash, use `System.IO.Hashing.XxHash32/64/3/128` directly — Bodu does not duplicate them; and prefer the BCL's hardware-accelerated `Aes`, `AesGcm`, and SHA-2/3 where they cover your case — reach for Bodu when you need an algorithm the BCL does not ship.
 
@@ -107,17 +107,16 @@ Real systems routinely use both packages, each on its own side of the trust boun
 ```bash
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
-dotnet add package Bodu.Collections      # only for the RFC 6962 Merkle tree
 ```
 
-All three target `net8.0` and depend only on `Bodu.Core` (and, for `Bodu.IO.Hashing`, the BCL's `System.IO.Hashing` contract). Install only the ones you need — they are independent packages, and `Bodu.Collections` in particular takes no dependency on the other two.
+Both target `net8.0` and depend only on `Bodu.Core` (and, for `Bodu.IO.Hashing`, the BCL's `System.IO.Hashing` contract). Install only the one you need — they are independent packages.
 
 ## Where to go next
 
 - **[Hashing & Cryptography — Concepts](hashing-and-cryptography-concepts.md)** — the full taxonomy: fingerprint vs. checksum vs. check digit vs. digest vs. MAC vs. AEAD vs. XOF vs. KDF, and the guarantee each does and does not make.
 - **[Bodu.IO.Hashing introduction](../io-hashing/index.md)** — subfamily map and the algorithm-selection tables.
-- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the standard's tree, inclusion and consistency proofs, and bound roots, in the `Bodu.Collections.Specialized` namespace.
+- **[Merkle trees and proofs](../../guides/cryptography/merkle-trees.md)** — the RFC 6962 tree, inclusion and consistency proofs, bound roots, and the write-time accumulator.
 - **[Bodu.Security.Cryptography introduction](../cryptography/index.md)** — the six subfamilies, the choosing-a-primitive table, and the safety rules.
-- **Getting started:** [Bodu.IO.Hashing](../io-hashing/getting-started.md) · [Bodu.Security.Cryptography](../cryptography/getting-started.md) · [Bodu.Collections](../collections/getting-started.md).
+- **Getting started:** [Bodu.IO.Hashing](../io-hashing/getting-started.md) · [Bodu.Security.Cryptography](../cryptography/getting-started.md).
 - **[Hashing & Cryptography guides](../../guides/topics/hashing-and-cryptography.md)** — the recipe-style walk-throughs for this topic.
-- **API reference:** [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography).
+- **API reference:** [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography).

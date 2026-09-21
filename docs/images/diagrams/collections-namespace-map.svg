@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="clm-t clm-d">
   <title id="clm-t">Bodu.Collections — namespace map</title>
-  <desc id="clm-d">Bodu.Collections ships the specialized collection catalogue across five namespaces. Bodu.Collections.Generic holds the bounded ring-backed collections, the evicting and sequenced dictionaries, navigable sets and dictionaries with rank and select, bidirectional, layered, and defaulting dictionaries, the two-key table, and the range-keyed lookups and overlap-storing interval trees. Bodu.Collections.Specialized holds the standalone structures that are not general-purpose containers: the packed BitSet, and the RFC 6962 Merkle tree with its inclusion and consistency proofs. Bodu.Collections.Probabilistic holds the approximate sketches: BloomFilter, CountMinSketch, and HyperLogLog. Bodu.Collections.Generic.Graphs holds the graph container, graph algorithms, and union-find. Bodu.Collections.Generic.Trees holds the trie family, radix tries, the Aho-Corasick multi-pattern matcher, and the n-ary tree. The package depends on Bodu.Core, and the thread-safe variants ship in Bodu.Collections.Concurrent.</desc>
+  <desc id="clm-d">Bodu.Collections ships the specialized collection catalogue across five namespaces. Bodu.Collections.Generic holds the bounded ring-backed collections, the evicting and sequenced dictionaries, navigable sets and dictionaries with rank and select, bidirectional, layered, and defaulting dictionaries, the two-key table, and the range-keyed lookups and overlap-storing interval trees. Bodu.Collections.Specialized holds the standalone structures that are not general-purpose containers: the packed BitSet. Bodu.Collections.Probabilistic holds the approximate sketches: BloomFilter, CountMinSketch, and HyperLogLog. Bodu.Collections.Generic.Graphs holds the graph container, graph algorithms, and union-find. Bodu.Collections.Generic.Trees holds the trie family, radix tries, the Aho-Corasick multi-pattern matcher, and the n-ary tree. The package depends on Bodu.Core, and the thread-safe variants ship in Bodu.Collections.Concurrent.</desc>
 
   <defs>
     <style>
@@ -52,9 +52,9 @@
       <text class="clm-ns" x="12" y="37">.Specialized</text>
       <text class="clm-role" x="12" y="57">Specialised, standalone</text>
       <text class="clm-type" x="12" y="77">BitSet (packed bits)</text>
-      <text class="clm-type" x="12" y="95">Rfc6962MerkleTree</text>
-      <text class="clm-type" x="12" y="113">MerkleBlockComputation</text>
-      <text class="clm-type" x="12" y="131">MerkleBlocks · proofs</text>
+      <text class="clm-type" x="12" y="95">NextSetBit · NextClearBit</text>
+      <text class="clm-type" x="12" y="113">And · Or · Xor · AndNot</text>
+      <text class="clm-type" x="12" y="131">Cardinality · enumerator</text>
     </g>
     <g transform="translate(215 218)">
       <rect class="clm-card" width="189" height="146" rx="7"/>

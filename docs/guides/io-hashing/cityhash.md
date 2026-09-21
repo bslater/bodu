@@ -85,7 +85,7 @@ using (var stream = File.OpenRead("asset.bin"))
 byte[] fingerprint = city.GetCurrentHash();
 ```
 
-For very large files where you do not want the whole buffer in memory, do the hashing chunk-by-chunk with an incremental non-cryptographic algorithm (<xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Fnv1a64>) or use a Merkle tree — see the [cryptography hashing guide](../cryptography/hashing.md) for the `MerkleTreeHash` pattern.
+For very large files where you do not want the whole buffer in memory, do the hashing chunk-by-chunk with an incremental non-cryptographic algorithm (<xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Fnv1a64>) or use a Merkle tree — see the [cryptography hashing guide](../cryptography/hashing.md) for the `MerkleTree` pattern.
 
 ## CityHash vs the other non-cryptographic hashes in this package
 

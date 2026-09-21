@@ -38,15 +38,11 @@ Bounded, ordered, navigable, and range-keyed collections, many built around a sh
 | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed `[low, high]` intervals that may freely overlap, O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries, O(log n) `Intersects` / `IntersectsPoint`, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps. |
 
 ### `Bodu.Collections.Specialized`
-The members of the package that serve a specialised purpose rather than acting as general-purpose containers. Neither family references anything else in the package, and nothing else references them — which is why they sit apart from the catalogue rather than inside it. See the [bit set](../../guides/core/bit-set.md) and [RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md) guides and the <xref:Bodu.Collections.Specialized> overview.
+The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it — which is why it sits apart from the catalogue rather than inside it. See the [bit set](../../guides/core/bit-set.md) guide and the <xref:Bodu.Collections.Specialized> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as `MerkleTree` in [Bodu.Security.Cryptography](../cryptography/index.md).)
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Specialized.BitSet> | Growable packed bit set with Java `BitSet` semantics: auto-grow on `Set`/`Flip`, reads beyond capacity return `false`, `NextSetBit` / `NextClearBit` / `Cardinality` queries, in-place `And` / `Or` / `Xor` / `AndNot`, and a non-boxing enumerator over set-bit indices. |
-| <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> | The whole surface, as one immutable, stateless facade over a `Func<HashAlgorithm>`: root computation in entry, fixed-size-block, and parallel modes; authentication paths and consistency proofs; five verifiers, all of which return `false` for malformed input rather than throwing; and the three domain-separated primitives (`HashLeaf`, `HashNode`, `BindRoot`). Safe to share across threads. |
-| <xref:Bodu.Collections.Specialized.MerkleBlockComputation> | The result of a block-mode pass — `Root`, `InputLength`, `BlockSize`, and the ordered `LeafHashes`. Returning the leaf hashes from the same pass is the point: an authentication path needs them, and without them a large object would have to be streamed twice. |
-| <xref:Bodu.Collections.Specialized.MerkleBlocks> | The block arithmetic as standalone 64-bit helpers — `BlockCount`, `BlockOffset`, `BlockLength`. A zero-length input has no blocks rather than one empty block, and a final short block is hashed at its actual length rather than padded. |
-| <xref:Bodu.Collections.Specialized.MerkleTreeDiagnostics> | An optional recorder `ComputeRootOfBlocks` fills with every leaf and internal node the fold produces, as <xref:Bodu.Collections.Specialized.MerkleTreeDiagnosticNode> entries (`Level`, `Index`, `Hash`, `ChildHashes`), with `Validate` to re-derive each parent from its children and `WriteTo` to dump the tree. Compiled from the same source into `Bodu.Security.Cryptography`, whose `MerkleTreeHash` / `ParallelMerkleTreeHash` accept it too. |
 
 ### `Bodu.Collections.Probabilistic`
 Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
@@ -97,8 +93,6 @@ The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concur
 | Prefix queries and autocomplete over string keys | <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie> |
 | Find every occurrence of many patterns in one pass | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> |
 | Approximate membership / frequency / distinct counts in fixed memory | <xref:Bodu.Collections.Probabilistic.BloomFilter`1>, <xref:Bodu.Collections.Probabilistic.CountMinSketch`1>, <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> |
-| Prove one entry or chunk belongs under a published root | <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> (`AuthenticationPath` + `VerifyInclusion`) |
-| Prove an append-only log never rewrote history | <xref:Bodu.Collections.Specialized.Rfc6962MerkleTree> (`ConsistencyProof` + `VerifyConsistency`) |
 | Graph traversal, shortest path, topological sort | <xref:Bodu.Collections.Generic.Graphs.Graph`1> + <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> |
 | Thread-safe FIFO ring, unique set, or bounded cache | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
 
@@ -121,6 +115,5 @@ A handful of conventions run through the whole package; knowing them up front ex
 - **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
 - **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
 - **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe companion package.
-- **[RFC 6962 Merkle trees and proofs](../../guides/core/rfc6962-merkle-trees.md)** — the Merkle surface in full: entry and block modes, proofs, bound roots, and parallel leaf hashing.
 - **[Bodu.Core introduction](../core/index.md)** — the foundation package this one builds on.
 - **[Core Foundations topic](../topics/core-foundations.md)** — how the three packages and the `Bodu.Text` namespace utilities fit together.
