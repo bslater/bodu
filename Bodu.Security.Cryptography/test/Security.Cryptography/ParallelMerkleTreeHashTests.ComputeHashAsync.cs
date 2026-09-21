@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
 using Bodu.Test.IO;
 using static Bodu.Security.Cryptography.MerkleTestData;
 
@@ -45,17 +46,19 @@ public partial class ParallelMerkleTreeHashTests
     }
 
     /// <summary>
-    /// Verifies that hashing an empty stream raises <see cref="InvalidOperationException" />
-    /// because no leaf nodes can be produced from zero bytes.
+    /// Verifies that hashing an empty stream yields the empty tree's root — the hash of zero bytes, as RFC 6962
+    /// defines <c>MTH({})</c> — rather than throwing.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldThrowExactly()
+    public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldReturnTheEmptyTreeRoot()
     {
+        using HashAlgorithm reference = Factory();
+        byte[] expected = reference.ComputeHash(Array.Empty<byte>());
+
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-        await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
-        {
-            await hasher.ComputeHashAsync(new MemoryStream());
-        });
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream());
+
+        CollectionAssert.AreEqual(expected, actual, "an empty stream is the empty tree, whose root is H()");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════════════
@@ -528,18 +531,19 @@ public partial class ParallelMerkleTreeHashTests
     // ═══════════════════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Verifies that an empty stream supplied after a successful call throws
-    /// <see cref="InvalidOperationException" /> and does not return stale data from the prior call.
+    /// Verifies that an empty stream supplied after a successful call yields the empty tree's root and not stale
+    /// data from the prior call.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenEmptyStreamFollowsSuccessfulCall_ShouldThrowExactly()
+    public async Task ComputeHashAsync_WhenEmptyStreamFollowsSuccessfulCall_ShouldReturnTheEmptyTreeRoot()
     {
+        using HashAlgorithm reference = Factory();
+        byte[] expected = reference.ComputeHash(Array.Empty<byte>());
+
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         hasher.ComputeHash(MakeData(8));
+        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream());
 
-        await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
-        {
-            await hasher.ComputeHashAsync(new MemoryStream());
-        });
+        CollectionAssert.AreEqual(expected, actual, "the prior computation must leave nothing behind");
     }
 }
