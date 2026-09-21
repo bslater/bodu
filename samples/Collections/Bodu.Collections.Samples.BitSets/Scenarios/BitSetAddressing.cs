@@ -6,7 +6,7 @@
 
 using Bodu.Collections.Specialized;
 
-namespace Bodu.Collections.Samples.SpecializedStructures.Scenarios;
+namespace Bodu.Collections.Samples.BitSets.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="BitSet" /> as a packed, growable set of non-negative integers: single-bit and range

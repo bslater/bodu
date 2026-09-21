@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Bodu.Collections.Samples.SpecializedStructures</RootNamespace>
+    <RootNamespace>Bodu.Collections.Samples.BitSets</RootNamespace>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
 

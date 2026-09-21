@@ -339,7 +339,6 @@ Bodu.Collections.Samples.CollectionCatalogue/
   disjoint-set union-find, the tree/trie family, and Aho-Corasick multi-pattern search.
 - `Bodu.Collections.Samples.ProbabilisticSketches` — the Bloom filter, count-min sketch, and HyperLogLog
   approximate sketches.
-- `Bodu.Collections.Samples.SpecializedStructures` — the packed `BitSet` and the RFC 6962 Merkle tree from
-  `Bodu.Collections.Specialized`.
+- `Bodu.Collections.Samples.BitSets` — the packed `BitSet` from `Bodu.Collections.Specialized`.
 - `Bodu.Collections.Concurrent.Samples.ThreadSafeCollections` — the thread-safe counterparts of the ring,
   the hash set, and this scenario's evicting cache.

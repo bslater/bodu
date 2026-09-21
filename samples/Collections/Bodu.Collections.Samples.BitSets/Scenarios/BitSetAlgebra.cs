@@ -6,7 +6,7 @@
 
 using Bodu.Collections.Specialized;
 
-namespace Bodu.Collections.Samples.SpecializedStructures.Scenarios;
+namespace Bodu.Collections.Samples.BitSets.Scenarios;
 
 /// <summary>
 /// Demonstrates the <see cref="BitSet" /> set-algebra surface — <see cref="BitSet.And" />, <see cref="BitSet.Or" />,

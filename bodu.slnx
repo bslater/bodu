@@ -276,7 +276,7 @@
     <Project Path="samples/Collections/Bodu.Collections.Samples.CollectionCatalogue/Bodu.Collections.Samples.CollectionCatalogue.csproj" />
     <Project Path="samples/Collections/Bodu.Collections.Samples.ProbabilisticSketches/Bodu.Collections.Samples.ProbabilisticSketches.csproj" />
     <Project Path="samples/Collections/Bodu.Collections.Samples.RangesGraphsTrees/Bodu.Collections.Samples.RangesGraphsTrees.csproj" />
-    <Project Path="samples/Collections/Bodu.Collections.Samples.SpecializedStructures/Bodu.Collections.Samples.SpecializedStructures.csproj" />
+    <Project Path="samples/Collections/Bodu.Collections.Samples.BitSets/Bodu.Collections.Samples.BitSets.csproj" />
   </Folder>
   <Folder Name="/Samples/Collections.Concurrent/">
     <Project Path="samples/Collections.Concurrent/Bodu.Collections.Concurrent.Samples.ThreadSafeCollections/Bodu.Collections.Concurrent.Samples.ThreadSafeCollections.csproj" />
