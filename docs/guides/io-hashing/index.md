@@ -131,4 +131,4 @@ hash.Reset();                              // back to the initial state
 - [Bodu.IO.Hashing getting started](../../docs/io-hashing/getting-started.md) — install and minimal samples.
 - [Bodu.Security.Cryptography hashing guide](../cryptography/hashing.md) — keyed and cryptographic hashes.
 - [Bodu.IO.Hashing API reference](xref:Bodu.IO.Hashing) — namespace overview with key types.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete hashing guide list is this page; the cryptography one is [its index](../cryptography/index.md).

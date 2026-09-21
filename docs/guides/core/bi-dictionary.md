@@ -81,4 +81,4 @@ The indexer setter follows the same policy for value conflicts. Re-binding an ex
 - [Multi-value dictionary](multi-value-dictionary.md) — one key to many values when the mapping is not one-to-one.
 - [Sequenced dictionary](sequenced-dictionary.md) — a dictionary with a stable, contractual iteration order.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.

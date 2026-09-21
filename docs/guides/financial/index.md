@@ -105,14 +105,17 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 3. **[Working with exchange rates](exchange-rates.md)** — the provider contracts and editing surface for crossing currencies.
 4. **[Exchange-rate types](exchange-types.md)** and **[lookups on a known dataset](exchange-rate-lookups.md)** — reference material; dip in when choosing a type or tuning a lookup policy.
 5. **[Caching exchange rates](exchange-rate-caching.md)** — add a TOML disk cache in front of any provider, with per-provider expiry.
-6. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
-7. **[Testing your own provider](testing-providers.md)** and **[runnable samples](../../samples/financial.md)** — the contract-test bases for consumer-written providers, and the offline sample projects under `samples/Financial/` that compose everything above end to end.
+6. **[JSON serialization](json-serialization.md)** — the `Bodu.Financial.Serialization.Json` companion: the converters, the three wire shapes, and the `AddFinancialJsonConverters()` / `AddFinancialJson()` registrations.
+7. **[Configuring providers from `appsettings`](provider-configuration.md)** and **[configuring rate caching](caching-configuration.md)** — the options each provider and cache backend binds, with worked configuration files.
+8. **[Writing your own web provider](custom-web-provider.md)** — subclass `WebRateProvider` or `PairWebRateProvider<TSeries>` when no built-in feed fits.
+9. **[Dependency injection](dependency-injection.md)** — last, once you know which services your application composes.
+10. **[Testing your own provider](testing-providers.md)** and **[runnable samples](../../samples/financial.md)** — the contract-test bases for consumer-written providers, and the offline sample projects under `samples/Financial/` that compose everything above end to end.
 
 ## See also
 
 - [Bodu.Financial introduction](../../docs/financial/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Financial getting started](../../docs/financial/getting-started.md) — install + minimal samples.
-- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — every guide in the topic on one page.
+- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — the topic map; the complete financial guide list is this page, and the numerics one is [its index](../numerics/index.md).
 - [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
 
 - [`Money<TCurrency>` API reference](xref:Bodu.Financial.Money`1)

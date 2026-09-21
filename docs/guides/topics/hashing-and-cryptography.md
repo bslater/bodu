@@ -127,3 +127,4 @@ Primitives with a formal adversary model, on the BCL `SymmetricAlgorithm` / `Has
 - **[Hashing & Cryptography concepts](../../docs/topics/hashing-and-cryptography-concepts.md)** — the cross-package taxonomy and safety vocabulary.
 - **Member introductions:** [Bodu.IO.Hashing](../../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../../docs/cryptography/index.md).
 - **API reference:** [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography).
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.IO.Hashing](../io-hashing/index.md) · [Bodu.Security.Cryptography](../cryptography/index.md).

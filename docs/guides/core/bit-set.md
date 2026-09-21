@@ -88,4 +88,4 @@ bool overlap = wantsEmail.Intersects(unsubscribed);   // true — non-mutating p
 - <xref:Bodu.Collections.Specialized.BitSet> — the full API surface.
 - [Range-keyed lookups](range-dictionary.md) — interval membership when the set is a few contiguous runs rather than dense bits.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.

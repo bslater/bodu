@@ -72,4 +72,4 @@ Contract points:
 - <xref:Bodu.Collections.Generic.LayeredDictionary`2> and <xref:Bodu.Collections.Generic.DefaultingDictionary`2> — the full API surfaces.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
 - [Sequenced dictionary](sequenced-dictionary.md), [Bidirectional dictionary](bi-dictionary.md), [Multi-value dictionary](multi-value-dictionary.md) — the rest of the dictionary family.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.
