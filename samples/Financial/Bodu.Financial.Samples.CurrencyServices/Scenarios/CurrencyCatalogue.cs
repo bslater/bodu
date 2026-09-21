@@ -23,10 +23,23 @@ public static class CurrencyCatalogue
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Currency catalogue: registry, CurrencyInfo, lookup ---");
+        SampleConsole.Scenario(
+            "The currency catalogue - registry, metadata, and lookup",
+            what: "Reads currencies out of the registry, inspects the metadata each one carries, and resolves "
+                + "codes through the lookup service including one that does not exist.",
+            why: "Currency is not just a three-letter label - the number of minor units, the cash rounding "
+                + "increment and the symbol are all properties of the currency, and code that hardcodes two "
+                + "decimals is wrong for the Japanese yen and for the Tunisian dinar in opposite directions. "
+                + "Shipping the ISO 4217 catalogue means those facts come from one place rather than from "
+                + "whatever each call site assumed. The lookup service exists because currency codes usually "
+                + "arrive as data, so resolution has to handle the unknown code as a normal outcome rather than "
+                + "as an exception.",
+            expect: "Each currency reports its own minor units rather than an assumed two, which is what makes "
+                + "the money types correct for zero- and three-decimal currencies. An unrecognised code resolves "
+                + "to a miss rather than throwing.");
 
         // The shipped registry is the whole ISO 4217 catalogue.
-        Console.WriteLine($"Registry: {CurrencyRegistry.All.Count} currencies shipped");
+        Console.WriteLine($"  Registry: {CurrencyRegistry.All.Count} currencies shipped");
 
         // The indexed lookup service is what runtime code queries by ISO code, numeric code, symbol,
         // region, or culture. Look up three currencies with different minor-unit conventions.
@@ -49,11 +62,11 @@ public static class CurrencyCatalogue
         }
 
         // Minor units drive amount scale: 2 decimals for most currencies, but 0 for JPY and 3 for BHD.
-        Console.WriteLine("JPY carries 0 minor units (whole yen); BHD carries 3 (thousandths of a dinar).");
+        Console.WriteLine("  JPY carries 0 minor units (whole yen); BHD carries 3 (thousandths of a dinar).");
 
         // The CurrencyCode enum is the strongly-typed bridge into the same registry entry.
         CurrencyInfo usd = CurrencyInfo.FromCurrencyCode(CurrencyCode.USD);
-        Console.WriteLine($"Enum bridge: CurrencyCode.USD -> {usd.IsoCode} #{usd.NumericCode}");
+        Console.WriteLine($"  Enum bridge: CurrencyCode.USD -> {usd.IsoCode} #{usd.NumericCode}");
 
         Console.WriteLine();
     }
