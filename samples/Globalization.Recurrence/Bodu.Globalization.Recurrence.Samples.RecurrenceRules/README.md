@@ -32,7 +32,8 @@ the same rule for equality.
 terse spellings compare equal:
 
 ```text
---- RecurrenceRule: parse, inspect, enumerate ---
+--- RecurrenceRule - parse, inspect, enumerate ---
+
 rule       : FREQ=MONTHLY;COUNT=5;BYDAY=1FR
 Frequency  : Monthly
 Interval   : 1
@@ -43,6 +44,7 @@ ByDay[0]   : Ordinal=1, Day=Friday, IsEveryOccurrence=False
 start      : 2026-01-01 09:30
 occurrences: 2026-01-02, 2026-02-06, 2026-03-06, 2026-04-03, 2026-05-01
 first      : 2026-01-02 09:30
+  (every part read back as a typed value - a rule a UI cannot inspect is a rule it cannot render back to a user)
 
 --- Every BY part is readable back ---
 rule        : FREQ=YEARLY;BYSECOND=0;BYMINUTE=30;BYHOUR=9;BYDAY=MO,3TH;BYMONTHDAY=15,-1;BYYEARDAY=100;BYWEEKNO=10;BYMONTH=3,9;BYSETPOS=1
@@ -66,6 +68,7 @@ input      : INTERVAL=1;FREQ=WEEKLY;BYDAY=MO,WE,FR;WKST=MO
 canonical  : FREQ=WEEKLY;BYDAY=MO,WE,FR
 round trip : True
 terse == verbose : True
+  (canonical text omits defaults, so two rules that select different dates can print almost identically - and the round trip is an identity, not an approximation)
 ```
 
 A part the rule did not state reads as an **empty list**, never `null`, so inspection code needs no
@@ -96,10 +99,12 @@ its Monday, which merely falls before the start). And the fourteen-day grid is n
 month filter, which the gaps prove: every gap is a multiple of 14.
 
 ```text
---- Invalid dates are skipped, never clamped ---
+--- BY-part semantics - the four rules that surprise people ---
+
 FREQ=MONTHLY from 2026-01-31 : 2026-01-31, 2026-03-31, 2026-05-31, 2026-07-31, 2026-08-31, 2026-10-31
 BYMONTHDAY=31 from 2026-01-01: 2026-01-31, 2026-03-31, 2026-05-31, 2026-07-31, 2026-08-31, 2026-10-31
 29 February yearly           : 2024-02-29, 2028-02-29, 2032-02-29
+  (February and the thirty-day months are absent, not clamped - a payroll rule that clamped would quietly pay February early)
 
 --- The occurrence set is a set ---
 BYMONTHDAY=1,-31             : 2026-01-01, 2026-02-01, 2026-03-01, 2026-04-01
@@ -109,10 +114,12 @@ BYDAY=1MO,-4MO               : 2026-02-02, 2026-03-02, 2026-03-09, 2026-04-06
 last weekday of the month    : 2026-01-30, 2026-02-27, 2026-03-31, 2026-04-30
 BYSETPOS=1 anchored Monday   : 2026-03-02, 2026-03-09, 2026-03-16
 BYSETPOS=1 anchored Wednesday: 2026-03-09, 2026-03-16, 2026-03-23
+  (BYSETPOS counts within the whole frequency period, so -1 under a monthly rule is the last matching day of the month, not of each week)
 
 --- A BY filter never re-anchors the interval ---
 every 14th day, Oct+Dec only : 2026-10-11, 2026-10-25, 2026-12-06, 2026-12-20, 2027-10-10, 2027-10-24
 gaps in days                 : 14, 42, 14, 294, 14
+  (the 14-day gaps survive the filter - a BY part removes dates the interval chose, it never re-anchors where the interval lands)
 ```
 
 The gap `42` is three fourteen-day steps across November, and `294` is twenty-one of them across the
@@ -137,7 +144,8 @@ there. Without a `BYDAY` limit, `BYWEEKNO` expands to the whole seven-day week. 
 in some years, so it skips 2021–2025 entirely:
 
 ```text
---- WKST shifts a weekly interval ---
+--- Week numbering - WKST and BYWEEKNO ---
+
 WKST=MO : 1997-08-05, 1997-08-10, 1997-08-19, 1997-08-24
 WKST=SU : 1997-08-05, 1997-08-17, 1997-08-19, 1997-08-31
 
@@ -152,6 +160,7 @@ week 20, WKST=SU         : 2026-05-18, 2027-05-17
 --- The fifty-third week exists only in some years ---
 BYWEEKNO=53;BYDAY=MO     : 2020-12-28, 2026-12-28, 2032-12-27
 BYWEEKNO=-1;BYDAY=MO     : 2026-12-28, 2027-12-27, 2028-12-25
+  (week 53 resolves only in the years that have one - inventing it every year, or dropping the request, would be wrong just occasionally enough to ship)
 ```
 
 **APIs demonstrated.** `RecurrenceRule.Parse` with `WKST`, `BYWEEKNO` (positive and negative), and
@@ -175,7 +184,8 @@ parsed one — the property that makes it safe in configuration code. Ordinals r
 `-1FR` in the rule's canonical text:
 
 ```text
---- RecurrenceRuleBuilder: fluent construction ---
+--- RecurrenceRuleBuilder - building rules without writing RRULE text ---
+
 built      : FREQ=WEEKLY;INTERVAL=2;COUNT=6;BYDAY=MO,WE,FR
 occurrences: 2026-01-05, 2026-01-07, 2026-01-09, 2026-01-19, 2026-01-21, 2026-01-23
 equals parsed text : True
@@ -198,17 +208,12 @@ occurrences: 2026-03-31, 2026-06-30, 2026-09-30, 2026-12-31
 
 --- WithWeekStart: the builder reaches WKST too ---
   WKST=Monday    FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU
-                  1997-08-05, 1997-08-10, 1997-08-19, 1997-08-24
   WKST=Sunday    FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=SU
-                  1997-08-05, 1997-08-17, 1997-08-19, 1997-08-31
 
 --- The remaining BY parts ---
   ByMonthDay(15, -1) : FREQ=MONTHLY;COUNT=4;BYMONTHDAY=15,-1
-                       2026-01-15, 2026-01-31, 2026-02-15, 2026-02-28
   ByYearDay(100, -100): FREQ=YEARLY;COUNT=4;BYYEARDAY=100,-100
-                       2026-04-10, 2026-09-23, 2027-04-10, 2027-09-23
   ByWeekNo(20)+Monday : FREQ=YEARLY;COUNT=3;BYDAY=MO;BYWEEKNO=20
-                       2026-05-11, 2027-05-17, 2028-05-15
 
 --- Time-of-day parts build, but do not enumerate ---
   built   : FREQ=DAILY;COUNT=4;BYSECOND=0;BYMINUTE=30;BYHOUR=9,17
@@ -249,7 +254,8 @@ overload yields only what falls inside it. The inclusive flag is what decides wh
 is returned. Past the end of a bounded rule, `next` reports nothing while `previous` still answers:
 
 ```text
---- Bounding a stream: COUNT, UNTIL, window, Take ---
+--- Bounding a stream, and the point queries that avoid one ---
+
 COUNT=4        : 2026-01-01, 2026-01-11, 2026-01-21, 2026-01-31
 UNTIL=20260210 : 2026-01-01, 2026-01-11, 2026-01-21, 2026-01-31, 2026-02-10
 unbounded+Take : 2026-01-01, 2026-01-11, 2026-01-21, 2026-01-31
@@ -279,6 +285,7 @@ prev before 2025: (none)
 ```text
 Bodu.Globalization.Recurrence.Samples.RecurrenceRules/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/RuleBasics.cs
   Scenarios/ByPartSemantics.cs
   Scenarios/WeekNumbering.cs

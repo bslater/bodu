@@ -20,7 +20,23 @@ public static class BuildingRules
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- RecurrenceRuleBuilder: fluent construction ---");
+        SampleConsole.Scenario(
+            "RecurrenceRuleBuilder - building rules without writing RRULE text",
+            what: "Builds a rule fluently and checks it equals the hand-written text, covers WeekDayNum ordinals "
+                + "including the negative and zero forms, builds a bounded yearly rule and a quarter-end rule "
+                + "with BYSETPOS, reaches WKST through the builder, and shows which parts build but do not "
+                + "affect enumeration.",
+            why: "RRULE text is compact and unforgiving - a typo produces either a parse error or, worse, a valid "
+                + "rule selecting the wrong dates. The builder makes the grammar discoverable and the mistakes "
+                + "compile-time, which matters most in configuration code where the rule is assembled from user "
+                + "choices. It is deliberately a spelling of the same grammar rather than a parallel model: the "
+                + "built rule equals the parsed one, so a rule can be built in a UI, stored as text, and parsed "
+                + "back without a second code path to keep in sync. The ordinal forms are where the builder "
+                + "earns its place, since -1FR and 3TH are the parts people most often get backwards.",
+            expect: "The built rule and the parsed text compare equal, which is the property that makes the "
+                + "builder safe to use anywhere the text form is used. Negative ordinals count back from the end "
+                + "of the period, and an ordinal of zero means every occurrence of that weekday - the form a bare "
+                + "BYDAY entry parses to.");
 
         // The builder takes the frequency up front -- the one part RFC 5545 makes mandatory --
         // then layers optional parts. Build() produces an immutable RecurrenceRule.
