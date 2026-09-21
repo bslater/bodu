@@ -20,7 +20,18 @@ public static class Memoization
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Memoizer: cache a pure function ---");
+        SampleConsole.Scenario(
+            "Memoizer - cache a pure function",
+            what: "Wraps a counting function, calls it ten times across four distinct arguments, and reports how " +
+                  "often the underlying function actually ran.",
+            why: "Memoization is only sound for a pure function - same input, same output, no side effects - " +
+                 "because the cache will happily serve a stale answer forever otherwise. Given that, it turns " +
+                 "repeated work into a lookup with no change to the call sites. The invocation counter is the " +
+                 "load-bearing evidence here: without it, a memoized and a non-memoized function are " +
+                 "indistinguishable from their return values alone, which is exactly why this scenario counts " +
+                 "rather than just printing results.",
+            expect: "Ten calls, four distinct arguments, and the function body runs four times - once per distinct " +
+                    "argument. The final call re-requests an argument already seen, and the counter does not move.");
 
         var calls = 0;
 
@@ -35,10 +46,10 @@ public static class Memoization
         foreach (var n in new[] { 3, 5, 3, 8, 5, 3, 8, 5, 3, 13 })
             _ = square(n);
 
-        Console.WriteLine($"calls made       : 10");
-        Console.WriteLine($"distinct args    : 4 (3, 5, 8, 13)");
-        Console.WriteLine($"function invoked : {calls} time(s)");
-        Console.WriteLine($"square(13)       : {square(13)} (served from cache, counter unchanged: {calls})");
+        Console.WriteLine($"  calls made       : 10  (through the memoized wrapper, which is what every call site sees)");
+        Console.WriteLine($"  distinct args    : 4 (3, 5, 8, 13)  (the cache is keyed on the argument, so this is the upper bound on real work)");
+        Console.WriteLine($"  function invoked : {calls} time(s)  (expected 4 - six of the ten calls were served from the cache without entering the function)");
+        Console.WriteLine($"  square(13)       : {square(13)}  (counter still {calls} - an already-seen argument costs a lookup, and the function is not re-entered)");
 
         Console.WriteLine();
     }

@@ -14,6 +14,12 @@ namespace Bodu.Core.Samples.FunctionalRailway.Scenarios;
 /// pipeline composed with <c>Bind</c>/<c>Map</c>/<c>Tap</c>. The first failing step short-circuits
 /// the rest, carrying a <see cref="ResultError" /> to the end instead of throwing.
 /// </summary>
+/// <remarks>
+/// The point is that failure is a return value on the same path as success, so the pipeline reads top to bottom
+/// with no try/catch interrupting it. Each step is written as if the previous one succeeded — because if it did
+/// not, the step never runs — and the original error arrives intact at the end rather than being wrapped, logged
+/// and rethrown at every level.
+/// </remarks>
 public static class ResultRailway
 {
     /// <summary>
@@ -21,12 +27,23 @@ public static class ResultRailway
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Result<T>: validate -> parse -> transform railway ---");
+        SampleConsole.Scenario(
+            "Result<T> - validate -> parse -> transform railway",
+            what: "Runs four inputs through one validate-then-parse-then-double pipeline: a good value and three " +
+                  "that fail at three different steps.",
+            why: "Exceptions for expected failures cost you the control flow: the happy path gets interleaved with " +
+                 "handlers, and an error is easy to catch too broadly or too late. A railway keeps failure on the " +
+                 "same return path, so the first failing step short-circuits the rest and the error travels to the " +
+                 "end untouched. The steps stay individually simple because each is written assuming the previous " +
+                 "one succeeded - which is guaranteed, since otherwise it does not run at all.",
+            expect: "Only '42' reaches the end, doubled to 84. The other three each stop at a different step and " +
+                    "report why, in the vocabulary of the step that failed - blank input, unparseable text, and a " +
+                    "negative value - rather than one generic message.");
 
-        Console.WriteLine($"'42'   : {Format(Process("42"))}");
-        Console.WriteLine($"' -3 ' : {Format(Process(" -3 "))}");
-        Console.WriteLine($"'oops' : {Format(Process("oops"))}");
-        Console.WriteLine($"''     : {Format(Process(string.Empty))}");
+        Console.WriteLine($"  \u002742\u0027   : {Format(Process("42"))}  (expected ok 84 - the only input that clears all three steps)");
+        Console.WriteLine($"  \u0027 -3 \u0027 : {Format(Process(" -3 "))}  (parsed fine, then failed the range rule - so the error names the value, not the format)");
+        Console.WriteLine($"  \u0027oops\u0027 : {Format(Process("oops"))}  (failed one step earlier, at the parse; the doubling step never ran)");
+        Console.WriteLine($"  \u0027\u0027     : {Format(Process(string.Empty))}  (failed at the first step, so neither the parse nor the transform was reached)");
 
         Console.WriteLine();
     }
