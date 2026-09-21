@@ -28,9 +28,23 @@ diagnostic's severity, code, and line number. Note the default (`Bodu`) profile 
 **What to expect.**
 
 ```text
-sample.boduconfig: root section + 3 glob sections
-flawed text      : document usable = True, diagnostics = 1
-  [Error] MissingEquals at line 5: Configuration property line is missing the '=' separator.
+--- Parse versus ParseWithDiagnostics ---
+  What   : Loads the committed configuration file, then parses deliberately flawed text through the diagnostic entry
+           point and prints every problem it collected alongside the document it still returned.
+  Why    : These two entry points answer different questions about the same input. A generated or machine-written
+           file that does not parse is a bug upstream, and the right response is to stop at the first error with a
+           clear exception. A file a person typed is different: stopping at the first error means they fix one line,
+           re-run, and discover the next - so the parser collects everything it can and still returns a usable
+           document, which is what an editor needs to underline every problem at once. Each diagnostic carries a
+           stable code and a line number for exactly that reason.
+  Expect : The flawed text yields a usable document rather than nothing, with the unparseable line reported as a
+           diagnostic naming its code and line number. The valid lines around it still parsed - partial recovery is
+           the point, since a document that collapses on one bad line cannot drive an editor.
+
+  sample.boduconfig: root section + 3 glob sections  (the committed file parses clean, so Load's throw-on-error behaviour is the right entry point for it)
+  flawed text      : document usable = True, diagnostics = 1  (expected True - a document comes back despite the error, which is what lets an editor keep working on a file mid-edit)
+    [Error] MissingEquals at line 5: Configuration property line is missing the '=' separator.
+  (a stable code and a line number per diagnostic - enough for an editor to place a squiggle without re-parsing)
 ```
 
 **APIs demonstrated.** `ConfigurationDocument.Load` / `.ParseWithDiagnostics`,
@@ -54,10 +68,27 @@ file (only `[*]` applies). It then shows the typed getters on one view: `GetEnum
 **What to expect.**
 
 ```text
-src/App/Program.cs               indent_size = 8, max_line_length = 100
-test/AppTests/ProgramTests.cs    indent_size = 4, max_line_length = (unset)
-README.md                        indent_size = 4, max_line_length = 120
-typed: start_day = Monday, strict_nullability = True, theme = (default)
+--- Resolve(targetPath) - the cascade ---
+  What   : Resolves the same document against three target paths - a production source file, a test file, and a
+           markdown file - and prints the effective values each one sees, then reads typed values through the enum,
+           boolean and defaulted-string getters.
+  Why    : This is the idea the whole library is built around, and it inverts how configuration usually works.
+           Rather than a file per directory, one file holds defaults plus glob-targeted exceptions, and a value is
+           only meaningful relative to the path you are asking about. Every section whose glob matches contributes,
+           with later sections overriding earlier ones, so specificity is expressed by ordering rather than by a
+           precedence algorithm nobody can predict. The typed getters exist because the file format has exactly one
+           value type - text - and every consumer would otherwise reimplement the same invariant-culture parsing,
+           differently.
+  Expect : Three paths, three different effective configurations, from one document and no per-directory files. The
+           test file picks up an override the source file does not, and the markdown file falls through to the
+           defaults because no .cs glob matches it. The typed row shows a value absent from the file resolving to
+           its supplied default rather than throwing.
+
+  src/App/Program.cs               indent_size = 8, max_line_length = 100
+  test/AppTests/ProgramTests.cs    indent_size = 4, max_line_length = (unset)
+  README.md                        indent_size = 4, max_line_length = 120
+  (one document, three effective configurations - the path is the input, and section order decides which override wins)
+  typed: start_day = Monday, strict_nullability = True, theme = (default)  (every wire value is text; the getters parse with invariant culture, and 'theme' falls back because the file does not set it)
 ```
 
 **APIs demonstrated.** `document.Resolve(targetPath)`, glob-section matching and override
@@ -80,9 +111,22 @@ set to show it bundles `RemoveEffectiveValue` (the key is simply absent from the
 **What to expect.**
 
 ```text
-TreatAsLiteral      : max_line_length = 'unset'
-RemoveEffectiveValue: max_line_length = '(absent)'
-EditorConfig preset : max_line_length present = False
+--- The 'unset' value and dialect presets ---
+  What   : Resolves the same test-tree path twice with opposite unset-value modes, then resolves it once more
+           through the EditorConfig-compatible preset.
+  Why    : A cascade can only add values, which leaves no way to say a deeper section should stop inheriting one -
+           so EditorConfig gives the literal text 'unset' that meaning. It is a genuine dialect decision rather than
+           an obvious one: a file that legitimately wants the string "unset" as a value needs the other mode, so the
+           library makes it explicit instead of guessing. Presets exist because a dialect is not one switch but
+           several that have to agree; setting them individually is how a configuration reader ends up
+           almost-compatible with the format it claims to read.
+  Expect : The same key, the same path, two different answers - literal text under one mode, absent under the other.
+           The preset then reports the key as absent without naming any individual switch, because it carries the
+           whole EditorConfig dialect including this one.
+
+  TreatAsLiteral      : max_line_length = 'unset'  (the word is just a value here - the mode a file that genuinely stores the text "unset" needs)
+  RemoveEffectiveValue: max_line_length = '(absent)'  (EditorConfig semantics - the key is gone from the view, which is the only way a cascade can un-inherit)
+  EditorConfig preset : max_line_length present = False  (expected False - the preset carries the whole dialect, so the switches cannot drift out of agreement)
 ```
 
 **APIs demonstrated.** `ConfigurationResolveOptions.UnsetValueMode`
@@ -104,8 +148,21 @@ lines survived, and re-loads + re-resolves the saved file to prove the new secti
 **What to expect.**
 
 ```text
-saved 437 chars to bodu-sample.boduconfig; comment lines preserved: 3
-re-resolved docs/guide/intro.md: max_line_length = 80
+--- Saving - mutate, append, write, and re-resolve ---
+  What   : Edits a value in an existing section, composes a new document with an extra section appended, saves it,
+           counts the comment lines that survived, and resolves a path from the written file.
+  Why    : A configuration file a program writes back is usually a file a person also edits, and the failure mode is
+           a tool that reformats or silently strips the comments explaining why a setting is there. This document
+           model is trivia-preserving underneath, so an edit changes the value it was asked to change and leaves
+           everything else - including comments and spacing - as the author wrote it. The read-only surface
+           deliberately does not grow sections: adding one is a structural change, so it goes through composing a
+           document rather than mutating in place, which keeps accidental structural edits out of the common path.
+  Expect : The comment lines are still in the saved file - the edit touched one value, not the formatting around it.
+           Re-loading the written file and resolving a path that only the appended section matches proves the round
+           trip produced a file the parser accepts, not just text that looks right.
+
+  saved 437 chars to bodu-sample.boduconfig; comment lines preserved: 3  (the comments the author wrote survive the edit - a config writer that strips them is a config writer people turn off)
+  re-resolved docs/guide/intro.md: max_line_length = 80  (the value comes from the appended section, so the written file really parses - not just looks right)
 ```
 
 **APIs demonstrated.** `IniSection.SetEntry` on a resolved section,
@@ -118,6 +175,7 @@ re-resolved docs/guide/intro.md: max_line_length = 80
 ```text
 Bodu.Text.Configuration.Samples.ConfigCascade/
   Program.cs                         # runs the scenarios in order
+  SampleConsole.cs                   # the What / Why / Expect scenario banner
   Data/sample.boduconfig             # committed input (root + [*] + two glob sections)
   Scenarios/ParseAndDiagnostics.cs
   Scenarios/ResolveCascade.cs

@@ -21,7 +21,25 @@ public static class IncludeExcludeBasics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Include/exclude sets (AnyMatch) ---");
+        SampleConsole.Scenario(
+            "Include/exclude sets - the AnyMatch model",
+            what: "Compiles two includes and one exclude into a filter, runs a five-line corpus through it with "
+                + "one line per decision path, then builds an exclude-only filter to show what happens when no "
+                + "include is declared at all.",
+            why: "This is the model Ant and MSBuild item groups use, and its two rules are worth stating "
+                + "explicitly because getting them backwards is the usual filtering bug. First, includes are an "
+                + "OR-set: matching any one is enough, so adding an include widens the filter. Second, an exclude "
+                + "always wins over an include, regardless of declaration order - which is what lets a broad "
+                + "include be paired with narrow carve-outs instead of being rewritten into a precise pattern. "
+                + "The third rule is the one people trip over: declaring zero includes means include everything, "
+                + "so a filter flips from blocklist to allowlist the moment its first include appears. Compiling "
+                + "once matters too - Build does the pattern analysis, so applying the filter to a million values "
+                + "does not redo it a million times.",
+            expect: "Three of the five lines are kept. The debug line is dropped although it matched an include, "
+                + "because the exclude vetoes; the info line is dropped because nothing included it - two "
+                + "different reasons for the same outcome. The upper-case WARN line is kept, since matching is "
+                + "case-insensitive by default. The exclude-only filter then accepts a value no pattern mentions, "
+                + "which is the blocklist behaviour that declaring an include would have turned off.");
 
         // TextFilter.Build is the compile step: it takes the declared patterns, classifies every glob into the
         // cheapest matching strategy its shape allows ("error*" and "warn*" become prefix comparisons, "*debug*"
@@ -52,7 +70,9 @@ public static class IncludeExcludeBasics
         // Filter() is the streaming surface: it defers evaluation until enumeration and yields the
         // accepted values in their source order.
         foreach (var line in filter.Filter(lines))
-            Console.WriteLine($"kept    -> {line}");
+            Console.WriteLine($"  kept    -> {line}");
+
+        Console.WriteLine("  (three of five: 'error-debug-trace' matched an include but the exclude vetoed it, and 'info' matched no include at all)");
 
         Console.WriteLine();
 
@@ -62,8 +82,10 @@ public static class IncludeExcludeBasics
         var excludeOnly = TextFilter.Build([TextFilterPattern.Exclude("*.tmp")]);
 
         // IsMatch() is the single-value surface: true = accepted, false = rejected.
-        Console.WriteLine($"report.txt  with exclude-only filter -> {excludeOnly.IsMatch("report.txt")}");   // no veto -> True
-        Console.WriteLine($"scratch.tmp with exclude-only filter -> {excludeOnly.IsMatch("scratch.tmp")}");  // "*.tmp" vetoes -> False
+        Console.WriteLine($"  report.txt  with exclude-only filter -> {excludeOnly.IsMatch("report.txt")}"
+            + "  (expected True - with no includes declared the filter is a blocklist, so an unmentioned value passes)");
+        Console.WriteLine($"  scratch.tmp with exclude-only filter -> {excludeOnly.IsMatch("scratch.tmp")}"
+            + "  (expected False - adding a single include here would flip every unmatched value to rejected)");
 
         Console.WriteLine();
     }

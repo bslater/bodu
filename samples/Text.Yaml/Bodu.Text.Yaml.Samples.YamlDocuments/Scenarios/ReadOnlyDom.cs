@@ -21,28 +21,45 @@ public static class ReadOnlyDom
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Read-only DOM: YamlDocument / YamlElement ---");
+        SampleConsole.Scenario(
+            "The read-only DOM - inspecting without materializing",
+            what: "Parses the document once, reads four typed leaves including a nested one, enumerates a "
+                + "mapping whose keys are not known in advance, and probes for an optional key that is absent.",
+            why: "This is the cheapest way to read a document you will not change. One parse produces one "
+                + "buffer, and the elements are cursors into it rather than objects built from it - so walking "
+                + "the tree allocates nothing further, and reading two keys out of a large document does not "
+                + "cost the whole document. Because the buffer is owned rather than borrowed, the document is "
+                + "disposable, which is the one thing to remember about this layer. TryGetProperty exists "
+                + "because optional keys are the normal case in configuration, and an exception is the wrong "
+                + "mechanism for something expected.",
+            expect: "The typed getters return CLR values rather than strings. Enumerating the mapping reports "
+                + "each value kind alongside it, so a consumer can branch on shape without a schema. The absent "
+                + "key reports False instead of throwing.");
 
         var yaml = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "server-config.yaml"));
         using var document = YamlDocument.Parse(yaml);
         var root = document.RootElement;
 
         // Drill down with GetProperty and read leaves with the typed getters.
-        Console.WriteLine($"title         : {root.GetProperty("title").GetString()}");
-        Console.WriteLine($"workers       : {root.GetProperty("workers").GetInt64()}");
-        Console.WriteLine($"drain_timeout : {root.GetProperty("drain_timeout").GetInt64()}");
-        Console.WriteLine($"tls.enabled   : {root.GetProperty("tls").GetProperty("enabled").GetBoolean()}");
+        Console.WriteLine($"  title         : {root.GetProperty("title").GetString()}");
+        Console.WriteLine($"  workers       : {root.GetProperty("workers").GetInt64()}");
+        Console.WriteLine($"  drain_timeout : {root.GetProperty("drain_timeout").GetInt64()}");
+        Console.WriteLine($"  tls.enabled   : {root.GetProperty("tls").GetProperty("enabled").GetBoolean()}"
+            + "  (each GetProperty is a cursor move within the one parsed buffer, not a new object)");
 
         // Enumerate a mapping without knowing its keys up front; each value reports its ValueKind.
-        Console.WriteLine("limits        :");
+        Console.WriteLine("  limits        :");
         foreach (var property in root.GetProperty("limits").EnumerateMapping())
         {
-            Console.WriteLine($"  {property.Name} = {property.Value.GetInt64()} ({property.Value.ValueKind})");
+            Console.WriteLine($"    {property.Name} = {property.Value.GetInt64()} ({property.Value.ValueKind})");
         }
+
+        Console.WriteLine("  (each value reports its kind, so a consumer can branch on shape without a schema)");
 
         // Probe optional keys with TryGetProperty instead of catching exceptions.
         var hasProxy = root.TryGetProperty("proxy", out _);
-        Console.WriteLine($"proxy present : {hasProxy}");
+        Console.WriteLine($"  proxy present : {hasProxy}"
+            + "  (expected False - optional keys are the normal case in config, so probing beats catching)");
 
         Console.WriteLine();
     }

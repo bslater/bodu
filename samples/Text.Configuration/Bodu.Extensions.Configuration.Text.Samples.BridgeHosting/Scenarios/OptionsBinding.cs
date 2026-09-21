@@ -39,7 +39,19 @@ public static class OptionsBinding
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AddConfigurationOptions<T>: TOML -> IOptions<T> via DI ---");
+        SampleConsole.Scenario(
+            "AddConfigurationOptions<T> - from a TOML table to an injected options type",
+            what: "Builds configuration from the TOML file, registers the [server] table as a strongly typed "
+                + "options class, resolves it from the service provider, and prints the bound values.",
+            why: "This is where the bridge stops being visible, which is the goal. A service that takes "
+                + "IOptions<ServerOptions> depends on a shape it owns, not on a configuration key, a file path "
+                + "or a format - so the file can move to JSON, to environment variables, or to a secret store "
+                + "without touching it. Binding also does the type conversion in one place: the wire values are "
+                + "all text, and Port arriving as an int rather than a string is the difference between parsing "
+                + "once at startup and parsing at every call site, differently.",
+            expect: "The options instance carries values from the TOML table with their types already resolved - "
+                + "an int port and a bool flag, not strings. Nothing in ServerOptions or in the code consuming it "
+                + "refers to TOML, which is the entire point of registering it this way.");
 
         IConfiguration configuration = new ConfigurationBuilder()
             .AddTomlFile(Path.Combine(AppContext.BaseDirectory, "Data", "settings.toml"))
@@ -51,7 +63,8 @@ public static class OptionsBinding
         using var provider = services.BuildServiceProvider();
         var options = provider.GetRequiredService<IOptions<ServerOptions>>().Value;
 
-        Console.WriteLine($"ServerOptions: {options.Host}:{options.Port} (tls: {options.Tls})");
+        Console.WriteLine($"  ServerOptions: {options.Host}:{options.Port} (tls: {options.Tls})"
+            + "  (bound from the [server] table with types resolved once at startup - the consuming code never mentions TOML)");
 
         Console.WriteLine();
     }
