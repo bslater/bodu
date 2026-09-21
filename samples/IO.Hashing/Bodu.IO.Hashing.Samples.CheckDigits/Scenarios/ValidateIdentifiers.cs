@@ -21,7 +21,18 @@ public static class ValidateIdentifiers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- IsValid across identifier domains ---");
+        SampleConsole.Scenario(
+            "IsValid across identifier domains",
+            what: "Validates a known-good identifier from six schemes - IBAN, ISBN-10, ISBN-13, EAN-13, a Luhn " +
+                  "card number and an ABA routing number - then alters exactly one digit in each and validates again.",
+            why: "A check digit is arithmetic the issuer folded into the identifier so a recipient can reject a " +
+                 "mistyped one before it reaches a system that would act on it. Validating locally turns a failed " +
+                 "payment, a wrong book or a misrouted transfer into an input-validation error - free, instant, " +
+                 "and with no lookup. Each scheme uses different arithmetic, which is why one IsValid per domain " +
+                 "exists rather than a single generic check.",
+            expect: "Every genuine identifier validates and every single-digit alteration is rejected. Detecting " +
+                    "any single wrong digit is the weakest guarantee all six schemes make - the next scenario " +
+                    "shows where they start to differ.");
 
         // (scheme, example, validator) - all examples are well-known published test values.
         var rows = new (string Scheme, string Value, Func<string, bool> IsValid)[]
@@ -41,7 +52,7 @@ public static class ValidateIdentifiers
             corrupted[4] = corrupted[4] == '9' ? '0' : (char)(corrupted[4] + 1);
             var typo = new string(corrupted);
 
-            Console.WriteLine($"  {scheme}: '{value}' -> {isValid(value)},  typo '{typo}' -> {isValid(typo)}");
+            Console.WriteLine($"  {scheme}: \u0027{value}\u0027 -> {isValid(value)},  typo \u0027{typo}\u0027 -> {isValid(typo)}  (expected True then False - one altered digit, caught locally without any lookup)");
         }
 
         Console.WriteLine();
