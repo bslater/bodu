@@ -12,7 +12,8 @@ fixed (RFC/NIST test-vector material where applicable) and digests/ciphertext/ke
 lowercase hex, so output is reproducible. The Merkle sample reproduces the RFC 6962 appendix D
 vectors byte for byte, so its roots can be checked against the RFC by eye. Where post-quantum key generation or encapsulation
 draws randomness, those scenarios print only deterministic facts (agreement/verification
-booleans and byte sizes). The `CustomHash.Test` project runs with the library test suites in CI.
+booleans and byte sizes) — and the HPKE sample does the same, because its ephemeral key is
+generated fresh inside every setup by design. The `CustomHash.Test` project runs with the library test suites in CI.
 
 ## Sample → pattern → package matrix
 
@@ -23,6 +24,7 @@ booleans and byte sizes). The `CustomHash.Test` project runs with the library te
 | `Bodu.Security.Cryptography.Samples.MerkleTrees` | The RFC 6962 Merkle-tree family — roots and audit paths with the leaf/node domain separation, the length-bound root (`BindRoot` / `VerifyInclusionBound`) that closes the tree-size ambiguity, append-only consistency proofs, the blocked/streaming/async surface with `MerkleBlockComputation`, write-time accumulation via `MerkleBlockAccumulator`, the `fanOut` and `maxDegreeOfParallelism` knobs (including the `NotSupportedException` on proofs for a non-binary tree), and the `MerkleTreeDiagnostics` trace | `Bodu.Security.Cryptography` |
 | `Bodu.Security.Cryptography.Samples.AsymmetricKeys` | X25519 key agreement (RFC 7748 vectors), Ed25519 sign/verify with tamper rejection, ML-KEM-512/768/1024 encapsulation/decapsulation, and ML-DSA-44/65/87 sign/verify | `Bodu.Security.Cryptography` |
 | `Bodu.Security.Cryptography.Samples.CipherModesAndPadding` | The layer beneath `SymmetricAlgorithm.Mode` — the seven `IPaddingStrategy` implementations with their actual trailer bytes and which can recover the original length, the confidentiality mode transforms driven directly over an `IBlockCipher` (with ECB shown leaking identical blocks), and the specialist modes: ciphertext stealing, XTS with per-sector tweaks, and CCM/SIV/GCM-SIV with a measurement of what nonce-misuse resistance buys | `Bodu.Security.Cryptography` |
+| `Bodu.Security.Cryptography.Samples.HybridEncryption` | RFC 9180 HPKE — the single-shot `Hpke.Seal` / `Open` pair, all four establishment modes (base, PSK, auth, auth-PSK) with each mode's extra input shown to be authenticated and the modes shown not to be interchangeable, the multi-message `HpkeSender` / `HpkeReceiver` contexts (sequence-bound, replay- and reorder-detecting), and the `HpkeSuite` surface with secret export including the export-only AEAD | `Bodu.Security.Cryptography` |
 | `Bodu.Security.Cryptography.Samples.CustomHash` (+ `.Test`) | A consumer-authored `AdditiveDigest` subclassing the `BlockHashAlgorithm` base and composing identically to the built-ins; the test project derives the shared `BlockHashAlgorithmTests<AdditiveDigestTests, AdditiveDigest, AdditiveDigest.Variant>` contract base with a `HashAlgorithmSpecification` and known-answer rows | `Bodu.Security.Cryptography` |
 
 Each sample project has its own README with the four-part per-scenario breakdown (Intent /
