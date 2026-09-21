@@ -31,17 +31,18 @@ preserved.
 **What to expect.**
 
 ```text
---- Explicit-scale Money: a 6-dp share price ---
-Plain Money (settles to 2 dp) : USD 145.68  (MinorUnits = 2)
-Unit-price Money (6 dp)       : USD 145.678912  (MinorUnits = 6)
-Same via settlement route     : USD 145.678912  (equal: True)
-Plain Money JSON              : {"amount":145.68,"currency":"USD"}
-Unit-price JSON               : {"amount":145.678912,"currency":"USD","scale":6}
-Deserialized unit price       : USD 145.678912  (MinorUnits = 6)
-Trailing zeros preserved      : {"amount":12.5,"currency":"USD","scale":6} -> USD 12.500000
-Rescale(2) settles            : USD 145.68  (MinorUnits = 2)
-TrimScale() drops zero scale  : USD 12.50  (MinorUnits = 2)
-Compact form (scale kept)     : "145.678912 USD" -> USD 145.678912  (MinorUnits = 6)
+--- Explicit-scale Money - a six-decimal share price ---
+
+  Plain Money (settles to 2 dp) : USD 145.68  (MinorUnits = 2)
+  Unit-price Money (6 dp)       : USD 145.678912  (MinorUnits = 6)
+  Same via settlement route     : USD 145.678912  (equal: True)
+  Plain Money JSON              : {"amount":145.68,"currency":"USD"}
+  Unit-price JSON               : {"amount":145.678912,"currency":"USD","scale":6}
+  Deserialized unit price       : USD 145.678912  (MinorUnits = 6)
+  Trailing zeros preserved      : {"amount":12.5,"currency":"USD","scale":6} -> USD 12.500000
+  Rescale(2) settles            : USD 145.68  (MinorUnits = 2)
+  TrimScale() drops zero scale  : USD 12.50  (MinorUnits = 2)
+  Compact form (scale kept)     : "145.678912 USD" -> USD 145.678912  (MinorUnits = 6)
 ```
 
 The `"scale"` property appears **only** when a value's precision differs from its currency's
@@ -72,12 +73,13 @@ currency's minor units with a single `RoundToMoney` call.
 **What to expect.**
 
 ```text
---- CalculatedMoney: unrounded unit price on the wire ---
+--- CalculatedMoney - carrying an unrounded unit price ---
+
 Unit price (unrounded) : 0.0325125 USD
-Serialized             : {"amount":0.0325125,"currency":"USD"}
+  Serialized             : {"amount":0.0325125,"currency":"USD"}
 Deserialized           : 0.0325125 USD
 x 40,000 units (unrounded): 1300.5000000 USD
-Settled line total     : USD 1300.50
+  Settled line total     : USD 1300.50
 ```
 
 `CalculatedMoney` serializes as the same `{"amount","currency"}` object as `Money`, but without a
@@ -101,7 +103,8 @@ the array, and computes each settled position as `unitPrice × shares` rounded o
 **What to expect.**
 
 ```text
---- Price-list document: 6-dp prices inside a POCO ---
+--- A price list on the wire - wide-scale amounts inside a document ---
+
 [
   {
     "Ticker": "ACME",
@@ -112,9 +115,26 @@ the array, and computes each settled position as `unitPrice × shares` rounded o
       "scale": 6
     }
   },
-  ...
+  {
+    "Ticker": "GLOBEX",
+    "Shares": 800,
+    "UnitPrice": {
+      "amount": 12.500000,
+      "currency": "USD",
+      "scale": 6
+    }
+  },
+  {
+    "Ticker": "INITECH",
+    "Shares": 3400,
+    "UnitPrice": {
+      "amount": 7.049999,
+      "currency": "USD",
+      "scale": 6
+    }
+  }
 ]
-Settled positions (unit price kept at 6 dp, position settled to 2 dp):
+  Settled positions (unit price kept at 6 dp, position settled to 2 dp):
   ACME      1,250 @ USD 145.678912   = USD 182098.64
   GLOBEX      800 @ USD 12.500000    = USD 10000.00
   INITECH   3,400 @ USD 7.049999     = USD 23970.00
@@ -134,6 +154,7 @@ to cents.
 ```text
 Bodu.Financial.Samples.UnitPricing/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/ExplicitScaleMoney.cs
   Scenarios/CalculatedUnitPrice.cs
   Scenarios/PriceListDocument.cs

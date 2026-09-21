@@ -30,7 +30,17 @@ public static class PriceListDocument
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Price-list document: 6-dp prices inside a POCO ---");
+        SampleConsole.Scenario(
+            "A price list on the wire - wide-scale amounts inside a document",
+            what: "Serializes a price list whose amounts carry six decimals, reads it back, and checks the scale "
+                + "survived.",
+            why: "A wide-scale price is only useful if it survives the boundary it travels across. A serializer "
+                + "that normalizes to the currency's minor units on write, or that parses into a two-decimal "
+                + "amount on read, silently turns an exact supplier price into a rounded one - and the loss "
+                + "happens in the layer nobody looks at. Round-tripping the scale is therefore part of the "
+                + "contract rather than an implementation detail.",
+            expect: "Every price comes back with the scale it was written at, so the document is a faithful "
+                + "record of what the supplier quoted rather than a rounded summary of it.");
 
         // Each quoted price is minted directly at six places via the explicit-scale factory.
         Money Price(decimal quoted) => Money.FromExplicitScale(quoted, CurrencyCode.USD, 6);
@@ -49,7 +59,7 @@ public static class PriceListDocument
 
         Holding[] restored = JsonSerializer.Deserialize<Holding[]>(json, options)!;
 
-        Console.WriteLine("Settled positions (unit price kept at 6 dp, position settled to 2 dp):");
+        Console.WriteLine("  Settled positions (unit price kept at 6 dp, position settled to 2 dp):");
         foreach (Holding holding in restored)
         {
             // Multiply the exact per-share price by the share count without intermediate rounding, then settle once.
