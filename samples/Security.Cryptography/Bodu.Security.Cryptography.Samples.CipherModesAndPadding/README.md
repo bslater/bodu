@@ -21,6 +21,11 @@ For NuGet consumers:
 dotnet add package Bodu.Security.Cryptography
 ```
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — PaddingStrategies
 
 **Intent.** Show each padding scheme's actual bytes side by side, and make the two things that bite callers
@@ -241,6 +246,7 @@ same thing for the same reason.
 ```text
 Bodu.Security.Cryptography.Samples.CipherModesAndPadding/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect banner every scenario prints through
   Hex.cs                              # hex formatting, block grouping, fill
   Scenarios/PaddingStrategies.cs
   Scenarios/ModeTransforms.cs

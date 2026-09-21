@@ -25,6 +25,11 @@ the chaining state and a public parameterless constructor. The base class drives
 alignment, and final-block padding orchestration, so the derived type never re-implements the streaming
 plumbing that `HashAlgorithm` consumers rely on.
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — ImplementAndHash
 
 **Intent.** Exercise the custom digest the way any consumer would: construct it and hash fixed inputs
@@ -108,6 +113,7 @@ sample, and runs in the default BVT tier.
 ```text
 Bodu.Security.Cryptography.Samples.CustomHash/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect banner every scenario prints through
   AdditiveDigest.cs                 # the BlockHashAlgorithm implementation
   Scenarios/ImplementAndHash.cs
   Scenarios/BesideTheBuiltIns.cs

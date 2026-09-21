@@ -19,6 +19,11 @@ For NuGet consumers:
 dotnet add package Bodu.Security.Cryptography
 ```
 
+Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
+records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+one without opening the source. The `text` blocks below show the value lines only; run the sample to see
+the banner above each of them.
+
 ## Scenario 1 — Commitments
 
 **Intent.** Show the core commitment: one root hash stands for a whole list, and a logarithmic audit path proves
@@ -44,16 +49,16 @@ throwing:
   HashLeaf(e[0]): 720ea60b...
   SHA256(e[0])  : 4f92ec18... (differs - the 0x00 leaf prefix)
   HashNode pair : 1ba430ca... (the 0x01 node prefix)
-  empty root    : e3b0c442...
+  empty root    : e3b0c442...  (the SHA-256 of the empty string, as the RFC specifies)
   1-entry root  : 720ea60b... == HashLeaf(e[0]): True
   path for e[3] : 3 steps (56439159..., b8cd573e..., 657f1dad...)
-  verify e[3]   : True
-  tampered entry: False
-  wrong index   : False
-  by leaf hash  : True
-  short root    : False
-  path too long : False
-  index >= size : False
+  verify e[3]   : True  (expected True - the three steps fold the entry back to the published root)
+  tampered entry: False  (expected False - one flipped bit in the entry changes its leaf hash)
+  wrong index   : False  (expected False - the index decides which side each step is hashed on)
+  by leaf hash  : True  (expected True - the same check for a verifier never shown the entry)
+  short root    : False  (expected False - a 16-byte root is rejected, not thrown)
+  path too long : False  (expected False - a fourth step cannot belong to a seven-leaf tree)
+  index >= size : False  (expected False - entry 99 is outside the tree)
 ```
 
 The empty root `e3b0c442...` is the SHA-256 of the empty string, exactly as the RFC specifies. Note also that the
@@ -113,29 +118,45 @@ operator quietly rewriting history.
 
 **What it does.** Takes two snapshots of the same log (at 4 entries and at 7), computes the consistency proof over
 the current list plus the earlier size, and verifies it from the two roots alone. It checks the degenerate `n → n`
-case, then forges a log by rewriting entry 1 and appending as normal, and finally tries a reversed size pair, a
-mis-sized proof step, and the leaf-hash overload.
+case, then rewrites entry 1 — *inside* the published snapshot — and appends as normal; then rewrites entry 5 —
+*after* the snapshot — for contrast. It finishes with a reversed size pair, a mis-sized proof step, and the
+leaf-hash overload.
 
 **What to expect.** The genuine extension verifies from the two signed roots, with the auditor never seeing an
-entry. The forged log's root is a perfectly valid Merkle root — it just is not an extension of what was published,
-so the proof fails:
+entry. Rewriting entry 1 fails: the forged log's root is a perfectly valid Merkle root, but the proof step is
+unchanged (entries 4–6 were not touched), so the verifier still folds the old root it holds into `e8da82b2…` —
+which is not the root being claimed. Rewriting entry 5 still verifies, and that is the guarantee working as
+defined rather than a hole: a 4 → 7 proof attests only that the first four entries are unchanged and in order.
+Catching a later amendment needs an auditor holding a signed root at size 7, which is why auditors keep every root
+they are given.
 
 ```text
-  root @ 4      : b41a66fe...
-  root @ 7      : e8da82b2...
-  proof 4 -> 7  : 1 step (657f1dad...)
-  verify 4 -> 7 : True
-  verify 7 -> 7 : True
-  forged root @7: 796a98a6...
-  forged proof  : False (history was rewritten)
-  verify 7 -> 4 : False (sizes out of order)
-  mis-sized step: False
-  from leaf hashes: identical proof: True
+  root @ 4       : b41a66fe...  (the snapshot the auditor already holds, signed)
+  root @ 7       : e8da82b2...  (what the log publishes today)
+  proof 4 -> 7   : 1 step (657f1dad...) - the Merkle head of entries 4..6, the only subtree the auditor has not seen
+  verify 4 -> 7  : True  (expected True - H(0x01 || root@4 || step) reproduces root@7)
+  verify 7 -> 7  : True  (expected True - republishing without appending needs an empty proof)
+
+  Rewrite INSIDE the snapshot - entry 1 is backdated, the other six entries left alone:
+    forged root @7 : 796a98a6...  (a valid root over the rewritten log - just not an extension of root @ 4)
+    proof step     : 657f1dad...  (unchanged: entries 4..6 were not touched, so the operator cannot move it)
+    verify 4 -> 7  : False  (expected False - the fold still yields e8da82b2..., which is not the root claimed)
+
+  Rewrite AFTER the snapshot - entry 5 is backdated, entries 0..3 left intact:
+    amended root @7: 868553bb...  (a different root again)
+    verify 4 -> 7  : True  (expected True - the proof commits to entries 0..3 only; a signed root at 7 is what catches this)
+
+  verify 7 -> 4  : False  (expected False - sizes out of order; a log cannot shrink)
+  mis-sized step : False  (expected False - a 16-byte step is rejected, not thrown)
+  from leaf hashes: identical proof: True  (expected True - leaves are all the proof needs)
 ```
 
-A single proof step suffices here because 4 is a power of two: the old tree is already a complete left subtree of
-the new one, so only the right subtree's hash is needed. The last line matters operationally — an operator keeping
-a running list of leaf hashes need not retain the entries to answer an auditor.
+A single proof step suffices here because 4 is a power of two and exactly RFC 6962's split point for 7: the old
+tree is already the complete left subtree of the new one, so `MTH(7) = H(0x01 ‖ root@4 ‖ MTH(e4..e6))` and only
+that right-hand hash is missing. It is also why the rewrite is unforgeable — the old root is a signed value the
+operator does not control, so producing a step that folds with it into the forged root would be a second-preimage
+break on SHA-256. The last line matters operationally — an operator keeping a running list of leaf hashes need
+not retain the entries to answer an auditor.
 
 **APIs demonstrated.** `.ConsistencyProof`, `.ConsistencyProofOfLeafHashes`, `.VerifyConsistency`, `.ComputeRoot`,
 `.HashLeaf`.
@@ -175,9 +196,9 @@ during verification:
   from leaves   : 9e8b5c08... == in-memory: True
   bound root    : f9e631f9...
   challenge     : block 2 (1024 bytes at offset 2048), path of 2 steps
-  answer        : True
+  answer        : True  (expected True - the prover still holds block 2)
   wrong block   : False (one flipped byte)
-  wrong length  : False
+  wrong length  : False  (expected False - the bound root names a 3372-byte object and no other)
 ```
 
 The `Stream` overloads are a single pass: they never hold the whole input, only the O(log n) spine of pending
@@ -305,8 +326,8 @@ method that returns `true` unconditionally:
     level 1 (node): [0] b8cd573e..., [1] 3e956cfc...
     level 2 (node): [0] b41a66fe...
   Root node     : level 2, index 0, 2 children
-  matches return: True
-  Validate      : True (0 errors)
+  matches return: True  (expected True - the recorded root is the value ComputeRoot returned)
+  Validate      : True (0 errors)  (expected True - every internal node re-derives from its recorded children)
   Validate(SHA512): False (3 mismatch(es) - the nodes were folded with SHA-256)
 ```
 
@@ -318,7 +339,7 @@ them:
   WriteTo(Console.Out):
     ════════════════════════════════════════════════════════════════════
       Merkle Tree Diagnostic
-      Levels: 3    Nodes: 7    Root: B41A66FE…234BAA
+      Levels: 3    Nodes: 7    Root: B41A66FE6C9B9DB1143A942CDFE56559B0C54A58619564C3517BACABDE234BAA
     ════════════════════════════════════════════════════════════════════
       Level 0  —  4 leaf nodes
       ────────────────────────────────────────────────────────────────────
@@ -340,6 +361,11 @@ not retained. A trace therefore proves the fold's internal consistency, not that
 input you think. Recording also costs memory proportional to the node count, so it is a diagnostic aid rather than
 something to leave enabled in production.
 
+The trace renders with box-drawing and arrow glyphs, so `Program` asks for UTF-8 output before writing
+anything: a Windows console left on a legacy code page maps `←` onto `0x1B` (ESC) and then swallows the
+text that follows it as an escape sequence. Set `Console.OutputEncoding = Encoding.UTF8` the same way if
+you call `WriteTo` from your own program on Windows.
+
 **APIs demonstrated.** `MerkleTreeDiagnostics()`, `.GetLevelCount`, `.GetLevel`, `.GetAllNodes`, `.Root`,
 `.Validate`, `.WriteTo`, `MerkleTreeDiagnostics.Node` (`.Level` / `.Index` / `.IsLeaf` / `.Hash` /
 `.ChildHashes`), and the `diagnostics` parameter on `.ComputeRoot`.
@@ -349,6 +375,7 @@ something to leave enabled in production.
 ```text
 Bodu.Security.Cryptography.Samples.MerkleTrees/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect banner every scenario prints through
   Hex.cs                              # lowercase-hex formatting, full and abbreviated
   SampleLog.cs                        # the fixed corpus and the shape conversions the API needs
   Scenarios/Commitments.cs
