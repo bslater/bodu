@@ -22,7 +22,25 @@ public static class RoundingTiers
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Three-tier rounding: per-step vs deferred vs exact ---");
+        SampleConsole.Scenario(
+            "Three-tier rounding - per-step, deferred, and exact",
+            what: "Compounds the same balance monthly for a year three ways: with Money rounding after every "
+                + "multiplication, with CalculatedMoney deferring to a single settlement, and with an exact "
+                + "rational factor applied in one step.",
+            why: "This is the central design idea of the money types, and the reason there are three of them "
+                + "rather than one. Rounding after every operation is correct for a ledger, where each entry is "
+                + "a real settled amount someone can be paid - but it is wrong for a calculation, because the "
+                + "error compounds along with the balance. Deferring rounding to a single settlement is correct "
+                + "for the calculation and wrong for the ledger, since intermediate values are not amounts "
+                + "anybody holds. Exact rational arithmetic is for when the factor itself must not be "
+                + "approximated: a monthly rate of 5 percent over 12 is a repeating decimal, so even before "
+                + "rounding, a decimal factor has already lost something. Having all three as distinct types "
+                + "means the choice is made once, visibly, rather than being an accident of where a Round call "
+                + "happened to land.",
+            expect: "Three different totals from the same input and the same nominal rate. The differences are "
+                + "small and that is exactly the hazard - they are too small to notice in a test and large "
+                + "enough to matter over a portfolio, which is why the type system rather than a convention "
+                + "has to carry the decision.");
 
         // 5% p.a. compounded monthly on 10,000.00. The true monthly factor is 1205/1200; as a
         // decimal it is already truncated (1.00416666...), and that tiny error is separate from
@@ -52,11 +70,13 @@ public static class RoundingTiers
             BigInteger.Pow(1200, 12));
         Money<USD> exact = principal.MultiplyExact(annualFactor);
 
-        Console.WriteLine($"Per-step  (Money<USD>)      : {perStep}");
-        Console.WriteLine($"Deferred  (CalculatedMoney) : {settled}");
-        Console.WriteLine($"Exact     (Fraction)        : {exact}");
-        Console.WriteLine("Pick the tier by contract: settle ledger entries per-step, run multi-step");
-        Console.WriteLine("calculations deferred, and use fractions when the factor itself must be exact.");
+        Console.WriteLine($"  Per-step  (Money<USD>)      : {perStep}");
+        Console.WriteLine($"  Deferred  (CalculatedMoney) : {settled}");
+        Console.WriteLine($"  Exact     (Fraction)        : {exact}");
+        Console.WriteLine("  (two cents apart on one balance over one year - too small to notice in a test, large enough to matter over a portfolio, which is why the type carries the decision)");
+
+        Console.WriteLine("  Pick the tier by contract: settle ledger entries per-step, run multi-step");
+        Console.WriteLine("  calculations deferred, and use fractions when the factor itself must be exact.");
         Console.WriteLine();
     }
 }

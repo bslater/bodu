@@ -26,10 +26,15 @@ exactly — and this scenario makes the difference visible on one calculation.
 
 **What to expect.**
 
-```
-Per-step  (Money<USD>)      : USD 10,511.64
-Deferred  (CalculatedMoney) : USD 10,511.62
-Exact     (Fraction)        : USD 10,511.62
+```text
+--- Three-tier rounding - per-step, deferred, and exact ---
+
+  Per-step  (Money<USD>)      : USD 10,511.64
+  Deferred  (CalculatedMoney) : USD 10,511.62
+  Exact     (Fraction)        : USD 10,511.62
+  (two cents apart on one balance over one year - too small to notice in a test, large enough to matter over a portfolio, which is why the type carries the decision)
+  Pick the tier by contract: settle ledger entries per-step, run multi-step
+  calculations deferred, and use fractions when the factor itself must be exact.
 ```
 
 The per-step total is 2 cents higher — that drift is the accumulated per-operation rounding,
@@ -55,11 +60,14 @@ representation in USD's two minor units), and materializes that one deferred val
 
 **What to expect.**
 
-```
+```text
+--- CalculatedMoney - deferring rounding until settlement ---
+
 Bill total (unrounded): 26.93 USD
 Split 2 ways (unrounded): 13.465 USD
-Settle (banker's)     : USD 13.46
-Settle (away-from-0)  : USD 13.47
+  Settle (banker's)     : USD 13.46
+  Settle (away-from-0)  : USD 13.47
+  13.465 is a half-cent midpoint: banker's takes the even neighbour, away-from-zero rounds up.
 ```
 
 The intermediate 13.465 is carried at full precision — a `Money<USD>` would have rounded it away
@@ -85,11 +93,13 @@ the cross-currency compile error.
 
 **What to expect.**
 
-```
-Typed total : USD 22.00  (Money<USD>, 2 minor units)
-Runtime     : USD 22.00  (Money, Code=USD)
-Cast back   : USD 22.00
-TryAs<JPY>  : false - the runtime value is USD, not JPY
+```text
+--- Typed and runtime money, and the bridges between them ---
+
+  Typed total : USD 22.00  (Money<USD>, 2 minor units)
+  Runtime     : USD 22.00  (Money, Code=USD)
+  Cast back   : USD 22.00
+  TryAs<JPY>  : false - the runtime value is USD, not JPY
 ```
 
 The value is identical through every bridge — widening is lossless; only the *static* type
@@ -111,11 +121,13 @@ declared by the CHF currency tag.
 
 **What to expect.**
 
-```
-USD 100.00 into 3     : USD 33.34, USD 33.33, USD 33.33  (sum USD 100.00)
-USD 100.00 at 50/30/20: USD 50.00, USD 30.00, USD 20.00
-JPY 1,000 into 3    : JPY 334, JPY 333, JPY 333
-CHF 7.02 cash      : CHF 7.00  (CHF cash increment 0.05)
+```text
+--- Allocation - splits that always sum back, and cash rounding ---
+
+  USD 100.00 into 3     : USD 33.34, USD 33.33, USD 33.33  (sum USD 100.00)
+  USD 100.00 at 50/30/20: USD 50.00, USD 30.00, USD 20.00
+  JPY 1,000 into 3    : JPY 334, JPY 333, JPY 333
+  CHF 7.02 cash      : CHF 7.00  (CHF cash increment 0.05)
 ```
 
 The extra cent lands on the first part (largest remainder first), the parts differ by at most
@@ -140,18 +152,20 @@ reusable `MoneyFormatter` fluently; round-trips the `"R"` invariant form through
 
 **What to expect.**
 
-```
-G  (default)     : USD 1,234.56
-C  (currency)    : $1,234.56
-L  (long name)   : 1,234.56 US Dollar
-N  (number only) : 1,234.56
-C0 (0 decimals)  : $1,235
-~C (elide match) : 1,234.56
-Formatter        : 1,234.56 US Dollar
-R round-trip     : "USD 1234.56" -> USD 1,234.56 (equal: True)
-StrictIso        : "USD 99.95" -> USD 99.95
-LenientImport    : "  1234.56 usd " -> USD 1,234.56
-TryParse         : "not money" -> false
+```text
+--- Formatting and parsing money ---
+
+  G  (default)     : USD 1,234.56
+  C  (currency)    : $1,234.56
+  L  (long name)   : 1,234.56 US Dollar
+  N  (number only) : 1,234.56
+  C0 (0 decimals)  : $1,235
+  ~C (elide match) : 1,234.56
+  Formatter        : 1,234.56 US Dollar
+  R round-trip     : "USD 1234.56" -> USD 1,234.56 (equal: True)
+  StrictIso        : "USD 99.95" -> USD 99.95
+  LenientImport    : "  1234.56 usd " -> USD 1,234.56
+  TryParse         : "not money" -> false
 ```
 
 `~C` prints no `$` because the en-US region currency *is* USD — the designator is elided exactly
@@ -177,17 +191,19 @@ to AUD twice: once through a simple `(from, to) => rate` delegate, and once thro
 
 **What to expect.**
 
-```
-Balances:
-  AUD 1,450.00
-  EUR 89.10
-  USD 370.75
-USD balance      : USD 370.75
-Total (delegate) : AUD 2,159.97
-Total (audited)  : AUD 2,159.97
-  AUD    1450.00 x 1 (identity)         = 1450.00
-  EUR      89.10 x 1.6310 [Treasury]    = 145.322100
-  USD     370.75 x 1.5230 [Treasury]    = 564.652250
+```text
+--- MoneyBag - holding several currencies without converting them ---
+
+  Balances:
+    AUD 1,450.00
+    EUR 89.10
+    USD 370.75
+  USD balance      : USD 370.75
+  Total (delegate) : AUD 2,159.97
+  Total (audited)  : AUD 2,159.97
+    AUD    1450.00 x 1 (identity)         = 1450.00
+    EUR      89.10 x 1.6310 [Treasury]    = 145.322100
+    USD     370.75 x 1.5230 [Treasury]    = 564.652250
 ```
 
 Balances iterate in stable ISO order. The two totals agree — the audit changes *explainability*,
@@ -219,12 +235,14 @@ round-trips the strict shape, and deserializes a lowercase-ISO document under `L
 
 **What to expect.**
 
-```
-Strict  : {"amount":19.99,"currency":"USD"} -> USD 19.99
-Compact : "19.99 USD"
-Compact : {"EUR":12.34,"USD":19.99}  (MoneyBag)
-Lenient : lowercase "usd" accepted -> USD 12.34
-See also: Bodu.Financial.Samples.JsonSerialization for the full Financial JSON surface.
+```text
+--- JSON policies - Strict, Lenient, and Compact ---
+
+  Strict  : {"amount":19.99,"currency":"USD"} -> USD 19.99
+  Compact : "19.99 USD"
+  Compact : {"EUR":12.34,"USD":19.99}  (MoneyBag)
+  Lenient : lowercase "usd" accepted -> USD 12.34
+  See also: Bodu.Financial.Samples.JsonSerialization for the full Financial JSON surface.
 ```
 
 Strict is the canonical object shape for persistence and audit (duplicate properties and
@@ -235,6 +253,21 @@ for external feeds — not a storage format.
 **APIs demonstrated.** `JsonSerializerOptions.AddFinancialJsonConverters(FinancialJsonPolicy)`,
 `FinancialJsonPolicy.Strict` / `Compact` / `Lenient`, the `Money<T>` / `Money` / `MoneyBag`
 converters.
+
+## Layout
+
+```text
+Bodu.Financial.Samples.MoneyBasics/
+  Program.cs                              # runs the scenarios in order
+  SampleConsole.cs                        # the What / Why / Expect scenario banner
+  Scenarios/RoundingTiers.cs
+  Scenarios/CalculatedMoneyScenario.cs
+  Scenarios/TypedRuntimeBridges.cs
+  Scenarios/Allocation.cs
+  Scenarios/FormattingParsing.cs
+  Scenarios/MoneyBagLedger.cs
+  Scenarios/JsonPolicies.cs
+```
 
 ## NuGet equivalent
 
