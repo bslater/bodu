@@ -20,7 +20,25 @@ public static class VixieSemantics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- The day-of-month / day-of-week union rule ---");
+        SampleConsole.Scenario(
+            "Vixie semantics - the behaviours that differ between cron implementations",
+            what: "Shows the day-of-month and day-of-week fields taking a union when both are restricted, the "
+                + "star-versus-range branch that makes '*/2' and '1-31/2' select different days despite denoting "
+                + "the same set, the absence of the union when only one day field is restricted, a step wider "
+                + "than its own range selecting only the range start, and Sunday being accepted as both 0 and 7.",
+            why: "These are the rules that make cron dialects incompatible, and the union rule is the one that "
+                + "surprises nearly everyone: when both day fields are restricted they are ORed rather than "
+                + "ANDed, so an expression meant to say 'the 13th, but only on Fridays' actually says 'the 13th, "
+                + "and also every Friday'. Getting this wrong does not throw - it produces a job that runs far "
+                + "more often than intended. The other three are smaller but equally silent: a step wider than "
+                + "its range is legal and selects one value, and Sunday has two spellings because different "
+                + "systems chose differently and crontabs exist using both.",
+            expect: "The union case produces noticeably more occurrences than an intersection would, which is "
+                + "the whole hazard. The '*/2' pair is the one with no rationalization available - it is "
+                + "reproduced because cronie does it, and the scenario cites the line of src/entry.c "
+                + "responsible. Restricting only one day field gives the intersection-like behaviour people "
+                + "expect, so the two cases have to be read differently. Both Sunday spellings select the same "
+                + "days.");
         Console.WriteLine();
 
         // When BOTH day fields are restricted, Vixie takes their UNION -- an instant matches if

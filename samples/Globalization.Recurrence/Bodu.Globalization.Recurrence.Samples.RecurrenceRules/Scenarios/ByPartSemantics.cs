@@ -21,7 +21,22 @@ public static class ByPartSemantics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Invalid dates are skipped, never clamped ---");
+        SampleConsole.Scenario(
+            "BY-part semantics - the four rules that surprise people",
+            what: "Shows a monthly rule on day 31 skipping the months that have no 31st, a rule whose parts "
+                + "select the same date twice yielding it once, BYSETPOS indexing the whole frequency period "
+                + "rather than each sub-period, and a BY filter leaving the interval anchor alone.",
+            why: "These are the four places where an intuitive reading of RRULE is wrong, and each of them is a "
+                + "real bug when guessed at. Skipping rather than clamping is the one that bites hardest: a "
+                + "payroll rule on day 31 that clamps to the 28th quietly pays February early, whereas skipping "
+                + "is visible and forces the author to say what they meant. Set semantics matter because "
+                + "overlapping BY parts are common and duplicate occurrences would double-fire a job. BYSETPOS "
+                + "counts within the whole period - so -1 under a monthly rule means the last matching day of "
+                + "the month, not the last of each week - and a BY part filters the dates an interval already "
+                + "chose rather than re-anchoring it.",
+            expect: "February and the thirty-day months are simply absent rather than clamped to their last day. "
+                + "The duplicate selection appears once. BYSETPOS picks one date per period rather than one per "
+                + "sub-period, and adding a BY filter does not shift where the interval lands.");
 
         // A monthly rule anchored on the 31st yields only the months that HAVE a 31st. February,
         // April, June, September and November are omitted -- not rolled back to the 28th or 30th.
@@ -38,6 +53,8 @@ public static class ByPartSemantics
         // at a time.
         RecurrenceRule leapDay = RecurrenceRule.Parse("FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=29;COUNT=3");
         Console.WriteLine($"29 February yearly           : {Join(leapDay.GetOccurrences(new DateTime(2024, 1, 1)))}");
+        Console.WriteLine("  (February and the thirty-day months are absent, not clamped - a payroll rule that clamped would quietly pay February early)");
+
 
         Console.WriteLine();
         Console.WriteLine("--- The occurrence set is a set ---");
@@ -69,6 +86,8 @@ public static class ByPartSemantics
         var onWednesday = new DateTime(2026, 3, 4);  // mid-week
         Console.WriteLine($"BYSETPOS=1 anchored Monday   : {Join(weekly.GetOccurrences(onMonday))}");
         Console.WriteLine($"BYSETPOS=1 anchored Wednesday: {Join(weekly.GetOccurrences(onWednesday))}");
+        Console.WriteLine("  (BYSETPOS counts within the whole frequency period, so -1 under a monthly rule is the last matching day of the month, not of each week)");
+
 
         // The Wednesday anchor does not promote Wednesday to position 1: the first period's
         // position 1 is still its Monday, which simply falls before the start and is dropped.
@@ -85,6 +104,8 @@ public static class ByPartSemantics
         // is a multiple of 14, which is the proof that the grid was never restarted.
         DateTime[] dates = [.. fortnightly.GetOccurrences(new DateTime(2026, 9, 27))];
         Console.WriteLine($"gaps in days                 : {string.Join(", ", dates.Zip(dates.Skip(1), (a, b) => (b - a).Days))}");
+        Console.WriteLine("  (the 14-day gaps survive the filter - a BY part removes dates the interval chose, it never re-anchors where the interval lands)");
+
 
         Console.WriteLine();
     }

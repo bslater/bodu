@@ -20,7 +20,22 @@ public static class WeekNumbering
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- WKST shifts a weekly interval ---");
+        SampleConsole.Scenario(
+            "Week numbering - WKST and BYWEEKNO",
+            what: "Runs the same fortnightly rule under two week-start settings, resolves a BYWEEKNO rule whose "
+                + "week straddles the year boundary, shows BYWEEKNO honouring WKST too, and asks for week 53 "
+                + "across several years.",
+            why: "WKST is the part most easily missed, because Monday is the default and a default is omitted "
+                + "from canonical text - so two rules that select different dates print almost identically. It "
+                + "matters whenever an interval greater than one is combined with BYDAY, since where the week "
+                + "boundary falls decides which occurrences share a week and therefore which weeks the interval "
+                + "skips. BYWEEKNO is the other half: ISO weeks are defined by where the majority of the week "
+                + "falls, so week 1 can begin in the previous December and week 53 exists only in some years. A "
+                + "library that invented a 53rd week every year, or silently dropped the request, would be wrong "
+                + "in a way that only shows up occasionally.",
+            expect: "The two week-start settings produce different dates from otherwise identical rules - that "
+                + "divergence is the entire reason WKST exists. The BYWEEKNO occurrences cross a calendar year "
+                + "boundary, and week 53 resolves only in the years that actually have one.");
 
         // With INTERVAL=2 the week boundary decides which side of the fortnight a date lands on.
         // Under WKST=MO the Sunday closes the current week; under WKST=SU it opens the next one,
@@ -65,6 +80,8 @@ public static class WeekNumbering
         // Negative week numbers count back from the end of the year: -1 is the last numbered week.
         RecurrenceRule lastWeek = RecurrenceRule.Parse("FREQ=YEARLY;BYWEEKNO=-1;BYDAY=MO;COUNT=3");
         Console.WriteLine($"BYWEEKNO=-1;BYDAY=MO     : {Join(lastWeek.GetOccurrences(new DateTime(2026, 1, 1)))}");
+        Console.WriteLine("  (week 53 resolves only in the years that have one - inventing it every year, or dropping the request, would be wrong just occasionally enough to ship)");
+
 
         Console.WriteLine();
     }

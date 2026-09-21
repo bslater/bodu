@@ -20,7 +20,22 @@ public static class SecondsAndFormats
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- CronFormat.WithSeconds: the six-field layout ---");
+        SampleConsole.Scenario(
+            "Six-field expressions, format inference, and canonical text",
+            what: "Parses six-field expressions with a leading seconds field, shows the format being inferred "
+                + "from the field count and being stated explicitly, re-emits expressions as canonical text, and "
+                + "compares two differently spelled expressions that select the same instants.",
+            why: "The seconds field is the clearest dialect split in cron: the same text means different things "
+                + "depending on whether the reader expects five fields or six, and an expression read under the "
+                + "wrong assumption is off by a whole field - minutes become seconds and hours become minutes. "
+                + "Inferring from the field count handles the common case, and being able to state the format "
+                + "explicitly handles the case where the input source is known and a wrong field count should be "
+                + "an error rather than a reinterpretation. Equality by schedule rather than by spelling matters "
+                + "for the same reason canonical text does: an operator comparing two config entries cares "
+                + "whether they run at the same times, not whether they are typed the same way.",
+            expect: "The inferred and stated formats agree where both apply. Canonical text normalizes spelling "
+                + "without changing meaning, and two expressions written differently compare equal when they "
+                + "select the same instants.");
         Console.WriteLine("fields: second minute hour day-of-month month day-of-week");
         Console.WriteLine();
 

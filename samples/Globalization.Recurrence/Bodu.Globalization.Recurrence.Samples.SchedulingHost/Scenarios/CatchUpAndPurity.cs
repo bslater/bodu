@@ -20,7 +20,21 @@ public static class CatchUpAndPurity
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Catching up after downtime ---");
+        SampleConsole.Scenario(
+            "Catching up after downtime, and why purity makes it possible",
+            what: "Replays the occurrences a job missed while a host was down by enumerating between the last "
+                + "run and now, then demonstrates that the same query gives the same answer regardless of when "
+                + "it is asked.",
+            why: "Catch-up is the operation that separates a schedule library from a timer. A timer only knows "
+                + "'fire in N seconds' and has no way to answer what it should have done while the process was "
+                + "stopped, so a host built on one either loses those runs or re-fires blindly. Answering it "
+                + "properly requires the schedule to be a pure function of its arguments: if any query consulted "
+                + "the wall clock or the machine timezone, asking about a past window would give a different "
+                + "answer depending on when you asked, and replay would be unreliable. That purity is enforced "
+                + "by a metadata-scan test in this package rather than left as a convention.",
+            expect: "The missed occurrences come back exactly, so a host can decide per job whether to replay "
+                + "them, run the latest only, or skip. The same window queried again gives the same answer, "
+                + "which is the property that makes replay safe to build on.");
 
         // The host supplies both ends of the window. Nothing in the library asks what time it is,
         // so this replay is exactly reproducible -- the same reason the package ships no timer,

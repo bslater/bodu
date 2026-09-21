@@ -20,7 +20,19 @@ public static class SetQueries
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- A term timetable with holidays removed ---");
+        SampleConsole.Scenario(
+            "Querying a set - a term timetable with holidays removed",
+            what: "Builds a weekly timetable, removes the holidays that fall inside it, enumerates the result, "
+                + "and answers next and previous across the removed dates.",
+            why: "This is the shape the set model exists for, and the queries are where the composition has to "
+                + "hold up: asking for the next class after a date that was cancelled must skip it rather than "
+                + "return it, which means exceptions have to apply to the point queries and not only to "
+                + "enumeration. Getting that wrong is a class of bug that enumeration tests do not catch, "
+                + "because the list looks right while a scheduler asking 'what is next' still fires on a "
+                + "removed date.",
+            expect: "The removed dates are absent from the enumeration and are skipped by the point queries "
+                + "too - next from just before a cancelled class returns the one after it, not the cancelled "
+                + "one.");
 
         // A realistic shape: a weekly class, plus a make-up session, minus a public holiday and a
         // mid-term break. The set is the single object a UI or scheduler queries.

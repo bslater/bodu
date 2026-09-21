@@ -31,7 +31,8 @@ weekday schedule six occurrences forward.
 skips the weekend, which is the `1-5` weekday range doing its job:
 
 ```text
---- CronExpression: the five-field Vixie layout ---
+--- CronExpression - the five-field Vixie layout ---
+
 fields: minute hour day-of-month month day-of-week
 
 query instant : 2026-03-10 14:32:00 (Tuesday)
@@ -93,6 +94,19 @@ expands ranges, steps and names into sorted value lists but leaves a whole-range
 different spellings of one schedule render identically and compare equal:
 
 ```text
+--- Six-field expressions, format inference, and canonical text ---
+
+fields: second minute hour day-of-month month day-of-week
+
+query instant : 2026-03-10 14:32:17
+
+*/10 * * * * *   every ten seconds               next: 2026-03-10 14:32:20
+0 * * * * *      at the top of every minute      next: 2026-03-10 14:33:00
+30 * * * * *     at 30 seconds past every minute next: 2026-03-10 14:32:30
+0 0 * * * *      on the hour                     next: 2026-03-10 15:00:00
+15 30 9 * * *    09:30:15 daily                  next: 2026-03-11 09:30:15
+0 0 12 * * MON   Mondays at noon                 next: 2026-03-16 12:00:00
+
 --- Inferring the format, or stating it ---
   '0 12 * * MON'     inferred    -> Standard
   '0 0 12 * * MON'   inferred    -> WithSeconds
@@ -151,7 +165,8 @@ not by the set of days it denotes, so `*/2` and `1-31/2` select different branch
 the same days:
 
 ```text
---- The day-of-month / day-of-week union rule ---
+--- Vixie semantics - the behaviours that differ between cron implementations ---
+
 
 '0 0 1 * MON' -- both day fields restricted, so UNION:
   2026-01-05, 2026-01-12, 2026-01-19, 2026-01-26, 2026-02-01
@@ -159,9 +174,7 @@ the same days:
 
 '*/2' and '1-31/2' denote the same days, but select different branches:
   0 16 */2    * sat -> 2023-05-13, 2023-05-27, 2023-06-03, 2023-06-17
-                       (leading '*' -> unrestricted -> INTERSECTION: odd-numbered Saturdays)
   0 16 1-31/2 * sat -> 2023-05-03, 2023-05-05, 2023-05-06, 2023-05-07
-                       (leading digit -> restricted -> UNION: odd days and Saturdays)
 
   This is not a rationalizable rule -- it is what cronie's src/entry.c does:
       if (ch == '*') e->flags |= DOM_STAR;
@@ -210,7 +223,8 @@ explicitly rather than silently ignored — which matters, because silently drop
 change the schedule rather than reject it:
 
 ```text
---- Valid syntax, unreachable schedule ---
+--- Unreachable schedules and defect-naming parse failures ---
+
   * * 30 2 *     next: (never)
   * * 31 2 *     next: (never)
   * * 31 4 *     next: (never)
@@ -251,6 +265,7 @@ change the schedule rather than reject it:
 ```text
 Bodu.Globalization.Recurrence.Samples.CronExpressions/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/CronBasics.cs
   Scenarios/SecondsAndFormats.cs
   Scenarios/VixieSemantics.cs

@@ -20,7 +20,21 @@ public static class RuleBasics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- RecurrenceRule: parse, inspect, enumerate ---");
+        SampleConsole.Scenario(
+            "RecurrenceRule - parse, inspect, enumerate",
+            what: "Parses an RRULE, reads its parts back as typed properties, enumerates occurrences, shows every "
+                + "BY part round-tripping through the model, compares two WeekDayNum values, and re-emits the "
+                + "rule as canonical text.",
+            why: "RFC 5545 recurrence is the vocabulary every calendar system already speaks, so supporting it "
+                + "means an iCalendar feed, an Outlook export and a scheduling UI all describe repetition the "
+                + "same way. The two properties worth insisting on are that a parsed rule is fully inspectable - "
+                + "otherwise the rule is an opaque string and a UI cannot render it back to a user - and that "
+                + "re-emitting produces canonical text, so a rule can be stored, read, edited and written back "
+                + "without drifting. Canonical also means defaults are omitted, which is why two rules that "
+                + "select different dates can print almost identically.",
+            expect: "Every part that went in comes back out as a typed value rather than as text to re-parse. The "
+                + "canonical form is stable, so a round trip is an identity rather than an approximation - which "
+                + "is what makes storing the text form safe.");
 
         // A rule is pure syntax: it carries no start instant. The series start is supplied per
         // query, which is what keeps the type free of hidden state.
@@ -49,6 +63,8 @@ public static class RuleBasics
 
         // The time of day rides along from the start instant; a date-valued rule never invents one.
         Console.WriteLine($"first      : {Format(rule.GetOccurrences(start).First())}");
+        Console.WriteLine("  (every part read back as a typed value - a rule a UI cannot inspect is a rule it cannot render back to a user)");
+
 
         Console.WriteLine();
         Console.WriteLine("--- Every BY part is readable back ---");
@@ -94,6 +110,8 @@ public static class RuleBasics
         // Equality is by meaning, not by source text: the two spellings above agree.
         RecurrenceRule terse = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=MO,WE,FR");
         Console.WriteLine($"terse == verbose : {terse.Equals(verbose)}");
+        Console.WriteLine("  (canonical text omits defaults, so two rules that select different dates can print almost identically - and the round trip is an identity, not an approximation)");
+
 
         Console.WriteLine();
     }

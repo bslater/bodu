@@ -20,7 +20,22 @@ public static class UnreachableAndDefects
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Valid syntax, unreachable schedule ---");
+        SampleConsole.Scenario(
+            "Unreachable schedules and defect-naming parse failures",
+            what: "Parses expressions that are syntactically valid but can never fire, parses malformed text "
+                + "through TryParse and prints the defect message for each, and validates a block of "
+                + "configuration entries reporting which are usable.",
+            why: "A cron expression has two ways of being wrong and only one of them is a syntax error. '30 4 31 "
+                + "2 *' parses cleanly and describes the 31st of February, so a scheduler that only validates "
+                + "syntax accepts it and then never fires - a silent failure that looks like a working "
+                + "configuration. Detecting unreachability turns that into something an operator can see at "
+                + "deploy time. The defect-naming TryParse overload exists for the same reason: a boolean false "
+                + "tells a configuration validator that something is wrong but not what, which means the error "
+                + "the operator eventually sees has to be written by the caller and is usually worse than the "
+                + "one the parser could have given.",
+            expect: "The unreachable expressions parse but report no occurrence, rather than appearing to work. "
+                + "Each malformed input comes back with a message naming the specific defect and not merely a "
+                + "failure, which is what makes a configuration validator's output actionable.");
 
         // These expressions parse -- every field is in range -- but select a date that does not
         // exist in any year. The engine reports no occurrence instead of searching forever.

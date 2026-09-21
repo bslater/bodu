@@ -30,7 +30,8 @@ rules and `RDATE`s. And where two rules produce the same instant it appears once
 is a set rather than a concatenation:
 
 ```text
---- A set from a single rule ---
+--- Composing a set from rules, dates, and exceptions ---
+
 start        : 2026-01-05 09:00
 rule         : FREQ=WEEKLY;COUNT=6;BYDAY=MO
 occurrences  : 2026-01-05, 2026-01-12, 2026-01-19, 2026-01-26, 2026-02-02, 2026-02-09
@@ -42,7 +43,6 @@ occurrences  : 2026-01-05, 2026-01-08, 2026-01-12, 2026-01-19, 2026-01-21, 2026-
 --- Removing dates (EXDATE) ---
 EXDATEs      : 2026-01-19, 2026-01-21
 occurrences  : 2026-01-05, 2026-01-08, 2026-01-12, 2026-01-26, 2026-02-02, 2026-02-09
-               (the 19th came from the rule, the 21st from an RDATE -- both removed)
 
 --- Several rules at once ---
 rule 1       : FREQ=WEEKLY;COUNT=4;BYDAY=MO
@@ -82,7 +82,8 @@ The parser accepts multi-valued `RDATE`/`EXDATE` lines, which is how files in th
 Equality is by value, so a constructed set equals a parsed one denoting the same schedule:
 
 ```text
---- Rendering a set to an iCalendar property block ---
+--- Round-tripping a set through an iCalendar property block ---
+
 ToString():
   DTSTART:20260302T143000
   RRULE:FREQ=WEEKLY;COUNT=8;BYDAY=MO,WE
@@ -107,7 +108,6 @@ Rules          : 1
 Dates          : 2026-06-15
 ExceptionDates : 2026-06-03, 2026-06-04
 occurrences    : 2026-06-01, 2026-06-02, 2026-06-05, 2026-06-06, 2026-06-07, 2026-06-08, 2026-06-09, 2026-06-10, 2026-06-15
-                 (the 3rd and 4th are excluded; the 15th is added)
 
 --- Equality is by value, not by text ---
 constructed == parsed : True
@@ -146,7 +146,8 @@ composition: the cancelled 2 March is skipped, and the `RDATE` make-up session o
 by `Next` just like a rule-produced occurrence:
 
 ```text
---- A term timetable with holidays removed ---
+--- Querying a set - a term timetable with holidays removed ---
+
 start        : 2026-02-02 10:00
 rule         : FREQ=WEEKLY;UNTIL=20260427T100000;BYDAY=MO
 make-up      : 2026-03-07
@@ -162,7 +163,6 @@ all sessions : 2026-02-02, 2026-02-09, 2026-02-16, 2026-02-23, 2026-03-07, 2026-
 --- Point queries skip exception dates ---
 query        : 2026-02-24 10:00
 next         : 2026-03-07 10:00
-               (2026-03-02 is an EXDATE, so it is skipped)
 query        : 2026-03-05 10:00
 next         : 2026-03-07 10:00 (the RDATE make-up session)
 
@@ -187,6 +187,7 @@ previous     : 2026-04-27 10:00 (the last session of term)
 ```text
 Bodu.Globalization.Recurrence.Samples.RecurrenceSets/
   Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
   Scenarios/SetComposition.cs
   Scenarios/PropertyBlocks.cs
   Scenarios/SetQueries.cs

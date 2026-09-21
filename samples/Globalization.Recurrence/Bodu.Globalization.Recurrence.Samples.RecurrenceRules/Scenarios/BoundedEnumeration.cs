@@ -21,7 +21,22 @@ public static class BoundedEnumeration
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Bounding a stream: COUNT, UNTIL, window, Take ---");
+        SampleConsole.Scenario(
+            "Bounding a stream, and the point queries that avoid one",
+            what: "Bounds the same series four ways - by COUNT, by UNTIL, by taking a prefix of an unbounded "
+                + "stream, and by a windowed overload - then answers next and previous at an instant that is "
+                + "itself an occurrence, and asks both questions past the end of a bounded rule.",
+            why: "A recurrence rule without COUNT or UNTIL describes an infinite series, so enumeration has to be "
+                + "lazy or the first call never returns. That makes bounding the caller's responsibility, and the "
+                + "four forms here exist because they answer different questions: the rule's own bound is part of "
+                + "the rule, a prefix is what a preview needs, and a window is what rendering one page of a "
+                + "calendar needs without walking the series from the start. The point queries matter for a "
+                + "different reason - a scheduler asking 'when next?' should not enumerate, and 'when last?' is "
+                + "asked just as often, which is why every schedule form in this package answers both.",
+            expect: "All four bounding forms agree on the occurrences they share. The inclusive flag decides "
+                + "whether an instant that is itself an occurrence counts as its own answer, which is why both "
+                + "point queries take it. Past the end of a bounded series both queries report no answer rather "
+                + "than throwing or searching forever.");
 
         var start = new DateTime(2026, 1, 1, 8, 0, 0);
 
