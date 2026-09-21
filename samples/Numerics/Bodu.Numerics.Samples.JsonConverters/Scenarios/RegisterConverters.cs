@@ -24,7 +24,18 @@ public static class RegisterConverters
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- AddNumericsJsonConverters: round-trip every type ---");
+        SampleConsole.Scenario(
+            "AddNumericsJsonConverters - round-trip every type",
+            what: "Registers the converters once on a JsonSerializerOptions, then serializes and re-reads each " +
+                  "numerics type, comparing the result against the original value.",
+            why: "Bodu.Numerics deliberately takes no dependency on System.Text.Json, so the converters ship in a " +
+                 "companion package - the pattern NodaTime uses. That keeps the core usable where the serializer " +
+                 "is not, at the cost of one registration call. Without it these types serialize by their public " +
+                 "properties, which for a Fraction means emitting whatever surface it happens to expose rather " +
+                 "than a form that reads back.",
+            expect: "Each type emits a documented shape and reads back equal to what went in - the match is the " +
+                    "claim, not the text. IntervalSet emits an array because it is a union of pieces, so its " +
+                    "normalized form survives the round trip rather than being flattened.");
 
         // A single call wires converters for all four types onto the options instance.
         // Strict is the default policy: canonical object shapes suitable for persistence.
@@ -59,7 +70,7 @@ public static class RegisterConverters
         var restored = JsonSerializer.Deserialize<T>(json, options);
 
         var matches = EqualityComparer<T>.Default.Equals(value, restored);
-        Console.WriteLine($"{label,-22}: {json}");
-        Console.WriteLine($"{"  re-read",-22}: {restored} (matches original: {matches})");
+        Console.WriteLine($"  {label,-22}: {json}");
+        Console.WriteLine($"  {"  re-read",-22}: {restored}  (matches original: {matches} - the equality is the claim; the text above is just how it got there)");
     }
 }

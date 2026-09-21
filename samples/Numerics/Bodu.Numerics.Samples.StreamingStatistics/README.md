@@ -26,13 +26,24 @@ statistic, and then accumulates the same data as two independent halves and merg
 Bessel's correction), and the combined two-halves mean matching the single-pass mean:
 
 ```text
---- RunningStatistics<T>: single-pass summary ---
-count                       : 8
-min / max                   : 2.0000 / 9.0000
-mean                        : 5.0000
-population variance / stddev: 4.0000 / 2.0000
-sample variance / stddev    : 4.5714 / 2.1381
-combined mean (2 halves)    : 5.0000 (count 8)
+--- RunningStatistics<T> - single-pass summary ---
+  What   : Feeds eight values through a single-pass accumulator, reads count, min, max, mean and both variances,
+           then combines two independently computed halves.
+  Why    : The textbook variance formula subtracts two large, nearly equal numbers and loses most of its significant
+           digits when the values are far from zero - it can even report a negative variance. This uses Welford's
+           method, which is numerically stable and needs one pass and constant memory, so it suits a stream you
+           cannot store. Combining two accumulators is what makes it parallelizable: partition the data, summarize
+           each part independently, then merge exactly.
+  Expect : Population and sample variance differ - 4.0 against 4.5714 - because the sample form divides by n-1 to
+           correct for estimating the mean from the same data. Merging two halves reproduces the mean and count of
+           the whole, which is the property that permits parallel summarization.
+
+  count                       : 8  (accumulated in one pass; none of the eight values is retained)
+  min / max                   : 2.0000 / 9.0000
+  mean                        : 5.0000
+  population variance / stddev: 4.0000 / 2.0000  (divides by n - correct when these eight ARE the whole population)
+  sample variance / stddev    : 4.5714 / 2.1381  (divides by n-1, correcting for the mean having been estimated from the same data - the larger value is not an error)
+  combined mean (2 halves)    : 5.0000 (count 8)  (two independently summarized halves merged exactly; this is what makes the statistic parallelizable)
 ```
 
 > **Note on member names.** The type exposes `Minimum`/`Maximum` (not `Min`/`Max`) and splits
@@ -56,15 +67,26 @@ capacity-3 `MovingMinMax`, printing the window sum, mean, min, max, and `IsFull`
 value evicts the oldest, so by the last row the window holds only `{20, 6, 6}` summing to `32`:
 
 ```text
---- MovingSum / MovingMinMax: fixed windows ---
-value  windowSum  windowMean  windowMin  windowMax  full
+--- MovingSum / MovingMinMax - fixed windows ---
+  What   : Pushes six values through a capacity-3 window, printing the running sum, mean, minimum and maximum after
+           each, plus whether the window has filled yet.
+  Why    : The naive sliding window recomputes over its contents on every push, which is O(k) per value and turns a
+           hot loop quadratic. These keep the answer incrementally: the sum adds the arrival and subtracts the
+           departure, and the min/max holds a monotonic deque so an extreme leaving the window is replaced in
+           amortised constant time. The full flag matters because a partially filled window is a real state -
+           reporting its mean as if the window were complete is a common bug at the start of a series.
+  Expect : The first two rows report full=False, since fewer than three values have arrived. Once full, each push
+           evicts the oldest: the sum drops by the departing value and the window minimum rises when the smallest
+           value leaves rather than lingering.
+
+  value  windowSum  windowMean  windowMin  windowMax  full
 10.00      10.00       10.00      10.00      10.00  False
 12.00      22.00       11.00      10.00      12.00  False
  8.00      30.00       10.00       8.00      12.00  True
 20.00      40.00       13.33       8.00      20.00  True
  6.00      34.00       11.33       6.00      20.00  True
  6.00      32.00       10.67       6.00      20.00  True
-final window sum            : 32.00 over last 3 of capacity 3
+  final window sum            : 32.00 over last 3 of capacity 3  (only the last 3 of the six pushed values contribute - the earlier ones were evicted, not merely down-weighted)
 ```
 
 **APIs demonstrated.** `new MovingSum<T>(int)`, `MovingSum<T>.Add`, `.Sum`, `.Mean`, `.Count`,
@@ -85,10 +107,20 @@ of `0..99` is `49.5` and the true p95 is about `94`; the single-pass estimates l
 `95.43` (an estimator, not an exact quantile — the small offset is expected):
 
 ```text
---- RunningQuantile<T>: streaming percentiles ---
-samples observed            : 100
-median (p=0.50) estimate    : 50.51
-p95    (p=0.95) estimate    : 95.43
+--- RunningQuantile<T> - streaming percentiles ---
+  What   : Observes 100 samples and estimates the median and the 95th percentile without retaining them.
+  Why    : An exact percentile needs the whole sorted sample, so a service computing p95 latency exactly must keep
+           every measurement - unbounded memory for a value read once a minute. A streaming estimator keeps a
+           handful of markers and adjusts them as data arrives, trading a small error for constant memory. That
+           trade is almost always right for monitoring, where the decision is whether p95 crossed a threshold rather
+           than what its exact value was.
+  Expect : Against a known uniform input the median lands near 50.5 and p95 near 95.4 - close to the true values but
+           not equal to them, which is the estimator working as designed rather than failing. Nothing here retains
+           the 100 samples.
+
+  samples observed            : 100  (100 seen, none kept - the estimator holds a handful of markers instead)
+  median (p=0.50) estimate    : 50.51  (near the true 50.5 but not equal: approximate by design, which is the trade for constant memory)
+  p95    (p=0.95) estimate    : 95.43  (the tail percentile a latency SLO is usually written against - exactly the value you cannot afford to store every sample for)
 ```
 
 **APIs demonstrated.** `RunningQuantile<T>.CreateMedian`, `new RunningQuantile<double>(double)`,
@@ -109,14 +141,26 @@ multiplication produces a scale-3 product; the explicit-scale division terminate
 `2.5` rounds to `2` under banker's rounding but `3` away-from-zero:
 
 ```text
---- BigDecimal: exact scaled arithmetic ---
-0.10 + 0.20             : 0.3 (scale 1)
-unscaled 12345, scale 2 : 123.45 (precision 5)
-123.45 * 1.10           : 135.795 (scale 3)
-1 / 3 to 10 places      : 0.3333333333
-Round(2.5, ToEven)      : 2
-Round(2.5, AwayFromZero): 3
-Round(123.45, 1 place)  : 123.4
+--- BigDecimal - exact scaled arithmetic ---
+  What   : Adds tenths, constructs a value from an unscaled integer and a scale, multiplies, divides to a requested
+           precision, and rounds under two midpoint modes.
+  Why    : Money is the case that forces this. A double cannot hold 0.10, so cents drift and a ledger stops
+           balancing; decimal fixes the base but caps at 28 digits and a fixed scale. BigDecimal carries an
+           arbitrary-precision unscaled value with an explicit scale, so it is exact at any magnitude - and because
+           division cannot always be exact, it requires the caller to state the precision rather than silently
+           truncating. The midpoint modes matter for the same reason: banker's rounding exists so a long run of .5
+           values does not accumulate an upward bias.
+  Expect : 0.10 + 0.20 is exactly 0.3 at scale 1. Multiplication adds scales, so 123.45 * 1.10 has scale 3 rather
+           than being trimmed. The same 2.5 rounds to 2 under ToEven and 3 under AwayFromZero - one value, two
+           defensible answers, which is why the mode is explicit.
+
+  0.10 + 0.20             : 0.3 (scale 1)  (exactly 0.3 - the sum that famously is not 0.3 in double, and the reason a ledger drifts)
+  unscaled 12345, scale 2 : 123.45 (precision 5)  (value and scale are stored separately, so 123.45 is exact rather than nearest-representable)
+  123.45 * 1.10           : 135.795 (scale 3)  (multiplication ADDS scales - 2 + 1 = 3 - so nothing is silently trimmed)
+  1 / 3 to 10 places      : 0.3333333333  (division cannot be exact here, so the caller must state the precision; it is never chosen silently)
+  Round(2.5, ToEven)      : 2  (banker's rounding - exists so a long run of .5 values does not accumulate an upward bias)
+  Round(2.5, AwayFromZero): 3  (the same 2.5, the other defensible answer - which is why the mode is an explicit argument)
+  Round(123.45, 1 place)  : 123.4
 ```
 
 **APIs demonstrated.** `BigDecimal.Parse`, `new BigDecimal(BigInteger, int)`, `operator +`,
@@ -128,6 +172,7 @@ int, MidpointRounding)`, `BigDecimal.Round(BigDecimal, int, MidpointRounding)`.
 ```text
 Bodu.Numerics.Samples.StreamingStatistics/
   Program.cs                     # runs the scenarios in order
+  SampleConsole.cs               # the what/why/expect banner every scenario opens with
   Scenarios/RunningStats.cs
   Scenarios/SlidingWindows.cs
   Scenarios/Quantiles.cs

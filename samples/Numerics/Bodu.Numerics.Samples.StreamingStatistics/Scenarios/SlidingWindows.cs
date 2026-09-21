@@ -21,7 +21,19 @@ public static class SlidingWindows
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- MovingSum / MovingMinMax: fixed windows ---");
+        SampleConsole.Scenario(
+            "MovingSum / MovingMinMax - fixed windows",
+            what: "Pushes six values through a capacity-3 window, printing the running sum, mean, minimum and " +
+                  "maximum after each, plus whether the window has filled yet.",
+            why: "The naive sliding window recomputes over its contents on every push, which is O(k) per value " +
+                 "and turns a hot loop quadratic. These keep the answer incrementally: the sum adds the arrival " +
+                 "and subtracts the departure, and the min/max holds a monotonic deque so an extreme leaving the " +
+                 "window is replaced in amortised constant time. The full flag matters because a partially filled " +
+                 "window is a real state - reporting its mean as if the window were complete is a common bug at " +
+                 "the start of a series.",
+            expect: "The first two rows report full=False, since fewer than three values have arrived. Once full, " +
+                    "each push evicts the oldest: the sum drops by the departing value and the window minimum " +
+                    "rises when the smallest value leaves rather than lingering.");
 
         // Both windows hold the last 3 values; older values fall out automatically.
         var sum = new MovingSum<double>(capacity: 3);
@@ -29,7 +41,7 @@ public static class SlidingWindows
 
         var series = new[] { 10.0, 12.0, 8.0, 20.0, 6.0, 6.0 };
 
-        Console.WriteLine("value  windowSum  windowMean  windowMin  windowMax  full");
+        Console.WriteLine("  value  windowSum  windowMean  windowMin  windowMax  full");
         foreach (var value in series)
         {
             // Each Add pushes one value in and, once full, evicts the oldest.
@@ -42,7 +54,7 @@ public static class SlidingWindows
         }
 
         // After six pushes the window holds only the final three values {20, 6, 6}.
-        Console.WriteLine($"final window sum            : {Fmt(sum.Sum)} over last {sum.Count} of capacity {sum.Capacity}");
+        Console.WriteLine($"  final window sum            : {Fmt(sum.Sum)} over last {sum.Count} of capacity {sum.Capacity}  (only the last 3 of the six pushed values contribute - the earlier ones were evicted, not merely down-weighted)");
 
         Console.WriteLine();
     }

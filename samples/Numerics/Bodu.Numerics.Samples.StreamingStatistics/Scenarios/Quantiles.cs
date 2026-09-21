@@ -21,7 +21,17 @@ public static class Quantiles
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- RunningQuantile<T>: streaming percentiles ---");
+        SampleConsole.Scenario(
+            "RunningQuantile<T> - streaming percentiles",
+            what: "Observes 100 samples and estimates the median and the 95th percentile without retaining them.",
+            why: "An exact percentile needs the whole sorted sample, so a service computing p95 latency exactly " +
+                 "must keep every measurement - unbounded memory for a value read once a minute. A streaming " +
+                 "estimator keeps a handful of markers and adjusts them as data arrives, trading a small error " +
+                 "for constant memory. That trade is almost always right for monitoring, where the decision is " +
+                 "whether p95 crossed a threshold rather than what its exact value was.",
+            expect: "Against a known uniform input the median lands near 50.5 and p95 near 95.4 - close to the " +
+                    "true values but not equal to them, which is the estimator working as designed rather than " +
+                    "failing. Nothing here retains the 100 samples.");
 
         // CreateMedian is the convenience constructor for the p=0.5 estimator; any probability in
         // (0, 1) is available through the constructor - here p95.
@@ -38,9 +48,9 @@ public static class Quantiles
 
         // Estimate reads the current approximation; the true median of 0..99 is 49.5 and the true
         // p95 is about 94, which the single-pass estimates track closely.
-        Console.WriteLine($"samples observed            : {median.Count}");
-        Console.WriteLine($"median (p={Fmt2(median.Probability)}) estimate    : {Fmt(median.Estimate)}");
-        Console.WriteLine($"p95    (p={Fmt2(p95.Probability)}) estimate    : {Fmt(p95.Estimate)}");
+        Console.WriteLine($"  samples observed            : {median.Count}  (100 seen, none kept - the estimator holds a handful of markers instead)");
+        Console.WriteLine($"  median (p={Fmt2(median.Probability)}) estimate    : {Fmt(median.Estimate)}  (near the true 50.5 but not equal: approximate by design, which is the trade for constant memory)");
+        Console.WriteLine($"  p95    (p={Fmt2(p95.Probability)}) estimate    : {Fmt(p95.Estimate)}  (the tail percentile a latency SLO is usually written against - exactly the value you cannot afford to store every sample for)");
 
         Console.WriteLine();
     }
