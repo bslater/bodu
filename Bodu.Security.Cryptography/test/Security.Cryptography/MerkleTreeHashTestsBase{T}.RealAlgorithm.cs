@@ -128,6 +128,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
             for (int i = 0; i < level.Count; i += fanOut)
             {
                 int groupSize = Math.Min(fanOut, level.Count - i);
+                if (groupSize == 1)
+                {
+                    // A lone leftover is promoted unchanged, never re-hashed as a one-child node.
+                    next.Add(level[i]);
+                    continue;
+                }
 
                 int totalLen = 1;
                 for (int j = 0; j < groupSize; j++) totalLen += level[i + j].Length;
@@ -353,6 +359,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
             for (int i = 0; i < level.Count; i += fanOut)
             {
                 int groupSize = Math.Min(fanOut, level.Count - i);
+                if (groupSize == 1)
+                {
+                    // A lone leftover is promoted unchanged, never re-hashed as a one-child node.
+                    next.Add(level[i]);
+                    continue;
+                }
 
                 int totalLen = 1;
                 for (int j = 0; j < groupSize; j++) totalLen += level[i + j].Length;

@@ -349,13 +349,14 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
 
     /// <summary>
     /// Vector D — three full blocks, fanOut=2 (uneven: 3 leaves → 2 internal nodes).
-    /// Data {1..12} → leaves 10,26,42 → level1 nodes 0x01+36=37 and 0x01+42=43 → root 0x01+37+43 = 81.
+    /// Data {1..12} → leaves 10,26,42 → level1: node 0x01+36=37 and the lone leaf 42 promoted unchanged →
+    /// root 0x01+37+42 = 80. Re-hashing the leftover as a one-child node would give 81 and a non-RFC 6962 shape.
     /// </summary>
     [TestMethod]
     public void ComputeHash_WhenThreeLeavesWithFanOutTwo_ShouldProduceCorrectTwoLevelRoot()
     {
         byte[] data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        byte[] expected = BitConverter.GetBytes((uint)81);
+        byte[] expected = BitConverter.GetBytes((uint)80);
 
         using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));

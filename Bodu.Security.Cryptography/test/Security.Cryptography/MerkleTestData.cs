@@ -68,7 +68,7 @@ internal static class MerkleTestData
 
     /// <summary>
     /// Computes the expected Merkle root hash for <paramref name="data" /> using an additive
-    /// hash, exactly replicating the zero-padding and tree-reduction strategy used by both
+    /// hash, exactly replicating the tree-reduction strategy used by both
     /// <see cref="MerkleTreeHash" /> and <see cref="ParallelMerkleTreeHash" />.
     /// </summary>
     /// <param name="data">The raw input bytes to hash. Must not be empty.</param>
@@ -109,15 +109,16 @@ internal static class MerkleTestData
             level.Add(AdditiveHash(data.AsSpan(offset, len)));
         }
 
-        // Reduce each level by grouping nodes in slices of fanOut until only the root remains.
-        // The final group in a level may be partial when node count is not a multiple of fanOut.
+        // Reduce each level by grouping nodes in slices of fanOut until only the root remains. The final group in a
+        // level may be partial when the node count is not a multiple of fanOut: two or more nodes are hashed like any
+        // other group, and a lone leftover is promoted unchanged - never re-hashed as a one-child node.
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
             for (int i = 0; i < level.Count; i += fanOut)
             {
                 int groupSize = Math.Min(fanOut, level.Count - i);
-                next.Add(AdditiveHashConcat(level.GetRange(i, groupSize)));
+                next.Add(groupSize == 1 ? level[i] : AdditiveHashConcat(level.GetRange(i, groupSize)));
             }
             level = next;
         }

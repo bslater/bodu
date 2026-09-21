@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTreeHashTestsBase{T}.DomainSeparation.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -102,16 +102,18 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     }
 
     /// <summary>
-    /// Verifies that empty input raises <see cref="InvalidOperationException" /> — zero bytes yield no leaves, so
-    /// the implementation rejects the call rather than returning a synthetic zero-leaf root.
+    /// Verifies that empty input yields the empty tree's root — the hash of zero bytes, as RFC 6962 defines
+    /// <c>MTH({})</c> — rather than a leaf over an empty block or an exception.
     /// </summary>
     [TestMethod]
-    public void ComputeHash_WhenInputIsEmpty_ShouldThrowExactly()
+    public void ComputeHash_WhenInputIsEmpty_ShouldReturnTheEmptyTreeRoot()
     {
+        using HashAlgorithm reference = Factory();
+        byte[] expected = reference.ComputeHash(Array.Empty<byte>());
+
         using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            ComputeHash(hasher, Array.Empty<byte>());
-        });
+        byte[] actual = ComputeHash(hasher, Array.Empty<byte>());
+
+        CollectionAssert.AreEqual(expected, actual, "an empty input is the empty tree, whose root is H()");
     }
 }
