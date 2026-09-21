@@ -74,7 +74,9 @@ jobs:
             done
           done
 
-          projects=$(echo "$projects" | tr ' ' '\n' | grep -v '^$' | sort -u | tr '\n' ' ')
+          # sed rather than `grep -v`: grep exits 1 when it filters every line out, and under
+          # `pipefail` that kills the step before the "nothing to collect" branch below can run.
+          projects=$(echo "$projects" | tr ' ' '\n' | sed '/^$/d' | sort -u | tr '\n' ' ')
 
           if [ -z "$projects" ]; then
             echo "No production source changed; nothing to collect."
