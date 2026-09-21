@@ -20,7 +20,22 @@ public static class CronBasics
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- CronExpression: the five-field Vixie layout ---");
+        SampleConsole.Scenario(
+            "CronExpression - the five-field Vixie layout",
+            what: "Parses several five-field expressions and reports what each selects, resolves the @ macros, "
+                + "answers next and previous at an instant that is itself an occurrence, and walks a schedule "
+                + "forward.",
+            why: "Cron is the notation operators already have in their heads and in their existing crontabs, so "
+                + "a scheduler that accepts it inherits a decade of institutional knowledge rather than asking "
+                + "everyone to learn a new syntax. Supporting the Vixie dialect specifically matters because "
+                + "cron is not one language - implementations differ on the day-field union rule, on whether "
+                + "seconds exist, and on step behaviour - and silently guessing a dialect turns a copied crontab "
+                + "line into a job that runs on the wrong days. Point queries rather than enumeration are the "
+                + "right primitive for a scheduler: it needs the next fire time, not a list.",
+            expect: "Each expression reports the instants it selects, and the macros resolve to their documented "
+                + "equivalents rather than being special-cased. The inclusive flag decides whether an instant "
+                + "that is itself a fire time counts as its own answer, which is the distinction a scheduler "
+                + "resuming at a fire time depends on.");
         Console.WriteLine("fields: minute hour day-of-month month day-of-week");
         Console.WriteLine();
 
