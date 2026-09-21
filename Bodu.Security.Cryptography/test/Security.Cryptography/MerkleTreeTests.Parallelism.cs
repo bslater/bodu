@@ -351,35 +351,13 @@ public partial class MerkleTreeTests
     [TestMethod]
     public void ComputeBlocked_WhenParallelAndTheLeafAlgorithmFaults_ShouldSurfaceTheFaultItself()
     {
-        var tree = new MerkleTree(() => new FaultingHashAlgorithm(), maxDegreeOfParallelism: -1);
+        var tree = new MerkleTree(() => new FaultingHashAlgorithm(faultOnPayloadLength: 1 + VectorBlockSize, static () => { }), maxDegreeOfParallelism: -1);
 
         var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = tree.ComputeBlocked(BlockModeInput(64).AsMemory(), VectorBlockSize);
         });
 
-        Assert.AreEqual("faulted leaf", ex.Message);
-    }
-
-    /// <summary>
-    /// A SHA-256 whose leaf computations fault, standing in for a broken algorithm; construction and the probe succeed.
-    /// </summary>
-    private sealed class FaultingHashAlgorithm : HashAlgorithm
-    {
-        /// <summary>Initializes a new instance of the <see cref="FaultingHashAlgorithm" /> class.</summary>
-        public FaultingHashAlgorithm() => HashSizeValue = 256;
-
-        /// <inheritdoc />
-        public override void Initialize()
-        {
-        }
-
-        /// <inheritdoc />
-        protected override void HashCore(byte[] array, int ibStart, int cbSize) =>
-            throw new InvalidOperationException("faulted leaf");
-
-        /// <inheritdoc />
-        protected override byte[] HashFinal() =>
-            throw new InvalidOperationException("faulted leaf");
+        Assert.AreEqual("Hashing failed.", ex.Message);
     }
 }
