@@ -5,7 +5,8 @@
 #
 # Default behaviour is safe:
 #   - fetches and prunes origin
-#   - only includes branches merged into origin/main
+#   - only includes branches whose work has landed: ancestry-merged, or the head of a merged pull
+#     request (resolved with the gh CLI, which is what recognises a squash merge)
 #   - excludes protected branch names
 #   - dry-run unless -Delete is supplied
 # -------------------------------------------------------------------------------------------------
@@ -14,7 +15,11 @@
 param(
     [string] $Remote = "origin",
 
-    [string] $Base = "main",
+    # The repository's default branch. When it does not exist the script infers it from <remote>/HEAD.
+    [string] $Base = "master",
+
+    # owner/name passed to gh when the working directory does not identify the repository on its own.
+    [string] $Repository = "",
 
     [int] $OlderThanDays = 30,
 
@@ -152,13 +157,99 @@ if ($LASTEXITCODE -ne 0) {
     }
 }
 
-$mergedRefs = Invoke-Git @("branch", "-r", "--merged", "$Remote/$Base") |
+# Landed-ness cannot be decided from git topology in this repository. `git branch -r --merged` answers
+# by ancestry, which reports nothing when pull requests are squash-merged: the squash commit is not a
+# descendant of the branch it came from. Comparing content does not rescue it either — the base branch
+# legitimately changes those files afterwards, and branches predating a history rewrite share no merge
+# base at all, so every branch looks unmerged. Measured against 40 branches in this repository, both
+# topology tests recognised none of the squash-merged ones.
+#
+# The signal that does hold is the pull request — but a merged PR is not sufficient on its own. A branch
+# that was pushed to after its PR merged still carries work nobody reviewed, and three such branches
+# existed in this repository (one with 9 later commits adding 46 documentation files). So a branch counts
+# as landed only when its PR is merged AND it has no commits after that merge. Both halves need the gh
+# CLI; without it only ancestry is available, and the script says so rather than pretending the answer
+# is complete.
+$ancestryMerged = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($ref in (Invoke-Git @("branch", "-r", "--merged", "$Remote/$Base") |
     ForEach-Object { $_.Trim() } |
-    Where-Object { $_ -and $_ -ne "$Remote/HEAD" }
+    Where-Object { $_ -and $_ -ne "$Remote/HEAD" })) {
+    [void] $ancestryMerged.Add($ref)
+}
 
-$mergedSet = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($ref in $mergedRefs) {
-    [void] $mergedSet.Add($ref)
+# Head branch name -> latest merge timestamp of a merged pull request, resolved in one call rather than
+# one per branch. The timestamp is what lets a post-merge push be detected.
+$mergedPrAt = [System.Collections.Generic.Dictionary[string, datetimeoffset]]::new([StringComparer]::OrdinalIgnoreCase)
+$prLookupAvailable = $false
+
+if (Get-Command gh -CommandType Application -ErrorAction Ignore) {
+    Write-Host "Resolving merged pull requests via gh..."
+
+    $ghArguments = @("pr", "list", "--state", "merged", "--limit", "1000", "--json", "number,headRefName,mergedAt")
+
+    if (-not [string]::IsNullOrWhiteSpace($Repository)) {
+        $ghArguments += @("--repo", $Repository)
+    }
+
+    # stdout only: gh writes progress and warnings to stderr, and merging them would corrupt the JSON.
+    $ghJson = & gh @ghArguments 2>$null | Out-String
+
+    if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($ghJson)) {
+        foreach ($pr in ($ghJson | ConvertFrom-Json)) {
+            if ([string]::IsNullOrWhiteSpace($pr.headRefName) -or -not $pr.mergedAt) {
+                continue
+            }
+
+            $mergedAt = [datetimeoffset]::Parse($pr.mergedAt, [cultureinfo]::InvariantCulture)
+
+            # A branch can front several merged pull requests; the latest merge is the one a later push
+            # has to be measured against.
+            if (-not $mergedPrAt.ContainsKey($pr.headRefName) -or $mergedAt -gt $mergedPrAt[$pr.headRefName]) {
+                $mergedPrAt[$pr.headRefName] = $mergedAt
+            }
+        }
+
+        $prLookupAvailable = $true
+        Write-Host "Merged pull requests: $($mergedPrAt.Count) distinct head branches."
+    }
+    else {
+        Write-Warning "gh pr list failed (exit $LASTEXITCODE). Only ancestry-merged branches will be recognised; run 'gh auth status' to check authentication."
+    }
+}
+else {
+    Write-Warning "gh was not found on PATH. Only ancestry-merged branches can be recognised, so squash-merged branches will be reported as unmerged."
+}
+
+function Test-BranchLanded {
+    <#
+    .SYNOPSIS
+        Determines whether a remote branch's work is already present on the base branch.
+
+    .DESCRIPTION
+        Returns $true when the branch is an ancestor of the base branch, or when its pull request is
+        merged and nothing was pushed to the branch afterwards. Everything else returns $false,
+        including every branch when the pull request lookup is unavailable — for a tool that deletes
+        branches, a false "unmerged" costs a branch that lingers while a false "merged" loses work.
+    #>
+    param(
+        [Parameter(Mandatory)] [string] $RemoteBranch,
+        [Parameter(Mandatory)] [string] $BranchName
+    )
+
+    if ($ancestryMerged.Contains($RemoteBranch)) {
+        return $true
+    }
+
+    if (-not $mergedPrAt.ContainsKey($BranchName)) {
+        return $false
+    }
+
+    # Commits after the merge are work the merged pull request never contained.
+    $since = $mergedPrAt[$BranchName].ToUniversalTime().ToString("o", [cultureinfo]::InvariantCulture)
+    $laterCommits = @(Invoke-Git @("log", "--oneline", "--since=$since", $RemoteBranch) |
+        Where-Object { $_ })
+
+    return $laterCommits.Count -eq 0
 }
 
 $separator = [char] 0x1f
@@ -202,7 +293,7 @@ $branches = foreach ($line in $rawRefs) {
 
     $date = [datetimeoffset]::Parse($parts[1]).LocalDateTime
     $ageDays = [int] [Math]::Floor(($now - $date).TotalDays)
-    $isMerged = $mergedSet.Contains($remoteBranch)
+    $isMerged = Test-BranchLanded -RemoteBranch $remoteBranch -BranchName $branchName
 
     if (-not $IncludeUnmerged -and -not $isMerged) {
         continue
@@ -239,6 +330,7 @@ if ($branches.Count -eq 0) {
     Write-Host "Base: $Remote/$Base"
     Write-Host "OlderThanDays: $OlderThanDays"
     Write-Host "IncludeUnmerged: $IncludeUnmerged"
+    Write-Host "PR lookup:       $(if ($prLookupAvailable) { 'available' } else { 'UNAVAILABLE - squash-merged branches look unmerged' })"
     exit 0
 }
 
@@ -248,6 +340,7 @@ Write-Host "Remote:          $Remote"
 Write-Host "Base:            $Remote/$Base"
 Write-Host "OlderThanDays:   $OlderThanDays"
 Write-Host "IncludeUnmerged: $IncludeUnmerged"
+Write-Host "PR lookup:       $(if ($prLookupAvailable) { 'available' } else { 'UNAVAILABLE - squash-merged branches look unmerged' })"
 Write-Host "Delete mode:     $Delete"
 Write-Host ""
 
