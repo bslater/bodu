@@ -98,6 +98,16 @@ currency (RBA quotes AUD, BoE quotes GBP; the pair providers accept any pair). U
 block, comment the ECB block, and run — the warm-up (`LoadPairAsync`) and both scenarios are
 provider-agnostic.
 
+## Layout
+
+```text
+Bodu.Financial.Samples.LiveRates/
+  Program.cs                          # runs the scenarios in order
+  SampleConsole.cs                    # the What / Why / Expect scenario banner
+  Scenarios/HistoricalDate.cs
+  Scenarios/WeekOfRates.cs
+```
+
 ## NuGet equivalent
 
 ```bash
