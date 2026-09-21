@@ -22,7 +22,19 @@ public static class WriteAndReadBack
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Write a workbook stream and read it back ---");
+        SampleConsole.Scenario(
+            "Writing a stream and reading it back",
+            what: "Emits a workbook stream record by record - including a shared string table large enough to "
+                + "need splitting - then reads it back and compares.",
+            why: "A codec that can only read is half a codec, and the round trip is what proves the record "
+                + "framing is understood rather than merely tolerated: anything the writer gets wrong about "
+                + "lengths, offsets or continuation boundaries surfaces immediately on the read. The shared "
+                + "string table is the part worth testing this way, because splitting it correctly is the "
+                + "fiddliest thing in the format and the failure mode is a file that opens and shows the wrong "
+                + "strings.",
+            expect: "The written stream reads back with the same records and the same strings, including across "
+                + "the continuation split - so the writer and reader agree about the framing rather than each "
+                + "being independently plausible.");
 
         byte[] stream = Write();
         Console.WriteLine($"  wrote {stream.Length} bytes");

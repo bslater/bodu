@@ -19,7 +19,19 @@ public static class RecordCensus
     /// <param name="stream">The workbook stream bytes.</param>
     public static void Run(byte[] stream)
     {
-        Console.WriteLine("--- Record census ---");
+        SampleConsole.Scenario(
+            "A record census over a BIFF stream",
+            what: "Walks every record in a workbook stream, counting them by identifier and reporting the "
+                + "version and code page the stream established.",
+            why: "This is the codec layer beneath the Excel reader, and its defining property is that an "
+                + "unrecognised record is not an error. A real .xls file contains records from decades of Excel "
+                + "versions and third-party writers, most of which no consumer cares about - so a reader that "
+                + "rejected what it did not understand would reject nearly every real file. Framing every record "
+                + "and decoding only the ones asked for is what makes the layer usable; the census is what that "
+                + "looks like when you ask it to decode nothing.",
+            expect: "Every record is framed and counted, including ones the codec has no typed accessor for. The "
+                + "version and code page come from records in the stream rather than being supplied, because the "
+                + "stream is self-describing about both.");
 
         var reader = new BiffReader(stream);
         var counts = new SortedDictionary<ushort, int>();

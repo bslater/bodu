@@ -28,7 +28,9 @@ back verbatim.
 **What to expect.**
 
 ```text
-authored container: 3072 bytes
+--- Authoring a container and reading it back ---
+
+  authored container: 3072 bytes
   /Payload (Storage, 0 bytes)
   /Manifest (Stream, 20 bytes)
   /Payload/ReadMe (45 bytes)
@@ -57,9 +59,11 @@ committed `sample1.doc` and prints the metadata Word 2000 wrote into it decades 
 **What to expect.**
 
 ```text
-authored : 'Quarterly figures' by Bodu Sample (created 2026-07-01)
-authored : root class id 00020906-0000-0000-c000-000000000046
-sample1.doc: title='Sample document created with MS Word', author='steve', app='Microsoft Word 9.0'
+--- OLE property sets ---
+
+  authored : 'Quarterly figures' by Bodu Sample (created 2026-07-01)
+  authored : root class id 00020906-0000-0000-c000-000000000046
+  sample1.doc: title='Sample document created with MS Word', author='steve', app='Microsoft Word 9.0'
 ```
 
 **APIs demonstrated.** `SummaryInformationBuilder.ToPropertySet`, `CompoundFile.Create`,
@@ -83,11 +87,14 @@ both read through the same API.
 **What to expect.**
 
 ```text
-golden-v3.cfb : IsCompoundFile = True
-sample1.doc   : IsCompoundFile = True (a .doc IS an OLE2 container)
-plain text    : IsCompoundFile = False
-same content authored as V3:   2560 bytes (512-byte sectors)
-same content authored as V4:  20480 bytes (4096-byte sectors)
+--- Detection and the version 3 / version 4 choice ---
+
+  golden-v3.cfb : IsCompoundFile = True
+  sample1.doc   : IsCompoundFile = True (a .doc IS an OLE2 container)
+  plain text    : IsCompoundFile = False
+  same content authored as V3:   2560 bytes (512-byte sectors)
+  same content authored as V4:  20480 bytes (4096-byte sectors)
+  V4 container reopens: root has 1 entry
 ```
 
 **APIs demonstrated.** `CompoundFile.IsCompoundFile(ReadOnlySpan<byte>)`,
@@ -108,12 +115,15 @@ and prints its first eight bytes.
 **What to expect.**
 
 ```text
-  1Table (Stream, 8375 bytes)
-  \x01CompObj (Stream, 106 bytes)
-  ObjectPool (Storage)
-  WordDocument (Stream, 9280 bytes)
-  \x05SummaryInformation (Stream, 4096 bytes)
-  \x05DocumentSummaryInformation (Stream, 4096 bytes)
+--- Walking a real document's storage tree ---
+
+    1Table (Stream, 8375 bytes)
+    \x01CompObj (Stream, 106 bytes)
+    ObjectPool (Storage)
+    WordDocument (Stream, 9280 bytes)
+    \x05SummaryInformation (Stream, 4096 bytes)
+    \x05DocumentSummaryInformation (Stream, 4096 bytes)
+    [ObjectPool]
 'WordDocument' head bytes: ECA5C10037200904 (9280 bytes total)
 ```
 
@@ -126,6 +136,7 @@ and prints its first eight bytes.
 ```text
 Bodu.IO.Compound.Samples.CompoundBasics/
   Program.cs                        # runs the scenarios in order
+  SampleConsole.cs                  # the What / Why / Expect scenario banner
   Data/golden-v3.cfb                # committed 8 KB v3 container fixture
   Data/sample1.doc                  # committed 29 KB Word 97-2003 fixture
   Scenarios/AuthorAndReadBack.cs

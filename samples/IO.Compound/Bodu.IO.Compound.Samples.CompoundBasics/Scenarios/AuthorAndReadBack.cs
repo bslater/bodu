@@ -23,7 +23,19 @@ public static class AuthorAndReadBack
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Author with CompoundStorageBuilder, read back with CompoundFile ---");
+        SampleConsole.Scenario(
+            "Authoring a container and reading it back",
+            what: "Builds a new compound file with nested storages and streams through the builder API, then "
+                + "opens the result and walks it back.",
+            why: "The round trip is the assertion, because the format has enough bookkeeping - the FAT, the "
+                + "mini-FAT for small streams, the directory tree - that a writer can produce something which "
+                + "looks structurally plausible and is not readable. Proving a written container reads back "
+                + "means the allocation and the directory are consistent, not merely well-formed. The builder is "
+                + "staged rather than incremental because sizes and allocations are only known once everything "
+                + "is present, which is also why authoring and editing are separate APIs.",
+            expect: "The authored container reads back with the same tree and the same stream contents. Small "
+                + "streams go through the mini-FAT and large ones through the FAT, and both paths round-trip - "
+                + "which is the split most likely to be got wrong.");
 
         // Build: a root with one stream, plus a nested storage holding two more.
         var root = CompoundStorageBuilder.CreateRoot();
@@ -36,7 +48,7 @@ public static class AuthorAndReadBack
         // Write the container to any stream.
         using var container = new MemoryStream();
         root.WriteTo(container);
-        Console.WriteLine($"authored container: {container.Length} bytes");
+        Console.WriteLine($"  authored container: {container.Length} bytes");
 
         // Read back: reopen and walk the tree.
         container.Position = 0;

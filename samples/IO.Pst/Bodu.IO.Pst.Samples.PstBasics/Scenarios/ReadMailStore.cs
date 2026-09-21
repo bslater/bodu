@@ -21,11 +21,22 @@ public static class ReadMailStore
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- The mail-store view (Bodu.Formats.Outlook.Pst) ---");
+        SampleConsole.Scenario(
+            "The mail-store view",
+            what: "Opens the same file through the mail-store reader instead of the node layer, walks the folder "
+                + "hierarchy, and reads messages with their decoded properties, recipients and attachments.",
+            why: "This is what the node layer is for, and the contrast is the point: the same file that was a "
+                + "tree of tagged blobs one scenario ago is a folder hierarchy of messages here, because the "
+                + "layer above supplies the MAPI interpretation the layer below deliberately withholds. Keeping "
+                + "them separate means a consumer who needs raw property access is not forced through a mail "
+                + "abstraction, and the mail reader does not have to re-implement B-tree traversal.",
+            expect: "Folders, messages, recipients and attachments, from the same bytes the previous scenario "
+                + "presented as raw nodes. Enumeration is streaming throughout, because a real mail store does "
+                + "not fit in memory.");
 
         using (var store = OutlookMailStore.OpenRead(Program.SamplePath))
         {
-            Console.WriteLine($"store (Unicode): {store.DisplayName}");
+            Console.WriteLine($"  store (Unicode): {store.DisplayName}");
 
             Walk(store.RootFolder, depth: 0);
 
@@ -43,7 +54,7 @@ public static class ReadMailStore
         // so Subject, SenderName, and the bodies read the same way.
         using (var store = OutlookMailStore.OpenRead(Program.AnsiSamplePath))
         {
-            Console.WriteLine($"store (ANSI)   : {store.DisplayName}");
+            Console.WriteLine($"  store (ANSI)   : {store.DisplayName}");
             Walk(store.RootFolder, depth: 0);
         }
 
@@ -58,12 +69,12 @@ public static class ReadMailStore
     private static void Walk(OutlookMailFolder folder, int depth)
     {
         string indent = new(' ', depth * 2);
-        Console.WriteLine($"{indent}[{folder.DisplayName ?? "(unnamed)"}] " +
+        Console.WriteLine($"  {indent}[{folder.DisplayName ?? "(unnamed)"}] " +
             $"({folder.MessageCount?.ToString() ?? "?"} messages)");
 
         foreach (OutlookMailMessage message in folder.EnumerateMessages())
         {
-            Console.WriteLine($"{indent}  {message.Subject} — {message.SenderName}");
+            Console.WriteLine($"  {indent}  {message.Subject} — {message.SenderName}");
 
             foreach (OutlookRecipient recipient in message.Recipients)
                 Console.WriteLine($"{indent}    to {recipient.DisplayName ?? recipient.EmailAddress}");

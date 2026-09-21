@@ -20,14 +20,26 @@ public static class NodesAndProperties
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Raw nodes: property and table contexts ---");
+        SampleConsole.Scenario(
+            "Raw nodes - property and table contexts",
+            what: "Enumerates nodes from the node database, reads a property context and a table context over "
+                + "them, and reports the wire-typed values.",
+            why: "This is the substrate beneath the mail-store reader, and it stops deliberately short of MAPI "
+                + "semantics: it reports a property's tag and its wire type, not what Outlook would call it. The "
+                + "separation matters because the two layers change for different reasons - the storage format is "
+                + "fixed by the file, while the interpretation of any given property tag is a matter of MAPI "
+                + "convention - and conflating them would put mail-specific knowledge in the layer that reads "
+                + "B-trees.",
+            expect: "Values come back with their wire types and tags rather than as interpreted mail fields, "
+                + "which is the honest level for this layer. The table context streams its rows rather than "
+                + "materializing them, since a folder's contents table can be very large.");
 
         using PstFile file = PstFile.OpenRead(Program.SamplePath);
 
         // The message-store object (well-known NID 0x21): a property context of wire-typed values.
         // 0x001F is PT_UNICODE - the container exposes the type code, not the property's meaning.
         PstNode store = file.GetNode(PstNodeId.MessageStore);
-        Console.WriteLine("message store (0x21) property context:");
+        Console.WriteLine("  message store (0x21) property context:");
         foreach (PstPropertyValue value in store.ReadPropertyContext())
         {
             string rendered = value.WireType == 0x001F ? $"\"{value.GetString()}\"" : $"{value.RawData.Length} bytes";
@@ -39,7 +51,7 @@ public static class NodesAndProperties
         if (file.TryGetNode(hierarchyId, out PstNode? table))
         {
             PstTableContext context = table.ReadTableContext();
-            Console.WriteLine($"root hierarchy table: {context.RowCount} rows x {context.Columns.Count} columns");
+            Console.WriteLine($"  root hierarchy table: {context.RowCount} rows x {context.Columns.Count} columns");
             foreach (PstTableRow row in context.EnumerateRows())
             {
                 var childId = new PstNodeId(row.RowId);

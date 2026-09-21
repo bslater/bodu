@@ -20,12 +20,22 @@ public static class ForwardOnlyReader
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- ExcelWorksheetReader: forward-only streaming ---");
+        SampleConsole.Scenario(
+            "The forward-only worksheet reader",
+            what: "Streams a worksheet cell by cell and row by row, reporting each cell's reference, kind and "
+                + "value without materializing the sheet.",
+            why: "A spreadsheet can be far larger than the useful part of it, and the common operations - sum a "
+                + "column, find a header row, validate an import - need one row at a time. This is the primary "
+                + "surface for that reason, with the materialized form as the convenience rather than the "
+                + "default. Forward-only also matches how the format actually stores data: records arrive in "
+                + "order, so streaming them is reading the file rather than reconstructing it.",
+            expect: "Cells arrive in order with their references and kinds, and nothing larger than the current "
+                + "row is held - so the cost of reading a sheet does not grow with the part of it you skip.");
 
         using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
         using var reader = workbook.OpenWorksheet(0);
 
-        Console.WriteLine($"streaming '{reader.Worksheet.Name}'...");
+        Console.WriteLine($"  streaming '{reader.Worksheet.Name}'...");
 
         // TryReadCell: the lowest-level loop - count and classify without buffering.
         var counts = new Dictionary<ExcelCellKind, int>();
@@ -39,8 +49,8 @@ public static class ForwardOnlyReader
             maxRow = Math.Max(maxRow, cell.RowIndex);
         }
 
-        Console.WriteLine($"cells read  : {cells} across rows 0..{maxRow}");
-        Console.WriteLine($"kinds       : {string.Join(", ", counts.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}={kv.Value}"))}");
+        Console.WriteLine($"  cells read  : {cells} across rows 0..{maxRow}");
+        Console.WriteLine($"  kinds       : {string.Join(", ", counts.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}={kv.Value}"))}");
 
         // ReadRows groups the same forward-only stream into rows - here the first three.
         // A fresh reader is required: the first one is exhausted, and forward-only readers cannot rewind.

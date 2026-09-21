@@ -21,7 +21,20 @@ public static class StreamingAndValidation
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Streaming, validation levels, and failure classification ---");
+        SampleConsole.Scenario(
+            "Streaming, validation levels, and failure classification",
+            what: "Reads node data as a stream rather than an array, opens a file under each validation level, "
+                + "and shows how different kinds of failure are classified.",
+            why: "A PST can be tens of gigabytes, so reading a node's data as a stream rather than a byte array "
+                + "is not an optimisation but a requirement - an attachment can be larger than available memory. "
+                + "The validation levels exist because real files fail their own checksums: a mailbox recovered "
+                + "from a failing disk may be readable in the part that matters, and refusing to open it is not "
+                + "always the service the user wants. Making that a level rather than a flag means the choice is "
+                + "recorded and deliberate, and the strict level remains available for the case where a bad "
+                + "checksum should stop everything.",
+            expect: "Node data streams without being materialized. Each validation level accepts a different "
+                + "range of input, and failures are classified by kind - an unsupported format is distinguished "
+                + "from a corrupt one, so a caller can tell 'I cannot read this' from 'this is broken'.");
 
         var options = new PstFileOptions
         {
@@ -34,7 +47,7 @@ public static class StreamingAndValidation
             // Price payloads first, then stream the largest one without materializing it.
             PstNodeInfo largest = file.EnumerateNodes().MaxBy(info => info.DataLength)!;
             PstNode node = file.GetNode(largest.NodeId);
-            Console.WriteLine($"largest node {largest.NodeId} holds {node.DataLength} bytes");
+            Console.WriteLine($"  largest node {largest.NodeId} holds {node.DataLength} bytes");
 
             long total = 0;
             var buffer = new byte[16 * 1024];
@@ -42,7 +55,7 @@ public static class StreamingAndValidation
             for (int read; (read = data.Read(buffer)) > 0;)
                 total += read;
 
-            Console.WriteLine($"streamed {total} bytes in 16 KiB chunks under Strict validation");
+            Console.WriteLine($"  streamed {total} bytes in 16 KiB chunks under Strict validation");
         }
 
         // Corruption surfaces as the PstFileException family - never anything else.
@@ -54,7 +67,7 @@ public static class StreamingAndValidation
         }
         catch (PstFileException ex)
         {
-            Console.WriteLine($"truncated copy rejected: {ex.GetType().Name} ({ex.Error})");
+            Console.WriteLine($"  truncated copy rejected: {ex.GetType().Name} ({ex.Error})");
         }
 
         Console.WriteLine();

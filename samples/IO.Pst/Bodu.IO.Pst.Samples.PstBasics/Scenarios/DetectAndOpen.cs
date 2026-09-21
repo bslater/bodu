@@ -22,19 +22,31 @@ public static class DetectAndOpen
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Detection and the open handshake ---");
+        SampleConsole.Scenario(
+            "Detection and the open handshake",
+            what: "Detects whether a file is a PST before opening it, then opens one and reports the format "
+                + "variant and the content encoding the header declared.",
+            why: "PST is not one format. The Unicode and ANSI variants differ in the width of nearly every "
+                + "field, so the layout has to be established from the header before anything else can be read - "
+                + "and the 4 KiB-page OST variant is close enough to look openable while being structurally "
+                + "different, which is why it is rejected explicitly rather than misread. The content encoding "
+                + "matters just as much: block data is obfuscated by one of two schemes, and reading a block "
+                + "without decoding it yields plausible-looking garbage rather than an error.",
+            expect: "Detection answers without a full open. The format variant and the encoding scheme are read "
+                + "from the file rather than assumed, which is what lets one reader handle both variants instead "
+                + "of two.");
 
         // IsPstFile answers from the magic alone, so it says "yes" to either format (and to OST files,
         // which the open that follows rejects with PstUnsupportedFormatException).
         foreach (string path in new[] { Program.SamplePath, Program.AnsiSamplePath })
         {
             using FileStream source = File.OpenRead(path);
-            Console.WriteLine($"{Path.GetFileName(path)} : IsPstFile = {PstFile.IsPstFile(source)}");
+            Console.WriteLine($"  {Path.GetFileName(path)} : IsPstFile = {PstFile.IsPstFile(source)}");
         }
 
         using (var text = new MemoryStream("just some text, definitely not a node database"u8.ToArray()))
         {
-            Console.WriteLine($"plain text  : IsPstFile = {PstFile.IsPstFile(text)}");
+            Console.WriteLine($"  plain text  : IsPstFile = {PstFile.IsPstFile(text)}");
         }
 
         Console.WriteLine();
@@ -54,7 +66,7 @@ public static class DetectAndOpen
     private static void Describe(string path)
     {
         using PstFile file = PstFile.OpenRead(path);
-        Console.WriteLine($"{Path.GetFileName(path)}");
+        Console.WriteLine($"  {Path.GetFileName(path)}");
         Console.WriteLine($"  format          : {file.Format}");
         Console.WriteLine($"  content encoding: {file.CryptMethod}");
 
