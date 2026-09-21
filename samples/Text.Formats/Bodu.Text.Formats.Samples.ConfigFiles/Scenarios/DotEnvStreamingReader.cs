@@ -21,7 +21,20 @@ public static class DotEnvStreamingReader
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- DotEnv: streaming reader with line numbers ---");
+        SampleConsole.Scenario(
+            "DotEnv - the forward-only reader with line numbers",
+            what: "Streams the same env file one token at a time, holding each key until its value token arrives, "
+                + "and runs a small lint pass that flags keys whose names suggest they may carry credentials.",
+            why: "The document DOM is the right surface when you want the values; this one is right when you want "
+                + "to say something about the file itself. A linter, a secret scanner or a migration tool needs "
+                + "the source line to report against, and that is exactly what a materialized document throws "
+                + "away - by the time you have a dictionary, the file is gone. Reading forward-only also means "
+                + "nothing larger than one token is held, which is what makes scanning a directory of env files "
+                + "cheap rather than proportional to their combined size.",
+            expect: "Each entry is reported with the line it came from, which is what a diagnostic needs to be "
+                + "actionable. The key and value arrive as separate tokens, so the loop holds the key across the "
+                + "read - that is the shape of every forward-only reader, and why the line number is captured "
+                + "with the key rather than with the value.");
 
         var envBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Data", "env.sample"));
         var reader = new Utf8DotEnvReader(envBytes);
@@ -49,6 +62,8 @@ public static class DotEnvStreamingReader
                     break;
             }
         }
+
+        Console.WriteLine("  (the line number comes from the reader, not reconstructed - a materialized document would have discarded it)");
 
         Console.WriteLine();
     }
