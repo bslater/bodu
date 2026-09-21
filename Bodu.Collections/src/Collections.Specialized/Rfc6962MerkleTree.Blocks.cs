@@ -164,7 +164,6 @@ public sealed partial class Rfc6962MerkleTree
         return new MerkleBlockComputation(root, source.Length, blockSize, leafHashes);
     }
 
-
     /// <summary>
     /// Reads <paramref name="source" /> forward in <paramref name="blockSize" />-byte blocks, invoking
     /// <paramref name="onLeafHash" /> with each block's leaf hash in order.
