@@ -12,10 +12,12 @@ Four smaller surfaces of `Bodu.Globalization.Calendar` sit beside the main servi
 
 <!-- compile -->
 ```csharp
+using var cts = new CancellationTokenSource();
+
 INotableDateService service = AmericasCalendarData.CreateService("US");
 var decade = new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2029, 12, 31));
 
-await foreach (NotableDate occurrence in service.ResolveAsync(decade, "US", cancellationToken: cancellationToken))
+await foreach (NotableDate occurrence in service.ResolveAsync(decade, "US", cancellationToken: cts.Token))
 {
     Console.WriteLine($"{occurrence.Date:yyyy-MM-dd} {occurrence.DisplayName}");
 }
