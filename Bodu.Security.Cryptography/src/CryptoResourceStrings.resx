@@ -436,4 +436,10 @@
   <data name="Arg_OutOfRange_MerkleParallelism" xml:space="preserve">
     <value>The degree of parallelism must be -1 or a positive number of workers, but was {0}.</value>
   </data>
+  <data name="Op_Invalid_MerkleAccumulatorFinished" xml:space="preserve">
+    <value>The accumulator has been finished; call Reset before appending further input.</value>
+  </data>
+  <data name="Op_Invalid_MerkleLeafHashesNotRetained" xml:space="preserve">
+    <value>Leaf hashes were not retained; create the accumulator with retainLeafHashes set to true to obtain a MerkleBlockComputation.</value>
+  </data>
 </root>

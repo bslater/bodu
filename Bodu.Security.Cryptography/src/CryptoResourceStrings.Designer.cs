@@ -1193,5 +1193,23 @@ namespace Bodu {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to The accumulator has been finished; call Reset before appending further input..
+        /// </summary>
+        internal static string Op_Invalid_MerkleAccumulatorFinished {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleAccumulatorFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leaf hashes were not retained; create the accumulator with retainLeafHashes set to true to obtain a MerkleBlockComputation..
+        /// </summary>
+        internal static string Op_Invalid_MerkleLeafHashesNotRetained {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MerkleLeafHashesNotRetained", resourceCulture);
+            }
+        }
+        
 }
 }

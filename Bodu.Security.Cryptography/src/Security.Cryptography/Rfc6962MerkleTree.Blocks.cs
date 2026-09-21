@@ -165,6 +165,40 @@ public sealed partial class Rfc6962MerkleTree
     }
 
     /// <summary>
+    /// Creates an accumulator that builds the root over fixed-size blocks from bytes appended as they are written, so a
+    /// writer can feed the tree from the same calls that feed its flat digest.
+    /// </summary>
+    /// <param name="blockSize">The size, in bytes, of each block — the chunk one leaf covers.</param>
+    /// <param name="retainLeafHashes">
+    /// <see langword="true" /> to keep every leaf hash so the accumulator can return a
+    /// <see cref="MerkleBlockComputation" /> for authentication paths; <see langword="false" /> to hold only a
+    /// logarithmic number of hashes.
+    /// </param>
+    /// <param name="diagnostics">
+    /// The recorder that receives the tree's nodes as they are produced, or <see langword="null" /> to record nothing.
+    /// </param>
+    /// <returns>A new accumulator owning one algorithm from this tree's factory.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">The algorithm factory returned <see langword="null" />.</exception>
+    /// <remarks>
+    /// The accumulator's root is identical to <see cref="ComputeRootOfBlocks(Stream, int, CancellationToken)" />'s over
+    /// the same bytes, and its <see cref="MerkleBlockAccumulator.FinishBound" /> is <see cref="BindRoot" /> of that
+    /// root and the byte length — the published shape for a possession check. It is sequential by nature: one writer
+    /// appends, and each leaf is hashed as its block completes.
+    /// </remarks>
+    public MerkleBlockAccumulator CreateBlockAccumulator(
+        int blockSize,
+        bool retainLeafHashes = false,
+        MerkleTreeDiagnostics? diagnostics = null)
+    {
+        MerkleBlocks.ThrowIfBlockSizeInvalid(blockSize);
+
+        return new MerkleBlockAccumulator(this, CreateAlgorithm(), blockSize, retainLeafHashes, diagnostics);
+    }
+
+    /// <summary>
     /// Reads <paramref name="source" /> forward in <paramref name="blockSize" />-byte blocks, invoking
     /// <paramref name="onLeafHash" /> with each block's leaf hash in order.
     /// </summary>
