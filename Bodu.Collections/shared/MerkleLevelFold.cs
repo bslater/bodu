@@ -37,9 +37,16 @@ namespace Bodu.Collections.Specialized;
 /// </remarks>
 internal sealed class MerkleLevelFold
 {
+    /// <summary>The algorithm every internal node is hashed with.</summary>
     private readonly HashAlgorithm _hasher;
+
+    /// <summary>The digest length, in bytes, of <see cref="_hasher" />.</summary>
     private readonly int _hashLength;
+
+    /// <summary>The number of children hashed into each parent.</summary>
     private readonly int _fanOut;
+
+    /// <summary>Receives every leaf and hashed node, or <see langword="null" /> when nothing is recorded.</summary>
     private readonly IMerkleTreeObserver? _observer;
 
     /// <summary>The nodes at each level still waiting for their group to fill; index zero is the leaf level.</summary>
@@ -48,6 +55,7 @@ internal sealed class MerkleLevelFold
     /// <summary>The index the next hashed node at each level receives, reported to the observer.</summary>
     private readonly List<long> _nextIndex = [];
 
+    /// <summary>The number of leaves added so far.</summary>
     private long _leafCount;
 
     /// <summary>

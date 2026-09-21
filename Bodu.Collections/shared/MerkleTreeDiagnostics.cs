@@ -116,7 +116,7 @@ public sealed class MerkleTreeDiagnostics
     /// </summary>
     /// <returns>The total number of levels, or zero if no nodes have been recorded.</returns>
     public int GetLevelCount() =>
-        _nodes.Count == 0 ? 0 : _nodes.Max(n => n.Level) + 1;
+        _nodes.IsEmpty ? 0 : _nodes.Max(n => n.Level) + 1;
 
     /// <summary>
     /// Returns all nodes at the specified <paramref name="level" />, sorted by index ascending.

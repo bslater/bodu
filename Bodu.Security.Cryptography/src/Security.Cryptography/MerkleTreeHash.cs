@@ -125,8 +125,8 @@ public sealed class MerkleTreeHash
     /// </param>
     /// <param name="blockSize">The size in bytes of each leaf block. Defaults to 1024.</param>
     /// <param name="fanOut">
-    /// The number of child nodes combined into each parent node. Defaults to 2, which is RFC 6962's tree; larger
-    /// values produce shallower trees that interoperate with nothing outside this package.
+    /// The number of child nodes combined into each parent node. Defaults to 2, which is RFC 6962's tree; larger values
+    /// produce shallower trees that interoperate with nothing outside this package.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithmFactory" /> is <see langword="null" />.
@@ -148,8 +148,8 @@ public sealed class MerkleTreeHash
     /// </param>
     /// <param name="blockSize">The size in bytes of each leaf block. Defaults to 1024.</param>
     /// <param name="fanOut">
-    /// The number of child nodes combined into each parent node. Defaults to 2, which is RFC 6962's tree; larger
-    /// values produce shallower trees that interoperate with nothing outside this package.
+    /// The number of child nodes combined into each parent node. Defaults to 2, which is RFC 6962's tree; larger values
+    /// produce shallower trees that interoperate with nothing outside this package.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="algorithmFactory" /> is <see langword="null" />.
@@ -197,8 +197,8 @@ public sealed class MerkleTreeHash
     /// </summary>
     /// <param name="data">The bytes to hash.</param>
     /// <param name="diagnostics">
-    /// A recorder that receives every leaf and internal node as the tree is built, or <see langword="null" /> to
-    /// record nothing.
+    /// A recorder that receives every leaf and internal node as the tree is built, or <see langword="null" /> to record
+    /// nothing.
     /// </param>
     /// <returns>The Merkle root hash of <paramref name="data" />.</returns>
     public byte[] ComputeHash(ReadOnlySpan<byte> data, MerkleTreeDiagnostics? diagnostics = null)
@@ -227,8 +227,8 @@ public sealed class MerkleTreeHash
     /// <param name="offset">The zero-based index at which to begin reading.</param>
     /// <param name="count">The number of bytes to hash.</param>
     /// <param name="diagnostics">
-    /// A recorder that receives every leaf and internal node as the tree is built, or <see langword="null" /> to
-    /// record nothing.
+    /// A recorder that receives every leaf and internal node as the tree is built, or <see langword="null" /> to record
+    /// nothing.
     /// </param>
     /// <returns>The Merkle root hash of the specified region.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
