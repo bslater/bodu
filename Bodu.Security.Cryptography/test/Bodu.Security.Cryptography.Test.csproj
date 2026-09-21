@@ -60,9 +60,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.Security.Cryptography.csproj" />
-    <!-- Test-only: the RFC 6962 parity tests compare this package's Merkle hashers with Bodu.Collections'
-         Rfc6962MerkleTree directly. The production package takes no such dependency. -->
-    <ProjectReference Include="..\..\Bodu.Collections\src\Bodu.Collections.csproj" />
   </ItemGroup>
 
 </Project>

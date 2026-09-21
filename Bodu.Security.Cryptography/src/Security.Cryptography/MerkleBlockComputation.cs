@@ -1,0 +1,131 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="MerkleBlockComputation.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Security.Cryptography;
+
+/// <summary>
+/// Represents the result of one block-mode Merkle computation: the tree's root, the shape of the input it was taken
+/// over, and the ordered leaf hashes an authentication path is built from.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This type exists so that a caller which has just streamed a large input past itself receives both the root <em>and</em>
+/// the leaf hashes from the same pass. Generating an authentication path needs the leaf hashes; without them the caller
+/// would have to stream the input a second time.
+/// </para>
+/// <para>
+/// The leaf hashes cost <c>leafCount × hashLength</c> bytes to retain — for a 512 MiB input at one-mebibyte blocks that
+/// is 512 hashes, or 16 KiB. A caller that needs only the root and not a path should use
+/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(System.IO.Stream, int, System.Threading.CancellationToken)" />,
+/// which folds the tree as it reads and never holds more than a logarithmic number of hashes.
+/// </para>
+/// </remarks>
+public sealed class MerkleBlockComputation
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MerkleBlockComputation" /> class.
+    /// </summary>
+    /// <param name="root">The tree's root hash.</param>
+    /// <param name="inputLength">The total number of input bytes the tree was computed over.</param>
+    /// <param name="blockSize">The block size the input was divided by.</param>
+    /// <param name="leafHashes">The ordered leaf hashes.</param>
+    internal MerkleBlockComputation(byte[] root, long inputLength, int blockSize, IReadOnlyList<byte[]> leafHashes)
+    {
+        Root = root;
+        InputLength = inputLength;
+        BlockSize = blockSize;
+        LeafHashes = leafHashes;
+    }
+
+    /// <summary>
+    /// Gets the tree's root hash — the unbound Merkle Tree Hash, not a length-bound root.
+    /// </summary>
+    /// <value>
+    /// The root, which is the hash of zero bytes when <see cref="InputLength" /> is zero, and the sole leaf's hash when
+    /// the input produced exactly one block.
+    /// </value>
+    /// <remarks>
+    /// To publish a commitment that also pins the input's length, pass this value and <see cref="InputLength" /> to
+    /// <see cref="Rfc6962MerkleTree.BindRoot(ReadOnlySpan{byte}, long)" />.
+    /// </remarks>
+    public byte[] Root { get; }
+
+    /// <summary>
+    /// Gets the total number of input bytes the tree was computed over.
+    /// </summary>
+    /// <value>The input length in bytes; zero for an empty input.</value>
+    public long InputLength { get; }
+
+    /// <summary>
+    /// Gets the block size the input was divided into leaves by.
+    /// </summary>
+    /// <value>The block size in bytes.</value>
+    public int BlockSize { get; }
+
+    /// <summary>
+    /// Gets the ordered leaf hashes, one per block.
+    /// </summary>
+    /// <value>
+    /// The leaf hashes in block order, which is empty for a zero-length input because such an input has zero blocks
+    /// rather than one empty block.
+    /// </value>
+    /// <remarks>
+    /// Pass this list to <see cref="Rfc6962MerkleTree.AuthenticationPath(IReadOnlyList{byte[]}, long)" /> to produce an
+    /// authentication path without re-reading the input.
+    /// </remarks>
+    public IReadOnlyList<byte[]> LeafHashes { get; }
+
+    /// <summary>
+    /// Gets the number of blocks the input divided into, which is also the number of leaves.
+    /// </summary>
+    /// <value>
+    /// <see cref="MerkleBlocks.BlockCount(long, int)" /> over <see cref="InputLength" /> and <see cref="BlockSize" />;
+    /// zero for an empty input.
+    /// </value>
+    public long BlockCount =>
+        MerkleBlocks.BlockCount(InputLength, BlockSize);
+
+    /// <summary>
+    /// Returns the byte offset at which the specified block of this computation's input begins.
+    /// </summary>
+    /// <param name="blockIndex">The zero-based index of the block.</param>
+    /// <returns>The offset, in bytes, from the start of the input.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="MerkleBlocks.BlockOffset(long, int)" /> is pure arithmetic over any index; this member knows the
+    /// input it belongs to and rejects a block that does not exist.
+    /// </remarks>
+    public long BlockOffset(long blockIndex)
+    {
+        ThrowHelper.ThrowIfNegative(blockIndex);
+        ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
+
+        return MerkleBlocks.BlockOffset(blockIndex, BlockSize);
+    }
+
+    /// <summary>
+    /// Returns the length of the specified block of this computation's input, which is shorter than
+    /// <see cref="BlockSize" /> only for the final block of an input whose length is not a whole multiple of it.
+    /// </summary>
+    /// <param name="blockIndex">The zero-based index of the block.</param>
+    /// <returns>The length, in bytes, of the block.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="blockIndex" /> is negative or not less than <see cref="BlockCount" />.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="MerkleBlocks.BlockLength(long, long, int)" /> returns zero for a block beyond the input; this member
+    /// knows the input it belongs to and rejects such a block instead.
+    /// </remarks>
+    public int BlockLength(long blockIndex)
+    {
+        ThrowHelper.ThrowIfNegative(blockIndex);
+        ThrowHelper.ThrowIfGreaterThanOrEqual(blockIndex, BlockCount);
+
+        return MerkleBlocks.BlockLength(InputLength, blockIndex, BlockSize);
+    }
+}

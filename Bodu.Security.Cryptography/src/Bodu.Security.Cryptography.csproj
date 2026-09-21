@@ -40,18 +40,4 @@
   </ItemGroup>
 
 
-  <!-- Namespace selector for the shared Merkle source compiled in below. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);SECURITY_CRYPTOGRAPHY</DefineConstants>
-  </PropertyGroup>
-
-  <!-- MerkleTreeHash and ParallelMerkleTreeHash are facades over the same Merkle core as Bodu.Collections'
-       Rfc6962MerkleTree: the domain-separation prefixes, the level-by-level fold, and the diagnostics recorder are
-       compiled from source rather than duplicated, so the two packages cannot drift apart; this creates no package
-       dependency. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Collections\shared\**\*.cs"
-             Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-
 </Project>

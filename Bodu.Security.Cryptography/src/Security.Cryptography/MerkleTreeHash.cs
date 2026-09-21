@@ -36,9 +36,9 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>At the default fan-out of two, this is RFC 6962's tree.</strong> The level-by-level walk with promotion
 /// visits exactly the nodes of RFC 6962's recursive definition, so the root is bit-identical to
-/// <c>Rfc6962MerkleTree.ComputeRootOfBlocks</c> from the <c>Bodu.Collections</c> package over the same blocks, and that
-/// type's inclusion and consistency proofs verify against roots produced here. The two types share this construction in
-/// source: the fold and the prefixes are compiled from <c>Bodu.Collections/shared</c>, not duplicated. A wider fan-out
+/// <see cref="Rfc6962MerkleTree.ComputeRootOfBlocks(Stream, int, CancellationToken)" /> over the same blocks, and that
+/// type's inclusion and consistency proofs verify against roots produced here. The two types share this construction:
+/// the fold and the prefixes are one implementation, not duplicated. A wider fan-out
 /// is a sound level-by-level commitment of its own — shallower, with wider internal nodes — but RFC 6962 has no k-ary
 /// form, so such roots interoperate with nothing outside this package.
 /// </para>

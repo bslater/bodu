@@ -54,16 +54,12 @@
     <File Path="bld\InternalsVisibleTo.targets" />
   </Folder>
   <Folder Name="/Bodu.Collections/">
-    <Project Path="Bodu.Collections\bench\Bodu.Collections.Benchmarks.csproj" />
     <Project Path="Bodu.Collections\src\Bodu.Collections.csproj" />
     <Project Path="Bodu.Collections\test\Bodu.Collections.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Collections.Concurrent/">
     <Project Path="Bodu.Collections.Concurrent\src\Bodu.Collections.Concurrent.csproj" />
     <Project Path="Bodu.Collections.Concurrent\test\Bodu.Collections.Concurrent.Test.csproj" />
-  </Folder>
-  <Folder Name="/Bodu.Collections.SourceOnly.Test/">
-    <Project Path="Bodu.Collections.SourceOnly.Test\test\Bodu.Collections.SourceOnly.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Core/">
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />

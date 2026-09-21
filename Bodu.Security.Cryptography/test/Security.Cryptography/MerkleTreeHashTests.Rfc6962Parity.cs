@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using Bodu.Collections.Specialized;
 
 namespace Bodu.Security.Cryptography;
 
