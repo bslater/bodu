@@ -315,18 +315,95 @@ def check_status() -> list[str]:
     return problems
 
 
+# ------------------------------------------------------- packages (definition of done)
+
+
+def packable_package_ids() -> dict[str, str]:
+    """Maps each packable package id to the project file that ships it.
+
+    The discovery rule matches the CI "Validate package inventory" step: every ``**/src/*.csproj``
+    outside the archive and CodeStyle trees that does not opt out with ``<IsPackable>false</IsPackable>``,
+    keyed by ``<PackageId>`` when the project overrides it (the regional calendar data packs do).
+    """
+    ids: dict[str, str] = {}
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = [d for d in dirnames if d not in ("archive", "Bodu.CodeStyle", "obj", "bin", ".git")]
+        if os.path.basename(dirpath) != "src":
+            continue
+        for name in filenames:
+            if not name.endswith(".csproj"):
+                continue
+            path = os.path.join(dirpath, name)
+            text = read(path)
+            if re.search(r"<IsPackable>\s*false", text, re.IGNORECASE):
+                continue
+            match = re.search(r"<PackageId>([^<]+)</PackageId>", text)
+            ids[match.group(1) if match else name[: -len(".csproj")]] = path
+    return ids
+
+
+def check_packages() -> list[str]:
+    """Holds every shipping package to the documentation set a new package is expected to arrive with.
+
+    Each package needs a row in ``bld/docs-checks/package-docs-map.txt`` naming its landing page, its
+    guides, and its samples page. Family pages are shared by design, and a reviewed ``-`` records a
+    deliberate absence; what the check forbids is a package with no row at all, a row pointing at a page
+    that does not exist, and a row left behind by a package that no longer ships.
+    """
+    map_path = os.path.join(CHECKS, "package-docs-map.txt")
+    if not os.path.exists(map_path):
+        return [f"{os.path.relpath(map_path, ROOT)}: missing; the package definition-of-done map is required"]
+
+    declared: dict[str, tuple[str, str, str]] = {}
+    problems = []
+    for line_no, raw in enumerate(read(map_path).splitlines(), 1):
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        parts = line.split()
+        if len(parts) != 4:
+            problems.append(f"package-docs-map.txt:{line_no}: expected 4 columns, found {len(parts)}")
+            continue
+        declared[parts[0]] = (parts[1], parts[2], parts[3])
+
+    packages = packable_package_ids()
+
+    for pkg in sorted(set(packages) - set(declared)):
+        problems.append(
+            f"package-docs-map.txt: `{pkg}` is packable but has no row; add its landing page, guides, "
+            f"and samples page (or a reviewed '-')")
+    for pkg in sorted(set(declared) - set(packages)):
+        problems.append(f"package-docs-map.txt: `{pkg}` has a row but is no longer a packable package; remove it")
+
+    for pkg in sorted(set(declared) & set(packages)):
+        landing, guides, samples = declared[pkg]
+        if landing != "-" and not (
+                os.path.exists(os.path.join(DOCS, "docs", landing, "index.md"))
+                or os.path.exists(os.path.join(DOCS, "docs", f"{landing}.md"))):
+            problems.append(f"package-docs-map.txt: `{pkg}` landing page 'docs/docs/{landing}' does not exist")
+        if guides != "-" and not (
+                os.path.isdir(os.path.join(DOCS, "guides", guides))
+                or os.path.exists(os.path.join(DOCS, "guides", f"{guides}.md"))):
+            problems.append(f"package-docs-map.txt: `{pkg}` guides 'docs/guides/{guides}' does not exist")
+        if samples != "-" and not os.path.exists(os.path.join(DOCS, "samples", f"{samples}.md")):
+            problems.append(f"package-docs-map.txt: `{pkg}` samples page 'docs/samples/{samples}.md' does not exist")
+
+    return problems
+
+
 # ------------------------------------------------------------------- main
 
 
 def main(argv: list[str]) -> int:
     wanted = [a for a in argv if not a.startswith("-")] or ["all"]
     if "all" in wanted:
-        wanted = ["orphans", "namespaces", "identifiers", "status"]
+        wanted = ["orphans", "namespaces", "identifiers", "status", "packages"]
     runners = {
         "orphans": check_orphans,
         "namespaces": check_namespaces,
         "identifiers": check_identifiers,
         "status": check_status,
+        "packages": check_packages,
     }
     failed = 0
     for name in wanted:
