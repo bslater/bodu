@@ -21,7 +21,24 @@ public static class TelemetryAndObserver
     /// </summary>
     public static void Run()
     {
-        Console.WriteLine("--- Telemetry + observer ---");
+        SampleConsole.Scenario(
+            "Telemetry and the observer hook",
+            what: "Runs a 200-value corpus built from eight fixed shapes through the filter, prints the "
+                + "statistics snapshot and the per-pattern hit counts, then resets the counters and attaches an "
+                + "observer that reports each vetoed value.",
+            why: "A filter that is wrong in production is hard to diagnose after the fact, because the evidence "
+                + "is the values that did not arrive. The counters are always on for that reason and cost "
+                + "essentially nothing. Their most useful signal is the per-pattern hit count, which credits only "
+                + "the pattern that actually decided an outcome: a pattern sitting near zero over a large corpus "
+                + "is either redundant or shadowed by an earlier rule, and that is not visible from reading the "
+                + "pattern list. The observer answers the other question - not how many, but which - and it is "
+                + "opt-in because seeing every decision is only worth the callback when you are actively "
+                + "debugging.",
+            expect: "The buckets reconcile exactly: evaluated equals accepted plus excluded plus not-included, "
+                + "with 100 accepted, 50 vetoed and 50 that matched no include. Those last two are counted "
+                + "separately although both were rejected, because they call for different fixes - one means an "
+                + "exclude is too broad, the other that an include is too narrow. The observer then names the "
+                + "two vetoed values out of three, which the counts alone would not have told you.");
 
         // Two includes (the brace expands to "error*" / "warn*") and one exclude — enough pattern shapes to
         // populate every statistics bucket below.
@@ -46,14 +63,17 @@ public static class TelemetryAndObserver
         // GetStatistics returns an immutable snapshot. The buckets always reconcile:
         // ItemsEvaluated == ItemsAccepted + ItemsExcluded + ItemsNotIncluded (here 200 = 100 + 50 + 50).
         var stats = filter.GetStatistics();
-        Console.WriteLine($"evaluated {stats.ItemsEvaluated}, accepted {stats.ItemsAccepted}, " +
-            $"excluded {stats.ItemsExcluded}, not-included {stats.ItemsNotIncluded} (kept {kept.Count})");
+        Console.WriteLine($"  evaluated {stats.ItemsEvaluated}, accepted {stats.ItemsAccepted}, "
+            + $"excluded {stats.ItemsExcluded}, not-included {stats.ItemsNotIncluded} (kept {kept.Count})"
+            + "  (the buckets reconcile: 200 == 100 + 50 + 50, and 'excluded' vs 'not-included' distinguishes a veto from no include matching)");
 
         // Per-pattern hit counts credit the DECIDING pattern only — the include that admitted the value or the
         // exclude that vetoed it. A pattern with a near-zero hit count over a big corpus is redundant or shadowed,
         // which is exactly the signal needed to tune a filter.
         foreach (var pattern in stats.Patterns)
-            Console.WriteLine($"  {pattern.Pattern,-18} decided {pattern.HitCount} outcomes");
+            Console.WriteLine($"    {pattern.Pattern,-18} decided {pattern.HitCount} outcomes");
+
+        Console.WriteLine("  (only the deciding pattern is credited - one sitting near zero over a large corpus is redundant or shadowed by an earlier rule)");
 
         Console.WriteLine();
 
@@ -62,6 +82,7 @@ public static class TelemetryAndObserver
 
         // An observer sees EVERY decision as it happens — value, decision, and deciding pattern.
         // Attaching costs one null check per evaluation; detaching is just setting the property back to null.
+        Console.WriteLine("  (the observer below sees every decision and reports only the vetoes - which values, not just how many)");
         filter.Observer = new VetoLogger();
         _ = filter.FilterToList(["error-9", "warn-debug-10", "error-debug-11"]);
         filter.Observer = null;
@@ -80,7 +101,7 @@ public static class TelemetryAndObserver
             // The callback receives every decision; this logger cares only about vetoes, so it filters on the
             // Excluded decision and lets everything else pass silently.
             if (decision == TextFilterDecision.Excluded)
-                Console.WriteLine($"observer: '{value}' vetoed by {pattern}");
+                Console.WriteLine($"  observer: '{value}' vetoed by {pattern}");
         }
     }
 }
