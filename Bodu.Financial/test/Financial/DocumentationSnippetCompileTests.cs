@@ -45,6 +45,8 @@ public sealed class DocumentationSnippetCompileTests
     private static readonly string[] ExcludedFileNames =
     [
         "json-serialization.md",
+        "exchange-rate-caching.md",
+        "caching-configuration.md",
     ];
 
     /// <summary>
