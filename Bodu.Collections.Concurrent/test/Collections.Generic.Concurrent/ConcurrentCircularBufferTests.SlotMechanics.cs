@@ -79,6 +79,13 @@ public partial class ConcurrentCircularBufferTests
                     {
                         // Snapshot may shrink between Count read and index read; permitted by the contract.
                     }
+                    catch (InvalidOperationException)
+                    {
+                        // The rotator mutates without pause, which is exactly the "sustained concurrent
+                        // modification" the indexer documents: once its retry budget is exhausted it throws
+                        // rather than return a torn read. That is the contract holding, not breaking, so it
+                        // is permitted here too. Any OTHER exception still fails the test below.
+                    }
                 }
             }
             catch (Exception ex)
@@ -94,7 +101,10 @@ public partial class ConcurrentCircularBufferTests
         start.Set();
         Task.WaitAll(rotator, reader);
 
-        Assert.IsEmpty(errors, "Indexer threw an unexpected exception during concurrent slot rotation.");
+        Assert.IsEmpty(
+            errors,
+            "Indexer threw an undocumented exception during concurrent slot rotation: "
+                + string.Join("; ", errors.Select(static e => e.GetType().Name + ": " + e.Message)));
     }
 
     /// <summary>
