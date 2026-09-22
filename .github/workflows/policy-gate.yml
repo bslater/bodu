@@ -1,0 +1,66 @@
+name: Policy Gate
+
+# Tier-1 DETERMINISTIC coding-policy gate — the blocking, reproducible, zero-AI backbone.
+#
+# Enforces the mechanically checkable rules from CLAUDE.md that the Roslyn analyzers don't
+# already cover. This is a REQUIRED check: it fails the build (and blocks merge under branch
+# protection) when a change violates a policy. Because it is deterministic there are no
+# false-positive merges and no per-PR model cost.
+#
+# It runs two checkers:
+#   • bld/check-folder-namespace-alignment.sh — whole-tree (the tree is clean today), the
+#     folder ↔ namespace convention.
+#   • bld/check-policy.sh — DIFF-SCOPED (added files / added lines only) so pre-existing
+#     grandfathered stragglers don't block unrelated PRs: copyright banner, file-scoped
+#     namespace, and no string-literal exception messages (resx/ThrowHelper policy).
+#
+# The judgment-based policies that can't be expressed deterministically are handled by the
+# companion Tier-2 agent in claude-policy-review.yml.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: policy-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history so the base ref is reachable for diff-scoped checks.
+          fetch-depth: 0
+
+      - name: Resolve diff base
+        id: base
+        run: |
+          # For a PR, diff against the merge-base with the target branch. For manual runs, fall
+          # back to origin/master. The check scripts read POLICY_BASE_REF / POLICY_HEAD_REF.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+          else
+            git fetch --no-tags --depth=1 origin master
+            base_sha="$(git rev-parse origin/master)"
+          fi
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
+          echo "Diffing against base: $base_sha"
+
+      - name: Folder ↔ namespace alignment (whole tree)
+        run: bash bld/check-folder-namespace-alignment.sh
+
+      - name: Coding-policy checks (diff-scoped)
+        env:
+          POLICY_BASE_REF: ${{ steps.base.outputs.base_sha }}
+          POLICY_HEAD_REF: HEAD
+        run: bash bld/check-policy.sh
