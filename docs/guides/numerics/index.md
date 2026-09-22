@@ -123,7 +123,7 @@ generic-math interfaces that ship in .NET 8+.
 
 - [Bodu.Numerics introduction](../../docs/numerics/index.md) — namespaces, headline types, scenarios.
 - [Bodu.Numerics getting started](../../docs/numerics/getting-started.md) — install + minimal samples.
-- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — every guide in the topic on one page.
+- [Numerics & Financial topic guides](../topics/numerics-and-financial.md) — the topic map; the complete numerics guide list is this page, and the financial one is [its index](../financial/index.md).
 - [Numerics & Financial topic overview](../../docs/topics/numerics-and-financial.md) — package boundaries and the decision table.
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)

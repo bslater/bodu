@@ -253,6 +253,7 @@ The `EvictionCount` and `TotalTouches` properties expose running totals of how m
 
 Unlike `Dictionary<TKey, TValue>.Add`, assigning to an existing key replaces the value **and** resets its eviction metadata. Note that `Add(key, value)` here is also add-*or-replace* — it does **not** throw on a duplicate key the way `Dictionary<TKey, TValue>.Add` does. There is no plain `TryAdd` or `GetOrAdd`; use the indexer or `Add` (the only `TryAdd` overload is the TTL-taking one described under [Time-based expiration](#time-based-expiration-ttl)):
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -277,6 +278,7 @@ bool hasB = lru.ContainsKey("b");   // false — evicted
 
 The capacity is the hard ceiling on entry count and must be greater than zero (the constructor throws `ArgumentOutOfRangeException` otherwise). A custom `IEqualityComparer<TKey>` can be supplied through the comparer-taking constructor overloads — for example `StringComparer.OrdinalIgnoreCase` for case-insensitive keys — and a seed collection can be supplied to pre-populate the cache:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

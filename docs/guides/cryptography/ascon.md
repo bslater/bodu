@@ -67,6 +67,7 @@ security margin in every variant.
 
 ### Hash
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -79,6 +80,7 @@ string hex     = Convert.ToHexString(digest);
 
 ### XOF — deriving two keys from one input
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -96,6 +98,7 @@ xof.Squeeze(macKey);    // next 32 bytes — independent of encKey
 
 ### AEAD — encrypt and authenticate
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using System.Text;

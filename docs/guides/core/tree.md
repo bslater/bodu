@@ -12,6 +12,7 @@ All examples below were run; the comments show the actual results.
 
 ## Pattern 1 — build a tree
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -39,6 +40,7 @@ string owner = support.Parent?.Value ?? "";     // "Company"
 
 Six enumerations are available on every node and apply to the subtree rooted at that node:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -71,6 +73,7 @@ Tree<int> top = two.Children[1].Root();                 // the node holding 1
 
 Every traversal is **lazy** (`yield`-based) and **iterative** — an explicit stack or queue rather than recursion — so arbitrarily deep trees can be walked without a stack overflow:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -88,6 +91,7 @@ int depth  = cursor.Depth;                  // 200000
 
 ## Pattern 3 — mutate: detach, re-attach, replace values, clear
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -132,6 +136,7 @@ Removal never destroys a subtree — a removed node keeps its children and can b
 
 Traversals do **not** carry a version counter, so there is no fail-fast exception: mutating the tree while one of its enumerations is live produces *undefined results* (skipped or repeated nodes are possible). Snapshot first, then mutate:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 

@@ -294,4 +294,4 @@ The remaining digests have their own walk-throughs too — [BLAKE2 / BLAKE3](bla
 - [Bodu.Security.Cryptography getting started](../../docs/cryptography/getting-started.md) — install and minimal samples per subfamily.
 - [Bodu.IO.Hashing guides](../io-hashing/index.md) — non-cryptographic checksums and fingerprints.
 - [Bodu.Security.Cryptography API reference](xref:Bodu.Security.Cryptography) — full type-by-type docs.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — the topic map across Bodu.IO.Hashing and Bodu.Security.Cryptography. The complete cryptography guide list is this page; the hashing one is [its index](../io-hashing/index.md).

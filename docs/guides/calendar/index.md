@@ -206,4 +206,4 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 - [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full namespace overview.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — the topic map: how these guides, the companion packages, the data packs, and the [Recurrence guides](../recurrence/index.md) relate. The complete guide list for the calendar family is this page.

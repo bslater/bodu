@@ -20,6 +20,7 @@ title: Using Skipjack
 
 ## Encrypt and decrypt — CBC + PKCS7
 
+<!-- compile -->
 ```csharp
 using System.Diagnostics;
 using System.Linq;

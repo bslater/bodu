@@ -14,7 +14,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// The Gumm algorithm was presented by H. Peter Gumm in 1985 (<i>A New Class of Check-Digit Methods for Arbitrary
 /// Number Systems</i>, IEEE Transactions on Information Theory, 31(1), 102–105). Like the Verhoeff scheme it was
 /// discovered independently of, it detects <b>all</b> single-digit substitution errors and <b>all</b> transpositions of
-/// adjacent digits — including the <c>aa</c> ↔ <c>bb</c> twin cases — using a single decimal check digit.
+/// adjacent digits using a single decimal check digit.
+/// </para>
+/// <para>
+/// Those two guarantees are the whole of the scheme's coverage. Gumm does <b>not</b> reliably detect <i>twin</i> errors
+/// (<c>aa → bb</c>): under this instantiation a little over four in ten of them pass validation, which is materially
+/// weaker than <see cref="Verhoeff" /> or <see cref="Damm" /> on the same class. Choose Gumm for its simplicity over
+/// Verhoeff, not for broader error coverage.
 /// </para>
 /// <para>
 /// The method operates in the dihedral group <i>D</i><sub>5</sub> (the symmetries of a regular pentagon, of order 10).

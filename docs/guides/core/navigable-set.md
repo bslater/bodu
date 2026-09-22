@@ -27,6 +27,7 @@ The backing-structure decision (order-statistic red-black tree with parent point
 
 ## Pattern 1 — nearest-neighbour queries
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -48,6 +49,7 @@ ladder.TryGetLower(99.50m, out _);                     // false — nothing stri
 
 `IndexOf` is the zero-based rank (elements smaller than the value); `GetAt` is the inverse (the k-th smallest); `CountInRange` subtracts two rank walks, so none of the three iterates the set:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -64,6 +66,7 @@ int fastPath = latencies.CountInRange(0, 50);        // 5 — O(log n), no itera
 
 ## Pattern 3 — directional and range views
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

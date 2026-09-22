@@ -62,7 +62,7 @@ Hosting the resolved view inside `Microsoft.Extensions.Configuration` (ASP.NET C
 - **[Introduction](../../docs/text-configuration/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/text-configuration/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/text-configuration/getting-started.md)** — install + runnable minimal samples.
-- **[Configuration topic guides](../topics/configuration.md)** — every guide in the Configuration topic on one page.
+- **[Configuration topic guides](../topics/configuration.md)** — the topic map for both configuration packages.
 - **[Configuration topic overview](../../docs/topics/configuration.md)** — the pipeline and package boundaries across both packages.
 - **[Bodu.Text.Configuration API reference](xref:Bodu.Text.Configuration)** — full type-by-type docs.
 - **[Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md)** — the `Microsoft.Extensions.Configuration` bridge.

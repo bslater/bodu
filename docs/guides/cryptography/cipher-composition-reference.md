@@ -38,6 +38,7 @@ Two consequences worth stating plainly:
 
 ## Pattern 1 — the five wrapper modes
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -66,6 +67,7 @@ foreach (CipherModeKind mode in new[] { CipherModeKind.ECB, CipherModeKind.CBC, 
 
 The wrappers are a convenience over three parts you can assemble yourself: an <xref:Bodu.Security.Cryptography.IBlockCipher> engine, an <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform> from `BlockCipherModeFactory`, and an <xref:Bodu.Security.Cryptography.IPaddingStrategy> from `PaddingFactory`. Both factories and the strategies express **block size in bits** — pass `cipher.BlockSize` (128), never the byte count.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -94,6 +96,7 @@ byte[] recovered = padding.Unpad(decrypted, cipher2.BlockSize);
 
 ## Pattern 3 — CTR with a partial final block
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -119,6 +122,7 @@ int written = ctr.Transform(plaintext, ciphertext, encrypt: true);      // 38 �
 
 ## Pattern 4 — CTS and XTS as direct transforms
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -138,6 +142,7 @@ byte[] recovered = new byte[ciphertext.Length];
 cts2.Transform(ciphertext, recovered, encrypt: false);
 ```
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -163,6 +168,7 @@ An `XtsModeTransform` given input that is not a multiple of 16 bytes throws `Cry
 
 `OCB`, `EAX`, and `SIV` appear in `CipherModeKind` but only as names; the factory rejects them. All six block-cipher AEADs implement <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> (and through it <xref:Bodu.Security.Cryptography.IAeadTransform>), take an `AesBlockCipher`, and are single-use per message:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -194,6 +200,7 @@ using (var c = new AesBlockCipher(key))
 
 <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> exposes both: `BlockPadding` (<xref:Bodu.Security.Cryptography.PaddingModeKind>) and the inherited `Padding` (`PaddingMode`). Setting either updates the other when the value exists in both enums; `ISO7816_4` updates only `BlockPadding`. `CreateEncryptor` reads `BlockPadding`, so ISO 7816-4 is honoured.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -222,6 +229,7 @@ The tweakable wrappers (`Threefish*`, `Serpent256/512/1024`) derive from `Tweaka
 | `TransformFinalBlock` | encrypt: pads then encrypts (an empty input still emits a padding block for PKCS7-style schemes); decrypt: validates alignment, decrypts, unpads |
 | `Dispose` | disposes the mode transform **and the engine** |
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

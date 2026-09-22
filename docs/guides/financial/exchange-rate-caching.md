@@ -303,7 +303,6 @@ I/O or TOML error on read yields an empty result, and a failed write is swallowe
 so a cache problem never breaks rate retrieval. You can use a cache directly — note
 there is no provider argument; the cache is bound to its provider at construction:
 
-<!-- compile -->
 ```csharp
 var cache = new TomlFileRateCache(
     new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
@@ -338,7 +337,6 @@ written as JSON numbers, which `System.Text.Json` round-trips losslessly to
 }
 ```
 
-<!-- compile -->
 ```csharp
 var cache = new JsonFileRateCache(
     new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" });
@@ -366,7 +364,6 @@ window that crosses a period boundary is split at the boundary so each file carr
 only its own period; a read concatenates every file in the pair's folder and the
 shared cache rules re-merge the halves, so the split is lossless.
 
-<!-- compile -->
 ```csharp
 // One file per month for each pair.
 var monthly = new TomlFileRateCache(new FileRateCacheOptions
@@ -384,7 +381,6 @@ supply a partition strategy (one of `Single`/`Yearly`/`Monthly`/`Daily`, or
 for an arbitrary period such as fiscal quarters) and optional delegates that decide
 the directory and the file name:
 
-<!-- compile -->
 ```csharp
 var custom = new TomlFileRateCache(new FileRateCacheOptions
 {
@@ -848,7 +844,6 @@ you opt in:
   pair is renewed before it can ever miss. A failing refresh is logged (`EventId 4517`)
   and swallowed — the next aged hit simply retries.
 
-<!-- compile -->
 ```csharp
 var options = new CachingRateOptions
 {
@@ -889,7 +884,6 @@ read-through path — an already covered pair costs only a cache read, a miss po
 rows and coverage — with up to four pairs fetched concurrently. A failing pair is
 logged (`EventId 4518`) and skipped; only the caller's cancellation aborts the run.
 
-<!-- compile -->
 ```csharp
 var provider = new CachingRateProvider(
     new FixedDatedRateProvider(Array.Empty<ExchangeRate>()),
@@ -1006,6 +1000,7 @@ rate-limited warning gate that throttles log volume — so sustained degradation
 quantifiable even while its logging is suppressed. Subscribe with any OpenTelemetry
 metrics exporter, or with an in-process `MeterListener`:
 
+<!-- compile -->
 ```csharp
 using var listener = new System.Diagnostics.Metrics.MeterListener
 {

@@ -12,6 +12,7 @@ For the "which form" decision and the shared due-ness recipe, start at the [recu
 
 The constructor takes any positive <xref:System.TimeSpan> that is a whole number of seconds. The textual form is the RFC 5545 §3.3.6 duration grammar:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -48,6 +49,7 @@ Rules, each with the message `TryParse` reports:
 - Weeks cannot be combined: `P1W1D` fails with "The weeks unit 'W' cannot be combined with any other duration component."
 - Values are unsigned integers (`PT1.5H` is rejected) and the total must be positive: `-PT1H`, `PT0S`, and `P0D` fail with "The duration must be greater than zero; signed and zero durations are not valid intervals."
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -70,6 +72,7 @@ bool ok2 = AnchoredInterval.TryParse("PT4H".AsSpan(), provider: null, out Anchor
 
 The anchor itself is **never** an occurrence. `GetNextOccurrence(anchor, after)` answers the first `anchor + k·interval` strictly after `after` (or equal, with `inclusive: true`); when `after` precedes the whole series, the first occurrence is returned. `GetPreviousOccurrence` answers `null` until the first occurrence has passed:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -97,6 +100,7 @@ Every query is O(1) arithmetic — no scanning — and the unbounded enumeration
 
 The interval is *configuration* ("every six hours"); the anchor is *state* ("the last completed run finished at 14:32"). Keeping them apart means the same parsed interval serves every job, and the host — which already persists the last-run instant — is the only party that knows the anchor. It also fixes the due-ness rule: because the anchor is not an occurrence, a run that completed at `now` is not immediately due again, and "is a run due?" stays the one-line comparison every form shares:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -114,6 +118,7 @@ Re-anchoring on each completion turns the interval into a *gap* schedule (six ho
 
 A heartbeat anchored on the moment a service came up, evaluated with the host's clock:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -133,6 +138,7 @@ Because the answer is computed from the anchor, not from the previous beat, the 
 
 Anchor on the failure instant. A fixed interval gives evenly spaced retries; for exponential back-off, parse one interval per attempt and anchor each on the previous attempt:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -160,6 +166,7 @@ foreach (string step in ladder)
 
 An anchored interval is exact elapsed time, so it is immune to daylight-saving changes: `PT6H` is six hours whatever the local calendar does. The `DateTimeOffset` overloads compare the anchor and the query instant as absolute instants, so an anchor recorded in UTC composes correctly with a `now` in any offset, and each answer carries the offset of the instant you asked with:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 

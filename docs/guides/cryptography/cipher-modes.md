@@ -187,6 +187,7 @@ using (var cts = new CtsModeTransform(cipher, iv))
 
 Unlike the five classic modes, XTS does not run through the `BlockMode` property of a `SymmetricAlgorithm`: it needs two keyed ciphers, so it is constructed directly as an <xref:Bodu.Security.Cryptography.XtsModeTransform> over a pair of <xref:Bodu.Security.Cryptography.IBlockCipher> instances.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

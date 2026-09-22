@@ -17,6 +17,7 @@ Every `IEnumerable<T>` operator follows the LINQ convention: argument validation
 
 ## Pattern 1 — batching: `Batch` versus `BatchPooled`
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -42,6 +43,7 @@ string stale = string.Join(", ", wrong[0].ToArray());     // "7, 5, 6" — not "
 
 ## Pattern 2 — `Cache`: enumerate an expensive source once
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -59,6 +61,7 @@ int total = pulls;                                  // 5 — the source ran exac
 
 ## Pattern 3 — combinatorics
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -75,6 +78,7 @@ var named = new[] { 1, 2 }.CartesianProduct(letters, (n, c) => $"{c}{n}"); // a1
 
 ## Pattern 4 — adjacent-element operators
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -93,6 +97,7 @@ All seven stream the source lazily. `Pairwise`, `RunLengthEncode`, and `Scan` ho
 
 ## Pattern 5 — zipping, interleaving, indexing, and null filtering
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -103,7 +108,7 @@ var padded   = a.ZipLongest(b);                          // (1, x), (2, y), (3, 
 var defaults = a.ZipLongest(b, -1, "?");                 // (1, x), (2, y), (3, ?)
 var joined   = a.ZipLongest(b, -1, "?", (n, s) => $"{n}{s}");   // 1x, 2y, 3?
 var woven    = a.Interleave(b.Select(s => s.Length), new[] { 100, 200, 300, 400 });   // 1, 1, 100, 2, 1, 200, 3, 300, 400
-var indexed  = b.Index();                                // (0, x), (1, y)
+var indexed  = Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index(b);   // (0, x), (1, y)
 var refs     = new string?[] { "a", null, "b" }.WhereNotNull();   // a, b        (reference types)
 var values   = new int?[] { 1, null, 3 }.WhereNotNull();          // 1, 3        (Nullable<T> unwrapped)
 bool hasAll  = a.ContainsAll(new[] { 1, 3 });            // true
@@ -112,12 +117,13 @@ bool empty   = ((int[]?)null).IsNullOrEmpty();           // true
 a.ForEach(x => Console.Write(x * 10 + " "));             // 10 20 30
 ```
 
-`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
+`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`. Call it through `Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index(source)` rather than as `source.Index()` if your project targets **.NET 9 or later**: the BCL added its own `System.Linq.Enumerable.Index<TSource>` with the same signature, and with both namespaces imported the extension-method form is ambiguous (`CS0121`). On `net8.0` — the framework this package targets — only Bodu's overload exists and `source.Index()` binds cleanly. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
 
 ## Pattern 6 — multi-accumulator `Aggregate`
 
 The `Aggregate` overloads fold two or three accumulators in a single pass, optionally with the element index, and optionally project the final tuple through a result selector:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -201,6 +207,7 @@ The walk is iterative (an explicit stack), so deep hierarchies do not overflow t
 
 All randomness flows through <xref:Bodu.IRandomGenerator> — one method, `int Next(int maxValue)` — so tests can substitute a deterministic source. Two implementations ship: <xref:Bodu.XorShiftRandom> (fast, seedable, derives from `System.Random`; **not** thread-safe) and <xref:Bodu.Collections.Generic.Extensions.SystemRandomAdapter> (wraps any `System.Random`, including the thread-safe `Random.Shared`).
 
+<!-- compile -->
 ```csharp
 using Bodu;
 using Bodu.Collections.Generic;
@@ -233,6 +240,7 @@ int count = ShuffleHelpers.ShuffleAndYield(deck, shared).Count();  // 10
 
 ## Pattern 9 — `IList<T>` and `IDictionary<TKey,TValue>` helpers
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Extensions;
 
@@ -256,6 +264,7 @@ int existing    = counts.GetOrAdd("a", 99);                       // 2  — pres
 
 ## Pattern 10 — `SequenceGenerator`
 
+<!-- compile -->
 ```csharp
 using Bodu.Sequences;
 

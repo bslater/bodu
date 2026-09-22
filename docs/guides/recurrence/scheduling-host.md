@@ -193,6 +193,7 @@ The periodic timer takes the same `TimeProvider`, so a test can advance a `FakeT
 
 The only state a host needs per schedule is the instant its job last **completed** — the `lastCompleted` in the due-ness comparison and, for an anchored interval, potentially the anchor itself. Store it as UTC and treat its absence as "never ran":
 
+<!-- compile -->
 ```csharp
 /// <summary>The one piece of scheduling state the host owns: when each job last completed.</summary>
 public interface ILastRunStore

@@ -10,6 +10,7 @@ Equality is governed by an `IEqualityComparer<T>` supplied at construction, so c
 
 ## Pattern 1 — counting occurrences
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -25,6 +26,7 @@ int kinds = words.DistinctCount;    // → 5 — distinct elements only
 
 `Count` reports the total number of elements including duplicates; `DistinctCount` reports the number of *distinct* elements. `CountOf` returns `0` for an absent element — no exception, no `TryGetValue` dance:
 
+<!-- compile -->
 ```csharp
 var histogram = new Multiset<char>("mississippi");
 
@@ -38,6 +40,7 @@ The `IEnumerable<T>` constructor seeds the bag with one count per source element
 
 ## Pattern 2 — adding and removing with explicit multiplicity
 
+<!-- compile -->
 ```csharp
 var inventory = new Multiset<string>();
 
@@ -52,6 +55,7 @@ bool removedAll = inventory.RemoveAll("widget");  // removes every copy → 0, r
 
 ## Pattern 3 — enumerating distinct values and frequencies
 
+<!-- compile -->
 ```csharp
 var bag = new Multiset<char> { 'a', 'a', 'b', 'c', 'c', 'c' };
 
@@ -83,6 +87,7 @@ Console.WriteLine(string.Join(", ", top2.Select(p => $"{p.Key}×{p.Value}")));
 
 Multiset operations combine counts rather than just membership. Each returns a new `Multiset<T>` (using the left operand's comparer) and mutates neither operand:
 
+<!-- compile -->
 ```csharp
 var a = new Multiset<int> { 1, 1, 2, 3 };
 var b = new Multiset<int> { 1, 2, 2, 4 };
@@ -108,6 +113,7 @@ The operations are well defined only when both operands use equivalent comparers
 
 ## Pattern 5 — case-insensitive counting
 
+<!-- compile -->
 ```csharp
 var tally = new Multiset<string>(StringComparer.OrdinalIgnoreCase);
 tally.Add("Error");

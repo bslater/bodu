@@ -29,6 +29,7 @@ title: Choosing a primitive
 
 Every Bodu hash derives from `System.Security.Cryptography.HashAlgorithm` (through <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> or one of its siblings), so `ComputeHash`, `TransformBlock` / `TransformFinalBlock`, `ComputeHashAsync(Stream)`, and `CryptoStream` all apply — see [Interoperating with System.Security.Cryptography](bcl-interop.md). The fast-path column comes from [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md); every accelerated primitive produces bit-identical output on the scalar path.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -58,6 +59,7 @@ Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816
 | Skein keyed | <xref:Bodu.Security.Cryptography.Skein512> `Key` | up to 8192 bits | per the variant | Skein-native MAC. | Peers that only implement HMAC. |
 | HMAC-SHA-2 | `System.Security.Cryptography.HMACSHA256` … | any | 256 / 384 / 512 bits | **The default MAC** — FIPS 198, universally implemented. | — |
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -99,6 +101,7 @@ Every Bodu AEAD implements <xref:Bodu.Security.Cryptography.IAeadTransform>, emi
 > [!WARNING]
 > Every AEAD in the table exposes a public span-based `Encrypt(plaintext, output)` instance method *and* an array-returning `Encrypt(plaintext, associatedData)` extension method. With two positional `byte[]` arguments C# binds the **instance** method — `aad` becomes the output buffer and the call returns an `int`. Always name the argument: `aead.Encrypt(plaintext, associatedData: aad)`. The single-argument form `aead.Encrypt(plaintext)` is unambiguous. The same applies to `Decrypt`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -140,6 +143,7 @@ using (var aead = new AsconAead128(key.AsSpan(0, 16), nonce12.AsSpan(0, 16)))
 | HKDF | <xref:Bodu.Security.Cryptography.Hkdf> (SHA-1 / SHA-256 / SHA-384 / SHA-512) | **High** (DH secret, KEM output, master key) | RFC 5869 | Stretching a strong secret into labelled keys. Interchangeable with the BCL `HKDF`; prefer the BCL. |
 | PBKDF2 | `System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2` | Low | RFC 8018 / NIST SP 800-132 | When FIPS compliance mandates PBKDF2. Not memory-hard — prefer Argon2id otherwise. |
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -166,6 +170,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 
 Pick Ed25519 / X25519 for modern protocols that specify Curve25519 (SSH, Signal-style, HPKE); pick the BCL types when you need X.509 certificates or FIPS-approved curves; add ML-KEM / ML-DSA in a hybrid alongside a classical scheme when quantum resistance is a requirement. The [asymmetric overview](asymmetric-overview.md) explains the shared `AsymmetricAlgorithm` base and the verify-or-fail discipline.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

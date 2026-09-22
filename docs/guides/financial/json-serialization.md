@@ -39,6 +39,7 @@ Money<USD> value = JsonSerializer.Deserialize<Money<USD>>(json, options);
 
 Pass a <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> to select the wire shape:
 
+<!-- compile -->
 ```csharp
 var compact = new JsonSerializerOptions()
     .AddFinancialJsonConverters(FinancialJsonPolicy.Compact);

@@ -17,8 +17,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- MemoryDistributedCache: an in-process IDistributedCache, so the distributed backend runs offline. -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Caching\src\Bodu.Financial.ExchangeRates.Caching.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Caching.Distributed\src\Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Financial.ExchangeRates.Caching.Sqlite\src\Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

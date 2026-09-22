@@ -74,6 +74,7 @@ Zero padding is appropriate when **the application layer already knows the real 
 
 ANSI X.923 appends `N - 1` bytes of value `0x00` followed by a trailing byte holding the padding length `N`. When the plaintext is already block-aligned, a full extra block of padding is appended so unpadding remains unambiguous. `Unpad` validates in constant time that all interior pad bytes are `0x00` and that the trailing length byte is in range.
 
+<!-- compile -->
 ```csharp
 using var alg = new Threefish256
 {
@@ -97,6 +98,7 @@ The same padding-oracle caution as PKCS7 applies: pair with a MAC when the ciphe
 
 ISO 10126 is shaped like ANSI X.923 except the interior pad bytes are cryptographically random instead of `0x00`. Because the random bytes cannot be reconstructed during decryption, `Unpad` only validates the trailing length byte.
 
+<!-- compile -->
 ```csharp
 using var alg = new Threefish256
 {
@@ -122,6 +124,7 @@ byte[] unpadded = bitPadding.Unpad(padded, blockSize: 256);
 
 **Use for:** stream-shaped modes (CTR, CFB, OFB) that don't need padding, or when you have already padded the plaintext in your own code and want the cipher to leave it alone.
 
+<!-- compile -->
 ```csharp
 // Stream-shaped mode: ciphertext length == plaintext length.
 using var alg = new Threefish256

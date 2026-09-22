@@ -127,15 +127,22 @@ jobs:
 
       - name: Run samples
         run: |
-          # Every sample console app that is a member of bodu.slnx (excluding sample test
-          # projects, which run in the Test step above). Samples are offline and deterministic;
-          # running each one is the smoke test that keeps the sample code from rotting.
-          # LiveRates is the one deliberate exception - it calls a live web feed, so it is
-          # built (slnx membership) but not executed here.
+          # Every sample console app that is a member of bodu.slnx. Samples are offline and
+          # deterministic; running each one is the smoke test that keeps the sample code from
+          # rotting. Three kinds of project are members but are not run here:
+          #   * sample test projects, which run in the Test step above;
+          #   * LiveRates, the one deliberate exception that calls a live web feed;
+          #   * library sample projects with no entry point (a plugin assembly, for example),
+          #     which are exercised by the host sample that loads them.
+          # The OutputType filter is what excludes the third kind, so adding a library sample
+          # does not need this step edited.
           projects=$(grep -oE 'Path="samples/[^"]*\.csproj"' bodu.slnx \
             | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
             | grep -v '\.Test\.csproj$' \
             | grep -v '\.Samples\.LiveRates\.csproj$' \
+            | while read -r proj; do \
+                grep -qE '<OutputType>\s*Exe\s*</OutputType>' "$proj" && echo "$proj"; \
+              done \
             | sort -u)
 
           if [ -z "$projects" ]; then

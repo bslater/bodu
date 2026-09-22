@@ -86,6 +86,7 @@ On read an enum binds from a wire name (case-insensitively), or from an integer 
 - <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` — member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
 - `YamlNumberEnumConverter<TEnum>` — the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`.
 
+<!-- compile -->
 ```csharp
 var options = new YamlSerializerOptions();
 options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));

@@ -19,6 +19,7 @@ The four trie collections accept an `IEqualityComparer<char>` at construction (p
 
 ## Pattern 1 — A set of words: membership and prefixes
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -47,6 +48,7 @@ bool added = words.Add("car");   // false — already present
 
 Build directly from a sequence (an exception is thrown on a duplicate key):
 
+<!-- compile -->
 ```csharp
 var fromSeq = new Trie(new[] { "alpha", "beta", "gamma" });
 ```
@@ -75,6 +77,7 @@ bool match = folded.Contains("HELLO");   // true
 
 <xref:Bodu.Collections.Generic.Trees.Trie`1> associates a value with each key. `KeysWithPrefix` lists the matching keys; `ItemsWithPrefix` lists the matching key/value pairs — the building block of an autocomplete dropdown.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -121,6 +124,7 @@ commands["push"] = "Update remote refs and objects"; // overwrites via the index
 
 Both tries remove by key and report whether the key was present:
 
+<!-- compile -->
 ```csharp
 var words = new Trie(new[] { "car", "card", "care" });
 
@@ -136,6 +140,7 @@ Removing a key leaves sibling keys that share its prefix intact — deleting `"c
 
 Enumerating a trie yields its keys (for <xref:Bodu.Collections.Generic.Trees.Trie>) or its key/value pairs (for <xref:Bodu.Collections.Generic.Trees.Trie`1>), in unspecified order. Enumeration is lazy — elements are produced on demand as the trie is walked, with no up-front snapshot — so breaking out of a `foreach` early does no more work than the elements consumed.
 
+<!-- compile -->
 ```csharp
 var map = new Trie<int>();
 map.Add("apple", 1);
@@ -170,6 +175,7 @@ foreach (string key in map.KeysWithPrefix("app").ToList())
 
 The public surface mirrors `Trie` / `Trie<TValue>` **member-for-member** — constructors (including the `IEqualityComparer<char>` overload), `Add` / `TryAdd` / `Set` / the indexer, `Contains` / `ContainsKey` / `TryGetValue`, `StartsWith`, `Remove`, `KeysWithPrefix` / `ItemsWithPrefix`, `Clear`, `Count`, `Comparer`, and the fail-fast enumerator — so swapping types is a one-word change:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -196,6 +202,7 @@ The tries above answer questions about **stored keys**. <xref:Bodu.Collections.G
 
 The automaton is built once from the complete pattern set and is **immutable** afterwards (its internal failure links are global invariants of the whole set — adding a pattern later would invalidate them wholesale; rebuild instead). Matching is ordinal; normalize case up front if you need folded matching.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic.Trees;
 
@@ -217,6 +224,7 @@ Matches are reported in a **pinned deterministic order**: ascending end index, t
 
 <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> attaches a value to each pattern and surfaces it on every match — the natural shape for "which rule fired, and what should I do about it":
 
+<!-- compile -->
 ```csharp
 var rules = AhoCorasickAutomaton<int>.Build(
 [

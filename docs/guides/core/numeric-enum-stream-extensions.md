@@ -96,6 +96,7 @@ bool bothNull = ComparableHelper.Min<string>(null, null) is null;   // true
 
 ## Pattern 3 — `EnumExtensions` and `Enums`
 
+<!-- compile -->
 ```csharp
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -136,6 +137,7 @@ bool byDesc   = Enums.TryParseDescription("Execute access", out Access x);     /
 
 ## Pattern 4 — `ArrayExtensions` and `SpanExtensions`
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -170,6 +172,7 @@ Span<int> reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span sti
 
 ## Pattern 5 — `StreamExtensions` and `BufferConverter`
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -189,6 +192,7 @@ Span<uint> swap = stackalloc uint[] { 0x11223344 };
 swap.SwapEndian();                                         // 0x44332211 — in place
 ```
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 

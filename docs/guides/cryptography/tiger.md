@@ -20,6 +20,7 @@ Tiger derives from <xref:System.Security.Cryptography.HashAlgorithm?displayPrope
 
 ## Pattern 1 — a default 192-bit digest
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -71,6 +72,7 @@ byte[] d2 = tiger2.ComputeHash(data);
 
 Match the variant to whatever the interoperating system speaks. `AlgorithmName` reflects the configured hash size (it follows the `Tiger/{bits}` convention regardless of variant; include the variant alongside it when logging):
 
+<!-- compile -->
 ```csharp
 using var tiger = new Tiger { Variant = TigerHashingVariant.Tiger2, HashSize = 160 };
 Console.WriteLine($"{tiger.AlgorithmName} ({tiger.Variant})");   // "Tiger/160 (Tiger2)"

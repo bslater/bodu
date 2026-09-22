@@ -18,6 +18,7 @@ Both derive from a shared <xref:Bodu.Security.Cryptography.Snefru> base, which s
 
 ## Pattern 1 — compute a digest
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -35,6 +36,7 @@ Swap `Snefru256` for `Snefru128` for a 16-byte digest.
 
 Snefru inherits the standard BCL streaming shape:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -49,6 +51,7 @@ You can also drive it block-by-block via `TransformBlock` / `TransformFinalBlock
 
 The two classes are completely independent — the block size differs (48 bytes for Snefru-128, 32 bytes for Snefru-256), and the outputs are not truncations of one another. Pick the width your interoperating system specifies.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

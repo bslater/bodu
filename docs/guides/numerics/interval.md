@@ -31,6 +31,7 @@ Use the static factory methods on `Interval<T>` directly when the
 endpoint type is fixed, or the non-generic `Interval` helper class
 when you want the compiler to infer the type from the arguments:
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -51,6 +52,7 @@ The primary constructor — `new Interval<T>(lower, upper,
 lowerInclusive, upperInclusive)` — is also public for cases where the
 inclusivity comes from a runtime computation:
 
+<!-- compile -->
 ```csharp
 bool isPercentage = true;
 var range = new Interval<double>(0.0, 100.0, true, isPercentage);
@@ -73,6 +75,7 @@ All empty intervals are equal to `Interval<T>.Empty` regardless of the
 bounds they were constructed with — the type honors the mathematical
 fact that there is one empty set, not many:
 
+<!-- compile -->
 ```csharp
 var a = Interval<int>.Empty;
 var b = new Interval<int>(5, 1, true, true);    // inverted bounds
@@ -91,6 +94,7 @@ both-open case.
 `Contains(T)` tests a single value, honoring the inclusivity of each
 endpoint:
 
+<!-- compile -->
 ```csharp
 var range = Interval<int>.ClosedOpen(1, 5);   // [1, 5)
 
@@ -104,6 +108,7 @@ range.Contains(0);  // False — outside the interval
 subset of this one — every value of the inner interval is also a
 value of the outer:
 
+<!-- compile -->
 ```csharp
 var outer = Interval<int>.Closed(0, 10);
 
@@ -138,6 +143,7 @@ collection of intervals by an endpoint explicitly (`OrderBy(i => i.Lower)`).
 `Overlaps(other)` reports whether the two intervals share at least
 one value:
 
+<!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).Overlaps(Interval<int>.Closed(3, 7));      // True
 Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10)); // False — touch only
@@ -152,6 +158,7 @@ value belongs to both.
 values shared by both operands. When the intersection is empty, the
 result is `Interval<T>.Empty`:
 
+<!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).Intersect(Interval<int>.Closed(3, 7));  // [3, 5]
 Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));  // ∅
@@ -160,6 +167,7 @@ Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));  // ∅
 When endpoint values tie, the *stricter* (open) inclusivity wins —
 this guarantees `Intersect` returns a true subset of both operands:
 
+<!-- compile -->
 ```csharp
 var a = Interval<int>.Closed(1, 5);    // [1, 5]
 var b = Interval<int>.Open(1, 5);      // (1, 5)
@@ -174,6 +182,7 @@ operands either overlap or are *adjacent*. Two intervals are adjacent
 when the upper endpoint of one equals the lower endpoint of the other
 and at least one of those endpoints is inclusive:
 
+<!-- compile -->
 ```csharp
 // Adjacent — [1, 5) ∪ [5, 10] -> [1, 10]
 if (Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out var u))
@@ -192,6 +201,7 @@ When endpoint values tie, the *looser* (inclusive) inclusivity wins —
 `TryUnion` returns the union, which is always a superset of either
 operand:
 
+<!-- compile -->
 ```csharp
 var a = Interval<int>.Closed(1, 5);    // [1, 5]
 var b = Interval<int>.Open(1, 5);      // (1, 5)
@@ -221,6 +231,7 @@ measure of the interval. For integer ranges where you want the *count*
 of integers in the interval, endpoint inclusion matters and you
 should compute it directly:
 
+<!-- compile -->
 ```csharp
 static int IntegerCount(Interval<int> r)
 {
@@ -241,6 +252,7 @@ IntegerCount(Interval<int>.Open(1, 5));       // 3 — {2, 3, 4}
 brackets indicate closed endpoints; round brackets indicate open
 endpoints. Empty intervals render as the U+2205 EMPTY SET glyph:
 
+<!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).ToString();      // "[1, 5]"
 Interval<int>.Open(1, 5).ToString();        // "(1, 5)"
@@ -311,6 +323,7 @@ intervals are equal when they describe the same set of values:
 - All empty intervals are equal to each other and share the same
   hash code, regardless of the bounds used to construct them.
 
+<!-- compile -->
 ```csharp
 var a = Interval<int>.Closed(1, 5);
 var b = Interval<int>.Closed(1, 5);

@@ -105,5 +105,5 @@ The Outlook format readers — the shared MAPI value model in `Bodu.Formats.Outl
 - **[Binary Formats & I/O overview](../../docs/topics/binary-formats.md)** — the topic landing page on the docs side.
 - **[Binary Formats & I/O concepts](../../docs/topics/binary-formats-concepts.md)** — the cross-package vocabulary.
 - **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.IO.Biff](../../docs/io-biff/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md) · [Bodu.IO.Pst](../../docs/io-pst/index.md).
-- **Guide index:** [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md) · [Bodu.Formats.Outlook](../outlook/index.md).
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md) · [Bodu.IO.Pst](../io-pst/index.md) · [Bodu.Formats.Outlook](../outlook/index.md).
 - **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook).

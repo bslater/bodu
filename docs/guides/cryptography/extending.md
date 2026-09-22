@@ -24,6 +24,7 @@ title: Extending the library
 
 `BlockHashAlgorithm` owns the residual buffer and the byte counter; you supply the block size (in **bits**) and the digest size through `HashSizeValue`, plus three hooks: `ProcessBlock` for each full block, `PadBlock` to turn the residual into one or two final blocks, and `ProcessFinalBlock` to emit the digest. `Initialize()` must reset your chaining state after calling `base.Initialize()`, and the constructor should call it once.
 
+<!-- compile -->
 ```csharp
 using System.Buffers.Binary;
 using Bodu.Security.Cryptography;

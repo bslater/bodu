@@ -37,6 +37,7 @@ The shared 128-bit block is also why this family does **not** suffer the SWEET32
 
 `AesBlockCipher` is a thin adapter over the BCL `Aes` algorithm that exposes the single-block ECB-mode encrypt / decrypt surface as an `IBlockCipher`. The wrapped BCL implementation is hardware-accelerated on AES-NI-capable CPUs.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

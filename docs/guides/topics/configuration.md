@@ -70,3 +70,4 @@ Surface a parsed and resolved document through the standard `IConfiguration` pip
 - **[Configuration overview](../../docs/topics/configuration.md)** — the topic landing page: pipeline, package table, decision table, install commands.
 - **[Configuration concepts](../../docs/topics/configuration-concepts.md)** — the cross-package vocabulary.
 - **[Bodu.Text.Configuration getting started](../../docs/text-configuration/getting-started.md)** and **[Bodu.Extensions.Configuration.Text getting started](../../docs/extensions-configuration-text/getting-started.md)** — install + minimal runnable samples.
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Text.Configuration](../text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](../extensions-configuration-text/index.md).

@@ -65,6 +65,7 @@ BigDecimal ten  = BigDecimal.Ten;
 `double` does **not** lift implicitly, because the nearest `double`
 to a written decimal is rarely that decimal. Convert deliberately:
 
+<!-- compile -->
 ```csharp
 BigDecimal exactBinary = (BigDecimal)0.1;              // the exact IEEE-754 value of 0.1d
 BigDecimal shortest    = BigDecimal.FromDouble(0.1);   // same value; explicit intent
@@ -94,6 +95,7 @@ var (mantissa, s) = v;
 Addition, subtraction, and multiplication are **exact** — the result
 carries whatever scale is needed to represent it with no loss:
 
+<!-- compile -->
 ```csharp
 BigDecimal sum  = BigDecimal.Add(0.1m, 0.2m);         // 0.3 exactly
 BigDecimal diff = BigDecimal.Subtract(5m, 0.001m);    // 4.999
@@ -121,6 +123,7 @@ cannot divide exactly and unboundedly at the same time. The contract:
   `Divide(BigDecimal dividend, BigDecimal divisor, int scale, MidpointRounding mode)`
   to fix the result scale and rounding mode explicitly.
 
+<!-- compile -->
 ```csharp
 BigDecimal third = BigDecimal.Divide(1m, 3m);                                   // 0.3333…（50 digits）
 BigDecimal cents = BigDecimal.Divide(10m, 3m, scale: 2, MidpointRounding.ToEven); // 3.33
@@ -184,6 +187,7 @@ conversion factories. Those factories are static virtual members of
 through a constrained type parameter rather than called as
 `BigDecimal.CreateChecked(...)` on the concrete type:
 
+<!-- compile -->
 ```csharp
 static T Sum<T>(params T[] values) where T : INumber<T>
 {

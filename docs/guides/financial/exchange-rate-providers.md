@@ -591,6 +591,7 @@ No date-resolution policy applies to a range — you get the rows that exist —
 `Provider`, `Date`, and `IsInverted` travel on the `ExchangeRate` itself, so nothing is
 repeated per row:
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial.Currencies;
 using Bodu.Financial.ExchangeRates;

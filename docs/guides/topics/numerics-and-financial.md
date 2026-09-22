@@ -131,3 +131,4 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 - **[Numerics & Financial overview](../../docs/topics/numerics-and-financial.md)** — the topic landing page: package table, decision table, install commands.
 - **[Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md)** — the cross-package vocabulary.
 - **[Bodu.Numerics getting started](../../docs/numerics/getting-started.md)** and **[Bodu.Financial getting started](../../docs/financial/getting-started.md)** — install + minimal runnable samples.
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Numerics](../numerics/index.md) · [Bodu.Financial](../financial/index.md).

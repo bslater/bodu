@@ -62,3 +62,4 @@ The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-frien
 - **[Bodu.Core introduction](../../docs/core/index.md)** and **[getting started](../../docs/core/getting-started.md)** — namespace map and minimal samples.
 - **[Bodu.Collections introduction](../../docs/collections/index.md)** and **[Bodu.Collections.Concurrent introduction](../../docs/collections-concurrent/index.md)** — the collection packages' namespace maps.
 - **API reference:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.Text](xref:Bodu.Text).
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Core Foundations guides](../core/index.md).

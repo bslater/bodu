@@ -46,6 +46,7 @@ When set, every accelerated primitive runs its scalar reference implementation r
 
 - **In code, at startup**, before touching any hashing or cipher type:
 
+<!-- compile -->
   ```csharp
   AppContext.SetSwitch("Bodu.Security.Cryptography.DisableSimd", true);
   ```

@@ -32,6 +32,7 @@ three-day gap at the end:
 | 2 | `2024-06-18` | Tuesday | `0.9300` |
 | 3 | `2024-06-21` | Friday | `0.9330` |
 
+<!-- compile -->
 ```csharp
 using Bodu.Financial;
 using Bodu.Financial.Currencies;

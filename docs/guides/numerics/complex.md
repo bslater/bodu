@@ -12,6 +12,7 @@ Every value in the comments of this guide was produced by running the sample; th
 
 ## Pattern 1 — construction
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu.Numerics;
@@ -41,6 +42,7 @@ Console.WriteLine(Complex<float>.NaN + " " + Complex<double>.Infinity);   // <Na
 
 ## Pattern 2 — arithmetic and operators
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -62,6 +64,7 @@ bool sameAsOperator = Complex<double>.Add(a, b) == a + b;   // true — Add/Subt
 
 Multiplication uses the direct four-multiply form and division uses Smith's algorithm — the same choices as `System.Numerics.Complex` — so results and non-finite behaviour match the BCL bit for bit (see Pattern 4). `Complex<T>` also satisfies the generic-math operator interfaces, so it works in code written against `INumberBase<TSelf>`:
 
+<!-- compile -->
 ```csharp
 using System.Numerics;
 using Bodu.Numerics;
@@ -79,6 +82,7 @@ Complex<double> result = SumOfSquares(values);   // <5; -2>
 
 ## Pattern 3 — magnitude, phase, conjugate, reciprocal
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -102,6 +106,7 @@ bool inf    = Complex<double>.IsInfinity(Complex<double>.Infinity);   // true
 
 `Complex{T}.Functions.cs` supplies `Sqrt`, `Exp`, `Log`, `Log(value, baseValue)`, `Log10`, `Pow(Complex)`, `Pow(T)`, the six trigonometric and hyperbolic functions, and the three inverse trigonometric functions. The sample below evaluates each on `0.5 − 1.25i` with both types and reports whether the `double` results are bit-identical:
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 using SysComplex = System.Numerics.Complex;
@@ -146,6 +151,7 @@ The logarithm and power family differ from the BCL by a few units in the last pl
 
 The canonical text form is `<real; imaginary>` — the same bracketed, semicolon-separated shape `System.Numerics.Complex.ToString()` produces. The separator is `;` regardless of culture so that a decimal comma (`de-DE`, `fr-FR`) cannot collide with it; the components themselves honour the supplied format and culture.
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using System.Text;
@@ -187,6 +193,7 @@ Accepted input forms are exactly two: the bracketed `<real; imaginary>` pair, an
 
 ## Pattern 6 — `float` and `Half` components
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 

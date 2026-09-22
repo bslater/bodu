@@ -12,6 +12,7 @@ The samples run against `sample1.pst` from the [runnable PST sample](../../sampl
 
 Every payload has a cheap length and a streaming read beside its buffered convenience. On a <xref:Bodu.IO.Pst.PstNode>: `DataLength` sums the data tree's leaf lengths from its index blocks without reading any leaf; `ReadAllBytes()` flattens the tree into one array; `OpenDataStream()` returns a seekable read-only <xref:System.IO.Stream> that keeps one leaf block resident, so the logical payload can exceed available memory.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -37,6 +38,7 @@ Console.WriteLine($"streamed {total} bytes; ReadAllBytes would allocate {node.Re
 
 The interesting payloads are usually not node data but *property values* — an attachment's bytes live behind `PidTagAttachDataBinary` (`0x3701`) in the attachment object's property context. <xref:Bodu.IO.Pst.PstPropertyContext> offers the same pair: `TryGetValueLength(id, out length)` reads only the value's index blocks, and `TryOpenValueStream(id, out stream)` serves a subnode-resident value block by block — the same stream `OpenDataStream` returns — while a heap-resident value is served from the decoded heap bytes.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -78,6 +80,7 @@ Both `Try*` members return `false` when the property is absent and throw <xref:B
 
 Table cells have the identical pair on <xref:Bodu.IO.Pst.PstTableRow> — `TryGetCellLength(id, out length)` and `TryOpenCellStream(id, out stream)` — which answer `false` when the column is missing *or* the row's existence bitmap marks the cell absent:
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -116,6 +119,7 @@ The buffered column is governed by `MaxNodeDataLength` (below); the priced and s
 
 ## `PstFileOptions`
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -164,6 +168,7 @@ The mail-store reader forwards the first three from <xref:Bodu.Formats.Outlook.O
 
 A truncated PST is the commonest damage. Under `Strict` the header's declared file length is compared with the stream at open, so the file is rejected before a single node is read:
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -196,6 +201,7 @@ Catch <xref:Bodu.IO.Pst.PstUnsupportedFormatException> first when you want to sa
 
 The tolerant default opens the same stream — the header is intact and the B-tree pages sit in the surviving half — and fails only when a read reaches past the end:
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -230,6 +236,7 @@ A read that escapes the file surfaces as `InvalidBlock` (or `InvalidPage` for a 
 
 Damage that leaves the geometry intact is where the levels diverge. Flip one byte inside a block's payload and `Compatible` reads straight through it — the bytes are wrong, but nothing structural disagrees — while `Strict` catches the CRC:
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 

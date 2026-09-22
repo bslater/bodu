@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Samples.Plugins</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Plugins\src\Bodu.Globalization.Calendar.Plugins.csproj" />
+
+    <!-- The plugin is loaded by path at runtime, never named at compile time. ReferenceOutputAssembly=false
+         makes that structural rather than a promise: the build produces and copies the plugin DLL, but its
+         types are not available to this project, so the host genuinely only knows it through the loader. -->
+    <ProjectReference Include="..\Bodu.Globalization.Calendar.Samples.Plugin.Contoso\Bodu.Globalization.Calendar.Samples.Plugin.Contoso.csproj"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="PluginAssembly" />
+  </ItemGroup>
+
+  <!-- Copy the built plugin next to the host so the sample can load it by path. -->
+  <Target Name="CopyPluginAssembly" AfterTargets="Build">
+    <Copy SourceFiles="@(PluginAssembly)" DestinationFolder="$(OutDir)plugins" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

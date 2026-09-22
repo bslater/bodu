@@ -30,6 +30,7 @@ foreach (LogEntry e in byCorrelation["missing-key"])   // safe — empty sequenc
 
 ## Pattern 2 — add many values at once
 
+<!-- compile -->
 ```csharp
 var routes = new MultiValueDictionary<string, string>();
 
@@ -87,6 +88,7 @@ The `Keys` collection exposes the distinct keys; `Values` and `ReadOnlyValues` e
 
 ## Pattern 6 — custom key comparison
 
+<!-- compile -->
 ```csharp
 var headers = new MultiValueDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 headers.Add("Accept", "text/html");
@@ -98,6 +100,7 @@ IReadOnlyList<string> accept = headers["ACCEPT"];   // both values, case-insensi
 
 By default the dictionary is a *list* multimap (Guava's `ListMultimap`): every added value is retained, including per-key duplicates. Passing `MultiValueBacking.Set` at construction switches it to an order-preserving *set* multimap (Guava's `SetMultimap`): values are deduplicated per key using an optional `IEqualityComparer<TValue>`, and each value keeps the position of its **first** occurrence.
 
+<!-- compile -->
 ```csharp
 var tags = new MultiValueDictionary<string, string>(
     MultiValueBacking.Set,

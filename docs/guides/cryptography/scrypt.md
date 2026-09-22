@@ -28,6 +28,7 @@ Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests *
 
 ## Pattern 1 — derive a key (static one-shot)
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using System.Text;

@@ -131,6 +131,7 @@ The receiver knows the cipher's block size, so it can slice the fixed-width pref
 
 Every `SymmetricAlgorithm` holds sensitive material (the expanded key schedule, the IV, intermediate buffers). Always wrap in `using`:
 
+<!-- compile -->
 ```csharp
 using var alg = new Threefish256();
 // …
