@@ -20,6 +20,11 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <c>&lt;!-- compile --&gt;</c>. Each opted-in block is compiled as the body of a method against the same assemblies
 /// this test references (Bodu.Financial and the caching layer), so an opted-in block must be method-body statements that
 /// resolve against those references. Illustrative fragments stay unmarked and are not compiled.
+/// <para>
+/// Only the guides this package owns are scanned - see <see cref="OwnedGuideFileNames" />. The rest of
+/// <c>docs/guides/financial</c> belongs to other projects' guards, whose snippets reference packages this test does
+/// not, so scanning the whole folder would fail on examples this project cannot resolve.
+/// </para>
 /// </remarks>
 [TestClass]
 public sealed class DocumentationSnippetCompileTests
@@ -28,6 +33,16 @@ public sealed class DocumentationSnippetCompileTests
     /// The sentinel that opts a fenced <c>csharp</c> block into compilation.
     /// </summary>
     private const string CompileSentinel = "<!-- compile -->";
+
+    /// <summary>
+    /// The guide files this package owns, and therefore the only ones this guard compiles. Every other file under
+    /// <c>docs/guides/financial</c> is covered by the guard in the project whose API it documents.
+    /// </summary>
+    private static readonly string[] OwnedGuideFileNames =
+    [
+        "exchange-rate-caching.md",
+        "caching-configuration.md",
+    ];
 
     /// <summary>
     /// Verifies that every opted-in financial guide snippet compiles against the current public API, with at least one
@@ -48,8 +63,12 @@ public sealed class DocumentationSnippetCompileTests
         var failures = new StringBuilder();
         int marked = 0;
 
-        foreach (string file in Directory.EnumerateFiles(guidesDirectory, "*.md"))
+        foreach (string name in OwnedGuideFileNames)
         {
+            string file = Path.Combine(guidesDirectory, name);
+            if (!File.Exists(file))
+                continue;
+
             foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file)))
             {
                 marked++;
