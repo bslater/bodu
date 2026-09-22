@@ -78,12 +78,26 @@ The caching layer: the read-through
 in-memory and JSON / TOML file backends (whole-territory, civil-year cache entries — warm queries,
 sub-range clipping, and filtered overloads all served without re-resolving; a file-backed cache
 lets a fresh service instance start warm), explicit `Warm` pre-resolution of a serving window,
-and `AddCachedNotableDateService` decorating an already-registered `INotableDateService`, with
-the SQLite / distributed backends and the hosted warm-up shown as fenced comment blocks. A
+and `AddCachedNotableDateService` decorating an already-registered `INotableDateService`. The
+durable backends now run rather than being described: a SQLite-backed cache is read back by a
+second service after the first is disposed, and two services over one `IDistributedCache`
+stand in for two processes sharing a store — both proved by the engine call count not moving.
+The hosted warm-up remains a fenced comment block. A
 `CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
 cache hit is proved by call count rather than by timing. *Packages: `Bodu.Globalization.Calendar`,
 `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.DependencyInjection`,
 `Bodu.Globalization.Calendar.AsiaPacific`.*
+
+### Bodu.Globalization.Calendar.Samples.RegionalData
+
+The five regional data packs — `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`,
+`.MiddleEast`, and `.Africa`. Lists what each pack covers (63 territories between them) and
+resolves a year from each, then shows why a notable-date lookup is territory-scoped: 1 January is
+a public holiday in all five sample territories while 25 December is not one in `AE` at all. A
+closing pass prints AU's 2027 weekend substitutions with the `ActualDate` each shifted from, so
+the adjustment is auditable rather than implied. Every pack is an embedded resource, so nothing
+here reads a file or makes a request. *Packages: the five `Bodu.Globalization.Calendar.<Region>`
+data packs.*
 
 ### Bodu.Globalization.Calendar.Samples.ValidationLint
 

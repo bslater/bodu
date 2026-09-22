@@ -10,6 +10,8 @@
   href: financial.md
 - name: Formats.Excel
   href: excel.md
+- name: Formats.Outlook
+  href: outlook.md
 - name: Globalization.Calendar
   href: calendar.md
 - name: Globalization.Recurrence

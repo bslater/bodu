@@ -301,6 +301,7 @@
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomCalendar/Bodu.Globalization.Calendar.Samples.CustomCalendar.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.NotableDatesBasics/Bodu.Globalization.Calendar.Samples.NotableDatesBasics.csproj" />
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.RegionalData/Bodu.Globalization.Calendar.Samples.RegionalData.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ServiceHosting/Bodu.Globalization.Calendar.Samples.ServiceHosting.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint/Bodu.Globalization.Calendar.Samples.ValidationLint.csproj">
       <Build Solution="Debug|*" Project="false" />
@@ -316,6 +317,7 @@
   </Folder>
   <Folder Name="/Samples/Formats.Excel/">
     <Project Path="samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading/Bodu.Formats.Excel.Binary.Samples.ExcelReading.csproj" />
+    <Project Path="samples/Formats.Outlook/Bodu.Formats.Outlook.Msg.Samples.MessageReading/Bodu.Formats.Outlook.Msg.Samples.MessageReading.csproj" />
   </Folder>
   <Folder Name="/Samples/IO.Biff/">
     <Project Path="samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics/Bodu.IO.Biff.Samples.BiffBasics.csproj" />
@@ -327,6 +329,7 @@
     <Project Path="samples/IO.Pst/Bodu.IO.Pst.Samples.PstBasics/Bodu.IO.Pst.Samples.PstBasics.csproj" />
   </Folder>
   <Folder Name="/Samples/Numerics/">
+    <Project Path="samples/Numerics/Bodu.Numerics.Samples.ComplexNumbers/Bodu.Numerics.Samples.ComplexNumbers.csproj" />
     <Project Path="samples/Numerics/Bodu.Numerics.Samples.Fractions/Bodu.Numerics.Samples.Fractions.csproj" />
     <Project Path="samples/Numerics/Bodu.Numerics.Samples.Intervals/Bodu.Numerics.Samples.Intervals.csproj" />
     <Project Path="samples/Numerics/Bodu.Numerics.Samples.JsonConverters/Bodu.Numerics.Samples.JsonConverters.csproj" />

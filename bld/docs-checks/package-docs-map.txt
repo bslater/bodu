@@ -17,7 +17,8 @@
 #                                the Excel guides that consume it.
 #   Bodu.Text.Serialization      no samples page; the shared engine has no runnable sample of its own,
 #                                it is exercised by every serializer sample.
-#   Bodu.Formats.Outlook*        no samples page; there are no Outlook sample projects under samples/ yet.
+#   (The Outlook packages had no samples page until samples/Formats.Outlook was added; they now
+#    resolve to docs/samples/outlook.md like every other family.)
 #
 # bld/check-docs.py 'packages' fails when a packable package has no row here, when a row names a
 # target that does not exist, or when a row exists for a package that is no longer packable. Adding a
@@ -47,9 +48,9 @@ Bodu.Financial.ExchangeRates.Xe                   exchange-rates                
 Bodu.Financial.ExchangeRates.Yahoo                exchange-rates                 financial                financial
 Bodu.Financial.Serialization.Json                 financial-serialization-json   financial                financial
 Bodu.Formats.Excel.Binary                         excel                          excel                    excel
-Bodu.Formats.Outlook                              outlook                        outlook                  -
-Bodu.Formats.Outlook.Msg                          outlook                        outlook                  -
-Bodu.Formats.Outlook.Pst                          outlook                        outlook                  -
+Bodu.Formats.Outlook                              outlook                        outlook                  outlook
+Bodu.Formats.Outlook.Msg                          outlook                        outlook                  outlook
+Bodu.Formats.Outlook.Pst                          outlook                        outlook                  outlook
 Bodu.Globalization.Calendar                       calendar                       calendar                 calendar
 Bodu.Globalization.Calendar.Africa                calendar-data                  calendar                 calendar
 Bodu.Globalization.Calendar.Americas              calendar-data                  calendar                 calendar
