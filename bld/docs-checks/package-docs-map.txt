@@ -1,0 +1,86 @@
+# Definition of done for a shipping package (Phase 5.5 of reviews/docfx-coverage-audit-and-plan.md).
+#
+# One row per packable package, tab- or space-separated:
+#
+#   <package id>   <docs landing>   <guides>   <samples page>
+#
+# The three targets are resolved under docs/ as:
+#   docs/docs/<docs landing>/index.md   (or docs/docs/<docs landing>.md)
+#   docs/guides/<guides>/               (or docs/guides/<guides>.md)
+#   docs/samples/<samples page>.md
+#
+# Several packages share a family page on purpose — the regional calendar data packs all land on
+# calendar-data, the exchange-rate providers on exchange-rates — so the same target may appear on
+# many rows. A '-' records a deliberate absence, reviewed rather than overlooked:
+#
+#   Bodu.IO.Biff                 no guide folder; the codec is documented through its landing page and
+#                                the Excel guides that consume it.
+#   Bodu.Text.Serialization      no samples page; the shared engine has no runnable sample of its own,
+#                                it is exercised by every serializer sample.
+#   (The Outlook packages had no samples page until samples/Formats.Outlook was added; they now
+#    resolve to docs/samples/outlook.md like every other family.)
+#
+# bld/check-docs.py 'packages' fails when a packable package has no row here, when a row names a
+# target that does not exist, or when a row exists for a package that is no longer packable. Adding a
+# package therefore forces a decision about its documentation rather than letting it ship unlisted.
+
+Bodu.Collections                                  collections                    core                     collections
+Bodu.Collections.Concurrent                       collections-concurrent         core                     collections-concurrent
+Bodu.Core                                         core                           core                     core
+Bodu.Extensions.Configuration.Text                extensions-configuration-text  extensions-configuration-text text-configuration
+Bodu.Financial                                    financial                      financial                financial
+Bodu.Financial.DependencyInjection                financial                      financial                financial
+Bodu.Financial.ExchangeRates                      exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Boe                  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Caching              exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Caching.Distributed  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Caching.Sqlite       exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.DependencyInjection  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Ecb                  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.ExchangeRateHost     exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Fixer                exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Fred                 exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Imf                  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Oanda                exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Ofx                  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Rba                  exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Xe                   exchange-rates                 financial                financial
+Bodu.Financial.ExchangeRates.Yahoo                exchange-rates                 financial                financial
+Bodu.Financial.Serialization.Json                 financial-serialization-json   financial                financial
+Bodu.Formats.Excel.Binary                         excel                          excel                    excel
+Bodu.Formats.Outlook                              outlook                        outlook                  outlook
+Bodu.Formats.Outlook.Msg                          outlook                        outlook                  outlook
+Bodu.Formats.Outlook.Pst                          outlook                        outlook                  outlook
+Bodu.Globalization.Calendar                       calendar                       calendar                 calendar
+Bodu.Globalization.Calendar.Africa                calendar-data                  calendar                 calendar
+Bodu.Globalization.Calendar.Americas              calendar-data                  calendar                 calendar
+Bodu.Globalization.Calendar.AsiaPacific           calendar-data                  calendar                 calendar
+Bodu.Globalization.Calendar.Build                 calendar-tooling               calendar                 calendar
+Bodu.Globalization.Calendar.Builder               calendar-builder               calendar                 calendar
+Bodu.Globalization.Calendar.Caching               calendar-caching               calendar                 calendar
+Bodu.Globalization.Calendar.Caching.Distributed   calendar-caching               calendar                 calendar
+Bodu.Globalization.Calendar.Caching.Sqlite        calendar-caching               calendar                 calendar
+Bodu.Globalization.Calendar.DependencyInjection   calendar-di                    calendar                 calendar
+Bodu.Globalization.Calendar.Europe                calendar-data                  calendar                 calendar
+Bodu.Globalization.Calendar.MiddleEast            calendar-data                  calendar                 calendar
+Bodu.Globalization.Calendar.Plugins               calendar-plugins               calendar                 calendar
+Bodu.Globalization.Calendar.Tool                  calendar-tooling               calendar                 calendar
+Bodu.Globalization.Recurrence                     recurrence                     recurrence               recurrence
+Bodu.IO.Biff                                      io-biff                        -                        io-biff
+Bodu.IO.Compound                                  io-compound                    io-compound              io-compound
+Bodu.IO.Hashing                                   io-hashing                     io-hashing               io-hashing
+Bodu.IO.Pst                                       io-pst                         io-pst                   io-pst
+Bodu.Numerics                                     numerics                       numerics                 numerics
+Bodu.Numerics.Serialization.Json                  numerics-serialization-json    numerics                 numerics
+Bodu.Security.Cryptography                        cryptography                   cryptography             cryptography
+Bodu.Text.Bencode                                 serialization/bencode          serialization/bencode    bencode
+Bodu.Text.Configuration                           text-configuration             text-configuration       text-configuration
+Bodu.Text.Delimited                               formats/delimited              formats                  formats
+Bodu.Text.DotEnv                                  formats/dotenv                 formats                  formats
+Bodu.Text.Encoding                                text-encoding                  text-encoding            text-encoding
+Bodu.Text.Filtering                               text-filtering                 text-filtering           text-filtering
+Bodu.Text.Formats                                 formats                        formats                  formats
+Bodu.Text.Ini                                     formats/ini                    formats                  formats
+Bodu.Text.Serialization                           serialization/core             serialization            -
+Bodu.Text.Toml                                    serialization/toml             serialization/toml       toml
+Bodu.Text.Yaml                                    serialization/yaml             serialization/yaml       yaml

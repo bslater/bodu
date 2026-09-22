@@ -74,6 +74,7 @@ The rules for how scales interact follow the established prior art (`decimal` it
   drops trailing-zero precision down to (never below) the registered minor units. These are the
   counterparts of dinero.js's `transformScale`/`trimScale` and Joda `BigMoney.withScale`.
 
+<!-- compile -->
   ```csharp
   Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
 
@@ -92,6 +93,7 @@ For amounts that are *computed* rather than quoted, prefer the settlement route:
 <xref:Bodu.Financial.MonetaryContext> whose <xref:Bodu.Financial.ScalePolicy> requests a custom
 scale:
 
+<!-- compile -->
 ```csharp
 var ctx = MonetaryContext.Default with
 {

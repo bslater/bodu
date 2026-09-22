@@ -148,6 +148,7 @@ Contract notes for implementers:
 
 A retail (NRF-style) 4-5-4 calendar ends in January, starts its weeks on Sunday, and opens on the Sunday nearest 1 February:
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -185,6 +186,7 @@ int lastDayFy    = retail.GetFiscalYear(new DateOnly(2024, 2, 3));       // 2023
 | `Weeks454` | 4, 5, 4 | weeks 1–4, 5–9, 10–13 |
 | `Weeks445` (default) | 4, 4, 5 | weeks 1–4, 5–8, 9–13; in a 53-week year Q4's third period is 6 weeks |
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -203,6 +205,7 @@ foreach (FiscalWeekPattern pattern in Enum.GetValues<FiscalWeekPattern>())
 
 <xref:Bodu.Extensions.WeekOrdinal> (`First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`) is the "nth weekday of the month" selector consumed by `NthDateOfWeekInMonth` / `GetNthDateOfWeekInMonth`, and reported by the `WeekOrdinalOfMonth` extension property.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -282,6 +285,7 @@ Two failure modes are worth knowing:
 
 <xref:Bodu.WorkingDaysOfWeek> is a closed list of named working weeks (`MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday`, `AllDays`, plus the `Custom` marker); <xref:Bodu.WeekPattern> is an open seven-day bitmask. <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> converts in both directions:
 
+<!-- compile -->
 ```csharp
 using Bodu;
 using Bodu.Extensions;

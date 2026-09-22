@@ -94,6 +94,7 @@ The same shape works for `Adler32`, `Adler64`, `Fletcher16`, `Fletcher32`, `Flet
 
 SipHash was designed to keep hash tables safe from collision-DoS attacks. It is a **reusable PRF** — one secret key authenticates many messages, and even an adversary who knows the algorithm cannot produce collisions efficiently without the key.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -178,6 +179,7 @@ byte[] fingerprint = hash.GetCurrentHash();
 
 For a cryptographic digest the `HashAlgorithm` base exposes `ComputeHash(Stream)`:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -193,6 +195,7 @@ For a larger file where you want partial verifiability — "the first megabyte's
 
 <xref:Bodu.Security.Cryptography.MerkleTree> lets you compute a single root digest over a stream by hashing it in fixed-size blocks and folding the leaves into RFC 6962's Merkle Tree Hash. The root is the one any RFC 6962 implementation computes over the same blocks, so an inclusion proof from the same type can later prove the integrity of an individual chunk without rehashing the whole stream.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

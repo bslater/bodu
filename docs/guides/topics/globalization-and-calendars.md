@@ -4,7 +4,7 @@ title: Globalization & Calendars — Guides
 
 # Globalization & Calendars — Guides
 
-Recipe-style walk-throughs for the calendar package family — the `Bodu.Globalization.Calendar` runtime, its companions (Builder, DependencyInjection, Plugins, Caching, Tool, Build), the five regional data packs, and the independent `Bodu.Globalization.Recurrence` sibling. Every guide in this topic lives under the [Bodu.Globalization.Calendar guides section](../calendar/index.md); this page is the topic-level map.
+Recipe-style walk-throughs for the calendar package family — the `Bodu.Globalization.Calendar` runtime, its companions (Builder, DependencyInjection, Plugins, Caching, Tool, Build), the five regional data packs, and the independent `Bodu.Globalization.Recurrence` sibling. This page is the topic-level map; the complete guide lists live in the [calendar guides index](../calendar/index.md) and the [Recurrence guides index](../recurrence/index.md).
 
 If you are new to the family, start with the [topic overview](../../docs/topics/globalization-and-calendars.md) for the package decision table and the [topic concepts](../../docs/topics/globalization-and-calendars-concepts.md) for the shared vocabulary, then come back here for the hands-on material.
 
@@ -126,3 +126,4 @@ If you are new to the family, start with the [topic overview](../../docs/topics/
 - [Topic concepts](../../docs/topics/globalization-and-calendars-concepts.md) — the cross-package vocabulary.
 - [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — the runtime's mental model and headline types.
 - [Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar) — full type-by-type docs.
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Globalization.Calendar](../calendar/index.md) · [Bodu.Globalization.Recurrence](../recurrence/index.md).

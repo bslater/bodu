@@ -8,6 +8,7 @@ title: Using DotEnv
 
 ## Pattern 1 — query a document
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv.Document;
 
@@ -45,6 +46,7 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(
 
 ## Pattern 3 — author and round-trip with the mutable DOM
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv.Nodes;
 

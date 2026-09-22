@@ -36,6 +36,7 @@ DiscreteInterval<int>.Closed(1, 10).Count;                                // 10
 Two integer intervals with no integer between them are adjacent and union to a
 single run, even though their endpoints are not equal:
 
+<!-- compile -->
 ```csharp
 var a = DiscreteInterval<int>.Closed(1, 2);
 var b = DiscreteInterval<int>.Closed(3, 4);
@@ -63,6 +64,7 @@ type. Formatting mirrors <xref:Bodu.Numerics.Interval`1>: the type implements
 `IFormattable`, `ISpanFormattable`, and `IUtf8SpanFormattable`, delegating to
 the equivalent continuous interval's canonical closed form.
 
+<!-- compile -->
 ```csharp
 DiscreteInterval<int>.Closed(0, 10).Difference(DiscreteInterval<int>.Closed(3, 5));   // [0, 2] ∪ [6, 10]
 ```

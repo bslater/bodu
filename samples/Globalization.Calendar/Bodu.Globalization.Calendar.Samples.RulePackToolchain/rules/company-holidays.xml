@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A notable-date rule document, authored as data rather than in code.
+
+  This is the input side of the rule-pack toolchain. The MSBuild integration in
+  Bodu.Globalization.Calendar.Build picks this file up as a NotableDatePack item, invokes the
+  bodu-calendar tool from Bodu.Globalization.Calendar.Tool to lint and compile it, and copies the
+  sealed .bcal pack it emits beside the application. Program.cs then loads that pack with
+  NotableDateResourceLoader.LoadBinary - the runtime never parses this XML.
+
+  It was generated once with NotableDateDocumentBuilder so the schema is exactly what the loader
+  expects; edit it by hand from here, and the build will tell you if an edit breaks it.
+-->
+<NotableDateResource schemaVersion="1.0" resourceId="company-holidays" xmlns="urn:bodu:globalization:calendar">
+  <Metadata>
+    <Name>Company holidays</Name>
+    <Description>Days the company observes, compiled to a binary pack at build time</Description>
+  </Metadata>
+  <NotableDates>
+    <NotableDate id="new-year" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="fixed">
+          <Strategy>
+            <Fixed month="January" day="1" />
+          </Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+    <NotableDate id="founders-day" displayName="Founders' Day" category="Other" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="fixed">
+          <Strategy>
+            <Fixed month="March" day="12" />
+          </Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+    <NotableDate id="christmas" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
+      <Rules>
+        <Rule id="fixed">
+          <Strategy>
+            <Fixed month="December" day="25" />
+          </Strategy>
+        </Rule>
+      </Rules>
+    </NotableDate>
+  </NotableDates>
+</NotableDateResource>

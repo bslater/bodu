@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Formats.Outlook.Msg.Samples.MessageReading</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The reader under demonstration, and the container writer the sample authors its fixture with. -->
+    <ProjectReference Include="..\..\..\Bodu.Formats.Outlook.Msg\src\Bodu.Formats.Outlook.Msg.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.IO.Compound\src\Bodu.IO.Compound.csproj" />
+  </ItemGroup>
+
+</Project>

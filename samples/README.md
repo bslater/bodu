@@ -28,7 +28,7 @@ API drift breaks the build immediately.
 
 Domain folders under `samples/` are named by namespace segment — `Core/`, `Collections/`,
 `Collections.Concurrent/`, `Financial/`, `Formats.Excel/`, `Globalization.Calendar/`,
-`Globalization.Recurrence/`, `IO.Compound/`, `IO.Hashing/`, `IO.Pst/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
+`Globalization.Recurrence/`, `Formats.Outlook/`, `IO.Compound/`, `IO.Hashing/`, `IO.Pst/`, `Numerics/`, `Security.Cryptography/`, `Text.Toml/`,
 `Text.Yaml/`, `Text.Bencode/`, `Text.Formats/`, `Text.Configuration/`, `Text.Encoding/`, `Text.Filtering/` —
 mirroring how
 folders map to namespaces in the library source trees. The `samples/` root itself stays lowercase, like `src`/`test`/`bench`, because it is

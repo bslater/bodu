@@ -24,6 +24,7 @@ title: Using Threefish-256
 
 The default configuration. Use this unless you have a specific reason to pick a different mode.
 
+<!-- compile -->
 ```csharp
 using System.Diagnostics;
 using System.Linq;
@@ -134,6 +135,7 @@ A common pattern is to set the tweak to a record ID, a filesystem path, or a mes
 
 ## File encryption
 
+<!-- compile -->
 ```csharp
 using var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 };
 alg.GenerateKey();

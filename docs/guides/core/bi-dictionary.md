@@ -18,6 +18,7 @@ A few contract points worth keeping in mind:
 
 ## Pattern 1 — translate in both directions
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -37,6 +38,7 @@ codes.RemoveValue(36);                        // removes the pair ("AU", 36)
 
 `Inverse` exposes the reversed mapping as a `BiDictionary<TValue, TKey>` **view sharing the same storage** — not a copy. Mutations through either view are immediately visible through the other, and `Inverse.Inverse` returns the original instance (reference-equal):
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -54,6 +56,7 @@ Through the inverse view, keys and values swap roles — the view's `KeyComparer
 
 ## Pattern 3 — choosing the duplicate-value policy
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -81,4 +84,4 @@ The indexer setter follows the same policy for value conflicts. Re-binding an ex
 - [Multi-value dictionary](multi-value-dictionary.md) — one key to many values when the mapping is not one-to-one.
 - [Sequenced dictionary](sequenced-dictionary.md) — a dictionary with a stable, contractual iteration order.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.

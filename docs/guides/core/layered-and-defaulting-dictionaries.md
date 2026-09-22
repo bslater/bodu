@@ -12,6 +12,7 @@ Two small dictionary utilities round out the dictionary family with shapes borro
 
 This is the same first-wins precedence model as `Bodu.Text.Configuration`'s resolver chain, where earlier configuration sources take precedence over later ones — a layered dictionary is the general-purpose collection expression of that idea: overrides in front, defaults behind.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -45,6 +46,7 @@ Contract points worth keeping in mind:
 
 `DefaultingDictionary<TKey, TValue>` wraps a `Dictionary<TKey, TValue>` and bakes a `Func<TKey, TValue>` value factory into the type: reading a **missing key through the indexer** invokes the factory, **stores** the produced value, and returns it. Exactly as in Python — where `__missing__` fires only for `d[key]` — the indexer getter is the *only* member that materializes defaults: `TryGetValue`, `ContainsKey`, `Remove`, `Count`, and enumeration see only entries that have actually been stored.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -72,4 +74,4 @@ Contract points:
 - <xref:Bodu.Collections.Generic.LayeredDictionary`2> and <xref:Bodu.Collections.Generic.DefaultingDictionary`2> — the full API surfaces.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
 - [Sequenced dictionary](sequenced-dictionary.md), [Bidirectional dictionary](bi-dictionary.md), [Multi-value dictionary](multi-value-dictionary.md) — the rest of the dictionary family.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.

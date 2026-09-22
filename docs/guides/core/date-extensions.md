@@ -19,6 +19,7 @@ Two rules apply everywhere:
 
 ## Pattern 1 — boundaries of a week, month, quarter, or year
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu;
@@ -50,6 +51,7 @@ TimeSpan tod = monthStart.TimeOfDay;                    // 00:00:00 — boundari
 
 ## Pattern 2 — navigating by day of week
 
+<!-- compile -->
 ```csharp
 using Bodu;
 using Bodu.Extensions;
@@ -86,6 +88,7 @@ DateTime lastRun = seriesStart.PreviousOccurrence(TimeSpan.FromDays(7), before: 
 
 The ISO members are independent of culture: weeks start on Monday and week 1 is the week containing the first Thursday.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -105,6 +108,7 @@ int weeks2024    = DateTimeExtensions.GetIsoWeeksInYear(2024);          // 52
 
 `WeekOfYear` and `WeekOfMonth` follow the BCL's <xref:System.Globalization.CalendarWeekRule> and first-day-of-week — from the current culture, an explicit culture, or an explicit rule pair.
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu.Extensions;
@@ -127,6 +131,7 @@ DateTime week20 = DateTimeExtensions.GetStartDateOfWeek(2024, 20, CultureInfo.Ge
 
 ## Pattern 5 — quarters and fiscal years
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -147,6 +152,7 @@ bool isStart     = date.IsFirstDateOfQuarter(CalendarQuarterDefinition.JanuaryTo
 
 ## Pattern 6 — predicates
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu;
@@ -176,6 +182,7 @@ string month    = saturday.MonthName(CultureInfo.InvariantCulture);             
 
 ## Pattern 7 — age, truncation, and day boundaries
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -195,6 +202,7 @@ DateTime shifted = asAt.Add(years: 1, months: -1, days: 0.5); // 2025-04-16 02:3
 
 ## Pattern 8 — conversions and static companions
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu.Extensions;
@@ -225,6 +233,7 @@ Every `Get…` static on `DateTimeExtensions` is the year/month-addressed compan
 
 Every calendar member above exists on `DateOnly` with the same name and rules. The differences are the members that need a time of day or an instant:
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 

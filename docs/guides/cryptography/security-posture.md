@@ -54,6 +54,7 @@ BLAKE2b, BLAKE2s, BLAKE3, Threefish-256/512/1024, and CubeHash carry AVX-512 ker
 
 or, in a `runtimeconfig.template.json`, `{ "configProperties": { "Bodu.Security.Cryptography.DisableSimd": true } }`, or `AppContext.SetSwitch("Bodu.Security.Cryptography.DisableSimd", true)` before the first accelerated primitive runs. The switch is read **once** at type initialization and cannot be toggled afterwards. The repository proves the scalar paths independently: `Bodu.Security.Cryptography.Simd.Test` is a separate test assembly whose `runtimeconfig.template.json` sets the switch, so the accelerated primitives are exercised through their scalar code and must still reproduce the published digests. See [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md).
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

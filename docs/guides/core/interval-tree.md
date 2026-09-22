@@ -33,6 +33,7 @@ The backing structure — a max-endpoint augmented red-black tree reusing the na
 
 ## Pattern 1 — conflict detection and stabbing
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -52,6 +53,7 @@ if (bookings.Intersects(11, 13))                    // true — design review re
 
 ## Pattern 2 — window queries over annotations
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -67,6 +69,7 @@ foreach ((long low, long high) in features.QueryOverlaps(4_600, 9_000))
 
 ## Pattern 3 — duplicate slots and targeted removal
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

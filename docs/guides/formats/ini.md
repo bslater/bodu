@@ -8,6 +8,7 @@ title: Using INI
 
 ## Pattern 1 — query a document
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 using Bodu.Text.Ini.Document;
@@ -68,6 +69,7 @@ Annotate a partial section type with `[IniSection]` and reference the `Bodu.Text
 
 ## Pattern 3 — comment-preserving edits with the mutable DOM
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Ini.Nodes;
 

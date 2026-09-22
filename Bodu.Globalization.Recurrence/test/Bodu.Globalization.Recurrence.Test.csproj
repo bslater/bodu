@@ -22,4 +22,8 @@
     <EmbeddedResource Include="Fixtures\Vectors\*.csv" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

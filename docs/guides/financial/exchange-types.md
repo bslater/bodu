@@ -49,6 +49,7 @@ quotes to load into a provider. It deliberately does **not** round;
 the destination currency's minor-unit precision is applied only when
 the rate meets a `Money` at the conversion boundary.
 
+<!-- compile -->
 ```csharp
 var rate = new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "ECB");
 decimal eurAmount = rate.Convert(100m);   // 92.80 — unrounded
@@ -63,6 +64,7 @@ way round, or to the wrong currency, is a **build error** rather than a
 runtime surprise. **Reach for it** for `Money<TCurrency>` conversions
 where both ends are known at the call site.
 
+<!-- compile -->
 ```csharp
 var typed = new ExchangeRate<USD, EUR>(0.928m, new DateOnly(2024, 6, 14), "ECB");
 Money<EUR> eur = Money.Of<USD>(100m).Convert(typed);   // typed Convert overload
@@ -123,6 +125,7 @@ atomic rollback — a mid-batch failure leaves the builder untouched.
 `ToSeries()` snapshots an immutable series; it throws on an empty
 builder because a series must hold at least one observation.
 
+<!-- compile -->
 ```csharp
 var builder = new RateSeriesBuilder(new CurrencyPair(CurrencyCode.USD, CurrencyCode.AUD), "RBA");
 builder.Add(new DateOnly(2026, 6, 1), 1.50m);
@@ -152,6 +155,7 @@ point, `GetOrAddSeries(...)` exposes a builder for bulk work,
 `ToSeries()` snapshots every non-empty series, and `ToBook()`
 materialises the whole `RateBook` ready to hand to a provider.
 
+<!-- compile -->
 ```csharp
 var table = new RateTableBuilder();
 table.Upsert(new CurrencyPair(CurrencyCode.USD, CurrencyCode.AUD), "RBA", new DateOnly(2026, 6, 1), 1.50m);
@@ -196,6 +200,7 @@ dictionary. Same-currency lookups short-circuit to `1m`, a missing pair
 falls back to the inverse (returning `1 / rate`), and a pair missing in
 both directions throws `KeyNotFoundException`.
 
+<!-- compile -->
 ```csharp
 var table = new FixedRateTable(new Dictionary<(string, string), decimal>
 {

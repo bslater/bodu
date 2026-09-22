@@ -12,6 +12,7 @@ For the "which form" decision and the shared due-ness recipe, start at the [recu
 
 `Parse(string)` infers the layout from the field count: five fields is <xref:Bodu.Globalization.Recurrence.CronFormat>`.Standard` (minute, hour, day-of-month, month, day-of-week) and six is `CronFormat.WithSeconds` (a leading seconds field). The `Format` property reports which one was chosen.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -27,6 +28,7 @@ DateTime? previous = nightly.GetPreviousOccurrence(now);              // 2026-03
 
 Answers preserve the `Kind` of the argument and carry zero seconds in the five-field layout (an `after` of `01:59:30` still answers `02:00:00`). Both boundary flags work as on every other form: `inclusive: true` lets an occurrence exactly equal to the boundary be returned.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -43,6 +45,7 @@ Pass the layout explicitly with `Parse(string, CronFormat)` when the field count
 
 Five `TryParse` overloads cover the same choices without exceptions. The two that add `out string? failureMessage` name the defect, which is the right shape for configuration validation:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -84,6 +87,7 @@ Two behaviours are worth stating because libraries disagree on them:
 - **A step wider than its range selects the range start** rather than being rejected: `*/60` and `*/90` in the minute field both mean minute `0` (cronie warns about this; some libraries throw). A step of `0` is rejected ("The cron field '1-5/0' is not valid.").
 - **Day-of-month and day-of-week combine by union only when both are restricted.** Following Vixie cron, an instant matches when it satisfies *either* field if both are restricted, and *both* fields otherwise — and "restricted" is decided by the field's leading character, so `*/2` (leading `*`) is unrestricted while `1-31/2` is restricted even though the two select the same days:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -98,8 +102,8 @@ DateTime? starStep = CronExpression.Parse("0 0 */2 * MON").GetNextOccurrence(now
 DateTime? rangeStep = CronExpression.Parse("0 0 1-31/2 * MON").GetNextOccurrence(now); // 2026-03-11 Wed
 ```
 
-> [!WARNING]
-> `ToString()` renders every field as `*` or an explicit numeric list, so `0 0 */2 * MON` renders as `0 0 1,3,5,…,31 * 1` — and that text re-parses with a *restricted* day-of-month, which flips the combination from intersection to union (23 March above becomes 11 March). `Equals` compares field sets only, so the two expressions still compare equal. Persist the **original** text for a `*`-leading day step that is combined with a restricted day-of-week (or the reverse); the canonical form is safe for every other expression.
+> [!NOTE]
+> Because the combination is chosen by the leading character rather than by the days a field selects, it is part of the expression's meaning. `ToString()` preserves it — `0 0 */2 * MON` renders as `0 0 */2 * 1`, keeping the star — so the canonical text always re-parses to the same schedule, and `Equals` treats the intersection and union readings as different values. Where the plain rendering cannot change the combination, it is used unchanged: `* * */10 * *` still renders as `* * 1,11,21,31 * *`, because the day-of-week `*` keeps that expression on the intersection branch either way.
 
 ## The `@` macros
 
@@ -119,6 +123,7 @@ A macro always yields `CronFormat.Standard`; parsing one with `CronFormat.WithSe
 
 `*/15 9-17 * * MON-FRI` fires every quarter hour from 09:00 through 17:45 on weekdays. Because the hour field is a *set*, the last slot of the day is 17:45 and the next after that is 09:00 on the next weekday:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -137,6 +142,7 @@ To stop at 17:00 rather than 17:45, list the fields explicitly: `*/15 9-16 * * M
 
 Vixie cron has no "last day" token (`L` is a Quartz extension the parser rejects). Derive it from the first of next month:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -156,6 +162,7 @@ Equivalently, `GetPreviousOccurrence` on `0 0 1 * *` from a point in the *next* 
 
 Every search scans **twelve years** in the requested direction and answers `null` past it. Twelve covers the largest gap between two consecutive occurrences of any satisfiable expression — a 29 February schedule crossing a non-leap century year (2096 → 2104, eight years) — with margin, while still bounding the search for an expression that can never match:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -170,6 +177,7 @@ DateTime? neverBack = CronExpression.Parse("0 0 30 2 *").GetPreviousOccurrence(n
 
 The `DateTimeOffset` overloads interpret the argument's wall-clock time in its own offset and return an occurrence carrying that offset — no conversion, no time-zone lookup. `0 9 * * *` queried at `2026-03-10 14:32 +10:00` answers `2026-03-11 09:00 +10:00`; queried at `14:32 +00:00` it answers `09:00 +00:00`. A host that wants "09:00 local" across a daylight-saving change re-derives the offset on every evaluation; see [Hosting schedules](scheduling-host.md#pattern-4--daylight-saving-and-time-zones-at-the-boundary).
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -181,7 +189,7 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 
 ## Canonical text and equality
 
-`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list — names, ranges, and steps are expanded, and `7` becomes `0`. `Equals` compares the six field sets and the layout, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5`. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>. See the warning under [Field syntax](#field-syntax) for the one case where the canonical text is not a faithful round-trip.
+`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list — names, ranges, and steps are expanded, and `7` becomes `0`. The two day fields are the exception: where the plain rendering would flip the union / intersection combination, the field keeps a spelling that preserves it (`*/2` stays `*/2`, a restricted but complete field stays `1-31`), so the canonical text always re-parses to an equal expression. `Equals` compares the six field sets, the layout, and that combination, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5` while `0 0 */2 * MON` does **not** equal `0 0 1-31/2 * MON` — the two select instants two weeks apart. A single restricted day field is not observable on its own, so `* * * * *` and `* * 1-31 * *` remain equal. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>.
 
 ## API summary
 

@@ -37,6 +37,7 @@ A resource-driven notable-date engine plus an ecosystem of opt-in companions (fl
 | Package | What it provides | Target framework |
 |---|---|---|
 | **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. Companion packages add fluent authoring (`…Builder`), `IServiceCollection` registration (`…DependencyInjection`), plugin loading (`…Plugins`), and five regional data packs. | `net8.0` |
+| **[Bodu.Globalization.Recurrence](recurrence/index.md)** | Recurrence-rule evaluation with no dependency on the calendar engine — `RecurrenceRule` for RFC 5545 `RRULE` (parse, format, and occurrence enumeration across every frequency and `BY*` part), `RecurrenceSet` for rules composed with `RDATE` / `EXDATE`, `CronExpression` for Vixie five-field and six-field cron, and `AnchoredInterval` for instant-anchored repetition. Every form answers both `GetNextOccurrence` and `GetPreviousOccurrence`, and is pure in its arguments — no wall clock, no machine time zone. | `net8.0` |
 
 ### [Text & Serialization](topics/text-and-serialization.md)
 
@@ -76,8 +77,10 @@ Legacy binary container and document formats — a general-purpose compound-file
 | **[Bodu.IO.Compound](io-compound/index.md)** | A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage "file system in a file" behind legacy Office documents (`.xls`, `.doc`, `.ppt`, `.msg`). Navigates the `RootStorage` hierarchy, reads each named stream through a seekable `CompoundStream` cursor (buffered or on-demand), edits and authors containers with a transactional `Commit` / `CommitAsync`, and reads and writes the OLE summary-information property sets. | `net8.0` |
 | **[Bodu.IO.Biff](io-biff/index.md)** | A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy `.xls` workbooks — the substrate beneath `Bodu.Formats.Excel.Binary`, in the same relation `Bodu.IO.Pst` has to `Bodu.Formats.Outlook.Pst`. The forward-only `BiffReader` frames records and exposes typed accessors; `BiffSstReader` walks the shared string table; `BiffWriter` emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model. | `net8.0` |
 | **[Bodu.Formats.Excel.Binary](excel/index.md)** | A narrow, read-only BIFF5 and BIFF8 (`.xls`) reader built on `Bodu.IO.Compound` and `Bodu.IO.Biff` that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation. | `net8.0` |
+| **[Bodu.IO.Pst](io-pst/index.md)** | A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI) — the node database (header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees) and the LTP layer over it, exposing each `PstNode`'s property-context and table-context views with wire-typed values. The substrate beneath the `.pst` mail-store reader; no MAPI semantics, no writing. | `net8.0` |
+| **[Bodu.Formats.Outlook](outlook/index.md)** | The Outlook format readers over the shared MAPI value model — property tags and types, the tag-addressed `MapiPropertyCollection`, and named-property identities in `Bodu.Formats.Outlook`; `Bodu.Formats.Outlook.Msg` opens a `.msg` message over `Bodu.IO.Compound`, and `Bodu.Formats.Outlook.Pst` opens a `.pst` mail store over `Bodu.IO.Pst` — folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation. | `net8.0` |
 
-Each package is versioned and released independently — take the one you need and ignore the others. `Bodu.Core` sits under the whole suite: its `ThrowHelper` supplies the shared argument validation, and every runtime package references it directly or transitively. The remaining cross-package dependencies run one way: `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` is an umbrella over `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, and those three — like `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` — build on the shared `Bodu.Text.Serialization` engine; `Bodu.Text.Configuration` references only `Bodu.Core`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration`, `Bodu.Text.Toml`, and `Bodu.Text.Bencode` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` and `Bodu.IO.Biff` to read BIFF5 and BIFF8 `.xls` workbooks; and `Bodu.IO.Pst` builds on `Bodu.Collections`. The [package matrix](package-matrix.md) lists every package's dependencies.
+Each package is versioned and released independently — take the one you need and ignore the others. `Bodu.Core` sits under the whole suite: its `ThrowHelper` supplies the shared argument validation, and every runtime package references it directly or transitively. The remaining cross-package dependencies run one way: `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` is an umbrella over `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, and those three — like `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` — build on the shared `Bodu.Text.Serialization` engine; `Bodu.Text.Configuration` references only `Bodu.Core`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration`, `Bodu.Text.Toml`, and `Bodu.Text.Bencode` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` and `Bodu.IO.Biff` to read BIFF5 and BIFF8 `.xls` workbooks; `Bodu.IO.Pst` builds on `Bodu.Collections`; `Bodu.Formats.Outlook` is container-free and is consumed by `Bodu.Formats.Outlook.Msg` (over `Bodu.IO.Compound`) and `Bodu.Formats.Outlook.Pst` (over `Bodu.IO.Pst`); and `Bodu.Globalization.Recurrence` references only `Bodu.Core` — it is a sibling of the calendar engine, not a dependant. The [package matrix](package-matrix.md) lists every package's dependencies.
 
 ## Library introductions
 
@@ -171,6 +174,17 @@ Each library has a dedicated introduction page that explains its namespaces, the
     <a href="calendar/getting-started.md">Getting started</a>
     <a href="../guides/calendar/index.md">Guides</a>
     <a href="xref:Bodu.Globalization.Calendar">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="recurrence/index.md">Bodu.Globalization.Recurrence</a></h3>
+  <p>Recurrence-rule evaluation in four shapes — RFC 5545 <code>RRULE</code> and <code>RecurrenceSet</code>, Vixie <code>CronExpression</code>, and instant-anchored <code>AnchoredInterval</code> — each answering both the next and the previous occurrence, and each pure in its arguments.</p>
+  <div class="bodu-card-links">
+    <a href="recurrence/index.md">Introduction</a>
+    <a href="recurrence/getting-started.md">Getting started</a>
+    <a href="../guides/recurrence/index.md">Guides</a>
+    <a href="xref:Bodu.Globalization.Recurrence">API reference</a>
   </div>
 </div>
 
@@ -316,6 +330,28 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="io-pst/index.md">Bodu.IO.Pst</a></h3>
+  <p>The read-only PST container layer — walk the node database and read any <code>PstNode</code>'s property-context and table-context views with wire-typed values, with the block encodings decoded and the checksums verified. No MAPI semantics; the substrate the mail-store reader sits on.</p>
+  <div class="bodu-card-links">
+    <a href="io-pst/index.md">Introduction</a>
+    <a href="io-pst/getting-started.md">Getting started</a>
+    <a href="../guides/io-pst/index.md">Guides</a>
+    <a href="xref:Bodu.IO.Pst">API reference</a>
+  </div>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="outlook/index.md">Bodu.Formats.Outlook</a></h3>
+  <p>The Outlook message and mail-store readers over one shared MAPI value model — open a <code>.msg</code> file or a <code>.pst</code> store and read folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only.</p>
+  <div class="bodu-card-links">
+    <a href="outlook/index.md">Introduction</a>
+    <a href="outlook/getting-started.md">Getting started</a>
+    <a href="../guides/outlook/index.md">Guides</a>
+    <a href="xref:Bodu.Formats.Outlook">API reference</a>
+  </div>
+</div>
+
 </div>
 
 ## Design principles
@@ -336,5 +372,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **Topic overviews:** [Core Foundations](topics/core-foundations.md) · [Hashing & Cryptography](topics/hashing-and-cryptography.md) · [Globalization & Calendars](topics/globalization-and-calendars.md) · [Text & Serialization](topics/text-and-serialization.md) · [Configuration](topics/configuration.md) · [Numerics & Financial](topics/numerics-and-financial.md) · [Binary Formats & I/O](topics/binary-formats.md).
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Package matrix](package-matrix.md)** — the authoritative package list with status, dependencies, and install commands.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md).
-- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.Collections](collections/index.md) · [Bodu.Collections.Concurrent](collections-concurrent/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Globalization.Recurrence](recurrence/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Filtering](text-filtering/index.md) · [Bodu.Text.Formats](formats/index.md) · [Bodu.Text.Bencode](serialization/bencode/index.md) · [Bodu.Text.Toml](serialization/toml/index.md) · [Bodu.Text.Yaml](serialization/yaml/index.md) · [Bodu.Text.Configuration](text-configuration/index.md) · [Bodu.Extensions.Configuration.Text](extensions-configuration-text/index.md) · [Bodu.Text](text/index.md) · [Bodu.Numerics](numerics/index.md) · [Bodu.Financial](financial/index.md) · [Bodu.IO.Compound](io-compound/index.md) · [Bodu.IO.Biff](io-biff/index.md) · [Bodu.Formats.Excel.Binary](excel/index.md) · [Bodu.IO.Pst](io-pst/index.md) · [Bodu.Formats.Outlook](outlook/index.md).
+- **API references:** [Bodu.Collections.Generic](xref:Bodu.Collections.Generic) · [Bodu.IO.Hashing](xref:Bodu.IO.Hashing) · [Bodu.Security.Cryptography](xref:Bodu.Security.Cryptography) · [Bodu.Globalization.Calendar](xref:Bodu.Globalization.Calendar) · [Bodu.Text](xref:Bodu.Text) · [Bodu.Numerics](xref:Bodu.Numerics) · [Bodu.Financial](xref:Bodu.Financial) · [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook) · [Bodu.Globalization.Recurrence](xref:Bodu.Globalization.Recurrence).

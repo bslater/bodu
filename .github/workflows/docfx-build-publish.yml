@@ -51,8 +51,10 @@ jobs:
 
     - name: Check documentation coverage guard rails
       # Orphaned pages, namespaces without an apidoc overview, prose identifiers
-      # that do not exist in src/, and package-status claims that disagree with
-      # docs/docs/package-matrix.md. Allow-lists live in bld/docs-checks/.
+      # that do not exist in src/, package-status claims that disagree with
+      # docs/docs/package-matrix.md, and the per-package definition of done
+      # (landing page, guides, samples page) declared in
+      # bld/docs-checks/package-docs-map.txt. Allow-lists live in bld/docs-checks/.
       run: python3 bld/check-docs.py all
 
     - name: Audit content for stale link patterns

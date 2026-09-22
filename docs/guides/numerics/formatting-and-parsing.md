@@ -23,6 +23,7 @@ Specifiers are case-insensitive — `Format` uppercases the first character — 
 
 `ToString()` and `ToString("G")` render the canonical pair as `numerator/denominator`. When the canonical denominator is one, the slash and denominator are omitted so whole numbers print as a bare integer:
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Create(3, 4).ToString();    // "3/4"
 Fraction<int>.Create(-7, 4).ToString();   // "-7/4"  — sign rides on the numerator
@@ -36,6 +37,7 @@ The general form is the round-trip wire shape: `JsonSerializer.Serialize` (see b
 
 `ToString("M")` separates the whole part from the proper remainder with a single space. The whole part carries the sign; the fractional part is always written with a non-negative numerator. Whole-number and proper-fraction values short-circuit to their bare forms:
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Create(7, 4).ToString("M");    // "1 3/4"
 Fraction<int>.Create(-7, 4).ToString("M");   // "-1 3/4"  — sign on the whole part
@@ -62,6 +64,7 @@ The convenience methods <xref:Bodu.Numerics.Fraction`1>.`ToMixedString(provider)
 
 When the canonical proper-fraction remainder matches one of these pairs, the result is `[sign][whole part][glyph]` with the whole part suppressed when zero. When no glyph applies, the formatter falls back to the mixed-number form:
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Create(1, 2).ToString("U");    // "½"
 Fraction<int>.Create(3, 4).ToString("U");    // "¾"
@@ -81,6 +84,7 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToUnicodeString(provider
 
 `ToString("P")` scales the value by 100, reduces the result to lowest terms, and renders it as a ratio with a trailing `%`. It is **not** a mixed number: a non-whole percentage prints as `numerator/denominator%`, and a whole one prints as `numerator%`:
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Create(3, 4).ToString("P");    // "75%"     — 300/4 reduces to 75/1
 Fraction<int>.Create(7, 4).ToString("P");    // "175%"    — 700/4 reduces to 175/1
@@ -106,6 +110,7 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider
 
 Parsing is lenient about whitespace — leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the parsed denominator by 100 in lowest terms.
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Parse("3/4");          // 3/4
 Fraction<int>.Parse("  2 1/3  ");    // 7/3       — whitespace trimmed
