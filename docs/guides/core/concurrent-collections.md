@@ -4,7 +4,7 @@ title: Concurrent collections
 
 # Concurrent collections
 
-`Bodu.Collections.Generic.Concurrent` ships three thread-safe collections that pair with their non-concurrent peers in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup, and `ConcurrentEvictingDictionary<TKey,TValue>` for a bounded cache with policy-driven eviction under concurrent reads and writes. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
+`Bodu.Collections.Generic.Concurrent` ships four thread-safe collections. Three pair with a non-concurrent peer in `Bodu.Collections.Generic`: `ConcurrentCircularBuffer<T>` for fixed-capacity FIFO under multi-producer / multi-consumer load, `ConcurrentHashSet<T>` for an unordered set of unique elements under concurrent add / remove / lookup, and `ConcurrentEvictingDictionary<TKey,TValue>` for a bounded cache with policy-driven eviction under concurrent reads and writes. The fourth, `ConcurrentLruCache<TKey,TValue>`, has no non-concurrent peer — it is a second bounded cache that trades exactness for lock-free reads. The namespace ships in the **`Bodu.Collections.Concurrent`** package (which depends on `Bodu.Collections`) — install with `dotnet add package Bodu.Collections.Concurrent`.
 
 Reach for them when the same collection is accessed by multiple producers and consumers — external locking around `CircularBuffer<T>`, `HashSet<T>`, or `EvictingDictionary<TKey,TValue>` works, but it serialises every operation behind a single monitor. The concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.
 
@@ -186,11 +186,66 @@ The `ItemEvicted` event is raised **after** an eviction has been committed and a
 
 `ToArray`, `Keys`, `Values`, enumeration, `Count`, and `IsEmpty` acquire every segment lock for a coherent point-in-time view; `ApproximateCount` is lock-free. Enumeration iterates a detached snapshot and never throws on concurrent modification; its order is unspecified. With TTL configured, `Count` reports the raw stored count *including* expired-but-unpurged entries — call `RemoveExpired()` to reconcile, exactly as with the non-concurrent type.
 
+## `ConcurrentLruCache<TKey,TValue>`
+
+The package's second bounded cache, and the read-optimized one. Entries live in a `ConcurrentDictionary<TKey,Node>` and recency is tracked by three internal FIFO queues — **hot** (new arrivals), **warm** (entries that have proven reuse), and **cold** (entries one unaccessed pass from eviction). A successful lookup is entirely lock-free: a dictionary probe plus a single volatile write to the entry's accessed flag. Queue maintenance — promoting accessed entries, demoting idle ones, evicting from the cold end — is amortized onto writers, so at most one thread briefly cycles the queues after a mutation while other writers proceed.
+
+This is the design BitFaster.Caching and Caffeine use, and it buys read throughput by giving up exact recency ordering.
+
+### Construction
+
+```csharp
+using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentLruCache<string, byte[]>(capacity: 1024);
+
+// Optional comparer, and an optional seed sequence.
+var ordinal = new ConcurrentLruCache<string, byte[]>(1024, StringComparer.OrdinalIgnoreCase);
+var seeded = new ConcurrentLruCache<string, byte[]>(1024, initialEntries);
+```
+
+### Core operations
+
+```csharp
+cache.Add("k", payload);                       // Add-or-replace
+cache.TryAdd("k", payload);                    // Add only when absent
+cache.TryGetValue("k", out var value);         // Lock-free; records a hit or a miss
+cache.TryRemove("k", out var removed);         // Explicit removal - not an eviction, no event
+byte[] p = cache.GetOrAdd("k", key => Load(key));
+```
+
+### Choosing between the two caches
+
+| | `ConcurrentLruCache<TKey,TValue>` | `ConcurrentEvictingDictionary<TKey,TValue>` |
+|---|---|---|
+| Reads | **Lock-free** | Take the owning segment's lock |
+| Policy | Pseudo-LRU only, approximate | All six `EvictingDictionaryPolicy` values, exact per segment |
+| Capacity | May **transiently** exceed `Capacity` by at most the number of in-flight writers | Strict — never more than `Capacity` |
+| `GetOrAdd` | `ConcurrentDictionary` semantics: racing callers may each run the factory; one produced value is stored and returned to all | **Single-flight** — the factory runs at most once per key |
+| TTL | Not supported | `EvictingDictionaryExpiration`, sliding or absolute |
+
+Reach for `ConcurrentLruCache<TKey,TValue>` when reads dominate and approximate recency is fine. Reach for `ConcurrentEvictingDictionary<TKey,TValue>` when you need a policy other than LRU, a strict bound, TTL, or cache-stampede protection — a duplicated factory call that is expensive enough to matter is on its own sufficient reason.
+
+The transient overshoot is bounded by write back-pressure: a writer that observes the cache over capacity converges maintenance before returning, so sustained insert pressure against a full cache serializes writes on the maintenance lock while reads stay lock-free.
+
+### Telemetry
+
+`HitCount`, `MissCount`, and `HitRatio` aggregate striped, cache-line-padded counters on demand, so the lock-free read path never contends on a shared counter. `EvictionCount` is a running total. `Count` is the backing dictionary's count; `ApproximateCount` is the lock-free estimate used by the debugger display.
+
+### Eviction notifications
+
+`ItemEvicted` is raised **after** the eviction is committed and all internal coordination is released, so a handler may call back into the cache. Handler exceptions are suppressed (except `OutOfMemoryException`) — the same post-commit contract the rest of the package's concurrent collections use. Explicit `TryRemove` and `Clear` are not evictions and raise no event.
+
+### Snapshots
+
+`ToArray`, `Keys`, `Values`, and enumeration observe a coherent point-in-time snapshot of the backing dictionary, never throw because of concurrent modification, and have unspecified order. Explicitly removed entries keep their queue slot until the maintenance cycle drains them, so internal occupancy accounting is eventual rather than instantaneous.
+
 ## When *not* to use these collections
 
 - **Single-threaded scenarios.** The Vyukov and split-ordered CAS coordination is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in [`Bodu.Collections.Generic`](xref:Bodu.Collections.Generic).
 - **Value types.** `ConcurrentCircularBuffer<T>` constrains `T : class?` because slot publication relies on `Volatile` reference reads. For a concurrent queue of value types, use the BCL `ConcurrentQueue<T>`.
 - **Bounded waiting.** None of the collections has a blocking dequeue / blocking add. Compose with `BlockingCollection<T>` if you need consumer threads to block until an item is available.
+- **Exact recency, a strict bound, or TTL from `ConcurrentLruCache<TKey,TValue>`.** It offers none of the three by design; that is what `ConcurrentEvictingDictionary<TKey,TValue>` is for.
 - **Ordered set semantics.** `ConcurrentHashSet<T>` does not maintain insertion order. For ordered concurrent semantics, an external lock around `SortedSet<T>` is usually clearer than a custom concurrent implementation.
 
 ## See also
@@ -198,6 +253,7 @@ The `ItemEvicted` event is raised **after** an eviction has been committed and a
 - [`ConcurrentCircularBuffer<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1)
 - [`ConcurrentHashSet<T>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1)
 - [`ConcurrentEvictingDictionary<TKey,TValue>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2)
+- [`ConcurrentLruCache<TKey,TValue>` API reference](xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2)
 - [Circular buffer guide](circular-buffer.md) — the non-concurrent peer.
 - [Evicting dictionary guide](evicting-dictionary.md) — the non-concurrent peer of the evicting cache.
 - [`Bodu.Collections.Generic.Concurrent` namespace landing](xref:Bodu.Collections.Generic.Concurrent)

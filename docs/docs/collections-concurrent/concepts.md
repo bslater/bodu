@@ -31,6 +31,17 @@ No operation on the set takes a lock — `Add`, `Remove`, `Contains`, `Count`, `
 
 The stripe count is the cache's concurrency budget: operations that need a globally coherent view (`Count`, `ToArray`, enumeration, `Clear`) acquire *every* segment lock once, which is exactly why the approximate alternatives below exist.
 
+## Amortized-maintenance pseudo-LRU
+
+<xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> answers the same "reads are writes" problem the opposite way. Rather than locking the read so it can reposition the key exactly, it lets the read record only that the entry *was* touched — a single volatile write to an accessed flag, on top of a `ConcurrentDictionary` probe — and defers the repositioning. Recency lives in three FIFO queues (**hot** for new arrivals, **warm** for entries that proved reuse, **cold** for entries one unaccessed pass from eviction), and the work of promoting, demoting, and evicting is amortized onto writers: after a mutation at most one thread briefly cycles the queues while other writers proceed.
+
+The result is a *pseudo*-LRU — an approximation of least-recently-used, which is what BitFaster.Caching and Caffeine also ship. Two consequences follow directly from deferring the bookkeeping, and both are contractual rather than incidental:
+
+- **`Count` may transiently exceed `Capacity`**, by at most the number of concurrently in-flight writers. Write back-pressure bounds it: a writer that observes the cache over capacity converges maintenance before returning, so sustained insert pressure against a full cache serializes writes on the maintenance lock while reads stay lock-free.
+- **Explicitly removed entries keep their queue slot** until a maintenance cycle drains them, so internal occupancy accounting is eventual rather than instantaneous.
+
+The two caches therefore sit at opposite ends of one trade: the evicting dictionary buys exactness with a lock on every operation; the LRU cache buys lock-free reads with approximation. Neither dominates — pick by which property you cannot give up.
+
 ## Snapshot enumeration
 
 The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** — `foreach` and `ToArray` capture the contents once, iterate over that fixed copy, and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.

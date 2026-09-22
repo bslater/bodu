@@ -6,7 +6,7 @@ title: Bodu.Collections.Concurrent — Introduction
 
 ![Bodu.Collections.Concurrent](../../images/hero-collections-concurrent.svg)
 
-**Bodu.Collections.Concurrent** ships the thread-safe members of the Bodu collection catalogue — the lock-free `ConcurrentCircularBuffer<T>`, the lock-free split-ordered `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache — as a focused companion package in the **[Core Foundations](../topics/core-foundations.md)** topic. The dependency chain is `Bodu.Core` ← [`Bodu.Collections`](../collections/index.md) ← `Bodu.Collections.Concurrent`: this package references `Bodu.Collections` (and through it `Bodu.Core`), so installing it brings the whole family. The namespace is unchanged from the original split — every type lives in `Bodu.Collections.Generic.Concurrent`.
+**Bodu.Collections.Concurrent** ships the thread-safe members of the Bodu collection catalogue — the lock-free `ConcurrentCircularBuffer<T>`, the lock-free split-ordered `ConcurrentHashSet<T>`, and two bounded caches: the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` and the read-optimized `ConcurrentLruCache<TKey,TValue>` — as a focused companion package in the **[Core Foundations](../topics/core-foundations.md)** topic. The dependency chain is `Bodu.Core` ← [`Bodu.Collections`](../collections/index.md) ← `Bodu.Collections.Concurrent`: this package references `Bodu.Collections` (and through it `Bodu.Core`), so installing it brings the whole family. The namespace is unchanged from the original split — every type lives in `Bodu.Collections.Generic.Concurrent`.
 
 Reach for this package when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock. External locking around `CircularBuffer<T>`, `HashSet<T>`, or `EvictingDictionary<TKey,TValue>` works, but it serialises every operation behind a single monitor; the concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.
 
@@ -21,6 +21,7 @@ Reach for this package when the same collection is accessed by multiple producer
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> | Thread-safe variant of <xref:Bodu.Collections.Generic.CircularBuffer`1>: a lock-free multi-producer / multi-consumer ring over the Vyukov per-slot sequence protocol, implementing <xref:System.Collections.Concurrent.IProducerConsumerCollection`1> with the same overwrite-on-full semantics as its single-threaded peer. Reference types only (`T : class?`). |
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> | Thread-safe unordered set of unique elements backed by a lock-free split-ordered list: elements live in one Harris–Michael lock-free linked list keyed by bit-reversed hashes, so every operation is lock-free and growth never rehashes a node. Implements `ISet<T>`; elements must be non-null (`T : notnull`). |
 | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> | Thread-safe variant of <xref:Bodu.Collections.Generic.EvictingDictionary`2>: a fixed-capacity bounded cache over lock-striped segments supporting all six eviction policies (FIFO / LRU / LFU / MRU / SecondChance / Random), optional TTL expiry, single-flight `GetOrAdd`, and a post-commit `ItemEvicted` event. Eviction order is exact per segment, approximate globally; keys must be non-null (`TKey : notnull`). |
+| <xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> | Read-optimized fixed-capacity cache with **lock-free reads** and a segmented pseudo-LRU policy (hot / warm / cold queues), with queue maintenance amortized onto writers and striped hit/miss telemetry. No TTL and no policy choice, `GetOrAdd` is not single-flight, and `Count` may transiently exceed `Capacity` by at most the number of in-flight writers; keys must be non-null (`TKey : notnull`). |
 
 ## Scenarios this library covers
 
@@ -33,6 +34,7 @@ Reach for this package when the same collection is accessed by multiple producer
 | Read-heavy membership tests that must never block writers | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1> (`Contains` is lock-free) |
 | Bounded in-process cache (LRU / LFU / TTL) shared by request threads | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> |
 | Cache-stampede protection — expensive value built at most once per key | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> (`GetOrAdd` runs the factory single-flight per key) |
+| Read-heavy bounded cache where lookups must not take a lock | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> (approximate LRU, no TTL) |
 
 ## Design notes
 
