@@ -80,6 +80,7 @@ The shared secret is a **raw curve point coordinate**, not uniform key material.
 
 A salt and an application-specific `info` / context string bind the derived key to its purpose and prevent the same secret from yielding the same key in two unrelated contexts.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

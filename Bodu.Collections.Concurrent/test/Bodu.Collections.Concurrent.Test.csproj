@@ -29,4 +29,8 @@
     <ProjectReference Include="..\src\Bodu.Collections.Concurrent.csproj" />
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
 </Project>

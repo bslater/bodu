@@ -30,6 +30,7 @@ Each format is a self-contained `System.Text.Json`-shaped library: a forward-onl
 - [Using INI](ini.md) — global keys and sections, comment-preserving edits, duplicate policies.
 - [Streams and token-level I/O](streaming.md) — the forward-only readers/writers and the record-streaming serializer surface.
 - [Errors across the line formats](error-handling.md) — the `*FormatException` / `*SerializationException` pair per format, what each carries, and which reader policies tolerate dirty input.
+- [Reflection-free binding with the source generator](source-generator.md) — emit `IDelimitedRecordFactory<TRecord>` / `IIniSectionFactory<TSection>` implementations at build time for trimming- and AOT-safe binding.
 - [Writer options and DOM options](writer-options-and-dom-options.md) — every `*WriterOptions`, `*NodeOptions`, and `*DocumentOptions` struct across the line formats and the serializer DOMs, with the effect of each knob.
 
 ## Suggested reading path

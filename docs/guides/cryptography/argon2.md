@@ -42,6 +42,7 @@ RFC 9106, Section 4 gives two uniformly-safe starting points: **Argon2id with `t
 
 The static `DeriveKey` mirrors the BCL's `Rfc2898DeriveBytes.Pbkdf2` shape:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using System.Text;

@@ -14,11 +14,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <!-- MemoryDistributedCache: an in-process IDistributedCache, so the distributed backend runs offline. -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Caching\src\Bodu.Globalization.Calendar.Caching.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Caching.Distributed\src\Bodu.Globalization.Calendar.Caching.Distributed.csproj" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Caching.Sqlite\src\Bodu.Globalization.Calendar.Caching.Sqlite.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.DependencyInjection\src\Bodu.Globalization.Calendar.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Data\Bodu.Globalization.Calendar.AsiaPacific\src\Bodu.Globalization.Calendar.AsiaPacific.csproj" />
   </ItemGroup>

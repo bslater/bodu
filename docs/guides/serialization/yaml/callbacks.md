@@ -17,6 +17,7 @@ The YAML serializer lets a type participate in its own serialization lifecycle b
 
 Member initializers run at construction, but a key present in the input then overwrites them — there is no way to distinguish "key absent" from "key set to the initializer value" after the fact. `OnDeserializing` runs after construction and *before* member assignment, so a value it assigns persists exactly when the input omits the key:
 
+<!-- compile -->
 ```csharp
 public sealed class ServerConfig : IOnDeserializing
 {
@@ -41,6 +42,7 @@ For a type built through a parameterized constructor the callback necessarily ru
 
 `OnDeserialized` is the last step of deserialization for the instance, so it observes the fully materialized object — including required members, extension data, and populated collections. Throwing from it fails the deserialization, and the exception propagates as thrown:
 
+<!-- compile -->
 ```csharp
 public sealed class ServerConfig : IOnDeserialized
 {
@@ -65,6 +67,7 @@ This complements `[Required]` (which checks presence, not validity): the attribu
 
 `OnSerializing` runs before the value's mapping is opened, so any mutation it performs is reflected in the emitted output. Use it to stamp timestamps, recompute checksums, or normalize state at the moment of writing:
 
+<!-- compile -->
 ```csharp
 public sealed class Snapshot : IOnSerializing
 {
@@ -84,6 +87,7 @@ YamlSerializer.Serialize(new Snapshot());
 
 `OnSerialized` runs after the value's mapping has been closed: it observes the completed write rather than influencing the output. Use it to restore state changed by `OnSerializing`, or to track writes:
 
+<!-- compile -->
 ```csharp
 public sealed class Snapshot : IOnSerialized
 {
@@ -106,6 +110,7 @@ YamlSerializer.Serialize(snapshot);
 
 The hooks combine naturally: `OnSerializing` keeps a computed member fresh at the moment of writing, and `OnDeserialized` rejects a document where the same invariant does not hold. Throw the format's serialization exception (<xref:Bodu.Text.Yaml.YamlSerializationException>) so callers handle validation failures in the same catch clause as every other binding error:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml;

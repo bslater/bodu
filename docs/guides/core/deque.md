@@ -21,6 +21,7 @@ For a single-ended FIFO buffer with eviction-on-full semantics, see [Circular bu
 
 `new Deque<T>()` and `new Deque<T>(capacity)` both produce a growable deque. The capacity argument is a hint — the backing array doubles automatically when filled.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -37,6 +38,7 @@ int last  = deque.RemoveLast();    // 3
 
 Pass `allowGrow: false` to switch off automatic growth. Adds to a full deque throw `InvalidOperationException`; the `Try*` overloads return `false` without modifying state:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -56,6 +58,7 @@ bool full  = bounded.IsFull;          // true
 
 Rejecting is only the default. `OverflowPolicy` selects what a full, fixed-capacity deque does with the next add: `DequeOverflowPolicy.Reject` (throw / return `false`, as above) or `DequeOverflowPolicy.EvictOpposite`, which silently discards the element at the *opposite* end to make room — `AddFirst` drops the tail element, `AddLast` drops the head element, and `Count` stays at `Capacity`. This is the double-ended analogue of Python's `collections.deque(maxlen=N)`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -81,6 +84,7 @@ The policy is consulted only when the deque is full and `AllowGrow` is `false`. 
 
 Use `AddFirst` / `AddLast` together with `RemoveFirst` / `RemoveLast` to build a sliding window or undo/redo buffer. (The drop-the-oldest step below is exactly what `OverflowPolicy = DequeOverflowPolicy.EvictOpposite` automates — shown here in its manual form for when the eviction needs custom logic.)
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -102,6 +106,7 @@ string mostRecent = recent.PeekLast();   // "save"
 
 ## Pattern 4 — peek without removing
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -121,6 +126,7 @@ int t = deque.PeekLast();    // 20
 
 `AllowGrow` is a settable property. Toggling from `true` to `false` does not shrink the existing capacity — call `TrimExcess` afterwards if a smaller footprint is wanted.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -142,6 +148,7 @@ deque.AddLast(101);                          // OK; grows again
 
 `EnsureCapacity` works regardless of `AllowGrow` — it is the explicit pre-grow hatch even on fixed-capacity deques. Use it to reserve space ahead of a known burst of inserts:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -158,6 +165,7 @@ In growable mode the backing array doubles on overflow — the new capacity is t
 
 A deque can be seeded from a sequence. When the source is longer than the supplied capacity, growable mode bumps the capacity to fit the whole source (nothing is dropped), whereas `allowGrow: false` with an over-long source throws `InvalidOperationException`. The default capacity is `16` and the default `allowGrow` is `true` on every constructor overload:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

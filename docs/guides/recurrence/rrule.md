@@ -15,6 +15,7 @@ This page is the per-form reference. For the "which form" decision and the due-n
 
 `Parse` accepts the bare rule text or the text with its `RRULE:` property prefix, in any case. The typed parts expose every component; the `BY*` lists are `IReadOnlyList<int>` (or `IReadOnlyList<WeekDayNum>` for `BYDAY`) and are empty when the part is absent.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -41,6 +42,7 @@ The type implements <xref:System.IFormattable>, but only the general specifier i
 
 Three `TryParse` shapes exist. The <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> overloads answer a boolean; the third adds an `out string? failureMessage` that names the defect, which is the one to use when the rule text comes from a user or a configuration file:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -63,6 +65,7 @@ Other messages you will see verbatim: a missing frequency ("A recurrence rule re
 
 <xref:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder> is the code-first alternative to text. It is constructed with the frequency; every other method returns the same builder so calls chain, and `Build()` produces the immutable rule. The builder can be reused after `Build()`, and each `By*` call **replaces** the values previously supplied for that part rather than appending.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -108,6 +111,7 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse("FREQ=MONTHLY;COUNT=12;BYDAY=
 
 `GetOccurrences(start)` yields the series in ascending order, each value preserving the `Kind` of `start`. The sequence is bounded when the rule declares `COUNT` or `UNTIL`; otherwise it continues to the end of the representable calendar, so bound it with `Take` or use the windowed overload. Membership depends only on the rule and the start — never on a window — so the two overloads always agree.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -132,6 +136,7 @@ The start instant is emitted **only when it satisfies the rule**. `FREQ=WEEKLY;B
 
 `GetNextOccurrence(start, after, inclusive)` and `GetPreviousOccurrence(start, before, inclusive)` answer a single instant, or `null`. With `inclusive: false` (the default) the boundary instant is excluded; with `inclusive: true` an occurrence exactly equal to the boundary is returned.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -153,6 +158,7 @@ Both searches are bounded by the end of the representable calendar (year 9999), 
 
 The `DateTimeOffset` overloads expand the rule on the **wall-clock time of the start** and reattach the start's offset to every result; the library performs no offset conversion and never consults the machine time zone. A start of `2026-01-05 09:00 +10:00` with `FREQ=DAILY` answers `2026-01-06 09:00 +10:00` for any `after` on 5 January, whatever offset `after` carries:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -169,6 +175,7 @@ Daylight-saving transitions are the caller's concern — see [Hosting schedules]
 
 `BYDAY` lists the weekdays; `BYSETPOS=-1` selects the last candidate in each monthly period:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -184,6 +191,7 @@ DateTime[] firstHalf2026 = lastWorkingDay.GetOccurrences(new DateTime(2026, 1, 1
 
 `INTERVAL` multiplies the frequency period. Anchored on a Tuesday, `FREQ=WEEKLY;INTERVAL=2;BYDAY=TU` is every fourteenth day:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -199,6 +207,7 @@ Which *weeks* count as "every second" depends on `WKST` — see [How `WKST` chan
 
 Negative `BYSETPOS` values index from the end of the candidate set of each period:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -214,6 +223,7 @@ DateTime[] fridays = penultimateFriday.GetOccurrences(new DateTime(2026, 1, 1)).
 
 `COUNT` caps the number of occurrences *after* deduplication and `BYSETPOS` selection, so it counts emitted instants, not candidates. A bounded rule's enumeration terminates on its own:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -232,6 +242,7 @@ DateTime? after = twelveSessions.GetNextOccurrence(start, last!.Value);         
 
 Because the library stores no last-run state, a catch-up is a windowed enumeration from the last recorded run to the resume instant. The window is inclusive at both ends, so exclude the last run itself if it was completed:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -259,6 +270,7 @@ Recurrence libraries diverge on a handful of `BY*` interactions. Each statement 
 
 **Invalid generated dates are skipped, never clamped.** `FREQ=MONTHLY` from 31 January yields 31 March, 31 May, 31 July, 31 August — months without a 31st are omitted rather than rolled back to the 30th. RFC 5545 requires this; it is also the single most common false bug report against recurrence libraries.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -269,6 +281,7 @@ DateTime[] thirtyFirsts = RecurrenceRule.Parse("FREQ=MONTHLY")
 
 **The occurrence set is a set.** Two `BY` values resolving to the same date contribute one occurrence, and deduplication happens *before* `BYSETPOS` indexes the candidates and before `COUNT` counts them. `BYMONTHDAY=1,-31` yields a single 1 January in 2026, not two:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -279,6 +292,7 @@ DateTime[] firsts = RecurrenceRule.Parse("FREQ=MONTHLY;BYMONTHDAY=1,-31")
 
 **`BYSETPOS` indexes the whole frequency period**, including candidates that precede the series start; those are dropped only afterwards. `FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1` anchored on Wednesday 7 January 2026 selects the *Monday* of each week — the first candidate of the period — so its first occurrence is Monday 12 January, not the Wednesday it was anchored on:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -289,6 +303,7 @@ DateTime[] firstWeekday = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR
 
 **A `BY` filter never re-anchors an interval.** `FREQ=DAILY;INTERVAL=14;BYMONTH=10,12` counts every fourteenth day from the start unconditionally and drops the ones outside October and December; the cadence is not restarted at 1 October:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -303,6 +318,7 @@ DateTime[] fortnightlyInQ4 = RecurrenceRule.Parse("FREQ=DAILY;INTERVAL=14;BYMONT
 
 `WKST` (default Monday) reparameterises **week numbering**, not just weekly intervals: it decides which dates `BYWEEKNO` resolves to *and* which weeks an `INTERVAL` counts. Numbered weeks straddle the calendar year, so week 1 may begin in the preceding December.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 

@@ -16,6 +16,7 @@ A few contract points worth keeping in mind:
 
 ## Pattern 1 — Wrap a pure function
 
+<!-- compile -->
 ```csharp
 using Bodu.Functional;
 
@@ -33,6 +34,7 @@ The returned `square` is a `Func<int, int>`; pass it around like any other deleg
 
 The single-argument overload accepts an `IEqualityComparer<TArg>` so you can decide when two arguments are "the same" key. A case-insensitive comparer folds `"Hello"` and `"HELLO"` onto one cache entry:
 
+<!-- compile -->
 ```csharp
 using Bodu.Functional;
 
@@ -50,6 +52,7 @@ Pass `null` for the comparer (or use the single-argument overload) to match on t
 
 The two-argument overload keys the cache on the `(T1, T2)` pair, so the result is reused only when both arguments match:
 
+<!-- compile -->
 ```csharp
 using Bodu.Functional;
 

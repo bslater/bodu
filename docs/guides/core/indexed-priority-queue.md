@@ -10,6 +10,7 @@ The standard `PriorityQueue<TElement, TPriority>` does not enforce element uniqu
 
 ## Construction
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -106,6 +107,7 @@ The enumerator is a struct, so a `foreach` loop allocates nothing.
 
 ## Worked example — Dijkstra's algorithm
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

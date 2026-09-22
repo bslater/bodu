@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bodu.Globalization.Calendar.Samples.RulePackToolchain</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+
+    <!-- Sample code - opt out of the shipping-library style gates. -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <RunAnalyzers>false</RunAnalyzers>
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+
+    <!-- Build ordering only. A NuGet consumer gets the task and the tool from the
+         Bodu.Globalization.Calendar.Build package; inside this repository they are projects, so the
+         sample references them purely so they are built before its own targets run. -->
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj"
+                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj"
+                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+
+  <!--
+    The rule documents to compile. A consumer writes exactly this item group; everything below it is
+    repository plumbing that a NuGet consumer does not need, because the package's build/*.targets is
+    imported automatically and finds the task and tool inside the package.
+  -->
+  <ItemGroup>
+    <NotableDatePack Include="rules\company-holidays.xml" />
+
+    <!-- The XML travels alongside only so the sample can show the two representations side by side;
+         a deployment ships the compiled pack and leaves the source behind. -->
+    <Content Include="rules\company-holidays.xml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_BoduRepoRoot>$(MSBuildThisFileDirectory)..\..\..\</_BoduRepoRoot>
+    <BoduCalendarTaskAssembly>$(_BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\bin\$(Configuration)\netstandard2.0\Bodu.Globalization.Calendar.Build.dll</BoduCalendarTaskAssembly>
+    <BoduCalendarToolDll>$(_BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\bin\$(Configuration)\net8.0\Bodu.Globalization.Calendar.Tool.dll</BoduCalendarToolDll>
+  </PropertyGroup>
+
+  <Import Project="$(_BoduRepoRoot)Bodu.Globalization.Calendar.Build\build\Bodu.Globalization.Calendar.Build.targets" />
+
+</Project>

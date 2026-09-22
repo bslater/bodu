@@ -93,6 +93,7 @@ The factory itself never reads or writes a value: the serializer calls `CanConve
 
 A converter is not limited to scalars: read a mapping by walking the reader's tokens, and write one by bracketing `WriteStartMapping` / `WriteEndMapping`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Reader;
@@ -146,6 +147,7 @@ For enums you usually do not need a hand-written converter. The library ships a 
 
 On the enumeration itself, use the generic string-enum form (<xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter`1>), optionally renaming individual members:
 
+<!-- compile -->
 ```csharp
 [Converter(typeof(YamlStringEnumConverter<Status>))]
 public enum Status
@@ -173,6 +175,7 @@ public sealed class WorkItem
 
 To cover *every* enumeration in one registration, add the non-generic string-enum factory (<xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter>) to the options, optionally with a naming policy:
 
+<!-- compile -->
 ```csharp
 var options = new YamlSerializerOptions();
 options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));

@@ -44,6 +44,7 @@ reset. For `AsconCxof128`, there is a fourth phase before absorption: an optiona
 
 The simplest path: absorb a message, squeeze an exact number of bytes.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -64,6 +65,7 @@ array. The instance transitions to the squeezing phase on the first call; subseq
 For a single-pass operation that does not need a reusable instance, use the static `HashData`
 method:
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -152,6 +154,7 @@ seed — effectively a stream cipher output.
 Two instances with different customization strings produce completely independent outputs for the
 same absorbed input.
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;

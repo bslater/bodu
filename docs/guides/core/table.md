@@ -19,6 +19,7 @@ The reason `Table` exists is the **projections**:
 
 With a tuple-keyed dictionary, "all cells of row *r*" is an O(n) LINQ scan over every entry, allocated fresh each time; with `Table` it is an O(1) dictionary handoff. Adopt `Table` only when you need those views — that is the roadmap's own adoption caveat for this type.
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -65,4 +66,4 @@ Row and column comparers are injectable at construction and exposed through `Row
 - <xref:Bodu.Collections.Generic.Table`3> — the full API surface.
 - [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
 - [Multi-value dictionary](multi-value-dictionary.md) — one key to *many* values, when the second axis is not a key.
-- [Core documentation](../../docs/core/index.md) — concepts and getting started for the collections packages.
+- [Bodu.Collections introduction](../../docs/collections/index.md) — namespaces, headline types, scenarios.

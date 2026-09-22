@@ -78,12 +78,57 @@ The caching layer: the read-through
 in-memory and JSON / TOML file backends (whole-territory, civil-year cache entries — warm queries,
 sub-range clipping, and filtered overloads all served without re-resolving; a file-backed cache
 lets a fresh service instance start warm), explicit `Warm` pre-resolution of a serving window,
-and `AddCachedNotableDateService` decorating an already-registered `INotableDateService`, with
-the SQLite / distributed backends and the hosted warm-up shown as fenced comment blocks. A
+and `AddCachedNotableDateService` decorating an already-registered `INotableDateService`. The
+durable backends now run rather than being described: a SQLite-backed cache is read back by a
+second service after the first is disposed, and two services over one `IDistributedCache`
+stand in for two processes sharing a store — both proved by the engine call count not moving.
+The hosted warm-up remains a fenced comment block. A
 `CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
 cache hit is proved by call count rather than by timing. *Packages: `Bodu.Globalization.Calendar`,
 `Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.DependencyInjection`,
 `Bodu.Globalization.Calendar.AsiaPacific`.*
+
+### Bodu.Globalization.Calendar.Samples.RegionalData
+
+The five regional data packs — `Bodu.Globalization.Calendar.Americas`, `.AsiaPacific`, `.Europe`,
+`.MiddleEast`, and `.Africa`. Lists what each pack covers (63 territories between them) and
+resolves a year from each, then shows why a notable-date lookup is territory-scoped: 1 January is
+a public holiday in all five sample territories while 25 December is not one in `AE` at all. A
+closing pass prints AU's 2027 weekend substitutions with the `ActualDate` each shifted from, so
+the adjustment is auditable rather than implied. Every pack is an embedded resource, so nothing
+here reads a file or makes a request. *Packages: the five `Bodu.Globalization.Calendar.<Region>`
+data packs.*
+
+### Bodu.Globalization.Calendar.Samples.Plugins (+ .Plugin.Contoso)
+
+Trust-gated plugin loading with `Bodu.Globalization.Calendar.Plugins`. A date-calculation algorithm
+is loaded out of a separate assembly at runtime and registered into a
+<xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>, after which a rule
+document referencing it by key (`contoso.founding-day`) resolves alongside ordinary fixed rules —
+neither side needing a type from the other. The second scenario is the reason the package exists:
+loading a plugin executes arbitrary code in-process, so the loader takes no policy-free overload.
+It pins the assembly with a SHA-256 allow-list, shows the same load refused under a wrong hash with
+`PluginNotTrustedException` raised before any plugin code runs, then a `DelegatingPluginTrustPolicy`
+for a host's own rule and a `CompositePluginTrustPolicy` that can only narrow trust.
+
+The plugin is its own project, `…Samples.Plugin.Contoso`, referenced with
+`ReferenceOutputAssembly="false"` so its types are genuinely unavailable to the host at compile
+time — the host reaches it only through the loader. That project is a class library with no entry
+point and is not run by the samples sweep. *Packages: `Bodu.Globalization.Calendar.Plugins`.*
+
+### Bodu.Globalization.Calendar.Samples.RulePackToolchain
+
+The rule-pack toolchain — `Bodu.Globalization.Calendar.Build` and the `bodu-calendar` tool from
+`Bodu.Globalization.Calendar.Tool`. Unlike every other sample the interesting part happens at
+**build** time: the csproj declares `rules/company-holidays.xml` as a `NotableDatePack` item, the
+`CompileNotableDatePack` task lints and compiles it with the tool, and the sealed `.bcal` pack is
+copied beside the application. The program is the consumer side, loading that pack with
+<xref:Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary*> and comparing it against
+parsing the same XML at runtime — same three holidays, 255 bytes against 1,946, and no schema
+validation on the deployment path. A NuGet consumer writes only the item group; the sample's
+explicit `.targets` import and task/tool path overrides are repository plumbing, needed because
+here the task and tool are projects rather than a restored package. *Packages:
+`Bodu.Globalization.Calendar.Build`, `Bodu.Globalization.Calendar.Tool`.*
 
 ### Bodu.Globalization.Calendar.Samples.ValidationLint
 

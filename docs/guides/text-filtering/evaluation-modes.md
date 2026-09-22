@@ -23,6 +23,7 @@ use — pick the one matching the mental model your users bring.
 A value is accepted when *(the include set is empty OR at least one include matches)* AND *no
 exclude matches*.
 
+<!-- compile -->
 ```csharp
 var filter = TextFilter.Build(
 [
@@ -42,6 +43,7 @@ gets *reported* as the deciding one.
 Rules form one ordered list; evaluation conceptually walks it and the **last** matching rule's
 action decides. Unmatched values are included, exactly as in gitignore.
 
+<!-- compile -->
 ```csharp
 var ordered = new TextFilterOptions { Mode = TextFilterEvaluationMode.LastMatchWins };
 var filter = TextFilter.Parse(["!*.log", "important.log"], ordered);

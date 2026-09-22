@@ -25,6 +25,7 @@ The backing structure is the key-value adaptation of the set's node machinery; t
 
 ## Pattern 1 — nearest entry at or before a key
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -43,6 +44,7 @@ samples.TryGetHigherKey(reading.Key, out DateTime nextSample);      // 09:10
 
 ## Pattern 2 — rank, select, and range counting over keys
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 
@@ -59,6 +61,7 @@ int inBand = scores.CountInRange(1900, 2300);       // 2 — O(log n), no iterat
 
 ## Pattern 3 — directional and range entry views
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

@@ -25,6 +25,7 @@ Console.WriteLine(buffer.Count);   // total elements appended
 
 The segment size is the number of elements per chunk. Pick a larger size for fewer, bigger allocations or a smaller size to bound the per-segment footprint:
 
+<!-- compile -->
 ```csharp
 // 512 elements per segment.
 var buffer = new SegmentedBuffer<byte>(segmentSize: 512);
@@ -36,6 +37,7 @@ The constructor throws <xref:System.ArgumentOutOfRangeException> when `segmentSi
 
 Even though storage is segmented, element access is O(1): the buffer maps a flat index onto `(segment, offset)` arithmetically. The indexer supports both read and write of any already-populated position:
 
+<!-- compile -->
 ```csharp
 var buffer = new SegmentedBuffer<string>(segmentSize: 4);
 buffer.Add("a");
@@ -63,6 +65,7 @@ The enumerator is fail-fast: modifying the buffer after enumeration begins — b
 
 A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass — without re-reading the source. Buffering into a `SegmentedBuffer<T>` pays no resize-copy as the total grows:
 
+<!-- compile -->
 ```csharp
 using Bodu.Collections.Generic;
 

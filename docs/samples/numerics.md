@@ -44,6 +44,18 @@ variance and standard deviation, min/max), the sliding-window `MovingSum<T>` and
 `MovingMinMax<T>`, the streaming `RunningQuantile<T>` (median and p95 estimators), and
 `BigDecimal` exact scaled arithmetic with rounding modes. *Package: `Bodu.Numerics`.*
 
+### Bodu.Numerics.Samples.ComplexNumbers
+
+<xref:Bodu.Numerics.Complex`1>, the generic counterpart of the `double`-only
+<xref:System.Numerics.Complex>: the arithmetic operators (including the non-componentwise
+multiply), `Conjugate` / `Reciprocal` / `Magnitude` / `Phase`, polar construction, and the
+transcendental surface (`Sqrt` of a negative real, Euler's identity through `Exp`, `Log`, `Pow`,
+and the trig functions) — each result printed beside `System.Numerics.Complex`'s answer for the
+same call. A closing scenario runs one generic Mandelbrot iteration over `Complex<float>`,
+`Complex<double>`, and `Complex<Half>` to show where the precision choice actually changes the
+answer, and covers parse/format round-tripping and the `Equals`-versus-`==` split on `NaN`.
+*Package: `Bodu.Numerics`.*
+
 ### Bodu.Numerics.Samples.JsonConverters
 
 `System.Text.Json` integration from the companion package: `AddNumericsJsonConverters()`

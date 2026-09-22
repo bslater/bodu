@@ -98,6 +98,7 @@ Start from a scenario preset by constructing the options from <xref:Bodu.Text.Ya
 
 Parse to <xref:Bodu.Text.Yaml.Nodes.YamlNode>, index into the tree, build scalars with `YamlValue.Create(…)`, and write it back with `ToYamlString()`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Yaml.Nodes;
 
@@ -145,6 +146,7 @@ foreach (YamlProperty property in doc.RootElement.GetProperty("server").Enumerat
 
 A YAML stream can hold several documents separated by `---` (and optionally terminated by `...`). <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> returns every document; the single-document `Parse` and `Deserialize<T>` read the first only:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Yaml.Document;
 

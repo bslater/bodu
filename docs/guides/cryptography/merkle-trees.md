@@ -33,6 +33,7 @@ Every root the tree computes is folded level by level with exactly that promotio
 
 ## A root and a proof over a list of entries
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

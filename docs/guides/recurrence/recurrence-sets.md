@@ -12,6 +12,7 @@ For the "which form" decision and the shared due-ness recipe, start at the [recu
 
 The constructor takes the start, the rules, and optional `dates` / `exceptionDates` sequences. At least one rule or one explicit date is required; an empty set throws <xref:System.ArgumentException> ("A recurrence set requires at least one rule or explicit recurrence date."). The date lists are sorted ascending on construction; the rules keep the order supplied.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -38,6 +39,7 @@ The start is emitted only when a rule or an explicit date produces it — it is 
 3. Any instant equal to an entry in `ExceptionDates` is removed. Matching is exact — an exception must carry the same time of day as the occurrence it removes.
 4. `COUNT` on a rule bounds that rule's own expansion; it is not reduced by exceptions, so `COUNT=8` with two `EXDATE` hits yields six rule occurrences, not eight.
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -85,6 +87,7 @@ The defect-naming `TryParse` reports: a missing start ("A recurrence set require
 
 iCalendar expresses "moved" as an exception on the original instant plus an explicit date for the replacement. The set below skips the Australia Day (26 January) and 9 February stand-ups, and moves the 12 January meeting to Wednesday 14 January:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -112,6 +115,7 @@ Point queries honour the same composition: with `inclusive: true` on an excluded
 
 Because unrelated lines are ignored on parse, a set can be read straight from the recurrence-bearing lines of a `VEVENT`. Export the canonical block into a `VEVENT` you assemble yourself:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
@@ -147,6 +151,7 @@ To preserve a UTC start, anchor the set on a `DateTimeKind.Utc` value: `DTSTART:
 
 `GetNextOccurrence(after, inclusive)` / `GetPreviousOccurrence(before, inclusive)` answer over the composed stream, so an exception date is never returned and an `RDATE` can be. The `DateTimeOffset` overloads interpret `Start`, `Dates`, and `ExceptionDates` — which are wall-clock values — in the offset of the argument and return an answer carrying that offset; no other conversion is performed:
 
+<!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 

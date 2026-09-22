@@ -43,6 +43,7 @@ The output is the ciphertext (same length as the plaintext) followed by a fixed-
 
 Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive **and assumes a 16-byte (128-bit) block size**. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules — so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`, is the only primitive that fits.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -79,6 +80,7 @@ The examples below all use those extension methods.
 
 GCM is the default choice for almost any authenticated-encryption workload. It's single-pass, hardware-accelerated, and part of TLS 1.3.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -270,6 +272,7 @@ On the wire, a failed tag check is indistinguishable from an attack; treat every
 
 This self-contained example encrypts, flips a single ciphertext byte, and shows the tag check rejecting the modified message. Each direction builds its own `AesBlockCipher` and `GcmModeTransform` because both are single-use (see [One-transform, one-message](#one-transform-one-message)):
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

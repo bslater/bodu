@@ -44,6 +44,7 @@ The same instance can both sign and verify while it holds the private key, but t
 
 The signer keeps the private seed secret; the public key is distributed to every party that needs to verify. The public key carries no secret and can be embedded in config, served over the network, or pinned in source.
 
+<!-- compile -->
 ```csharp
 using var signer = Ed25519.Create();
 signer.GenerateKey();

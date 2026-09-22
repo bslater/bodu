@@ -74,7 +74,7 @@ applies unchanged to values consumed through `IConfiguration`.
 - **[Introduction](../../docs/extensions-configuration-text/index.md)** — namespaces, headline types, scenarios.
 - **[Core concepts](../../docs/extensions-configuration-text/concepts.md)** — full vocabulary.
 - **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install + runnable minimal samples.
-- **[Configuration topic guides](../topics/configuration.md)** — every guide in the Configuration topic on one page.
+- **[Configuration topic guides](../topics/configuration.md)** — the topic map for both configuration packages.
 - **[Configuration topic overview](../../docs/topics/configuration.md)** — the pipeline and package boundaries across both packages.
 - **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
 - **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.

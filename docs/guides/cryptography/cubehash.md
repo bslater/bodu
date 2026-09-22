@@ -24,6 +24,7 @@ The published naming convention is **CubeHash `r+b`/`w+f`-`h`** — initializati
 
 ## Pattern 1 — default CubeHash (the SHA-3 submission)
 
+<!-- compile -->
 ```csharp
 using System.Text;
 using Bodu.Security.Cryptography;
@@ -53,6 +54,7 @@ byte[] digest = cube.ComputeHash(data);
 
 Increase the transform rounds or the block size to move along the speed / margin curve:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -85,6 +87,7 @@ Console.WriteLine(safe.AlgorithmName);   // e.g. "CubeHash16+32/16+64-512"
 
 CubeHash plugs into the BCL streaming shape:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -100,6 +103,7 @@ byte[] digest = cube.ComputeHash(stream);
 
 The CubeHash test-vector files in the NIST competition submission use the notation `CubeHash i+r/b+f-h`. To reproduce a specific vector, set all four parameters plus `HashSize`:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

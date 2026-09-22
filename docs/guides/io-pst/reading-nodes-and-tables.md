@@ -10,6 +10,7 @@ The samples run against `sample1.pst` from the [runnable PST sample](../../sampl
 
 ## Pattern 1 — open a file
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -24,6 +25,7 @@ Console.WriteLine($"{file.Format} format, block data: {file.CryptMethod}");
 
 <xref:Bodu.IO.Pst.PstFile.Format> reports the variant (`Unicode`, 64-bit structures, or `Ansi`, 32-bit); every public type behaves identically over either. <xref:Bodu.IO.Pst.PstFile.CryptMethod> is the header's content encoding — `None`, `Permute`, or `Cyclic` — which the reader undoes transparently on every block read; you never see encoded bytes.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -42,6 +44,7 @@ Console.WriteLine(file.Format);
 
 Every object in the file is addressed by a <xref:Bodu.IO.Pst.PstNodeId>: a 32-bit value whose five low bits carry the <xref:Bodu.IO.Pst.PstNodeType> and whose 27 high bits carry an index. The type bits make identifiers self-describing, and the format leans on it — a folder's hierarchy, contents, and associated-contents tables reuse the folder's *index* with the corresponding *table* type bits, so you can compute them without any lookup.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -77,6 +80,7 @@ The <xref:Bodu.IO.Pst.PstNodeType> values you will meet most: `NormalFolder` (`0
 
 ## Pattern 2 — walk the directory and look nodes up
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -128,6 +132,7 @@ if (!file.TryGetNode(new PstNodeId(PstNodeType.NormalFolder, 0x7FFFFFF), out Pst
 
 `ReadPropertyContext` parses the node's heap and returns a <xref:Bodu.IO.Pst.PstPropertyContext>: a read-only collection of <xref:Bodu.IO.Pst.PstPropertyValue> keyed by 16-bit property identifier, in ascending identifier order. The records are materialized when the context is read, but each value's payload resolves only when accessed, so listing identifiers and wire types costs nothing per value.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -192,6 +197,7 @@ A <xref:Bodu.IO.Pst.PstPropertyValue> carries `PropertyId`, the raw `WireType` (
 
 `GetString` deliberately handles only the UTF-16 type: a code-page string (`0x001E`) stays bytes because choosing its encoding is a format-layer decision, as are multi-valued (`0x1000` flag) and object-typed payloads, which surface raw. The mail-store reader is where those decode.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -224,6 +230,7 @@ catch (PstFileException ex) when (ex.Error == PstFileError.PropertyNotFound)
 
 `ReadTableContext` returns a <xref:Bodu.IO.Pst.PstTableContext>: `Columns` (a <xref:Bodu.IO.Pst.PstTableColumn> per column — property identifier, wire type, cell width), `RowCount` from the table's row index, and rows whose identifier names the object the row stands for. A folder's hierarchy table lists its child folders, so each `RowId` is a child folder's node identifier.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -268,6 +275,7 @@ Note the widths: a variable-size column such as the `0x001F` display name occupi
 
 `EnumerateRows` streams the row matrix one block at a time and never materializes the whole table; each yielded <xref:Bodu.IO.Pst.PstTableRow> copies its own bytes, so rows stay valid after the enumeration advances. The row surface is `RowId`, `TryGetCell(id, out value)` — `true` only when the table declares the column *and* the row's existence bitmap marks the cell present — `EnumerateCells()` over the present cells, and the streaming pair `TryGetCellLength` / `TryOpenCellStream`.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 
@@ -300,6 +308,7 @@ if (table.TryGetRow(rowIds[0], out PstTableRow? row))
 
 A message is a `NormalMessage` node whose property context holds the message's properties and whose private **subnode tree** holds its recipient table, attachment table, and attachment objects — invisible to the node B-tree, reachable only through the owning node.
 
+<!-- compile -->
 ```csharp
 using Bodu.IO.Pst;
 

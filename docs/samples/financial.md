@@ -46,9 +46,13 @@ The caching layer against an offline source: the read-through
 <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProvider>, coverage-based range serving
 (including negative caching of empty windows), tiered stacking (in-memory L1 over durable file
 L2, surviving a simulated restart), and the
-<xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability> clamping model. A small counting
-decorator makes hit-vs-fetch behaviour visible in the output. *Packages: `Bodu.Financial`,
-`Bodu.Financial.ExchangeRates.Caching`.*
+<xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability> clamping model. A closing scenario
+runs the two durable backends: a SQLite-backed cache read back by a second provider after the
+first is disposed, and two providers over one `IDistributedCache` standing in for two
+processes — with the result's `RateProvenance` still reporting `Origin=Cache` so a stored
+answer is never mistaken for a fresh fetch. A small counting decorator makes hit-vs-fetch
+behaviour visible throughout. *Packages: `Bodu.Financial`,
+`Bodu.Financial.ExchangeRates.Caching`, `…Caching.Sqlite`, `…Caching.Distributed`.*
 
 ### Bodu.Financial.Samples.AggregatedRates
 

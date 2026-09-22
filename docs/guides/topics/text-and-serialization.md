@@ -147,3 +147,4 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an ar
 - [Text & Serialization topic overview](../../docs/topics/text-and-serialization.md) — the disambiguation triangle, package table, and decision table.
 - [Topic concepts](../../docs/topics/text-and-serialization-concepts.md) — codec vs. format vs. serializer, the tier model, framing, canonical output, strictness.
 - Package introductions — [Bodu.Text.Encoding](../../docs/text-encoding/index.md), [Bodu.Text.Filtering](../../docs/text-filtering/index.md), [Bodu.Text.Formats](../../docs/formats/index.md), [Bodu serializers](../../docs/serialization/index.md).
+- **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Text.Encoding](../text-encoding/index.md) · [Bodu.Text.Filtering](../text-filtering/index.md) · [Bodu.Text.Formats](../formats/index.md) · [Bodu serializers](../serialization/index.md).

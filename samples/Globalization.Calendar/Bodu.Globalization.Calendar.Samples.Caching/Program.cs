@@ -26,6 +26,7 @@ public static class Program
 
         ReadThroughCaching.Run();
         FileBackedCaches.Run();
+        DurableBackends.Run();
         WarmUp.Run();
         DiRegistration.Run();
 

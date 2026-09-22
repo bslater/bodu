@@ -41,6 +41,7 @@ The birthday bound is why width matters: random 96-bit nonces reach a ~50 % coll
 
 ## Encrypt and decrypt — ChaCha20
 
+<!-- compile -->
 ```csharp
 using System.Diagnostics;
 using System.Linq;

@@ -13,6 +13,7 @@ title: Interoperating with System.Security.Cryptography
 
 A Bodu hash is a `HashAlgorithm`, so the BCL lifecycle applies unchanged: `ComputeHash` for one shot, `TransformBlock` … `TransformFinalBlock` then `Hash` for incremental use. <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> adds a span-friendly `AppendData` that forwards to `TransformBlock`, so you can mix the two freely.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -46,6 +47,7 @@ byte[] appendedHash = appended.Hash!;
 
 `System.Security.Cryptography.IncrementalHash` only accepts algorithms a `HashAlgorithmName` can name, so it cannot host BLAKE2, Skein, or Tiger. The equivalent shape on a Bodu hash is `AppendData` followed by an empty `TransformFinalBlock`, and `Initialize()` plays the part of `GetHashAndReset`'s reset:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -70,6 +72,7 @@ Do not look for `GetHashAndReset` on a Bodu hash — it does not exist on any pu
 
 `CreateEncryptor()` / `CreateDecryptor()` on any wrapper return an `ICryptoTransform` (a <xref:Bodu.Security.Cryptography.BlockCipherTransform>, or a stream-cipher transform), so `CryptoStream` composes as it would with `Aes`:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -108,6 +111,7 @@ The BCL `SymmetricAlgorithm` one-shot helpers (`EncryptCbc`, `EncryptEcb`, and t
 
 <xref:Bodu.Security.Cryptography.GcmModeTransform> over <xref:Bodu.Security.Cryptography.AesBlockCipher> implements the same 96-bit-nonce, 128-bit-tag profile of NIST SP 800-38D that `System.Security.Cryptography.AesGcm` does. The only difference is layout: Bodu returns `ciphertext ‖ tag` in one array, the BCL takes the ciphertext and tag as separate buffers. Split or concatenate at the boundary and the bytes match in both directions — this run uses the SP 800-38D test-case-4 material:
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -152,6 +156,7 @@ Both `bclPlain` and `boduPlain` equal `plaintext`. The BCL type supports 12- to 
 
 The BCL's `ChaCha20Poly1305` is RFC 8439 with a 96-bit nonce. Bodu's <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> is the extended-nonce construction (`draft-irtf-cfrg-xchacha`, libsodium `crypto_aead_xchacha20poly1305_ietf`): it derives a subkey with HChaCha20 from the first 16 nonce bytes and runs ChaCha20 on the remaining 8. They are different constructions and are **not** wire-compatible, even under the same key. Bodu ships no plain ChaCha20-Poly1305 because the BCL already does.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -175,6 +180,7 @@ Choose by the nonce discipline: a counter you can guarantee never repeats → th
 
 <xref:Bodu.Security.Cryptography.X25519> and <xref:Bodu.Security.Cryptography.Ed25519> override the `AsymmetricAlgorithm` import/export core (`ImportPkcs8PrivateKey`, `ImportSubjectPublicKeyInfo`, `TryExportPkcs8PrivateKey`, `TryExportSubjectPublicKeyInfo`) with the RFC 8410 encodings, so the **inherited** convenience members work unchanged: `ExportPkcs8PrivateKey()`, `ExportSubjectPublicKeyInfo()`, `ExportPkcs8PrivateKeyPem()`, `ExportSubjectPublicKeyInfoPem()`, and `ImportFromPem(string)`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -211,6 +217,7 @@ The post-quantum types expose raw encodings only (`ExportEncapsulationKey`, `Exp
 
 <xref:Bodu.Security.Cryptography.Hkdf> takes a `HashAlgorithmName` and accepts SHA-1, SHA-256, SHA-384, and SHA-512 — anything else throws `ArgumentException` (`hashAlgorithm`). Its output is identical to the BCL `HKDF` for the same inputs, so the two are interchangeable (this is RFC 5869 test case 1):
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -226,6 +233,7 @@ byte[] bcl  = HKDF.DeriveKey(HashAlgorithmName.SHA256, ikm, outputLength: 42, sa
 
 <xref:Bodu.Security.Cryptography.Hotp> and <xref:Bodu.Security.Cryptography.Totp> do not take a `HashAlgorithmName`; they take <xref:Bodu.Security.Cryptography.OtpHashAlgorithm> (`Sha1`, `Sha256`, `Sha512`), which maps onto the BCL HMACs internally:
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -239,6 +247,7 @@ string totp   = Totp.GenerateCode(secret, DateTimeOffset.FromUnixTimeSeconds(59)
 
 `System.Security.Cryptography.CryptographicOperations.FixedTimeEquals` is what the library itself uses. The value types wrap it: <xref:Bodu.Security.Cryptography.HashValue>, <xref:Bodu.Security.Cryptography.AuthenticationTag>, and <xref:Bodu.Security.Cryptography.SignatureValue> compare in constant time through `Equals`, `==`, and an explicit `FixedTimeEquals`; the `VerifyHash` / `TryVerifyHash` extensions do the same over a freshly computed digest.
 
+<!-- compile -->
 ```csharp
 using System.Security.Cryptography;
 using Bodu.Security.Cryptography;

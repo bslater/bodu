@@ -28,6 +28,7 @@ None of the structs enforce semantics (uniqueness, length); they carry bytes and
 
 <xref:Bodu.Security.Cryptography.GcmModeTransform> is the one transform with a `Nonce`-typed constructor beside its `byte[]` and span constructors; it still requires exactly 12 bytes and throws `ArgumentException` otherwise. Reconstruct the nonce from the wire on the receiving side with `FromBytes`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -56,6 +57,7 @@ The stream AEADs and `AsconAead128` take `byte[]` / span nonces; pass `nonce.AsS
 
 <xref:Bodu.Security.Cryptography.Scrypt> has the one overload in the library typed on these values: `DeriveKey(SecretBytes password, Salt salt, int costN, int blockSizeR, int parallelization, int length)`. The password buffer is pinned for its lifetime and zeroed on `Dispose`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -74,6 +76,7 @@ After `Dispose` — or the end of the `using` — `AsSpan`, `ToArray`, `FixedTim
 
 `HashValue` is the type for a digest you keep and compare: parse it from configuration with `ParseHex` (throws `FormatException`) or `TryParseHex`, emit it with `ToHexString` / `ToBase64String`, and compare with `==` or `FixedTimeEquals` — both constant-time.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 
@@ -92,6 +95,7 @@ bool parsed = HashValue.TryParseHex("not hex", out _); // false
 
 `EncryptDetached` / `DecryptDetached` on <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions> split the tag out of the `ciphertext ‖ tag` layout for protocols that carry it out of band. They are defined for <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> (GCM, GCM-SIV, CCM, OCB, EAX, SIV, and `AsconAead128`); a tag of the wrong length throws `ArgumentException`, a wrong tag `CryptographicException`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
@@ -120,6 +124,7 @@ The stream AEADs have no detached overloads; slice the tag off the combined outp
 
 `SignatureValue` records not only the bytes but the encoding they use: `SignatureFormat.Raw` (the fixed-width `r ‖ s` form Ed25519 and ML-DSA produce), `Der` (ASN.1 `SEQUENCE`), or `P1363` (the IEEE fixed-width form BCL `ECDsa` emits by default); `Unknown` is the zero value. `FromBytes` rejects an undefined format with `ArgumentOutOfRangeException`. `Equals` / `==` compare **format and bytes**; `FixedTimeEquals` compares bytes only.
 
+<!-- compile -->
 ```csharp
 using Bodu.Security.Cryptography;
 

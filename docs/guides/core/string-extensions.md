@@ -15,6 +15,7 @@ The surface is organized below by task. Each table gives the one-line contract a
 
 `After` / `AfterLast` / `Before` / `BeforeLast` / `Between` return the text on one side of a marker, or `null` when the marker is absent — which makes them safe to chain with `??`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -40,6 +41,7 @@ The markers must not be `null` (`ArgumentNullException`). An empty marker matche
 
 ## Pattern 2 — wrapping and unwrapping
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -66,6 +68,7 @@ string partial  = "[alpha".Unwrap("[", "]");    // [alpha — both ends must be 
 
 The whitespace family works on the whole string; the line family treats the string as a sequence of lines delimited by CRLF, CR, or LF.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -79,6 +82,7 @@ foreach (string line in raw.SplitLines(removeEmptyLines: true))
     Console.WriteLine($"[{line.Trim()}]");        // [line one] / [line   two] / [line three]
 ```
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -111,6 +115,7 @@ string joined = "a\r\nb\nc".RemoveLineEndings();  // "abc"
 
 These are the `StringComparison.Ordinal` / `OrdinalIgnoreCase` forms of the BCL predicates, spelled out so a code review can see the comparison rule at the call site.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -138,6 +143,7 @@ string swapped = header.ReplaceOrdinalIgnoreCase("APPLICATION", "text");   // "C
 
 These eight are the only members declared on `string?`. They turn the `string.IsNullOrWhiteSpace` dance into one call.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -169,6 +175,7 @@ bool   i = blank.HasText();                               // false
 
 ## Pattern 6 — affixes and removal
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -198,6 +205,7 @@ string replaced  = "Hello {name}, {greeting}".ReplaceMany(new Dictionary<string,
 
 The `Keep*` family retains only the named Unicode category; the `Remove*` family drops it. `KeepWhere` / `RemoveWhere` take an arbitrary `Func<char, bool>`.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -228,6 +236,7 @@ string noNums   = "a1b2".RemoveWhere(char.IsDigit); // "ab"
 
 Nine casing conversions share one acronym-aware tokenizer: the input is split at separators (spaces, punctuation, underscores, hyphens), at lower-to-upper boundaries, at digit-to-letter boundaries, and at acronym-to-word boundaries (`XMLHttpRequest` → `XML`, `Http`, `Request`), then each word is re-cased and re-joined.
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -247,6 +256,7 @@ string sentence = "the API of the iPhone. a second sentence".ToSentenceCase();
 
 The parameterless overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> — invariant culture, the built-in acronym list recognised for *splitting*, mixed-case brand words (`iPhone`, `eBay`) preserved, and every word re-cased (which is why `HTTP` becomes `Http` above). Pass a <xref:Bodu.Extensions.WordCasingOptions> to change that:
 
+<!-- compile -->
 ```csharp
 using System.Globalization;
 using Bodu.Extensions;
@@ -279,6 +289,7 @@ string e = "XMLHttpRequest".ToSnakeCase();                // "xml_http_request" 
 
 ## Pattern 9 — slugs, identifiers, and safe names
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
@@ -314,6 +325,7 @@ string file = "report: q1/q2 <final>.pdf".ToSafeFileName();   // on Linux: "repo
 
 ## Pattern 10 — truncation, slicing, Base64, and parsing
 
+<!-- compile -->
 ```csharp
 using Bodu.Extensions;
 

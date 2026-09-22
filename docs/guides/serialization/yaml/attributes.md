@@ -10,6 +10,7 @@ title: Mapping attributes
 
 <xref:Bodu.Text.Serialization.PropertyNameAttribute> pins the serialized key for one member, beating any naming policy:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Serialization;
 
@@ -57,6 +58,7 @@ On the read path, <xref:Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseIns
 
 <xref:Bodu.Text.Serialization.IgnoreAttribute> drops a member unconditionally, or under a per-member condition:
 
+<!-- compile -->
 ```csharp
 using Bodu.Text.Serialization;
 
@@ -90,6 +92,7 @@ The remaining shaping is on <xref:Bodu.Text.Yaml.YamlSerializerOptions>:
 | `IncludeFields` | Includes public fields alongside properties. |
 | `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> — `Skip` (default) ignores keys that map to no member; `Disallow` raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 
+<!-- compile -->
 ```csharp
 var options = new YamlSerializerOptions
 {
@@ -103,6 +106,7 @@ var options = new YamlSerializerOptions
 
 With `IncludeFields` set, a public field maps exactly like a property — it honours the naming policy and `[PropertyName]` / `[Ignore]`:
 
+<!-- compile -->
 ```csharp
 public sealed class Counter
 {

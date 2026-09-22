@@ -556,32 +556,42 @@
       items:
         - name: Overview
           href: financial/index.md
-        - name: Working with Money<TCurrency>
-          href: financial/money.md
-        - name: Monetary precision & unit pricing
-          href: financial/monetary-precision.md
-        - name: JSON serialization
-          href: financial/json-serialization.md
-        - name: Working with exchange rates
-          href: financial/exchange-rates.md
-        - name: Built-in exchange-rate providers
-          href: financial/exchange-rate-providers.md
-        - name: Configuring providers from appsettings
-          href: financial/provider-configuration.md
-        - name: Exchange-rate types (usage catalogue)
-          href: financial/exchange-types.md
-        - name: Exchange-rate lookups (worked dataset)
-          href: financial/exchange-rate-lookups.md
-        - name: Caching and aggregating exchange rates
-          href: financial/exchange-rate-caching.md
-        - name: Configuring rate caching from appsettings
-          href: financial/caching-configuration.md
-        - name: Dependency injection
-          href: financial/dependency-injection.md
-        - name: Testing your own provider
-          href: financial/testing-providers.md
-        - name: Writing your own web provider
-          href: financial/custom-web-provider.md
+        - name: Bodu.Financial — Money
+          items:
+            - name: Working with Money<TCurrency>
+              href: financial/money.md
+            - name: Monetary precision & unit pricing
+              href: financial/monetary-precision.md
+        - name: Bodu.Financial.Serialization.Json
+          items:
+            - name: JSON serialization
+              href: financial/json-serialization.md
+        - name: Bodu.Financial.ExchangeRates
+          items:
+            - name: Working with exchange rates
+              href: financial/exchange-rates.md
+            - name: Built-in exchange-rate providers
+              href: financial/exchange-rate-providers.md
+            - name: Configuring providers from appsettings
+              href: financial/provider-configuration.md
+            - name: Exchange-rate types (usage catalogue)
+              href: financial/exchange-types.md
+            - name: Exchange-rate lookups (worked dataset)
+              href: financial/exchange-rate-lookups.md
+            - name: Writing your own web provider
+              href: financial/custom-web-provider.md
+            - name: Testing your own provider
+              href: financial/testing-providers.md
+        - name: Bodu.Financial.ExchangeRates.Caching
+          items:
+            - name: Caching and aggregating exchange rates
+              href: financial/exchange-rate-caching.md
+            - name: Configuring rate caching from appsettings
+              href: financial/caching-configuration.md
+        - name: Bodu.Financial.DependencyInjection
+          items:
+            - name: Dependency injection
+              href: financial/dependency-injection.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:

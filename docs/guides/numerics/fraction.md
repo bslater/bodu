@@ -26,6 +26,7 @@ Use the static factory methods on `Fraction<T>` directly when the
 backing type is fixed. Unlike `Interval<T>`, there is no non-generic
 helper class for inference — pick the backing type up front.
 
+<!-- compile -->
 ```csharp
 using Bodu.Numerics;
 
@@ -56,6 +57,7 @@ conditions through a `false` return without throwing.
 
 ### From other numeric types
 
+<!-- compile -->
 ```csharp
 Fraction<int>.FromDecimal(0.125m);              // 1/8 — exact decimal
 Fraction<int>.FromDouble(0.5);                  // 1/2 — exact for round halves
@@ -76,6 +78,7 @@ approximation* to a real number within a denominator bound, use
 
 ### Best rational approximation
 
+<!-- compile -->
 ```csharp
 Fraction<int> piApprox = Fraction<int>.Approximate(Math.PI, maxDenominator: 1000);
 // 355/113 — the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
@@ -91,6 +94,7 @@ bound.
 
 ### Continued fractions
 
+<!-- compile -->
 ```csharp
 Fraction<int> phi = Fraction<int>.Create(610, 377);
 int[] coeffs = phi.ToContinuedFraction();
@@ -119,6 +123,7 @@ on non-finite input, and the `string` overload throws
 `BigInteger` precision and narrow only the final result, so an exact
 value too large for `T` is bounded *before* it is narrowed.
 
+<!-- compile -->
 ```csharp
 var pi = Fraction<int>.Create(355, 113);
 pi.LimitDenominator(100);                    // 311/99 — closest with denominator ≤ 100
@@ -134,6 +139,7 @@ no unreduced form to preserve. Equality compares the canonical
 components, so `Fraction<int>.Create(2, 4) == Fraction<int>.Create(1, 2)`
 is `true`.
 
+<!-- compile -->
 ```csharp
 var a = Fraction<int>.Create(2, 4);    // 1/2
 var b = Fraction<int>.Create(1, 2);    // 1/2
@@ -225,6 +231,7 @@ Arithmetic operations promote operands to `BigInteger`, evaluate
 exactly, then narrow back to `T`. Overflow on narrowing raises
 `OverflowException`:
 
+<!-- compile -->
 ```csharp
 var huge = Fraction<int>.Create(int.MaxValue, 1);
 var doubled = huge + huge;     // OverflowException
@@ -233,6 +240,7 @@ var doubled = huge + huge;     // OverflowException
 Switch the backing type to `BigInteger` to eliminate narrowing
 entirely:
 
+<!-- compile -->
 ```csharp
 var hugeBI = Fraction<BigInteger>.Create(int.MaxValue, 1);
 var doubledBI = hugeBI + hugeBI;   // 4294967294/1 — no overflow
@@ -308,6 +316,7 @@ Truncation toward zero is the rule for the integer-extraction members: `Fraction
 
 ## Rounding and mixed parts
 
+<!-- compile -->
 ```csharp
 var x = Fraction<int>.Create(7, 3);   // 2.333…
 
@@ -337,6 +346,7 @@ or `Fraction<int>.IsNaN(x)` does not compile. They are reached through
 a generic type parameter constrained to the interface, which is exactly
 how every generic-math algorithm consumes them:
 
+<!-- compile -->
 ```csharp
 static void Inspect<T>(T x, T y) where T : INumber<T>
 {
@@ -386,6 +396,7 @@ nearest `double`; non-finite sources fail. The checked path overflows
 to <xref:System.OverflowException>, the saturating / truncating paths
 clamp to `MinValue` / `MaxValue` instead.
 
+<!-- compile -->
 ```csharp
 static T Checked<T, TOther>(TOther value)
     where T : INumber<T>
@@ -426,6 +437,7 @@ Leading / trailing whitespace is trimmed. Numeric components parse
 with `NumberStyles.None`, so scientific notation and group separators
 are rejected.
 
+<!-- compile -->
 ```csharp
 Fraction<int>.Parse("3/4");                // 3/4
 Fraction<int>.Parse("2 1/3");              // 7/3
@@ -443,6 +455,7 @@ Fraction<int>.TryParse("nope", out var _); // false
 | `"U"` | Unicode vulgar where a glyph exists (denominator ≤ 16), otherwise mixed |
 | `"P"` | Percentage form: scales by 100, re-reduces, renders as `numerator/denominator%` (bare `numerator%` when whole) |
 
+<!-- compile -->
 ```csharp
 var x = Fraction<int>.Create(7, 3);
 

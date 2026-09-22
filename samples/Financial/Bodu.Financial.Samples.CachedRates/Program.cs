@@ -45,6 +45,7 @@ public static class Program
         CoverageRanges.Run(cacheDirectory);
         TieredStacking.Run(cacheDirectory);
         HistoryClamping.Run();
+        DurableBackends.Run();
 
         Console.WriteLine("Done.");
     }
