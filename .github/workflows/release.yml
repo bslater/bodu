@@ -46,7 +46,119 @@ permissions:
   id-token: write   # required for the trusted-publishing OIDC exchange (NuGet/login)
 
 jobs:
+  # ---------------------------------------------------------------------------------------------
+  # Test gate. Nothing is signed, packed or published until the suite passes on the exact commit
+  # being released. Deliberately a SEPARATE job so the release job - which holds the signing key
+  # and the production environment - does not start at all on a red suite: no key is decoded, and
+  # any environment approval is requested only once the commit has earned it.
+  #
+  # Runs the same discovery and the same tier as build-test.yml (test.runsettings = the full
+  # regression tier), in Release, so the gate cannot pass on a configuration the release will not
+  # ship.
+  # ---------------------------------------------------------------------------------------------
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      CONFIGURATION: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration "$CONFIGURATION" \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Discover test projects
+        run: |
+          # Derived from the solution, as in build-test.yml, so the gate follows projects being
+          # added or removed without this workflow being edited.
+          projects=$(grep -oE 'Path="[^"]*\.Test\.csproj"' bodu.slnx \
+            | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
+            | sort -u)
+
+          if [ -z "$projects" ]; then
+            echo "::error::No test projects discovered in bodu.slnx" >&2
+            exit 1
+          fi
+
+          # Same module-presence guard build-test.yml carries: a regional pack silently dropped
+          # from the solution would shrink the tested surface while the gate stayed green.
+          missing=""
+          for region in Africa Americas AsiaPacific Europe MiddleEast; do
+            expected="Bodu.Globalization.Calendar.$region.Test.csproj"
+            if ! echo "$projects" | grep -q "/$expected\$"; then
+              missing="$missing $expected"
+            fi
+          done
+
+          if [ -n "$missing" ]; then
+            echo "::error::Expected regional calendar test projects missing from bodu.slnx:$missing" >&2
+            exit 1
+          fi
+
+          echo "Gating the release on $(echo "$projects" | wc -l) test project(s)."
+          {
+            echo 'TEST_PROJECTS<<EOF'
+            echo "$projects"
+            echo 'EOF'
+          } >> "$GITHUB_ENV"
+
+      - name: Restore
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Restore $proj"
+            dotnet restore "$proj"
+            echo "::endgroup::"
+          done
+
+      - name: Build
+        run: |
+          for proj in $TEST_PROJECTS; do
+            echo "::group::Build $proj"
+            dotnet build "$proj" --configuration "$CONFIGURATION" --no-restore
+            echo "::endgroup::"
+          done
+
+      - name: Test
+        run: |
+          # Every project is run even after one fails, so a release attempt reports the whole
+          # picture rather than only the first break.
+          status=0
+
+          for proj in $TEST_PROJECTS; do
+            name=$(basename "$proj" .csproj)
+            echo "::group::Test $name"
+            dotnet test "$proj" \
+              --configuration "$CONFIGURATION" \
+              --no-build \
+              --settings test.runsettings \
+              --logger "console;verbosity=normal" || status=$?
+            echo "::endgroup::"
+          done
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Tests failed - refusing to pack or publish this commit." >&2
+          fi
+          exit $status
+
   release:
+    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
