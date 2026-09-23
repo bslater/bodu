@@ -1,5 +1,7 @@
 # Bodu.Text.Filtering
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 A high-performance include/exclude filtering engine for lists of text values. A set of glob
 (wildcard) and regex patterns compiles once into a `TextFilter`, which then classifies each
 pattern by evaluation cost and runs the cheapest matchers first — so filtering 100k+ items

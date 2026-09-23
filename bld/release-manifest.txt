@@ -1,36 +1,86 @@
 # NuGet shipping manifest. `dotnet pack bodu.slnx` builds every packable project; only the
-# packages listed here are pushed to nuget.org by .github/workflows/release.yml, and only they
-# receive the package-validation baseline (see Directory.Build.targets and bld/Versioning.props).
-# One PackageId per line; `#` starts a comment. Extending a release wave = append its package
-# ids here and bump BoduBaseVersion in bld/Versioning.props. See bld/RELEASING.md.
+# packages listed here are pushed to nuget.org by .github/workflows/release.yml.
+#
+# Each line is "<PackageId> <first-shipped-version>": the id, then the lock-step version at which
+# that package FIRST appeared on nuget.org. The version is not the version being released — that is
+# BoduBaseVersion in bld/Versioning.props — it is a permanent record, written once when the package
+# joins a wave and never edited again.
+#
+# It exists because the package-validation baseline (BoduPackageValidationBaseline) compares a pack
+# against that package's own published predecessor. A package joining this release has no such
+# predecessor, and pointing ApiCompat at one fails the pack with NU1102 before it compares anything,
+# so Directory.Build.targets applies the baseline only when the baseline version is at or after the
+# package's first-shipped version.
+#
+# Extending a release wave = append its package ids with the version they will first ship at, and
+# bump BoduBaseVersion in bld/Versioning.props. See bld/RELEASING.md.
+
+# --------------------------------------------------------------------------------------------
+# Deliberately NOT published. These projects pack (the release workflow packs the whole solution)
+# and are available as build artifacts, but are withheld from nuget.org on purpose. Listing them
+# here, rather than leaving them absent, keeps a later wave from adding one without seeing why it
+# was held back. Removing an entry from this list is the decision to ship it.
+#
+#   Bodu.Financial.ExchangeRates.Xe
+#       Experimental. Authenticates with a token scraped from XE.com, which has no official
+#       endpoint, so the provider can stop working at any time through no fault of the code and
+#       no release of ours can fix it. Publishing it means fielding issues that cannot be closed.
+#
+#   Bodu.Globalization.Calendar.Tool
+#       A PackAsTool CLI (`bodu-calendar`), not a library. Different consumer contract from every
+#       other package here; warrants its own decision rather than a slot in a library wave.
+#
+#   Bodu.Globalization.Calendar.Build
+#       An MSBuild integration package (DevelopmentDependency, IncludeBuildOutput=false). Same
+#       reasoning as the tool it drives.
+# --------------------------------------------------------------------------------------------
 
 # Wave 1 — foundation packages
-Bodu.Core
-Bodu.Collections
-Bodu.Collections.Concurrent
-Bodu.Numerics
-Bodu.Numerics.Serialization.Json
-Bodu.IO.Hashing
-Bodu.Text.Encoding
-Bodu.Security.Cryptography
+Bodu.Core 0.5.0
+Bodu.Collections 0.5.0
+Bodu.Collections.Concurrent 0.5.0
+Bodu.Numerics 0.5.0
+Bodu.Numerics.Serialization.Json 0.5.0
+Bodu.IO.Hashing 0.5.0
+Bodu.Text.Encoding 0.5.0
+Bodu.Security.Cryptography 0.5.0
 
 # Wave 2 — self-contained format & text libraries
-Bodu.Text.Serialization
-Bodu.Text.Bencode
-Bodu.Text.Toml
-Bodu.Text.Yaml
-Bodu.Text.Delimited
-Bodu.Text.DotEnv
-Bodu.Text.Ini
-Bodu.Text.Formats
-Bodu.Text.Configuration
-Bodu.Text.Filtering
-Bodu.IO.Compound
-Bodu.IO.Biff
-Bodu.Formats.Excel.Binary
-Bodu.Formats.Outlook
-Bodu.Formats.Outlook.Msg
+Bodu.Text.Serialization 0.5.0
+Bodu.Text.Bencode 0.5.0
+Bodu.Text.Toml 0.5.0
+Bodu.Text.Yaml 0.5.0
+Bodu.Text.Delimited 0.5.0
+Bodu.Text.DotEnv 0.5.0
+Bodu.Text.Ini 0.5.0
+Bodu.Text.Formats 0.5.0
+Bodu.Text.Configuration 0.5.0
+Bodu.Text.Filtering 0.5.0
+Bodu.IO.Compound 0.5.0
+Bodu.IO.Biff 0.5.0
+Bodu.Formats.Excel.Binary 0.5.0
+Bodu.Formats.Outlook 0.5.0
+Bodu.Formats.Outlook.Msg 0.5.0
 
 # Wave 3 — Outlook personal-folders (PST) readers
-Bodu.IO.Pst
-Bodu.Formats.Outlook.Pst
+Bodu.IO.Pst 0.5.0
+Bodu.Formats.Outlook.Pst 0.5.0
+
+# Wave 4 — financial core, calendar engine, and the remaining Core-only libraries
+Bodu.Financial 0.6.0
+Bodu.Financial.DependencyInjection 0.6.0
+Bodu.Financial.Serialization.Json 0.6.0
+Bodu.Extensions.Configuration.Text 0.6.0
+Bodu.Globalization.Recurrence 0.6.0
+Bodu.Globalization.Calendar 0.6.0
+Bodu.Globalization.Calendar.Americas 0.6.0
+Bodu.Globalization.Calendar.AsiaPacific 0.6.0
+Bodu.Globalization.Calendar.Europe 0.6.0
+Bodu.Globalization.Calendar.MiddleEast 0.6.0
+Bodu.Globalization.Calendar.Africa 0.6.0
+Bodu.Globalization.Calendar.Builder 0.6.0
+Bodu.Globalization.Calendar.DependencyInjection 0.6.0
+Bodu.Globalization.Calendar.Plugins 0.6.0
+Bodu.Globalization.Calendar.Caching 0.6.0
+Bodu.Globalization.Calendar.Caching.Sqlite 0.6.0
+Bodu.Globalization.Calendar.Caching.Distributed 0.6.0

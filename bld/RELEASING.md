@@ -16,9 +16,19 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
   `bld/release-manifest.txt` are pushed to nuget.org**. Everything else is
   produced as a build artifact only.
 - **Waves extend the manifest.** Releasing the next wave = append its
-  package ids to the manifest, bump `BoduBaseVersion`, tag the new version.
-  Earlier packages re-publish at the new coherent version;
-  `--skip-duplicate` makes re-pushing an unchanged version a no-op.
+  package ids to the manifest **with the version they will first ship at**,
+  bump `BoduBaseVersion`, tag the new version. Earlier packages re-publish at
+  the new coherent version; `--skip-duplicate` makes re-pushing an unchanged
+  version a no-op.
+- **The manifest records first-shipped versions.** Each line is
+  `<PackageId> <first-shipped-version>`. That version is *not* what the run
+  publishes (`BoduBaseVersion` is) — it is a permanent note of when the
+  package first reached nuget.org, written once and never edited. The
+  package-validation baseline uses it to decide whether a package has a
+  published predecessor to compare against: without it, appending a wave
+  while the baseline still points at the previous release asks ApiCompat to
+  restore a package that was never published, and the pack fails with
+  `NU1102` before comparing any API.
 
 ## Preconditions
 
@@ -35,7 +45,9 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
      `environment: production`. Change either and the exchange is refused.
      A run that does not opt in to publishing never performs the exchange, so
      dry runs need no credential at all.
-2. `bld/release-manifest.txt` lists exactly the packages this release ships.
+2. `bld/release-manifest.txt` lists exactly the packages this release ships,
+   each with the version it first shipped at (new entries take the version
+   being cut).
 3. `BoduBaseVersion` in `bld/Versioning.props` is the version being cut.
 4. Every manifest package has a project-root `README.md` (packed as the
    NuGet readme, carrying its API-stability tier) and an icon under

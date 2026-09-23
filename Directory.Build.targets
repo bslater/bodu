@@ -66,15 +66,27 @@
   </PropertyGroup>
 
   <!--
-    Package-validation baseline, applied only to packages that have actually shipped. The shipping
-    manifest (bld/release-manifest.txt) is the record of what has been published, so the baseline
-    version (BoduPackageValidationBaseline in bld/Versioning.props — empty until the first release)
-    is set only for projects whose PackageId appears there; a never-published package has no
-    baseline to validate against. The anchored line match keeps prefixed ids apart (Bodu.Numerics
-    must not also match Bodu.Numerics.Serialization.Json), and the condition short-circuits before
-    the file read while the baseline property is empty, so ordinary builds pay nothing. A project
-    that shipped out-of-band via BoduPackageVersionOverride can pin its own
-    PackageValidationBaselineVersion in its csproj, which this block then leaves untouched.
+    Package-validation baseline, applied only to packages that have actually shipped, at a version
+    they actually shipped at.
+
+    bld/release-manifest.txt records "<PackageId> <first-shipped-version>" — the lock-step version at
+    which each package first appeared on nuget.org. BoduPackageFirstShippedVersion pulls that value
+    for the current project; an empty result means the project is not in the manifest at all (never
+    published, nothing to compare against). The baseline then applies only when
+    BoduPackageValidationBaseline is at or after it.
+
+    That second test is what makes a new wave safe. Appending packages to the manifest while the
+    baseline still points at the previous release would otherwise ask ApiCompat to restore a
+    predecessor that was never published, and the pack dies on NU1102 ("Unable to find package
+    Bodu.Financial with version (= 0.5.0)") before comparing any API. Recording the first-shipped
+    version per package is self-maintaining: it is written once when the package joins a wave and
+    never edited, so the next baseline bump needs no corresponding edit here.
+
+    The anchored line match keeps prefixed ids apart (Bodu.Numerics must not also match
+    Bodu.Numerics.Serialization.Json), and the file is read only once the cheap property tests have
+    passed, so ordinary builds pay nothing. A project that shipped out-of-band via
+    BoduPackageVersionOverride can pin its own PackageValidationBaselineVersion in its csproj, which
+    this block then leaves untouched.
 
     The baseline also requires BoduSignAssembly — the published packages are strong-named, so a
     comparison against them is only meaningful from a build carrying the same assembly identity.
@@ -84,7 +96,11 @@
     a build that deliberately opts out with BoduSignAssembly=false, which then skips validation
     rather than failing with a signing error that has nothing to do with the developer's change.
   -->
-  <PropertyGroup Condition="'$(EnablePackageValidation)' == 'true' and '$(BoduPackageValidationBaseline)' != '' and '$(BoduSignAssembly)' == 'true' and '$(PackageValidationBaselineVersion)' == '' and $([System.Text.RegularExpressions.Regex]::IsMatch($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)bld/release-manifest.txt')), '(?m)^$(MSBuildProjectName)\s*$'))">
+  <PropertyGroup Condition="'$(EnablePackageValidation)' == 'true' and '$(BoduPackageValidationBaseline)' != '' and '$(BoduSignAssembly)' == 'true' and '$(PackageValidationBaselineVersion)' == ''">
+    <BoduPackageFirstShippedVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)bld/release-manifest.txt')), '(?m)^$(MSBuildProjectName)[ \t]+([0-9]+\.[0-9]+\.[0-9]+)[ \t]*$').Groups.get_Item(1).Value)</BoduPackageFirstShippedVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(BoduPackageFirstShippedVersion)' != '' and $([MSBuild]::VersionGreaterThanOrEquals('$(BoduPackageValidationBaseline)', '$(BoduPackageFirstShippedVersion)'))">
     <PackageValidationBaselineVersion>$(BoduPackageValidationBaseline)</PackageValidationBaselineVersion>
   </PropertyGroup>
 

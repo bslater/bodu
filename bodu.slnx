@@ -220,6 +220,7 @@
   </Folder>
   <Folder Name="/Bodu.Financial/">
     <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/src/Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+    <Project Path="Bodu.Financial.ExchangeRates.DependencyInjection/test/Bodu.Financial.ExchangeRates.DependencyInjection.Test.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/src/Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.ExchangeRateHost/test/Bodu.Financial.ExchangeRates.ExchangeRateHost.Test.csproj" />
     <Project Path="Bodu.Financial.ExchangeRates.Testing/src/Bodu.Financial.ExchangeRates.Testing.csproj" />
