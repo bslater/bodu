@@ -15,6 +15,26 @@
 # Extending a release wave = append its package ids with the version they will first ship at, and
 # bump BoduBaseVersion in bld/Versioning.props. See bld/RELEASING.md.
 
+# --------------------------------------------------------------------------------------------
+# Deliberately NOT published. These projects pack (the release workflow packs the whole solution)
+# and are available as build artifacts, but are withheld from nuget.org on purpose. Listing them
+# here, rather than leaving them absent, keeps a later wave from adding one without seeing why it
+# was held back. Removing an entry from this list is the decision to ship it.
+#
+#   Bodu.Financial.ExchangeRates.Xe
+#       Experimental. Authenticates with a token scraped from XE.com, which has no official
+#       endpoint, so the provider can stop working at any time through no fault of the code and
+#       no release of ours can fix it. Publishing it means fielding issues that cannot be closed.
+#
+#   Bodu.Globalization.Calendar.Tool
+#       A PackAsTool CLI (`bodu-calendar`), not a library. Different consumer contract from every
+#       other package here; warrants its own decision rather than a slot in a library wave.
+#
+#   Bodu.Globalization.Calendar.Build
+#       An MSBuild integration package (DevelopmentDependency, IncludeBuildOutput=false). Same
+#       reasoning as the tool it drives.
+# --------------------------------------------------------------------------------------------
+
 # Wave 1 — foundation packages
 Bodu.Core 0.5.0
 Bodu.Collections 0.5.0
