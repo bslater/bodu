@@ -60,8 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
-    env:
-      CONFIGURATION: Release
+    # Deliberately NO job-level CONFIGURATION env. MSBuild reads environment variables as global
+    # properties and property names are case-insensitive, so CONFIGURATION=Release silently becomes
+    # Configuration=Release for every child process - including the nested `dotnet build` that
+    # Bodu.Globalization.Calendar.Build.Test spawns over its fixture project. That test asserts the
+    # compiled pack at bin/Debug/net8.0 (the nested build takes no -c and relies on the default),
+    # so the leaked property moved the output to bin/Release and failed the test. Release runs 7 and
+    # 8 both died here. Pass the configuration explicitly per step instead.
 
     steps:
       - name: Checkout
@@ -81,7 +86,7 @@ jobs:
         working-directory: Bodu.CodeStyle
         run: |
           dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
-            --configuration "$CONFIGURATION" \
+            --configuration Release \
             --output "${{ github.workspace }}/local-packages"
 
       - name: Discover test projects
@@ -131,7 +136,7 @@ jobs:
         run: |
           for proj in $TEST_PROJECTS; do
             echo "::group::Build $proj"
-            dotnet build "$proj" --configuration "$CONFIGURATION" --no-restore
+            dotnet build "$proj" --configuration Release --no-restore
             echo "::endgroup::"
           done
 
@@ -154,7 +159,7 @@ jobs:
             echo "::group::Test $name"
             rc=0
             dotnet test "$proj" \
-              --configuration "$CONFIGURATION" \
+              --configuration Release \
               --no-build \
               --settings test.runsettings \
               --results-directory "${{ github.workspace }}/TestResults/$name" \
