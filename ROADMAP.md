@@ -100,13 +100,15 @@ shared `WebRateProvider` base, the provider-agnostic caching layer (`CachingRate
 distributed backends, and per-package DI; and (5) DI packages for
 `Bodu.Financial` and the calendar service, plus the calendar plugin loader.
 Central package management (`Directory.Packages.props`) is now in place.
-Nothing has been tagged/released yet (no git tags), so the release tranches
-below remain the first publishing target rather than a shipped state.*
+Waves 1–3 shipped at **0.5.0** (tag `v0.5.0`) — 25 packages live on
+nuget.org, strong-named and published through nuget.org trusted publishing
+(OIDC), with package validation now comparing each pack against its
+published predecessor.*
 
 ## How to read this
 
-- **Release focus** lists the packages queued for their first publish,
-  grouped into release waves.
+- **Release focus** lists the release waves: which packages have shipped,
+  and which are queued for their first publish.
 - **Non-goals** lists things the repository is deliberately *not* doing,
   to keep scope discussions short.
 - **Per-project roadmap** has a short subsection per project (or project
@@ -155,11 +157,25 @@ The roadmap assumes the conventions already documented in
 
 ## Release focus
 
-No package has been tagged or published yet. The first publish is
-organised into waves so package-validation and dependency ordering are
-exercised on the smallest self-contained units first.
+Publishing is organised into waves so package-validation and dependency
+ordering are exercised on the smallest self-contained units first, and so a
+package's public surface stays free to change until it actually ships — the
+first publish is what fixes an API and gives it an ApiCompat baseline.
 
-**Wave 1 — foundation packages (no inter-Bodu package dependencies):**
+**Shipped.** Waves 1–3 published at **0.5.0**: the 25 packages listed in
+`bld/release-manifest.txt` at that version. Wave 4 (below) is staged for
+**0.6.0**; the exchange-rate providers follow in a later wave, held at
+Preview until they have been exercised against their live upstream
+endpoints.
+
+`Bodu.Financial.ExchangeRates.Xe` is **not** queued for any wave: it
+authenticates with a scraped token and can break without notice, which no
+release of ours can fix. `Bodu.Globalization.Calendar.Tool` (a `PackAsTool`
+CLI) and `.Build` (an MSBuild `DevelopmentDependency`) are also held back —
+both are toolchain packages with a different consumer contract from a
+library, and warrant their own decision rather than a slot in a library wave.
+
+**Wave 1 — foundation packages (no inter-Bodu package dependencies):** *(shipped 0.5.0)*
 
 | Package | Notes |
 | --- | --- |
@@ -171,7 +187,7 @@ exercised on the smallest self-contained units first.
 | `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
 | `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
 
-**Wave 2 — self-contained format & text libraries:**
+**Wave 2 — self-contained format & text libraries:** *(shipped 0.5.0)*
 
 | Package | Notes |
 | --- | --- |
@@ -190,17 +206,32 @@ exercised on the smallest self-contained units first.
 | `Bodu.Formats.Outlook` | The shared, container-free MAPI value model. |
 | `Bodu.Formats.Outlook.Msg` | Read-only `.msg` (MS-OXMSG) reader over `Bodu.IO.Compound`. |
 
-**Wave 3 — financial core + calendar (coordinated breaking change):**
+**Wave 4 — financial core + calendar:** *(staged for 0.6.0)*
+
+Note that wave 3 as numbered here was overtaken: the Outlook personal-folders
+readers (`Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst`) landed first and shipped
+as wave 3 at 0.5.0, so the financial + calendar set below is wave 4 in
+`bld/release-manifest.txt`.
+
+This was previously labelled a *coordinated breaking change* over
+`NotableDateService()` no longer loading every region's rules. That framing
+predates the lock-step scheme and no longer applies: the calendar packages
+have never been published, so their first release cannot break a consumer.
+The data-pack requirement is simply the shape they ship in.
 
 | Package | Notes |
 | --- | --- |
 | `Bodu.Financial` | `Money` / `Money<TCurrency>`, `CalculatedMoney`, `MoneyBag`, the ISO 4217 catalogue, rounding/allocation policies, and the FX abstractions (`ExchangeRate`, `IRateProvider` / `IDatedRateProvider`, `RateBook`, `WebRateProvider` base). References `Bodu.Numerics`. |
 | `Bodu.Financial.DependencyInjection` | `AddFinancialService`, currency-resolution registration. |
-| `Bodu.Globalization.Calendar` | 1.1.0 — multi-assembly rule resolution. **Behavioural change**: parameterless `NotableDateService()` no longer ships every region's rules; consumers must reference a data pack. |
+| `Bodu.Financial.Serialization.Json` | `System.Text.Json` integration for `Bodu.Financial` (`AddFinancialJsonConverters`, `AddFinancialJson`). Keeps the core serialization-agnostic. |
+| `Bodu.Extensions.Configuration.Text` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. Core-only besides the text packages it builds on, all of which shipped at 0.5.0. |
+| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parse and round-trip but throw `NotSupportedException` on enumeration. |
+| `Bodu.Globalization.Calendar` | Multi-assembly rule resolution. The parameterless `NotableDateService()` does not load every region's rules; consumers reference a data pack. |
 | `Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}` | The five regional data packs (authoritative country set below). |
 | `Bodu.Globalization.Calendar.{Builder,DependencyInjection,Plugins}` | Authoring API, DI registration, trust-gated plugin loader. |
+| `Bodu.Globalization.Calendar.Caching{,.Sqlite,.Distributed}` | Read-through notable-date cache and its durable / shared backends. Preview, matching the equivalent exchange-rate caching packages. |
 
-**Wave 4 — exchange-rate providers, caching, and DI:**
+**Wave 5 — exchange-rate providers, caching, and DI:** *(Preview; after 0.6.0)*
 
 | Package | Notes |
 | --- | --- |
@@ -226,9 +257,9 @@ applies to each package's surface. A single git tag `v<version>` releases
 every package listed in the shipping manifest
 (`bld/release-manifest.txt`) — the release workflow packs the whole
 solution but publishes only the manifest set. Later waves append their
-package ids to the manifest and bump the base version (the coordinated
-Calendar wave is slated 1.1.0, shipping together with its data packs);
-earlier packages re-publish at the new coherent version. Per-package
+package ids to the manifest — each with the version it first ships at — and
+bump the base version; earlier packages re-publish at the new coherent
+version. Per-package
 divergence is reserved for out-of-band fixes via
 `BoduPackageVersionOverride`. See `bld/RELEASING.md` for the full
 procedure. *(This supersedes the earlier `<package>/v<version>`
