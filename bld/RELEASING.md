@@ -53,6 +53,16 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
    NuGet readme, carrying its API-stability tier) and an icon under
    `bld/icons/<PackageId>.png`.
 
+`bld/check-release-manifest.sh` enforces preconditions 2 and 4 mechanically,
+and runs in `build-test.yml` on every pull request — so a malformed manifest
+entry, or a shipping package missing its README, tier banner or icon, fails
+there rather than in a release run after a tag has been pushed. Run it locally
+before cutting a release:
+
+```bash
+bash bld/check-release-manifest.sh
+```
+
 ## Publishing a subset
 
 A manual run takes an optional `packages` input: space- or comma-separated

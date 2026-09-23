@@ -32,6 +32,12 @@ jobs:
       - name: Check folder / namespace alignment
         run: bash bld/check-folder-namespace-alignment.sh
 
+      # Same rationale: bash-only and seconds to run, so a malformed manifest or a shipping package
+      # missing its README, tier banner or icon fails here rather than in a release run — after a tag
+      # has been pushed and a nuget.org version can no longer be withdrawn.
+      - name: Check release manifest
+        run: bash bld/check-release-manifest.sh
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
