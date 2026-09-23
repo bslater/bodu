@@ -13,8 +13,14 @@ name: Release
 #
 # Required/optional secrets:
 #   BODU_SNK        (required) base64 of the full private Bodu.snk strong-name key.
-#   NUGET_API_KEY   (optional) nuget.org push key. When unset, packages are built and uploaded as
-#                   artifacts but not published, so the workflow is safe to run as a dry run.
+#
+# Publishing uses nuget.org TRUSTED PUBLISHING (OIDC) - there is no stored push key. The job
+# requests a short-lived (~1 hour) key from nuget.org via NuGet/login, which nuget.org issues only
+# when the request's OIDC claims match the trusted-publishing policy: this repository, this
+# workflow file, and the 'production' environment. Hence 'id-token: write' below and the
+# environment on the job; changing either breaks the claim match and the exchange is refused.
+# A run that does not opt in to publishing never performs the exchange, so a dry run needs no
+# credential at all.
 
 on:
   push:
@@ -23,17 +29,30 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: 'Publish the packed packages to nuget.org (requires NUGET_API_KEY).'
+        description: 'Publish the packed packages to nuget.org.'
         type: boolean
         default: false
+      packages:
+        description: >-
+          Optional space- or comma-separated package ids to publish instead of the whole manifest
+          (e.g. "Bodu.Core Bodu.IO.Biff"). Every id must appear in bld/release-manifest.txt.
+          Leave empty to stage the full manifest. Ignored for tag runs, which always release the
+          whole manifest at the tagged version.
+        type: string
+        default: ''
 
 permissions:
   contents: read
+  id-token: write   # required for the trusted-publishing OIDC exchange (NuGet/login)
 
 jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    # Named by the nuget.org trusted-publishing policy. The OIDC claim carries it, so the
+    # exchange is refused if this is absent or renamed.
+    environment: production
 
     env:
       CONFIGURATION: Release
@@ -152,17 +171,53 @@ jobs:
 
       - name: Select shipping packages (bld/release-manifest.txt)
         shell: bash
+        env:
+          # Empty for tag runs: a tag releases the whole manifest at the tagged version.
+          REQUESTED_PACKAGES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.packages || '' }}
         run: |
           # Pack builds every packable project in the solution, including waves that are not yet
           # released. Only packages listed in the shipping manifest are staged for publish;
           # everything else remains a build artifact only.
+          #
+          # A manual run may narrow that set further with the 'packages' input. The subset is
+          # validated against the manifest first and an unknown id fails the run: silently
+          # publishing a different set than the operator asked for is the failure mode worth
+          # spending a build on, because a nuget.org version cannot be withdrawn afterwards.
           PUBLISH_DIR="${{ github.workspace }}/publish"
           mkdir -p "$PUBLISH_DIR"
           shopt -s nullglob
-          fail=0; count=0
+
+          manifest_ids=()
           while IFS= read -r line; do
-            id="${line%%#*}"; id="${id//[$'\t\r ']/}"
-            [ -z "$id" ] && continue
+            mid="${line%%#*}"; mid="${mid//[$'\t\r ']/}"
+            [ -n "$mid" ] && manifest_ids+=("$mid")
+          done < bld/release-manifest.txt
+
+          requested="${REQUESTED_PACKAGES//,/ }"
+          selected_ids=()
+          if [ -n "${requested// /}" ]; then
+            bad=0
+            for rid in $requested; do
+              found=0
+              for mid in "${manifest_ids[@]}"; do
+                [ "$rid" = "$mid" ] && { found=1; break; }
+              done
+              if [ "$found" -eq 1 ]; then
+                selected_ids+=("$rid")
+              else
+                echo "::error::Requested package '$rid' is not in bld/release-manifest.txt. Only manifest packages can be published."
+                bad=1
+              fi
+            done
+            [ "$bad" -eq 0 ] || exit 1
+            echo "Subset requested: publishing ${#selected_ids[@]} of ${#manifest_ids[@]} manifest package(s)."
+          else
+            selected_ids=("${manifest_ids[@]}")
+            echo "No subset requested: staging the full manifest (${#selected_ids[@]} packages)."
+          fi
+
+          fail=0; count=0
+          for id in "${selected_ids[@]}"; do
             count=$((count + 1))
             # The [0-9] guard stops 'Bodu.Numerics' also matching 'Bodu.Numerics.Serialization.Json'.
             pkgs=("$ARTIFACTS_DIR/$id".[0-9]*.nupkg)
@@ -176,14 +231,14 @@ jobs:
               fail=1; continue
             fi
             cp "${pkgs[0]}" "$snupkg" "$PUBLISH_DIR/"
-          done < bld/release-manifest.txt
+          done
           [ "$fail" -eq 0 ] || exit 1
           staged=$(ls "$PUBLISH_DIR"/*.nupkg | wc -l)
           if [ "$staged" -ne "$count" ]; then
-            echo "::error::Staged $staged packages but the manifest lists $count."
+            echo "::error::Staged $staged packages but $count were selected."
             exit 1
           fi
-          echo "Staged $staged manifest packages for publish:"
+          echo "Staged $staged package(s) for publish:"
           ls -1 "$PUBLISH_DIR"/*.nupkg
           echo "Packed but NOT published (not in the shipping manifest):"
           for f in "$ARTIFACTS_DIR"/*.nupkg; do
@@ -211,17 +266,32 @@ jobs:
           retention-days: 90
           if-no-files-found: error
 
+      # Exchanges this run's GitHub OIDC token for a short-lived nuget.org API key. Runs only when
+      # the job will actually publish, so a dry run never mints a credential.
+      - name: Acquire a short-lived nuget.org key (trusted publishing)
+        id: nuget-login
+        if: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
+        uses: NuGet/login@v1
+        with:
+          user: bodu
+
       - name: Publish to nuget.org
-        # Publish on a tag release, or a manual run that opted in — and only when the key exists.
+        # Publish on a tag release, or a manual run that opted in.
         if: ${{ github.event_name == 'push' || github.event.inputs.publish == 'true' }}
         shell: bash
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
           if [ -z "$NUGET_API_KEY" ]; then
-            echo "::warning::NUGET_API_KEY is not set — skipping publish. Packages remain available as artifacts."
-            exit 0
+            echo "::error::Trusted publishing returned no key. Check that the nuget.org policy names this repository, this workflow file, and the 'production' environment, and that the job has id-token: write."
+            exit 1
           fi
+
+          # --skip-duplicate keeps a re-run idempotent, but it also means an already-published
+          # version is reported as skipped rather than failing. Count what actually pushed so a
+          # scope or policy problem cannot masquerade as a clean release.
+          expected=$(ls "$PUBLISH_DIR"/*.nupkg | wc -l)
+          echo "Pushing $expected package(s) to nuget.org."
           dotnet nuget push "$PUBLISH_DIR"/*.nupkg \
             --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json \
