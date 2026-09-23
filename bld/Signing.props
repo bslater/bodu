@@ -1,12 +1,24 @@
 <Project>
 
   <!--
-    Assembly strong-name signing, centralized but disabled by default. Bodu assemblies are
-    not currently strong-named, and adopting a strong name for published packages is
-    effectively permanent. To enable, set BoduSignAssembly=true and provide bld/Bodu.snk.
+    Assembly strong-name signing, centralized and on by default. The decision is already made and
+    is effectively permanent: the 0.5.0 packages shipped strong-named under this identity (public
+    key token 66114d6b6c32ac58), so every later build must carry the same identity or it is not a
+    drop-in replacement for what consumers already reference.
+
+    On by default rather than release-only so an ordinary build produces the assembly identity that
+    ships. Two things depend on that. Package validation compares a pack against the published
+    baseline and stops at CP0003 when the identity differs, so a release-only default left every
+    local pack unable to run the ApiCompat check (see Directory.Build.targets). And the
+    InternalsVisibleTo grants are rewritten to carry the public key only while signing is on, so a
+    signing-off build exercises a different friend-assembly path than the one that ships.
+
+    Default signing is PUBLIC signing — the committed key below is public-only, which is all that is
+    needed to stamp the identity. A release additionally sets BoduRealSign=true and supplies the
+    private key, which is the only thing that needs a secret.
   -->
   <PropertyGroup>
-    <BoduSignAssembly Condition="'$(BoduSignAssembly)' == ''">false</BoduSignAssembly>
+    <BoduSignAssembly Condition="'$(BoduSignAssembly)' == ''">true</BoduSignAssembly>
     <SignAssembly>$(BoduSignAssembly)</SignAssembly>
 
     <!--
@@ -35,10 +47,10 @@
     InternalsVisibleTo grant when signing is enabled, because a strong-named assembly may only grant
     its internals to a friend that presents this public key.
 
-    Left empty until the key pair is generated and checked in. While empty (or while SignAssembly is
-    false) the public-key suffix is not applied, so unsigned builds continue to grant internals by
-    simple name. Populating this and setting BoduSignAssembly=true is all that is required to turn on
-    strong-name signing across the solution.
+    Populated, and signing is on by default, so the suffix is applied on an ordinary build. The
+    guard remains because the suffix is only correct while the granting assembly is actually signed:
+    a build that turns signing off (BoduSignAssembly=false) falls back to granting internals by
+    simple name, which is what an unsigned assembly requires.
   -->
   <PropertyGroup>
     <BoduPublicKey Condition="'$(BoduPublicKey)' == ''">00240000048000001401000006020000002400005253413100080000010001006D3276A0BC354DD91E1B096CEB71C53A269B954B8FA751E03842399107060C82F0663DE4DCFD4B2A2D1E01502DE4EE8DC367BBF320C51CFB31948A31398D804077CFB472D0EA8D079E957AF2B4F1E988959DF2A155DEAAA98338B893D85541E379B42D2B4AE48A208CDC07C5DAA44ED655F4BB2365281CFCEEEA4025B54724DF47426CAE599AAFCC0299C86EC3C3EE936817E56826377B66F1284072E7E8DA174BD81C1CFFAED06C57E851ADA7485E1C86B32B46DB6978B9EA969930A39AAC6E1F247D853DDA56BFC14D2A97B6C5FD71396DE65BC13E3A65197026F31D55A92B1F017FF9F241380E41F40231E0418BF32A39FCA8208B51F4441FD71A516263B7</BoduPublicKey>
