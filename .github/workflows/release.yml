@@ -340,9 +340,13 @@ jobs:
           mkdir -p "$PUBLISH_DIR"
           shopt -s nullglob
 
+          # Each manifest line is "<PackageId> <first-shipped-version>"; only the id is needed here.
+          # The version records when a package first reached nuget.org and drives the package-validation
+          # baseline in Directory.Build.targets, not what this run publishes.
           manifest_ids=()
           while IFS= read -r line; do
-            mid="${line%%#*}"; mid="${mid//[$'\t\r ']/}"
+            mid="${line%%#*}"
+            mid="$(printf '%s' "$mid" | tr -d '\r' | awk '{print $1}')"
             [ -n "$mid" ] && manifest_ids+=("$mid")
           done < bld/release-manifest.txt
 
