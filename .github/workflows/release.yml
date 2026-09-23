@@ -139,23 +139,59 @@ jobs:
         run: |
           # Every project is run even after one fails, so a release attempt reports the whole
           # picture rather than only the first break.
+          #
+          # Each project's outcome is recorded by name and exit code, and the failures are
+          # restated at the end. A release gate has to survive its own logs: GitHub serves only
+          # the tail of a long run, and a non-zero `dotnet test` does not always correspond to a
+          # reported test failure - an aborted or crashed test host, or a run that discovers no
+          # tests at all, exits non-zero with nothing named. Without this summary the only
+          # evidence is "exit code 1" with the responsible project scrolled out of reach.
           status=0
+          failed=""
 
           for proj in $TEST_PROJECTS; do
             name=$(basename "$proj" .csproj)
             echo "::group::Test $name"
+            rc=0
             dotnet test "$proj" \
               --configuration "$CONFIGURATION" \
               --no-build \
               --settings test.runsettings \
-              --logger "console;verbosity=normal" || status=$?
+              --results-directory "${{ github.workspace }}/TestResults/$name" \
+              --logger "trx;LogFileName=$name.trx" \
+              --logger "console;verbosity=normal" || rc=$?
             echo "::endgroup::"
+
+            if [ "$rc" -ne 0 ]; then
+              echo "::error::$name exited $rc"
+              failed="$failed$name (exit $rc)%0A"
+              status=$rc
+            fi
           done
 
           if [ "$status" -ne 0 ]; then
-            echo "::error::Tests failed - refusing to pack or publish this commit." >&2
+            echo "::error::Tests failed - refusing to pack or publish this commit. Projects:%0A$failed" >&2
+            echo "### Release gate failed" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "These test projects exited non-zero. A project listed here with no failing test in" >> "$GITHUB_STEP_SUMMARY"
+            echo "its TRX aborted or discovered no tests - check the uploaded \`release-test-results-trx\` artifact." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            printf '%s' "$failed" | sed 's/%0A/\n/g' | while IFS= read -r line; do
+              [ -n "$line" ] && echo "- $line" >> "$GITHUB_STEP_SUMMARY"
+            done
           fi
           exit $status
+
+      # Uploaded even on success: the TRX is the only durable record of what the gate ran, and
+      # GitHub serves only the tail of the console log.
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-test-results-trx
+          path: TestResults/**/*.trx
+          retention-days: 14
+          if-no-files-found: warn
 
   release:
     needs: test
