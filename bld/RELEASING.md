@@ -26,14 +26,35 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
    - `BODU_SNK` (**required**) — base64 of the full private strong-name key.
      The workflow verifies it against the committed `bld/Bodu.public.snk`
      and fails fast on any mismatch.
-   - `NUGET_API_KEY` (**required to publish**) — nuget.org push key. When
-     unset the workflow still packs and uploads artifacts, so runs are safe
-     dry runs.
+   - There is **no push key**. Publishing uses nuget.org **trusted
+     publishing** (OIDC): the job exchanges this run's GitHub OIDC token for a
+     short-lived (~1 hour) key via `NuGet/login`. nuget.org issues it only when
+     the request's claims match the trusted-publishing policy — this
+     repository, `release.yml`, and the `production` environment — which is why
+     the workflow declares `id-token: write` and the job sets
+     `environment: production`. Change either and the exchange is refused.
+     A run that does not opt in to publishing never performs the exchange, so
+     dry runs need no credential at all.
 2. `bld/release-manifest.txt` lists exactly the packages this release ships.
 3. `BoduBaseVersion` in `bld/Versioning.props` is the version being cut.
 4. Every manifest package has a project-root `README.md` (packed as the
    NuGet readme, carrying its API-stability tier) and an icon under
    `bld/icons/<PackageId>.png`.
+
+## Publishing a subset
+
+A manual run takes an optional `packages` input: space- or comma-separated
+package ids to publish **instead of** the whole manifest, e.g.
+`Bodu.Core Bodu.IO.Biff`. Leave it empty to stage the full manifest.
+
+Every requested id must appear in `release-manifest.txt`; an unknown id (a typo,
+or a package that packs but has not been approved to ship) **fails the run**
+rather than being skipped. Publishing a different set than the operator asked
+for is the failure worth spending a build on, because a nuget.org version cannot
+be withdrawn afterwards — only delisted.
+
+Tag runs ignore the input: a tag releases the whole manifest at the tagged
+version, which is what keeps the lock-step set coherent.
 
 ## Dry run
 
