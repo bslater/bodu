@@ -89,11 +89,23 @@ its `.snupkg`) to nuget.org.
    `dotnet add package Bodu.Core` in a scratch project.
 3. **Set the package-validation baseline**: in `bld/Versioning.props`, set
    `BoduPackageValidationBaseline` to the just-published version (e.g.
-   `1.0.0`). From then on every pack of a manifest-listed package runs the
-   strict ApiCompat comparison against the published baseline, catching
-   accidental breaking changes at pack time. Verify with a local
-   `dotnet pack` once nuget.org lists the packages (the baseline package is
-   restored during validation).
+   `1.0.0`). From then on every *signed* pack of a manifest-listed package
+   runs the strict ApiCompat comparison against the published baseline,
+   catching accidental breaking changes at pack time. Verify once nuget.org
+   lists the packages (the baseline package is restored during validation):
+
+   ```bash
+   dotnet pack Bodu.Core/src/Bodu.Core.csproj -c Release -p:BoduSignAssembly=true
+   ```
+
+   `BoduSignAssembly=true` matters: published packages are strong-named, so
+   ApiCompat rejects an unsigned pack at CP0003 (public key token `null` vs
+   the published token) before comparing any API. The committed public-only
+   key is enough to match the identity — real signing is not required. An
+   ordinary unsigned `dotnet pack` skips the baseline entirely rather than
+   failing on identity, so local builds and PR CI are unaffected; the
+   release workflow packs with `BoduSignAssembly=true`, so the gate that
+   guards publishing still runs.
 
 ## Next waves
 

@@ -75,8 +75,17 @@
     the file read while the baseline property is empty, so ordinary builds pay nothing. A project
     that shipped out-of-band via BoduPackageVersionOverride can pin its own
     PackageValidationBaselineVersion in its csproj, which this block then leaves untouched.
+
+    The baseline also requires BoduSignAssembly — the published packages are strong-named, so a
+    comparison against them is only meaningful from a build carrying the same assembly identity.
+    Without it ApiCompat stops at CP0003 (public key token 'null' vs the published token) before it
+    ever reaches the API surface, which would fail every ordinary `dotnet pack` with an error that
+    has nothing to do with the developer's change. The release workflow packs with
+    BoduSignAssembly=true, so the gate that guards publishing is unaffected; to run the same check
+    locally, pack with -p:BoduSignAssembly=true (the committed public-only key is sufficient — real
+    signing is not required to match the identity).
   -->
-  <PropertyGroup Condition="'$(EnablePackageValidation)' == 'true' and '$(BoduPackageValidationBaseline)' != '' and '$(PackageValidationBaselineVersion)' == '' and $([System.Text.RegularExpressions.Regex]::IsMatch($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)bld/release-manifest.txt')), '(?m)^$(MSBuildProjectName)\s*$'))">
+  <PropertyGroup Condition="'$(EnablePackageValidation)' == 'true' and '$(BoduPackageValidationBaseline)' != '' and '$(BoduSignAssembly)' == 'true' and '$(PackageValidationBaselineVersion)' == '' and $([System.Text.RegularExpressions.Regex]::IsMatch($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)bld/release-manifest.txt')), '(?m)^$(MSBuildProjectName)\s*$'))">
     <PackageValidationBaselineVersion>$(BoduPackageValidationBaseline)</PackageValidationBaselineVersion>
   </PropertyGroup>
 
