@@ -91,9 +91,21 @@ its `.snupkg`) to nuget.org.
    `BoduPackageValidationBaseline` to the just-published version (e.g.
    `1.0.0`). From then on every pack of a manifest-listed package runs the
    strict ApiCompat comparison against the published baseline, catching
-   accidental breaking changes at pack time. Verify with a local
-   `dotnet pack` once nuget.org lists the packages (the baseline package is
-   restored during validation).
+   accidental breaking changes at pack time. Verify once nuget.org lists the
+   packages (the baseline package is restored during validation):
+
+   ```bash
+   dotnet pack Bodu.Core/src/Bodu.Core.csproj -c Release
+   ```
+
+   No extra properties: signing is on by default (`bld/Signing.props`), so an
+   ordinary build already carries the published strong-name identity that
+   ApiCompat compares against. That matters because ApiCompat checks identity
+   *before* API surface — against an unsigned build it stops at CP0003
+   (public key token `null` vs the published token) and never reaches the
+   comparison. A build that deliberately turns signing off
+   (`-p:BoduSignAssembly=false`) therefore skips the baseline rather than
+   failing on identity.
 
 ## Next waves
 
