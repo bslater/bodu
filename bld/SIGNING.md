@@ -1,9 +1,10 @@
 # Strong-name signing (Path A)
 
-Bodu assemblies ship **unsigned by default**. The infrastructure to strong-name them is staged and
-inert; enabling it is a two-value change once a key exists. This is *identity* signing only (a stable
-`PublicKeyToken`), not publisher trust — for consumer-verifiable publisher identity, add a code-signing
-certificate and author-sign the NuGet packages separately.
+Bodu assemblies are **strong-named by default**, under public key token `66114d6b6c32ac58`. The
+0.5.0 packages shipped under this identity, so it is now fixed: changing or dropping it would break
+every consumer's assembly reference. This is *identity* signing only (a stable `PublicKeyToken`), not
+publisher trust — for consumer-verifiable publisher identity, add a code-signing certificate and
+author-sign the NuGet packages separately.
 
 ## Key management
 
@@ -19,7 +20,7 @@ with `-p:BoduRealSign=true` and supplies the private key.
 
 ## What is already wired
 
-- `bld/Signing.props` — `BoduSignAssembly` (off), `SignAssembly`, `BoduStrongNameKeyFile`
+- `bld/Signing.props` — `BoduSignAssembly` (**on by default**), `SignAssembly`, `BoduStrongNameKeyFile`
   (→ committed `bld/Bodu.public.snk`), `PublicSign` (on unless `BoduRealSign=true`), and the
   `BoduPublicKey` hex string (the public key of `bld/Bodu.public.snk`).
 - `bld/InternalsVisibleTo.targets` — `BoduAppendPublicKeyToInternalsVisibleTo` weaves
@@ -31,29 +32,34 @@ with `-p:BoduRealSign=true` and supplies the private key.
 - `.gitignore` — ignores `*.snk` except `bld/Bodu.public.snk`, so the private key cannot be committed
   by accident.
 
-## Enabling (public signing — the normal path)
+## How it is set up (public signing — the normal path)
 
-1. **Commit the public key** only:
+All three steps below are already done; they are recorded here because the key material is the part
+that cannot be reconstructed from the repository.
+
+1. **The public key is committed**, the private key is not:
 
    ```bash
    git add -f bld/Bodu.public.snk     # -f because *.snk is gitignored
    ```
 
-   Store the full private `Bodu.snk` in your secret manager (GitHub Actions secret, Azure Key Vault,
-   1Password, …). Do **not** put it in the working tree.
+   The full private `Bodu.snk` lives in a secret store (here, the `BODU_SNK` GitHub Actions secret)
+   and never in the working tree.
 
-2. **Populate `BoduPublicKey`** in `bld/Signing.props` with the long hex `PublicKey` from
-   `sn -tp bld/Bodu.public.snk` (the long key, not the 8-byte token).
+2. **`BoduPublicKey`** in `bld/Signing.props` holds the long hex `PublicKey` from
+   `sn -tp bld/Bodu.public.snk` (the long key, not the 8-byte token). `bld/InternalsVisibleTo.targets`
+   appends it to every grant.
 
-3. **Turn it on** — set the repo-wide default in `bld/Signing.props`, or per build:
+3. **`BoduSignAssembly` defaults to `true`**, so an ordinary build already produces the shipped
+   identity — which is what lets package validation compare a local pack against the published
+   baseline (see [RELEASING.md](RELEASING.md)).
 
-   ```bash
-   dotnet build bodu.slnx -p:BoduSignAssembly=true
-   ```
-
-   `SignAssembly` applies to **src and test** projects alike (test assemblies must carry the same
-   public key to receive the `InternalsVisibleTo` grants), so this is all-or-nothing across the
-   solution. Run `dotnet test bodu.slnx --settings bvt.runsettings` once after enabling.
+`SignAssembly` applies to **src and test** projects alike: test assemblies must carry the same public
+key to receive the `InternalsVisibleTo` grants, so this is all-or-nothing across the solution — and
+across `Bodu.CodeStyle`, which resolves the same `Directory.Build.props` / `Directory.Build.targets`
+chain. A build can opt out wholesale with `-p:BoduSignAssembly=false`, which also drops the public-key
+suffix from the grants so an unsigned build still compiles; such a build skips package validation,
+because its assembly identity no longer matches the published baseline.
 
 ## Optional: a real, verifiable signature at release
 

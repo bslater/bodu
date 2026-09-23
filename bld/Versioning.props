@@ -21,9 +21,9 @@
       release, so subsequent packs run the ApiCompat comparison against the published packages.
       Empty = validation stays inert (no published baseline exists yet). The baseline is applied
       only to packages listed in bld/release-manifest.txt — packages that have never shipped have
-      nothing to compare against — and only to a build with BoduSignAssembly=true, because the
-      published packages are strong-named and a comparison against them needs the same assembly
-      identity. Applied in the repository-root Directory.Build.targets; see bld/RELEASING.md for the
+      nothing to compare against — and only to a build with BoduSignAssembly=true (the default),
+      because the published packages are strong-named and a comparison against them needs the same
+      assembly identity. Applied in the repository-root Directory.Build.targets; see bld/RELEASING.md for the
       release procedure.
     -->
     <BoduPackageValidationBaseline>0.5.0</BoduPackageValidationBaseline>
