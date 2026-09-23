@@ -1,5 +1,7 @@
 # Bodu.Text.Formats
 
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+
 > **Umbrella meta-package.** This package carries no code of its own — it references the three standalone line-format libraries so a single package reference brings in all of them.
 
 The Bodu line-oriented text formats on .NET 8, each a self-contained library shaped after `System.Text.Json`:

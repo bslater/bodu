@@ -1744,8 +1744,11 @@ Target state:
 
 ### API-stability tiers
 
-**Done.** Every packable project now carries a single tier label as a
-blockquote directly under its README title. The assignment:
+**Done.** Every packable project queued for or already on nuget.org carries a
+single tier label as a blockquote directly under its README title. The two
+withheld toolchain packages (`Bodu.Globalization.Calendar.Tool` and `.Build`)
+are deliberately untiered: a tier is a promise to consumers, and theirs is not
+owed until the decision to publish them is taken. The assignment:
 
 - **Stable** — the mature core of the solution: `Bodu.Core`,
   `Bodu.Collections.Concurrent`,
@@ -1755,7 +1758,7 @@ blockquote directly under its README title. The assignment:
   `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
   configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
-  `.Configuration`, `Bodu.Extensions.Configuration.Text`),
+  `.Configuration` / `.Filtering`, `Bodu.Extensions.Configuration.Text`),
   `Bodu.Formats.Excel.Binary`, `Bodu.Financial` (+ its DI package), the
   whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
   and the five data packs), and the shared
