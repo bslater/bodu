@@ -122,7 +122,21 @@ public sealed class RateCacheWarmupServiceTests
         IHostedService hosted = provider.GetRequiredService<IHostedService>();
         await hosted.StartAsync(cts.Token);
         if (hosted is BackgroundService background && background.ExecuteTask is { } run)
-            await run;
+        {
+            // Awaiting the run is only a synchronization point here, and how it ends differs by framework.
+            // .NET 8 invokes ExecuteAsync, whose own catch swallows the cancellation so the task completes
+            // normally; .NET 10 short-circuits an already-cancelled start and hands back an ExecuteTask that
+            // is already Canceled, so ExecuteAsync -- and its catch -- never runs. Both satisfy what this
+            // test asserts below, that no work was done, so cancellation is tolerated and nothing else is:
+            // any other fault still fails the test.
+            try
+            {
+                await run;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
 
         Assert.AreEqual(0, inner.GetRatesAsyncCallCount, "a pre-cancelled run must not fetch anything");
     }
