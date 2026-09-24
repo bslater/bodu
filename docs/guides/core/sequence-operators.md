@@ -108,7 +108,7 @@ var padded   = a.ZipLongest(b);                          // (1, x), (2, y), (3, 
 var defaults = a.ZipLongest(b, -1, "?");                 // (1, x), (2, y), (3, ?)
 var joined   = a.ZipLongest(b, -1, "?", (n, s) => $"{n}{s}");   // 1x, 2y, 3?
 var woven    = a.Interleave(b.Select(s => s.Length), new[] { 100, 200, 300, 400 });   // 1, 1, 100, 2, 1, 200, 3, 300, 400
-var indexed  = Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index(b);   // (0, x), (1, y)
+var indexed  = b.Index();                                // (0, x), (1, y)
 var refs     = new string?[] { "a", null, "b" }.WhereNotNull();   // a, b        (reference types)
 var values   = new int?[] { 1, null, 3 }.WhereNotNull();          // 1, 3        (Nullable<T> unwrapped)
 bool hasAll  = a.ContainsAll(new[] { 1, 3 });            // true
@@ -117,7 +117,7 @@ bool empty   = ((int[]?)null).IsNullOrEmpty();           // true
 a.ForEach(x => Console.Write(x * 10 + " "));             // 10 20 30
 ```
 
-`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`. Call it through `Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index(source)` rather than as `source.Index()` if your project targets **.NET 9 or later**: the BCL added its own `System.Linq.Enumerable.Index<TSource>` with the same signature, and with both namespaces imported the extension-method form is ambiguous (`CS0121`). On `net8.0` — the framework this package targets — only Bodu's overload exists and `source.Index()` binds cleanly. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
+`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`, and `source.Index()` binds cleanly on every framework this package targets. That is worth a note, because it did not use to. .NET 9 added `System.Linq.Enumerable.Index<TSource>` with the same signature as Bodu's, so while the package targeted `net8.0` alone, a consumer on .NET 9 or later resolved the `net8.0` asset — which *contains* Bodu's overload, because the polyfill is compiled out only from `net9.0` upward — and ended up with both in scope and an ambiguous call (`CS0121`), for which this guide used to recommend a fully-qualified static call. Multi-targeting removes the collision at the source: a consumer on .NET 10 resolves the `net10.0` asset, where the polyfill is absent and the BCL's overload is the only candidate, and a consumer on .NET 8 resolves the `net8.0` asset, where Bodu's is. Exactly one exists on either side, so the extension form is unambiguous and the fully-qualified workaround is no longer needed — it would in fact fail to compile against `net10.0`. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
 
 ## Pattern 6 — multi-accumulator `Aggregate`
 
