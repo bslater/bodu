@@ -62,7 +62,6 @@
     <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
     <!-- BCL out-of-band packages. -->
     <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
-    <PackageVersion Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
   <!--
     ============================================================================================
@@ -72,7 +71,7 @@
     with a .NET release must match the framework a given leg targets, or the net8.0 leg would drag
     a .NET 10 assembly onto a .NET 8 consumer. Everything here therefore exists at both 8.0.x and
     10.0.x on the same release cadence – the Microsoft.Extensions.* family, Microsoft.Data.Sqlite
-    (EF Core's cadence) and System.Text.Encoding.CodePages.
+    (EF Core's cadence).
 
     &lt;PackageVersion Update="..."&gt; rather than Include: the item already exists from the group
     above, so Include would declare it twice and fail the restore (NU1011).
@@ -110,7 +109,6 @@
     <PackageVersion Update="Microsoft.Extensions.Options" Version="10.0.12" />
     <PackageVersion Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.12" />
     <PackageVersion Update="Microsoft.Extensions.Primitives" Version="10.0.12" />
-    <PackageVersion Update="System.Text.Encoding.CodePages" Version="10.0.12" />
   </ItemGroup>
   <!--
     ============================================================================================

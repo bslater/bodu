@@ -41,10 +41,13 @@
     <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
   </ItemGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" />
-  </ItemGroup>
+  <!--
+    System.Text.Encoding.CodePages is deliberately NOT referenced. CodePagesEncodingProvider ships in
+    the shared framework for every target framework here - Microsoft.NETCore.App.Ref carries
+    System.Text.Encoding.CodePages.dll for net8.0 as well as net10.0 - so an explicit PackageReference
+    adds a redundant dependency to the published package and raises NU1510, which the docs build
+    (docfx with warnings promoted to errors) treats as fatal.
+  -->
 
   <!-- Strongly-typed resource strings. -->
   <ItemGroup>
