@@ -20,7 +20,8 @@
      System.Linq.Enumerable.Reverse<TSource>(TSource[]), which made our same-shaped extension
      ambiguous (CS0121) for any consumer importing both namespaces; [OverloadResolutionPriority]
      does not help, as it is not consulted across declaring types. The family was renamed to
-     Reversed, which also states that the source is not mutated. These suppressions cover only the
+     ToReversed, matching SpanExtensions.ToReversed and the BCL's To* convention, and stating
+     that the source is not mutated. These suppressions cover only the
      removal of the old names - the new ones are validated normally, as is the rest of the surface.
      Drop these entries once the baseline moves past 1.0.0, since by then the old names will not be
      in the baseline to miss.

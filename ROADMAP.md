@@ -1750,11 +1750,15 @@ invisible on the `net8.0` leg, and not fixable with
 `[OverloadResolutionPriority]` (that attribute is not consulted across
 declaring types — verified, not assumed).
 
-**Resolved by renaming the family to `Reversed`** in the 1.0.0 cut, which
-is the only cheap moment for it. The new name is better independent of the
-collision: the past participle says the method returns a new array rather
-than mutating in place like `Array.Reverse`, and it sits alongside the
-existing `SpanExtensions.ToReversed`. All six overloads moved together —
+**Resolved by renaming the family to `ToReversed`** in the 1.0.0 cut,
+which is the only cheap moment for it. The new name is better independent
+of the collision: the past participle says the method returns a new array
+rather than mutating in place like `Array.Reverse`, it matches the BCL's
+`To*` convention for materializing a new collection, and it makes the array
+and span families read alike — `SpanExtensions.ToReversed` already existed
+with the same three-overload shape. An array still binds to the array
+overload, which is an identity match, in preference to the span one, which
+needs a conversion (verified on both legs). All six overloads moved together —
 the three generic `T[]` forms and the three non-generic `Array` forms —
 because a half-renamed family is worse than either name. The break is
 recorded in `Bodu.Core`'s `CompatibilitySuppressions.xml` so package

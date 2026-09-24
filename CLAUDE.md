@@ -86,8 +86,9 @@ only in files that import `Bodu.Extensions` rather than declaring into it — in
 enclosing scope outranks an imported one, so the library's own tests can stay green while every
 consumer breaks. The first instance was `ArrayExtensions.Reverse<T>(T[])` against .NET 10's new
 `System.Linq.Enumerable.Reverse<TSource>(TSource[])`; it was resolved by renaming the whole family
-to **`Reversed`**, which also reads better (the past participle says the source is not mutated,
-unlike `Array.Reverse`) and matches the neighbouring `SpanExtensions.ToReversed`. Note that
+to **`ToReversed`**, which also reads better (the past participle says the source is not mutated,
+unlike `Array.Reverse`) and matches both the neighbouring `SpanExtensions.ToReversed` and the BCL's
+`To*` convention for materializing a new collection. Note that
 `[OverloadResolutionPriority]` cannot fix this class of collision — it is not consulted between
 candidates from different declaring types.
 
