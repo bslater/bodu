@@ -31,6 +31,7 @@ JsonFile
 # External identifiers: Win32 API, MSBuild property, NuGet package, WeekPattern text form.
 StgCreateStorageEx
 IsTestProject
+PackAsTool
 MSTest.TestFramework
 MTuW
 JavaScriptEncoder.UnsafeRelaxedJsonEscaping   # System.Text.Encodings.Web member named in the Complex<T> JSON note

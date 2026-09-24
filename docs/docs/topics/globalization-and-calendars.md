@@ -85,9 +85,9 @@ dotnet add package Bodu.Globalization.Calendar.Plugins
 dotnet add package Bodu.Globalization.Calendar.Caching
 dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite         # optional durable backend
 dotnet add package Bodu.Globalization.Calendar.Caching.Distributed    # optional IDistributedCache / Redis backend
-dotnet add package Bodu.Globalization.Calendar.Build                  # build-time .bcal compilation (preview)
-dotnet tool install --global Bodu.Globalization.Calendar.Tool         # the bodu-calendar CLI (preview)
 ```
+
+The rule-pack toolchain — `Bodu.Globalization.Calendar.Tool` (the `bodu-calendar` CLI) and `Bodu.Globalization.Calendar.Build` (its MSBuild integration) — is [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg); build both from a clone.
 
 The recurrence sibling stands alone:
 

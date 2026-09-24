@@ -391,19 +391,148 @@ def check_packages() -> list[str]:
     return problems
 
 
+# ------------------------------------------------- publication (manifest vs docs)
+
+
+def release_manifest() -> tuple[dict[str, str], dict[str, str]]:
+    """Reads ``bld/release-manifest.txt`` as the two sets of packages it records.
+
+    Returns ``(published, withheld)``: published maps a package id to the version it first
+    shipped at, withheld maps a package id to the reason it is kept off nuget.org.
+
+    The grammar is the manifest's own, and is shared with the ``Select shipping packages`` step
+    in ``.github/workflows/release.yml`` — a data line is ``<PackageId> <first-shipped-version>``,
+    while a comment line that is *only* a package id opens a withheld entry whose reason is the
+    wrapped comment lines beneath it. Parsing the same file both workflows already trust keeps
+    "is this package published?" a single answer rather than a second list to maintain.
+    """
+    published: dict[str, str] = {}
+    withheld: dict[str, str] = {}
+    collecting: str | None = None
+
+    for raw in read(os.path.join(ROOT, "bld", "release-manifest.txt")).splitlines():
+        line = raw.rstrip()
+        if line.lstrip().startswith("#"):
+            stripped = line.lstrip()[1:].strip()
+            if re.fullmatch(r"Bodu\.[A-Za-z0-9.]+", stripped):
+                collecting = stripped
+                withheld[collecting] = ""
+            elif collecting and stripped:
+                withheld[collecting] = (withheld[collecting] + " " + stripped).strip()
+            continue
+
+        collecting = None
+        parts = line.split()
+        if len(parts) >= 2 and parts[0].startswith("Bodu."):
+            published[parts[0]] = parts[1]
+
+    return published, withheld
+
+
+# A withheld package is not on nuget.org, so the only install command that can work names a feed
+# built from a local pack. Requiring that marker — rather than banning the command outright — keeps
+# the one honest instruction (install the CLI from a clone) sayable, and rejects the plain form that
+# silently fails for the reader.
+LOCAL_SOURCE = re.compile(r"--add-source|--source\s+[.\w/\\]")
+
+
+def install_commands(pkg: str, is_tool: bool) -> re.Pattern[str]:
+    """Builds the pattern that a page uses to tell a reader to install ``pkg``."""
+    # The trailing guard is "not another identifier character" rather than whitespace, so an id
+    # quoted mid-sentence (`dotnet tool install --global Bodu.X`) counts the same as one on its own
+    # line in a fenced block, while Bodu.X.Y is not mistaken for Bodu.X.
+    escaped = re.escape(pkg)
+    if is_tool:
+        return re.compile(rf"dotnet tool install (?:--global |-g )?{escaped}(?![A-Za-z0-9_.])")
+    return re.compile(rf"dotnet add package {escaped}(?![A-Za-z0-9_.])")
+
+
+def check_publication() -> list[str]:
+    """Keeps the documented install story in step with what nuget.org actually carries.
+
+    Three failures are worth catching, and only the first was caught before:
+
+    * a packable package the manifest does not account for at all — neither shipped nor
+      recorded as deliberately withheld, so nobody decided either way;
+    * a published package with no install command anywhere under ``docs/``, which leaves a
+      reader with no way in;
+    * a **withheld** package whose docs hand out an install command regardless. That is the one
+      that reached the live site: ``dotnet add package Bodu.Financial.ExchangeRates.Oanda``
+      names a package that has never been pushed, so the command simply fails.
+
+    Withheld packages are documented — they are real code with real API pages — they just may not
+    claim to be installable from nuget.org.
+    """
+    published, withheld = release_manifest()
+    if not published:
+        return ["release-manifest.txt: no published entries found; the parser needs updating"]
+
+    packages = packable_package_ids()
+    problems = []
+
+    for pkg in sorted(set(packages) - set(published) - set(withheld)):
+        problems.append(
+            f"release-manifest.txt: `{pkg}` is packable but the manifest neither ships it nor records "
+            f"it as withheld. Add it with its first-shipped version, or add a comment entry saying why "
+            f"it is held back")
+    for pkg in sorted(set(published) & set(withheld)):
+        problems.append(f"release-manifest.txt: `{pkg}` is listed as shipping and also recorded as withheld")
+    for pkg in sorted(set(published) - set(packages)):
+        problems.append(f"release-manifest.txt: `{pkg}` is listed as shipping but is not a packable project")
+
+    # Every packable package is listed in the matrix, published or not: the matrix is the page a
+    # reader is sent to, so a package missing from it is invisible however well it is documented.
+    matrix_text = read(os.path.join(DOCS, "docs", "package-matrix.md"))
+    for pkg in sorted(packages):
+        if f"`{pkg}`" not in matrix_text:
+            problems.append(f"package-matrix.md: `{pkg}` is packable but is not listed")
+
+    pages = docs_pages(include_apidoc=True)
+    texts = {os.path.relpath(p, DOCS).replace(os.sep, "/"): read(p) for p in pages}
+
+    for pkg in sorted(set(published) & set(packages)):
+        is_tool = bool(re.search(r"<PackAsTool>\s*true", read(packages[pkg]), re.IGNORECASE))
+        pattern = install_commands(pkg, is_tool)
+        if not any(pattern.search(t) for t in texts.values()):
+            verb = "dotnet tool install" if is_tool else "dotnet add package"
+            problems.append(f"docs/: published package `{pkg}` has no '{verb} {pkg}' command anywhere under docs/")
+
+    for pkg in sorted(set(withheld) & set(packages)):
+        is_tool = bool(re.search(r"<PackAsTool>\s*true", read(packages[pkg]), re.IGNORECASE))
+        pattern = install_commands(pkg, is_tool)
+        for rel, text in sorted(texts.items()):
+            for line_no, line in enumerate(text.splitlines(), 1):
+                if pattern.search(line) and not LOCAL_SOURCE.search(line):
+                    problems.append(
+                        f"{rel}:{line_no}: `{pkg}` is withheld from nuget.org, so this command cannot work as "
+                        f"written. Either drop it, or point it at a local feed with --add-source")
+
+    # Phantom packages: an install command naming something this solution does not produce.
+    for rel, text in sorted(texts.items()):
+        for line_no, line in enumerate(text.splitlines(), 1):
+            for m in re.finditer(r"dotnet (?:add package|tool install(?: --global| -g)?) (Bodu[A-Za-z0-9_.]*)", line):
+                if m.group(1) not in packages:
+                    problems.append(
+                        f"{rel}:{line_no}: installs `{m.group(1)}`, which is not a packable project under "
+                        f"**/src/. Stale or renamed package?")
+
+    return problems
+
+
 # ------------------------------------------------------------------- main
 
 
 def main(argv: list[str]) -> int:
     wanted = [a for a in argv if not a.startswith("-")] or ["all"]
     if "all" in wanted:
-        wanted = ["orphans", "namespaces", "identifiers", "status", "packages"]
+        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication"]
     runners = {
         "orphans": check_orphans,
         "namespaces": check_namespaces,
         "identifiers": check_identifiers,
         "status": check_status,
         "packages": check_packages,
+        "publication": check_publication,
     }
     failed = 0
     for name in wanted:

@@ -6,7 +6,7 @@ uid: Bodu.Globalization.Calendar.Tool
 
 ## Purpose
 
-**Bodu.Globalization.Calendar.Tool** is the `bodu-calendar` command-line tool (`dotnet tool install --global Bodu.Globalization.Calendar.Tool`): it validates notable-date XML / JSON documents with the stable `BODU-CAL-*` diagnostics (`lint`), compiles them to sealed `.bcal` binary rule packs (`compile`), and inspects compiled packs (`info`). The namespace holds the tool's in-process entry point, <xref:Bodu.Globalization.Calendar.Tool.CalendarTool>, which the console host, the `Bodu.Globalization.Calendar.Build` MSBuild task, and the test suite all share — so the build-time compiler and the command line are one code path.
+**Bodu.Globalization.Calendar.Tool** is the `bodu-calendar` command-line tool (built from a clone — it is not published to nuget.org): it validates notable-date XML / JSON documents with the stable `BODU-CAL-*` diagnostics (`lint`), compiles them to sealed `.bcal` binary rule packs (`compile`), and inspects compiled packs (`info`). The namespace holds the tool's in-process entry point, <xref:Bodu.Globalization.Calendar.Tool.CalendarTool>, which the console host, the `Bodu.Globalization.Calendar.Build` MSBuild task, and the test suite all share — so the build-time compiler and the command line are one code path.
 
 The package is published as **Preview**. It depends on `Bodu.Globalization.Calendar` and performs every load through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> in collect mode, resolving imports first from an optional `--resolver-dir` and then from the bundled <xref:Bodu.Globalization.Calendar.CommonNotableDateResources>.
 

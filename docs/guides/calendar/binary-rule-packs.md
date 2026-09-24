@@ -65,7 +65,9 @@ Rules encode nullable fields as presence bytes and their occurrence source as a 
 The `bodu-calendar` dotnet tool wraps the same compile pipeline for scripts and CI — it validates a notable-date document with the stable `BODU-CAL-*` diagnostics and compiles it to a sealed pack without writing any C#:
 
 ```bash
-dotnet tool install --global Bodu.Globalization.Calendar.Tool
+# Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 
 bodu-calendar lint holidays.xml
 bodu-calendar compile holidays.xml -o holidays.bcal
@@ -78,8 +80,11 @@ bodu-calendar info holidays.bcal
 
 The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration — a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
 
-```bash
-dotnet add package Bodu.Globalization.Calendar.Build
+It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so reference the project from a clone:
+
+```xml
+<ProjectReference Include="../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj"
+                  ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 ```
 
 ```xml
