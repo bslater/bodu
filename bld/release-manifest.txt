@@ -22,9 +22,15 @@
 # was held back. Removing an entry from this list is the decision to ship it.
 #
 #   Bodu.Financial.ExchangeRates.Xe
-#       Experimental. Authenticates with a token scraped from XE.com, which has no official
-#       endpoint, so the provider can stop working at any time through no fault of the code and
-#       no release of ours can fix it. Publishing it means fielding issues that cannot be closed.
+#       Experimental. Authenticates with a token scraped from XE.com's bootstrap page, which has no
+#       official endpoint, so the provider can stop working at any time through no fault of the code
+#       and no release of ours can fix it. Publishing it means fielding issues that cannot be closed.
+#
+#   Bodu.Financial.ExchangeRates.Oanda
+#       Same class of fragility. OANDA's Historical Currency Converter endpoint is undocumented and
+#       gated by bot mitigation: the provider loads the site root to capture a challenge cookie and
+#       re-primes when challenged. Working around anti-bot measures is a clear signal the operator
+#       does not intend programmatic use, and the endpoint can change without notice.
 #
 #   Bodu.Globalization.Calendar.Tool
 #       A PackAsTool CLI (`bodu-calendar`), not a library. Different consumer contract from every
@@ -84,3 +90,19 @@ Bodu.Globalization.Calendar.Plugins 0.6.0
 Bodu.Globalization.Calendar.Caching 0.6.0
 Bodu.Globalization.Calendar.Caching.Sqlite 0.6.0
 Bodu.Globalization.Calendar.Caching.Distributed 0.6.0
+
+# Wave 5 — exchange-rate provider infrastructure, sources, and caching
+Bodu.Financial.ExchangeRates 0.7.0
+Bodu.Financial.ExchangeRates.DependencyInjection 0.7.0
+Bodu.Financial.ExchangeRates.Boe 0.7.0
+Bodu.Financial.ExchangeRates.Ecb 0.7.0
+Bodu.Financial.ExchangeRates.Rba 0.7.0
+Bodu.Financial.ExchangeRates.Imf 0.7.0
+Bodu.Financial.ExchangeRates.Fred 0.7.0
+Bodu.Financial.ExchangeRates.Fixer 0.7.0
+Bodu.Financial.ExchangeRates.ExchangeRateHost 0.7.0
+Bodu.Financial.ExchangeRates.Yahoo 0.7.0
+Bodu.Financial.ExchangeRates.Ofx 0.7.0
+Bodu.Financial.ExchangeRates.Caching 0.7.0
+Bodu.Financial.ExchangeRates.Caching.Sqlite 0.7.0
+Bodu.Financial.ExchangeRates.Caching.Distributed 0.7.0

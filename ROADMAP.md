@@ -162,18 +162,27 @@ ordering are exercised on the smallest self-contained units first, and so a
 package's public surface stays free to change until it actually ships — the
 first publish is what fixes an API and gives it an ApiCompat baseline.
 
-**Shipped.** Waves 1–3 published at **0.5.0**: the 25 packages listed in
-`bld/release-manifest.txt` at that version. Wave 4 (below) is staged for
-**0.6.0**; the exchange-rate providers follow in a later wave, held at
-Preview until they have been exercised against their live upstream
-endpoints.
+**Shipped.** Waves 1–3 published at **0.5.0** (25 packages) and wave 4 at
+**0.6.0** (17 more, for 42 in total) — the set listed in
+`bld/release-manifest.txt` with each package's first-shipped version. Wave 5
+(below) is staged for **0.7.0**: the exchange-rate family, held at Preview
+until it has been exercised against its live upstream endpoints, which is a
+reason to label it rather than to delay it.
 
-`Bodu.Financial.ExchangeRates.Xe` is **not** queued for any wave: it
-authenticates with a scraped token and can break without notice, which no
-release of ours can fix. `Bodu.Globalization.Calendar.Tool` (a `PackAsTool`
-CLI) and `.Build` (an MSBuild `DevelopmentDependency`) are also held back —
-both are toolchain packages with a different consumer contract from a
-library, and warrant their own decision rather than a slot in a library wave.
+Two providers are **not** queued for any wave, both because they reach their
+data by working around a site rather than through a published interface.
+`…ExchangeRates.Xe` harvests an auth token from XE.com's bootstrap page.
+`…ExchangeRates.Oanda` calls an undocumented endpoint gated by bot
+mitigation, loading the site root to capture a challenge cookie and
+re-priming when challenged. Either can stop working through no fault of the
+code, and no release of ours can fix it; publishing them means fielding
+issues that cannot be closed. The remaining nine providers read a documented
+feed or an authenticated public API.
+
+`Bodu.Globalization.Calendar.Tool` (a `PackAsTool` CLI) and `.Build` (an
+MSBuild `DevelopmentDependency`) are also held back — both are toolchain
+packages with a different consumer contract from a library, and warrant their
+own decision rather than a slot in a library wave.
 
 **Wave 1 — foundation packages (no inter-Bodu package dependencies):** *(shipped 0.5.0)*
 
@@ -206,7 +215,7 @@ library, and warrant their own decision rather than a slot in a library wave.
 | `Bodu.Formats.Outlook` | The shared, container-free MAPI value model. |
 | `Bodu.Formats.Outlook.Msg` | Read-only `.msg` (MS-OXMSG) reader over `Bodu.IO.Compound`. |
 
-**Wave 4 — financial core + calendar:** *(staged for 0.6.0)*
+**Wave 4 — financial core + calendar:** *(shipped 0.6.0)*
 
 Note that wave 3 as numbered here was overtaken: the Outlook personal-folders
 readers (`Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst`) landed first and shipped
@@ -231,12 +240,17 @@ The data-pack requirement is simply the shape they ship in.
 | `Bodu.Globalization.Calendar.{Builder,DependencyInjection,Plugins}` | Authoring API, DI registration, trust-gated plugin loader. |
 | `Bodu.Globalization.Calendar.Caching{,.Sqlite,.Distributed}` | Read-through notable-date cache and its durable / shared backends. Preview, matching the equivalent exchange-rate caching packages. |
 
-**Wave 5 — exchange-rate providers, caching, and DI:** *(Preview; after 0.6.0)*
+**Wave 5 — exchange-rate providers, caching, and DI:** *(staged for 0.7.0; Preview)*
+
+Fourteen packages: the provider infrastructure and its DI plumbing, nine
+source providers, and the three caching packages. `Xe` and `Oanda` are
+excluded — see the held-back note above.
 
 | Package | Notes |
 | --- | --- |
+| `Bodu.Financial.ExchangeRates` | The provider infrastructure: `WebRateProvider` / `PairWebRateProvider<TSeries>`, the fetch machinery (single-flight coordinator, file-system byte cache, HTTP client factory), and the loader/source contracts every provider builds on. |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebRateProvider` machinery (named `HttpClient` + Polly resilience). |
-| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Xe,Oanda,Fixer,ExchangeRateHost,Fred,Imf}` | Per-source provider packages, each shipping its own DI extension. |
+| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Imf,Fred,Fixer,ExchangeRateHost,Yahoo,Ofx}` | Per-source provider packages, each shipping its own DI extension. `Boe`/`Ecb`/`Rba`/`Imf` read a central bank's published feed; `Fred`/`Fixer`/`ExchangeRateHost` use an authenticated public API; `Yahoo`/`Ofx` use a public JSON endpoint. |
 | `Bodu.Financial.ExchangeRates.Caching` | `CachingRateProvider`, `AggregatingRateProvider`, in-memory / TOML / JSON backends. |
 | `Bodu.Financial.ExchangeRates.Caching.{Sqlite,Distributed}` | Durable SQLite and shared `IDistributedCache` backends. |
 
