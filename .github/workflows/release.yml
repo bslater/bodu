@@ -350,6 +350,31 @@ jobs:
             [ -n "$mid" ] && manifest_ids+=("$mid")
           done < bld/release-manifest.txt
 
+          # Packages the manifest's comment block names as deliberately withheld, with the first line
+          # of each reason. Requesting one of these is a different mistake from a typo - the decision
+          # not to ship it was made on purpose and is recorded - so the error says which it is.
+          withheld_ids=(); withheld_reasons=()
+          collecting=""
+          while IFS= read -r line; do
+            case "$line" in
+              '#'*)
+                stripped="$(printf '%s' "$line" | sed 's/^#[[:space:]]*//; s/[[:space:]]*$//')"
+                if printf '%s' "$stripped" | grep -qE '^Bodu\.[A-Za-z0-9.]+$'; then
+                  collecting="$stripped"; withheld_ids+=("$stripped"); withheld_reasons+=("")
+                elif [ -n "$collecting" ] && [ -n "$stripped" ]; then
+                  # Join the reason's wrapped comment lines; taking only the first truncates it mid-sentence.
+                  last=$(( ${#withheld_reasons[@]} - 1 ))
+                  if [ -z "${withheld_reasons[$last]}" ]; then
+                    withheld_reasons[$last]="$stripped"
+                  else
+                    withheld_reasons[$last]="${withheld_reasons[$last]} $stripped"
+                  fi
+                fi
+                ;;
+              *) collecting="" ;;
+            esac
+          done < bld/release-manifest.txt
+
           requested="${REQUESTED_PACKAGES//,/ }"
           selected_ids=()
           if [ -n "${requested// /}" ]; then
@@ -361,12 +386,36 @@ jobs:
               done
               if [ "$found" -eq 1 ]; then
                 selected_ids+=("$rid")
+                continue
+              fi
+
+              bad=1
+
+              # Withheld on purpose: quote the manifest's own reason.
+              reason=""
+              for i in "${!withheld_ids[@]}"; do
+                [ "$rid" = "${withheld_ids[$i]}" ] && { reason="${withheld_reasons[$i]}"; break; }
+              done
+              if [ -n "$reason" ]; then
+                echo "::error::'$rid' is deliberately withheld from nuget.org, not missing. $reason  --  To ship it, add it to bld/release-manifest.txt with its first-shipped version - that edit is the decision."
+                continue
+              fi
+
+              # Packs, but has not been approved to ship. The pack ran before this step, so the
+              # artifacts directory is an accurate answer to "is this a package at all?".
+              shopt -s nullglob
+              built=("$ARTIFACTS_DIR/$rid".[0-9]*.nupkg)
+              shopt -u nullglob
+              if [ "${#built[@]}" -gt 0 ]; then
+                echo "::error::'$rid' is built by this solution but is not in bld/release-manifest.txt, so it is not approved to ship. Add it to the manifest with the version it first ships at, or drop it from the packages input."
               else
-                echo "::error::Requested package '$rid' is not in bld/release-manifest.txt. Only manifest packages can be published."
-                bad=1
+                echo "::error::'$rid' is not a package this build produces - it may be a test or infrastructure project (IsPackable=false), a directory name rather than a package id, or a typo. Package ids are the left-hand column of bld/release-manifest.txt."
               fi
             done
-            [ "$bad" -eq 0 ] || exit 1
+            if [ "$bad" -ne 0 ]; then
+              echo "::error::Nothing was published. The 'packages' input selects a SUBSET of the manifest - for a full release leave it EMPTY and all ${#manifest_ids[@]} manifest packages are staged. A tag run (v<version>) ignores this input entirely and always releases the whole manifest."
+              exit 1
+            fi
             echo "Subset requested: publishing ${#selected_ids[@]} of ${#manifest_ids[@]} manifest package(s)."
           else
             selected_ids=("${manifest_ids[@]}")
