@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PstMessagingFixtureBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -24,9 +24,8 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </para>
 /// <para>
 /// The malformation knobs remove legitimate structure (<see cref="IncludeRecipientTable" />,
-/// <see cref="IncludeEmbeddedMessageSubnode" />) or add invalid structure
-/// (<see cref="IncludeDanglingAttachmentRow" />) so tests can drive the strict-versus-tolerant contract without
-/// patching bytes.
+/// <see cref="IncludeEmbeddedMessageSubnode" />) or add invalid structure (<see cref="IncludeDanglingAttachmentRow" />)
+/// so tests can drive the strict-versus-tolerant contract without patching bytes.
 /// </para>
 /// </remarks>
 internal sealed class PstMessagingFixtureBuilder

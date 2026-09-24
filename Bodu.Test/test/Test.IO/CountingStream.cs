@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CountingStream.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Test.IO;
 /// </summary>
 /// <remarks>
 /// Unlike <see cref="MonitoringStream" />, which deliberately rejects seeking so access patterns stay linear, this
-/// wrapper delegates <see cref="Seek" /> and the <see cref="Position" /> setter to the inner stream, so it can stand
-/// in for random-access sources.
+/// wrapper delegates <see cref="Seek" /> and the <see cref="Position" /> setter to the inner stream, so it can stand in
+/// for random-access sources.
 /// </remarks>
 public sealed class CountingStream
     : System.IO.Stream

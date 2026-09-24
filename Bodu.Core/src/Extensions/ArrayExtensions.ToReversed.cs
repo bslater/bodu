@@ -61,9 +61,9 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the canonical typed-array implementation. The full-array overload (<see cref="ToReversed{T}(T[])" />) and
-    /// the <see cref="Range" />-based overload (<see cref="ToReversed{T}(T[], Range)" />) both resolve their arguments and
-    /// delegate here.
+    /// This is the canonical typed-array implementation. The full-array overload (<see cref="ToReversed{T}(T[])" />)
+    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(T[], Range)" />) both resolve their
+    /// arguments and delegate here.
     /// </para>
     /// <para>
     /// Bounds validation is delegated to
@@ -154,10 +154,10 @@ public static partial class ArrayExtensions
     /// arrays.
     /// </exception>
     /// <remarks>
-    /// Delegates to <see cref="ToReversed(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>. See
-    /// that overload for full implementation details. Prefer the generic <see cref="ToReversed{T}(T[])" /> overload where
-    /// the element type is known at compile time; the non-generic path cannot use <see cref="ReverseCore{T}" /> and
-    /// falls back to <see cref="Array.Copy(Array, Array, int)" /> and <see cref="Array.Reverse(Array, int, int)" />.
+    /// Delegates to <see cref="ToReversed(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>.
+    /// See that overload for full implementation details. Prefer the generic <see cref="ToReversed{T}(T[])" /> overload
+    /// where the element type is known at compile time; the non-generic path cannot use <see cref="ReverseCore{T}" />
+    /// and falls back to <see cref="Array.Copy(Array, Array, int)" /> and <see cref="Array.Reverse(Array, int, int)" />.
     /// </remarks>
     public static Array ToReversed(this Array source)
     {
@@ -196,8 +196,8 @@ public static partial class ArrayExtensions
     /// <remarks>
     /// <para>
     /// This is the canonical non-generic implementation. The full-array overload (<see cref="ToReversed(Array)" />) and
-    /// the <see cref="Range" />-based overload (<see cref="ToReversed(Array, Range)" />) both resolve their arguments and
-    /// delegate here.
+    /// the <see cref="Range" />-based overload (<see cref="ToReversed(Array, Range)" />) both resolve their arguments
+    /// and delegate here.
     /// </para>
     /// <para>
     /// Unlike the typed <see cref="ToReversed{T}(T[], int, int)" /> overload, this method cannot delegate to

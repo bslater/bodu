@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MerkleTreeDiagnostics.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -179,8 +179,8 @@ public sealed partial class MerkleTreeDiagnostics
     /// ambiguous match may occur if two nodes share the same hash.
     /// </para>
     /// <para>
-    /// Every character written is ASCII, so the trace survives a console on any code page and a paste into a bug
-    /// report unchanged. A child list reads <c>parent &lt;- child + child</c>, and the root level is marked <c>*</c>.
+    /// Every character written is ASCII, so the trace survives a console on any code page and a paste into a bug report
+    /// unchanged. A child list reads <c>parent &lt;- child + child</c>, and the root level is marked <c>*</c>.
     /// </para>
     /// </remarks>
     /// <param name="writer">The destination writer. Must not be <see langword="null" />.</param>

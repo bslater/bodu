@@ -18,10 +18,10 @@ public sealed partial class CronExpression : IFormattable
     /// <returns>The canonical cron text, which round-trips through <see cref="Parse(string)" />.</returns>
     /// <remarks>
     /// Where the two day fields are concerned, Vixie reads restricted-ness from the field's leading character alone,
-    /// and when both fields are restricted they combine by union rather than intersection. The canonical text
-    /// therefore keeps a leading <c>*</c> on an unrestricted field that does not select every value (<c>*/2</c>), and
-    /// keeps a restricted field explicit when it does (<c>1-31</c>), but only in the cases where the plain rendering
-    /// would flip that combination — so the text always re-parses to an equal expression.
+    /// and when both fields are restricted they combine by union rather than intersection. The canonical text therefore
+    /// keeps a leading <c>*</c> on an unrestricted field that does not select every value (<c>*/2</c>), and keeps a
+    /// restricted field explicit when it does (<c>1-31</c>), but only in the cases where the plain rendering would flip
+    /// that combination — so the text always re-parses to an equal expression.
     /// </remarks>
     public override string ToString() =>
         FormatCore();
@@ -103,10 +103,11 @@ public sealed partial class CronExpression : IFormattable
     /// </summary>
     /// <returns>The rendered day-of-month and day-of-week field text.</returns>
     /// <remarks>
-    /// The plain rendering implies a restricted-ness of its own — <c>*</c> for a mask that selects every value, a
-    /// value list otherwise — and that is usually the right answer, so it is preferred whenever it reproduces
+    /// The plain rendering implies a restricted-ness of its own — <c>*</c> for a mask that selects every value, a value
+    /// list otherwise — and that is usually the right answer, so it is preferred whenever it reproduces
     /// <see cref="DaysCombineByUnion" />. Only when it would flip the combination does either field switch to the
-    /// restriction-preserving spelling, which keeps the canonical text as close to the plain form as correctness allows.
+    /// restriction-preserving spelling, which keeps the canonical text as close to the plain form as correctness
+    /// allows.
     /// </remarks>
     private (string DayOfMonth, string DayOfWeek) FormatDayFields()
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PstFixtureBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -168,8 +168,8 @@ internal sealed class PstFixtureBuilder
     /// </summary>
     /// <param name="file">The file bytes.</param>
     /// <remarks>
-    /// The checksum covers both B-tree roots (the same 471-byte range in both layouts), so a test that patches one
-    /// must repair it or the header is refused before the patched reference is followed.
+    /// The checksum covers both B-tree roots (the same 471-byte range in both layouts), so a test that patches one must
+    /// repair it or the header is refused before the patched reference is followed.
     /// </remarks>
     internal static void RepairHeaderChecksum(byte[] file) =>
         BinaryPrimitives.WriteUInt32LittleEndian(file.AsSpan(4), PstCrc.Compute(file.AsSpan(8, 471)));

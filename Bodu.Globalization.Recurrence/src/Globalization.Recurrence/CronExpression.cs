@@ -306,9 +306,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <returns>A hash code consistent with <see cref="Equals(CronExpression)" />.</returns>
     /// <remarks>
     /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares,
-    /// as does the day-field combination mode. Mixing only each mask's cardinality would satisfy the
-    /// equality contract but collapse the common case — a schedule selecting one value per field, such as
-    /// <c>0 2 * * *</c> — onto a single bucket.
+    /// as does the day-field combination mode. Mixing only each mask's cardinality would satisfy the equality contract
+    /// but collapse the common case — a schedule selecting one value per field, such as <c>0 2 * * *</c> — onto a
+    /// single bucket.
     /// </remarks>
     public override int GetHashCode()
     {

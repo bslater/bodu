@@ -18,17 +18,17 @@ namespace Bodu.IO.Compound;
 /// </param>
 /// <param name="PayloadCategory">
 /// The expected <see cref="CompoundFileError" /> when every stream payload is also read, or <see langword="null" />
-/// when the fixture reads through cleanly. Defaults to <see cref="Category" />: a fixture rejected during the
-/// metadata walk is rejected the same way before any payload is reached.
+/// when the fixture reads through cleanly. Defaults to <see cref="Category" />: a fixture rejected during the metadata
+/// walk is rejected the same way before any payload is reached.
 /// </param>
 /// <param name="MinimalCategory">
 /// The expected <see cref="CompoundFileError" /> when the fixture is opened and fully read at
 /// <see cref="CompoundValidationLevel.Minimal" />, or <see langword="null" /> when the tolerant level recovers.
 /// </param>
 /// <remarks>
-/// The three columns are three distinct contracts, and a fixture can pass one and fail another. A defect in a
-/// directory entry surfaces during the metadata walk; a defect in a sector chain surfaces only once the payload it
-/// describes is actually read; and the tolerant level is expected to recover from a strict subset of both.
+/// The three columns are three distinct contracts, and a fixture can pass one and fail another. A defect in a directory
+/// entry surfaces during the metadata walk; a defect in a sector chain surfaces only once the payload it describes is
+/// actually read; and the tolerant level is expected to recover from a strict subset of both.
 /// </remarks>
 public sealed record CompoundMalformedKat(
     string RelativePath,
