@@ -125,6 +125,15 @@ git push origin v1.0.0
 The tag run packs, stages the manifest set, and pushes each `.nupkg` (and
 its `.snupkg`) to nuget.org.
 
+**The `v` must be lowercase.** `release.yml` triggers on `tags: ['v*']`, and
+GitHub Actions tag filters are case-sensitive, so a tag pushed as `V1.0.0`
+matches nothing and starts **no run at all** — no failure, no annotation, and a
+tag plus a GitHub Release that both look correct. Nothing can report the miss,
+because nothing runs. This happened on 1.0.0, and the only symptom was an absent
+release run. After pushing a tag, confirm the Release workflow actually started
+before assuming the release is under way; if it did not, check the tag's case
+first.
+
 ## Post-publish
 
 1. Verify each manifest package is listed on nuget.org at the new version
