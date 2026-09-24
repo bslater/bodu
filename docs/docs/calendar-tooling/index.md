@@ -14,11 +14,15 @@ A compiled pack loads through <xref:Bodu.Globalization.Calendar.NotableDateResou
 
 ### Install
 
+This tool is [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg) — pack it from a clone and install it from that feed:
+
 ```bash
-dotnet tool install --global Bodu.Globalization.Calendar.Tool
+# Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 ```
 
-Targets `net8.0` and **depends on** `Bodu.Globalization.Calendar`.
+Targets `net8.0` and `net10.0`, and **depends on** `Bodu.Globalization.Calendar`.
 
 Status: **Preview** (see the [package matrix](../package-matrix.md)).
 
@@ -78,8 +82,11 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
 
 ### Install
 
-```bash
-dotnet add package Bodu.Globalization.Calendar.Build
+This package is [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg). To use it from a clone, reference the project directly:
+
+```xml
+<ProjectReference Include="../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj"
+                  ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 ```
 
 A **development dependency**: the package ships the task assembly under `tasks/`, the `.targets` under `build/`, and the framework-dependent `bodu-calendar` binaries under `tools/`. It adds **no runtime reference** to the consuming project — reference `Bodu.Globalization.Calendar` yourself to load the packs it produces.

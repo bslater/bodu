@@ -6,8 +6,12 @@ title: The bodu-calendar CLI
 
 `Bodu.Globalization.Calendar.Tool` is a .NET tool that validates notable-date XML / JSON documents with the stable `BODU-CAL-*` diagnostics and compiles them to sealed `.bcal` binary packs. It runs the *same* load pipeline as the runtime — `NotableDateResourceLoader.TryLoad` / `TryLoadJson` in collect mode — so a document that passes `lint` loads at run time and vice versa, and the `Bodu.Globalization.Calendar.Build` MSBuild task is a thin wrapper over its `compile` verb. This page is the verb-by-verb reference; the [tooling introduction](../../../docs/calendar-tooling/index.md) covers installation and positioning, and [Binary rule packs](../binary-rule-packs.md) covers when a pack is worth it.
 
+The tool is [not published to nuget.org](../../../docs/package-matrix.md#not-published-to-nugetorg), so install it from a locally built feed:
+
 ```bash
-dotnet tool install --global Bodu.Globalization.Calendar.Tool
+# Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 bodu-calendar --help
 ```
 
@@ -119,7 +123,9 @@ Because errors exit `1` and diagnostics are stable, the tool drops straight into
 
 ```bash
 # GitHub Actions / any POSIX shell — lint every document, fail on the first error.
-dotnet tool install --global Bodu.Globalization.Calendar.Tool
+# Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 for doc in rules/*.xml rules/*.json; do
   bodu-calendar lint "$doc" --resolver-dir rules/shared || exit 1
 done
@@ -129,7 +135,8 @@ done
 # GitHub Actions step
 - name: Lint notable-date rule packs
   run: |
-    dotnet tool install --global Bodu.Globalization.Calendar.Tool
+    dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+    dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
     bodu-calendar lint rules/holidays.xml --resolver-dir rules/shared
     bodu-calendar compile rules/holidays.xml -o artifacts/holidays.bcal --resolver-dir rules/shared
 ```

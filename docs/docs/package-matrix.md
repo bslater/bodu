@@ -168,12 +168,34 @@ See the [Calendar introduction](calendar/index.md) for how the companion package
 | Status | What it commits to |
 |---|---|
 | **Stable** | The public API surface is committed. Breaking changes are reserved for a major-version bump; additive changes ship in minor versions; bug fixes in patch versions. |
-| **Preview** | The package is published for early evaluation. The public API surface is still taking shape and may change between releases without a major-version bump. |
-| **Experimental** | The package is published, but its behaviour depends on an external resource that offers no versioned contract (for example a scraped web page), so it can stop working without any change on the Bodu side. Treat it as best-effort and pair it with a stable alternative. |
+| **Preview** | Offered for early evaluation. The public API surface is still taking shape and may change between releases without a major-version bump. |
+| **Experimental** | Behaviour depends on an external resource that offers no versioned contract (for example a scraped web page), so it can stop working without any change on the Bodu side. Treat it as best-effort and pair it with a stable alternative. |
+
+Status describes the **API contract**, not availability: it says what a version bump may do to code you have already written. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not — see below.
+
+## Not published to nuget.org
+
+These four projects build and pack with the rest of the solution, and are documented here like any other package, but they are withheld from nuget.org on purpose. `bld/release-manifest.txt` records the reasoning; in short:
+
+| Package | Why it is held back |
+|---|---|
+| `Bodu.Financial.ExchangeRates.Xe` | Authenticates with a token scraped from an unversioned XE.com page, so it can stop working through no fault of the code and no release can fix it. |
+| `Bodu.Financial.ExchangeRates.Oanda` | Same class of fragility: OANDA's endpoint is undocumented and gated by bot mitigation. |
+| `Bodu.Globalization.Calendar.Tool` | A `PackAsTool` CLI rather than a library — a different consumer contract from every other package here, warranting its own decision. |
+| `Bodu.Globalization.Calendar.Build` | An MSBuild integration for the tool above, and held back with it. |
+
+To use one, build it from a clone. The CLI installs from a local feed:
+
+```bash
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
+```
+
+For the three library/MSBuild packages, reference the project directly with `<ProjectReference>` instead of a `PackageReference`.
 
 ## Install commands
 
-The standard `dotnet add package` invocation for each shipped package:
+The standard `dotnet add package` invocation for each **published** package:
 
 ```bash
 # Primary libraries
@@ -206,10 +228,6 @@ dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
 dotnet add package Bodu.Globalization.Recurrence
 
-# Rule-pack toolchain: the bodu-calendar command-line tool, and the MSBuild
-# integration that runs it during build (a development dependency)
-dotnet tool install --global Bodu.Globalization.Calendar.Tool
-dotnet add package Bodu.Globalization.Calendar.Build
 dotnet add package Bodu.Text.Serialization
 dotnet add package Bodu.Financial.DependencyInjection
 dotnet add package Bodu.Financial.Serialization.Json
@@ -230,8 +248,6 @@ dotnet add package Bodu.Financial.ExchangeRates.Boe
 dotnet add package Bodu.Financial.ExchangeRates.Ecb
 dotnet add package Bodu.Financial.ExchangeRates.Yahoo
 dotnet add package Bodu.Financial.ExchangeRates.Ofx
-dotnet add package Bodu.Financial.ExchangeRates.Xe
-dotnet add package Bodu.Financial.ExchangeRates.Oanda
 dotnet add package Bodu.Financial.ExchangeRates.Fixer
 dotnet add package Bodu.Financial.ExchangeRates.ExchangeRateHost
 dotnet add package Bodu.Financial.ExchangeRates.Fred
