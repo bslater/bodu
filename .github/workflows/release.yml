@@ -32,13 +32,7 @@ name: Release
 on:
   push:
     tags:
-      # Both cases are matched deliberately. GitHub Actions tag filters are case-sensitive, so a tag
-      # pushed as V1.0.0 did not match 'v*' and started no run at all - no failure, no annotation,
-      # nothing to notice except an absent release. Accepting 'V*' turns that silent miss into a
-      # working release. If both cases of the same version are ever pushed, two runs fire and the
-      # second publish is a no-op, because the push step passes --skip-duplicate.
       - 'v*'
-      - 'V*'
   workflow_dispatch:
     inputs:
       publish:
