@@ -28,8 +28,14 @@
   <ItemGroup>
     <!-- Benchmark harness. -->
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
-    <!-- Data access. -->
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.11" />
+    <!--
+      Data access. Held at the 8.0.x line for the net8.0 leg, but at 8.0.31 rather than the 8.0.11
+      this was pinned at: every 8.0.x below 8.0.12 resolves SQLitePCLRaw.lib.e_sqlite3 2.1.6
+      transitively, which carries GHSA-2m69-gcr7-jv3q (high severity, NU1903). 8.0.31 depends on
+      SQLitePCLRaw.bundle_e_sqlite3 2.1.12, the same patched version the net10.0 override already
+      resolves, so both legs land on a fixed native library.
+    -->
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.31" />
     <!-- Roslyn (consumed as a runtime dependency by the caching test-support surface). -->
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
@@ -56,7 +62,53 @@
     <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
     <!-- BCL out-of-band packages. -->
     <PackageVersion Include="System.IO.Hashing" Version="10.0.7" />
-    <PackageVersion Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
+  <!--
+    ============================================================================================
+    Framework-aligned overrides for the net10.0 leg.
+
+    The versions above are the floor and apply to the net8.0 leg: a package shipped in lock-step
+    with a .NET release must match the framework a given leg targets, or the net8.0 leg would drag
+    a .NET 10 assembly onto a .NET 8 consumer. Everything here therefore exists at both 8.0.x and
+    10.0.x on the same release cadence – the Microsoft.Extensions.* family, Microsoft.Data.Sqlite
+    (EF Core's cadence).
+
+    &lt;PackageVersion Update="..."&gt; rather than Include: the item already exists from the group
+    above, so Include would declare it twice and fail the restore (NU1011).
+
+    Packages NOT listed here are deliberate. BenchmarkDotNet, Microsoft.Build.Utilities.Core,
+    Microsoft.CodeAnalysis.CSharp, System.IO.Hashing and the whole test/analyzer wave move on
+    their own cadence and ship a single build that serves every target framework, so splitting
+    them by leg would pin two versions of the same thing for no reason.
+
+    NOTE: the condition names net10.0 literally, and $(BoduNetTargets) in bld/TargetFrameworks.props
+    is what decides which legs are actually built. Adding a framework there means adding a matching
+    group here – otherwise the new leg silently inherits the 8.0.x floor above.
+    ============================================================================================
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageVersion Update="Microsoft.Data.Sqlite" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Caching.Abstractions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Caching.Memory" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.Binder" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.Ini" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.FileProviders.Physical" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Http" Version="10.0.12" />
+    <!-- dotnet/extensions has its own numbering; 10.0.0 is its .NET 10 release, not a 10.0.12. -->
+    <PackageVersion Update="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
+    <PackageVersion Update="Microsoft.Extensions.Logging" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Options" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.12" />
+    <PackageVersion Update="Microsoft.Extensions.Primitives" Version="10.0.12" />
   </ItemGroup>
   <!--
     ============================================================================================

@@ -1,6 +1,6 @@
 # Bodu.Numerics
 
-> **API stability — Preview / Release Candidate.** The rational and interval algebra is functionally complete and suitable for trial use. `Fraction<T>` is a stable candidate; the interval-set and discrete-interval APIs may still receive source-breaking refinement before the 1.0 stable release. Breaking changes are otherwise reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 Numeric value primitives for .NET. The public model is exact rational numbers plus an interval algebra:
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar.Samples.RulePackToolchain</RootNamespace>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
@@ -17,11 +17,20 @@
 
     <!-- Build ordering only. A NuGet consumer gets the task and the tool from the
          Bodu.Globalization.Calendar.Build package; inside this repository they are projects, so the
-         sample references them purely so they are built before its own targets run. -->
+         sample references them purely so they are built before its own targets run.
+
+         UndefineProperties="TargetFramework" is required because this project multi-targets and the
+         references set SkipGetTargetFrameworkProperties. An inner build carries TargetFramework as a
+         global property, which normally flows to a ProjectReference and is then replaced by the
+         framework negotiation; skipping that negotiation leaves the inherited value in place, so the
+         netstandard2.0 task project was asked to build as net8.0/net10.0 and failed with NETSDK1005.
+         Undefining the property lets each referenced project build its own declared framework. -->
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj"
-                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" />
+                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true"
+                      UndefineProperties="TargetFramework" />
     <ProjectReference Include="..\..\..\Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj"
-                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" />
+                      ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true"
+                      UndefineProperties="TargetFramework" />
   </ItemGroup>
 
   <!--

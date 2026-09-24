@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Financial JSON Serialization</Title>
     <Description>System.Text.Json integration for Bodu.Financial. Provides converters, a shared serialization policy (FinancialJsonPolicy: Strict/Lenient/Compact), the AddFinancialJsonConverters() registration helper for Money, Money&lt;TCurrency&gt;, MoneyBag, ExchangeRate, and CurrencyPair, and the AddFinancialJson() dependency-injection registration. Keeping JSON support in this companion package leaves the core Bodu.Financial library serialization-agnostic.</Description>

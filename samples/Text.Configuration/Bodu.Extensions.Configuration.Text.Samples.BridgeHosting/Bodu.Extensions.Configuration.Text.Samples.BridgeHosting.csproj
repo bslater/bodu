@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu.Samples.Extensions.Configuration.Text.BridgeHosting</RootNamespace>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>

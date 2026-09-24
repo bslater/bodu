@@ -7,7 +7,7 @@
     MSTest.TestFramework (for the attributes and Assert surface) plus the calendar engine.
   -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu.Globalization.Calendar</RootNamespace>
     <AssemblyName>Bodu.Globalization.Calendar.Data.Test.Common</AssemblyName>
     <IsPackable>false</IsPackable>

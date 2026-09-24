@@ -460,7 +460,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         }
 
         byte[] key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
-        byte[] reversed = key.Reverse();
+        byte[] reversed = key.ToReversed();
         byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
 
         byte[] hash1;

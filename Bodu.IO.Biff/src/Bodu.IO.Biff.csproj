@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — BIFF</Title>
     <Description>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy .xls workbooks. A forward-only, allocation-free BiffReader walks physical records, detects the BIFF version, exposes every record's identifier and raw payload, and decodes the common structural and cell records through typed accessors — including the shared string table across its CONTINUE records — while a BiffWriter emits conformant BIFF5 or BIFF8 records from typed values or raw payloads. Understands how BIFF is encoded, not what an Excel workbook means: no compound-file container, no workbook or cell model, no formula evaluation.</Description>
@@ -21,10 +21,13 @@
     <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
   </ItemGroup>
 
-  <!-- Code-page encodings for BIFF5 byte strings. -->
-  <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" />
-  </ItemGroup>
+  <!--
+    System.Text.Encoding.CodePages is deliberately NOT referenced. CodePagesEncodingProvider ships in
+    the shared framework for every target framework here - Microsoft.NETCore.App.Ref carries
+    System.Text.Encoding.CodePages.dll for net8.0 as well as net10.0 - so an explicit PackageReference
+    adds a redundant dependency to the published package and raises NU1510, which the docs build
+    (docfx with warnings promoted to errors) treats as fatal.
+  -->
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>

@@ -1,6 +1,6 @@
 # Bodu.Text.Ini
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 An INI library for .NET 8, shaped after `System.Text.Json`: a typed serializer over a two-reader token surface, with a comment-preserving mutable document object model and a read-only one. The value model is a two-level object-of-objects — global keys hoist onto the root, each `[section]` is a nested object of string values.
 

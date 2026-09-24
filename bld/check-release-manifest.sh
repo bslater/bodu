@@ -28,6 +28,12 @@
 #   7. Icon       — bld/icons/<PackageId>.png exists. The docfx workflow checks the other direction
 #                   (every .svg has a rasterized sibling); this checks that every SHIPPING package has
 #                   an icon, which is the direction a release cares about.
+#   8. Stream     — the package's tier agrees with the version stream it ships on. Bodu runs two:
+#                   Stable-tier packages ship at BoduBaseVersion, and the Preview/Experimental tier
+#                   ships at BoduPreviewVersion via <BoduPackageVersionOverride> in its own csproj.
+#                   Nothing else reconciles those, so a package promoted to Stable but left on the
+#                   preview stream (or a preview package with no override) would publish at the wrong
+#                   version and only be noticed on nuget.org, where it cannot be taken back.
 #
 # Withheld packages (named in the manifest's comment block) are deliberately absent and are not
 # checked — they do not ship, so they owe consumers nothing.
@@ -62,9 +68,16 @@ if [ -z "$base_version" ]; then
     exit 1
 fi
 
+preview_version="$(sed -n 's:.*<BoduPreviewVersion>\(.*\)</BoduPreviewVersion>.*:\1:p' "$versioning" | head -1)"
+if [ -z "$preview_version" ]; then
+    printf '::error file=bld/Versioning.props::BoduPreviewVersion could not be read\n'
+    exit 1
+fi
+
 printf 'Release manifest check\n'
 printf '======================\n'
-printf 'BoduBaseVersion: %s\n' "$base_version"
+printf 'BoduBaseVersion:    %s  (Stable tier)\n' "$base_version"
+printf 'BoduPreviewVersion: %s  (Preview / Experimental tier)\n' "$preview_version"
 
 # Compares two MAJOR.MINOR.PATCH versions; prints 1 when $1 > $2, else 0.
 version_gt() {
@@ -119,11 +132,36 @@ while IFS= read -r raw; do
 
     # 5/6. README and its tier banner.
     readme="$project_root/README.md"
+    tier=""
     if [ ! -f "$readme" ]; then
         fail "$id: no README.md at $(realpath --relative-to="$repo_root" "$project_root") (bld/RELEASING.md precondition 4)"
-    elif ! head -c 2000 "$readme" | grep -qE 'API stability[[:space:]]*[—-]+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)'; then
-        fail "$id: README.md carries no API-stability tier banner (Stable / Preview / Experimental)"
+    else
+        tier="$(head -c 2000 "$readme" \
+            | grep -oE 'API stability[[:space:]]*[—-]+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)' \
+            | grep -oE '(Stable|Preview|Experimental)' | head -1)"
+        if [ -z "$tier" ]; then
+            fail "$id: README.md carries no API-stability tier banner (Stable / Preview / Experimental)"
+        fi
     fi
+
+    # 8. Version stream agrees with the tier.
+    override="$(sed -n 's:.*<BoduPackageVersionOverride>\(.*\)</BoduPackageVersionOverride>.*:\1:p' "$project" | head -1)"
+    case "$tier" in
+        Stable)
+            if [ -n "$override" ]; then
+                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>$override</BoduPackageVersionOverride>, so it would ship on the preview stream instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
+            fi
+            ;;
+        Preview|Experimental)
+            if [ -z "$override" ]; then
+                fail "$id: tiered $tier but sets no <BoduPackageVersionOverride>, so it would ship at BoduBaseVersion $base_version alongside the Stable packages. Add <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride> to its csproj."
+            elif [ "$override" != '$(BoduPreviewVersion)' ]; then
+                # A literal is rejected even when it currently equals BoduPreviewVersion: it agrees by
+                # coincidence, and stops agreeing silently the next time the preview stream moves.
+                fail "$id: tiered $tier but pins its version override to the literal '$override' rather than \$(BoduPreviewVersion) (currently $preview_version). Reference the property so the preview stream moves in one edit and cannot drift."
+            fi
+            ;;
+    esac
 
     # 7. Icon.
     if [ ! -f "$repo_root/bld/icons/$id.png" ]; then

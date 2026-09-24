@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu — Globalization Recurrence</Title>

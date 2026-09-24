@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Exchange-Rate Provider Infrastructure</Title>
     <Description>Web exchange-rate provider infrastructure for Bodu.Financial. Provides the WebRateProvider and PairWebRateProvider base classes that per-source provider packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA) build on, plus the shared fetch machinery: single-flight request coalescing, file-system response caching, HttpClient construction, and pair-load contracts. Depends only on Bodu.Financial and Microsoft.Extensions.Logging.Abstractions.</Description>

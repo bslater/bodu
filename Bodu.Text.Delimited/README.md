@@ -1,6 +1,6 @@
 # Bodu.Text.Delimited
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 An RFC 4180 delimited-text (CSV / TSV) library for .NET 8, shaped after `System.Text.Json`: a typed record serializer over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model, plus the dialect policies real-world files need (ragged rows, malformed records, duplicate headers).
 

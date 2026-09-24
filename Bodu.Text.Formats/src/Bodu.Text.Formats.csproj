@@ -6,7 +6,7 @@
     themselves live in Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini.
   -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Text Formats</Title>
     <Description>Umbrella package for the Bodu line-oriented text formats on .NET 8 — delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. References Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini, each a System.Text.Json-shaped library with a ref-struct Utf8 reader/writer pair, a serializer, a mutable node DOM, and a read-only document DOM.</Description>

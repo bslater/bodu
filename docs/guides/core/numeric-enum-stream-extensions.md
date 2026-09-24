@@ -144,8 +144,8 @@ using Bodu.Extensions;
 int[] source = { 1, 2, 3, 4, 5 };
 
 int[] middle   = source.Slice(1, 3);            // 2, 3, 4
-int[] partRev  = source.Reverse(1, 3);          // 1, 4, 3, 2, 5 — a new array; source untouched
-int[] rangeRev = source.Reverse(..2);           // 2, 1, 3, 4, 5
+int[] partRev  = source.ToReversed(1, 3);       // 1, 4, 3, 2, 5 — a new array; source untouched
+int[] rangeRev = source.ToReversed(..2);        // 2, 1, 3, 4, 5
 int[] padL     = source.PadLeft(7, 0);          // 0, 0, 1, 2, 3, 4, 5
 int[] padR     = source.PadRight(6, 9);         // 1, 2, 3, 4, 5, 9
 int[] copy     = source.Copy();
@@ -164,11 +164,11 @@ Span<int> reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span sti
 | `Copy()` | Shallow copy. |
 | `Slice(index[, count])` | New array. |
 | `PadLeft(totalLength, padValue)` / `PadRight(totalLength, padValue)` | Returns the input unchanged when already long enough. |
-| `Reverse()` / `Reverse(index, count)` / `Reverse(Range)` | **Returns a new array** — unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. |
+| `ToReversed()` / `ToReversed(index, count)` / `ToReversed(Range)` | **Returns a new array** — unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. Named `ToReversed` to match `SpanExtensions.ToReversed` below and the BCL's `To*` convention for materializing a new collection; the old name `Reverse` also collided with `Enumerable.Reverse<TSource>(TSource[])`, added in .NET 10. An array binds to this overload rather than the span one, which takes a conversion. |
 | `Clear()` / `Clear(index[, count])` | In place; generic and non-generic forms. |
 | `ToMatrix(transpose)` | Jagged `T[][]` → rectangular `T[,]`; every row must have the same length. |
 | `AsReadOnly()` | `Span<T>` → `ReadOnlySpan<T>` without a cast. |
-| `ToReversed()` (+ `(index, count)` / `Range`) | Reversed **copy** into a new array-backed `Span<T>`; the source is not modified. |
+| `ToReversed()` (+ `(index, count)` / `Range`) | The span counterpart of the array member above: a reversed **copy** into a new array-backed `Span<T>`; the source is not modified. |
 
 ## Pattern 5 — `StreamExtensions` and `BufferConverter`
 

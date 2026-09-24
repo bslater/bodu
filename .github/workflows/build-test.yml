@@ -156,10 +156,14 @@ jobs:
             exit 1
           fi
 
+          # Samples multi-target, so --framework is required: `dotnet run` refuses to guess.
+          # They run on the newest supported framework — the sample code itself is identical
+          # across legs, and both legs are already compiled by the Build step above, so running
+          # each sample twice would double the step's wall-clock for no additional signal.
           for proj in $projects; do
             name=$(basename "$proj" .csproj)
             echo "::group::Run $name"
-            dotnet run --project "$proj" --configuration Release
+            dotnet run --project "$proj" --configuration Release --framework net10.0
             echo "::endgroup::"
           done
 

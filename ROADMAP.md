@@ -67,9 +67,9 @@ landed — see Active focus). A
 release-discipline pass earlier moved `Bodu.Numerics` from Stable to
 **Preview**; its serialization and documentation conventions have since
 caught up (JSON now ships in the `Bodu.Numerics.Serialization.Json`
-companion), and the tier now holds only while the new `BigDecimal` and
-statistics surfaces settle (see *API-stability
-tiers*). This revision also folds in a **cross-ecosystem gap review** —
+companion) and the `BigDecimal` and statistics surfaces have settled, so
+both `Bodu.Numerics` and its JSON companion are **Stable** again (see
+*API-stability tiers*). This revision also folds in a **cross-ecosystem gap review** —
 Bodu's surface compared against the highest-adoption Java (Guava, Apache
 Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
 `difflib` / `email`, `dateutil`, `rapidfuzz`, `phonenumbers`, `pint`)
@@ -130,10 +130,12 @@ work started today.
 The roadmap assumes the conventions already documented in
 [`CLAUDE.md`](CLAUDE.md). The ones most relevant to forward planning:
 
-- **TFM baseline.** All shipping projects target `net8.0` only — no
-  multi-targeting today. Compiling/testing requires the .NET 10 SDK
-  (C# 14, `.slnx`), pinned via the root `global.json`. Bumping the
-  floor is a roadmap decision (see *Cross-cutting themes*).
+- **TFM baseline.** Every .NET project multi-targets `net8.0;net10.0`
+  through the single `$(BoduNetTargets)` property in
+  `bld/TargetFrameworks.props`; no project names a framework literally.
+  Compiling/testing requires the .NET 10 SDK (C# 14, `.slnx`), pinned via
+  the root `global.json`. Dropping `net8.0` is a roadmap decision (see
+  *Cross-cutting themes*).
 - **Central package management.** `Directory.Packages.props` now pins
   every NuGet version centrally; new dependencies flow through it, not
   per-project `<PackageReference Version=...>`.
@@ -1723,11 +1725,52 @@ already the universal testing convention (see `CLAUDE.md`).
 
 ### TFM policy
 
-All shipping projects target `net8.0` only. Direction: follow Microsoft's
-LTS cadence — move the floor to `net10.0` when `net8.0` exits standard
-support, and never multi-target older `netstandard` without a concrete
-consumer ask. The dead `netstandard2.0` `ItemGroup` conditionals in a few
-`.csproj` files should be removed in the next routine sweep.
+**Done — every .NET project multi-targets `net8.0;net10.0`.** The matrix
+lives in one property, `$(BoduNetTargets)` in
+`bld/TargetFrameworks.props`; projects reference the property rather than
+naming a framework, so widening or narrowing the matrix is a one-line
+edit. Three projects stay `netstandard2.0` because their hosts demand it:
+the Roslyn generator `Bodu.Text.Formats.Generators`, the MSBuild task
+`Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`.
+
+Adding `net10.0` was additive — no consumer notices a new lib folder — so
+it needed no major-version coordination. **Removing `net8.0` is the
+breaking half** and is deliberately deferred: .NET 8 leaves LTS support in
+November 2026, and the floor moves only once there is reason to believe
+consumers have followed. Never multi-target older `netstandard` without a
+concrete consumer ask.
+
+One consequence to keep in view. Widening to `net10.0` widens the BCL,
+which can make a Bodu extension method newly ambiguous with a framework
+overload of the same shape. The first instance: .NET 10 added
+`System.Linq.Enumerable.Reverse<TSource>(TSource[])`, which collided with
+`Bodu.Extensions.ArrayExtensions.Reverse<T>(T[])` and yielded CS0121 in
+any file importing both namespaces — a source break landing on consumers,
+invisible on the `net8.0` leg, and not fixable with
+`[OverloadResolutionPriority]` (that attribute is not consulted across
+declaring types — verified, not assumed).
+
+**Resolved by renaming the family to `ToReversed`** in the 1.0.0 cut,
+which is the only cheap moment for it. The new name is better independent
+of the collision: the past participle says the method returns a new array
+rather than mutating in place like `Array.Reverse`, it matches the BCL's
+`To*` convention for materializing a new collection, and it makes the array
+and span families read alike — `SpanExtensions.ToReversed` already existed
+with the same three-overload shape. An array still binds to the array
+overload, which is an identity match, in preference to the span one, which
+needs a conversion (verified on both legs). All six overloads moved together —
+the three generic `T[]` forms and the three non-generic `Array` forms —
+because a half-renamed family is worse than either name. The break is
+recorded in `Bodu.Core`'s `CompatibilitySuppressions.xml` so package
+validation keeps guarding everything else.
+
+Worth noting for the next such case: the tests did not catch this one on
+their own. `ArrayExtensionsTests` is declared *inside* `namespace
+Bodu.Extensions`, where the enclosing namespace outranks an imported one,
+so its hundreds of `.Reverse()` calls compiled cleanly on net10 while a
+consumer's would not. The single failure came from a test in a *different*
+namespace that imported `Bodu.Extensions` — the consumer shape. A test
+that lives in the namespace it tests cannot see this class of break.
 
 ### AOT and trim readiness
 
@@ -1769,29 +1812,31 @@ owed until the decision to publish them is taken. The assignment:
   `Bodu.Collections` (the specialized collection catalogue split out of
   `Bodu.Core` with namespaces unchanged; the tranche additions shipped
   with settled APIs per the implementation plan),
-  `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.IO.Biff`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
-  configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
-  `.Configuration` / `.Filtering`, `Bodu.Extensions.Configuration.Text`),
-  `Bodu.Formats.Excel.Binary`, `Bodu.Financial` (+ its DI package), the
-  whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
-  and the five data packs), and the shared
-  `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
-- **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
-  `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
-  still settling their conventions, and the new `BigDecimal` and
-  statistics-aggregate surfaces are settling; `Fraction<T>` is a stable
-  candidate) and its companion
-  `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
-  types are now serialization-agnostic and support is opt-in via
-  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer reached
-  family parity in 0.3.0 — enum converters, presets, the DOM bridges —
-  and the new surface has not yet shipped) and the network-dependent
-  exchange-rate family: the web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`
-  and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
-  These are held at Preview until they have shipped and been exercised
-  against their live upstream endpoints; the public API is largely settled,
-  but behaviour against third-party feeds is not yet battle-tested.
+  configuration libraries (`Bodu.Text.Serialization` and the serializers
+  built on it — `Bodu.Text.Bencode` / `.Toml` / `.Yaml` / `.Delimited` /
+  `.DotEnv` / `.Ini` / `.Formats` — plus `Bodu.Text.Configuration` /
+  `.Filtering` and `Bodu.Extensions.Configuration.Text`),
+  `Bodu.Formats.Excel.Binary`, `Bodu.Numerics` and its
+  `Bodu.Numerics.Serialization.Json` companion, `Bodu.Financial` (+ its DI
+  and JSON packages), `Bodu.Globalization.Recurrence`, the whole
+  `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins, the
+  five data packs, and the caching trio
+  `…Calendar.Caching{,.Sqlite,.Distributed}`), and the source-independent
+  half of the exchange-rate stack: `Bodu.Financial.ExchangeRates` (the
+  provider base classes and shared fetch machinery), the
+  `…ExchangeRates.DependencyInjection` plumbing, and the caching trio
+  `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
+- **Preview** — the container and mail-store readers whose surfaces are
+  still settling (`Bodu.IO.Pst` and the Outlook readers built on it,
+  `Bodu.Formats.Outlook{,.Msg,.Pst}`) and the network-dependent per-source
+  exchange-rate providers
+  `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`.
+  The providers are held at Preview until each has been exercised against
+  its live upstream endpoint across a release cycle: the API they expose is
+  settled — it is the shared base-class contract, which is now Stable — but
+  their behaviour against third-party feeds is not yet battle-tested.
 - **Experimental** — `Bodu.Financial.ExchangeRates.Xe`, which depends on a
   scraped auth token and can break without notice.
 

@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Caching
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A read-through cache that sits **in front of** the notable-date service. The engine stays a pure
 computer that knows nothing of caching: `CachingNotableDateService` implements the same

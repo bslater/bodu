@@ -2,7 +2,10 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — FRED Exchange Rates</Title>
     <Description>FRED (Federal Reserve Bank of St. Louis) exchange-rate provider for Bodu.Financial. Maps each currency pair to a FRED foreign-exchange series, fetches and parses the series observations JSON endpoint, and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Includes the dependency-injection registration extensions (AddFredExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>

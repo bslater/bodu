@@ -2,7 +2,10 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Outlook Msg</Title>
     <Description>A read-only reader for the Outlook message format (.msg / MS-OXMSG) over the Bodu.IO.Compound OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or message authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
@@ -38,10 +41,13 @@
     <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
   </ItemGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" />
-  </ItemGroup>
+  <!--
+    System.Text.Encoding.CodePages is deliberately NOT referenced. CodePagesEncodingProvider ships in
+    the shared framework for every target framework here - Microsoft.NETCore.App.Ref carries
+    System.Text.Encoding.CodePages.dll for net8.0 as well as net10.0 - so an explicit PackageReference
+    adds a redundant dependency to the published package and raises NU1510, which the docs build
+    (docfx with warnings promoted to errors) treats as fatal.
+  -->
 
   <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
   <ItemGroup>

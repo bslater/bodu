@@ -1,6 +1,6 @@
 # Bodu.Globalization.Recurrence
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 Recurrence-rule evaluation for .NET: four ways to express "when does this happen again?", each
 answering next- **and** previous-occurrence queries over `DateTime` and `DateTimeOffset`.
