@@ -160,6 +160,38 @@ first.
    (`-p:BoduSignAssembly=false`) therefore skips the baseline rather than
    failing on identity.
 
+## Documentation for a release
+
+`.github/workflows/docfx-build-publish.yml` publishes the DocFX site to the
+`gh-pages` branch, versioned:
+
+| URL | Contents | Written when |
+|---|---|---|
+| `/` | the latest release | on its `v*` tag |
+| `/<series>/` | that release, archived (`1.0`, `1.1`, …) | once, on its tag |
+| `/dev/` | the current master build | every merge to master |
+
+A tag run therefore publishes the docs as well as the packages, with no extra
+step. Only a plain `vMAJOR.MINOR.PATCH` tag does so — a prerelease is skipped
+rather than allowed to replace the root, since it is not the latest release.
+
+**Before the Pages cutover**, `/` and `/<series>/` are empty, because nothing has
+been tagged since the branch started. Seeding them is a manual run: Actions →
+*Build and Publish DocFX Sites* → *Run workflow* from **master**, with
+`publish_slot` set to the series (`1.0`).
+
+Dispatching the release **tag** does not work and is not the shortcut it looks
+like. `workflow_dispatch` runs the workflow as defined at the ref you dispatch,
+and a tag cut before this publishing existed has no such step; the tag's own docs
+also predate the publication check, so the run would fail on the install commands
+it names for packages that were never published. Master carries the corrections
+and no source change since `v1.0.0`, so its build is the same API reference
+without them.
+
+Once the branch looks right, switch Settings → Pages to *Deploy from a branch:
+`gh-pages`*, then delete the `deploy-docs` job — until that switch it is what
+serves the live site, which is why both run side by side.
+
 ## Next waves
 
 1. Append the wave's package ids to `bld/release-manifest.txt`.
