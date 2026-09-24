@@ -3,13 +3,18 @@ name: Build and Publish DocFX Sites
 on:
   push:
     branches: [ master ]
+    # A release tag publishes that release's docs: to the root, and to its own /<series>/ copy.
+    # Master publishes to /dev/. See "Publish to the versioned gh-pages branch" below.
+    tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  # contents: write is for the gh-pages branch the versioned site is published to; nothing else
+  # in this workflow writes to the repository.
+  contents: write
   actions: read
   pages: write
   id-token: write
@@ -241,6 +246,67 @@ jobs:
         # Upload entire repository
         path: 'docs/_site'
 
+    - name: Publish to the versioned gh-pages branch
+      # Writes the built site into the branch layout bld/stage-docs-site.sh documents: the latest
+      # release at the root and under /<series>/, master under /dev/.
+      #
+      # This runs ALONGSIDE the deploy-pages job below, which still serves the live site. Until the
+      # repository's Pages source is switched to "Deploy from a branch: gh-pages", this branch is
+      # built and can be inspected but serves nothing — so landing this cannot take the site down,
+      # in either order. Switching the setting is the cutover; the deploy-docs job is removed then.
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        set -eu
+
+        if [ "$GITHUB_REF" = "refs/heads/master" ]; then
+          SLOT="dev"
+        else
+          VERSION="${GITHUB_REF_NAME#v}"      # v1.2.3 -> 1.2.3
+
+          # Only a plain MAJOR.MINOR.PATCH tag publishes. A prerelease is not "the latest release"
+          # and must not replace the root site; a malformed tag should not fail the run either.
+          # Both would otherwise derive a slot stage-docs-site.sh rejects — "1.0.0-rc" from
+          # v1.0.0-rc.1, "1" from v1.0 — turning a stray tag into a red build.
+          if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Tag ${GITHUB_REF_NAME} is not a plain vMAJOR.MINOR.PATCH release — not publishing it as the latest docs."
+            exit 0
+          fi
+
+          SLOT="${VERSION%.*}"                # 1.2.3  -> 1.2
+        fi
+
+        WORK="$(mktemp -d)"
+        REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+        # Shallow-clone the branch if it exists; create it empty and orphaned the first time, so
+        # the docs history never carries the source history.
+        if git ls-remote --exit-code --heads "$REMOTE" gh-pages >/dev/null 2>&1; then
+          git clone --depth 1 --branch gh-pages "$REMOTE" "$WORK"
+        else
+          echo "gh-pages does not exist yet — creating it."
+          git clone --depth 1 "$REMOTE" "$WORK"
+          git -C "$WORK" checkout --orphan gh-pages
+          git -C "$WORK" rm -rf . >/dev/null 2>&1 || true
+        fi
+
+        bash bld/stage-docs-site.sh docs/_site "$WORK" "$SLOT"
+
+        git -C "$WORK" config user.name  "github-actions[bot]"
+        git -C "$WORK" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git -C "$WORK" add -A
+        if git -C "$WORK" diff --cached --quiet; then
+          echo "No change to publish for slot '${SLOT}'."
+          exit 0
+        fi
+        git -C "$WORK" commit -m "Publish docs for ${GITHUB_REF_NAME} into /${SLOT}/ (${GITHUB_SHA})"
+        git -C "$WORK" push "$REMOTE" gh-pages
+        echo "Published slot '${SLOT}' to gh-pages."
+
+  # Serves the live site from the Actions artifact, which is what the repository's Pages source is
+  # still set to. Remove this job at the cutover, once Pages is serving the gh-pages branch — until
+  # then it is what keeps the site up, and the branch above is staged but unserved.
   deploy-docs:
     needs: build-docs
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
