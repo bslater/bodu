@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids
+
+  Every entry here is a deliberate, reviewed decision. A suppression that nobody can explain is a
+  silenced bug, so do not add one without recording why below, and delete one the moment the reason
+  stops holding. Regenerating this file with -p:ApiCompatGenerateSuppressionFile=true rewrites it and
+  DISCARDS these comments - regenerate into a scratch copy and merge by hand instead.
+
+  1. IEnumerableExtensions.Index<TSource> - present on the net8.0 leg, absent on net10.0.
+     Intentional and pre-existing: the method is a polyfill guarded by #if !NET9_0_OR_GREATER,
+     because .NET 9 added Enumerable.Index with an identical signature. On net10.0 the consumer gets
+     the BCL's, so nothing is lost. Compiling it on both legs would collide exactly the way
+     ArrayExtensions.Reverse did (see below) - this guard is the pattern that avoids that, not a
+     defect. Invisible until the package multi-targeted, because a single-TFM package has no second
+     leg to differ from.
+
+  2. ArrayExtensions.Reverse (six overloads) - removed against the 0.7.0 baseline.
+     Intentional break, taken in the 1.0.0 major. .NET 10 added
+     System.Linq.Enumerable.Reverse<TSource>(TSource[]), which made our same-shaped extension
+     ambiguous (CS0121) for any consumer importing both namespaces; [OverloadResolutionPriority]
+     does not help, as it is not consulted across declaring types. The family was renamed to
+     Reversed, which also states that the source is not mutated. These suppressions cover only the
+     removal of the old names - the new ones are validated normally, as is the rest of the surface.
+     Drop these entries once the baseline moves past 1.0.0, since by then the old names will not be
+     in the baseline to miss.
+-->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index``1(System.Collections.Generic.IEnumerable{``0})</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net10.0/Bodu.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array,System.Int32,System.Int32)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array,System.Range)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[],System.Int32,System.Int32)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[],System.Range)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[])</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

@@ -3,6 +3,9 @@
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Outlook Msg</Title>
     <Description>A read-only reader for the Outlook message format (.msg / MS-OXMSG) over the Bodu.IO.Compound OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — without any MAPI session emulation or message authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>

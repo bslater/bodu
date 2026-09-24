@@ -13,12 +13,32 @@
     intent is obvious.
   -->
   <PropertyGroup>
-    <BoduBaseVersion>0.7.0</BoduBaseVersion>
+    <BoduBaseVersion>1.0.0</BoduBaseVersion>
     <VersionPrefix>$(BoduBaseVersion)</VersionPrefix>
 
     <!--
-      Package-validation baseline. Set this to the last published lock-step version after each
-      release, so subsequent packs run the ApiCompat comparison against the published packages.
+      The second version stream. Since the 1.0.0 cut the solution ships two lock-step streams, split
+      along the API-stability tier each package's README declares:
+
+        Stable                  ships at BoduBaseVersion    (the default; no per-project setting)
+        Preview / Experimental  ships at BoduPreviewVersion (via BoduPackageVersionOverride below)
+
+      The split exists so the 1.0 compatibility promise is made only by packages that can keep it.
+      A preview package stays below 1.0 until its API settles, at which point promoting it is two
+      edits: retier its README banner and delete its override.
+
+      A preview package references this property rather than pinning a literal, so moving the
+      preview stream stays a one-line edit here. bld/check-release-manifest.sh enforces both that and
+      the tier-to-stream agreement, because nothing else reconciles a package's declared tier with
+      the version it actually publishes at — and a wrong version cannot be taken back off nuget.org.
+    -->
+    <BoduPreviewVersion>0.7.1</BoduPreviewVersion>
+
+    <!--
+      Package-validation baseline. Set this to the last version every package shipped at, so
+      subsequent packs run the ApiCompat comparison against the published packages. One value
+      serves both streams: it is the last release in which Stable and preview packages shared a
+      version, and every published package therefore has a 0.7.0 predecessor to compare against.
       Empty = validation stays inert (no published baseline exists yet). The baseline is applied
       only to packages listed in bld/release-manifest.txt — packages that have never shipped have
       nothing to compare against — and only to a build with BoduSignAssembly=true (the default),

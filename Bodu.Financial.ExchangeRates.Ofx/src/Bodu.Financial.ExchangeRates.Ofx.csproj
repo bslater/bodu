@@ -3,6 +3,9 @@
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — OFX Exchange Rates</Title>
     <Description>OFX (ofx.com) exchange-rate provider for Bodu.Financial. Fetches and parses the OFX public spot-rate-history JSON service and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over arbitrary currency pairs. Includes the dependency-injection registration extensions (AddOfxExchangeRates) that bind OfxRateProviderOptions and configure a resilient named HttpClient.</Description>

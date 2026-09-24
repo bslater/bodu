@@ -155,8 +155,10 @@ while IFS= read -r raw; do
         Preview|Experimental)
             if [ -z "$override" ]; then
                 fail "$id: tiered $tier but sets no <BoduPackageVersionOverride>, so it would ship at BoduBaseVersion $base_version alongside the Stable packages. Add <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride> to its csproj."
-            elif [ "$override" != '$(BoduPreviewVersion)' ] && [ "$override" != "$preview_version" ]; then
-                fail "$id: tiered $tier but pins its version override to '$override' rather than \$(BoduPreviewVersion) ($preview_version). Reference the property so the preview stream moves in one edit."
+            elif [ "$override" != '$(BoduPreviewVersion)' ]; then
+                # A literal is rejected even when it currently equals BoduPreviewVersion: it agrees by
+                # coincidence, and stops agreeing silently the next time the preview stream moves.
+                fail "$id: tiered $tier but pins its version override to the literal '$override' rather than \$(BoduPreviewVersion) (currently $preview_version). Reference the property so the preview stream moves in one edit and cannot drift."
             fi
             ;;
     esac
