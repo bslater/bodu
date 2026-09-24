@@ -460,10 +460,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         }
 
         byte[] key = Enumerable.Range(1, specification.MinKeyLength).Select(i => (byte)i).ToArray();
-        // Invoked as a static call rather than key.Reverse(): .NET 10 added
-        // System.Linq.Enumerable.Reverse<TSource>(TSource[]), which makes the extension-method form
-        // ambiguous (CS0121) wherever both System.Linq and Bodu.Extensions are imported.
-        byte[] reversed = ArrayExtensions.Reverse(key);
+        byte[] reversed = key.Reversed();
         byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
 
         byte[] hash1;

@@ -1742,15 +1742,31 @@ concrete consumer ask.
 
 One consequence to keep in view. Widening to `net10.0` widens the BCL,
 which can make a Bodu extension method newly ambiguous with a framework
-overload of the same shape. The first instance is already known:
-.NET 10 added `System.Linq.Enumerable.Reverse<TSource>(TSource[])`,
-which collides with `Bodu.Extensions.ArrayExtensions.Reverse<T>(T[])`
-and yields CS0121 in any file importing both namespaces. The collision
-is a source break for consumers, is invisible on the `net8.0` leg, and
-cannot be resolved with `[OverloadResolutionPriority]` — that attribute
-is not consulted across declaring types (verified, not assumed). Deciding
-between keeping the method and documenting the disambiguation, or
-renaming it, is open; a rename belongs in a major version.
+overload of the same shape. The first instance: .NET 10 added
+`System.Linq.Enumerable.Reverse<TSource>(TSource[])`, which collided with
+`Bodu.Extensions.ArrayExtensions.Reverse<T>(T[])` and yielded CS0121 in
+any file importing both namespaces — a source break landing on consumers,
+invisible on the `net8.0` leg, and not fixable with
+`[OverloadResolutionPriority]` (that attribute is not consulted across
+declaring types — verified, not assumed).
+
+**Resolved by renaming the family to `Reversed`** in the 1.0.0 cut, which
+is the only cheap moment for it. The new name is better independent of the
+collision: the past participle says the method returns a new array rather
+than mutating in place like `Array.Reverse`, and it sits alongside the
+existing `SpanExtensions.ToReversed`. All six overloads moved together —
+the three generic `T[]` forms and the three non-generic `Array` forms —
+because a half-renamed family is worse than either name. The break is
+recorded in `Bodu.Core`'s `CompatibilitySuppressions.xml` so package
+validation keeps guarding everything else.
+
+Worth noting for the next such case: the tests did not catch this one on
+their own. `ArrayExtensionsTests` is declared *inside* `namespace
+Bodu.Extensions`, where the enclosing namespace outranks an imported one,
+so its hundreds of `.Reverse()` calls compiled cleanly on net10 while a
+consumer's would not. The single failure came from a test in a *different*
+namespace that imported `Bodu.Extensions` — the consumer shape. A test
+that lives in the namespace it tests cannot see this class of break.
 
 ### AOT and trim readiness
 

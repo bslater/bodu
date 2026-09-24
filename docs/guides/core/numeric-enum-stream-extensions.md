@@ -144,8 +144,8 @@ using Bodu.Extensions;
 int[] source = { 1, 2, 3, 4, 5 };
 
 int[] middle   = source.Slice(1, 3);            // 2, 3, 4
-int[] partRev  = source.Reverse(1, 3);          // 1, 4, 3, 2, 5 — a new array; source untouched
-int[] rangeRev = source.Reverse(..2);           // 2, 1, 3, 4, 5
+int[] partRev  = source.Reversed(1, 3);         // 1, 4, 3, 2, 5 — a new array; source untouched
+int[] rangeRev = source.Reversed(..2);          // 2, 1, 3, 4, 5
 int[] padL     = source.PadLeft(7, 0);          // 0, 0, 1, 2, 3, 4, 5
 int[] padR     = source.PadRight(6, 9);         // 1, 2, 3, 4, 5, 9
 int[] copy     = source.Copy();
@@ -164,7 +164,7 @@ Span<int> reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span sti
 | `Copy()` | Shallow copy. |
 | `Slice(index[, count])` | New array. |
 | `PadLeft(totalLength, padValue)` / `PadRight(totalLength, padValue)` | Returns the input unchanged when already long enough. |
-| `Reverse()` / `Reverse(index, count)` / `Reverse(Range)` | **Returns a new array** — unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. |
+| `Reversed()` / `Reversed(index, count)` / `Reversed(Range)` | **Returns a new array** — unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. Named `Reversed`, not `Reverse`, both because the past participle signals that the source is left alone and because .NET 10 added `Enumerable.Reverse<TSource>(TSource[])`, which the old name collided with. |
 | `Clear()` / `Clear(index[, count])` | In place; generic and non-generic forms. |
 | `ToMatrix(transpose)` | Jagged `T[][]` → rectangular `T[,]`; every row must have the same length. |
 | `AsReadOnly()` | `Span<T>` → `ReadOnlySpan<T>` without a cast. |

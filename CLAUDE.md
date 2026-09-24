@@ -81,10 +81,15 @@ Two things to know when writing code that must compile on both legs. First, the 
 `NETx_0_OR_GREATER` symbols cumulatively, so `NET8_0_OR_GREATER` is true on the `net10.0` leg too —
 gate genuinely net10-only code on `NET10_0_OR_GREATER`, never on the absence of a lower symbol.
 Second, `net10.0` widens the BCL, which can make a Bodu extension method ambiguous with a new
-framework overload where it was not before (`System.Linq.Enumerable.Reverse<TSource>(TSource[])` is
-the known case — see the note under `Bodu.Core` in *Key Types*). Such a break surfaces only on the
-`net10.0` leg, and only in files that import both namespaces rather than declaring into
-`Bodu.Extensions` directly.
+framework overload where it was not before. Such a break surfaces only on the `net10.0` leg, and
+only in files that import `Bodu.Extensions` rather than declaring into it — inside the namespace the
+enclosing scope outranks an imported one, so the library's own tests can stay green while every
+consumer breaks. The first instance was `ArrayExtensions.Reverse<T>(T[])` against .NET 10's new
+`System.Linq.Enumerable.Reverse<TSource>(TSource[])`; it was resolved by renaming the whole family
+to **`Reversed`**, which also reads better (the past participle says the source is not mutated,
+unlike `Array.Reverse`) and matches the neighbouring `SpanExtensions.ToReversed`. Note that
+`[OverloadResolutionPriority]` cannot fix this class of collision — it is not consulted between
+candidates from different declaring types.
 
 Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 

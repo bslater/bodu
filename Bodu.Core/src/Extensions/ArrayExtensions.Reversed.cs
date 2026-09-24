@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ArrayExtensions.Reverse.cs" company="Bodu Pty. Ltd.">
+// <copyright file="ArrayExtensions.Reversed.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -24,10 +24,10 @@ public static partial class ArrayExtensions
     /// <remarks>
     /// Converts <paramref name="source" /> to a <see cref="ReadOnlySpan{T}" /> via
     /// <see cref="MemoryExtensions.AsSpan{T}(T[])" /> and delegates to <see cref="ReverseCore{T}" />, which performs
-    /// the SIMD-accelerated copy and reversal. See <see cref="Reverse{T}(T[], int, int)" /> for full performance and
+    /// the SIMD-accelerated copy and reversal. See <see cref="Reversed{T}(T[], int, int)" /> for full performance and
     /// allocation details.
     /// </remarks>
-    public static T[] Reverse<T>(this T[] source)
+    public static T[] Reversed<T>(this T[] source)
     {
         ArgumentNullException.ThrowIfNull(source);
         return ReverseCore<T>(source, 0, source.Length);
@@ -61,8 +61,8 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the canonical typed-array implementation. The full-array overload (<see cref="Reverse{T}(T[])" />) and
-    /// the <see cref="Range" />-based overload (<see cref="Reverse{T}(T[], Range)" />) both resolve their arguments and
+    /// This is the canonical typed-array implementation. The full-array overload (<see cref="Reversed{T}(T[])" />) and
+    /// the <see cref="Range" />-based overload (<see cref="Reversed{T}(T[], Range)" />) both resolve their arguments and
     /// delegate here.
     /// </para>
     /// <para>
@@ -77,12 +77,12 @@ public static partial class ArrayExtensions
     /// <code>
     ///<![CDATA[
     /// int[] data = { 1, 2, 3, 4, 5 };
-    /// int[] full = data.Reverse(); // [ 5, 4, 3, 2, 1 ]
-    /// int[] partial = data.Reverse(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]
+    /// int[] full = data.Reversed(); // [ 5, 4, 3, 2, 1 ]
+    /// int[] partial = data.Reversed(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]
     ///]]>
     /// </code>
     /// </example>
-    public static T[] Reverse<T>(this T[] source, int index, int count)
+    public static T[] Reversed<T>(this T[] source, int index, int count)
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(source, index, count);
         return ReverseCore<T>(source, index, count);
@@ -114,19 +114,19 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <remarks>
     /// Resolves <paramref name="range" /> via <see cref="Range.GetOffsetAndLength" /> and delegates to
-    /// <see cref="ReverseCore{T}" />. Prefer <see cref="Reverse{T}(T[], int, int)" /> when the start and count are
+    /// <see cref="ReverseCore{T}" />. Prefer <see cref="Reversed{T}(T[], int, int)" /> when the start and count are
     /// already available as integers to avoid constructing an intermediate <see cref="Range" /> value.
     /// </remarks>
     /// <example>
     /// <code>
     ///<![CDATA[
     /// int[] data = { 1, 2, 3, 4, 5 };
-    /// int[] fromStart = data.Reverse(1..4); // [ 1, 4, 3, 2, 5 ]
-    /// int[] fromEnd = data.Reverse(^4..^1); // [ 1, 4, 3, 2, 5 ]
+    /// int[] fromStart = data.Reversed(1..4); // [ 1, 4, 3, 2, 5 ]
+    /// int[] fromEnd = data.Reversed(^4..^1); // [ 1, 4, 3, 2, 5 ]
     ///]]>
     /// </code>
     /// </example>
-    public static T[] Reverse<T>(this T[] source, Range range)
+    public static T[] Reversed<T>(this T[] source, Range range)
     {
         ThrowHelper.ThrowIfNull(source);
         (int start, int length) = range.GetOffsetAndLength(source.Length);
@@ -154,12 +154,12 @@ public static partial class ArrayExtensions
     /// arrays.
     /// </exception>
     /// <remarks>
-    /// Delegates to <see cref="Reverse(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>. See
-    /// that overload for full implementation details. Prefer the generic <see cref="Reverse{T}(T[])" /> overload where
+    /// Delegates to <see cref="Reversed(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>. See
+    /// that overload for full implementation details. Prefer the generic <see cref="Reversed{T}(T[])" /> overload where
     /// the element type is known at compile time; the non-generic path cannot use <see cref="ReverseCore{T}" /> and
     /// falls back to <see cref="Array.Copy(Array, Array, int)" /> and <see cref="Array.Reverse(Array, int, int)" />.
     /// </remarks>
-    public static Array Reverse(this Array source)
+    public static Array Reversed(this Array source)
     {
         ThrowHelper.ThrowIfNull(source);
         return ReverseArrayCore(source, 0, source.Length);
@@ -195,12 +195,12 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the canonical non-generic implementation. The full-array overload (<see cref="Reverse(Array)" />) and
-    /// the <see cref="Range" />-based overload (<see cref="Reverse(Array, Range)" />) both resolve their arguments and
+    /// This is the canonical non-generic implementation. The full-array overload (<see cref="Reversed(Array)" />) and
+    /// the <see cref="Range" />-based overload (<see cref="Reversed(Array, Range)" />) both resolve their arguments and
     /// delegate here.
     /// </para>
     /// <para>
-    /// Unlike the typed <see cref="Reverse{T}(T[], int, int)" /> overload, this method cannot delegate to
+    /// Unlike the typed <see cref="Reversed{T}(T[], int, int)" /> overload, this method cannot delegate to
     /// <see cref="ReverseCore{T}" /> because the element type is not known at compile time. Instead it uses
     /// <see cref="Array.CreateInstance(Type, int)" /> to allocate a correctly typed result,
     /// <see cref="Array.Copy(Array, Array, int)" /> to populate it, and <see cref="Array.Reverse(Array, int, int)" />
@@ -213,7 +213,7 @@ public static partial class ArrayExtensions
     /// <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> does not inspect <see cref="Array.Rank" />.
     /// </para>
     /// </remarks>
-    public static Array Reverse(this Array source, int index, int count)
+    public static Array Reversed(this Array source, int index, int count)
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(source, index, count);
         ThrowHelper.ThrowIfArrayMultidimensional(source);
@@ -247,10 +247,10 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <remarks>
     /// Resolves <paramref name="range" /> via <see cref="Range.GetOffsetAndLength" /> and delegates to
-    /// <see cref="ReverseArrayCore" />. Prefer <see cref="Reverse(Array, int, int)" /> when the start and count are
+    /// <see cref="ReverseArrayCore" />. Prefer <see cref="Reversed(Array, int, int)" /> when the start and count are
     /// already available as integers to avoid constructing an intermediate <see cref="Range" /> value.
     /// </remarks>
-    public static Array Reverse(this Array source, Range range)
+    public static Array Reversed(this Array source, Range range)
     {
         ThrowHelper.ThrowIfArrayMultidimensional(source);
         (int start, int length) = range.GetOffsetAndLength(source.Length);
