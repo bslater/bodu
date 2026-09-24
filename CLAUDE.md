@@ -145,6 +145,36 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
+**Reproducing what CI runs.** Two differences make a green local run a weaker signal than it looks,
+and both have bitten:
+
+- **CI uses `test.runsettings`, not `bvt.runsettings`.** `test.runsettings` excludes only `Stress`
+  and `Census`, so it *includes* the Regression tier; `bvt.runsettings` excludes Regression as well.
+  A Regression-only failure is invisible to a BVT run. To match CI:
+  `dotnet test bodu.slnx --settings test.runsettings`.
+- **Both target frameworks need their own runtime installed.** With only the .NET 10 runtime present,
+  the `net8.0` leg still *runs* — on .NET 10, via roll-forward — so it compiles per-framework but
+  executes against the wrong BCL, and a net8/net10 behavioural difference can pass locally and fail
+  in CI. Install the .NET 8 runtime and leave `DOTNET_ROLL_FORWARD` unset when the result is meant to
+  mean anything about the `net8.0` leg.
+
+**Restore and build must agree on the configuration.** Fourteen projects — the benchmarks, the AOT
+smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples — are excluded from the *Debug*
+solution configuration in `bodu.slnx` (`<Build Solution="Debug|*" Project="false" />`). `dotnet
+restore bodu.slnx` defaults to Debug and therefore skips them, while `dotnet build bodu.slnx -c
+Release` builds them, so the pair
+
+```bash
+dotnet restore bodu.slnx                        # Debug: 14 projects skipped
+dotnet build   bodu.slnx -c Release --no-restore # ... which then fail with NETSDK1004
+```
+
+fails on projects that are perfectly well configured. Either let the build restore implicitly (plain
+`dotnet build bodu.slnx -c Release`, which is what CI's per-project steps effectively do), or pass the
+configuration to both: `dotnet restore bodu.slnx -p:Configuration=Release`. The exclusions are
+deliberate — they keep the benchmarks and toolchain out of ordinary Debug builds — so this is a
+usage constraint, not a defect in the solution file.
+
 ### SDK Bootstrap (Claude Code on the web)
 
 `.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
