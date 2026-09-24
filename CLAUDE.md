@@ -175,6 +175,32 @@ configuration to both: `dotnet restore bodu.slnx -p:Configuration=Release`. The 
 deliberate — they keep the benchmarks and toolchain out of ordinary Debug builds — so this is a
 usage constraint, not a defect in the solution file.
 
+**After the target-framework list changes, restore before building.** Every
+`obj/project.assets.json` records the frameworks it was restored for. Change a project's
+`TargetFrameworks` — or pull a change that does, as the `net8.0` → `net8.0;net10.0` retarget did —
+and every assets file written by an earlier restore is stale, so the build fails with `NETSDK1005`
+naming whichever leg the assets file lacks:
+
+```text
+error NETSDK1005: Assets file '...\obj\project.assets.json' doesn't have a target for 'net10.0'.
+```
+
+A plain `dotnet restore` rewrites the assets files in place and clears it; deleting `obj/` and
+`bin/` is not required. Two things are worth knowing about the failure mode:
+
+- **A restore scoped to one framework poisons the project for every other leg.** Restoring with a
+  `TargetFramework` global property in scope (`dotnet restore -p:TargetFramework=net10.0`, or a
+  build that leaks the property into a reference) writes an assets file containing *only* that
+  framework. The next full build then reports `NETSDK1005` for the legs it dropped — including
+  `netstandard2.0` on the analyzer and generator projects — which reads like a repository defect
+  and is not one. An unqualified `dotnet restore` fixes it.
+- **Visual Studio needs its own cache cleared as well.** Alongside `NETSDK1005` it reports
+  `MSB4057: The target "ResolveProjectReferences" does not exist in the project`. That target is
+  defined only for a project's *inner* (per-framework) build; the outer cross-targeting build of a
+  multi-targeted project genuinely does not have it. Seeing it means the IDE is still addressing
+  these projects as single-targeting from cached state written before the retarget. Close the
+  solution, delete `.vs/`, reopen, and let the restore run.
+
 ### SDK Bootstrap (Claude Code on the web)
 
 `.claude/hooks/session-start.sh` installs `dotnet-sdk-10.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when a .NET 10 SDK is already installed it exits immediately, so resume / clear / compact sessions pay no extra cost. The repository-root `global.json` pins SDK resolution to the 10.0.1xx band, so once the hook has run, `dotnet build` / `dotnet test` pick up the installed SDK 10 automatically.
