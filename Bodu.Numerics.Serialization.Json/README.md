@@ -1,6 +1,6 @@
 # Bodu.Numerics.Serialization.Json
 
-> **API stability — Preview.** This package tracks the Preview-tier `Bodu.Numerics` surface; the converter set and wire shapes are settled but may receive source-breaking refinement before the 1.0 stable release. Breaking changes are otherwise reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 `System.Text.Json` integration for **[Bodu.Numerics](https://www.nuget.org/packages/Bodu.Numerics)**. The core library is deliberately serialization-agnostic — its value types carry no `[JsonConverter]` attribute and take no `System.Text.Json` dependency — so JSON support is opt-in through this companion package (the NodaTime companion-package pattern):
 

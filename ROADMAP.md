@@ -67,9 +67,9 @@ landed — see Active focus). A
 release-discipline pass earlier moved `Bodu.Numerics` from Stable to
 **Preview**; its serialization and documentation conventions have since
 caught up (JSON now ships in the `Bodu.Numerics.Serialization.Json`
-companion), and the tier now holds only while the new `BigDecimal` and
-statistics surfaces settle (see *API-stability
-tiers*). This revision also folds in a **cross-ecosystem gap review** —
+companion) and the `BigDecimal` and statistics surfaces have settled, so
+both `Bodu.Numerics` and its JSON companion are **Stable** again (see
+*API-stability tiers*). This revision also folds in a **cross-ecosystem gap review** —
 Bodu's surface compared against the highest-adoption Java (Guava, Apache
 Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
 `difflib` / `email`, `dateutil`, `rapidfuzz`, `phonenumbers`, `pint`)
@@ -1769,29 +1769,31 @@ owed until the decision to publish them is taken. The assignment:
   `Bodu.Collections` (the specialized collection catalogue split out of
   `Bodu.Core` with namespaces unchanged; the tranche additions shipped
   with settled APIs per the implementation plan),
-  `Bodu.IO.Hashing`, `Bodu.IO.Compound`,
+  `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.IO.Biff`,
   `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
-  configuration libraries (`Bodu.Text.Bencode` / `.Toml` / `.Formats` /
-  `.Configuration` / `.Filtering`, `Bodu.Extensions.Configuration.Text`),
-  `Bodu.Formats.Excel.Binary`, `Bodu.Financial` (+ its DI package), the
-  whole `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins,
-  and the five data packs), and the shared
-  `Bodu.Financial.ExchangeRates.DependencyInjection` plumbing.
-- **Preview** — `Bodu.Numerics` (the interval algebra expanded quickly —
-  `DiscreteInterval<T>`, `IntervalSet<T>`, and the pair result types are
-  still settling their conventions, and the new `BigDecimal` and
-  statistics-aggregate surfaces are settling; `Fraction<T>` is a stable
-  candidate) and its companion
-  `Bodu.Numerics.Serialization.Json` (the JSON contract is new — the core
-  types are now serialization-agnostic and support is opt-in via
-  `AddNumericsJsonConverters`), `Bodu.Text.Yaml` (the serializer reached
-  family parity in 0.3.0 — enum converters, presets, the DOM bridges —
-  and the new surface has not yet shipped) and the network-dependent
-  exchange-rate family: the web providers `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`
-  and the three caching backends `Bodu.Financial.ExchangeRates.Caching{,.Sqlite,.Distributed}`.
-  These are held at Preview until they have shipped and been exercised
-  against their live upstream endpoints; the public API is largely settled,
-  but behaviour against third-party feeds is not yet battle-tested.
+  configuration libraries (`Bodu.Text.Serialization` and the serializers
+  built on it — `Bodu.Text.Bencode` / `.Toml` / `.Yaml` / `.Delimited` /
+  `.DotEnv` / `.Ini` / `.Formats` — plus `Bodu.Text.Configuration` /
+  `.Filtering` and `Bodu.Extensions.Configuration.Text`),
+  `Bodu.Formats.Excel.Binary`, `Bodu.Numerics` and its
+  `Bodu.Numerics.Serialization.Json` companion, `Bodu.Financial` (+ its DI
+  and JSON packages), `Bodu.Globalization.Recurrence`, the whole
+  `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins, the
+  five data packs, and the caching trio
+  `…Calendar.Caching{,.Sqlite,.Distributed}`), and the source-independent
+  half of the exchange-rate stack: `Bodu.Financial.ExchangeRates` (the
+  provider base classes and shared fetch machinery), the
+  `…ExchangeRates.DependencyInjection` plumbing, and the caching trio
+  `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
+- **Preview** — the container and mail-store readers whose surfaces are
+  still settling (`Bodu.IO.Pst` and the Outlook readers built on it,
+  `Bodu.Formats.Outlook{,.Msg,.Pst}`) and the network-dependent per-source
+  exchange-rate providers
+  `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`.
+  The providers are held at Preview until each has been exercised against
+  its live upstream endpoint across a release cycle: the API they expose is
+  settled — it is the shared base-class contract, which is now Stable — but
+  their behaviour against third-party feeds is not yet battle-tested.
 - **Experimental** — `Bodu.Financial.ExchangeRates.Xe`, which depends on a
   scraped auth token and can break without notice.
 

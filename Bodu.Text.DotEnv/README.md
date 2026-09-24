@@ -1,6 +1,6 @@
 # Bodu.Text.DotEnv
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A DotEnv (`.env`) library for .NET 8, shaped after `System.Text.Json`: a typed settings serializer over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model. The dialect follows the mainstream `dotenv` implementations — `export` prefixes, double/single quoting with escapes, inline comments — and values are deliberately literal: no `${VAR}` interpolation happens at parse time.
 
