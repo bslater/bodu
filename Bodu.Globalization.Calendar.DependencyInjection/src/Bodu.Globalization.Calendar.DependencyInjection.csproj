@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Calendar DI</Title>
     <Description>Microsoft.Extensions.DependencyInjection registration helpers for Bodu.Globalization.Calendar, registering INotableDateService over a loaded NotableDateResource.</Description>

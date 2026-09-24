@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>Bodu.Globalization.Calendar.Tool</RootNamespace>
     <PackAsTool>true</PackAsTool>

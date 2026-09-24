@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Fixer Exchange Rates</Title>
     <Description>Fixer (fixer.io) exchange-rate provider for Bodu.Financial. Fetches and parses the Fixer time-series and historical JSON endpoints and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Includes the dependency-injection registration extensions (AddFixerExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>

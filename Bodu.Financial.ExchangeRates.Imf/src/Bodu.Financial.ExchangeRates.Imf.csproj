@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — IMF Exchange Rates</Title>
     <Description>IMF (International Monetary Fund) exchange-rate provider for Bodu.Financial. Downloads and parses the IMF Representative Exchange Rates monthly tab-separated report and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API. Rates are USD-anchored daily representative rates (all reported currencies against the US dollar) with per-month caching; direction is auto-normalized. Includes the dependency-injection registration extensions (AddImfExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>

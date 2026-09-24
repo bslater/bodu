@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — BIFF</Title>
     <Description>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy .xls workbooks. A forward-only, allocation-free BiffReader walks physical records, detects the BIFF version, exposes every record's identifier and raw payload, and decodes the common structural and cell records through typed accessors — including the shared string table across its CONTINUE records — while a BiffWriter emits conformant BIFF5 or BIFF8 records from typed values or raw payloads. Understands how BIFF is encoded, not what an Excel workbook means: no compound-file container, no workbook or cell model, no formula evaluation.</Description>

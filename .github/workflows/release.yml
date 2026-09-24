@@ -7,6 +7,13 @@ name: Release
 # been released yet are produced as build artifacts only. See bld/RELEASING.md for the release model.
 #
 # Triggered for a release by pushing a version tag (e.g. v1.0.0), or manually via the Actions tab.
+#
+# The tag is a LABEL, not the version. Nothing here passes a version to `dotnet pack` — each package's
+# version comes from bld/Versioning.props, which now runs two streams: Stable-tier packages ship at
+# BoduBaseVersion and the Preview/Experimental tier ships at BoduPreviewVersion (set per project via
+# BoduPackageVersionOverride, and reported in the build log). So a run tagged v1.0.0 publishes most
+# packages at 1.0.0 and the preview set at its own lower version. Name the tag after BoduBaseVersion
+# and check the pack log if you need the exact version a given package went out at.
 # The private strong-name key is never stored in the repo: it is supplied as the base64-encoded
 # BODU_SNK secret, decoded to a path outside the working tree for the duration of the job, and shredded
 # afterwards. Real signing is opt-in here (BoduRealSign=true); ordinary CI builds stay public-signed.
@@ -37,7 +44,7 @@ on:
           Optional space- or comma-separated package ids to publish instead of the whole manifest
           (e.g. "Bodu.Core Bodu.IO.Biff"). Every id must appear in bld/release-manifest.txt.
           Leave empty to stage the full manifest. Ignored for tag runs, which always release the
-          whole manifest at the tagged version.
+          whole manifest, each package at the version bld/Versioning.props computes for it.
         type: string
         default: ''
 

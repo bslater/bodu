@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Notable-Date Cache (SQLite)</Title>
     <Description>SQLite storage backend for the Bodu.Globalization.Calendar notable-date cache. Provides SqliteNotableDateCache, an INotableDateCache that persists computed years in a SQLite database, and the AddSqliteNotableDateCache dependency-injection registration.</Description>

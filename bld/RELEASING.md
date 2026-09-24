@@ -6,10 +6,32 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
 
 ## The model
 
-- **Lock-step versioning.** Every library versions together at
+- **Lock-step versioning, in two streams.** Packages version together at
   `BoduBaseVersion` ([`Versioning.props`](Versioning.props)), so a matched
-  version number across `Bodu.*` packages is a coherent set. A single package
-  breaks rank only via `BoduPackageVersionOverride` in its own csproj.
+  version number across `Bodu.*` packages is a coherent set. Since the 1.0.0
+  cut there are **two** such streams, split along the API-stability tier each
+  package's README declares:
+
+  | Tier | Ships at | How |
+  |---|---|---|
+  | Stable | `BoduBaseVersion` | the default — no per-project setting |
+  | Preview / Experimental | `BoduPreviewVersion` | `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>` in its own csproj |
+
+  The split exists so a 1.0 compatibility promise is made only by packages
+  that can keep it: the preview tier stays below 1.0 until its API settles.
+  Reference the `$(BoduPreviewVersion)` property rather than pinning a literal,
+  so moving the preview stream stays a one-line edit — `check-release-manifest.sh`
+  enforces both that and the tier↔stream agreement, because nothing else
+  reconciles a package's README tier with the version it actually publishes at.
+
+  A single package still breaks rank out of band by setting
+  `BoduPackageVersionOverride` to a literal version; that is reported in the
+  build log and, on a manifest package, will fail the stream check until the
+  tier and the override agree.
+- **The tag is a label, not a version.** Nothing passes a version to
+  `dotnet pack` — each package's version comes from the properties above. A run
+  tagged `v1.0.0` therefore publishes the Stable tier at 1.0.0 and the preview
+  tier at `BoduPreviewVersion`. Name the tag after `BoduBaseVersion`.
 - **One tag releases the manifest.** Pushing a `v<version>` tag (e.g.
   `v1.0.0`) runs `.github/workflows/release.yml`: the whole solution is
   packed (real-signed), but **only packages listed in

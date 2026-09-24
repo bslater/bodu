@@ -2,7 +2,7 @@
 
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <Title>Bodu — Notable-Date Cache (Distributed)</Title>
     <Description>Distributed (IDistributedCache / Redis) storage backend for the Bodu.Globalization.Calendar notable-date cache. Provides DistributedNotableDateCache, an INotableDateCache over any IDistributedCache, and the AddDistributedNotableDateCache / AddRedisNotableDateCache dependency-injection registrations.</Description>

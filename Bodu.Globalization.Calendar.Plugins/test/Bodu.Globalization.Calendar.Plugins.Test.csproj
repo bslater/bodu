@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
     <RootNamespace>Bodu</RootNamespace>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -34,13 +34,25 @@
     <ProjectReference Include="@(PluginFixture)" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
 
-  <Target Name="CopyPluginFixtures" AfterTargets="Build">
+  <!--
+    Condition: this project multi-targets, so Build runs once for the outer build (TargetFramework empty,
+    dispatching to the inner builds) and once per framework. Only the inner builds have a framework to
+    resolve fixtures for; letting the outer build run this target asks a multi-targeted fixture project
+    for GetTargetPath with no framework selected, which fails with MSB4057.
+  -->
+  <Target Name="CopyPluginFixtures" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <!--
       Ask each fixture project where it actually built to rather than assuming bin\$(Configuration)\$(TargetFramework).
       A hard-coded guess that stops matching copies nothing and still reports success, which then surfaces far away as
       a "Fixture assembly not found" assertion in every loader test.
     -->
-    <MSBuild Projects="@(PluginFixture)" Targets="GetTargetPath">
+    <!--
+      TargetFramework is passed explicitly because the fixtures multi-target: GetTargetPath is declared by the
+      inner (per-framework) build, so asking the outer build for it fails with MSB4057. Forwarding this
+      project's own TargetFramework also keeps each leg isolated - the net8.0 test run loads net8.0 fixtures
+      and the net10.0 run loads net10.0 ones, rather than both legs sharing whichever was built last.
+    -->
+    <MSBuild Projects="@(PluginFixture)" Targets="GetTargetPath" Properties="TargetFramework=$(TargetFramework)">
       <Output TaskParameter="TargetOutputs" ItemName="_PluginFixtureTarget" />
     </MSBuild>
 

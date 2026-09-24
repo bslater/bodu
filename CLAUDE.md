@@ -65,7 +65,26 @@ Each project has the layout:
 
 ### Target Frameworks
 
-All projects target `net8.0`.
+Every .NET project in the tree multi-targets **`net8.0;net10.0`**. No project names a framework
+literally: they all set `<TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>`, and that property
+is defined once in `bld/TargetFrameworks.props`, so the supported matrix widens or narrows in a
+single place. Three projects are exceptions and stay `netstandard2.0` because their hosts require
+it — the Roslyn source generator `Bodu.Text.Formats.Generators`, the MSBuild task
+`Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`. A library that additionally needs
+downlevel reach uses `$(BoduMultiTargetFrameworks)` (`net8.0;net10.0;netstandard2.0`).
+
+`net8.0` is retained deliberately: adding a target framework is additive and invisible to existing
+consumers, whereas removing `net8.0` would strand everyone still on the .NET 8 LTS runtime. Drop it
+only as a deliberate major-version decision.
+
+Two things to know when writing code that must compile on both legs. First, the SDK defines the
+`NETx_0_OR_GREATER` symbols cumulatively, so `NET8_0_OR_GREATER` is true on the `net10.0` leg too —
+gate genuinely net10-only code on `NET10_0_OR_GREATER`, never on the absence of a lower symbol.
+Second, `net10.0` widens the BCL, which can make a Bodu extension method ambiguous with a new
+framework overload where it was not before (`System.Linq.Enumerable.Reverse<TSource>(TSource[])` is
+the known case — see the note under `Bodu.Core` in *Key Types*). Such a break surfaces only on the
+`net10.0` leg, and only in files that import both namespaces rather than declaring into
+`Bodu.Extensions` directly.
 
 Compiling and testing the solution requires the **.NET 10 SDK**, pinned via the repository-root `global.json` (`10.0.100`, `rollForward: latestMinor`): the sources use C# 14 language features and the `.slnx` solution format, neither of which the 8.0 SDK supports. The separate `Bodu.CodeStyle` solution pins its own SDK via `Bodu.CodeStyle/global.json` and is unaffected.
 

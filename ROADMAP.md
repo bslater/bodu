@@ -130,10 +130,12 @@ work started today.
 The roadmap assumes the conventions already documented in
 [`CLAUDE.md`](CLAUDE.md). The ones most relevant to forward planning:
 
-- **TFM baseline.** All shipping projects target `net8.0` only — no
-  multi-targeting today. Compiling/testing requires the .NET 10 SDK
-  (C# 14, `.slnx`), pinned via the root `global.json`. Bumping the
-  floor is a roadmap decision (see *Cross-cutting themes*).
+- **TFM baseline.** Every .NET project multi-targets `net8.0;net10.0`
+  through the single `$(BoduNetTargets)` property in
+  `bld/TargetFrameworks.props`; no project names a framework literally.
+  Compiling/testing requires the .NET 10 SDK (C# 14, `.slnx`), pinned via
+  the root `global.json`. Dropping `net8.0` is a roadmap decision (see
+  *Cross-cutting themes*).
 - **Central package management.** `Directory.Packages.props` now pins
   every NuGet version centrally; new dependencies flow through it, not
   per-project `<PackageReference Version=...>`.
@@ -1723,11 +1725,32 @@ already the universal testing convention (see `CLAUDE.md`).
 
 ### TFM policy
 
-All shipping projects target `net8.0` only. Direction: follow Microsoft's
-LTS cadence — move the floor to `net10.0` when `net8.0` exits standard
-support, and never multi-target older `netstandard` without a concrete
-consumer ask. The dead `netstandard2.0` `ItemGroup` conditionals in a few
-`.csproj` files should be removed in the next routine sweep.
+**Done — every .NET project multi-targets `net8.0;net10.0`.** The matrix
+lives in one property, `$(BoduNetTargets)` in
+`bld/TargetFrameworks.props`; projects reference the property rather than
+naming a framework, so widening or narrowing the matrix is a one-line
+edit. Three projects stay `netstandard2.0` because their hosts demand it:
+the Roslyn generator `Bodu.Text.Formats.Generators`, the MSBuild task
+`Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`.
+
+Adding `net10.0` was additive — no consumer notices a new lib folder — so
+it needed no major-version coordination. **Removing `net8.0` is the
+breaking half** and is deliberately deferred: .NET 8 leaves LTS support in
+November 2026, and the floor moves only once there is reason to believe
+consumers have followed. Never multi-target older `netstandard` without a
+concrete consumer ask.
+
+One consequence to keep in view. Widening to `net10.0` widens the BCL,
+which can make a Bodu extension method newly ambiguous with a framework
+overload of the same shape. The first instance is already known:
+.NET 10 added `System.Linq.Enumerable.Reverse<TSource>(TSource[])`,
+which collides with `Bodu.Extensions.ArrayExtensions.Reverse<T>(T[])`
+and yields CS0121 in any file importing both namespaces. The collision
+is a source break for consumers, is invisible on the `net8.0` leg, and
+cannot be resolved with `[OverloadResolutionPriority]` — that attribute
+is not consulted across declaring types (verified, not assumed). Deciding
+between keeping the method and documenting the disambiguation, or
+renaming it, is open; a rename belongs in a major version.
 
 ### AOT and trim readiness
 

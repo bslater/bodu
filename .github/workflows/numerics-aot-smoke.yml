@@ -39,12 +39,21 @@ jobs:
     - name: Install NativeAOT prerequisites
       run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
 
-    - name: Publish AOT smoke app
+    - name: Publish and run the AOT smoke app on each target framework
       # PublishAot is set inside the AotSmoke csproj rather than passed with -p: a command-line
       # -p:PublishAot=true is a global MSBuild property that propagates to every project in the
       # restore graph — including the netstandard2.0 Bodu.CodeStyle analyzer projects wired in as
       # analyzer-only ProjectReferences — which fails restore with NETSDK1207.
-      run: dotnet publish Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj -c Release -r linux-x64
-
-    - name: Run the native binary
-      run: ./Bodu.Numerics/aot/bin/Release/net8.0/linux-x64/publish/Bodu.Numerics.AotSmoke
+      #
+      # The project multi-targets, so -f is required and each leg is published and run in turn:
+      # trimming and AOT warnings differ between framework versions, and a leg that is never
+      # published is a leg whose AOT compatibility is unverified.
+      run: |
+        set -euo pipefail
+        for tfm in net8.0 net10.0; do
+          echo "::group::AOT smoke ($tfm)"
+          dotnet publish Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj \
+            -c Release -r linux-x64 -f "$tfm"
+          "./Bodu.Numerics/aot/bin/Release/$tfm/linux-x64/publish/Bodu.Numerics.AotSmoke"
+          echo "::endgroup::"
+        done
