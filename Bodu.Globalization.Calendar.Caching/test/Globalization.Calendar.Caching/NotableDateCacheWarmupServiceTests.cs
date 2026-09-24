@@ -99,19 +99,17 @@ public sealed class NotableDateCacheWarmupServiceTests
         await hosted.StartAsync(cts.Token);
         if (hosted is BackgroundService background && background.ExecuteTask is { } run)
         {
-            // Awaiting the run is only a synchronization point here, and how it ends differs by framework.
-            // .NET 8 invokes ExecuteAsync, whose own catch swallows the cancellation so the task completes
-            // normally; .NET 10 short-circuits an already-cancelled start and hands back an ExecuteTask that
-            // is already Canceled, so ExecuteAsync -- and its catch -- never runs. Both satisfy what this
-            // test asserts below, that no work was done, so cancellation is tolerated and nothing else is:
-            // any other fault still fails the test.
-            try
-            {
-                await run;
-            }
-            catch (OperationCanceledException)
-            {
-            }
+#if NET10_0_OR_GREATER
+            // .NET 10 short-circuits an already-cancelled start: ExecuteTask is handed back already in the
+            // Canceled state and ExecuteAsync never runs at all, so there is nothing to await. Asserted
+            // rather than merely tolerated, so this test still fails if that behaviour changes again.
+            Assert.AreEqual(TaskStatus.Canceled, run.Status, "an already-cancelled start should not run the body");
+#else
+            // .NET 8 does invoke ExecuteAsync, and its own catch (OperationCanceledException) swallows the
+            // cancellation, so the run task completes normally and is awaited here as an ordinary
+            // synchronization point before the assertion below.
+            await run;
+#endif
         }
 
         Assert.AreEqual(0, inner.ResolveCount, "a pre-cancelled run must not compute anything");
