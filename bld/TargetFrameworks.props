@@ -10,6 +10,11 @@
     additive change that existing consumers do not notice, whereas removing net8.0 would strand
     every consumer still on the .NET 8 LTS runtime. Drop net8.0 from this list only as a
     deliberate major-version decision.
+
+    Adding a framework here is not sufficient on its own: Directory.Packages.props pins the
+    framework-aligned dependencies (the Microsoft.Extensions.* family and friends) per leg, and its
+    override group names net10.0 literally. A leg added here with no matching group there silently
+    inherits the 8.0.x floor, which would ship a .NET 8 dependency to a newer consumer.
   -->
   <PropertyGroup>
     <BoduNetTarget>net8.0</BoduNetTarget>
