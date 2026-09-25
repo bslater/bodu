@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class PairWebRateProviderContractTests&lt;TProvider, TSeries&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class PairWebRateProviderContractTests&lt;TProvider, TSeries&gt; | BODU ">
+    
+    <meta name="description" content="Provides the shared contract every pair-based web provider built on  must satisfy, layered on top of the general . It exercises the per-pair warm-up surface —  and  — that the shared base contributes, so each concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a sealed [TestClass] from this base.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2">
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2" class="text-break">Class PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</h1>
+  <div class="markdown level0 summary"><p>Provides the shared contract every pair-based web provider built on
+<a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> must satisfy, layered on top of the general
+<a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html">DatedRateProviderContractTests&lt;TProvider&gt;</a>. It exercises the per-pair warm-up surface —
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a> and
+<a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.GetAvailablePairs.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs">GetAvailablePairs()</a> — that the shared base contributes, so each
+concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> <code>[TestClass]</code> from this base.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html">DatedRateProviderContractTests</a>&lt;TProvider&gt;</div>
+    <div class="level2"><span class="xref">PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.CanonicalPair.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_CanonicalPair">DatedRateProviderContractTests&lt;TProvider&gt;.CanonicalPair</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.KnownDate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_KnownDate">DatedRateProviderContractTests&lt;TProvider&gt;.KnownDate</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.UnknownDate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_UnknownDate">DatedRateProviderContractTests&lt;TProvider&gt;.UnknownDate</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.RangeStart.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_RangeStart">DatedRateProviderContractTests&lt;TProvider&gt;.RangeStart</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.RangeEnd.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_RangeEnd">DatedRateProviderContractTests&lt;TProvider&gt;.RangeEnd</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.SupportsInverseLookup.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_SupportsInverseLookup">DatedRateProviderContractTests&lt;TProvider&gt;.SupportsInverseLookup</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.SupportsIdentityRate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_SupportsIdentityRate">DatedRateProviderContractTests&lt;TProvider&gt;.SupportsIdentityRate</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.SupportsDisposalGuard.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_SupportsDisposalGuard">DatedRateProviderContractTests&lt;TProvider&gt;.SupportsDisposalGuard</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenResolvedSyncAndAsync_ShouldReturnEquivalentResult.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenResolvedSyncAndAsync_ShouldReturnEquivalentResult">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenResolvedSyncAndAsync_ShouldReturnEquivalentResult()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRates_WhenResolvedSyncAndAsync_ShouldReturnEquivalentRange.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRates_WhenResolvedSyncAndAsync_ShouldReturnEquivalentRange">DatedRateProviderContractTests&lt;TProvider&gt;.GetRates_WhenResolvedSyncAndAsync_ShouldReturnEquivalentRange()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.TryGetRate_WhenDateUnavailable_ShouldReturnFalse.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_TryGetRate_WhenDateUnavailable_ShouldReturnFalse">DatedRateProviderContractTests&lt;TProvider&gt;.TryGetRate_WhenDateUnavailable_ShouldReturnFalse()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenDateUnavailable_ShouldThrowKeyNotFoundException.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenDateUnavailable_ShouldThrowKeyNotFoundException">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenDateUnavailable_ShouldThrowKeyNotFoundException()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenResolved_ShouldReportConsistentProvenance.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenResolved_ShouldReportConsistentProvenance">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenResolved_ShouldReportConsistentProvenance()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenOptionsNull_ShouldResolveKnownDate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenOptionsNull_ShouldResolveKnownDate">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenOptionsNull_ShouldResolveKnownDate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenInverseRequested_ShouldReturnReciprocalRate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenInverseRequested_ShouldReturnReciprocalRate">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenInverseRequested_ShouldReturnReciprocalRate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.GetRate_WhenSameCurrency_ShouldReturnIdentityRate.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_GetRate_WhenSameCurrency_ShouldReturnIdentityRate">DatedRateProviderContractTests&lt;TProvider&gt;.GetRate_WhenSameCurrency_ShouldReturnIdentityRate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.Members_WhenDisposed_ShouldThrowObjectDisposedException.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_Members_WhenDisposed_ShouldThrowObjectDisposedException">DatedRateProviderContractTests&lt;TProvider&gt;.Members_WhenDisposed_ShouldThrowObjectDisposedException()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.CreateProvider.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_CreateProvider">DatedRateProviderContractTests&lt;TProvider&gt;.CreateProvider()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Testing.html">Testing</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Testing.dll</h6>
+  <h5 id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class PairWebRateProviderContractTests&lt;TProvider, TSeries&gt; : DatedRateProviderContractTests&lt;TProvider&gt; where TProvider : PairWebRateProvider&lt;TSeries&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TProvider</span></td>
+        <td><p>The concrete pair-based provider under test.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TSeries</span></td>
+        <td><p>The provider's series-metadata type surfaced through <code>GetAvailablePairs</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>The contract is asserted against whatever pair the subclass seeds through
+<a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.CanonicalPair.html#Bodu_Financial_ExchangeRates_Testing_DatedRateProviderContractTests_1_CanonicalPair">CanonicalPair</a>, so it applies to any pair-based
+source without imposing a dataset. The exact <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> subtype a provider throws for an
+inverted range is source-specific and remains covered by each provider's local tests.</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.ExchangeRates.Testing;
+
+// A pair-based source proves the warm-up lifecycle on top of the dated contract.
+// Point the provider at a local stub (a canned HTTP handler or file-backed pair
+// source) so the contract runs hermetically.
+[TestClass]
+public sealed class MyFeedRateProviderContractTests
+    : PairWebRateProviderContractTests&lt;MyFeedRateProvider, MyFeedSeriesInfo&gt;
+{
+    protected override CurrencyPair CanonicalPair =&gt; new(CurrencyCode.AUD, CurrencyCode.USD);
+
+    protected override DateOnly KnownDate =&gt; new(2024, 1, 15);
+
+    protected override DateOnly UnknownDate =&gt; new(2024, 6, 17);
+
+    protected override RateHistoryAvailability ExpectedHistoryAvailability =&gt;
+        RateHistoryAvailability.RollingDays(180);
+
+    protected override MyFeedRateProvider CreateProvider() =&gt;
+        new(new MyFeedRateProviderOptions(), stubHttpClient);
+}</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_ExpectedHistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2.ExpectedHistoryAvailability">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.ExpectedHistoryAvailability.html#Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_ExpectedHistoryAvailability">ExpectedHistoryAvailability</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the history availability the provider is expected to advertise — the declared depth of the upstream source.
+Every pair provider must declare one deliberately (an intentional
+<a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.Unbounded.html#Bodu_Financial_ExchangeRates_RateHistoryAvailability_Unbounded">Unbounded</a> included), so this contract fails when a new provider
+forgets to set the value in its options.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_GetAvailablePairs_AfterWarm_ShouldReportLoadedSeries" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2.GetAvailablePairs_AfterWarm_ShouldReportLoadedSeries">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.GetAvailablePairs_AfterWarm_ShouldReportLoadedSeries.html#Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_GetAvailablePairs_AfterWarm_ShouldReportLoadedSeries">GetAvailablePairs_AfterWarm_ShouldReportLoadedSeries()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that a warmed pair is surfaced through <code>GetAvailablePairs</code>, so callers can discover the loaded
+series without hard-coding them.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_HistoryAvailability_ShouldMatchDeclaredExpectation" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2.HistoryAvailability_ShouldMatchDeclaredExpectation">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.HistoryAvailability_ShouldMatchDeclaredExpectation.html#Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_HistoryAvailability_ShouldMatchDeclaredExpectation">HistoryAvailability_ShouldMatchDeclaredExpectation()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the provider advertises the expected history availability, forwarded from its options, so the
+caching and aggregation layers can rely on every pair provider declaring its source's depth.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_LoadPairAsync_WhenWarmed_ShouldResolveKnownDate" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2.LoadPairAsync_WhenWarmed_ShouldResolveKnownDate">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.LoadPairAsync_WhenWarmed_ShouldResolveKnownDate.html#Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_LoadPairAsync_WhenWarmed_ShouldResolveKnownDate">LoadPairAsync_WhenWarmed_ShouldResolveKnownDate()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that explicitly warming a cold provider through <code>LoadPairAsync</code> makes the seeded known date
+resolve to a positive rate, exercising the per-pair fetch-and-accumulate path.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable" data-uid="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests`2.LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable.html#Bodu_Financial_ExchangeRates_Testing_PairWebRateProviderContractTests_2_LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable">LoadPairAsync_WhenWindowAlreadyCovered_ShouldRemainResolvable()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that re-warming the same pair and window is idempotent: a second <code>LoadPairAsync</code> over an
+already-covered window completes without disturbing the resolved rate.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="introduction">Introduction</h1>
+
+<p><strong>Bodu</strong> is a solution that ships a family of independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own — and most are self-contained, with the few cross-package dependencies listed below — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.</p>
+<p>The suite is organized into <strong>seven topics</strong>. Each topic groups the packages that solve related problems, and each has a dedicated overview page explaining the collective purpose of its members and how they fit together. If you are new to Bodu, start with the topic that matches your problem, then drill into the member library's introduction.</p>
+<h2 id="the-suite-in-seven-topics">The suite in seven topics</h2>
+<h3 id="core-foundations"><a href="topics/core-foundations.html">Core Foundations</a></h3>
+<p>The foundation every other package builds on — collections, buffers, extensions, argument validation, and text-encoding utilities.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="core/index.html">Bodu.Core</a></strong></td>
+<td>The foundation package — a day-of-week <code>WeekPattern</code> value type, pooled buffers, async coordination primitives, railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code> / <code>Either&lt;TLeft,TRight&gt;</code>), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized <code>ThrowHelper</code>.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="collections/index.html">Bodu.Collections</a></strong></td>
+<td>The specialized collection catalogue (depends on <code>Bodu.Core</code>; namespaces unchanged) — fixed-capacity rings (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>), policy-driven caches (<code>EvictingDictionary&lt;TKey,TValue&gt;</code> with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong></td>
+<td>The thread-safe collection companion (depends on <code>Bodu.Collections</code>) — the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC, <code>IProducerConsumerCollection&lt;T&gt;</code>), the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>).</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="text/index.html">Bodu.Text</a></strong> <em>(namespace in Bodu.Core)</em></td>
+<td>Encoding-detection and text / byte conversion helpers over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="hashing--cryptography"><a href="topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></h3>
+<p>Two packages split by a single question — <em>is there an adversary?</em> Non-cryptographic fingerprints, checksums, and check digits on one side; ciphers, AEAD, MACs, digests, KDFs, and the RFC 6962 Merkle tree with its inclusion and consistency proofs on the other.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="io-hashing/index.html">Bodu.IO.Hashing</a></strong></td>
+<td>Non-cryptographic hashing on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="cryptography/index.html">Bodu.Security.Cryptography</a></strong></td>
+<td>Cryptographic primitives on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, and the full ASCON family.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="globalization--calendars"><a href="topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></h3>
+<p>A resource-driven notable-date engine plus an ecosystem of opt-in companions (fluent authoring, dependency injection, trust-gated plugins) and per-region holiday data packs.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="calendar/index.html">Bodu.Globalization.Calendar</a></strong></td>
+<td>Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. Companion packages add fluent authoring (<code>…Builder</code>), <code>IServiceCollection</code> registration (<code>…DependencyInjection</code>), plugin loading (<code>…Plugins</code>), and five regional data packs.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="recurrence/index.html">Bodu.Globalization.Recurrence</a></strong></td>
+<td>Recurrence-rule evaluation with no dependency on the calendar engine — <code>RecurrenceRule</code> for RFC 5545 <code>RRULE</code> (parse, format, and occurrence enumeration across every frequency and <code>BY*</code> part), <code>RecurrenceSet</code> for rules composed with <code>RDATE</code> / <code>EXDATE</code>, <code>CronExpression</code> for Vixie five-field and six-field cron, and <code>AnchoredInterval</code> for instant-anchored repetition. Every form answers both <code>GetNextOccurrence</code> and <code>GetPreviousOccurrence</code>, and is pure in its arguments — no wall clock, no machine time zone.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="text--serialization"><a href="topics/text-and-serialization.html">Text &amp; Serialization</a></h3>
+<p>Three different jobs that all sound like &quot;text&quot;: binary-to-text codecs, document formats, and object serializers.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="text-encoding/index.html">Bodu.Text.Encoding</a></strong></td>
+<td>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="text-filtering/index.html">Bodu.Text.Filtering</a></strong></td>
+<td>A high-performance include/exclude filtering engine for lists of text values. Glob (wildcard, character-class, <code>{a,b}</code> alternation) and regex patterns compile once into an immutable <code>TextFilter</code> that runs the cheapest matching strategies first; choose Ant / MSBuild-style <code>AnyMatch</code> sets or gitignore-style <code>LastMatchWins</code> ordered rules, parse raw lines with the gitignore conventions, and observe decisions through built-in statistics and a per-decision observer.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="formats/index.html">Bodu.Text.Formats</a></strong></td>
+<td>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. An umbrella over three sibling packages — <strong>Delimited</strong> (CSV / TSV), <strong>DotEnv</strong>, and <strong>Ini</strong> — each shipping a <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, a <code>…Serializer</code> POCO mapper, and mutable and read-only DOMs, with strict invariant enforcement.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="serialization/bencode/index.html">Bodu.Text.Bencode</a></strong> · <strong><a href="serialization/toml/index.html">Bodu.Text.Toml</a></strong> · <strong><a href="serialization/yaml/index.html">Bodu.Text.Yaml</a></strong></td>
+<td>Three serializers that map your own types to and from a format — a shared architecture over the <code>Bodu.Text.Serialization</code> engine and a <code>System.Text.Json</code>-aligned shape, each shipping a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0; <strong>YAML</strong> the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the <a href="serialization/index.html">shared family introduction</a>.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration"><a href="topics/configuration.html">Configuration</a></h3>
+<p>Layered, EditorConfig-style configuration — a parser/resolver plus a bridge into the <code>Microsoft.Extensions.Configuration</code> pipeline.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="text-configuration/index.html">Bodu.Text.Configuration</a></strong></td>
+<td>EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited <code>ConfigurationView</code> with typed accessors (<code>GetInt32</code>, <code>GetEnum&lt;T&gt;</code>, <code>GetValue&lt;T&gt;</code>). Profile presets, optional diagnostic collection, and byte-faithful round-trip save.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong></td>
+<td>Bridges <code>Bodu.Text.Configuration</code> to <code>Microsoft.Extensions.Configuration</code>. Adds <code>AddTextConfiguration*</code> entry points on <code>IConfigurationBuilder</code> — mirroring <code>AddJsonFile</code> / <code>AddJsonStream</code> — so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with <code>IOptions&lt;T&gt;</code> binding and reload-on-change support.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="numerics--financial"><a href="topics/numerics-and-financial.html">Numerics &amp; Financial</a></h3>
+<p>Exact arithmetic — rational numbers and intervals, and the money, currency, and exchange-rate primitives built on top of them.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="numerics/index.html">Bodu.Numerics</a></strong></td>
+<td>Generic-math value primitives — <code>Fraction&lt;T&gt;</code> for exact rational arithmetic over any <code>IBinaryInteger&lt;T&gt;</code> with canonical-form auto-reduction and <code>BigInteger</code>-promoted intermediates, and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals with intersection, union, and adjacency.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="financial/index.html">Bodu.Financial</a></strong></td>
+<td>Type-safe monetary primitives — <code>Money&lt;TCurrency&gt;</code> (currency as type parameter, so cross-currency arithmetic fails the build), <code>Money</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="binary-formats--io"><a href="topics/binary-formats.html">Binary Formats &amp; I/O</a></h3>
+<p>Legacy binary container and document formats — a general-purpose compound-file container (read, edit, and author) with narrower read-only format readers layered on top.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it provides</th>
+<th>Target framework</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="io-compound/index.html">Bodu.IO.Compound</a></strong></td>
+<td>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage &quot;file system in a file&quot; behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE summary-information property sets.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="io-biff/index.html">Bodu.IO.Biff</a></strong></td>
+<td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only <code>BiffReader</code> frames records and exposes typed accessors; <code>BiffSstReader</code> walks the shared string table; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="excel/index.html">Bodu.Formats.Excel.Binary</a></strong></td>
+<td>A narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="io-pst/index.html">Bodu.IO.Pst</a></strong></td>
+<td>A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI) — the node database (header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees) and the LTP layer over it, exposing each <code>PstNode</code>'s property-context and table-context views with wire-typed values. The substrate beneath the <code>.pst</code> mail-store reader; no MAPI semantics, no writing.</td>
+<td><code>net8.0</code></td>
+</tr>
+<tr>
+<td><strong><a href="outlook/index.html">Bodu.Formats.Outlook</a></strong></td>
+<td>The Outlook format readers over the shared MAPI value model — property tags and types, the tag-addressed <code>MapiPropertyCollection</code>, and named-property identities in <code>Bodu.Formats.Outlook</code>; <code>Bodu.Formats.Outlook.Msg</code> opens a <code>.msg</code> message over <code>Bodu.IO.Compound</code>, and <code>Bodu.Formats.Outlook.Pst</code> opens a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code> — folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation.</td>
+<td><code>net8.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each package is versioned and released independently — take the one you need and ignore the others. <code>Bodu.Core</code> sits under the whole suite: its <code>ThrowHelper</code> supplies the shared argument validation, and every runtime package references it directly or transitively. The remaining cross-package dependencies run one way: <code>Bodu.Collections</code> builds on <code>Bodu.Core</code>, and <code>Bodu.Collections.Concurrent</code> builds on <code>Bodu.Collections</code>; <code>Bodu.Text.Formats</code> is an umbrella over <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, and <code>Bodu.Text.Ini</code>, and those three — like <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Toml</code>, and <code>Bodu.Text.Yaml</code> — build on the shared <code>Bodu.Text.Serialization</code> engine; <code>Bodu.Text.Configuration</code> references only <code>Bodu.Core</code>; <code>Bodu.Extensions.Configuration.Text</code> builds on <code>Bodu.Text.Configuration</code>, <code>Bodu.Text.Toml</code>, and <code>Bodu.Text.Bencode</code> plus <code>Microsoft.Extensions.Configuration</code>; <code>Bodu.Financial</code> builds on <code>Bodu.Numerics</code> for its <code>Fraction&lt;BigInteger&gt;</code> precision escape hatch; <code>Bodu.Formats.Excel.Binary</code> builds on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> to read BIFF5 and BIFF8 <code>.xls</code> workbooks; <code>Bodu.IO.Pst</code> builds on <code>Bodu.Collections</code>; <code>Bodu.Formats.Outlook</code> is container-free and is consumed by <code>Bodu.Formats.Outlook.Msg</code> (over <code>Bodu.IO.Compound</code>) and <code>Bodu.Formats.Outlook.Pst</code> (over <code>Bodu.IO.Pst</code>); and <code>Bodu.Globalization.Recurrence</code> references only <code>Bodu.Core</code> — it is a sibling of the calendar engine, not a dependant. The <a href="package-matrix.html">package matrix</a> lists every package's dependencies.</p>
+<h2 id="library-introductions">Library introductions</h2>
+<p>Each library has a dedicated introduction page that explains its namespaces, the role of each headline type, and the scenarios it is designed for. Pair it with the matching getting-started page for install commands and a minimal sample. The cards below follow the seven-topic order.</p>
+<h3 id="core-foundations-1">Core Foundations</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="core/index.html">Bodu.Core</a></h3>
+  <p>Day-of-week patterns, pooled buffers, async coordination and railway primitives, and date / numeric / span extensions. Useful in almost any application; depended on internally by every other Bodu package.</p>
+  <div class="bodu-card-links">
+    <a href="core/index.html">Introduction</a>
+    <a href="core/getting-started.html">Getting started</a>
+    <a href="../guides/core/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="collections/index.html">Bodu.Collections</a></h3>
+  <p>The specialized collection catalogue — bounded rings, eviction-aware caches with TTL expiry, navigable and range-keyed lookups, interval trees, graphs, tries, and probabilistic sketches. Depends on <code>Bodu.Core</code>; namespaces unchanged.</p>
+  <div class="bodu-card-links">
+    <a href="collections/index.html">Introduction</a>
+    <a href="collections/getting-started.html">Getting started</a>
+    <a href="../guides/core/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Collections.Generic.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="collections-concurrent/index.html">Bodu.Collections.Concurrent</a></h3>
+  <p>The thread-safe collection companion — a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache. Depends on <code>Bodu.Collections</code>.</p>
+  <div class="bodu-card-links">
+    <a href="collections-concurrent/index.html">Introduction</a>
+    <a href="collections-concurrent/getting-started.html">Getting started</a>
+    <a href="../guides/core/concurrent-collections.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Collections.Generic.Concurrent.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="text/index.html">Bodu.Text</a></h3>
+  <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> — BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
+  <div class="bodu-card-links">
+    <a href="text/index.html">Introduction</a>
+    <a class="xref" href="../api/Bodu.Text.html">API reference</a>
+  </div>
+</div>
+</div>
+<h3 id="hashing--cryptography-1">Hashing &amp; Cryptography</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="io-hashing/index.html">Bodu.IO.Hashing</a></h3>
+  <p>Non-cryptographic hashes — fingerprints, checksums, and human-readable check digits. Optimized for speed, portability, and error-detection coverage rather than adversary resistance.</p>
+  <div class="bodu-card-links">
+    <a href="io-hashing/index.html">Introduction</a>
+    <a href="io-hashing/getting-started.html">Getting started</a>
+    <a href="../guides/io-hashing/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.IO.Hashing.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="cryptography/index.html">Bodu.Security.Cryptography</a></h3>
+  <p>Block ciphers, authenticated encryption, keyed hashes, and cryptographic digests with a formal adversary model. Drops into any API that expects <code>SymmetricAlgorithm</code> or <code>HashAlgorithm</code>.</p>
+  <div class="bodu-card-links">
+    <a href="cryptography/index.html">Introduction</a>
+    <a href="cryptography/getting-started.html">Getting started</a>
+    <a href="../guides/cryptography/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Security.Cryptography.html">API reference</a>
+  </div>
+</div>
+</div>
+<h3 id="globalization--calendars-1">Globalization &amp; Calendars</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="calendar/index.html">Bodu.Globalization.Calendar</a></h3>
+  <p>Notable-date resolution and dynamic calendar calculators driven from pluggable XML or JSON rule sources, with an observance-adjustment pipeline, plugin host, and territory filtering.</p>
+  <div class="bodu-card-links">
+    <a href="calendar/index.html">Introduction</a>
+    <a href="calendar/getting-started.html">Getting started</a>
+    <a href="../guides/calendar/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Globalization.Calendar.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="recurrence/index.html">Bodu.Globalization.Recurrence</a></h3>
+  <p>Recurrence-rule evaluation in four shapes — RFC 5545 <code>RRULE</code> and <code>RecurrenceSet</code>, Vixie <code>CronExpression</code>, and instant-anchored <code>AnchoredInterval</code> — each answering both the next and the previous occurrence, and each pure in its arguments.</p>
+  <div class="bodu-card-links">
+    <a href="recurrence/index.html">Introduction</a>
+    <a href="recurrence/getting-started.html">Getting started</a>
+    <a href="../guides/recurrence/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Globalization.Recurrence.html">API reference</a>
+  </div>
+</div>
+</div>
+<h3 id="text--serialization-1">Text &amp; Serialization</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="text-encoding/index.html">Bodu.Text.Encoding</a></h3>
+  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
+  <div class="bodu-card-links">
+    <a href="text-encoding/index.html">Introduction</a>
+    <a href="text-encoding/getting-started.html">Getting started</a>
+    <a href="../guides/text-encoding/index.html">Guides</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="text-filtering/index.html">Bodu.Text.Filtering</a></h3>
+  <p>Include/exclude text filtering: glob and regex patterns compiled into a cost-tiered <code>TextFilter</code>, with Ant / MSBuild set semantics or gitignore-style ordered rules, gitignore-convention parsing, and built-in match telemetry.</p>
+  <div class="bodu-card-links">
+    <a href="text-filtering/index.html">Introduction</a>
+    <a href="text-filtering/getting-started.html">Getting started</a>
+    <a href="../guides/text-filtering/index.html">Guides</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="formats/index.html">Bodu.Text.Formats</a></h3>
+  <p>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. Ships Delimited (CSV / TSV), DotEnv, and Ini as sibling namespaces, each with strict invariant enforcement.</p>
+  <div class="bodu-card-links">
+    <a href="formats/index.html">Introduction</a>
+    <a href="formats/getting-started.html">Getting started</a>
+    <a href="../guides/formats/index.html">Guides</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="serialization/index.html">Bodu serializers — Bencode, TOML &amp; YAML</a></h3>
+  <p>Three serializers — POCO ↔ format — for Bencode (BEP 3), TOML, and YAML. A shared architecture over <code>Bodu.Text.Serialization</code>, each with a serializer, a mutable and a read-only DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair.</p>
+  <div class="bodu-card-links">
+    <a href="serialization/index.html">Introduction</a>
+    <a href="serialization/bencode/index.html">Bencode</a>
+    <a href="serialization/toml/index.html">TOML</a>
+    <a href="serialization/yaml/index.html">YAML</a>
+    <a href="../guides/serialization/index.html">Guides</a>
+  </div>
+</div>
+</div>
+<h3 id="configuration-1">Configuration</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="text-configuration/index.html">Bodu.Text.Configuration</a></h3>
+  <p>EditorConfig-style configuration layering over an INI document model — glob-anchored sections resolved for a target path into a flat, typed <code>ConfigurationView</code>, with profile presets, diagnostic collection, and round-trip save.</p>
+  <div class="bodu-card-links">
+    <a href="text-configuration/index.html">Introduction</a>
+    <a href="text-configuration/getting-started.html">Getting started</a>
+    <a href="../guides/text-configuration/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Text.Configuration.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></h3>
+  <p>The <code>Microsoft.Extensions.Configuration</code> bridge — an <code>AddTextConfiguration*</code> builder entry point that layers a Bodu configuration file alongside JSON, INI, and environment-variable sources with <code>IOptions&lt;T&gt;</code> binding.</p>
+  <div class="bodu-card-links">
+    <a href="extensions-configuration-text/index.html">Introduction</a>
+    <a href="extensions-configuration-text/getting-started.html">Getting started</a>
+    <a href="../guides/extensions-configuration-text/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Extensions.Configuration.Text.html">API reference</a>
+  </div>
+</div>
+</div>
+<h3 id="numerics--financial-1">Numerics &amp; Financial</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="numerics/index.html">Bodu.Numerics</a></h3>
+  <p>Generic-math value primitives — <code>Fraction&lt;T&gt;</code> for exact rational arithmetic and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals, both over the <code>INumber&lt;T&gt;</code> abstractions.</p>
+  <div class="bodu-card-links">
+    <a href="numerics/index.html">Introduction</a>
+    <a href="numerics/getting-started.html">Getting started</a>
+    <a href="../guides/numerics/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Numerics.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="financial/index.html">Bodu.Financial</a></h3>
+  <p>Type-safe monetary primitives — <code>Money&lt;TCurrency&gt;</code> with compile-time currency safety, <code>Money</code> for runtime-tagged scenarios, the ISO 4217 catalogue, exchange-rate providers, allocation, and cash rounding.</p>
+  <div class="bodu-card-links">
+    <a href="financial/index.html">Introduction</a>
+    <a href="financial/getting-started.html">Getting started</a>
+    <a href="../guides/financial/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Financial.html">API reference</a>
+  </div>
+</div>
+</div>
+<h3 id="binary-formats--io-1">Binary Formats &amp; I/O</h3>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="io-compound/index.html">Bodu.IO.Compound</a></h3>
+  <p>An OLE2 / Compound File Binary (CFB) container reader, editor, and writer — navigate the storage hierarchy, read each named stream through a seekable <code>CompoundStream</code> cursor, edit or author containers with a transactional commit, and read and write the OLE property sets. The BIFF5 and BIFF8 <code>.xls</code> reader <code>Bodu.Formats.Excel.Binary</code> is built on it, with the record stream decoded by <code>Bodu.IO.Biff</code>.</p>
+  <div class="bodu-card-links">
+    <a href="io-compound/index.html">Introduction</a>
+    <a href="io-compound/getting-started.html">Getting started</a>
+    <a href="../guides/io-compound/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.IO.Compound.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="io-biff/index.html">Bodu.IO.Biff</a></h3>
+  <p>A low-level codec for the BIFF5 and BIFF8 record streams inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>. Walk a workbook stream record by record with the allocation-free <code>BiffReader</code> and its typed accessors, decode the shared string table with <code>BiffSstReader</code>, and emit BIFF5 or BIFF8 records with <code>BiffWriter</code>; no compound-file dependency, no workbook or cell model.</p>
+  <div class="bodu-card-links">
+    <a href="io-biff/index.html">Introduction</a>
+    <a href="io-biff/getting-started.html">Getting started</a>
+    <a class="xref" href="../api/Bodu.IO.Biff.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="excel/index.html">Bodu.Formats.Excel.Binary</a></h3>
+  <p>A narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> — surface raw worksheet cell values (strings, numbers, booleans, errors, and a formula's cached result) through a forward-only <code>ExcelWorksheetReader</code> or a randomly addressable <code>ExcelWorksheet</code>, with date-format detection and serial-date conversion, without formula evaluation or styling.</p>
+  <div class="bodu-card-links">
+    <a href="excel/index.html">Introduction</a>
+    <a href="excel/getting-started.html">Getting started</a>
+    <a href="../guides/excel/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Formats.Excel.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="io-pst/index.html">Bodu.IO.Pst</a></h3>
+  <p>The read-only PST container layer — walk the node database and read any <code>PstNode</code>'s property-context and table-context views with wire-typed values, with the block encodings decoded and the checksums verified. No MAPI semantics; the substrate the mail-store reader sits on.</p>
+  <div class="bodu-card-links">
+    <a href="io-pst/index.html">Introduction</a>
+    <a href="io-pst/getting-started.html">Getting started</a>
+    <a href="../guides/io-pst/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.IO.Pst.html">API reference</a>
+  </div>
+</div>
+<div class="bodu-card">
+  <h3><a href="outlook/index.html">Bodu.Formats.Outlook</a></h3>
+  <p>The Outlook message and mail-store readers over one shared MAPI value model — open a <code>.msg</code> file or a <code>.pst</code> store and read folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only.</p>
+  <div class="bodu-card-links">
+    <a href="outlook/index.html">Introduction</a>
+    <a href="outlook/getting-started.html">Getting started</a>
+    <a href="../guides/outlook/index.html">Guides</a>
+    <a class="xref" href="../api/Bodu.Formats.Outlook.html">API reference</a>
+  </div>
+</div>
+</div>
+<h2 id="design-principles">Design principles</h2>
+<ul>
+<li><strong>Small by intent.</strong> Each library solves one coherent problem. If something already fits well elsewhere in .NET, we don't duplicate it.</li>
+<li><strong>Nullable reference types</strong> are enabled solution-wide. Public APIs make their null-intent explicit.</li>
+<li><strong>Analyzer-clean.</strong> StyleCop.Analyzers, Roslynator, the .NET analyzers, AsyncFixer, and the Visual Studio Threading analyzers run at build time. Doc-comment warnings — including <code>CS1591</code> — are treated as errors.</li>
+<li><strong>Deterministic builds</strong> produce reproducible package outputs.</li>
+<li><strong>Documentation-first.</strong> Every public type and member carries XML documentation in US English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.</li>
+<li><strong>MIT licensed</strong>, with minimal external runtime dependencies — the core libraries depend only on the BCL; the dependency-injection, caching, JSON, and Outlook packages pull in a few permissively licensed Microsoft packages (see <a href="licensing.html">Licensing</a>).</li>
+</ul>
+<h2 id="testing-and-conventions">Testing and conventions</h2>
+<p>The solution uses <strong>MSTest</strong> with a partial-class test layout that mirrors the source layout one-to-one. Test methods follow the naming convention <code>&lt;MethodOrProperty&gt;_When&lt;Condition&gt;[_For&lt;TypedCondition&gt;]_Should&lt;ExpectedResult&gt;</code> and carry an XML <code>&lt;summary&gt;</code> that starts with &quot;Verifies that …&quot;, which makes test intent readable directly in the test explorer without opening the test body.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong>Topic overviews:</strong> <a href="topics/core-foundations.html">Core Foundations</a> · <a href="topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a> · <a href="topics/globalization-and-calendars.html">Globalization &amp; Calendars</a> · <a href="topics/text-and-serialization.html">Text &amp; Serialization</a> · <a href="topics/configuration.html">Configuration</a> · <a href="topics/numerics-and-financial.html">Numerics &amp; Financial</a> · <a href="topics/binary-formats.html">Binary Formats &amp; I/O</a>.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — prerequisites, install commands, and a one-minute sample from each library.</li>
+<li><strong><a href="package-matrix.html">Package matrix</a></strong> — the authoritative package list with status, dependencies, and install commands.</li>
+<li><strong>Library introductions:</strong> <a href="core/index.html">Bodu.Core</a> · <a href="collections/index.html">Bodu.Collections</a> · <a href="collections-concurrent/index.html">Bodu.Collections.Concurrent</a> · <a href="io-hashing/index.html">Bodu.IO.Hashing</a> · <a href="cryptography/index.html">Bodu.Security.Cryptography</a> · <a href="calendar/index.html">Bodu.Globalization.Calendar</a> · <a href="recurrence/index.html">Bodu.Globalization.Recurrence</a> · <a href="text-encoding/index.html">Bodu.Text.Encoding</a> · <a href="text-filtering/index.html">Bodu.Text.Filtering</a> · <a href="formats/index.html">Bodu.Text.Formats</a> · <a href="serialization/bencode/index.html">Bodu.Text.Bencode</a> · <a href="serialization/toml/index.html">Bodu.Text.Toml</a> · <a href="serialization/yaml/index.html">Bodu.Text.Yaml</a> · <a href="text-configuration/index.html">Bodu.Text.Configuration</a> · <a href="extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a> · <a href="text/index.html">Bodu.Text</a> · <a href="numerics/index.html">Bodu.Numerics</a> · <a href="financial/index.html">Bodu.Financial</a> · <a href="io-compound/index.html">Bodu.IO.Compound</a> · <a href="io-biff/index.html">Bodu.IO.Biff</a> · <a href="excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="io-pst/index.html">Bodu.IO.Pst</a> · <a href="outlook/index.html">Bodu.Formats.Outlook</a>.</li>
+<li><strong>API references:</strong> <a class="xref" href="../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic</a> · <a class="xref" href="../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> · <a class="xref" href="../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a> · <a class="xref" href="../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar</a> · <a class="xref" href="../api/Bodu.Text.html">Bodu.Text</a> · <a class="xref" href="../api/Bodu.Numerics.html">Bodu.Numerics</a> · <a class="xref" href="../api/Bodu.Financial.html">Bodu.Financial</a> · <a class="xref" href="../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a> · <a class="xref" href="../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a> · <a class="xref" href="../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a> · <a class="xref" href="../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

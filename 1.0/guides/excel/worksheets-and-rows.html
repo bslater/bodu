@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Streaming vs materialized | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Streaming vs materialized | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="streaming-vs-materialized">Streaming vs materialized</h1>
+
+<p>A worksheet can be read two ways, and the choice is the main performance decision in the library. This guide contrasts the forward-only <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> with the materialized <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a>, and shows when to reach for each.</p>
+<p>Both surfaces yield the same sparse <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> values — only the access pattern and memory profile differ.</p>
+<h2 id="the-two-surfaces-at-a-glance">The two surfaces at a glance</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a></th>
+<th><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Obtained from</td>
+<td><code>workbook.OpenWorksheet(...)</code></td>
+<td><code>workbook.ReadWorksheet(...)</code></td>
+</tr>
+<tr>
+<td>Access</td>
+<td>Forward-only, record order</td>
+<td>Random, by <code>(row, column)</code></td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>One cell at a time</td>
+<td>Whole sheet buffered</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td><code>TryReadCell</code>, <code>ReadCells</code>, <code>ReadRows</code></td>
+<td><code>TryGetCell</code>, <code>Cells</code>, <code>Rows</code></td>
+</tr>
+<tr>
+<td>Reach for</td>
+<td>A single pass over a large sheet</td>
+<td>Lookups and revisiting cells</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--stream-cells-lowest-allocation">Pattern 1 — stream cells (lowest allocation)</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
+
+while (reader.TryReadCell(out ExcelCell cell))
+    Accumulate(cell);
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.TryReadCell.html#Bodu_Formats_Excel_ExcelWorksheetReader_TryReadCell_Bodu_Formats_Excel_ExcelCell__">TryReadCell(out ExcelCell)</a> decodes one cell at a time in record order, without building an intermediate map. The reader is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> — dispose it (the <code>using</code> declaration does) before opening the next sheet. <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.ReadCells.html#Bodu_Formats_Excel_ExcelWorksheetReader_ReadCells">ReadCells()</a> wraps the same loop as a lazy <code>IEnumerable&lt;ExcelCell&gt;</code> for LINQ.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The reader is forward-only and single-pass: <code>TryReadCell</code>, <code>ReadCells</code>, and <code>ReadRows</code> all draw from one shared cursor that advances and never rewinds. Drive a given reader through exactly one of them — once the cursor reaches the worksheet's end it yields nothing further, and there is no reset. To scan a sheet a second time, open a fresh reader with <code>OpenWorksheet</code>, or materialise it once with <code>ReadWorksheet</code> and revisit the buffered cells.</p>
+</div>
+<h2 id="pattern-2--group-cells-into-rows">Pattern 2 — group cells into rows</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelWorksheetReader reader = workbook.OpenWorksheet(&quot;Data&quot;);
+
+foreach (ExcelRow row in reader.ReadRows())
+{
+    Console.WriteLine($&quot;row {row.RowIndex}: {row.Cells.Count} cell(s)&quot;);
+    foreach (ExcelCell cell in row.Cells)
+        Console.Write($&quot;  c{cell.ColumnIndex}&quot;);
+    Console.WriteLine();
+}
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.ReadRows.html#Bodu_Formats_Excel_ExcelWorksheetReader_ReadRows">ReadRows()</a> groups consecutive cells into an <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelRow.html">ExcelRow</a> as their row index advances. Because Excel writes cells in row-major order, this groups a producer's rows without buffering the whole sheet. Rows with no populated cell are not materialized, so the sequence is sparse.</p>
+<h2 id="pattern-3--random-access-by-position">Pattern 3 — random access by position</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
+
+ExcelWorksheet sheet = workbook.ReadWorksheet(&quot;Data&quot;);
+
+if (sheet.TryGetCell(10, 1, out ExcelCell seriesId))
+    Console.WriteLine(seriesId.StringValue);
+
+Console.WriteLine($&quot;{sheet.Cells.Count} populated cells across {sheet.Rows.Count} rows&quot;);
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.ReadWorksheet.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_ReadWorksheet_System_String_">ReadWorksheet(string)</a> reads the whole sheet once and returns an <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> that exposes cells by position through <code>TryGetCell</code>, all populated cells in row-major order through <code>Cells</code>, and grouped <code>Rows</code>. <code>TryGetCell</code> returns <code>false</code> for an absent (blank) cell. Reach for this surface when you need to look cells up, cross-reference columns, or revisit the sheet — at the cost of holding it in memory.</p>
+<h2 id="pattern-4--read-several-sheets-independently">Pattern 4 — read several sheets independently</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
+
+using ExcelWorksheetReader data = workbook.OpenWorksheet(&quot;Data&quot;);
+using ExcelWorksheetReader notes = workbook.OpenWorksheet(&quot;Notes&quot;);
+
+// Each reader seeks to its own sheet's substream and advances independently.
+data.TryReadCell(out _);
+notes.TryReadCell(out _);
+</code></pre>
+<p>Opening a sheet seeks to its recorded byte offset, so readers from the same workbook are independent. Address a sheet by name or by zero-based index — both <code>OpenWorksheet</code> and <code>ReadWorksheet</code> accept either; an unknown name throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> and an out-of-range index throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</p>
+<h2 id="choosing-a-surface">Choosing a surface</h2>
+<ul>
+<li><strong>Reach for the streaming reader</strong> when you scan a sheet once — aggregations, exports, row-by-row transforms over a large worksheet — and want to bound allocation to a single cell.</li>
+<li><strong>Reach for the materialized worksheet</strong> when you need random access — looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.</li>
+</ul>
+<h2 id="tuning-large-workbook-reads">Tuning large-workbook reads</h2>
+<p>On a small <code>.xls</code> the choice of surface barely matters; on a workbook with
+hundreds of thousands of cells it is the difference between a bounded read and
+holding the whole sheet in memory. The levers below all bound the working set
+without changing the values you read.</p>
+<p><strong>Prefer the streaming reader.</strong> <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a>
+decodes one <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelCell.html">ExcelCell</a> at a time in record order, so its
+allocation is a single cell regardless of sheet size. The materialized
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> buffers every populated cell, so it
+scales with the sheet — use it only when you genuinely need random access, and
+let it fall out of scope as soon as the lookups are done.</p>
+<p><strong>Read one sheet at a time, and dispose between sheets.</strong> Each reader seeks to its
+own substream and holds decode state until disposed. Open, drain, and dispose one
+reader before opening the next rather than holding several open across a workbook:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Excel;
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;big.xls&quot;);
+
+foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
+{
+    using ExcelWorksheetReader reader = workbook.OpenWorksheet(sheet.Index);
+    while (reader.TryReadCell(out ExcelCell cell))
+        Accumulate(cell);
+}   // each reader's decode state is released before the next opens
+</code></pre>
+<p><strong>Skip the metadata you do not use.</strong> Pass an
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a> that clears the work you do
+not need — <code>ReadDocumentProperties = false</code> skips the summary-information
+property sets at open time, and <code>DetectDateFormats = false</code> skips the
+number-format classification on every numeric cell (leaving
+<code>ExcelCell.IsDateFormatted</code> always <code>false</code>):</p>
+<pre><code class="lang-csharp">var options = new ExcelBinaryReaderOptions
+{
+    ReadDocumentProperties = false,   // no summary-information parse
+    DetectDateFormats      = false,   // no per-cell number-format lookup
+};
+
+using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;big.xls&quot;, options);
+</code></pre>
+<p><strong>Avoid full materialization for one-pass work.</strong> <code>ReadCells</code> and <code>ReadRows</code>
+stream lazily; <code>ReadRows</code> groups consecutive cells into an
+<a class="xref" href="../../api/Bodu.Formats.Excel.ExcelRow.html">ExcelRow</a> as the row index advances without buffering the
+whole sheet, because Excel writes cells in row-major order. Reach for
+<code>ReadWorksheet</code> (which buffers) only when you must revisit cells.</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Do</th>
+<th>Avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bound memory to one cell</td>
+<td><code>OpenWorksheet</code> + <code>TryReadCell</code> / <code>ReadCells</code></td>
+<td><code>ReadWorksheet</code></td>
+</tr>
+<tr>
+<td>Process row by row</td>
+<td><code>ReadRows</code></td>
+<td>materializing then iterating <code>Rows</code></td>
+</tr>
+<tr>
+<td>Numeric / time-series only</td>
+<td><code>ReadDocumentProperties = false</code>, <code>DetectDateFormats = false</code></td>
+<td>default options</td>
+</tr>
+<tr>
+<td>Several sheets</td>
+<td>one reader at a time, disposed between</td>
+<td>holding many readers open</td>
+</tr>
+<tr>
+<td>Random lookups (small sheet)</td>
+<td><code>ReadWorksheet</code> + <code>TryGetCell</code></td>
+<td>streaming and re-scanning</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="cell-values-and-dates.html">Cell values and dates</a> — interpret the <code>ExcelCell</code> values both surfaces yield.</li>
+<li><a href="reading-workbooks.html">Reading workbooks</a> — the open path and reader options.</li>
+<li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

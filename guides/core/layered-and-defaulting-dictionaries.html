@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Layered and defaulting dictionaries | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Layered and defaulting dictionaries | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="layered-and-defaulting-dictionaries">Layered and defaulting dictionaries</h1>
+
+<p>Two small dictionary utilities round out the dictionary family with shapes borrowed from Python's standard library: <code>LayeredDictionary&lt;TKey, TValue&gt;</code> is the .NET analogue of <code>collections.ChainMap</code>, and <code>DefaultingDictionary&lt;TKey, TValue&gt;</code> is the analogue of <code>collections.defaultdict</code>.</p>
+<h2 id="layered-dictionary-chainmap">Layered dictionary (<code>ChainMap</code>)</h2>
+<p><code>LayeredDictionary&lt;TKey, TValue&gt;</code> is a <strong>live, read-through view</strong> over an ordered list of underlying dictionaries. It copies nothing: lookups search the layers in order and the <em>first</em> layer containing the key wins, so an entry in an earlier layer <em>shadows</em> any same-keyed entry in later layers. All writes — <code>Add</code>, the indexer setter, <code>Remove</code>, <code>Clear</code> — go to the <strong>first layer only</strong>, exactly matching Python <code>ChainMap</code>.</p>
+<p>This is the same first-wins precedence model as <code>Bodu.Text.Configuration</code>'s resolver chain, where earlier configuration sources take precedence over later ones — a layered dictionary is the general-purpose collection expression of that idea: overrides in front, defaults behind.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var overrides = new Dictionary&lt;string, string&gt;();
+var defaults = new Dictionary&lt;string, string&gt; { [&quot;colour&quot;] = &quot;blue&quot;, [&quot;size&quot;] = &quot;medium&quot; };
+
+var settings = new LayeredDictionary&lt;string, string&gt;(overrides, defaults);
+
+string colour = settings[&quot;colour&quot;];   // &quot;blue&quot; — falls through to the defaults layer
+settings[&quot;colour&quot;] = &quot;red&quot;;           // writes to overrides, shadowing the default
+colour = settings[&quot;colour&quot;];          // &quot;red&quot; — the first layer wins
+</code></pre>
+<p>Contract points worth keeping in mind:</p>
+<ul>
+<li><p><strong>The layer list is fixed at construction; the layers stay live.</strong> Mutating an underlying dictionary directly is immediately visible through the view. The <code>Layers</code> property exposes the list read-only.</p>
+</li>
+<li><p><strong><code>Remove</code> mutates the first layer only.</strong> It returns <code>false</code> for a key that exists only in deeper layers — the key stays visible through the view. Removing a first-layer entry that shadowed a deeper one makes the deeper value visible again (the <em>unshadowing</em> behaviour):</p>
+<pre><code class="lang-csharp">settings.Remove(&quot;colour&quot;);            // removes &quot;red&quot; from overrides…
+colour = settings[&quot;colour&quot;];          // &quot;blue&quot; — the default is unshadowed
+</code></pre>
+</li>
+<li><p><strong><code>Add</code> throws only when the first layer already contains the key.</strong> A key that exists solely in deeper layers is addable — the new first-layer entry simply shadows the deeper value.</p>
+</li>
+<li><p><strong><code>Clear</code> clears the first layer only</strong>, so previously shadowed deeper entries become visible again.</p>
+</li>
+<li><p><strong><code>Count</code>, <code>Keys</code>, <code>Values</code>, and enumeration present the merged view</strong> — distinct keys with first-wins values. They walk every layer, so <code>Count</code> is O(n) in the total entries across layers on every call, not a cached property. <code>Keys</code> and <code>Values</code> are snapshots taken at call time; enumeration is lazy over the live layers.</p>
+</li>
+<li><p><strong>The optional comparer governs only the view's deduplication.</strong> Each underlying dictionary keeps resolving keys with its own comparer, so mismatched comparers can produce surprising shadowing (a case-insensitive first layer answers for casings the view considers distinct). Construct the view and its layers with the same comparer.</p>
+</li>
+<li><p>The non-generic <code>IDictionary</code> / <code>ICollection</code> interfaces are deliberately not implemented — this is a view type, not a stand-alone collection.</p>
+</li>
+</ul>
+<h2 id="defaulting-dictionary-defaultdict">Defaulting dictionary (<code>defaultdict</code>)</h2>
+<p><code>DefaultingDictionary&lt;TKey, TValue&gt;</code> wraps a <code>Dictionary&lt;TKey, TValue&gt;</code> and bakes a <code>Func&lt;TKey, TValue&gt;</code> value factory into the type: reading a <strong>missing key through the indexer</strong> invokes the factory, <strong>stores</strong> the produced value, and returns it. Exactly as in Python — where <code>__missing__</code> fires only for <code>d[key]</code> — the indexer getter is the <em>only</em> member that materializes defaults: <code>TryGetValue</code>, <code>ContainsKey</code>, <code>Remove</code>, <code>Count</code>, and enumeration see only entries that have actually been stored.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var groups = new DefaultingDictionary&lt;string, List&lt;int&gt;&gt;(_ =&gt; new List&lt;int&gt;());
+
+groups[&quot;odd&quot;].Add(1);    // miss — the factory creates the list, it is stored, then mutated
+groups[&quot;odd&quot;].Add(3);    // hit — the stored list is returned; the factory is not invoked
+
+bool has = groups.ContainsKey(&quot;even&quot;);   // false — lookups never materialize defaults
+</code></pre>
+<p>How it relates to the existing <code>GetOrAdd</code> extension in Bodu.Core: <code>IDictionaryExtensions.GetOrAdd</code> stays the lightweight per-call-site option — you pass the factory at each call against any <code>IDictionary&lt;TKey, TValue&gt;</code>. <code>DefaultingDictionary&lt;TKey, TValue&gt;</code> fixes the policy at construction, so every plain indexer read applies it; hand the dictionary to code that only knows <code>IDictionary&lt;TKey, TValue&gt;</code> and the defaults still materialize.</p>
+<p>Contract points:</p>
+<ul>
+<li>The factory and the comparer are exposed through <code>ValueFactory</code> and <code>Comparer</code>.</li>
+<li><strong>Reentrancy is deterministic:</strong> if the factory itself mutates the dictionary — even assigning the very key being materialized — the factory's <em>return value</em> is stored last and wins.</li>
+<li><code>TValue</code> is unconstrained: a factory returning <code>null</code> stores <code>null</code> as-is; the key is then present and the factory is not invoked for it again.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Neither type is thread-safe. The layered view's merged reads and the defaulting dictionary's check-invoke-store sequence both require external synchronization when shared across threads.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a> and <a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a> — the full API surfaces.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide across the namespace.</li>
+<li><a href="sequenced-dictionary.html">Sequenced dictionary</a>, <a href="bi-dictionary.html">Bidirectional dictionary</a>, <a href="multi-value-dictionary.html">Multi-value dictionary</a> — the rest of the dictionary family.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

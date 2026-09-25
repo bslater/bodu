@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Ini.Reader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Ini.Reader | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Ini.Reader">
+
+  <h1 id="Bodu_Text_Ini_Reader" data-uid="Bodu.Text.Ini.Reader" class="text-break">Namespace Bodu.Text.Ini.Reader</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-ini.svg" alt="Bodu.Text.Ini.Reader"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Ini.Reader</strong> is the lowest tier of <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a> and exposes two forward-only cursors over UTF-8 INI text. <a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> reports the file <strong>as authored</strong> — section headers, entries, and comments in source order, duplicates included — while <a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a> walks the <strong>normalized</strong> object-of-objects shape (global keys hoisted, duplicate sections and keys resolved by the <a class="xref" href="Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a> policies) that the <a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> and both DOMs bind through.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> — the source-order <code>ref struct</code> lexer: <code>Read</code>, <code>TokenType</code> (a <a class="xref" href="Bodu.Text.Ini.IniTokenType.html">IniTokenType</a>: <code>SectionHeader</code>, <code>PropertyName</code>, <code>String</code>, <code>Comment</code>), <code>GetString</code>, <code>LineNumber</code>, and <code>BytesConsumed</code>.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a> — the normalized cursor: <code>Read</code>, <code>TokenType</code> (<code>StartObject</code> / <code>EndObject</code> / <code>PropertyName</code> / <code>String</code>), <code>GetString</code>, and <code>CurrentDepth</code>.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.IniReaderOptions.html">IniReaderOptions</a> — <code>DisallowHashComments</code> and <code>SkipComments</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Reader;
+
+var reader = new Utf8IniReader(&quot;; owned by ops\n[server]\nhost=localhost\n&quot;u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == IniTokenType.SectionHeader)
+        Console.WriteLine($&quot;[{reader.GetString()}] at line {reader.LineNumber}&quot;);
+    else if (reader.TokenType == IniTokenType.Comment)
+        Console.WriteLine($&quot;comment: {reader.GetString()}&quot;);
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Choose the reader by intent.</strong> Use <code>Utf8IniReader</code> for linting, comment handling, or faithful transcription; use <code>IniDocumentReader</code> when you want the logical configuration shape with duplicates already merged.</li>
+<li><strong>Conservative dialect.</strong> <code>=</code> is the only separator; values run literally to end of line; <code>;</code> and <code>#</code> start full-line comments only.</li>
+<li><strong>Malformed input</strong> throws <a class="xref" href="Bodu.Text.Ini.IniFormatException.html">IniFormatException</a>.</li>
+<li><strong>See also:</strong> the <a href="../docs/formats/index.html">line-formats introduction</a> and the <a href="../guides/formats/ini.html">INI guide</a> (The two readers).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a></h4>
+      <section><p>Provides a forward-only cursor over the normalized token stream of a parsed INI document: a root object whose
+properties are the hoisted global keys followed by the sections, each section an object of key/value entries. The
+reader is a <code>ref struct</code>, so it cannot be boxed or captured.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.Reader.IniReaderOptions.html">IniReaderOptions</a></h4>
+      <section><p>Provides configuration for a <a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a>, controlling comment recognition.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a></h4>
+      <section><p>Provides a high-performance, forward-only, source-order reader for INI bytes. The reader is a
+<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

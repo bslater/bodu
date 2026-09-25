@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>WeekPattern | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="WeekPattern | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="weekpattern">WeekPattern</h1>
+
+<p><code>WeekPattern</code> is an immutable value-type bitmask representing a set of selected days in a standard seven-day week. It supports non-destructive composition, bitwise operators, string parsing, formatting, and enumeration — making it a natural primitive for schedules, recurrence rules, and working-day calculations.</p>
+<p>Because <code>WeekPattern</code> is a value type, every operation that changes the selection returns a new instance rather than mutating the receiver.</p>
+<p><img src="../../images/diagrams/week-pattern.svg" alt="WeekPattern seven-day bitmask — one bit per day indexed by DayOfWeek, with composition and bitwise operators"></p>
+<h2 id="pattern-1--build-a-pattern-with-with--without">Pattern 1 — build a pattern with With / Without</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern weekdays = WeekPattern.Empty
+    .With(DayOfWeek.Monday)
+    .With(DayOfWeek.Tuesday)
+    .With(DayOfWeek.Wednesday)
+    .With(DayOfWeek.Thursday)
+    .With(DayOfWeek.Friday);
+
+Console.WriteLine(weekdays.Count);                      // 5
+Console.WriteLine(weekdays.Contains(DayOfWeek.Monday)); // True
+Console.WriteLine(weekdays.Contains(DayOfWeek.Sunday)); // False
+</code></pre>
+<h2 id="pattern-2--use-the-built-in-well-known-patterns">Pattern 2 — use the built-in well-known patterns</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern workweek  = WeekPattern.Weekdays;           // Mon–Fri
+WeekPattern weekend   = WeekPattern.Weekend;            // Sat–Sun
+WeekPattern allDays   = WeekPattern.AllDays;            // Mon–Sun
+WeekPattern empty     = WeekPattern.Empty;              // no days
+
+// Regional working weeks, one preset per WorkingDaysOfWeek member.
+WeekPattern gulf      = WeekPattern.SundayToThursday;   // Sun–Thu
+WeekPattern sixDay    = WeekPattern.MondayToSaturday;   // Mon–Sat
+</code></pre>
+<h2 id="pattern-3--bitwise-combination">Pattern 3 — bitwise combination</h2>
+<p>The <code>|</code>, <code>&amp;</code>, and <code>~</code> operators compose or intersect patterns:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern mon    = WeekPattern.Empty.With(DayOfWeek.Monday);
+WeekPattern fri    = WeekPattern.Empty.With(DayOfWeek.Friday);
+WeekPattern monFri = mon | fri;
+
+// Intersect with weekdays to strip any weekend days.
+WeekPattern safeSchedule = monFri &amp; WeekPattern.Weekdays;
+
+// Invert — days NOT in the pattern.
+WeekPattern nonWorking = ~WeekPattern.Weekdays;  // Sat–Sun
+</code></pre>
+<p>All four bitwise operators are defined: <code>|</code> (union), <code>&amp;</code> (intersection), <code>^</code> (symmetric difference — days in exactly one operand), and <code>~</code> (complement within the seven-day week). Symmetric difference is handy for &quot;which days changed&quot; between two schedules:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">WeekPattern oldShift = WeekPattern.Parse(&quot;_MTW___&quot;);
+WeekPattern newShift = WeekPattern.Parse(&quot;__TWT__&quot;);
+WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu — the days that differ
+</code></pre>
+<h2 id="comparing-patterns">Comparing patterns</h2>
+<p><code>WeekPattern</code> implements <code>IEquatable&lt;WeekPattern&gt;</code> and <code>IComparable&lt;WeekPattern&gt;</code>, and defines <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Two patterns are equal when they select the same days; the ordering operators compare the underlying bitmask, so they give a total order suitable for sorting or use as a dictionary key — they are <em>not</em> a subset relation. Use <code>&amp;</code>/<code>==</code> to test containment (<code>(a &amp; b) == b</code> means &quot;a contains all of b&quot;).</p>
+<h2 id="pattern-4--parse-from-a-compact-string">Pattern 4 — parse from a compact string</h2>
+<p><code>WeekPattern.Parse</code> accepts standard abbreviations (case-insensitive):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern mwf  = WeekPattern.Parse(&quot;_M_W_F_&quot;);      // Mon, Wed, Fri (Sunday-first mask)
+WeekPattern tuth = WeekPattern.Parse(&quot;__T_T__&quot;);      // Tue, Thu
+WeekPattern all  = WeekPattern.Parse(&quot;SMTWTFS&quot;);      // every day
+
+bool ok = WeekPattern.TryParse(&quot;MF&quot;, out WeekPattern result);
+</code></pre>
+<h2 id="pattern-5--enumerate-selected-days">Pattern 5 — enumerate selected days</h2>
+<p><code>WeekPattern</code> implements <code>IEnumerable&lt;DayOfWeek&gt;</code>, always yielding selected days in <code>DayOfWeek</code> order (Sunday = 0 first, unless the first day of the week is configured otherwise):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern schedule = WeekPattern.Parse(&quot;_MTWTF_&quot;);
+
+foreach (DayOfWeek day in schedule)
+    Console.WriteLine(day);
+
+// Monday, Tuesday, Wednesday, Thursday, Friday
+</code></pre>
+<h2 id="pattern-6--remove-a-day">Pattern 6 — remove a day</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+WeekPattern fiveDays = WeekPattern.Weekdays;
+WeekPattern fourDays = fiveDays.Without(DayOfWeek.Friday);
+
+Console.WriteLine(fourDays.Count);   // 4
+</code></pre>
+<h2 id="pattern-7--schedule-a-recurring-date-using-weekpattern">Pattern 7 — schedule a recurring date using WeekPattern</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+
+// Find all Tuesdays and Thursdays in April 2025.
+WeekPattern tuthu = WeekPattern.Empty
+    .With(DayOfWeek.Tuesday)
+    .With(DayOfWeek.Thursday);
+
+DateOnly start = new DateOnly(2025, 4, 1);
+DateOnly end   = new DateOnly(2025, 4, 30);
+
+for (DateOnly d = start; d &lt;= end; d = d.AddDays(1))
+{
+    if (tuthu.Contains(d.DayOfWeek))
+        Console.WriteLine(d);
+}
+</code></pre>
+<h2 id="pattern-8--bridge-to-and-from-workingdaysofweek">Pattern 8 — bridge to and from WorkingDaysOfWeek</h2>
+<p><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> is the companion enum naming the common working-week presets (<code>MondayToFriday</code>, <code>SaturdayToThursday</code>, …). Convert between the two through the extension methods on <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a> — useful when an API takes the named preset but you need the raw day set (or vice versa):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Extensions;
+
+WeekPattern saudiWeek = WorkingDaysOfWeek.SaturdayToWednesday.ToWeekPattern();
+WorkingDaysOfWeek back = WeekPattern.Weekdays.ToWorkingDaysOfWeek();   // MondayToFriday
+</code></pre>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Empty</code></td>
+<td>Static field — no days selected.</td>
+</tr>
+<tr>
+<td><code>Weekdays</code></td>
+<td>Static field — Mon–Fri.</td>
+</tr>
+<tr>
+<td><code>Weekend</code></td>
+<td>Static field — Sat–Sun.</td>
+</tr>
+<tr>
+<td><code>AllDays</code></td>
+<td>Static field — every day, Mon–Sun.</td>
+</tr>
+<tr>
+<td><code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>MondayToThursdayAndSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, <code>SundayToFriday</code>, <code>SundayToThursday</code></td>
+<td>Static fields — the regional working-week presets, one per <code>WorkingDaysOfWeek</code> member (<code>MondayToFriday</code> is the same set as <code>Weekdays</code>).</td>
+</tr>
+<tr>
+<td><code>With(DayOfWeek)</code></td>
+<td>Returns a new pattern with the day added.</td>
+</tr>
+<tr>
+<td><code>Without(DayOfWeek)</code></td>
+<td>Returns a new pattern with the day removed.</td>
+</tr>
+<tr>
+<td><code>Contains(DayOfWeek)</code></td>
+<td>Returns <code>true</code> if the day is selected.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Number of selected days (0–7).</td>
+</tr>
+<tr>
+<td><code>Parse(string)</code></td>
+<td>Parses a compact abbreviation string. Throws on invalid input.</td>
+</tr>
+<tr>
+<td><code>TryParse(string, out WeekPattern)</code></td>
+<td>Parses without throwing.</td>
+</tr>
+<tr>
+<td><code>ToString()</code></td>
+<td>Returns the compact abbreviation string.</td>
+</tr>
+<tr>
+<td><code>\|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code></td>
+<td>Union, intersection, symmetric-difference, complement operators.</td>
+</tr>
+<tr>
+<td><code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></td>
+<td>Equality (same day set) and total-order comparison of the bitmask.</td>
+</tr>
+<tr>
+<td><code>IComparable&lt;WeekPattern&gt;</code>, <code>IComparable&lt;byte&gt;</code>, <code>IComparable</code></td>
+<td><code>CompareTo</code> over the bitmask — the same total order the comparison operators use, so patterns sort with <code>OrderBy</code> and <code>SortedSet&lt;WeekPattern&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>IEnumerable&lt;DayOfWeek&gt;</code></td>
+<td>Enumerates selected days in <code>DayOfWeek</code> order.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="circular-buffer.html">Circular buffer</a> — fixed-capacity FIFO ring buffer.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> — capacity-bounded dictionary with FIFO / LRU / LFU eviction.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

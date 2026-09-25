@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Collections — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Collections — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducollections">Bodu.Collections</h1>
+
+<p><img src="../../images/hero-collections.svg" alt="Bodu.Collections"></p>
+<p><strong>Bodu.Collections</strong> is the specialized generic-collection catalogue of the Bodu suite and a member of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of <code>Bodu.Core</code> — the namespaces are unchanged (<code>Bodu.Collections.Generic</code> and its siblings), only the package boundary moved. The package depends on <a href="../core/index.html"><code>Bodu.Core</code></a> for shared primitives such as <code>ThrowHelper</code> and the <code>IRandomGenerator</code> abstraction; see the <a href="../package-matrix.html">package matrix</a> for the full dependency map.</p>
+<p>The thread-safe variants — <code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache in the <code>Bodu.Collections.Generic.Concurrent</code> namespace — ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on this one.</p>
+<p><img src="../../images/diagrams/collections-namespace-map.svg" alt="Bodu.Collections namespace map — the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency"></p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="boducollectionsgeneric"><code>Bodu.Collections.Generic</code></h3>
+<p>Bounded, ordered, navigable, and range-keyed collections, many built around a shared ring-backed primitive.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a></td>
+<td>Fixed-capacity FIFO ring. Configurable to either silently overwrite or throw when full.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a></td>
+<td>Double-ended queue with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>. The <code>AllowGrow</code> flag toggles between auto-resize and fixed-capacity modes; when fixed, <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a> selects reject-or-evict overflow behavior.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a></td>
+<td>Segmented buffer for streaming scenarios where total length is not known up front.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a></td>
+<td>Abstract base shared by <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code>. Extension point for new ring-backed collections.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction, plus optional time-based (TTL) expiry. Drop-in cache primitive with standard dictionary semantics.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a></td>
+<td>Enum selecting the eviction policy: <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, <code>SecondChance</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Unbounded insertion- or access-ordered dictionary (Java <code>LinkedHashMap</code> shape) with O(1) access to and removal of the first and last entries. Optional access-order mode underpins hand-built LRU caches.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Bidirectional one-to-one map (Guava <code>BiMap</code> shape) with O(1) lookup in both directions and a live <code>Inverse</code> view sharing the same storage. Duplicate-value conflicts resolve by a construction-time <code>Throw</code> / <code>Replace</code> policy.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Live read-through view over an ordered list of dictionaries (Python <code>ChainMap</code> shape): the first layer containing a key wins on read, all writes go to the first layer only, and removing a shadowing entry unshadows the deeper value.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Dictionary with a construction-time value factory (Python <code>defaultdict</code> shape): the indexer getter materializes, stores, and returns a default for a missing key; every other member sees only actually-stored entries.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a></td>
+<td>Two-key row/column map (Guava <code>Table</code> shape) whose point is the projections: live <code>Row</code> / <code>Column</code> read-only dictionary views, <code>RowKeys</code> / <code>ColumnKeys</code>, and per-row <code>RowMap()</code> iteration over a row-major store. Column-axis operations scan every row (O(rows)); empty rows are pruned automatically.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
+<td>Index-aware set and priority-queue variants for lookup-by-position and key-based priority updates.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a></td>
+<td>Multi-map and multi-set semantics over <code>IEqualityComparer&lt;TKey&gt;</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a></td>
+<td>Comparer-ordered set over an order-statistic red-black tree: O(log n) nearest-neighbour queries (<code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>), rank/select (<code>IndexOf</code> / <code>GetAt</code>), <code>CountInRange</code>, <code>Min</code>/<code>Max</code>, and live fail-fast <code>Ascending</code> / <code>Descending</code> / <code>Range</code> views.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Key-sorted dictionary over the same order-statistic red-black tree: O(log n) nearest-neighbour entry queries (<code>TryGetFloorEntry</code> / <code>TryGetCeilingEntry</code> / <code>TryGetHigherEntry</code> / <code>TryGetLowerEntry</code>, plus key-only variants), rank/select (<code>IndexOfKey</code> / <code>GetAt</code>), <code>CountInRange</code>, <code>MinEntry</code>/<code>MaxEntry</code>, and live fail-fast <code>Ascending</code> / <code>Descending</code> / <code>Range</code> entry views. Null keys rejected; null values allowed.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Range-1.html">Range&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
+<td>Range-keyed lookups for ordered or interval-valued keys.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a></td>
+<td>Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed <code>[low, high]</code> intervals that may freely overlap, O(log n + k) stabbing (<code>QueryPoint</code>) and window (<code>QueryOverlaps</code>) queries, O(log n) <code>Intersects</code> / <code>IntersectsPoint</code>, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boducollectionsspecialized"><code>Bodu.Collections.Specialized</code></h3>
+<p>The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it — which is why it sits apart from the catalogue rather than inside it. See the <a href="../../guides/core/bit-set.html">bit set</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Specialized.html">Bodu.Collections.Specialized</a> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as <code>MerkleTree</code> in <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.)</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Specialized.BitSet.html">BitSet</a></td>
+<td>Growable packed bit set with Java <code>BitSet</code> semantics: auto-grow on <code>Set</code>/<code>Flip</code>, reads beyond capacity return <code>false</code>, <code>NextSetBit</code> / <code>NextClearBit</code> / <code>Cardinality</code> queries, in-place <code>And</code> / <code>Or</code> / <code>Xor</code> / <code>AndNot</code>, and a non-boxing enumerator over set-bit indices.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boducollectionsprobabilistic"><code>Bodu.Collections.Probabilistic</code></h3>
+<p>Approximate &quot;sketch&quot; structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the <a href="../../guides/core/probabilistic-collections.html">Probabilistic collections</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Probabilistic.html">Bodu.Collections.Probabilistic</a> overview.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a></td>
+<td>Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports <code>UnionWith</code> merging and version-checked export/import.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a></td>
+<td>Approximate per-element frequency counting sized from <code>epsilon</code> / <code>delta</code>. Never underestimates; with probability at least <code>1 − δ</code> an estimate is at most the true count plus <code>ε · TotalCount</code>. Supports <code>MergeWith</code> (cell-wise sum) and export/import.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
+<td>Approximate distinct-element (cardinality) counting in <code>2^precision</code> one-byte registers with ~<code>1.04/√m</code> relative standard error. <code>MergeWith</code> (register-wise max) is lossless and never double-counts shared elements.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boducollectionsgenericgraphs"><code>Bodu.Collections.Generic.Graphs</code></h3>
+<p>Graphs and graph algorithms. See the <a href="../../guides/core/graphs.html">Graphs and graph algorithms</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.html">Bodu.Collections.Generic.Graphs</a> overview.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a></td>
+<td>Directed or undirected graph with optional non-negative edge weights.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a></td>
+<td>BFS / DFS traversal, shortest path, topological sort, and connected components over the read-only graph views.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a></td>
+<td>Union-find (disjoint-set) with path compression for connectivity and components.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boducollectionsgenerictrees"><code>Bodu.Collections.Generic.Trees</code></h3>
+<p>The trie family and an n-ary tree. See the <a href="../../guides/core/trie.html">Tries and text search</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.html">Bodu.Collections.Generic.Trees</a> overview.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a></td>
+<td>A string set and a string-keyed map with prefix queries (<code>StartsWith</code>, <code>KeysWithPrefix</code>).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></td>
+<td>Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a></td>
+<td>Immutable multi-pattern text matchers built once from a pattern set: <code>EnumerateMatches</code> reports every (overlapping, nested) occurrence of every pattern in one O(text + matches) pass, in a pinned (end index, pattern length) order, with span-based <code>CountMatches</code> / <code>HasMatch</code> conveniences; the keyed variant carries a value per pattern onto each match.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a></td>
+<td>A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boducollectionsgenericconcurrent-companion-package"><code>Bodu.Collections.Generic.Concurrent</code> (companion package)</h3>
+<p>The thread-safe variants — the lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, the lock-free split-ordered <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, and the lock-striped <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>) — ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on <code>Bodu.Collections</code>.</p>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fixed-capacity FIFO ring buffer (single-threaded)</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Double-ended queue with O(1) ends</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>LRU / LFU / FIFO / MRU / Random / Second-Chance cache</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> + <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a></td>
+</tr>
+<tr>
+<td>Cache entries that expire after a time-to-live</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> + <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryExpiration.html">EvictingDictionaryExpiration</a></td>
+</tr>
+<tr>
+<td>Index-aware set with O(1) lookup-by-position</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Nearest-neighbour, rank, and range queries over sorted data</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a></td>
+</tr>
+<tr>
+<td>Range-keyed lookup table</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Intervals that overlap — stabbing and window queries</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a></td>
+</tr>
+<tr>
+<td>Multi-map / multi-set semantics</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Two-way lookup between unique keys and unique values</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a></td>
+</tr>
+<tr>
+<td>Priority queue with in-place priority updates (Dijkstra, A*)</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
+</tr>
+<tr>
+<td>Prefix queries and autocomplete over string keys</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a></td>
+</tr>
+<tr>
+<td>Find every occurrence of many patterns in one pass</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a></td>
+</tr>
+<tr>
+<td>Approximate membership / frequency / distinct counts in fixed memory</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Graph traversal, shortest path, topological sort</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a> + <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a></td>
+</tr>
+<tr>
+<td>Thread-safe FIFO ring, unique set, or bounded cache</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> (in <a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-principles">Design principles</h2>
+<p>A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.</p>
+<ul>
+<li><strong>One toggle, not two classes.</strong> Where a collection has to choose between <em>reject</em> and <em>make room</em> on overflow, that choice is a single settable property — <code>AllowOverwrite</code> on <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>, <code>AllowGrow</code> (with <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a>) on <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> — rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a <code>Try…</code> peer that substitutes a <code>false</code> return.</li>
+<li><strong>Fail-fast where it is cheap, snapshot where it is not.</strong> The single-threaded collections detect concurrent structural mutation with a version counter and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> from the enumerator — the BCL contract. The lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> (in the companion <a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a> package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.</li>
+<li><strong>Struct enumerators.</strong> Every collection's <code>GetEnumerator()</code> returns a <code>struct</code>, so a <code>foreach</code> over a concrete-typed variable allocates nothing; enumerating through an <code>IEnumerable&lt;T&gt;</code> reference boxes as usual.</li>
+<li><strong>Reads can mutate.</strong> Recency-based caches (<a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> under LRU/MRU/LFU/SecondChance, <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> in access-order mode) update ordering metadata on a successful lookup. That is why even concurrent read-read on these types needs external synchronisation.</li>
+<li><strong>Validation flows through one helper.</strong> Every public entry point validates its arguments through <code>Bodu.Core</code>'s <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a>, so exception type, message, and parameter-name capture stay uniform across the suite.</li>
+<li><strong>Pluggable randomness, never a global.</strong> Helpers that need randomness (<code>RandomReplacement</code> eviction, shuffles) accept an <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> rather than reaching for a static <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.random">Random</a>, so tests can inject a deterministic source.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the collection vocabulary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run a minimal sample for the headline types.</li>
+<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> — the decision guide across the whole catalogue.</li>
+<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> — recipe-style walk-throughs for every headline type.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> — full namespace overview.</li>
+<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> — the thread-safe companion package.</li>
+<li><strong><a href="../core/index.html">Bodu.Core introduction</a></strong> — the foundation package this one builds on.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — how the three packages and the <code>Bodu.Text</code> namespace utilities fit together.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

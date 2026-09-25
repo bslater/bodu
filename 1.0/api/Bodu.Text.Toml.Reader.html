@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Toml.Reader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Toml.Reader | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Reader">
+
+  <h1 id="Bodu_Text_Toml_Reader" data-uid="Bodu.Text.Toml.Reader" class="text-break">Namespace Bodu.Text.Toml.Reader</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-toml.svg" alt="Bodu.Text.Toml.Reader"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Toml.Reader</strong> is the lowest tier of <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>: the forward-only token readers over UTF-8 TOML (v1.0.0, or v1.1.0 by opt-in). It exposes two cursors — the source-order lexer <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a>, which reports table headers, dotted-key segments, comments, and values as they appear, and the normalized <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a>, which walks the resolved table tree and is the reader a custom <a class="xref" href="Bodu.Text.Toml.Serialization.TomlConverter-1.html">TomlConverter&lt;T&gt;</a> binds through. The <a class="xref" href="Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a> and both DOMs are built over this tier.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> — the source-order <code>ref struct</code> lexer: <code>Read</code> / <code>Skip</code> / <code>TrySkip</code>, <code>TokenType</code> (a <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html">TomlTokenType</a>), <code>ValueSpan</code>, <code>LineNumber</code> / <code>ColumnNumber</code>, typed <code>Get*</code> / <code>TryGet*</code> accessors for every TOML scalar kind, <code>GetComment</code>, and <code>ValueTextEquals</code>; the <code>isFinalBlock</code> + state constructors support resumable multi-block reads.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> — the normalized tree-order cursor: <code>Read</code> / <code>Skip</code>, <code>TokenType</code>, <code>CurrentDepth</code>, and the <code>Get*</code> scalar accessors.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a> — <code>SpecVersion</code> (a <a class="xref" href="Bodu.Text.Toml.TomlSpecVersion.html">TomlSpecVersion</a>) and <code>MaxDepth</code>.</li>
+<li><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderState.html">TomlReaderState</a> — the opaque snapshot carried between input blocks of a <code>Utf8TomlReader</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+using Bodu.Text.Toml.Reader;
+
+var reader = new Utf8TomlReader(&quot;port = 8080&quot;u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == TomlTokenType.Key)
+        Console.Write($&quot;{reader.GetString()} = &quot;);
+    else if (reader.TokenType == TomlTokenType.Integer)
+        Console.WriteLine(reader.GetInt64());
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Two token streams.</strong> <code>Utf8TomlReader</code> yields <code>TableHeader</code> / <code>ArrayTableHeader</code> / <code>Key</code> / <code>Comment</code> tokens in file order; <code>TomlDocumentReader</code> yields the normalized <code>StartTable</code> / <code>PropertyName</code> / value shape with headers and dotted keys already resolved.</li>
+<li><strong>Strict by default.</strong> Parsing enforces v1.0.0; set <code>SpecVersion</code> to <code>V1_1</code> for the v1.1.0 additions. Malformed input throws <a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> with line, column, and offset.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/toml/index.html">Bodu.Text.Toml introduction</a> and the <a href="../guides/serialization/toml/using.html">Using TOML</a> guide (Pattern 9 — Process tokens by hand).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a></h4>
+      <section><p>Provides a forward-only cursor over the normalized, tree-order token stream of a parsed TOML document, serving as
+the binding layer through which converters consume values. The reader is a <code>ref struct</code>, so it
+cannot be boxed or captured; pass it by <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a> to thread it through a converter.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a></h4>
+      <section><p>Defines the customizations applied when creating a <a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Toml.Reader.TomlReaderState.html">TomlReaderState</a></h4>
+      <section><p>Carries the resumable state of a <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> between input blocks: an opaque snapshot that,
+together with the unconsumed bytes, lets a new reader continue exactly where the previous block's reader stopped.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a></h4>
+      <section><p>Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the
+input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> advances to the next lexical token in document order
+— for example <code>[server.tls]</code> surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</a> followed by a
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> per dotted segment, and <code>ports = [1, 2]</code> as a key, then
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a>, two integers, and <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_EndArray">EndArray</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

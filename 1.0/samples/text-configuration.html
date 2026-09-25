@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.Text.Configuration</code>
+and its <code>Microsoft.Extensions.Configuration</code> bridge under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Text.Configuration"><code>samples/Text.Configuration/</code></a>.
+Both samples are <strong>offline and deterministic</strong> — they run against committed <code>Data/</code> files —
+and are members of <code>bodu.slnx</code>, built and executed by CI. Each README documents every
+scenario individually: its intent, what the code does, the output to expect, and the APIs
+demonstrated.</p>
+<p>Run either sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Text.Configuration/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="bodutextconfigurationsamplesconfigcascade">Bodu.Text.Configuration.Samples.ConfigCascade</h3>
+<p>The document/resolver pipeline end to end: <code>Parse</code> vs
+<a class="xref" href="../api/Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics.html">ParseWithDiagnostics</a> under the Relaxed
+profile (diagnostics collected, document still usable); the heart of the library — path-targeted
+resolution, where every section whose glob matches the target contributes keys and later
+sections win, shown by resolving one file for three different targets and reading typed values
+(<code>GetInt32</code>, <code>GetEnum&lt;DayOfWeek&gt;</code>, fallbacks) from the
+<a class="xref" href="../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a>; the <code>unset</code> dialect decision —
+<a class="xref" href="../api/Bodu.Text.Configuration.ConfigurationUnsetValueMode.html">ConfigurationUnsetValueMode</a> <code>TreatAsLiteral</code> vs
+<code>RemoveEffectiveValue</code>, and the canonical profile option sets
+(<code>ConfigurationResolveOptions.EditorConfigCompatible</code>) that switch the whole pipeline
+coherently; and the write phase — in-place section edits, composing an appended section, and
+<code>ConfigurationDocument.Save</code> with every comment preserved. <em>Package:
+<code>Bodu.Text.Configuration</code>.</em></p>
+<h3 id="boduextensionsconfigurationtextsamplesbridgehosting">Bodu.Extensions.Configuration.Text.Samples.BridgeHosting</h3>
+<p>The same file formats flowing into the standard <code>Microsoft.Extensions.Configuration</code>
+pipeline: <code>AddTextConfigurationFile</code> resolving the <code>.boduconfig</code> cascade for a supplied
+<code>targetPath</code> at load time (the same file yields <code>logging:level = information</code> for a dev
+target and <code>warning</code> for a production target); <code>AddTomlFile</code> flattening TOML tables onto
+colon-separated configuration keys (<code>[server.limits]</code> → <code>server:limits:*</code>) with
+<code>optional: true</code> skipping missing files; and the final hop —
+<code>AddConfigurationOptions&lt;TOptions&gt;</code> binding a section to a POCO registered with dependency
+injection, consumed as <code>IOptions&lt;ServerOptions&gt;</code> by code that never learns the values came
+from TOML. The README also documents the path-handling difference between the two sources
+(file-provider-relative vs direct). <em>Packages: <code>Bodu.Extensions.Configuration.Text</code>,
+<code>Bodu.Text.Configuration</code>, <code>Bodu.Text.Toml</code>.</em></p>
+<h2 id="guarded-documentation">Guarded documentation</h2>
+<p>The guides under <a href="../guides/text-configuration/index.html"><code>docs/guides/text-configuration/</code></a>
+and
+<a href="../guides/extensions-configuration-text/index.html"><code>docs/guides/extensions-configuration-text/</code></a>
+carry compile-guarded snippets: examples marked with a <code>&lt;!-- compile --&gt;</code> sentinel are
+compiled against the current public API by <code>DocumentationSnippetCompileTests</code> in each
+library's test project (Regression tier).</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../guides/text-configuration/index.html">Text.Configuration guides</a> — parsing, profiles,
+views and resolution, diagnostics.</li>
+<li><a href="../guides/extensions-configuration-text/index.html">Configuration-bridge guides</a> — the
+<code>IConfigurationBuilder</code> sources and options binding.</li>
+<li><a href="formats.html">Formats samples</a> — plain INI and DotEnv, for when you don't need cascades.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

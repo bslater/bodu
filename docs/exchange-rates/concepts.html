@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Financial.ExchangeRates — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Financial.ExchangeRates — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodufinancialexchangerates--core-concepts">Bodu.Financial.ExchangeRates — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/financial/exchange-rate-providers.html">providers guide</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic. For the high-level shape of the package, start with the <a href="index.html">introduction</a>; the FX vocabulary shared with the core package — provider contracts, resolution policies, provenance — lives in the <a href="../financial/concepts.html">Bodu.Financial concepts</a> page.</p>
+<h2 id="warm-then-look-up">Warm, then look up</h2>
+<p>A web provider is a <strong>materializer</strong>: it downloads a feed, upserts every observation into an accumulator, and rebuilds an immutable snapshot (a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> wrapped in a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>). Every lookup is answered from that snapshot, so a lookup never touches the network unless the snapshot cannot answer it.</p>
+<p>There are three ways to warm the snapshot:</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Available on</th>
+<th>What it loads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Feed-specific warm-up (<code>LoadRangeAsync</code>, <code>PreloadAsync</code>, <code>LoadFeedAsync</code>, <code>LoadEraAsync</code>)</td>
+<td>Each bulk provider, shaped to its feed</td>
+<td>A date range, an era, or a whole feed for every quote currency.</td>
+</tr>
+<tr>
+<td><code>LoadPairAsync(from, to, start, end)</code></td>
+<td>Every provider, through <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></td>
+<td>Whatever unit covers the requested pair and window — a single pair on a pair feed, the enclosing feed or era on a bulk feed.</td>
+</tr>
+<tr>
+<td>The asynchronous getters (<code>GetRateAsync</code>, <code>GetRatesAsync</code>)</td>
+<td>Every provider</td>
+<td>On demand: a single-date lookup fetches the window <code>[date − DefaultLookback, date]</code>; a range read fetches the requested range. Already-covered windows are skipped.</td>
+</tr>
+</tbody>
+</table>
+<p>The synchronous getters (<code>GetRate</code>, <code>TryGetRate</code>, <code>GetRates</code>) resolve against the snapshot only. On a miss they return <code>false</code> or throw <code>KeyNotFoundException</code> — unless <code>AllowSynchronousNetworkAccess</code> is enabled (below).</p>
+<h2 id="bulk-provider-vs-pair-provider">Bulk provider vs pair provider</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a> is the root base. A <strong>bulk</strong> provider (RBA, ECB, BoE, IMF) derives from it directly: the feed publishes one base currency against many quotes, so a load brings in every pair at once and the provider tracks coverage per feed, era, or window. Only direct (<code>base→X</code>) and inverse (<code>X→base</code>) pairs resolve; a cross pair such as <code>USD→JPY</code> on the ECB provider is rejected with <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> before any download.</p>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> is the <strong>pair</strong> specialization (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED). It implements coverage tracking with a gap-aware per-pair <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DateRangeCoverage.html">DateRangeCoverage</a> set — a request that straddles an unfetched interior gap is treated as uncovered and fetched — and delegates the actual fetch-and-parse to an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a>. The <code>TSeries</code> type parameter is the feed-specific series metadata (<code>YahooSeriesInfo</code>, <code>FixerSeriesInfo</code>, …) that <code>GetAvailablePairs()</code> returns.</p>
+<h2 id="defaultlookback"><code>DefaultLookback</code></h2>
+<p>When a single-date asynchronous lookup must fetch on demand, the provider fetches the window ending on the requested date and spanning <code>DefaultLookback</code> (7 days by default on <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>), so a <code>PreviousWithin</code> resolution has observations to fall back to. Bulk providers override it: the ECB provider uses <code>TimeSpan.Zero</code> because a feed load already brings the surrounding dates.</p>
+<h2 id="raterangeresult"><code>RateRangeResult</code></h2>
+<p>A range read returns a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateRangeResult.html">RateRangeResult</a> rather than a bare list, so the caller can tell what was asked for from what was observed:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FromIsoCode</code>, <code>ToIsoCode</code></td>
+<td>The pair as requested.</td>
+</tr>
+<tr>
+<td><code>RequestedStartDate</code>, <code>RequestedEndDate</code></td>
+<td>The inclusive window as requested.</td>
+</tr>
+<tr>
+<td><code>Rates</code></td>
+<td>The observations found, in ascending date order — also exposed as <code>this[int]</code>, <code>Count</code>, and <code>IEnumerable&lt;ExchangeRate&gt;</code> (the result itself is an <code>IReadOnlyList&lt;ExchangeRate&gt;</code>).</td>
+</tr>
+<tr>
+<td><code>IsEmpty</code></td>
+<td><code>true</code> when no observation fell inside the window.</td>
+</tr>
+<tr>
+<td><code>FirstObservedDate</code>, <code>LastObservedDate</code></td>
+<td>The observed span, or <code>null</code> when empty.</td>
+</tr>
+</tbody>
+</table>
+<p>A window that spans weekends or holidays yields fewer observations than days; an empty result is a normal outcome, not an exception.</p>
+<h2 id="history-availability">History availability</h2>
+<p>Every web provider implements <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a> and advertises how far back it can serve rates through <code>HistoryAvailability</code>, a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> with three kinds:</p>
+<table>
+<thead>
+<tr>
+<th>Factory</th>
+<th><code>Kind</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RateHistoryAvailability.Unbounded</code></td>
+<td><code>Unbounded</code></td>
+<td>No declared floor (the base-class default).</td>
+</tr>
+<tr>
+<td><code>RateHistoryAvailability.RollingDays(n)</code></td>
+<td><code>Rolling</code></td>
+<td>Only the last <code>n</code> days relative to the current date — OANDA's anonymous endpoint (~180 days), or the ECB provider when only rolling feeds are configured.</td>
+</tr>
+<tr>
+<td><code>RateHistoryAvailability.Since(date)</code></td>
+<td><code>Since</code></td>
+<td>Data exists from a fixed epoch — Fixer's 1999-01-01, the ECB full-history feed's 1999-01-04.</td>
+</tr>
+</tbody>
+</table>
+<p><code>GetEarliestAvailable(asOf)</code> and <code>IsAvailable(date, asOf)</code> let a caller — or the <a href="../../guides/financial/exchange-rate-caching.html#respecting-advertised-history">caching layer</a> — avoid asking for dates the feed has declared unavailable. Pair providers read the value from <code>WebRateProviderOptions.HistoryAvailability</code>; bulk providers derive it from their feed configuration.</p>
+<h2 id="payload-cache-vs-rate-cache">Payload cache vs rate cache</h2>
+<p>Two caches with different jobs:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Payload cache</th>
+<th>Rate cache</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lives in</td>
+<td>This package (<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IByteCache-1.html">IByteCache&lt;TKey&gt;</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html">FileSystemByteCache&lt;TKey&gt;</a>) and the bulk provider packages</td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code> (<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>)</td>
+</tr>
+<tr>
+<td>Stores</td>
+<td>The <strong>raw bytes</strong> of a downloaded file, keyed by download unit (an ECB feed, an RBA era, an IMF report month)</td>
+<td><strong>Parsed, resolved rates</strong> plus the fetched-window coverage, per provider and pair</td>
+</tr>
+<tr>
+<td>Purpose</td>
+<td>Avoid re-downloading immutable history across process restarts</td>
+<td>Serve repeated lookups without consulting the provider at all; share across processes and machines</td>
+</tr>
+<tr>
+<td>Freshness</td>
+<td>A file older than the options' <code>RefreshInterval</code> is re-downloaded</td>
+<td>Per-provider expiry, jitter, and refresh-ahead</td>
+</tr>
+<tr>
+<td>Configured by</td>
+<td><code>EnableDiskCache</code>, <code>CacheDirectory</code>, <code>RefreshInterval</code> on the bulk providers' options</td>
+<td><code>AddCachedRateProvider</code> and the <code>IRateCache</code> backends</td>
+</tr>
+</tbody>
+</table>
+<p>The payload cache is <strong>best-effort</strong>: an I/O failure while reading is a miss, a failure while writing is swallowed (and logged when a logger is supplied), so a cache problem never breaks rate retrieval. Pair providers keep no payload cache — each pair-and-window request is a distinct query — and rely on in-memory coverage and, optionally, the rate cache.</p>
+<h2 id="single-flight">Single-flight</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.SingleFlightCoordinator-1.html">SingleFlightCoordinator&lt;TKey&gt;</a> implements request coalescing: when several callers request the same key while a fetch is running, they join the running task instead of starting duplicate work. <code>WebRateProvider.LoadCoalescedAsync(key, load, cancellationToken)</code> wraps it for derived types, and <code>PairWebRateProvider&lt;TSeries&gt;</code> applies it per pair-and-window automatically.</p>
+<p>Two properties matter to consumers. The in-flight entry is released as soon as the operation completes, <strong>including on failure</strong>, so a fault never poisons a key. And the shared operation runs under <code>CancellationToken.None</code>: a caller's token abandons only that caller's wait (it observes <code>OperationCanceledException</code>), never the fetch the other joiners are waiting on.</p>
+<h2 id="allowsynchronousnetworkaccess"><code>AllowSynchronousNetworkAccess</code></h2>
+<p>Off by default. When enabled, the synchronous getters block to fetch a missing window on demand instead of reporting a miss. Blocking on asynchronous I/O from a thread with a captured <code>SynchronizationContext</code> (a UI thread, classic ASP.NET) can deadlock, so the provider converts that situation into an immediate <code>InvalidOperationException</code> rather than a hang. Enable it only for code that calls the synchronous getters from thread-pool threads, or prefer the asynchronous surface and an explicit warm-up.</p>
+<h2 id="resilience">Resilience</h2>
+<p>A provider constructed from options alone builds and owns its <code>HttpClient</code> through <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory.html">RateProviderHttpClientFactory</a>: the options' <code>UserAgent</code>, <code>HttpTimeout</code> (applied as <code>HttpClient.Timeout</code>), and <code>MaxResponseContentBufferSize</code> (a 64 MiB ceiling so a hostile endpoint cannot drive unbounded memory use). There is no retry.</p>
+<p>A provider registered through <code>AddWebRateProvider</code> (every <code>Add&lt;Source&gt;ExchangeRates</code>) borrows a named <code>HttpClient</code> from <code>IHttpClientFactory</code> fitted with the <strong>standard Polly resilience handler</strong> — retry with exponential backoff and jitter, a per-attempt timeout driven from <code>HttpTimeout</code>, a total-request timeout of three times that value, and a circuit breaker. <code>HttpClient.Timeout</code> is set to infinite so the two mechanisms do not compete. Tune or effectively disable the pipeline through the <code>configureResilience</code> callback (<code>Action&lt;HttpStandardResilienceOptions&gt;</code>) on the registration.</p>
+<h2 id="failure-modes">Failure modes</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Surfaces as</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A date the snapshot cannot resolve under the lookup options</td>
+<td><code>TryGetRate</code> returns <code>false</code>; <code>GetRate</code> / <code>GetRateAsync</code> throw <code>KeyNotFoundException</code></td>
+<td>Every provider</td>
+</tr>
+<tr>
+<td>A pair a single-base feed does not quote (cross pair)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeriesNotFoundException.html">RateSeriesNotFoundException</a> (a <code>KeyNotFoundException</code>)</td>
+<td>Bulk providers, before any download</td>
+</tr>
+<tr>
+<td>An inverted date range (<code>endDate &lt; startDate</code>), a malformed ISO code</td>
+<td><code>ArgumentException</code> (<code>ArgumentNullException</code> for a null code)</td>
+<td>Range and warm-up surfaces</td>
+</tr>
+<tr>
+<td>Invalid options (<code>BaseAddress</code> null, non-positive timeout, missing API key, …)</td>
+<td><code>ArgumentException</code> from the constructor; with DI, an options-validation failure at startup (<code>ValidateOnStart</code>)</td>
+<td>Construction / registration</td>
+</tr>
+<tr>
+<td>A downloaded payload that cannot be parsed</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateFormatException.html">ExchangeRateFormatException</a> (a <code>FormatException</code>)</td>
+<td>The fetch, propagated to the caller that triggered it</td>
+</tr>
+<tr>
+<td>A transport failure (DNS, connection, non-success status)</td>
+<td><code>HttpRequestException</code> — on the DI path, after the resilience pipeline has exhausted its retries</td>
+<td>The fetch</td>
+</tr>
+<tr>
+<td>A per-request timeout on an owned client</td>
+<td><code>TaskCanceledException</code> (the <code>HttpClient</code> convention)</td>
+<td>The fetch</td>
+</tr>
+<tr>
+<td>A synchronous fetch attempted on a thread with a <code>SynchronizationContext</code></td>
+<td><code>InvalidOperationException</code></td>
+<td>Synchronous getters with <code>AllowSynchronousNetworkAccess</code> enabled</td>
+</tr>
+<tr>
+<td>Any member after <code>Dispose()</code></td>
+<td><code>ObjectDisposedException</code></td>
+<td>Every provider</td>
+</tr>
+</tbody>
+</table>
+<p>Fetch failures are logged at <code>DownloadFailedLogLevel</code> (<code>Warning</code> by default) and rethrown; the pair base logs anything other than a transport, I/O, or format failure under a distinct error event so a bug is not mislabelled as a feed problem. Cancellation is never logged.</p>
+<h2 id="lifetimes-and-httpclient-ownership">Lifetimes and <code>HttpClient</code> ownership</h2>
+<p>A provider is designed to be <strong>long-lived</strong>: its value is the accumulated snapshot. The DI registration makes it a singleton and exposes the same instance as <code>IDatedRateProvider</code> and <code>IRateProvider</code> (idempotent <code>TryAdd</code> registrations, so the first registered provider wins each contract).</p>
+<p>The options-only constructor <strong>owns</strong> the <code>HttpClient</code> it builds and disposes it with the provider. The constructor that accepts an <code>HttpClient</code> leaves the client's lifetime — and its user agent and timeout — to the caller; that is the shape <code>AddWebRateProvider</code> uses with <code>IHttpClientFactory</code>. Dispose an owned provider when it goes out of scope; after disposal every public member throws <code>ObjectDisposedException</code>, but snapshots already handed out through <code>GetLoadedBook()</code> / <code>GetLoadedSnapshot()</code> stay valid because they are immutable.</p>
+<h2 id="thread-safety">Thread safety</h2>
+<p>A provider is safe for concurrent use. Lookups read a <code>volatile</code> reference to the current immutable snapshot, so they never block behind a fetch and never observe a partially applied load; fetches accumulate under the provider's <code>SyncRoot</code> and publish the new snapshot atomically. Concurrent loads of the same unit coalesce (above). <code>GetLoadedBook()</code> and <code>GetLoadedSnapshot()</code> return immutable instances pinned at call time — later fetches replace, never mutate, them — so they are safe to share across threads and to keep after the provider is disposed. <code>GetAvailablePairs()</code> returns a snapshot array.</p>
+<h2 id="snapshots-and-export">Snapshots and export</h2>
+<p><code>GetLoadedBook()</code> returns the immutable <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a> of everything fetched so far; <code>GetLoadedSnapshot()</code> returns the same data as a ready-to-query <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>. Both are the composable export primitives — rewrap the book with a provider-priority policy, edit a copy through <code>RateBook.ToBuilder()</code>, or hand the snapshot to code that must never touch the network. The <a href="../../guides/financial/exchange-rate-providers.html#snapshotting-and-exporting-rates">providers guide</a> shows the patterns.</p>
+<h2 id="logging">Logging</h2>
+<p>Logging is opt-in: pass an <code>ILogger</code> (or let DI supply one) or the provider uses <code>NullLogger</code>. Each options type exposes five per-event levels — <code>DownloadStartingLogLevel</code> (<code>Debug</code>), <code>DownloadCompletedLogLevel</code> (<code>Information</code>), <code>DownloadFailedLogLevel</code> (<code>Warning</code>), <code>ObservationIngestedLogLevel</code> (<code>Information</code>), and <code>SynchronousNetworkFetchLogLevel</code> (<code>Warning</code>) — so verbosity is tuned per concern without category-wide filters; <code>LogLevel.None</code> suppresses an event entirely.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples for every concept above.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape of the package and the provider family table.</li>
+<li><strong><a href="../../guides/financial/exchange-rate-lookups.html">Exchange-rate lookups on a known dataset</a></strong> — the six date-resolution policies and tolerance, which apply unchanged to web providers.</li>
+<li><strong><a href="../../guides/financial/exchange-rate-caching.html">Caching and aggregating exchange rates</a></strong> — the rate cache this page distinguishes from the payload cache.</li>
+<li><strong><a href="../financial/concepts.html">Bodu.Financial concepts</a></strong> — the FX vocabulary shared with the core package.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.html">Bodu.Financial.ExchangeRates API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

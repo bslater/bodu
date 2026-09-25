@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class TextFilterPattern | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class TextFilterPattern | BODU ">
+    
+    <meta name="description" content="Represents one immutable filtering rule: a pattern, the action taken when it matches, the syntax the pattern is written in, and an optional case-sensitivity override.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Filtering.TextFilterPattern">
+
+
+
+  <h1 id="Bodu_Text_Filtering_TextFilterPattern" data-uid="Bodu.Text.Filtering.TextFilterPattern" class="text-break">Class TextFilterPattern</h1>
+  <div class="markdown level0 summary"><p>Represents one immutable filtering rule: a pattern, the action taken when it matches, the syntax the pattern is
+written in, and an optional case-sensitivity override.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">TextFilterPattern</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Filtering.html">Filtering</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Filtering.dll</h6>
+  <h5 id="Bodu_Text_Filtering_TextFilterPattern_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class TextFilterPattern</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Filtering_TextFilterPattern_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Patterns do not match values on their own; they are compiled — together with the other patterns of a rule set — into
+a <a class="xref" href="Bodu.Text.Filtering.TextFilter.html">TextFilter</a> via
+<a class="xref" href="Bodu.Text.Filtering.TextFilter.Build.html#Bodu_Text_Filtering_TextFilter_Build_System_Collections_Generic_IEnumerable_Bodu_Text_Filtering_TextFilterPattern__">Build(IEnumerable&lt;TextFilterPattern&gt;)</a>. Wildcard grammar errors
+and regular-expression syntax errors are reported at that point, not by this constructor.
+</p>
+<p>
+The constructor validates only shape-independent rules: the pattern text must be non-empty, must not consist solely
+of white space, and must not exceed <span class="xref">Bodu.Text.Filtering.TextFilterPattern.MaxPatternLength</span> characters (a guard against pathological
+patterns, mirroring the limits used elsewhere in the Bodu libraries).
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern__ctor_System_String_Bodu_Text_Filtering_TextFilterAction_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__" data-uid="Bodu.Text.Filtering.TextFilterPattern.#ctor(System.String,Bodu.Text.Filtering.TextFilterAction,Bodu.Text.Filtering.TextFilterPatternKind,System.Nullable{System.Boolean})">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.-ctor.html#Bodu_Text_Filtering_TextFilterPattern__ctor_System_String_Bodu_Text_Filtering_TextFilterAction_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__">TextFilterPattern(string, TextFilterAction, TextFilterPatternKind, bool?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> class.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_Action" data-uid="Bodu.Text.Filtering.TextFilterPattern.Action">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Action.html#Bodu_Text_Filtering_TextFilterPattern_Action">Action</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the action taken when the pattern matches a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_IgnoreCase" data-uid="Bodu.Text.Filtering.TextFilterPattern.IgnoreCase">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.IgnoreCase.html#Bodu_Text_Filtering_TextFilterPattern_IgnoreCase">IgnoreCase</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the case-sensitivity override for this pattern.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_Kind" data-uid="Bodu.Text.Filtering.TextFilterPattern.Kind">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Kind.html#Bodu_Text_Filtering_TextFilterPattern_Kind">Kind</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the syntax used to interpret <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Pattern.html#Bodu_Text_Filtering_TextFilterPattern_Pattern">Pattern</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_Pattern" data-uid="Bodu.Text.Filtering.TextFilterPattern.Pattern">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Pattern.html#Bodu_Text_Filtering_TextFilterPattern_Pattern">Pattern</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the pattern text as originally supplied.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_Exclude_System_String_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__" data-uid="Bodu.Text.Filtering.TextFilterPattern.Exclude(System.String,Bodu.Text.Filtering.TextFilterPatternKind,System.Nullable{System.Boolean})">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Exclude.html#Bodu_Text_Filtering_TextFilterPattern_Exclude_System_String_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__">Exclude(string, TextFilterPatternKind, bool?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an exclude pattern.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_Include_System_String_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__" data-uid="Bodu.Text.Filtering.TextFilterPattern.Include(System.String,Bodu.Text.Filtering.TextFilterPatternKind,System.Nullable{System.Boolean})">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Include.html#Bodu_Text_Filtering_TextFilterPattern_Include_System_String_Bodu_Text_Filtering_TextFilterPatternKind_System_Nullable_System_Boolean__">Include(string, TextFilterPatternKind, bool?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an include pattern.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Filtering_TextFilterPattern_ToString" data-uid="Bodu.Text.Filtering.TextFilterPattern.ToString">
+          <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.ToString.html#Bodu_Text_Filtering_TextFilterPattern_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a diagnostic representation of the pattern in the form <code>+wildcard:text</code> or <code>-regex:text</code>,
+where the leading sign reflects <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.Action.html#Bodu_Text_Filtering_TextFilterPattern_Action">Action</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

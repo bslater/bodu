@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct SignatureValue | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct SignatureValue | BODU ">
+    
+    <meta name="description" content="Represents a digital-signature value together with its wire encoding.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.SignatureValue">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_SignatureValue" data-uid="Bodu.Security.Cryptography.SignatureValue" class="text-break">Struct SignatureValue</h1>
+  <div class="markdown level0 summary"><p>Represents a digital-signature value together with its wire encoding.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_SignatureValue_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct SignatureValue : IEquatable&lt;SignatureValue&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_SignatureValue_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A signature is a byte sequence whose interpretation depends on its encoding (see <a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a>).
+Carrying the <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Format.html#Bodu_Security_Cryptography_SignatureValue_Format">Format</a> with the bytes prevents the most common signature interoperability failure:
+passing an ASN.1 DER signature to a verifier expecting the fixed-width IEEE P1363 form, or vice versa.
+</p>
+<p>
+<a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> carries its bytes by defensive copy, and the default instance (
+<code>default(SignatureValue)</code>) is the empty value with <a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html#Bodu_Security_Cryptography_SignatureFormat_Unknown">Unknown</a>:
+<a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Length.html#Bodu_Security_Cryptography_SignatureValue_Length">Length</a> is <code>0</code> and <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.IsEmpty.html#Bodu_Security_Cryptography_SignatureValue_IsEmpty">IsEmpty</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.
+</p>
+<p>
+<a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Equals.html#Bodu_Security_Cryptography_SignatureValue_Equals_Bodu_Security_Cryptography_SignatureValue_">Equals(SignatureValue)</a> compares both the format and the bytes;
+<a class="xref" href="Bodu.Security.Cryptography.SignatureValue.FixedTimeEquals.html#Bodu_Security_Cryptography_SignatureValue_FixedTimeEquals_Bodu_Security_Cryptography_SignatureValue_">FixedTimeEquals(SignatureValue)</a> compares the bytes only, in fixed time.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_SignatureValue_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Record a signature together with the wire encoding its producer emitted.
+SignatureValue signature = SignatureValue.FromBytes(signatureBytes, SignatureFormat.P1363);
+
+// Downstream code branches on the recorded format instead of guessing, avoiding the classic
+// failure of feeding a fixed-width P1363 signature to a verifier that expects ASN.1 DER.
+ReadOnlySpan&lt;byte&gt; bytes = signature.AsSpan();
+bool valid = signature.Format == SignatureFormat.Der
+    ? VerifyDer(bytes)
+    : VerifyP1363(bytes);</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_Format" data-uid="Bodu.Security.Cryptography.SignatureValue.Format">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Format.html#Bodu_Security_Cryptography_SignatureValue_Format">Format</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the wire encoding of the signature bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_IsEmpty" data-uid="Bodu.Security.Cryptography.SignatureValue.IsEmpty">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.IsEmpty.html#Bodu_Security_Cryptography_SignatureValue_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the signature is empty.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_Length" data-uid="Bodu.Security.Cryptography.SignatureValue.Length">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Length.html#Bodu_Security_Cryptography_SignatureValue_Length">Length</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bytes in the signature.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_AsSpan" data-uid="Bodu.Security.Cryptography.SignatureValue.AsSpan">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.AsSpan.html#Bodu_Security_Cryptography_SignatureValue_AsSpan">AsSpan()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a read-only view over the signature bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_Equals_Bodu_Security_Cryptography_SignatureValue_" data-uid="Bodu.Security.Cryptography.SignatureValue.Equals(Bodu.Security.Cryptography.SignatureValue)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Equals.html#Bodu_Security_Cryptography_SignatureValue_Equals_Bodu_Security_Cryptography_SignatureValue_">Equals(SignatureValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this signature equals another, comparing both format and bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_Equals_System_Object_" data-uid="Bodu.Security.Cryptography.SignatureValue.Equals(System.Object)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Equals.html#Bodu_Security_Cryptography_SignatureValue_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this signature equals the specified object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_FixedTimeEquals_Bodu_Security_Cryptography_SignatureValue_" data-uid="Bodu.Security.Cryptography.SignatureValue.FixedTimeEquals(Bodu.Security.Cryptography.SignatureValue)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.FixedTimeEquals.html#Bodu_Security_Cryptography_SignatureValue_FixedTimeEquals_Bodu_Security_Cryptography_SignatureValue_">FixedTimeEquals(SignatureValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the bytes of this signature to another in fixed time, ignoring <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.Format.html#Bodu_Security_Cryptography_SignatureValue_Format">Format</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_FromBytes_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_SignatureFormat_" data-uid="Bodu.Security.Cryptography.SignatureValue.FromBytes(System.ReadOnlySpan{System.Byte},Bodu.Security.Cryptography.SignatureFormat)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.FromBytes.html#Bodu_Security_Cryptography_SignatureValue_FromBytes_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_SignatureFormat_">FromBytes(ReadOnlySpan&lt;byte&gt;, SignatureFormat)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> from the provided bytes and encoding.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_GetHashCode" data-uid="Bodu.Security.Cryptography.SignatureValue.GetHashCode">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.GetHashCode.html#Bodu_Security_Cryptography_SignatureValue_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code computed over the format and the signature bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_ToArray" data-uid="Bodu.Security.Cryptography.SignatureValue.ToArray">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.ToArray.html#Bodu_Security_Cryptography_SignatureValue_ToArray">ToArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the signature bytes into a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_ToBase64String" data-uid="Bodu.Security.Cryptography.SignatureValue.ToBase64String">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.ToBase64String.html#Bodu_Security_Cryptography_SignatureValue_ToBase64String">ToBase64String()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the signature as a Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_ToHexString" data-uid="Bodu.Security.Cryptography.SignatureValue.ToHexString">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.ToHexString.html#Bodu_Security_Cryptography_SignatureValue_ToHexString">ToHexString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the signature as a lowercase hexadecimal string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_ToString" data-uid="Bodu.Security.Cryptography.SignatureValue.ToString">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.ToString.html#Bodu_Security_Cryptography_SignatureValue_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the lowercase hexadecimal representation of the signature bytes.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_op_Equality_Bodu_Security_Cryptography_SignatureValue_Bodu_Security_Cryptography_SignatureValue_" data-uid="Bodu.Security.Cryptography.SignatureValue.op_Equality(Bodu.Security.Cryptography.SignatureValue,Bodu.Security.Cryptography.SignatureValue)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.op_Equality.html#Bodu_Security_Cryptography_SignatureValue_op_Equality_Bodu_Security_Cryptography_SignatureValue_Bodu_Security_Cryptography_SignatureValue_">operator ==(SignatureValue, SignatureValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two signatures are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_SignatureValue_op_Inequality_Bodu_Security_Cryptography_SignatureValue_Bodu_Security_Cryptography_SignatureValue_" data-uid="Bodu.Security.Cryptography.SignatureValue.op_Inequality(Bodu.Security.Cryptography.SignatureValue,Bodu.Security.Cryptography.SignatureValue)">
+          <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.op_Inequality.html#Bodu_Security_Cryptography_SignatureValue_op_Inequality_Bodu_Security_Cryptography_SignatureValue_Bodu_Security_Cryptography_SignatureValue_">operator !=(SignatureValue, SignatureValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two signatures are not equal.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

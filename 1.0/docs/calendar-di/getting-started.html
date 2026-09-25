@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Globalization.Calendar.DependencyInjection — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Globalization.Calendar.DependencyInjection — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduglobalizationcalendardependencyinjection--getting-started">Bodu.Globalization.Calendar.DependencyInjection — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>resource</em>, <em>territory</em>, or <em>collaborators</em>? Read the runtime's
+<a href="../calendar/concepts.html">core concepts</a> first; the <a href="index.html">introduction</a> explains the registration surface
+this page exercises.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Globalization.Calendar.DependencyInjection
+
+# One or more regional data packs supply the resources the samples register:
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+
+# Optional read-through cache in front of the registered service:
+dotnet add package Bodu.Globalization.Calendar.Caching
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Globalization.Calendar</code> (the runtime) and, at the .NET 8.0 LTS line,
+<code>Microsoft.Extensions.DependencyInjection.Abstractions</code>, <code>Microsoft.Extensions.Logging.Abstractions</code>, and
+<code>Microsoft.Extensions.Options</code> (for the options-monitor overload). It brings no container of its own — any
+<code>IServiceCollection</code> host works, and the samples use the ASP.NET Core <code>WebApplication</code> builder.</p>
+<p>Every extension method is in the <code>Bodu.Globalization.Calendar</code> namespace; there is no
+<code>Bodu.Globalization.Calendar.DependencyInjection</code> namespace to import.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="register-and-inject-a-service">Register and inject a service</h3>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+</code></pre>
+<p><code>INotableDateService</code> is now a singleton; inject it anywhere. By-year resolution is the
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceExtensions.html">NotableDateServiceExtensions</a> extension; the single-day and range overloads are on
+the interface itself:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+public sealed class HolidayService
+{
+    private readonly INotableDateService _calendar;
+
+    public HolidayService(INotableDateService calendar) =&gt;
+        _calendar = calendar;
+
+    public IReadOnlyList&lt;NotableDate&gt; Year(int year) =&gt;
+        _calendar.Resolve(year, &quot;AU-NSW&quot;);
+
+    public bool IsClosure(DateOnly date) =&gt;
+        _calendar.Resolve(date, &quot;AU-NSW&quot;, NotableDateFilter.IsNonWorkingDay()).Count &gt; 0;
+}
+</code></pre>
+<p>Use the factory overload when the resource depends on other registered services — for example, the territory comes
+from configuration:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddNotableDateService(sp =&gt;
+{
+    string territory = sp.GetRequiredService&lt;IConfiguration&gt;()[&quot;Calendar:Territory&quot;] ?? &quot;AU&quot;;
+    return AsiaPacificCalendarData.LoadResource(territory);
+});
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Calendar&quot;: {
+    &quot;Territory&quot;: &quot;AU&quot;
+  }
+}
+</code></pre>
+<p>The factory runs when the service is first resolved, not at registration.</p>
+<h3 id="register-one-service-per-jurisdiction-keyed">Register one service per jurisdiction (keyed)</h3>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddNotableDateService(&quot;US&quot;, AmericasCalendarData.LoadResource(&quot;US&quot;));
+builder.Services.AddNotableDateService(&quot;AU&quot;, AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+</code></pre>
+<p>Resolve by key through the standard .NET 8 keyed-service surface — a <code>[FromKeyedServices]</code> constructor parameter or
+<code>GetRequiredKeyedService</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+public sealed class PayrollCalendar
+{
+    private readonly INotableDateService _calendar;
+
+    public PayrollCalendar([FromKeyedServices(&quot;AU&quot;)] INotableDateService calendar) =&gt;
+        _calendar = calendar;
+
+    public bool IsBankHoliday(DateOnly date) =&gt;
+        _calendar.Resolve(date, &quot;AU&quot;, NotableDateFilter.ForCategory(NotableDateCategory.BankHoliday)).Count &gt; 0;
+}
+
+// Or, from a resolver:
+INotableDateService us = app.Services.GetRequiredKeyedService&lt;INotableDateService&gt;(&quot;US&quot;);
+</code></pre>
+<p>Keyed registrations are independent of the unkeyed one — register both when most consumers want a default calendar
+and a few want a specific jurisdiction. The keyed overloads accept a <code>NotableDateServiceOptions</code> (or an options
+factory) for collaborators, exactly like the unkeyed forms.</p>
+<h3 id="swap-the-rule-set-at-run-time-reloadable">Swap the rule set at run time (reloadable)</h3>
+<p><code>AddReloadableNotableDateService</code> registers the singleton service over a singleton
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a>. Inject the provider to reload:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+builder.Services.AddReloadableNotableDateService(EuropeCalendarData.LoadResource(&quot;GB&quot;));
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+public sealed class CalendarReloader
+{
+    private readonly MutableNotableDateResourceProvider _provider;
+
+    public CalendarReloader(MutableNotableDateResourceProvider provider) =&gt;
+        _provider = provider;
+
+    public void Apply(string updatedXml) =&gt;
+        _provider.Reload(NotableDateResourceLoader.Load(updatedXml, CommonNotableDateResources.Resolver));
+}
+</code></pre>
+<p>Every consumer of the singleton <code>INotableDateService</code> sees the new resource on its next query. A component that only
+needs to <em>read</em> the current resource can inject the
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a> interface instead of the concrete provider.</p>
+<h4 id="rebuild-from-configuration-automatically">Rebuild from configuration automatically</h4>
+<p>When the rule set is a function of configuration, bind an options class and use the <code>IOptionsMonitor&lt;TOptions&gt;</code>
+overload. Every change the options infrastructure observes — an edited <code>appsettings.json</code> with <code>reloadOnChange</code>,
+for example — reruns the factory and swaps the result into the live service:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.DependencyInjection;
+
+public sealed class CalendarOptions
+{
+    public string Territory { get; set; } = &quot;AU&quot;;
+}
+
+builder.Services.AddOptions&lt;CalendarOptions&gt;().Bind(builder.Configuration.GetSection(&quot;Calendar&quot;));
+builder.Services.AddReloadableNotableDateService&lt;CalendarOptions&gt;((sp, options) =&gt;
+    AsiaPacificCalendarData.LoadResource(options.Territory));
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Calendar&quot;: {
+    &quot;Territory&quot;: &quot;AU-NSW&quot;
+  }
+}
+</code></pre>
+<p>A factory that throws during a change is logged and leaves the previously loaded resource in effect, so a broken
+configuration edit never takes the calendar offline. (The <code>Calendar</code> section can hold other children — such as the
+caching package's <code>NotableDateCache</code> — without affecting the binding; the binder maps only the properties
+<code>CalendarOptions</code> declares.)</p>
+<h3 id="compose-with-custom-collaborators">Compose with custom collaborators</h3>
+<p>Pass a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> to any overload that accepts one — here a custom
+algorithm registry shared by the loader and the service, both produced from the container:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+var registry = new NotableDateAlgorithmRegistry()
+    .Register(&quot;company-founders-day&quot;, new FoundersDayAlgorithm());
+
+builder.Services.AddNotableDateService(
+    sp =&gt; NotableDateResourceLoader.Load(
+        sp.GetRequiredService&lt;IConfiguration&gt;()[&quot;Calendar:Document&quot;]!,
+        CommonNotableDateResources.Resolver,
+        registry),
+    _ =&gt; new NotableDateServiceOptions { Algorithms = registry });
+</code></pre>
+<p>The founders-day algorithm stands for your own <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a>
+implementation; see <a href="../../guides/calendar/building-the-service.html">Building and extending the service</a>.</p>
+<h2 id="adding-the-caching-decorator">Adding the caching decorator</h2>
+<p>The <a href="../calendar-caching/index.html"><code>Bodu.Globalization.Calendar.Caching</code></a> package layers a read-through cache over
+whichever registration you chose. <code>AddCachedNotableDateService</code> removes the registered <code>INotableDateService</code>
+descriptor, keeps it as the inner service, and registers the
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> decorator in its place — so it must come
+<strong>after</strong> the registration it wraps, and consumers keep injecting <code>INotableDateService</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+builder.Services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
+builder.Services.AddCachedNotableDateService(builder.Configuration);   // binds Calendar:NotableDateCache
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Calendar&quot;: {
+    &quot;NotableDateCache&quot;: {
+      &quot;Ttl&quot;: &quot;7.00:00:00&quot;,
+      &quot;CacheDirectory&quot;: &quot;/var/cache/notable-dates&quot;
+    }
+  }
+}
+</code></pre>
+<p>With the reloadable registration, the decorator observes the container's <code>INotableDateResourceProvider</code> and derives
+its resource-version token from it, so a <code>Reload(...)</code> invalidates every cached year on the next query with no extra
+wiring. With a plain <code>AddNotableDateService</code>, set <code>ResourceVersion</code> in the section and bump it after a data update.</p>
+<p>The decorator wraps only the <strong>unkeyed</strong> <code>INotableDateService</code>; keyed registrations are left untouched. To cache a
+keyed service, construct the decorator in that key's factory instead:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+builder.Services.AddKeyedSingleton&lt;INotableDateService&gt;(&quot;AU&quot;, (sp, _) =&gt;
+    new CachingNotableDateService(
+        AsiaPacificCalendarData.CreateService(&quot;AU&quot;),
+        new InMemoryNotableDateCache(),
+        new NotableDateCachingOptions { ResourceVersion = &quot;au-2026.1&quot; },
+        loggerFactory: sp.GetService&lt;ILoggerFactory&gt;()));
+</code></pre>
+<p>The caching package's <a href="../calendar-caching/getting-started.html">getting-started page</a> covers the SQLite and Redis
+backends and the startup warm-up.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the full overload table, lifetimes, and idempotency.</li>
+<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> — the complete walkthrough with collaborators and the reloadable workflow.</li>
+<li><strong><a href="../calendar-caching/index.html">Bodu.Globalization.Calendar.Caching</a></strong> — the caching decorator, its backends, and its registrations.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs</a></strong> — the <code>&lt;Region&gt;CalendarData</code> factories the samples load resources from.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">API reference</a></strong> — the registration surface, member by member.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline calendar sample projects you can <code>dotnet run</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

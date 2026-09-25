@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Writing a cache backend | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Writing a cache backend | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="writing-a-cache-backend">Writing a cache backend</h1>
+
+<p>The shipped backends — in-memory, TOML and JSON files, SQLite, and <code>IDistributedCache</code> — cover most deployments, but the storage seam is public. This page is for the case they do not cover: it states the <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract and the invariants a backend must honour, shows the two ways to satisfy it (derive the mechanism from <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a>, or implement the interface directly), walks through a complete backend that compiles, and shows how to plug it in and test it.</p>
+<h2 id="the-contract">The contract</h2>
+<p><code>INotableDateCache</code> has three members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Contract</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)</code></td>
+<td>Return the entry for <code>(territory, year)</code> <strong>only if</strong> its <code>ResourceVersion</code> equals <code>resourceVersion</code> and it is still fresh at <code>asOf</code> under <code>ttl</code>; otherwise <code>null</code>. Throws <code>ArgumentNullException</code> for a <code>null</code> territory or version; every other failure is a <code>null</code> (a miss).</td>
+</tr>
+<tr>
+<td><code>NotableDateCacheWriteStatus StoreYear(NotableDateCacheEntry entry, TimeSpan ttl, DateTimeOffset asOf)</code></td>
+<td>Merge the entry into the territory's stored years — the incoming year replaces any existing entry for that year — and prune entries that are stale at <code>asOf</code> or belong to a different resource version. Answer <code>Stored</code>, or <code>Failed</code> when a storage error was swallowed, or <code>Skipped</code> for a deliberate no-op.</td>
+</tr>
+<tr>
+<td><code>void Clear()</code></td>
+<td>Best-effort removal of everything.</td>
+</tr>
+</tbody>
+</table>
+<p>The unit of storage is <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a> — an immutable record of <code>(Territory, Year, ResourceVersion, Occurrences, ComputedAtUtc)</code> with an <code>IsFresh(asOf, ttl)</code> helper. An entry whose <code>Occurrences</code> list is empty is a valid, cacheable result (&quot;this year was computed and has nothing&quot;).</p>
+<h2 id="invariants-a-backend-must-honour">Invariants a backend must honour</h2>
+<ol>
+<li><strong>Territory keys are case-insensitive.</strong> <code>us</code> and <code>US</code> address the same entry; a subdivision (<code>CA-ON</code>) and its parent (<code>CA</code>) are distinct. Normalise to <code>Trim().ToUpperInvariant()</code> on both read and write, and persist the normalised form.</li>
+<li><strong>Version match is exact and ordinal.</strong> Serve an entry only when its <code>ResourceVersion</code> equals the requested one; a store drops every stored entry whose version differs from the incoming entry's, so a resource reload invalidates the territory wholesale.</li>
+<li><strong>Freshness is strict.</strong> An entry exactly one time-to-live old is stale (<code>ComputedAtUtc + ttl &lt;= asOf</code> is a miss). <code>NotableDateCacheEntry.IsFresh</code> encodes this; use it rather than re-deriving it.</li>
+<li><strong>Ordering round-trips.</strong> <code>Occurrences</code> must come back in exactly the order they were stored — the service's date-then-identity order. The decorator assembles multi-year range results by concatenation and relies on this; a backend that cannot preserve order forces a sort fallback on every read.</li>
+<li><strong>Merge is per year, last write wins.</strong> A store for <code>(US, 2026)</code> replaces the previous <code>(US, 2026)</code> and leaves <code>(US, 2025)</code> alone; the surviving set is re-checked for freshness on every write, so the store self-cleans.</li>
+<li><strong>Failures degrade, they do not throw.</strong> A read failure is an empty read; a write failure returns <code>Failed</code>. Only argument validation throws. If you expose a <code>ThrowOnStorageFailure</code>-style option, keep <code>false</code> as the default.</li>
+<li><strong>Concurrent stores to one territory must not lose entries.</strong> Two writers merging <code>(US, 2026)</code> and <code>(US, 2027)</code> concurrently must end with both years present — serialise the read-modify-write per territory.</li>
+</ol>
+<h2 id="option-a--derive-from-notabledatecachebasetoptions">Option A — derive from <code>NotableDateCacheBase&lt;TOptions&gt;</code></h2>
+<p><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheBase-1.html">NotableDateCacheBase&lt;TOptions&gt;</a> implements invariants 1–3, 5, and 7 for you: it normalises the territory, applies the freshness and version policy in <code>GetYear</code>, merges and prunes in <code>StoreYear</code> under a per-territory lock, and implements the internal batch-read seam so a multi-year range costs one read. A derived backend supplies <strong>only</strong> persistence of a territory's entry list:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Modifier</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>protected NotableDateCacheBase(TOptions options)</code></td>
+<td>constructor</td>
+<td>Validates and stores the options (<code>options.Validate()</code> is called).</td>
+</tr>
+<tr>
+<td><code>protected TOptions Options</code></td>
+<td>property</td>
+<td>The validated options.</td>
+</tr>
+<tr>
+<td><code>IReadOnlyList&lt;NotableDateCacheEntry&gt; ReadEntries(string territory)</code></td>
+<td><code>protected internal abstract</code></td>
+<td>Return the raw stored entries for a normalised territory, unfiltered; an empty list when none exist <strong>or the read failed</strong>.</td>
+</tr>
+<tr>
+<td><code>bool WriteEntries(string territory, IReadOnlyList&lt;NotableDateCacheEntry&gt; entries)</code></td>
+<td><code>protected internal abstract</code></td>
+<td>Replace the territory's stored state with <code>entries</code> (an empty list means &quot;delete the territory&quot;). Return <code>true</code> when persisted, <code>false</code> when a failure was swallowed. The list is freshly allocated per write, so it may be stored by reference.</td>
+</tr>
+<tr>
+<td><code>bool WriteEntries(string territory, IReadOnlyList&lt;NotableDateCacheEntry&gt; entries, TimeSpan ttl, DateTimeOffset asOf)</code></td>
+<td><code>protected internal virtual</code></td>
+<td>Overload that also receives the time-to-live, for stores with server-side expiry; the default delegates to the two-argument form.</td>
+</tr>
+<tr>
+<td><code>void Clear()</code></td>
+<td><code>public abstract</code></td>
+<td>Remove everything.</td>
+</tr>
+<tr>
+<td><code>NotableDateCacheEntry? GetYear(…)</code></td>
+<td><code>public virtual</code></td>
+<td>Override only when a keyed store can answer one year cheaper than reading the territory; the override must apply the same policy.</td>
+</tr>
+</tbody>
+</table>
+<p><code>TOptions</code> must derive from <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a>; use the base type itself when the backend needs no settings. The two seam members are declared <code>protected internal</code>, which a class in another assembly overrides with plain <code>protected override</code>. The base takes ownership of ordering only in the sense that it never reorders — invariant 4 is still yours.</p>
+<p>A complete backend over a dictionary, with the read-failure and write-failure paths a real store would have:</p>
+<pre><code class="lang-csharp">using System.Collections.Concurrent;
+using Bodu.Globalization.Calendar.Caching;
+
+/// &lt;summary&gt;An INotableDateCache over an in-process dictionary — the smallest complete backend.&lt;/summary&gt;
+public sealed class DictionaryNotableDateCache : NotableDateCacheBase&lt;NotableDateCacheOptions&gt;
+{
+    private readonly ConcurrentDictionary&lt;string, IReadOnlyList&lt;NotableDateCacheEntry&gt;&gt; _store =
+        new(StringComparer.Ordinal);
+
+    public DictionaryNotableDateCache()
+        : this(new NotableDateCacheOptions())
+    {
+    }
+
+    public DictionaryNotableDateCache(NotableDateCacheOptions options)
+        : base(options)
+    {
+    }
+
+    public override void Clear() =&gt;
+        _store.Clear();
+
+    protected override IReadOnlyList&lt;NotableDateCacheEntry&gt; ReadEntries(string territory)
+    {
+        // The base has already normalised 'territory'. Return the raw list; the base filters it.
+        return _store.TryGetValue(territory, out IReadOnlyList&lt;NotableDateCacheEntry&gt;? entries)
+            ? entries
+            : Array.Empty&lt;NotableDateCacheEntry&gt;();
+    }
+
+    protected override bool WriteEntries(string territory, IReadOnlyList&lt;NotableDateCacheEntry&gt; entries)
+    {
+        // An empty merged list means every year was pruned: remove the territory rather than keep an empty state.
+        if (entries.Count == 0)
+        {
+            _store.TryRemove(territory, out _);
+            return true;
+        }
+
+        // The base hands over a freshly merged list per write, so it is safe to store by reference.
+        _store[territory] = entries;
+        return true;   // a dictionary write cannot fail; a real store returns false when it swallows an exception
+    }
+}
+</code></pre>
+<p>A store with I/O follows the same shape with a <code>try</code>/<code>catch</code> around the persistence call: on failure, <code>ReadEntries</code> returns an empty list and <code>WriteEntries</code> returns <code>false</code> (rethrowing only when <code>Options.ThrowOnStorageFailure</code> is set), and the failure is logged and counted.</p>
+<h2 id="option-b--implement-inotabledatecache-directly">Option B — implement <code>INotableDateCache</code> directly</h2>
+<p>Implement the interface when the store's natural shape is not &quot;a list per territory&quot; — for example a key-value store that can only fetch one <code>(territory, year)</code> pair at a time — or when you want none of the base's locking. You then own every invariant above, including merge-and-prune on store. <a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a> is the smallest example of a direct implementation: it validates arguments, answers <code>null</code>, and reports <code>Skipped</code>.</p>
+<p>The batch-read seam the decorator uses to answer a multi-year range from one read is internal to the package, so a direct implementation is read once per spanned year; that is correct, only less efficient for wide ranges.</p>
+<h2 id="registering-the-backend">Registering the backend</h2>
+<p>Hand the backend to the decorator directly, or through the registration's <code>cacheFactory</code>. The factory is the same composition rule the SQLite and distributed add-ons use, and the container does not dispose a factory-supplied cache, so register it as a singleton if it holds resources:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var service = new CachingNotableDateService(
+    AmericasCalendarData.CreateService(&quot;US&quot;),
+    new InMemoryNotableDateCache(),                 // or your DictionaryNotableDateCache
+    new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(7) });
+
+IReadOnlyList&lt;NotableDate&gt; july = service.Resolve(
+    new DateRange(new DateOnly(2026, 7, 1), new DateOnly(2026, 7, 31)), &quot;US&quot;);
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Caching;
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+services.AddNotableDateService(AmericasCalendarData.LoadResource(&quot;US&quot;));
+services.AddSingleton&lt;INotableDateCache, DictionaryNotableDateCache&gt;();
+services.AddCachedNotableDateService(cacheFactory: sp =&gt; sp.GetRequiredService&lt;INotableDateCache&gt;());
+</code></pre>
+<h2 id="testing-a-backend">Testing a backend</h2>
+<p>The repository exercises every shipped backend through one abstract contract suite, <code>NotableDateCacheContractTests</code> in <code>Bodu.Globalization.Calendar.Caching.Test</code> (folder <code>Globalization.Calendar.Caching.Contracts</code>). A concrete subclass supplies a fresh cache through <code>protected abstract INotableDateCache CreateCache()</code> and inherits every contract test — case-insensitive keys, version mismatch as a miss, strict freshness, per-year merge and prune, ordering round-trip, and the <code>StoreYear</code> status. <code>InMemoryNotableDateCacheContractTests</code>, <code>TomlFileNotableDateCacheContractTests</code>, and <code>JsonFileNotableDateCacheContractTests</code> are its in-repo subclasses; the SQLite and distributed test projects carry their own subclasses under their <code>*.Contracts</code> folders. The decorator's own tests additionally use an <code>OrderViolatingNotableDateCache</code> to prove the sort fallback and a <code>CountingNotableDateCache</code> to count reads.</p>
+<p>Outside the repository the contract base is not packaged, so write the same checks against your backend. The essentials — each one is a direct reading of an invariant above:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Caching;
+
+public static class BackendChecks
+{
+    public static void Run(INotableDateCache cache)
+    {
+        var asOf = new DateTimeOffset(2026, 9, 1, 0, 0, 0, TimeSpan.Zero);
+        TimeSpan ttl = TimeSpan.FromDays(30);
+        IReadOnlyList&lt;NotableDate&gt; year = AmericasCalendarData.CreateService(&quot;US&quot;).Resolve(2026, &quot;US&quot;);
+
+        // Store, then read back by a differently cased key: same entry, same order.
+        var entry = new NotableDateCacheEntry(&quot;us&quot;, 2026, &quot;v1&quot;, year, asOf);
+        if (cache.StoreYear(entry, ttl, asOf) != NotableDateCacheWriteStatus.Stored) throw new Exception(&quot;store&quot;);
+        NotableDateCacheEntry? hit = cache.GetYear(&quot;US&quot;, 2026, &quot;v1&quot;, ttl, asOf);
+        if (hit is null || !hit.Occurrences.Select(o =&gt; (o.Date, o.Identity)).SequenceEqual(year.Select(o =&gt; (o.Date, o.Identity))))
+            throw new Exception(&quot;ordering or key normalisation&quot;);
+
+        // A different version is a miss; an entry exactly one TTL old is a miss.
+        if (cache.GetYear(&quot;US&quot;, 2026, &quot;v2&quot;, ttl, asOf) is not null) throw new Exception(&quot;version&quot;);
+        if (cache.GetYear(&quot;US&quot;, 2026, &quot;v1&quot;, ttl, asOf + ttl) is not null) throw new Exception(&quot;freshness&quot;);
+
+        // Storing a new version prunes the old one; storing another year keeps both.
+        cache.StoreYear(entry with { ResourceVersion = &quot;v2&quot; }, ttl, asOf);
+        if (cache.GetYear(&quot;US&quot;, 2026, &quot;v1&quot;, ttl, asOf) is not null) throw new Exception(&quot;prune on version change&quot;);
+        cache.StoreYear(entry with { Year = 2027, ResourceVersion = &quot;v2&quot; }, ttl, asOf);
+        if (cache.GetYear(&quot;US&quot;, 2026, &quot;v2&quot;, ttl, asOf) is null || cache.GetYear(&quot;US&quot;, 2027, &quot;v2&quot;, ttl, asOf) is null)
+            throw new Exception(&quot;merge per year&quot;);
+
+        cache.Clear();
+        if (cache.GetYear(&quot;US&quot;, 2026, &quot;v2&quot;, ttl, asOf) is not null) throw new Exception(&quot;clear&quot;);
+    }
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="backends-and-options.html">Cache backends and options</a></strong> — what the shipped backends persist and how they are configured.</li>
+<li><strong><a href="notable-date-caching.html">Caching notable dates</a></strong> — the decorator's behaviour the backend serves.</li>
+<li><strong><a class="xref" href="../../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> — <code>INotableDateCache</code>, <code>NotableDateCacheBase&lt;TOptions&gt;</code>, <code>NotableDateCacheEntry</code>, <code>NotableDateCacheWriteStatus</code>.</li>
+<li><strong><a href="../../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class AdjustmentPolicyBuilder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class AdjustmentPolicyBuilder | BODU ">
+    
+    <meta name="description" content="Provides a fluent surface for authoring a reusable adjustment policy: its scope, the trigger that activates it, the action it performs, the emission mode of the resulting occurrence, and any custom handler parameters.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder">
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder" class="text-break">Class AdjustmentPolicyBuilder</h1>
+  <div class="markdown level0 summary"><p>Provides a fluent surface for authoring a reusable adjustment policy: its scope, the trigger that activates it, the
+action it performs, the emission mode of the resulting occurrence, and any custom handler parameters.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">AdjustmentPolicyBuilder</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Builder.html">Builder</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Builder.dll</h6>
+  <h5 id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AdjustmentPolicyBuilder</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A policy reads as a sentence: <code>When</code> a trigger holds, <code>Then</code> perform an action, and <code>Emit</code> the
+resulting occurrence in the chosen mode. Configure the builder inside
+<a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.AddAdjustmentPolicy.html#Bodu_Globalization_Calendar_Builder_NotableDateDocumentBuilder_AddAdjustmentPolicy_System_String_System_Action_Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder__">AddAdjustmentPolicy(string, Action&lt;AdjustmentPolicyBuilder&gt;)</a> and
+reference the policy from a rule with <a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.WithAdjustment.html#Bodu_Globalization_Calendar_Builder_NotableDateRuleBuilder_WithAdjustment_System_String_">WithAdjustment(string)</a>.
+</p>
+</div>
+  <h5 id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// "If the holiday lands on a weekend, move it to the next working day and emit only the observed date."
+builder.AddAdjustmentPolicy("weekend-roll", p =&gt; p
+    .When(AdjustmentTrigger.IfWeekend)
+    .Then(AdjustmentAction.MoveToNextWorkingDay)
+    .SkipNonWorkingDates()
+    .Emit(EmissionMode.ObservedOnly)
+    .WithReason("Observed (weekend roll-forward)"));</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_Emit_Bodu_Globalization_Calendar_RangeResolution_EmissionMode_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.Emit(Bodu.Globalization.Calendar.RangeResolution.EmissionMode)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.Emit.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_Emit_Bodu_Globalization_Calendar_RangeResolution_EmissionMode_">Emit(EmissionMode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the emission mode of the resulting occurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_EmitNonWorking_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.EmitNonWorking(System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.EmitNonWorking.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_EmitNonWorking_System_Boolean_">EmitNonWorking(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets whether the emitted occurrence is a non-working day.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_OnTriggerWeekdays_System_DayOfWeek___" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.OnTriggerWeekdays(System.DayOfWeek[])">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.OnTriggerWeekdays.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_OnTriggerWeekdays_System_DayOfWeek___">OnTriggerWeekdays(params DayOfWeek[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces the weekdays attached to the trigger with the supplied collection.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_SkipNonWorkingDates_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.SkipNonWorkingDates(System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.SkipNonWorkingDates.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_SkipNonWorkingDates_System_Boolean_">SkipNonWorkingDates(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets whether the action skips other non-working dates while searching.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_SkipWeekends_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.SkipWeekends(System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.SkipWeekends.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_SkipWeekends_System_Boolean_">SkipWeekends(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets whether the action skips weekends while searching.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_Then_Bodu_Globalization_Calendar_AdjustmentAction_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.Then(Bodu.Globalization.Calendar.AdjustmentAction)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.Then.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_Then_Bodu_Globalization_Calendar_AdjustmentAction_">Then(AdjustmentAction)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the action type the policy performs when triggered.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_When_Bodu_Globalization_Calendar_AdjustmentTrigger_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.When(Bodu.Globalization.Calendar.AdjustmentTrigger)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.When.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_When_Bodu_Globalization_Calendar_AdjustmentTrigger_">When(AdjustmentTrigger)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the trigger type that activates the policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionDayOfWeek_System_DayOfWeek_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionDayOfWeek(System.DayOfWeek)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionDayOfWeek.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionDayOfWeek_System_DayOfWeek_">WithActionDayOfWeek(DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the target weekday for weekday-seeking actions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionDays_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionDays(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionDays.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionDays_System_Int32_">WithActionDays(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the signed day offset applied by an add-days action.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionHandlerKey_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionHandlerKey(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithActionHandlerKey.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithActionHandlerKey_System_String_">WithActionHandlerKey(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the custom-handler key used by a custom action.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithDescription_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithDescription(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithDescription.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithDescription_System_String_">WithDescription(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the human-readable description of the policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithMaxSearchDays_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithMaxSearchDays(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithMaxSearchDays.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithMaxSearchDays_System_Int32_">WithMaxSearchDays(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the maximum number of days an action searches before giving up.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithParameter_System_String_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithParameter(System.String,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithParameter.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithParameter_System_String_System_String_">WithParameter(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds or replaces a custom handler parameter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithPriority_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithPriority(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithPriority.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithPriority_System_Int32_">WithPriority(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the priority of the policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithReason_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithReason(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithReason.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithReason_System_String_">WithReason(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the reason attached to the emitted occurrence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithReplacementRule_System_String_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithReplacementRule(System.String,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithReplacementRule.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithReplacementRule_System_String_System_String_">WithReplacementRule(string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the replacement rule reference for a replace-with-rule action.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithScope_System_Action_Bodu_Globalization_Calendar_Builder_AdjustmentScopeBuilder__" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithScope(System.Action{Bodu.Globalization.Calendar.Builder.AdjustmentScopeBuilder})">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithScope.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithScope_System_Action_Bodu_Globalization_Calendar_Builder_AdjustmentScopeBuilder__">WithScope(Action&lt;AdjustmentScopeBuilder&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Configures the scope of the policy through the supplied delegate.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerDay_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerDay(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerDay.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerDay_System_Int32_">WithTriggerDay(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the comparison day used by day-sensitive triggers.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerHandlerKey_System_String_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerHandlerKey(System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerHandlerKey.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerHandlerKey_System_String_">WithTriggerHandlerKey(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the custom-handler key used by a custom trigger.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerMonth_System_Int32_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerMonth(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerMonth.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerMonth_System_Int32_">WithTriggerMonth(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the comparison month used by month-sensitive triggers.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerWeekOrdinal_Bodu_Extensions_WeekOrdinal_" data-uid="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerWeekOrdinal(Bodu.Extensions.WeekOrdinal)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.WithTriggerWeekOrdinal.html#Bodu_Globalization_Calendar_Builder_AdjustmentPolicyBuilder_WithTriggerWeekOrdinal_Bodu_Extensions_WeekOrdinal_">WithTriggerWeekOrdinal(WeekOrdinal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the week ordinal used by occurrence-sensitive triggers.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></div>
+      <div><a class="xref" href="Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></div>
+      <div><span><a href="../guides/calendar/adjustment-rules.html">Observance adjustment rules (guide)</a></span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

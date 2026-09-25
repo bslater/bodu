@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class BloomFilter&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class BloomFilter&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Represents a space-efficient probabilistic set that tests whether an element might be a member. Membership queries can produce false positives but never false negatives: an element that was added is always reported as present, while an element that was never added is occasionally misreported as present.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1">
+
+
+
+  <h1 id="Bodu_Collections_Probabilistic_BloomFilter_1" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1" class="text-break">Class BloomFilter&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents a space-efficient probabilistic set that tests whether an element <em>might</em> be a member. Membership
+queries can produce false positives but never false negatives: an element that was added is always reported as
+present, while an element that was never added is occasionally misreported as present.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">BloomFilter&lt;T&gt;</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Probabilistic.html">Probabilistic</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Collections.dll</h6>
+  <h5 id="Bodu_Collections_Probabilistic_BloomFilter_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class BloomFilter&lt;T&gt; where T : notnull</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of elements tracked by the filter. Must not be <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Collections_Probabilistic_BloomFilter_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The filter is sized from the constructor arguments using the standard Bloom formulas: the bit count is
+<code>m = ⌈−n·ln(p) / ln(2)²⌉</code> and the hash count is <code>k = max(1, round(m/n·ln 2))</code>, where <code>n</code> is
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ExpectedItems.html#Bodu_Collections_Probabilistic_BloomFilter_1_ExpectedItems">ExpectedItems</a> and <code>p</code> is <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.DesignFalsePositiveRate.html#Bodu_Collections_Probabilistic_BloomFilter_1_DesignFalsePositiveRate">DesignFalsePositiveRate</a>. Once more than <code>n</code>
+elements have been added the observed false-positive rate rises above <code>p</code>;
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.EstimatedFalsePositiveRate.html#Bodu_Collections_Probabilistic_BloomFilter_1_EstimatedFalsePositiveRate">EstimatedFalsePositiveRate</a> reports the rate implied by the current fill.
+</p>
+<p>
+Elements are hashed via the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> (or
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>): the comparer's 32-bit
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1.gethashcode">GetHashCode(T)</a> is expanded through a deterministic SplitMix64-style avalanche
+into two 64-bit values combined by Kirsch–Mitzenmacher double hashing. All entropy therefore derives from the 32-bit
+comparer hash — standard practice for comparer-based sketches — which bounds the achievable false-positive floor by
+the collision rate of that hash.
+</p>
+<p>
+The expansion is platform-stable, but the comparer may not be: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.gethashcode#system-string-gethashcode">GetHashCode()</a> is randomized per
+process, so exported state for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> elements (or any type with a randomized hash) is only
+meaningful when re-imported within the same process, or when a custom comparer with a stable hash is used.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.UnionWith.html#Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__">UnionWith(BloomFilter&lt;T&gt;)</a> merges another filter into this one by bitwise OR. The two filters must be compatible — the
+same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.BitCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_BitCount">BitCount</a>, the same <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.HashCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_HashCount">HashCount</a>, and the same (or equal) comparer — which in
+practice means they were constructed with the same parameters. After the merge this filter reports an element as
+possibly present when either source filter would have.
+</p>
+<p>
+The export format produced by <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.TryExport.html#Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> / <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Export.html#Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a> and consumed by <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Import.html#Bodu_Collections_Probabilistic_BloomFilter_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__">Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)</a>
+is an opaque, version-checked snapshot, not a wire contract; its layout may change between library versions with a
+corresponding version-byte bump.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> is not thread-safe. Concurrent reads and writes require external synchronization.
+</p>
+</div>
+  <h5 id="Bodu_Collections_Probabilistic_BloomFilter_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Track ~10,000 visitor ids with a 1% false-positive budget.
+var seen = new BloomFilter&lt;int&gt;(expectedItems: 10_000, falsePositiveRate: 0.01);
+
+seen.Add(42);
+
+Console.WriteLine(seen.MightContain(42));   // True  — added items are always found
+Console.WriteLine(seen.MightContain(4711)); // False (usually) — may rarely be a false positive</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.#ctor(System.Int32,System.Double)">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.-ctor.html#Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_">BloomFilter(int, double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> class sized for the expected element count and
+target false-positive rate, using the default equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.#ctor(System.Int32,System.Double,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.-ctor.html#Bodu_Collections_Probabilistic_BloomFilter_1__ctor_System_Int32_System_Double_System_Collections_Generic_IEqualityComparer__0__">BloomFilter(int, double, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> class sized for the expected element count and
+target false-positive rate, using the specified equality comparer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_BitCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.BitCount">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.BitCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_BitCount">BitCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of addressable bits in the filter (<code>m</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_Comparer" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Comparer">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Comparer.html#Bodu_Collections_Probabilistic_BloomFilter_1_Comparer">Comparer</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the equality comparer whose hash codes drive bit selection.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_DesignFalsePositiveRate" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.DesignFalsePositiveRate">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.DesignFalsePositiveRate.html#Bodu_Collections_Probabilistic_BloomFilter_1_DesignFalsePositiveRate">DesignFalsePositiveRate</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the false-positive probability the filter was sized for.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_EstimatedFalsePositiveRate" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.EstimatedFalsePositiveRate">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.EstimatedFalsePositiveRate.html#Bodu_Collections_Probabilistic_BloomFilter_1_EstimatedFalsePositiveRate">EstimatedFalsePositiveRate</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the false-positive probability implied by the current fill of the filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_ExpectedItems" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.ExpectedItems">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.ExpectedItems.html#Bodu_Collections_Probabilistic_BloomFilter_1_ExpectedItems">ExpectedItems</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of distinct elements the filter was sized for (<code>n</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_HashCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.HashCount">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.HashCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_HashCount">HashCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bit positions probed per element (<code>k</code>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_Add__0_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Add(`0)">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Add.html#Bodu_Collections_Probabilistic_BloomFilter_1_Add__0_">Add(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds an element to the filter. After the call, <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.MightContain.html#Bodu_Collections_Probabilistic_BloomFilter_1_MightContain__0_">MightContain(T)</a> is guaranteed to return
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for the element.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_Clear" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Clear">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Clear.html#Bodu_Collections_Probabilistic_BloomFilter_1_Clear">Clear()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes all elements from the filter by clearing every bit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Export(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Export.html#Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the filter state to <code class="paramref">destination</code>, which must be at least
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.GetExportByteCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_GetExportByteCount">GetExportByteCount()</a> bytes long.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_GetExportByteCount" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.GetExportByteCount">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.GetExportByteCount.html#Bodu_Collections_Probabilistic_BloomFilter_1_GetExportByteCount">GetExportByteCount()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of bytes required to export the filter state via <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.TryExport.html#Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Export.html#Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.Import(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Import.html#Bodu_Collections_Probabilistic_BloomFilter_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__">Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> from state previously produced by <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.TryExport.html#Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a> or
+<a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.Export.html#Bodu_Collections_Probabilistic_BloomFilter_1_Export_System_Span_System_Byte__">Export(Span&lt;byte&gt;)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_MightContain__0_" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.MightContain(`0)">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.MightContain.html#Bodu_Collections_Probabilistic_BloomFilter_1_MightContain__0_">MightContain(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the element might be a member of the filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.TryExport(System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.TryExport.html#Bodu_Collections_Probabilistic_BloomFilter_1_TryExport_System_Span_System_Byte__System_Int32__">TryExport(Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to write the filter state to <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__" data-uid="Bodu.Collections.Probabilistic.BloomFilter`1.UnionWith(Bodu.Collections.Probabilistic.BloomFilter{`0})">
+          <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.UnionWith.html#Bodu_Collections_Probabilistic_BloomFilter_1_UnionWith_Bodu_Collections_Probabilistic_BloomFilter__0__">UnionWith(BloomFilter&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Merges another compatible filter into this one so that this filter subsequently reports an element as possibly
+present when either source filter would have.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

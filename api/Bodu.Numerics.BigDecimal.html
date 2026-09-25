@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct BigDecimal | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct BigDecimal | BODU ">
+    
+    <meta name="description" content="Represents an immutable, arbitrary-precision decimal number — a  unscaled value together with a base-ten scale.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.BigDecimal">
+
+
+
+  <h1 id="Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal" class="text-break">Struct BigDecimal</h1>
+  <div class="markdown level0 summary"><p>Represents an immutable, arbitrary-precision decimal number — a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> unscaled value together
+with a base-ten scale.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.icomparisonoperators-3">IComparisonOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imodulusoperators-3">IModulusOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditionoperators-3">IAdditionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditiveidentity-2">IAdditiveIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idecrementoperators-1">IDecrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idivisionoperators-3">IDivisionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iequalityoperators-3">IEqualityOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iincrementoperators-1">IIncrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplicativeidentity-2">IMultiplicativeIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplyoperators-3">IMultiplyOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isubtractionoperators-3">ISubtractionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunarynegationoperators-2">IUnaryNegationOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunaryplusoperators-2">IUnaryPlusOperators</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_BigDecimal_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct BigDecimal : INumber&lt;BigDecimal&gt;, IComparisonOperators&lt;BigDecimal, BigDecimal, bool&gt;, IModulusOperators&lt;BigDecimal, BigDecimal, BigDecimal&gt;, ISignedNumber&lt;BigDecimal&gt;, INumberBase&lt;BigDecimal&gt;, ISpanFormattable, IFormattable, IAdditionOperators&lt;BigDecimal, BigDecimal, BigDecimal&gt;, IAdditiveIdentity&lt;BigDecimal, BigDecimal&gt;, IDecrementOperators&lt;BigDecimal&gt;, IDivisionOperators&lt;BigDecimal, BigDecimal, BigDecimal&gt;, IEqualityOperators&lt;BigDecimal, BigDecimal, bool&gt;, IIncrementOperators&lt;BigDecimal&gt;, IMultiplicativeIdentity&lt;BigDecimal, BigDecimal&gt;, IMultiplyOperators&lt;BigDecimal, BigDecimal, BigDecimal&gt;, ISubtractionOperators&lt;BigDecimal, BigDecimal, BigDecimal&gt;, IUnaryNegationOperators&lt;BigDecimal, BigDecimal&gt;, IUnaryPlusOperators&lt;BigDecimal, BigDecimal&gt;, IUtf8SpanFormattable, IComparable, IComparable&lt;BigDecimal&gt;, IEquatable&lt;BigDecimal&gt;, ISpanParsable&lt;BigDecimal&gt;, IParsable&lt;BigDecimal&gt;, IUtf8SpanParsable&lt;BigDecimal&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Numerics_BigDecimal_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> is the value <code>UnscaledValue × 10<sup>-Scale</sup></code>. Unlike
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> it has no fixed precision or range limit: both the number of significant digits and the
+exponent grow as needed.
+</p>
+<p>
+Every value is held in a single canonical form so equal values share one representation and compare and hash
+equally: trailing zeros are removed from the unscaled value down to — but never past — a scale of zero, so
+<code>1.0</code> and <code>1.00</code> are the same value, and an integer such as <code>100</code> keeps a scale of zero.
+</p>
+<p>
+Addition, subtraction, multiplication, and remainder are exact. Division is generally not exact (for example
+<code>1 / 3</code>), so the <code>/</code> operator and <a class="xref" href="Bodu.Numerics.BigDecimal.Divide.html#Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Divide(BigDecimal, BigDecimal)</a> round to a default working
+scale of <a class="xref" href="Bodu.Numerics.BigDecimal.DefaultDivisionScale.html">DefaultDivisionScale</a> decimal places using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>; use
+<a class="xref" href="Bodu.Numerics.BigDecimal.Divide.html#Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_System_Int32_System_MidpointRounding_">Divide(BigDecimal, BigDecimal, int, MidpointRounding)</a> to choose the scale and rounding explicitly.
+Exact quotients self-trim through canonicalization, so <code>1 / 2</code> is <code>0.5</code>.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_BigDecimal_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">BigDecimal price = BigDecimal.Parse("19.99");
+BigDecimal tax = price * BigDecimal.Parse("0.10");   // 1.999
+BigDecimal total = price + tax;                      // 21.989
+
+BigDecimal third = BigDecimal.One / 3;               // 0.3333… (50 places, half-even)
+BigDecimal half = BigDecimal.One / 2;                // 0.5 (exact)</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal__ctor_System_Numerics_BigInteger_" data-uid="Bodu.Numerics.BigDecimal.#ctor(System.Numerics.BigInteger)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.-ctor.html#Bodu_Numerics_BigDecimal__ctor_System_Numerics_BigInteger_">BigDecimal(BigInteger)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> struct representing the integer
+<code class="paramref">value</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal__ctor_System_Numerics_BigInteger_System_Int32_" data-uid="Bodu.Numerics.BigDecimal.#ctor(System.Numerics.BigInteger,System.Int32)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.-ctor.html#Bodu_Numerics_BigDecimal__ctor_System_Numerics_BigInteger_System_Int32_">BigDecimal(BigInteger, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> struct from an unscaled value and scale, reducing
+the result to canonical form.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_DefaultDivisionScale" data-uid="Bodu.Numerics.BigDecimal.DefaultDivisionScale">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.DefaultDivisionScale.html">DefaultDivisionScale</a>
+        </td>
+        <td class="markdown level1 summary"><p>The default number of fractional decimal places produced by the <code>/</code> operator and <a class="xref" href="Bodu.Numerics.BigDecimal.Divide.html#Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Divide(BigDecimal, BigDecimal)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_IsInteger" data-uid="Bodu.Numerics.BigDecimal.IsInteger">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.IsInteger.html#Bodu_Numerics_BigDecimal_IsInteger">IsInteger</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the value is an integer — has no fractional part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_IsNegative" data-uid="Bodu.Numerics.BigDecimal.IsNegative">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.IsNegative.html#Bodu_Numerics_BigDecimal_IsNegative">IsNegative</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the value is negative.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_IsPositive" data-uid="Bodu.Numerics.BigDecimal.IsPositive">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.IsPositive.html#Bodu_Numerics_BigDecimal_IsPositive">IsPositive</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the value is positive — strictly greater than zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_IsZero" data-uid="Bodu.Numerics.BigDecimal.IsZero">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.IsZero.html#Bodu_Numerics_BigDecimal_IsZero">IsZero</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the value is zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_MinusOne" data-uid="Bodu.Numerics.BigDecimal.MinusOne">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.MinusOne.html#Bodu_Numerics_BigDecimal_MinusOne">MinusOne</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> representing the value negative one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_One" data-uid="Bodu.Numerics.BigDecimal.One">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.One.html#Bodu_Numerics_BigDecimal_One">One</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> representing the value one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Precision" data-uid="Bodu.Numerics.BigDecimal.Precision">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Precision.html#Bodu_Numerics_BigDecimal_Precision">Precision</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the precision — the number of significant decimal digits in the unscaled value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Scale" data-uid="Bodu.Numerics.BigDecimal.Scale">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Scale.html#Bodu_Numerics_BigDecimal_Scale">Scale</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the base-ten scale of the canonical form — the number of fractional decimal places.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Sign" data-uid="Bodu.Numerics.BigDecimal.Sign">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Sign.html#Bodu_Numerics_BigDecimal_Sign">Sign</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the sign of the value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Ten" data-uid="Bodu.Numerics.BigDecimal.Ten">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Ten.html#Bodu_Numerics_BigDecimal_Ten">Ten</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> representing the value ten.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_UnscaledValue" data-uid="Bodu.Numerics.BigDecimal.UnscaledValue">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.UnscaledValue.html#Bodu_Numerics_BigDecimal_UnscaledValue">UnscaledValue</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the unscaled integer significand of the canonical form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Zero" data-uid="Bodu.Numerics.BigDecimal.Zero">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Zero.html#Bodu_Numerics_BigDecimal_Zero">Zero</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> representing the value zero.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Abs_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Abs(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Abs.html#Bodu_Numerics_BigDecimal_Abs_Bodu_Numerics_BigDecimal_">Abs(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the absolute value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Add_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Add(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Add.html#Bodu_Numerics_BigDecimal_Add_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Add(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two values exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Ceiling_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Ceiling(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Ceiling.html#Bodu_Numerics_BigDecimal_Ceiling_Bodu_Numerics_BigDecimal_">Ceiling(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the smallest integer value greater than or equal to <code class="paramref">value</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_CompareTo_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.CompareTo(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.CompareTo.html#Bodu_Numerics_BigDecimal_CompareTo_Bodu_Numerics_BigDecimal_">CompareTo(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares this value with another <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_CompareTo_System_Object_" data-uid="Bodu.Numerics.BigDecimal.CompareTo(System.Object)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.CompareTo.html#Bodu_Numerics_BigDecimal_CompareTo_System_Object_">CompareTo(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares this value with another object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Deconstruct_System_Numerics_BigInteger__System_Int32__" data-uid="Bodu.Numerics.BigDecimal.Deconstruct(System.Numerics.BigInteger@,System.Int32@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Deconstruct.html#Bodu_Numerics_BigDecimal_Deconstruct_System_Numerics_BigInteger__System_Int32__">Deconstruct(out BigInteger, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Deconstructs the value into its canonical unscaled value and scale.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Divide(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Divide.html#Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Divide(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one value by another, rounding to <a class="xref" href="Bodu.Numerics.BigDecimal.DefaultDivisionScale.html">DefaultDivisionScale</a> decimal places using
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_System_Int32_System_MidpointRounding_" data-uid="Bodu.Numerics.BigDecimal.Divide(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal,System.Int32,System.MidpointRounding)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Divide.html#Bodu_Numerics_BigDecimal_Divide_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_System_Int32_System_MidpointRounding_">Divide(BigDecimal, BigDecimal, int, MidpointRounding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one value by another, rounding the result to the specified number of decimal places.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Equals_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Equals(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Equals.html#Bodu_Numerics_BigDecimal_Equals_Bodu_Numerics_BigDecimal_">Equals(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this value equals another <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Equals_System_Object_" data-uid="Bodu.Numerics.BigDecimal.Equals(System.Object)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Equals.html#Bodu_Numerics_BigDecimal_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this value equals another object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Floor_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Floor(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Floor.html#Bodu_Numerics_BigDecimal_Floor_Bodu_Numerics_BigDecimal_">Floor(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the largest integer value less than or equal to <code class="paramref">value</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_FromDecimal_System_Decimal_" data-uid="Bodu.Numerics.BigDecimal.FromDecimal(System.Decimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.FromDecimal.html#Bodu_Numerics_BigDecimal_FromDecimal_System_Decimal_">FromDecimal(decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_FromDouble_System_Double_" data-uid="Bodu.Numerics.BigDecimal.FromDouble(System.Double)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.FromDouble.html#Bodu_Numerics_BigDecimal_FromDouble_System_Double_">FromDouble(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> via its shortest round-trip decimal text.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_GetHashCode" data-uid="Bodu.Numerics.BigDecimal.GetHashCode">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.GetHashCode.html#Bodu_Numerics_BigDecimal_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code consistent with <a class="xref" href="Bodu.Numerics.BigDecimal.Equals.html#Bodu_Numerics_BigDecimal_Equals_Bodu_Numerics_BigDecimal_">Equals(BigDecimal)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Max_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Max(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Max.html#Bodu_Numerics_BigDecimal_Max_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Max(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the larger of two values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Min_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Min(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Min.html#Bodu_Numerics_BigDecimal_Min_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Min(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the smaller of two values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Multiply_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Multiply(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Multiply.html#Bodu_Numerics_BigDecimal_Multiply_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Multiply(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two values exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Negate_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Negate(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Negate.html#Bodu_Numerics_BigDecimal_Negate_Bodu_Numerics_BigDecimal_">Negate(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Negates a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Parse.html#Bodu_Numerics_BigDecimal_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_">Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses the UTF-8 decimal text representation of a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Parse.html#Bodu_Numerics_BigDecimal_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses the decimal text representation of a value from a character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Parse_System_String_" data-uid="Bodu.Numerics.BigDecimal.Parse(System.String)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Parse.html#Bodu_Numerics_BigDecimal_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses the decimal text representation of a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.Parse(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Parse.html#Bodu_Numerics_BigDecimal_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses the decimal text representation of a value using the specified format provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Pow_Bodu_Numerics_BigDecimal_System_Int32_" data-uid="Bodu.Numerics.BigDecimal.Pow(Bodu.Numerics.BigDecimal,System.Int32)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Pow.html#Bodu_Numerics_BigDecimal_Pow_Bodu_Numerics_BigDecimal_System_Int32_">Pow(BigDecimal, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Raises a value to an integer power.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Remainder_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Remainder(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Remainder.html#Bodu_Numerics_BigDecimal_Remainder_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Remainder(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the remainder of dividing one value by another — the exact value of
+<code>left - Truncate(left / right) × right</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Round(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Round.html#Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_">Round(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rounds a value to the nearest integer using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_System_Int32_" data-uid="Bodu.Numerics.BigDecimal.Round(Bodu.Numerics.BigDecimal,System.Int32)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Round.html#Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_System_Int32_">Round(BigDecimal, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rounds a value to the specified number of decimal places using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding#system-midpointrounding-toeven">ToEven</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_System_Int32_System_MidpointRounding_" data-uid="Bodu.Numerics.BigDecimal.Round(Bodu.Numerics.BigDecimal,System.Int32,System.MidpointRounding)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Round.html#Bodu_Numerics_BigDecimal_Round_Bodu_Numerics_BigDecimal_System_Int32_System_MidpointRounding_">Round(BigDecimal, int, MidpointRounding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Rounds a value to the specified number of decimal places using the specified rounding mode.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Subtract_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Subtract(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Subtract.html#Bodu_Numerics_BigDecimal_Subtract_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">Subtract(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one value from another exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToBigInteger" data-uid="Bodu.Numerics.BigDecimal.ToBigInteger">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToBigInteger.html#Bodu_Numerics_BigDecimal_ToBigInteger">ToBigInteger()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the integer part of the value, truncated toward zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToDecimal" data-uid="Bodu.Numerics.BigDecimal.ToDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToDecimal.html#Bodu_Numerics_BigDecimal_ToDecimal">ToDecimal()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the value to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToDouble" data-uid="Bodu.Numerics.BigDecimal.ToDouble">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToDouble.html#Bodu_Numerics_BigDecimal_ToDouble">ToDouble()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToString" data-uid="Bodu.Numerics.BigDecimal.ToString">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToString.html#Bodu_Numerics_BigDecimal_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the plain (non-scientific) decimal string representation of the value using the invariant culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToString_System_String_" data-uid="Bodu.Numerics.BigDecimal.ToString(System.String)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToString.html#Bodu_Numerics_BigDecimal_ToString_System_String_">ToString(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the value using the specified format specifier and the invariant culture, consistent with the
+parameterless <a class="xref" href="Bodu.Numerics.BigDecimal.ToString.html#Bodu_Numerics_BigDecimal_ToString">ToString()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.ToString(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.ToString.html#Bodu_Numerics_BigDecimal_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the value using the specified format specifier and format provider.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_Truncate_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.Truncate(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.Truncate.html#Bodu_Numerics_BigDecimal_Truncate_Bodu_Numerics_BigDecimal_">Truncate(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the integer part of <code class="paramref">value</code>, discarding any fractional digits.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryFormat.html#Bodu_Numerics_BigDecimal_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Tries to format the value of the current instance as UTF-8 into the provided span of bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.BigDecimal.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryFormat.html#Bodu_Numerics_BigDecimal_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Tries to format the value of the current instance into the provided span of characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_BigDecimal__" data-uid="Bodu.Numerics.BigDecimal.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.BigDecimal@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryParse.html#Bodu_Numerics_BigDecimal_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_BigDecimal__">TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse the UTF-8 decimal text representation of a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_BigDecimal__" data-uid="Bodu.Numerics.BigDecimal.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.BigDecimal@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryParse.html#Bodu_Numerics_BigDecimal_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_BigDecimal__">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse the decimal text representation of a value from a character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryParse_System_String_Bodu_Numerics_BigDecimal__" data-uid="Bodu.Numerics.BigDecimal.TryParse(System.String,Bodu.Numerics.BigDecimal@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryParse.html#Bodu_Numerics_BigDecimal_TryParse_System_String_Bodu_Numerics_BigDecimal__">TryParse(string?, out BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse the decimal text representation of a value using the current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_BigDecimal__" data-uid="Bodu.Numerics.BigDecimal.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.BigDecimal@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryParse.html#Bodu_Numerics_BigDecimal_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_BigDecimal__">TryParse(string?, IFormatProvider?, out BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse the decimal text representation of a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryToDecimal_System_Decimal__" data-uid="Bodu.Numerics.BigDecimal.TryToDecimal(System.Decimal@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryToDecimal.html#Bodu_Numerics_BigDecimal_TryToDecimal_System_Decimal__">TryToDecimal(out decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert the value to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_TryToDouble_System_Double__" data-uid="Bodu.Numerics.BigDecimal.TryToDouble(System.Double@)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.TryToDouble.html#Bodu_Numerics_BigDecimal_TryToDouble_System_Double__">TryToDouble(out double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to convert the value to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Addition_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Addition(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Addition.html#Bodu_Numerics_BigDecimal_op_Addition_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator +(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two values exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Decrement_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Decrement(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Decrement.html#Bodu_Numerics_BigDecimal_op_Decrement_Bodu_Numerics_BigDecimal_">operator --(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decrements a value by one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Division_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Division(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Division.html#Bodu_Numerics_BigDecimal_op_Division_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator /(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one value by another, rounding to <a class="xref" href="Bodu.Numerics.BigDecimal.DefaultDivisionScale.html">DefaultDivisionScale</a> decimal places.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Equality_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Equality(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Equality.html#Bodu_Numerics_BigDecimal_op_Equality_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator ==(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two values are numerically equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Decimal" data-uid="Bodu.Numerics.BigDecimal.op_Explicit(Bodu.Numerics.BigDecimal)~System.Decimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Explicit.html#Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Decimal">explicit operator decimal(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Explicitly converts a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Double" data-uid="Bodu.Numerics.BigDecimal.op_Explicit(Bodu.Numerics.BigDecimal)~System.Double">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Explicit.html#Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Double">explicit operator double(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Explicitly converts a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> to the nearest <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Numerics_BigInteger" data-uid="Bodu.Numerics.BigDecimal.op_Explicit(Bodu.Numerics.BigDecimal)~System.Numerics.BigInteger">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Explicit.html#Bodu_Numerics_BigDecimal_op_Explicit_Bodu_Numerics_BigDecimal__System_Numerics_BigInteger">explicit operator BigInteger(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Explicitly converts a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> to a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a>, truncating toward zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Explicit_System_Double__Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal.op_Explicit(System.Double)~Bodu.Numerics.BigDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Explicit.html#Bodu_Numerics_BigDecimal_op_Explicit_System_Double__Bodu_Numerics_BigDecimal">explicit operator BigDecimal(double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Explicitly converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> via its shortest round-trip decimal
+text — so <code>0.1d</code> becomes <code>0.1</code>, not its exact binary expansion.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_GreaterThan_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_GreaterThan(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_GreaterThan.html#Bodu_Numerics_BigDecimal_op_GreaterThan_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator &gt;(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one value is greater than another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_GreaterThanOrEqual_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_GreaterThanOrEqual(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_GreaterThanOrEqual.html#Bodu_Numerics_BigDecimal_op_GreaterThanOrEqual_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator &gt;=(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one value is greater than or equal to another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Implicit_System_Decimal__Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal.op_Implicit(System.Decimal)~Bodu.Numerics.BigDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Implicit.html#Bodu_Numerics_BigDecimal_op_Implicit_System_Decimal__Bodu_Numerics_BigDecimal">implicit operator BigDecimal(decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Implicit_System_Int32__Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal.op_Implicit(System.Int32)~Bodu.Numerics.BigDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Implicit.html#Bodu_Numerics_BigDecimal_op_Implicit_System_Int32__Bodu_Numerics_BigDecimal">implicit operator BigDecimal(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Implicitly converts a 32-bit signed integer to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Implicit_System_Int64__Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal.op_Implicit(System.Int64)~Bodu.Numerics.BigDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Implicit.html#Bodu_Numerics_BigDecimal_op_Implicit_System_Int64__Bodu_Numerics_BigDecimal">implicit operator BigDecimal(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Implicitly converts a 64-bit signed integer to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Implicit_System_Numerics_BigInteger__Bodu_Numerics_BigDecimal" data-uid="Bodu.Numerics.BigDecimal.op_Implicit(System.Numerics.BigInteger)~Bodu.Numerics.BigDecimal">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Implicit.html#Bodu_Numerics_BigDecimal_op_Implicit_System_Numerics_BigInteger__Bodu_Numerics_BigDecimal">implicit operator BigDecimal(BigInteger)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Implicitly converts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> to a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Increment_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Increment(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Increment.html#Bodu_Numerics_BigDecimal_op_Increment_Bodu_Numerics_BigDecimal_">operator ++(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Increments a value by one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Inequality_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Inequality(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Inequality.html#Bodu_Numerics_BigDecimal_op_Inequality_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator !=(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two values are not numerically equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_LessThan_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_LessThan(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_LessThan.html#Bodu_Numerics_BigDecimal_op_LessThan_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator &lt;(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one value is less than another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_LessThanOrEqual_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_LessThanOrEqual(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_LessThanOrEqual.html#Bodu_Numerics_BigDecimal_op_LessThanOrEqual_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator &lt;=(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether one value is less than or equal to another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Modulus_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Modulus(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Modulus.html#Bodu_Numerics_BigDecimal_op_Modulus_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator %(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the remainder of dividing one value by another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Multiply_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Multiply(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Multiply.html#Bodu_Numerics_BigDecimal_op_Multiply_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator *(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two values exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_Subtraction_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_Subtraction(Bodu.Numerics.BigDecimal,Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_Subtraction.html#Bodu_Numerics_BigDecimal_op_Subtraction_Bodu_Numerics_BigDecimal_Bodu_Numerics_BigDecimal_">operator -(BigDecimal, BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one value from another exactly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_UnaryNegation_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_UnaryNegation(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_UnaryNegation.html#Bodu_Numerics_BigDecimal_op_UnaryNegation_Bodu_Numerics_BigDecimal_">operator -(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Negates a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_BigDecimal_op_UnaryPlus_Bodu_Numerics_BigDecimal_" data-uid="Bodu.Numerics.BigDecimal.op_UnaryPlus(Bodu.Numerics.BigDecimal)">
+          <a class="xref" href="Bodu.Numerics.BigDecimal.op_UnaryPlus.html#Bodu_Numerics_BigDecimal_op_UnaryPlus_Bodu_Numerics_BigDecimal_">operator +(BigDecimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the value unchanged.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_">ComparableExtensions.AtLeast&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_">ComparableExtensions.AtMost&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0___0___0_">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0___0_">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0___0_">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0___0_">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0___0_">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0___0___0_">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_">ComparableExtensions.Max&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_">ComparableExtensions.Min&lt;T&gt;(T, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.NumericExtensions.GetBytes.html#Bodu_Extensions_NumericExtensions_GetBytes__1___0_System_Boolean_">NumericExtensions.GetBytes&lt;T&gt;(T, bool)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

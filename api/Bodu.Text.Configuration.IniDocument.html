@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class IniDocument | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class IniDocument | BODU ">
+    
+    <meta name="description" content="Represents a mutable INI-style document, providing access to the global section and all named sections, together with a mutation surface for authoring documents programmatically.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.IniDocument">
+
+
+
+  <h1 id="Bodu_Text_Configuration_IniDocument" data-uid="Bodu.Text.Configuration.IniDocument" class="text-break">Class IniDocument</h1>
+  <div class="markdown level0 summary"><p>Represents a mutable INI-style document, providing access to the global section and all named sections, together
+with a mutation surface for authoring documents programmatically.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a></div>
+    <div class="level2"><span class="xref">IniDocument</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GlobalSection.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">IniDocumentBase.GlobalSection</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.Sections.html#Bodu_Text_Configuration_IniDocumentBase_Sections">IniDocumentBase.Sections</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.GetSection.html#Bodu_Text_Configuration_IniDocumentBase_GetSection_System_String_">IniDocumentBase.GetSection(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.TryGetSection.html#Bodu_Text_Configuration_IniDocumentBase_TryGetSection_System_String_Bodu_Text_Configuration_IniSection__">IniDocumentBase.TryGetSection(string, out IniSection)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
+  <h5 id="Bodu_Text_Configuration_IniDocument_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class IniDocument : IniDocumentBase</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Configuration_IniDocument_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Build an instance from scratch using the constructors and the <a class="xref" href="Bodu.Text.Configuration.IniDocument.AddSection.html#Bodu_Text_Configuration_IniDocument_AddSection_Bodu_Text_Configuration_IniSection_">AddSection(IniSection)</a>/<a class="xref" href="Bodu.Text.Configuration.IniDocument.GetOrAddSection.html#Bodu_Text_Configuration_IniDocument_GetOrAddSection_System_String_">GetOrAddSection(string)</a>
+members; a parsed document is obtained through
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.Parse.html#Bodu_Text_Configuration_ConfigurationDocument_Parse_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">Parse(string, ConfigurationParseOptions?)</a>, which exposes the same base read
+surface.
+</p>
+<p>
+Section lookup uses ordinal comparison, case-insensitive by default and case-sensitive when the document was created
+with that option.
+</p>
+</div>
+  <h5 id="Bodu_Text_Configuration_IniDocument_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var doc = new IniDocument();
+IniSection db = doc.GetOrAddSection("database");
+db.SetEntry("host", "localhost");
+
+// Walk every named section.
+foreach (IniSection section in doc.Sections)
+    Console.WriteLine($"[{section.Name}] — {section.Entries.Count} entries");
+
+// Read the global section (keys that appeared before any header).
+IniSection global = doc.GlobalSection;
+
+// Lookup by section name.
+if (doc.TryGetSection("database", out IniSection? found))
+    Console.WriteLine(found!["host"]);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Configuration_IniDocument__ctor_Bodu_Text_Configuration_IniSection_System_Collections_Generic_IEnumerable_Bodu_Text_Configuration_IniSection__System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocument.#ctor(Bodu.Text.Configuration.IniSection,System.Collections.Generic.IEnumerable{Bodu.Text.Configuration.IniSection},System.Boolean)">
+          <a class="xref" href="Bodu.Text.Configuration.IniDocument.-ctor.html#Bodu_Text_Configuration_IniDocument__ctor_Bodu_Text_Configuration_IniSection_System_Collections_Generic_IEnumerable_Bodu_Text_Configuration_IniSection__System_Boolean_">IniDocument(IniSection, IEnumerable&lt;IniSection&gt;, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a> class from a global section and an ordered sequence
+of named sections. Use this constructor to build documents programmatically without first parsing configuration
+text.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_IniDocument__ctor_System_Boolean_" data-uid="Bodu.Text.Configuration.IniDocument.#ctor(System.Boolean)">
+          <a class="xref" href="Bodu.Text.Configuration.IniDocument.-ctor.html#Bodu_Text_Configuration_IniDocument__ctor_System_Boolean_">IniDocument(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a> class with an empty global section and no named
+sections.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Configuration_IniDocument_AddSection_Bodu_Text_Configuration_IniSection_" data-uid="Bodu.Text.Configuration.IniDocument.AddSection(Bodu.Text.Configuration.IniSection)">
+          <a class="xref" href="Bodu.Text.Configuration.IniDocument.AddSection.html#Bodu_Text_Configuration_IniDocument_AddSection_Bodu_Text_Configuration_IniSection_">AddSection(IniSection)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Appends <code class="paramref">section</code> to the document.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_IniDocument_GetOrAddSection_System_String_" data-uid="Bodu.Text.Configuration.IniDocument.GetOrAddSection(System.String)">
+          <a class="xref" href="Bodu.Text.Configuration.IniDocument.GetOrAddSection.html#Bodu_Text_Configuration_IniDocument_GetOrAddSection_System_String_">GetOrAddSection(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the first section with the supplied name, creating and appending one when no match exists.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_IniDocument_RemoveSection_System_String_" data-uid="Bodu.Text.Configuration.IniDocument.RemoveSection(System.String)">
+          <a class="xref" href="Bodu.Text.Configuration.IniDocument.RemoveSection.html#Bodu_Text_Configuration_IniDocument_RemoveSection_System_String_">RemoveSection(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the section with the supplied name. When multiple sections share the same name (under
+<a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_Preserve">Preserve</a> or <a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_MergeAdjacent">MergeAdjacent</a>
+), every occurrence is removed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_">ConfigurationExtensions.Resolve(IniDocumentBase, string?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Text.Configuration.ConfigurationExtensions.Resolve.html#Bodu_Text_Configuration_ConfigurationExtensions_Resolve_Bodu_Text_Configuration_IniDocumentBase_System_String_Bodu_Text_Configuration_ConfigurationResolveOptions_">ConfigurationExtensions.Resolve(IniDocumentBase, string?, ConfigurationResolveOptions?)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

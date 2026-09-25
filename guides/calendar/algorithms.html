@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Date calculation algorithms | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Date calculation algorithms | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="date-calculation-algorithms">Date calculation algorithms</h1>
+
+<p>A single-date <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a> finds its <em>nominal</em> date for a year through exactly one <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a>. The loader maps each <code>&lt;Strategy&gt;</code> element in a rule document to a strategy implementation. Most compute a date from calendar arithmetic; <code>&lt;Algorithm&gt;</code> delegates to a named astronomical or ecclesiastical calculator that cannot be expressed as a formula (Easter, the equinoxes, Vesak, Diwali, Qingming, …). (A rule may alternatively declare a <code>&lt;Recurrence&gt;</code> that yields many dates — see <a href="strategy-reference.html#recurrence-sources">Notable-date rule strategies</a> — but this guide is about the single-date algorithms.)</p>
+<p>This guide focuses on the <code>&lt;Algorithm&gt;</code> strategy: the full set of built-in keys, <code>AlgorithmDateStrategy.IsKnownKey</code>, how to implement and register a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a>, and how reference strategies resolve another rule's date through the strategy resolution context. For the complete catalogue of every strategy element and recurrence source, see <a href="strategy-reference.html">Notable-date rule strategies</a>.</p>
+<p>For the conceptual distinction between <em>algorithm</em> and <em>fixed rule</em>, see <a href="../../docs/calendar/concepts.html#algorithm-vs-fixed-rule">Core concepts — Algorithm vs. fixed rule</a>. For the namespace overview, see the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.html">Algorithms API reference</a>.</p>
+<hr>
+<h2 id="the-strategy-kinds">The strategy kinds</h2>
+<p>A single-date <code>&lt;Rule&gt;</code> carries exactly one <code>&lt;Strategy&gt;</code> child, mapping to a public <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> implementation. You rarely construct these by hand — the loader builds them from the document — but they are the vocabulary the engine resolves against. The strategy contract is a single method, <code>DateOnly? Calculate(int year, StrategyResolutionContext context)</code>, returning <code>null</code> when the rule produces no occurrence for that year.</p>
+<table>
+<thead>
+<tr>
+<th><code>&lt;Strategy&gt;</code> element</th>
+<th>Strategy type</th>
+<th>What it computes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;Fixed&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a></td>
+<td>A specific month + day every year, optionally in a non-Gregorian calendar.</td>
+</tr>
+<tr>
+<td><code>&lt;DayOfWeekInMonth&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy.html">DayOfWeekInMonthStrategy</a></td>
+<td>The <em>n</em>th or last weekday in a month.</td>
+</tr>
+<tr>
+<td><code>&lt;RelativeWeekdayInMonth&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html">RelativeWeekdayInMonthStrategy</a></td>
+<td>A weekday positioned relative to a weekday-in-month anchor.</td>
+</tr>
+<tr>
+<td><code>&lt;WeekdayNearDate&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy.html">WeekdayNearDateStrategy</a></td>
+<td>A weekday on / before / after / nearest a fixed reference date.</td>
+</tr>
+<tr>
+<td><code>&lt;OrdinalDayOfMonth&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.OrdinalDayOfMonthStrategy.html">OrdinalDayOfMonthStrategy</a></td>
+<td>A signed day-of-month from the start or end of a month.</td>
+</tr>
+<tr>
+<td><code>&lt;DayOfYear&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.DayOfYearStrategy.html">DayOfYearStrategy</a></td>
+<td>A signed day-of-year from 1 January or 31 December.</td>
+</tr>
+<tr>
+<td><code>&lt;IsoWeekDate&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IsoWeekDateStrategy.html">IsoWeekDateStrategy</a></td>
+<td>A weekday within an ISO-8601 week of an ISO week-year.</td>
+</tr>
+<tr>
+<td><code>&lt;OffsetFromRule&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a></td>
+<td>A signed calendar-day offset from another rule's occurrence.</td>
+</tr>
+<tr>
+<td><code>&lt;WeekdayNearRule&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.html">WeekdayNearRuleStrategy</a></td>
+<td>A weekday near another rule's occurrence.</td>
+</tr>
+<tr>
+<td><code>&lt;NthWeekdayFromRule&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NthWeekdayFromRuleStrategy.html">NthWeekdayFromRuleStrategy</a></td>
+<td>The <em>n</em>th weekday before/after another rule's occurrence.</td>
+</tr>
+<tr>
+<td><code>&lt;WorkingDayOffsetFromRule&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WorkingDayOffsetFromRuleStrategy.html">WorkingDayOffsetFromRuleStrategy</a></td>
+<td>A signed <strong>working-day</strong> offset from another rule's occurrence.</td>
+</tr>
+<tr>
+<td><code>&lt;WorkingDayInMonth&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy.html">WorkingDayInMonthStrategy</a></td>
+<td>The <em>n</em>th working day of a month.</td>
+</tr>
+<tr>
+<td><code>&lt;Algorithm&gt;</code></td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a></td>
+<td>Dispatch to a named algorithm key.</td>
+</tr>
+</tbody>
+</table>
+<p>The reference (<code>&lt;OffsetFromRule&gt;</code>, <code>&lt;WeekdayNearRule&gt;</code>, <code>&lt;NthWeekdayFromRule&gt;</code>, <code>&lt;WorkingDayOffsetFromRule&gt;</code>) and business-day (<code>&lt;WorkingDayOffsetFromRule&gt;</code>, <code>&lt;WorkingDayInMonth&gt;</code>) strategies resolve through the same <code>StrategyResolutionContext</code> — see <a href="#cross-rule-references-and-the-resolution-context">Cross-rule references and the resolution context</a> below and <a href="strategy-reference.html">Notable-date rule strategies</a> for each element's attributes and scenarios. Recurrence sources implement the sibling <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a> contract (<code>IEnumerable&lt;DateOnly&gt; GetOccurrences(DateRange range, StrategyResolutionContext context)</code>).</p>
+<h3 id="fixed--a-fixed-month-and-day"><code>&lt;Fixed&gt;</code> — a fixed month and day</h3>
+<p>The most common strategy: the same calendar position every year. <code>month</code> is a number 1–12 or an English month name; <code>day</code> is the day of month. An invalid combination (e.g. 29 February in a non-leap year) yields no occurrence for that year and the rule is skipped.</p>
+<pre><code class="lang-xml">&lt;NotableDate id=&quot;new-years-day&quot; displayName=&quot;New Year's Day&quot; category=&quot;PublicHoliday&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;
+      &lt;Strategy&gt;&lt;Fixed month=&quot;January&quot; day=&quot;1&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p><code>&lt;Fixed&gt;</code> also expresses dates in a non-Gregorian calendar via the enclosing <code>&lt;Applicability calendar=&quot;...&quot;&gt;</code> (<code>Hijri</code>, <code>UmmAlQura</code>, <code>Hebrew</code>, <code>Persian</code>, <code>ChineseLunisolar</code>). Because a short Hijri month can recur twice in a single Gregorian year, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a> additionally exposes <code>CalculateAll</code>; the optional <code>skipLeapMonth</code> and <code>sweepCalendarYears</code> attributes tune lunisolar projection. See <a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a>.</p>
+<h3 id="dayofweekinmonth--the-nth-weekday-in-a-month"><code>&lt;DayOfWeekInMonth&gt;</code> — the <em>n</em>th weekday in a month</h3>
+<p>Driven by <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> (<code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>). <code>Fifth</code> yields no occurrence in months that lack a fifth instance; <code>Last</code> always selects the final occurrence.</p>
+<pre><code class="lang-xml">&lt;!-- US Thanksgiving — the fourth Thursday in November. --&gt;
+&lt;Rule id=&quot;default&quot;&gt;
+  &lt;Strategy&gt;&lt;DayOfWeekInMonth month=&quot;11&quot; dayOfWeek=&quot;Thursday&quot; weekOrdinal=&quot;Fourth&quot; /&gt;&lt;/Strategy&gt;
+&lt;/Rule&gt;
+</code></pre>
+<h3 id="relativeweekdayinmonth--a-weekday-relative-to-an-anchor-weekday"><code>&lt;RelativeWeekdayInMonth&gt;</code> — a weekday relative to an anchor weekday</h3>
+<p>Locates a weekday-in-month anchor (the <code>weekOrdinal</code>-th <code>dayOfWeek</code> of <code>month</code>), then steps to a <code>relativeDayOfWeek</code> positioned by <code>direction</code> (a <a class="xref" href="../../api/Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a> value) from it.</p>
+<pre><code class="lang-xml">&lt;!-- US Election Day — the Tuesday after the first Monday in November. --&gt;
+&lt;Rule id=&quot;default&quot;&gt;
+  &lt;Strategy&gt;
+    &lt;RelativeWeekdayInMonth month=&quot;11&quot; dayOfWeek=&quot;Monday&quot; weekOrdinal=&quot;First&quot;
+                            relativeDayOfWeek=&quot;Tuesday&quot; direction=&quot;After&quot; /&gt;
+  &lt;/Strategy&gt;
+&lt;/Rule&gt;
+</code></pre>
+<h3 id="weekdayneardate--a-weekday-near-a-fixed-date"><code>&lt;WeekdayNearDate&gt;</code> — a weekday near a fixed date</h3>
+<p>Driven by <a class="xref" href="../../api/Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a> (<code>Before</code>, <code>OnOrBefore</code>, <code>Nearest</code>, <code>OnOrAfter</code>, <code>After</code>) relative to the <code>month</code>/<code>day</code> reference.</p>
+<pre><code class="lang-xml">&lt;!-- Victoria Day (CA) — the Monday on or before 24 May. --&gt;
+&lt;Rule id=&quot;default&quot;&gt;
+  &lt;Strategy&gt;&lt;WeekdayNearDate month=&quot;5&quot; day=&quot;24&quot; dayOfWeek=&quot;Monday&quot; direction=&quot;OnOrBefore&quot; /&gt;&lt;/Strategy&gt;
+&lt;/Rule&gt;
+</code></pre>
+<h3 id="offsetfromrule--a-signed-offset-from-another-rule"><code>&lt;OffsetFromRule&gt;</code> — a signed offset from another rule</h3>
+<p>References another concept's rule via <code>notableDateRef</code> (and optional <code>ruleRef</code>) and adds a signed <code>offsetDays</code>. This is how the Easter cluster is authored: Good Friday and Easter Monday hang off Easter Sunday. The referenced rule is resolved first; references are resolved cycle-safely within the resource.</p>
+<pre><code class="lang-xml">&lt;NotableDate id=&quot;easter-sunday&quot; displayName=&quot;Easter Sunday&quot; category=&quot;Religious&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;&lt;Strategy&gt;&lt;Algorithm key=&quot;western-easter&quot; /&gt;&lt;/Strategy&gt;&lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+
+&lt;NotableDate id=&quot;good-friday&quot; displayName=&quot;Good Friday&quot; category=&quot;PublicHoliday&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;
+      &lt;Strategy&gt;&lt;OffsetFromRule notableDateRef=&quot;easter-sunday&quot; ruleRef=&quot;default&quot; offsetDays=&quot;-2&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+
+&lt;NotableDate id=&quot;easter-monday&quot; displayName=&quot;Easter Monday&quot; category=&quot;PublicHoliday&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;
+      &lt;Strategy&gt;&lt;OffsetFromRule notableDateRef=&quot;easter-sunday&quot; ruleRef=&quot;default&quot; offsetDays=&quot;1&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p>The referenced algorithm runs once per year per resolution, regardless of how many offset rules consume it. See <a href="../../docs/calendar/concepts.html#rule-references-offset-from-rule">Rule references</a> and the <a href="#cross-rule-references-and-the-resolution-context">resolution context</a> below.</p>
+<h3 id="algorithm--dispatch-to-a-named-calculator"><code>&lt;Algorithm&gt;</code> — dispatch to a named calculator</h3>
+<p>For dates that cannot be expressed as calendar arithmetic. The <code>key</code> attribute names a built-in calculator (below) or a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> registered in a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>.</p>
+<pre><code class="lang-xml">&lt;Rule id=&quot;default&quot;&gt;
+  &lt;Strategy&gt;&lt;Algorithm key=&quot;western-easter&quot; /&gt;&lt;/Strategy&gt;
+&lt;/Rule&gt;
+</code></pre>
+<h3 id="constructing-a-strategy-directly">Constructing a strategy directly</h3>
+<p>Each strategy is a public, sealed type with a constructor mirroring its <code>&lt;Strategy&gt;</code> attributes, so you can evaluate one outside a document — useful for unit tests or ad-hoc calculation. <code>Calculate(year, context)</code> takes a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a>; pass one built over the resource the strategy resolves against (or, for the year-only strategies that never follow a reference, any context):</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+var context = new StrategyResolutionContext(resource);
+
+// Fourth Thursday in November 2026 (US Thanksgiving).
+var thanksgiving = new DayOfWeekInMonthStrategy(11, DayOfWeek.Thursday, WeekOrdinal.Fourth);
+DateOnly? date = thanksgiving.Calculate(2026, context);   // → 2026-11-26
+
+// Western Easter Sunday 2026, resolved through the key dispatcher.
+var easter = new AlgorithmDateStrategy(AlgorithmDateStrategy.WesternEasterKey);
+DateOnly? easter2026 = easter.Calculate(2026, context);   // → 2026-04-05
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a> additionally exposes <code>IReadOnlyList&lt;DateOnly&gt; CalculateAll(int year, StrategyResolutionContext context)</code>, which returns <em>every</em> occurrence in the Gregorian year — the surface that surfaces a short Hijri month landing twice. The single-date <code>Calculate</code> returns the chronologically first. See <a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a>.</p>
+<hr>
+<h2 id="built-in-algorithm-keys">Built-in algorithm keys</h2>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> resolves a string key to a bundled astronomical or gazetted calculator. The calculators behind these keys are an internal implementation detail reached only through the key — there is no public class to instantiate; reference the key from a rule document instead.</p>
+<p>The two Easter keys are also exposed as constants on <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a>: <code>WesternEasterKey</code> (<code>&quot;western-easter&quot;</code>) and <code>OrthodoxEasterKey</code> (<code>&quot;orthodox-easter&quot;</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Date it computes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>western-easter</code></td>
+<td>Easter Sunday by the Gregorian computus.</td>
+</tr>
+<tr>
+<td><code>orthodox-easter</code></td>
+<td>Easter Sunday by the Julian computus, projected onto the Gregorian calendar.</td>
+</tr>
+<tr>
+<td><code>vernal-equinox</code></td>
+<td>The astronomical March (vernal) equinox.</td>
+</tr>
+<tr>
+<td><code>autumnal-equinox</code></td>
+<td>The astronomical September (autumnal) equinox.</td>
+</tr>
+<tr>
+<td><code>jp-vernal-equinox</code></td>
+<td>Japan's gazetted Vernal Equinox Day (Shunbun no Hi).</td>
+</tr>
+<tr>
+<td><code>jp-autumnal-equinox</code></td>
+<td>Japan's gazetted Autumnal Equinox Day (Shūbun no Hi).</td>
+</tr>
+<tr>
+<td><code>qingming</code></td>
+<td>Qingming (Tomb-Sweeping Day) — the solar term 15° after the March equinox, typically 4–5 April.</td>
+</tr>
+<tr>
+<td><code>tehran-nowruz</code></td>
+<td>Nowruz (Farvardin 1, the Solar Hijri new year) from the true vernal-equinox instant at the Tehran standard meridian.</td>
+</tr>
+<tr>
+<td><code>vesak</code></td>
+<td>Vesak (Buddha's birthday) — the full-moon observance in the Theravāda tradition.</td>
+</tr>
+<tr>
+<td><code>asalha-puja</code></td>
+<td>Asalha Puja (Dhamma Day) — the full moon of the eighth lunar month.</td>
+</tr>
+<tr>
+<td><code>losar</code></td>
+<td>Losar (Tibetan New Year) — the Tibetan lunisolar new year.</td>
+</tr>
+<tr>
+<td><code>matariki</code></td>
+<td>Matariki — the Māori new year, set by the gazetted public-holiday calendar.</td>
+</tr>
+<tr>
+<td><code>ram-navami</code></td>
+<td>Ram Navami — the Hindu festival of Rama's birth.</td>
+</tr>
+<tr>
+<td><code>raksha-bandhan</code></td>
+<td>Raksha Bandhan.</td>
+</tr>
+<tr>
+<td><code>janmashtami</code></td>
+<td>Krishna Janmashtami.</td>
+</tr>
+<tr>
+<td><code>ganesh-chaturthi</code></td>
+<td>Ganesh Chaturthi.</td>
+</tr>
+<tr>
+<td><code>navaratri</code></td>
+<td>The first day of Navaratri.</td>
+</tr>
+<tr>
+<td><code>dussehra</code></td>
+<td>Dussehra (Vijayadashami).</td>
+</tr>
+<tr>
+<td><code>karva-chauth</code></td>
+<td>Karva Chauth.</td>
+</tr>
+<tr>
+<td><code>diwali</code></td>
+<td>Diwali (Deepavali).</td>
+</tr>
+<tr>
+<td><code>vasant-panchami</code></td>
+<td>Vasant Panchami.</td>
+</tr>
+<tr>
+<td><code>maha-shivaratri</code></td>
+<td>Maha Shivaratri.</td>
+</tr>
+<tr>
+<td><code>holi</code></td>
+<td>Holi.</td>
+</tr>
+<tr>
+<td><code>maun-agiyaras</code></td>
+<td>Maun Agiyaras — the Jain observance on Margashirsha shukla 11.</td>
+</tr>
+</tbody>
+</table>
+<p>The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: <code>vernal-equinox</code> / <code>autumnal-equinox</code> use UTC, <code>jp-vernal-equinox</code> / <code>jp-autumnal-equinox</code> use Japan Standard Time (UTC+9), and <code>qingming</code> uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar <em>panchanga</em> by the engine's internal <code>HinduLunarCalculator</code>; <code>vesak</code> and <code>asalha-puja</code> resolve full-moon dates; <code>losar</code> and <code>matariki</code> come from gazetted-date tables.</p>
+<p><code>tehran-nowruz</code> is an <strong>observation-based variant</strong>: it applies the official Iranian rule — Farvardin 1 falls on the day of the true vernal equinox when the equinox instant occurs before apparent solar noon at the 52.5°E Tehran standard meridian (UTC+03:30), otherwise on the following day — and is supported for the years 1800–2200 (outside that window it yields no occurrence). It is opt-in: the bundled tabular resources remain the default, and a rule chooses the astronomical variant by referencing the key.</p>
+<p><code>AlgorithmDateStrategy.IsKnownKey(key)</code> reports whether a key is built in:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar.Algorithms;
+
+bool builtIn = AlgorithmDateStrategy.IsKnownKey(&quot;western-easter&quot;);          // true
+bool custom  = AlgorithmDateStrategy.IsKnownKey(&quot;pi-day&quot;);                  // false — needs a registry
+</code></pre>
+<p>A key that <code>IsKnownKey</code> does not recognise is resolved against the custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a> supplied at load and construction time. An unregistered, unknown key surfaces as an error-severity validation diagnostic — and a <code>NotableDateValidationException</code> — when the document is loaded.</p>
+<hr>
+<h2 id="implementing-a-custom-algorithm">Implementing a custom algorithm</h2>
+<p>Implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> to add a calculator the built-in set does not cover. The single method <code>Calculate</code> receives the target year and returns a <code>DateOnly?</code> — return <code>null</code> for years the algorithm does not support.</p>
+<pre><code class="lang-csharp">using System;
+using Bodu.Globalization.Calendar.Algorithms;
+
+// Pi Day — 14 March every year.
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year) =&gt; new DateOnly(year, 3, 14);
+}
+</code></pre>
+<p>A more realistic example computes a weekday-relative date:</p>
+<pre><code class="lang-csharp">using System;
+using Bodu.Globalization.Calendar.Algorithms;
+
+// Mother's Day (US) — the second Sunday in May.
+public sealed class MothersDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year)
+    {
+        DateOnly firstOfMay = new DateOnly(year, 5, 1);
+        int daysToFirstSunday = ((int)DayOfWeek.Sunday - (int)firstOfMay.DayOfWeek + 7) % 7;
+        return firstOfMay.AddDays(daysToFirstSunday + 7);
+    }
+}
+</code></pre>
+<h3 id="registering-the-algorithm">Registering the algorithm</h3>
+<p>Register each instance under the key the rule document references, using the chainable <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>. The same registry must be passed to <strong>both</strong> the loader (so the key passes validation) and the <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> constructor (so it resolves at query time):</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+INotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+    .Register(&quot;pi-day&quot;,      new PiDayAlgorithm())
+    .Register(&quot;mothers-day&quot;, new MothersDayAlgorithm());
+
+// Pass the registry to the loader so &quot;pi-day&quot;/&quot;mothers-day&quot; are whitelisted during validation …
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ =&gt; null, registry);
+
+// … and to the service so AlgorithmDateStrategy can resolve them at query time.
+NotableDateService service = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
+</code></pre>
+<p>The custom registry implements <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a> (<code>Contains(key)</code> and <code>TryGet(key, out algorithm)</code>), the same lookup surface the engine consults at resolution time. The rule document references the key exactly like a built-in one:</p>
+<pre><code class="lang-xml">&lt;NotableDate id=&quot;pi-day&quot; displayName=&quot;Pi Day&quot; category=&quot;Observance&quot;&gt;
+  &lt;Rules&gt;
+    &lt;Rule id=&quot;default&quot;&gt;&lt;Strategy&gt;&lt;Algorithm key=&quot;pi-day&quot; /&gt;&lt;/Strategy&gt;&lt;/Rule&gt;
+  &lt;/Rules&gt;
+&lt;/NotableDate&gt;
+</code></pre>
+<p>Resolve as usual — by-year resolution is the <code>service.Resolve(year, territory)</code> extension:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+IReadOnlyList&lt;NotableDate&gt; dates = service.Resolve(2026, &quot;US&quot;);
+
+foreach (NotableDate date in dates)
+    Console.WriteLine($&quot;{date.Date:d MMM yyyy}  {date.DisplayName}&quot;);
+// → 14 Mar 2026  Pi Day, 10 May 2026  Mother's Day, …
+</code></pre>
+<blockquote>
+<p><strong>Packaging algorithms for reuse.</strong> When a custom calculator ships in its own assembly, expose it as an <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin.html">INotableDateAlgorithmPlugin</a> and load it through the trust-gated <code>NotableDatePluginLoader</code> rather than referencing the type directly. See <a href="building-the-service.html#plugin-system">Building and extending the service — Plugin system</a>.</p>
+</blockquote>
+<hr>
+<h2 id="cross-rule-references-and-the-resolution-context">Cross-rule references and the resolution context</h2>
+<p><code>&lt;OffsetFromRule&gt;</code> and custom strategies that need another rule's date receive a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a>. It carries the custom algorithm registry (<code>.Algorithms</code>) and resolves a referenced rule's occurrence for a year, cycle-safely:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar.Algorithms;
+
+// context is supplied by the engine to IDateCalculationStrategy.Calculate(year, context).
+DateOnly? easter = context.ResolveReference(&quot;easter-sunday&quot;, &quot;default&quot;, 2026);
+// → the resolved Easter Sunday date for 2026, or null when the reference produces no occurrence.
+</code></pre>
+<p><code>ResolveReference(notableDateRef, ruleRef, year)</code> is the same machinery <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a> uses; a self-referential or mutually-referential chain is detected and reported rather than looping. When the referenced rule produces no occurrence for the year, <code>ResolveReference</code> returns <code>null</code> and the offset rule produces no occurrence in turn.</p>
+<p>A <code>StrategyResolutionContext</code> can also be constructed directly over a resource (and, optionally, an algorithm registry) when you want to evaluate a reference outside a running query:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+var context = new StrategyResolutionContext(resource, registry);
+DateOnly? easterSunday2026 = context.ResolveReference(&quot;easter-sunday&quot;, &quot;default&quot;, 2026);
+</code></pre>
+<hr>
+<h2 id="loading-bundled-algorithm-backed-concepts">Loading bundled algorithm-backed concepts</h2>
+<p>Most algorithm-backed dates are already authored in the bundled common catalogues and data packs, so you rarely register the built-in keys yourself. Importing <code>christian-western</code> brings in Easter and its offset cluster; <code>global-buddhist</code> brings in Vesak and Asalha Puja; <code>global-hindu</code> brings in the Hindu-festival keys. Pass <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a>'s resolver so <code>&lt;Imports&gt;</code> resolve:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateResource resource = NotableDateResourceLoader.Load(
+    myDocumentXml, CommonNotableDateResources.Resolver);
+NotableDateService service = new NotableDateService(resource);
+</code></pre>
+<p>See <a href="rule-authoring.html">Authoring notable date rules</a> for imports and overrides, and the <a href="data-packs.html">Calendar data packs</a> for the ready-made regional resources.</p>
+<hr>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/calendar/concepts.html">Core concepts</a> — vocabulary used across this guide.</li>
+<li><a href="notable-dates.html">Using NotableDateService</a> — loading resources, querying by date / range / year, and filtering.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — documents, imports, and overrides.</li>
+<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> — the per-element strategy contracts.</li>
+<li><a href="resolution-pipeline.html">The resolution pipeline</a> — resolution ordering and reference cycle detection.</li>
+<li><a href="non-gregorian-calendars.html">Working with non-Gregorian calendars</a> — <code>&lt;Fixed&gt;</code> dates in Hijri / Hebrew / Persian / Chinese lunisolar calendars.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.html">Algorithms API reference</a> — full type reference.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

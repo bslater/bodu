@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class OutlookMessageReaderOptions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class OutlookMessageReaderOptions | BODU ">
+    
+    <meta name="description" content="Controls how an  opens its container and handles malformed content.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions">
+
+
+
+  <h1 id="Bodu_Formats_Outlook_OutlookMessageReaderOptions" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions" class="text-break">Class OutlookMessageReaderOptions</h1>
+  <div class="markdown level0 summary"><p>Controls how an <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> opens its container and handles malformed content.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">OutlookMessageReaderOptions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Formats</span>.<a class="xref" href="Bodu.Formats.Outlook.html">Outlook</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Formats.Outlook.Msg.dll</h6>
+  <h5 id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OutlookMessageReaderOptions</code></pre>
+  </div>
+  <h5 id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>The defaults mirror the underlying <a class="xref" href="Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a>: the container is buffered whole and validated
+at <a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html#Bodu_IO_Compound_CompoundValidationLevel_Compatible">Compatible</a>, under which a malformed property is omitted rather than
+failing the open. <a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html#Bodu_IO_Compound_CompoundValidationLevel_Strict">Strict</a> makes structural problems throw
+<a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> instead.</p>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_DecompressRtf" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.DecompressRtf">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.DecompressRtf.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_DecompressRtf">DecompressRtf</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the compressed RTF body is decompressed when read through the body conveniences.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxDecompressedRtfBytes" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxDecompressedRtfBytes">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxDecompressedRtfBytes.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxDecompressedRtfBytes">MaxDecompressedRtfBytes</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the largest decompressed RTF body, in bytes, the reader produces.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxEmbeddedMessageDepth" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxEmbeddedMessageDepth">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxEmbeddedMessageDepth.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxEmbeddedMessageDepth">MaxEmbeddedMessageDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the deepest embedded-message nesting the reader opens: the root message is depth zero, a message opened
+from one of its attachments is depth one, and so on.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxInlineAttachmentBytes" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxInlineAttachmentBytes">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.MaxInlineAttachmentBytes.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_MaxInlineAttachmentBytes">MaxInlineAttachmentBytes</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the largest by-value attachment payload, in bytes, that is decoded into the attachment's
+<a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.Properties.html#Bodu_Formats_Outlook_OutlookAttachment_Properties">Properties</a>; a larger <code>PidTagAttachDataBinary</code> stream is left in the
+container and served only through <a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.OpenContentStream.html#Bodu_Formats_Outlook_OutlookAttachment_OpenContentStream">OpenContentStream()</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_ReadStrategy" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.ReadStrategy">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.ReadStrategy.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_ReadStrategy">ReadStrategy</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the strategy used to source the container's bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Formats_Outlook_OutlookMessageReaderOptions_ValidationLevel" data-uid="Bodu.Formats.Outlook.OutlookMessageReaderOptions.ValidationLevel">
+          <a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.ValidationLevel.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_ValidationLevel">ValidationLevel</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets how strictly the container and the message structures are validated.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

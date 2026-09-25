@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Table (two-key map with projections) | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Table (two-key map with projections) | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="table-two-key-map-with-projections">Table (two-key map with projections)</h1>
+
+<p><code>Table&lt;TRow, TColumn, TValue&gt;</code> is the .NET analogue of Guava's <code>Table</code>: a map keyed by two independent keys — a row and a column — that associates each <code>(row, column)</code> pair with a single value.</p>
+<h2 id="when-the-type-is-justified">When the type is justified</h2>
+<p>Be honest about the baseline first: <strong>a plain <code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> already covers flat two-key lookup.</strong> Tuple keys hash and compare fine, and if all you ever do is get/set/remove by the full pair, the BCL dictionary is the right choice — <code>Table</code> adds nothing there.</p>
+<p>The reason <code>Table</code> exists is the <strong>projections</strong>:</p>
+<ul>
+<li><code>Row(row)</code> — all cells of one row as a live <code>IReadOnlyDictionary&lt;TColumn, TValue&gt;</code>.</li>
+<li><code>Column(column)</code> — one column across all rows as a live <code>IReadOnlyDictionary&lt;TRow, TValue&gt;</code>.</li>
+<li><code>RowKeys</code> / <code>ColumnKeys</code> — the key sets of each axis.</li>
+<li><code>RowMap()</code> — per-row iteration pairing each row key with its live row view.</li>
+</ul>
+<p>With a tuple-keyed dictionary, &quot;all cells of row <em>r</em>&quot; is an O(n) LINQ scan over every entry, allocated fresh each time; with <code>Table</code> it is an O(1) dictionary handoff. Adopt <code>Table</code> only when you need those views — that is the roadmap's own adoption caveat for this type.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var sales = new Table&lt;string, int, decimal&gt;();
+sales.Add(&quot;Widgets&quot;, 2024, 1200m);
+sales.Add(&quot;Widgets&quot;, 2025, 1350m);
+sales.Add(&quot;Gadgets&quot;, 2025, 800m);
+
+decimal w2025 = sales[&quot;Widgets&quot;, 2025];              // flat two-key lookup
+
+IReadOnlyDictionary&lt;int, decimal&gt; widgets = sales.Row(&quot;Widgets&quot;);   // 2024 → 1200, 2025 → 1350
+IReadOnlyDictionary&lt;string, decimal&gt; in2025 = sales.Column(2025);   // Widgets → 1350, Gadgets → 800
+
+sales[&quot;Gadgets&quot;, 2025] = 850m;                       // upsert through the indexer…
+decimal revised = in2025[&quot;Gadgets&quot;];                 // 850 — the held view is live
+</code></pre>
+<h2 id="the-flat-surface">The flat surface</h2>
+<p>The two-key surface mirrors the familiar dictionary contract:</p>
+<ul>
+<li><code>this[row, column]</code> — get throws <code>KeyNotFoundException</code> for a missing cell; set upserts (creating the row when absent).</li>
+<li><code>Add</code> throws on a duplicate cell; <code>TryAdd</code> returns <code>false</code> instead.</li>
+<li><code>TryGetValue</code>, <code>Contains(row, column)</code>, <code>ContainsRow</code>, <code>ContainsColumn</code>, <code>ContainsValue</code>.</li>
+<li><code>Remove(row, column)</code>, <code>RemoveRow(row)</code> (all cells of the row), <code>RemoveColumn(column)</code> (the column's cell in every row), <code>Clear</code>.</li>
+<li><code>Count</code> is the total cell count, maintained as an O(1) counter; <code>IsEmpty</code> is its zero check.</li>
+<li>Enumeration yields the flat cells as <code>KeyValuePair&lt;(TRow Row, TColumn Column), TValue&gt;</code> in row-major order (per-row order is the unspecified <code>Dictionary</code> order — do not rely on it).</li>
+</ul>
+<p>Row and column comparers are injectable at construction and exposed through <code>RowComparer</code> / <code>ColumnComparer</code>.</p>
+<h2 id="contract-points">Contract points</h2>
+<ul>
+<li><strong>The views are live.</strong> <code>Row</code> and <code>Column</code> hold the table and the key and resolve on every access — mutations made after the view was created are visible through it. A row view created <em>before</em> the row exists reports empty and starts reporting cells once the row appears; it reverts to empty when the row's last cell is removed.</li>
+<li><strong>The column axis is honest about its cost.</strong> The backing store is row-major (<code>Dictionary&lt;TRow, Dictionary&lt;TColumn, TValue&gt;&gt;</code>) with <strong>no second index</strong>: <code>Column(...)</code> enumeration and its <code>Count</code>, <code>ContainsColumn</code>, and <code>RemoveColumn</code> scan every row and are O(rows) per call; <code>ColumnKeys</code> walks every cell. Per-row lookups through a column view (<code>ContainsKey</code>, <code>TryGetValue</code>, the indexer) stay O(1). Put the axis you project by most often on the row side.</li>
+<li><strong>Empty rows never leak.</strong> Removing a row's last cell — via <code>Remove</code> or <code>RemoveColumn</code> — also removes the row, so <code>ContainsRow</code>, <code>RowKeys</code>, and <code>RowMap()</code> only ever report rows holding at least one cell.</li>
+<li><strong><code>RowKeys</code> is live; <code>ColumnKeys</code> is a snapshot.</strong> <code>RowKeys</code> is the backing dictionary's key collection; <code>ColumnKeys</code> is recomputed (distinct under <code>ColumnComparer</code>) on each read.</li>
+<li><strong>Fail-fast enumeration.</strong> The views delegate to the live backing dictionaries, so mutating the table while enumerating the table or a view surfaces the standard <code>Dictionary</code> fail-fast <code>InvalidOperationException</code>.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Table&lt;TRow, TColumn, TValue&gt;</code> is not thread-safe. Concurrent reads and writes, including through the row and column views, require external synchronization.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> — the full API surface.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide across the namespace.</li>
+<li><a href="multi-value-dictionary.html">Multi-value dictionary</a> — one key to <em>many</em> values, when the second axis is not a key.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

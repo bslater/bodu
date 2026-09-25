@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Utf8TomlReader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Utf8TomlReader | BODU ">
+    
+    <meta name="description" content="Provides a forward-only, source-order reader for UTF-8 TOML bytes: a ref struct that holds the input span and scans it incrementally. Each  advances to the next lexical token in document order — for example [server.tls] surfaces as  followed by a  per dotted segment, and ports = [1, 2] as a key, then , two integers, and .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader">
+
+
+
+  <h1 id="Bodu_Text_Toml_Reader_Utf8TomlReader" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader" class="text-break">Struct Utf8TomlReader</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only, source-order reader for UTF-8 TOML bytes: a <code>ref struct</code> that holds the
+input span and scans it incrementally. Each <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> advances to the next lexical token in document order
+— for example <code>[server.tls]</code> surfaces as <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_TableHeader">TableHeader</a> followed by a
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> per dotted segment, and <code>ports = [1, 2]</code> as a key, then
+<a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_StartArray">StartArray</a>, two integers, and <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_EndArray">EndArray</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a>.<a class="xref" href="Bodu.Text.Toml.Reader.html">Reader</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
+  <h5 id="Bodu_Text_Toml_Reader_Utf8TomlReader_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct Utf8TomlReader</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Toml_Reader_Utf8TomlReader_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The reader validates lexical well-formedness only: UTF-8 validity, string termination and escapes, number and
+date-time grammar, newline discipline, control characters, the bracket nesting bound, and the grammar features gated
+by <a class="xref" href="Bodu.Text.Toml.TomlSpecVersion.html">TomlSpecVersion</a>. It enforces no structural semantics — duplicate keys, table redefinition,
+dotted-key rules, arrays of tables, and inline-table closedness are whole-document rules applied by the parsing
+entry points (<code>TomlSerializer</code>, <code>TomlNode.Parse</code>, <code>TomlDocument.Parse</code>, and the binding cursor
+<a class="xref" href="Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a>). A document can therefore read cleanly here and still be rejected by those
+surfaces, and lexical errors are raised from <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> as scanning reaches them, not from the constructor.
+</p>
+<p>
+Scalar values are validated and decoded as part of <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> — a malformed number or date-time raises
+<a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> from <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> even when the consumer never asks for the value — and
+the typed accessors return the decoded result. String content is the exception: <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a> validates it in
+place, and <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetString">GetString()</a> materializes the string on demand from <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueSpan.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ValueSpan">ValueSpan</a>.
+</p>
+<p>
+All positions — <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenStartIndex.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TokenStartIndex">TokenStartIndex</a>, <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ColumnNumber.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ColumnNumber">ColumnNumber</a>, and the positions carried by thrown
+<a class="xref" href="Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a> instances — are byte-true offsets into the UTF-8 source.
+</p>
+<example>
+<pre><code class="lang-csharp">// Lex "port = 8080" into a key token followed by an integer token.
+var reader = new Utf8TomlReader("port = 8080"u8);
+
+while (reader.Read())
+{
+    if (reader.TokenType == TomlTokenType.Key)
+        Console.Write($"{reader.GetString()} = ");
+    else if (reader.TokenType == TomlTokenType.Integer)
+        Console.WriteLine(reader.GetInt64());
+}</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___">Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied sequence, enforcing
+strict TOML v1.0.0.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,Bodu.Text.Toml.Reader.TomlReaderOptions)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___Bodu_Text_Toml_Reader_TomlReaderOptions_">Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;, TomlReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied sequence using the
+supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.Buffers.ReadOnlySequence{System.Byte}@,System.Boolean,Bodu.Text.Toml.Reader.TomlReaderState)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_Buffers_ReadOnlySequence_System_Byte___System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_">Utf8TomlReader(in ReadOnlySequence&lt;byte&gt;, bool, TomlReaderState)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over one block of a document supplied as
+a sequence, resuming from the state captured at the end of the previous block.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__">Utf8TomlReader(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied bytes, enforcing strict
+TOML v1.0.0.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Reader_TomlReaderOptions_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.Text.Toml.Reader.TomlReaderOptions)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_Text_Toml_Reader_TomlReaderOptions_">Utf8TomlReader(ReadOnlySpan&lt;byte&gt;, TomlReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over the supplied bytes using the
+supplied options, skipping a leading byte-order mark when present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,Bodu.Text.Toml.Reader.TomlReaderState)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.-ctor.html#Bodu_Text_Toml_Reader_Utf8TomlReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_Text_Toml_Reader_TomlReaderState_">Utf8TomlReader(ReadOnlySpan&lt;byte&gt;, bool, TomlReaderState)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> struct over one block of a document, resuming
+from the state captured at the end of the previous block.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_BytesConsumed" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.BytesConsumed">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.BytesConsumed.html#Bodu_Text_Toml_Reader_Utf8TomlReader_BytesConsumed">BytesConsumed</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bytes of the current block the reader has fully processed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_ColumnNumber" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ColumnNumber">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ColumnNumber.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ColumnNumber">ColumnNumber</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the 1-based byte column at which the current token begins.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentDepth" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentDepth">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentDepth.html#Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentDepth">CurrentDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the current bracket nesting depth: the number of arrays and inline tables open around the current token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentState" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentState">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.CurrentState.html#Bodu_Text_Toml_Reader_Utf8TomlReader_CurrentState">CurrentState</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the resumable state to construct the next block's reader from.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_HasEscapes" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.HasEscapes">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.HasEscapes.html#Bodu_Text_Toml_Reader_Utf8TomlReader_HasEscapes">HasEscapes</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the current string token contains escape sequences or line-ending backslashes,
+so that <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetString">GetString()</a> cannot return the raw bytes by direct transcoding.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalBlock" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalBlock">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalBlock.html#Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalBlock">IsFinalBlock</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the supplied bytes contain the final block of the document.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalKeySegment" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalKeySegment">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.IsFinalKeySegment.html#Bodu_Text_Toml_Reader_Utf8TomlReader_IsFinalKeySegment">IsFinalKeySegment</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the current <a class="xref" href="Bodu.Text.Toml.TomlTokenType.html#Bodu_Text_Toml_TomlTokenType_Key">Key</a> token is the final segment of its
+dotted path.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_LineNumber" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.LineNumber">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.LineNumber.html#Bodu_Text_Toml_Reader_Utf8TomlReader_LineNumber">LineNumber</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the 1-based line on which the current token begins.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenStartIndex" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenStartIndex">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenStartIndex.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TokenStartIndex">TokenStartIndex</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the byte offset at which the current token begins, including any delimiters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TokenType" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenType">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TokenType.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TokenType">TokenType</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the kind of the current token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueSpan" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueSpan">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueSpan.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ValueSpan">ValueSpan</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the raw UTF-8 bytes of the current token's text content, excluding delimiters.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetBoolean" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetBoolean">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetBoolean.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetBoolean">GetBoolean()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a Boolean.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetByte" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetByte">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetByte.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetByte">GetByte()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an 8-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetComment" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetComment">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetComment.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetComment">GetComment()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a comment, returning the text after the <code>#</code> to the end of the line.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateOnly" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateOnly">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateOnly.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateOnly">GetDateOnly()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local date.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTime" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTime">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTime.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTime">GetDateTime()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTimeOffset" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTimeOffset">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDateTimeOffset.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetDateTimeOffset">GetDateTimeOffset()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an offset date-time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDecimal" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDecimal">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDecimal.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetDecimal">GetDecimal()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a decimal, parsed exactly from the raw float literal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetDouble" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDouble">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetDouble.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetDouble">GetDouble()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an IEEE 754 binary64 floating-point value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetGuid" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetGuid">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetGuid.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetGuid">GetGuid()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>, parsed from a string token in the 36-character hyphenated (
+<code>D</code>) format.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt16" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt16">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt16.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt16">GetInt16()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 16-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt32" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt32">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt32.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt32">GetInt32()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 32-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt64" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt64">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetInt64.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetInt64">GetInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 64-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSByte" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSByte">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSByte.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetSByte">GetSByte()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an 8-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetSingle" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSingle">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetSingle.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetSingle">GetSingle()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as an IEEE 754 binary32 floating-point value, parsed from the raw float literal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetString" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetString.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetString">GetString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token's text as a string, decoding escape sequences when present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetTimeOnly" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetTimeOnly">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetTimeOnly.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetTimeOnly">GetTimeOnly()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a local time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt16" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt16">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt16.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt16">GetUInt16()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 16-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt32" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt32">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt32.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt32">GetUInt32()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 32-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt64" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt64">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.GetUInt64.html#Bodu_Text_Toml_Reader_Utf8TomlReader_GetUInt64">GetUInt64()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the current token as a 64-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_Read" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Read">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Read.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Read">Read()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Advances the reader to the next token.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_Skip" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.Skip">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.Skip.html#Bodu_Text_Toml_Reader_Utf8TomlReader_Skip">Skip()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Skips the current value in source order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetByte_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetByte(System.Byte@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetByte.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetByte_System_Byte__">TryGetByte(out byte)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as an 8-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetDecimal_System_Decimal__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetDecimal(System.Decimal@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetDecimal.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetDecimal_System_Decimal__">TryGetDecimal(out decimal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a decimal, parsed exactly from the raw float literal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetGuid_System_Guid__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetGuid(System.Guid@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetGuid.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetGuid_System_Guid__">TryGetGuid(out Guid)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> in the 36-character hyphenated (<code>D</code>) format.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt16_System_Int16__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt16(System.Int16@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt16.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt16_System_Int16__">TryGetInt16(out short)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a 16-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt32_System_Int32__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt32(System.Int32@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetInt32.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetInt32_System_Int32__">TryGetInt32(out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a 32-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSByte_System_SByte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSByte(System.SByte@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSByte.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSByte_System_SByte__">TryGetSByte(out sbyte)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as an 8-bit signed integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSingle_System_Single__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSingle(System.Single@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetSingle.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetSingle_System_Single__">TryGetSingle(out float)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as an IEEE 754 binary32 floating-point value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt16_System_UInt16__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt16(System.UInt16@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt16.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt16_System_UInt16__">TryGetUInt16(out ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a 16-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt32_System_UInt32__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt32(System.UInt32@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt32.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt32_System_UInt32__">TryGetUInt32(out uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a 32-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt64_System_UInt64__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt64(System.UInt64@)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TryGetUInt64.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TryGetUInt64_System_UInt64__">TryGetUInt64(out ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to read the current token as a 64-bit unsigned integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_TrySkip" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.TrySkip">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.TrySkip.html#Bodu_Text_Toml_Reader_Utf8TomlReader_TrySkip">TrySkip()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to skip the current value in source order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Byte__">ValueTextEquals(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current string or key token to the supplied UTF-8 text without allocating when the token is
+escape-free.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_ReadOnlySpan_System_Char__">ValueTextEquals(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current string or key token to the supplied text without allocating when the token is escape-free
+and the text is small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_String_" data-uid="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals(System.String)">
+          <a class="xref" href="Bodu.Text.Toml.Reader.Utf8TomlReader.ValueTextEquals.html#Bodu_Text_Toml_Reader_Utf8TomlReader_ValueTextEquals_System_String_">ValueTextEquals(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares the current string or key token to the supplied text.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

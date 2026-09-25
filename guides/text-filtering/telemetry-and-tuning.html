@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Telemetry and tuning | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Telemetry and tuning | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="telemetry-and-tuning">Telemetry and tuning</h1>
+
+<p>A <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> is built for bulk work — 100k+ values against
+tens to hundreds of patterns — so it ships with the observability needed to understand and tune a
+filter at that volume: always-on counters, per-pattern hit attribution, and an optional
+per-decision observer.</p>
+<h2 id="quick-reference">Quick reference</h2>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>What it tells you</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.GetStatistics.html#Bodu_Text_Filtering_TextFilter_GetStatistics"><code>GetStatistics()</code></a></td>
+<td>Decision buckets, per-pattern hit counts, regex timeouts, optional timing</td>
+<td>A few plain counter increments per value</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.Evaluate.html"><code>Evaluate(value)</code></a></td>
+<td>The decision and the deciding pattern for one value</td>
+<td>Same as <code>IsMatch</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.GetMatchingPatterns.html"><code>GetMatchingPatterns(value)</code></a></td>
+<td><em>Every</em> matching pattern (no short-circuit)</td>
+<td>Full scan; diagnostic use</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.Observer.html#Bodu_Text_Filtering_TextFilter_Observer"><code>Observer</code></a></td>
+<td>Every decision as it happens, with the deciding pattern</td>
+<td>One null check when unattached</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-statistics-snapshot">The statistics snapshot</h2>
+<p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics</code></a> is an immutable snapshot.
+The buckets always reconcile — <code>ItemsEvaluated == ItemsAccepted + ItemsExcluded + ItemsNotIncluded</code> — and per-pattern
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPatternStatistics.html"><code>HitCount</code></a> credits the <strong>deciding</strong> pattern
+only: the include that admitted the value or the exclude that vetoed it. That is exactly the signal
+selectivity tuning needs — a pattern with a near-zero hit count over a large corpus is either
+redundant or shadowed.</p>
+<p>Counters are deliberately plain (not interlocked): matching results are always exact under
+concurrency (the compiled state is immutable), but counters may undercount when evaluating from
+multiple threads. Single-threaded pipelines get exact statistics for free. Timing is opt-in via
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>TextFilterOptions.CaptureEvaluationTime</code></a> and
+accumulates into <code>EvaluationTime</code>.</p>
+<h2 id="the-observer-hook">The observer hook</h2>
+<p>Attach an <a class="xref" href="../../api/Bodu.Text.Filtering.ITextFilterObserver.html"><code>ITextFilterObserver</code></a> to see every
+decision — the evaluated value, the <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a>,
+and the deciding pattern — for sampling, audit logging, or debugging a surprising veto. The
+callback runs synchronously on the evaluating thread; exceptions propagate to the caller; when no
+observer is attached the evaluation path pays only a single null check.</p>
+<h2 id="cost-tiers-and-what-they-mean-for-tuning">Cost tiers and what they mean for tuning</h2>
+<p>At build time each glob is classified into the cheapest strategy its shape permits, and in
+<code>AnyMatch</code> mode each group runs cheapest-first:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Pattern shape</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>*</code></td>
+<td>always true</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>abc</code></td>
+<td>whole-string equality</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>abc*</code>, <code>*abc</code>, <code>abc*def</code></td>
+<td>prefix / suffix comparison</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>*abc*</code></td>
+<td>vectorized substring search</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>?</code>, classes, multiple <code>*</code> segments</td>
+<td>general wildcard matcher</td>
+</tr>
+<tr>
+<td>5</td>
+<td>regex</td>
+<td><code>NonBacktracking</code> regex engine</td>
+</tr>
+</tbody>
+</table>
+<p>Practical consequences:</p>
+<ul>
+<li>Prefer glob shapes over regexes when both can express the rule — <code>{error,warn}*</code> compiles to two
+tier-2 prefix checks, while <code>^(error|warn)</code> is tier 5.</li>
+<li>Order within a group does not matter in <code>AnyMatch</code> — write rules for readability; the engine
+sorts by cost.</li>
+<li>The indicative benchmark (100k values, 100 mixed patterns) runs ~3× faster than a compiled
+per-pattern-regex baseline, with zero allocations per value.</li>
+</ul>
+<h2 id="regex-timeouts-fail-safe">Regex timeouts fail safe</h2>
+<p>Regexes prefer the linear-time <code>NonBacktracking</code> engine; patterns it cannot compile
+(backreferences, lookarounds) fall back to the backtracking engine guarded by
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterOptions.html"><code>RegexMatchTimeout</code></a>. If a match times out, the
+decision fails safe <strong>by action</strong>: a timed-out include does not admit the value, and a timed-out
+exclude still vetoes it — the filter never accidentally lets a value through because its exclude
+timed out. Timeouts are counted in
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics.RegexTimeouts</code></a> and visible
+to the observer.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="patterns-and-globs.html">Patterns and globs</a></strong> — shaping rules into cheap tiers.</li>
+<li><strong><a href="evaluation-modes.html">Evaluation modes</a></strong> — set vs ordered semantics.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html">API reference</a></strong> — the statistics types.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

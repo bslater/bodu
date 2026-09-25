@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method FirstDateOfQuarter | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method FirstDateOfQuarter | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter*">
+
+
+
+<h1 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter*">Method FirstDateOfQuarter</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter*"></a>
+<h4 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter(System.DateOnly)">FirstDateOfQuarter(DateOnly)</h4>
+<div class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the first day of the calendar quarter that contains the
+specified <code class="paramref">date</code>, using the standard calendar quarter definition.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static DateOnly FirstDateOfQuarter(this DateOnly date)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><span class="parametername">date</span></td>
+      <td><p>The date value used to determine the containing quarter.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> value set to the first day of the quarter that contains <code class="paramref">date</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload uses the standard calendar alignment defined by
+<a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html#Bodu_Extensions_CalendarQuarterDefinition_JanuaryToDecember">JanuaryToDecember</a>:
+</p>
+<ul><li><span class="term">Q1</span>January – March</li><li><span class="term">Q2</span>April – June</li><li><span class="term">Q3</span>July – September</li><li><span class="term">Q4</span>October – December</li></ul>
+</div>
+<a id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter*"></a>
+<h4 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter(System.DateOnly,Bodu.Extensions.CalendarQuarterDefinition)">FirstDateOfQuarter(DateOnly, CalendarQuarterDefinition)</h4>
+<div class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the first day of the quarter that contains the specified
+<code class="paramref">date</code>, using the specified calendar quarter definition.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static DateOnly FirstDateOfQuarter(this DateOnly date, CalendarQuarterDefinition definition)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><span class="parametername">date</span></td>
+      <td><p>The date value used to determine the containing quarter.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a></td>
+      <td><span class="parametername">definition</span></td>
+      <td><p>The <a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> that determines how quarter boundaries are aligned.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> value set to the first day of the corresponding quarter.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_Bodu_Extensions_CalendarQuarterDefinition__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+The <code class="paramref">definition</code> controls whether quarters are aligned to the first day of a month (e.g.
+January – March) or anchored to a custom day-of-month boundary.
+</p>
+<p>
+For provider-driven (e.g. 4-4-5 fiscal) quarters, use the
+<a class="xref" href="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter.html#Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_Bodu_Extensions_IQuarterDefinitionProvider_">FirstDateOfQuarter(DateOnly, IQuarterDefinitionProvider)</a> overload instead.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown if <code class="paramref">definition</code> is not a defined value of the <a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a>
+enumeration.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></td>
+      <td><p>Thrown if <code class="paramref">definition</code> is <a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html#Bodu_Extensions_CalendarQuarterDefinition_Custom">Custom</a>; use the
+provider-based overload instead.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter*"></a>
+<h4 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateOnlyExtensions.FirstDateOfQuarter(System.DateOnly,Bodu.Extensions.IQuarterDefinitionProvider)">FirstDateOfQuarter(DateOnly, IQuarterDefinitionProvider)</h4>
+<div class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the first day of the quarter that contains the specified
+<code class="paramref">date</code>, using a custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static DateOnly FirstDateOfQuarter(this DateOnly date, IQuarterDefinitionProvider provider)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><span class="parametername">date</span></td>
+      <td><p>The date value used to determine the containing quarter.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a></td>
+      <td><span class="parametername">provider</span></td>
+      <td><p>The <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> that defines custom quarter boundaries. Must not be
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></td>
+      <td><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> value set to the first day of the quarter containing <code class="paramref">date</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_DateOnlyExtensions_FirstDateOfQuarter_System_DateOnly_Bodu_Extensions_IQuarterDefinitionProvider__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+This overload supports advanced or domain-specific quarter systems by delegating boundary logic to the supplied
+<code class="paramref">provider</code> — for example, 4-4-5 retail calendars or regional fiscal quarters.
+</p>
+</div>
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+      <td><p>Thrown if <code class="paramref">provider</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown if the <code class="paramref">provider</code> returns a date outside the range of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly.minvalue">MinValue</a>
+and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly.maxvalue">MaxValue</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

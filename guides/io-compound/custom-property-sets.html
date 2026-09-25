@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Authoring custom property sets | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Authoring custom property sets | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="authoring-custom-property-sets">Authoring custom property sets</h1>
+
+<p><a href="property-sets.html">Reading property sets</a> covers the two standard metadata streams and their typed views. This guide is the write side, and the part the typed builders do not reach: the raw <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> model, user-defined named properties in a document's second section, and property-set streams of your own on any storage.</p>
+<p>An OLE property set (MS-OLEPS) is the serialized form of the COM <code>IPropertyStorage</code> interface. It begins with a header declaring a class identifier and one or two <strong>sections</strong>; each section is identified by a format identifier (FMTID), carries a code page, and maps integer property identifiers (PIDs) to typed values. The first section holds the well-known properties; an optional second section — the <em>user-defined</em> section, FMTID <code>D5CDD505-2E9C-101B-9397-08002B2CF9AE</code> — holds custom properties whose human-readable names live in the section's dictionary. Office shows those names on the <em>Custom</em> tab of a document's properties.</p>
+<p>The samples run against <code>sample1.doc</code> from the <a href="../../samples/io-compound.html">runnable compound-file sample</a>, a Word 2000 document copied as <code>report.doc</code>; the quoted output is what they print.</p>
+<h2 id="the-model">The model</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Role</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a></td>
+<td>The whole stream: header plus sections.</td>
+<td><code>.ctor(formatId, classId, codePage)</code> · <code>FormatId</code> · <code>ClassId</code> · <code>CodePage</code> · <code>Sections</code> · <code>AddSection</code> · <code>TryGetValue(pid, out value)</code> / <code>this[pid]</code> (first section) · <code>Parse(ReadOnlyMemory&lt;byte&gt;)</code> · <code>Read(Stream)</code> · <code>ToArray()</code> · <code>WriteTo(Stream)</code> · <code>WriteTo(IBufferWriter&lt;byte&gt;)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySection.html">OlePropertySection</a></td>
+<td>One section: PID → value, plus the optional name dictionary.</td>
+<td><code>.ctor(formatId, codePage)</code> · <code>FormatId</code> · <code>CodePage</code> · <code>Properties</code> · <code>PropertyNames</code> · <code>Set(pid, value)</code> · <code>SetName(pid, name)</code> · <code>Remove(pid)</code> · <code>TryGetValue</code> / <code>this[pid]</code> · <code>GetNamedProperties()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></td>
+<td>One typed value, the managed <code>PROPVARIANT</code>.</td>
+<td><code>Type</code> · <code>IsVector</code> · <code>Value</code> · <code>Create(int / short / long / double / bool / string[, type] / DateTimeOffset)</code> · <code>CreateBlob(byte[])</code> · <code>AsString</code> / <code>AsInt32</code> / <code>AsInt64</code> / <code>AsBoolean</code> / <code>AsDateTimeOffset</code> / <code>AsTimeSpan</code> / <code>AsBytes</code> · <code>GetValueOrDefault&lt;T&gt;()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a></td>
+<td>The <code>VT_*</code> type code.</td>
+<td>See <a href="#property-types">the type table</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Two conventions make a property-set stream findable. The <strong>name</strong> starts with the control character U+0005 — <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> for the standard pair, exposed as <code>SummaryInformation.StreamName</code> and <code>DocumentSummaryInformation.StreamName</code> — a prefix the CFB sort order places first and that ordinary names never use. Your own sets may follow the same convention or use any valid entry name. The <strong>format identifier</strong> of the first section tells a reader what the PIDs mean: <code>F29F85E0-4FF9-1068-AB91-08002B27B3D9</code> for summary information, <code>D5CDD502-2E9C-101B-9397-08002B2CF9AE</code> for document summary information, your own GUID for a set you define.</p>
+<h2 id="pattern-1--write-user-defined-properties-with-the-builder">Pattern 1 — write user-defined properties with the builder</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a> authors the built-in section from typed fields and adds the user-defined section for you: <code>AddCustomProperty(name, value)</code> assigns names to PIDs from 2 upward in insertion order and builds the dictionary. On a writable file, <code>SetDocumentSummaryInformation</code> stages the result as the well-known root stream.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+File.Copy(&quot;report.doc&quot;, &quot;report-tagged.doc&quot;, overwrite: true);
+using CompoundFile file = CompoundFile.Open(&quot;report-tagged.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+
+var builder = new DocumentSummaryInformationBuilder
+{
+    Category = &quot;Reports&quot;,
+    Company = &quot;Bodu Pty. Ltd.&quot;,
+};
+builder.AddCustomProperty(&quot;ReviewedBy&quot;, OlePropertyValue.Create(&quot;Ada&quot;));
+builder.AddCustomProperty(&quot;Reviewed&quot;, OlePropertyValue.Create(true));
+builder.AddCustomProperty(&quot;Revision&quot;, OlePropertyValue.Create(7));
+builder.AddCustomProperty(&quot;ReviewedOn&quot;, OlePropertyValue.Create(new DateTimeOffset(2026, 9, 9, 8, 30, 0, TimeSpan.Zero)));
+
+file.SetDocumentSummaryInformation(new DocumentSummaryInformation(builder.ToPropertySet()));
+file.Commit();
+</code></pre>
+<p>The two builders cover these fields (PID in parentheses); only the fields you set are written, and each builder's <code>CodePage</code> (default 1252) encodes its strings:</p>
+<table>
+<thead>
+<tr>
+<th><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a></th>
+<th><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Title</code> (2) · <code>Subject</code> (3) · <code>Author</code> (4) · <code>Keywords</code> (5) · <code>Comments</code> (6) · <code>LastAuthor</code> (8) · <code>RevisionNumber</code> (9) · <code>CreateTime</code> (12) · <code>LastSaveTime</code> (13) · <code>PageCount</code> (14) · <code>WordCount</code> (15) · <code>CharacterCount</code> (16) · <code>ApplicationName</code> (18)</td>
+<td><code>Category</code> (2) · <code>LineCount</code> (5) · <code>ParagraphCount</code> (6) · <code>SlideCount</code> (7) · <code>Manager</code> (14) · <code>Company</code> (15) · <code>AddCustomProperty(name, value)</code> → the user-defined section</td>
+</tr>
+</tbody>
+</table>
+<p>Both expose <code>ToPropertySet()</code>, <code>ToArray()</code>, and <code>WriteTo(Stream)</code>. Fields the readers surface but the builders do not (<code>Template</code>, <code>TotalEditTime</code>, <code>LastPrinted</code>, <code>Security</code>, <code>PresentationTarget</code>, …) are set on the raw section by PID, as in the next pattern.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>SetDocumentSummaryInformation</code> <strong>replaces</strong> the stream. If the document already carries a document-summary stream with fields you want to keep, read it first (<code>TryGetDocumentSummaryInformation</code>), edit its <code>PropertySet</code>, and write that back — see Pattern 3 below.</p>
+</div>
+<h2 id="pattern-1-by-hand--assemble-the-sections-yourself">Pattern 1, by hand — assemble the sections yourself</h2>
+<p>The builder is a convenience over three constructors. Building the set directly lets you choose the string type per value, add blobs and floating-point values, and pick your own PIDs:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+var documentSummary = new Guid(&quot;D5CDD502-2E9C-101B-9397-08002B2CF9AE&quot;);   // FMTID_DocSummaryInformation
+var userDefined = new Guid(&quot;D5CDD505-2E9C-101B-9397-08002B2CF9AE&quot;);       // FMTID_UserDefinedProperties
+
+var set = new OlePropertySet(formatId: documentSummary, classId: Guid.Empty, codePage: 1252);
+
+var builtIn = new OlePropertySection(documentSummary, codePage: 1252);
+builtIn.Set(2, OlePropertyValue.Create(&quot;Reports&quot;));                         // PID 2 = Category
+builtIn.Set(15, OlePropertyValue.Create(&quot;Bodu Pty. Ltd.&quot;));                 // PID 15 = Company
+set.AddSection(builtIn);
+
+var custom = new OlePropertySection(userDefined, codePage: 1252);
+custom.SetName(2, &quot;ReviewedBy&quot;);                                            // PIDs 2.. are yours; 0 and 1 are reserved
+custom.Set(2, OlePropertyValue.Create(&quot;Ada&quot;, OlePropertyType.UnicodeString));
+custom.SetName(3, &quot;Revision&quot;);
+custom.Set(3, OlePropertyValue.Create(7));
+custom.SetName(4, &quot;Weight&quot;);
+custom.Set(4, OlePropertyValue.Create(0.75));
+custom.SetName(5, &quot;Thumbnail&quot;);
+custom.Set(5, OlePropertyValue.CreateBlob(new byte[] { 0x89, 0x50, 0x4E, 0x47 }));
+set.AddSection(custom);
+
+Console.WriteLine($&quot;{set.Sections.Count} sections, {custom.Properties.Count} custom properties, names: {string.Join(&quot;, &quot;, custom.PropertyNames.Values)}&quot;);
+
+using CompoundFile file = CompoundFile.Open(&quot;report-tagged.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+file.RootStorage.WritePropertySet(DocumentSummaryInformation.StreamName, set);
+file.Commit();
+
+// 2 sections, 4 custom properties, names: ReviewedBy, Revision, Weight, Thumbnail
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.WritePropertySet.html">WritePropertySet</a> serializes any set into a named child stream of any storage, creating or replacing it in the staging tree; <code>Commit</code> persists it. PIDs 0 (the dictionary) and 1 (the code page) are reserved in every section, so keep custom PIDs at 2 or above. The <code>OlePropertySet</code> constructor's <code>codePage</code> and <code>classId</code> are header-level values; the section's own <code>CodePage</code> is what encodes its <code>AnsiString</code> values.</p>
+<h2 id="pattern-2--read-it-back">Pattern 2 — read it back</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.CustomProperties.html#Bodu_IO_Compound_PropertySets_DocumentSummaryInformation_CustomProperties">CustomProperties</a> joins the user-defined section's names to its values; the raw sections remain reachable for anything else.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+using CompoundFile file = CompoundFile.OpenRead(&quot;report-tagged.doc&quot;);
+
+// The typed view joins names to values for you.
+if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? summary))
+{
+    Console.WriteLine($&quot;category={summary.Category} company={summary.Company}&quot;);
+    foreach ((string name, OlePropertyValue value) in summary.CustomProperties)
+        Console.WriteLine($&quot;  {name} ({value.Type}) = {Render(value)}&quot;);
+
+    int revision = summary.CustomProperties[&quot;Revision&quot;].GetValueOrDefault&lt;int&gt;();
+    Console.WriteLine($&quot;revision {revision}&quot;);
+}
+
+// Or walk the raw sections.
+if (file.RootStorage.TryOpenPropertySet(DocumentSummaryInformation.StreamName, out OlePropertySet? set))
+{
+    foreach (OlePropertySection section in set.Sections)
+        Console.WriteLine($&quot;  section {section.FormatId}: {section.Properties.Count} properties, {section.PropertyNames.Count} names&quot;);
+
+    IReadOnlyDictionary&lt;string, OlePropertyValue&gt; named = set.Sections[1].GetNamedProperties();
+    Console.WriteLine($&quot;  ReviewedBy = {named[&quot;ReviewedBy&quot;].AsString()}&quot;);
+}
+
+static string Render(OlePropertyValue value) =&gt;
+    value.AsString()
+    ?? value.AsDateTimeOffset()?.ToString(&quot;u&quot;)
+    ?? value.AsInt64()?.ToString()
+    ?? value.AsBoolean()?.ToString()
+    ?? (value.AsBytes() is byte[] bytes ? Convert.ToHexString(bytes) : value.Value?.ToString() ?? &quot;(null)&quot;);
+
+// After the builder version of Pattern 1:
+// category=Reports company=Bodu Pty. Ltd.
+//   ReviewedBy (AnsiString) = Ada
+//   Reviewed (Boolean) = True
+//   Revision (Int32) = 7
+//   ReviewedOn (FileTime) = 2026-09-09 08:30:00Z
+// revision 7
+//   section d5cdd502-2e9c-101b-9397-08002b2cf9ae: 3 properties, 0 names
+//   section d5cdd505-2e9c-101b-9397-08002b2cf9ae: 5 properties, 4 names
+//   ReviewedBy = Ada
+//
+// After the hand-assembled version:
+//   ReviewedBy (UnicodeString) = Ada
+//   Revision (Int32) = 7
+//   Weight (Float64) = 0.75
+//   Thumbnail (Blob) = 89504E47
+</code></pre>
+<p>The section's <code>Properties</code> count is one higher than the names you gave because the code-page property (PID 1) is written into every section. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.TryOpenPropertySet.html">TryOpenPropertySet</a> returns <code>false</code> when no stream by that name exists and throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> only when one exists but is not a well-formed property set. The <code>As*</code> accessors return <code>null</code> rather than throwing on a type that does not match; <code>GetValueOrDefault&lt;T&gt;</code> returns <code>default</code> — so ask for the CLR type the value was boxed as (<code>int</code> for <code>Int32</code>, <code>long</code> for <code>Int64</code> and <code>FileTime</code>, <code>bool</code>, <code>double</code>, <code>string</code>, <code>byte[]</code>).</p>
+<h2 id="pattern-3--round-trip-a-real-documents-summary-with-one-field-changed">Pattern 3 — round-trip a real document's summary with one field changed</h2>
+<p>Editing what a real writer produced means preserving everything you did not touch — the code page, the application name, the timestamps, and the <em>string type</em> the writer chose. Read the set, change one value on its first section, and write the same set back.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+File.Copy(&quot;report.doc&quot;, &quot;report-retitled.doc&quot;, overwrite: true);
+
+using (CompoundFile file = CompoundFile.Open(&quot;report-retitled.doc&quot;, FileMode.Open, FileAccess.ReadWrite))
+{
+    if (!file.TryGetSummaryInformation(out SummaryInformation? summary))
+        return;
+
+    Console.WriteLine($&quot;before: title='{summary.Title}' author='{summary.Author}' app='{summary.ApplicationName}' created={summary.CreateTime:u}&quot;);
+
+    OlePropertySection section = summary.PropertySet.Sections[0];
+    OlePropertyValue existing = section[2]!;                                        // PID 2 = Title
+    section.Set(2, OlePropertyValue.Create(&quot;Sample document (reviewed)&quot;, existing.Type));   // keep the writer's string type
+
+    file.SetSummaryInformation(summary);   // every other property, and the code page, travel unchanged
+    file.Commit();
+}
+
+using CompoundFile check = CompoundFile.OpenRead(&quot;report-retitled.doc&quot;);
+if (check.TryGetSummaryInformation(out SummaryInformation? after))
+    Console.WriteLine($&quot;after:  title='{after.Title}' author='{after.Author}' app='{after.ApplicationName}' created={after.CreateTime:u} codepage={after.PropertySet.CodePage}&quot;);
+
+// before: title='Sample document created with MS Word' author='steve' app='Microsoft Word 9.0' created=2001-02-28 23:54:00Z
+// after:  title='Sample document (reviewed)' author='steve' app='Microsoft Word 9.0' created=2001-02-28 23:54:00Z codepage=1252
+</code></pre>
+<p><code>Set</code> on the parsed section mutates the same <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> the record wraps, so <code>SetSummaryInformation(summary)</code> writes your edit alongside every untouched value. The writer re-emits every value shape the reader parses — including vector values such as a document summary's heading pairs — so a set read from any real document can be written back; the one nuance is that variant-vector elements re-emit with a type word inferred from the CLR value (a <code>FileTime</code>-tagged element surfaces as <code>long</code> and re-emits as <code>Int64</code>), giving value rather than byte identity for those.</p>
+<h2 id="pattern-4--a-property-set-of-your-own-on-any-storage">Pattern 4 — a property set of your own on any storage</h2>
+<p>Nothing ties property sets to the root or to the two standard names. Allocate a format identifier for your application, put the set in whatever storage suits, and read it back with the same <code>TryOpenPropertySet</code>:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+var myFormat = new Guid(&quot;7C3B9A52-1B1E-4C5A-9B4D-2F3E1D0C9A11&quot;);   // an FMTID you allocate for your application
+
+var set = new OlePropertySet(myFormat, classId: Guid.Empty, codePage: 65001);
+var section = new OlePropertySection(myFormat, codePage: 65001);
+section.SetName(2, &quot;Pipeline&quot;);
+section.Set(2, OlePropertyValue.Create(&quot;nightly-ingest&quot;));          // AnsiString, encoded with code page 65001 (UTF-8)
+section.SetName(3, &quot;Sequence&quot;);
+section.Set(3, OlePropertyValue.Create(42L));
+set.AddSection(section);
+
+using CompoundFile file = CompoundFile.Open(&quot;report-tagged.doc&quot;, FileMode.Open, FileAccess.ReadWrite);
+CompoundStorage storage = file.RootStorage.TryOpenStorage(&quot;Bodu&quot;, out CompoundStorage? existing) ? existing : file.RootStorage.CreateStorage(&quot;Bodu&quot;);
+storage.WritePropertySet(&quot;BoduPipeline&quot;, set);
+file.Commit();
+
+if (storage.TryOpenPropertySet(&quot;BoduPipeline&quot;, out OlePropertySet? read))
+{
+    foreach ((string name, OlePropertyValue value) in read.Sections[0].GetNamedProperties())
+        Console.WriteLine($&quot;{name} = {value.Value}&quot;);
+}
+
+// Pipeline = nightly-ingest
+// Sequence = 42
+</code></pre>
+<p>A name dictionary is legal in any section, not just the user-defined one, so <code>GetNamedProperties()</code> works here too. Code page 65001 makes <code>AnsiString</code> values UTF-8 on the wire; <code>UnicodeString</code> is the alternative that never depends on the section code page. The writer encodes code pages 1200, 1201, and 65001 exactly and every other value — 1252 included — as Latin-1, so for text outside ASCII use one of those three or <code>UnicodeString</code>.</p>
+<h2 id="bytes-in-and-out-without-a-container">Bytes in and out without a container</h2>
+<p>The set serializes independently of any file — useful for the builder authoring path, for tests, and for property sets that travel outside a compound file:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound.Builders;
+using Bodu.IO.Compound.PropertySets;
+
+var builder = new SummaryInformationBuilder { Title = &quot;Quarterly report&quot;, Author = &quot;Ada&quot;, WordCount = 1280 };
+
+byte[] bytes = builder.ToArray();                       // the serialized stream payload
+OlePropertySet parsed = OlePropertySet.Parse(bytes);    // ...and back
+Console.WriteLine($&quot;{bytes.Length} bytes; title={parsed[2]?.AsString()} words={parsed[15]?.AsInt32()}&quot;);
+
+using var stream = new MemoryStream();
+parsed.WriteTo(stream);                                 // Stream and IBufferWriter&lt;byte&gt; overloads
+stream.Position = 0;
+SummaryInformation summary = SummaryInformation.Read(stream);
+Console.WriteLine(summary.Title);
+
+// Embed through the builder path when authoring from scratch.
+var root = CompoundStorageBuilder.CreateRoot();
+root.AddStream(SummaryInformation.StreamName, bytes);
+Console.WriteLine(root.ToArray().Length);
+
+// 144 bytes; title=Quarterly report words=1280
+// Quarterly report
+// 2560
+</code></pre>
+<p><code>Parse</code> takes the bytes you already hold; <code>Read(Stream)</code> consumes a stream to its end. Both throw <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> for data that is not a well-formed property set.</p>
+<h2 id="property-types">Property types</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a> carries the <code>VT_*</code> codes. The <code>Create*</code> factories cover the common scalars; anything else is authored by initializing an <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a> directly with <code>Type</code> and a <code>Value</code> of the CLR shape the writer expects.</p>
+<table>
+<thead>
+<tr>
+<th><code>OlePropertyType</code></th>
+<th>Code</th>
+<th><code>VT_*</code></th>
+<th>CLR <code>Value</code></th>
+<th>Factory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Int16</code> / <code>UInt16</code></td>
+<td>2 / 18</td>
+<td><code>I2</code> / <code>UI2</code></td>
+<td><code>short</code> / <code>ushort</code></td>
+<td><code>Create(short)</code></td>
+</tr>
+<tr>
+<td><code>Int32</code> / <code>UInt32</code></td>
+<td>3 / 19</td>
+<td><code>I4</code> / <code>UI4</code></td>
+<td><code>int</code> / <code>uint</code></td>
+<td><code>Create(int)</code></td>
+</tr>
+<tr>
+<td><code>Int64</code> / <code>UInt64</code></td>
+<td>20 / 21</td>
+<td><code>I8</code> / <code>UI8</code></td>
+<td><code>long</code> / <code>ulong</code></td>
+<td><code>Create(long)</code></td>
+</tr>
+<tr>
+<td><code>Int8</code> / <code>UInt8</code></td>
+<td>16 / 17</td>
+<td><code>I1</code> / <code>UI1</code></td>
+<td><code>sbyte</code> / <code>byte</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Float32</code> / <code>Float64</code></td>
+<td>4 / 5</td>
+<td><code>R4</code> / <code>R8</code></td>
+<td><code>float</code> / <code>double</code></td>
+<td><code>Create(double)</code></td>
+</tr>
+<tr>
+<td><code>Currency</code></td>
+<td>6</td>
+<td><code>CY</code></td>
+<td><code>decimal</code> (scaled by 10,000 on the wire)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>7</td>
+<td><code>DATE</code></td>
+<td>OLE automation date</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Boolean</code></td>
+<td>11</td>
+<td><code>BOOL</code></td>
+<td><code>bool</code> (<code>-1</code> / <code>0</code> on the wire)</td>
+<td><code>Create(bool)</code></td>
+</tr>
+<tr>
+<td><code>AnsiString</code> / <code>BinaryString</code></td>
+<td>30 / 8</td>
+<td><code>LPSTR</code> / <code>BSTR</code></td>
+<td><code>string</code>, encoded with the section code page</td>
+<td><code>Create(string)</code> (default)</td>
+</tr>
+<tr>
+<td><code>UnicodeString</code></td>
+<td>31</td>
+<td><code>LPWSTR</code></td>
+<td><code>string</code>, UTF-16</td>
+<td><code>Create(string, OlePropertyType.UnicodeString)</code></td>
+</tr>
+<tr>
+<td><code>FileTime</code></td>
+<td>64</td>
+<td><code>FILETIME</code></td>
+<td><code>long</code> ticks — read as <code>AsDateTimeOffset()</code> or <code>AsTimeSpan()</code></td>
+<td><code>Create(DateTimeOffset)</code></td>
+</tr>
+<tr>
+<td><code>Blob</code> / <code>ClipboardData</code></td>
+<td>65 / 71</td>
+<td><code>BLOB</code> / <code>CF</code></td>
+<td><code>byte[]</code></td>
+<td><code>CreateBlob(byte[])</code></td>
+</tr>
+<tr>
+<td><code>Variant</code></td>
+<td>12</td>
+<td><code>VARIANT</code></td>
+<td>element type inferred from the CLR value (vectors only)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Empty</code> / <code>Null</code></td>
+<td>0 / 1</td>
+<td><code>EMPTY</code> / <code>NULL</code></td>
+<td><code>null</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>vector</strong> (<code>VT_VECTOR</code>) is an <code>OlePropertyValue</code> with <code>IsVector = true</code> and an <code>object?[]</code> of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileSerializationException.html">CompoundFileSerializationException</a>:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+var section = new OlePropertySection(new Guid(&quot;D5CDD505-2E9C-101B-9397-08002B2CF9AE&quot;), 1252);
+section.SetName(2, &quot;Tags&quot;);
+section.Set(2, new OlePropertyValue
+{
+    Type = OlePropertyType.AnsiString,
+    IsVector = true,
+    Value = new object?[] { &quot;finance&quot;, &quot;q3&quot;, &quot;draft&quot; },
+});
+
+var set = new OlePropertySet(section.FormatId, Guid.Empty, 1252);
+set.AddSection(section);
+OlePropertySet parsed = OlePropertySet.Parse(set.ToArray());
+Console.WriteLine(string.Join(&quot;|&quot;, (object?[])parsed[2]!.Value!));
+
+section.Set(3, new OlePropertyValue { Type = OlePropertyType.Empty, IsVector = true, Value = Array.Empty&lt;object?&gt;() });
+try
+{
+    set.ToArray();
+}
+catch (CompoundFileSerializationException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+
+// finance|q3|draft
+// The property value type 'Empty' cannot be serialized to an OLE property set.
+</code></pre>
+<p><code>WritePropertySet</code> raises the same exception for an invalid stream name.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="property-sets.html">Reading property sets</a> — the typed views and the read side of <code>TryGet*</code> / <code>TryOpenPropertySet</code>.</li>
+<li><a href="editing-in-place.html">Editing an existing container in place</a> — the update-mode session these patterns write through, <code>Commit</code>, and <code>Revert</code>.</li>
+<li><a href="authoring-compound-files.html">Authoring compound files</a> — embedding a serialized set through the builder path.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets API reference</a>.</li>
+<li><a href="index.html">Bodu.IO.Compound guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

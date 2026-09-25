@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Formatting and parsing Fraction&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Formatting and parsing Fraction&lt;T&gt; | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="formatting-and-parsing-fractiont">Formatting and parsing <code>Fraction&lt;T&gt;</code></h1>
+
+<p>Exact rational values only round-trip when their textual form preserves every bit of the canonical representation. <code>Fraction&lt;T&gt;</code> ships three first-class text forms — the improper ratio <code>7/3</code>, the mixed number <code>2 1/3</code>, and the single-codepoint Unicode glyph <code>2⅓</code> — plus a percentage form. Every output form is also an accepted input form, so any <code>ToString</code> result feeds back through <code>Parse</code> to the same value.</p>
+<p>This guide covers what each specifier renders, what the parser accepts, and how culture and span surfaces interact with both. For the rest of the type, start with <a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a>.</p>
+<h2 id="format-specifiers-at-a-glance">Format specifiers at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Specifier</th>
+<th>Output</th>
+<th>Example (<code>7/3</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>G</code> (default)</td>
+<td>improper ratio</td>
+<td><code>7/3</code></td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>mixed number</td>
+<td><code>2 1/3</code></td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>Unicode vulgar fraction with mixed-number fallback</td>
+<td><code>2⅓</code></td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>percentage (ratio form)</td>
+<td><code>700/3%</code></td>
+</tr>
+</tbody>
+</table>
+<p>Specifiers are case-insensitive — <code>Format</code> uppercases the first character — and the format string <code>null</code>, <code>&quot;&quot;</code>, or <code>&quot;G&quot;</code> all select the general form. Any other specifier throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+<h2 id="improper-ratio-form-default">Improper-ratio form (default)</h2>
+<p><code>ToString()</code> and <code>ToString(&quot;G&quot;)</code> render the canonical pair as <code>numerator/denominator</code>. When the canonical denominator is one, the slash and denominator are omitted so whole numbers print as a bare integer:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.Create(3, 4).ToString();    // &quot;3/4&quot;
+Fraction&lt;int&gt;.Create(-7, 4).ToString();   // &quot;-7/4&quot;  — sign rides on the numerator
+Fraction&lt;int&gt;.Create(6, 2).ToString();    // &quot;3&quot;     — canonical denominator is one
+Fraction&lt;int&gt;.Zero.ToString();            // &quot;0&quot;
+</code></pre>
+<p>The general form is the round-trip wire shape: <code>JsonSerializer.Serialize</code> (see below) and <code>&lt;xref:Bodu.Numerics.Fraction</code>1&gt;.Parse<code>both treat</code>&quot;n/d&quot;` as the lossless text form.</p>
+<h2 id="mixed-number-form">Mixed-number form</h2>
+<p><code>ToString(&quot;M&quot;)</code> separates the whole part from the proper remainder with a single space. The whole part carries the sign; the fractional part is always written with a non-negative numerator. Whole-number and proper-fraction values short-circuit to their bare forms:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.Create(7, 4).ToString(&quot;M&quot;);    // &quot;1 3/4&quot;
+Fraction&lt;int&gt;.Create(-7, 4).ToString(&quot;M&quot;);   // &quot;-1 3/4&quot;  — sign on the whole part
+Fraction&lt;int&gt;.Create(11, 4).ToString(&quot;M&quot;);   // &quot;2 3/4&quot;
+Fraction&lt;int&gt;.Create(3, 4).ToString(&quot;M&quot;);    // &quot;3/4&quot;     — proper fraction: no whole part
+Fraction&lt;int&gt;.Create(4, 1).ToString(&quot;M&quot;);    // &quot;4&quot;       — whole number: no fractional part
+Fraction&lt;int&gt;.Zero.ToString(&quot;M&quot;);            // &quot;0&quot;
+</code></pre>
+<p>The convenience methods <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToMixedString(provider)</code> and <code>ToMixedNumberString(provider)</code> are aliases for <code>ToString(&quot;M&quot;, provider)</code>.</p>
+<h2 id="unicode-vulgar-fraction-form">Unicode vulgar-fraction form</h2>
+<p><code>ToString(&quot;U&quot;)</code> emits a single-codepoint glyph when one exists for the proper-fraction part. The 18 glyphs supported are the Unicode &quot;Number Forms&quot; vulgar fractions:</p>
+<table>
+<thead>
+<tr>
+<th>Glyph</th>
+<th>Value</th>
+<th>Glyph</th>
+<th>Value</th>
+<th>Glyph</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>½</code></td>
+<td>1/2</td>
+<td><code>⅖</code></td>
+<td>2/5</td>
+<td><code>⅛</code></td>
+<td>1/8</td>
+</tr>
+<tr>
+<td><code>⅓</code></td>
+<td>1/3</td>
+<td><code>⅗</code></td>
+<td>3/5</td>
+<td><code>⅜</code></td>
+<td>3/8</td>
+</tr>
+<tr>
+<td><code>⅔</code></td>
+<td>2/3</td>
+<td><code>⅘</code></td>
+<td>4/5</td>
+<td><code>⅝</code></td>
+<td>5/8</td>
+</tr>
+<tr>
+<td><code>¼</code></td>
+<td>1/4</td>
+<td><code>⅙</code></td>
+<td>1/6</td>
+<td><code>⅞</code></td>
+<td>7/8</td>
+</tr>
+<tr>
+<td><code>¾</code></td>
+<td>3/4</td>
+<td><code>⅚</code></td>
+<td>5/6</td>
+<td><code>⅑</code></td>
+<td>1/9</td>
+</tr>
+<tr>
+<td><code>⅕</code></td>
+<td>1/5</td>
+<td><code>⅐</code></td>
+<td>1/7</td>
+<td><code>⅒</code></td>
+<td>1/10</td>
+</tr>
+</tbody>
+</table>
+<p>When the canonical proper-fraction remainder matches one of these pairs, the result is <code>[sign][whole part][glyph]</code> with the whole part suppressed when zero. When no glyph applies, the formatter falls back to the mixed-number form:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.Create(1, 2).ToString(&quot;U&quot;);    // &quot;½&quot;
+Fraction&lt;int&gt;.Create(3, 4).ToString(&quot;U&quot;);    // &quot;¾&quot;
+Fraction&lt;int&gt;.Create(7, 4).ToString(&quot;U&quot;);    // &quot;1¾&quot;     — whole part + glyph, no separator
+Fraction&lt;int&gt;.Create(-3, 4).ToString(&quot;U&quot;);   // &quot;-¾&quot;
+Fraction&lt;int&gt;.Create(5, 2).ToString(&quot;U&quot;);    // &quot;2½&quot;
+Fraction&lt;int&gt;.Create(3, 1).ToString(&quot;U&quot;);    // &quot;3&quot;      — whole number
+Fraction&lt;int&gt;.Create(5, 9).ToString(&quot;U&quot;);    // &quot;5/9&quot;    — no 5/9 glyph: falls back to mixed
+</code></pre>
+<p>The convenience method <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToUnicodeString(provider)</code> is an alias for <code>ToString(&quot;U&quot;, provider)</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>A glyph is emitted only when the proper-fraction remainder has denominator at most 16 <em>and</em> matches one of the 18 shipped pairs. <code>5/9</code> has no glyph and falls back to mixed form even though its denominator is under 16; the table — not the denominator alone — is the gate.</p>
+</div>
+<h2 id="percentage-form">Percentage form</h2>
+<p><code>ToString(&quot;P&quot;)</code> scales the value by 100, reduces the result to lowest terms, and renders it as a ratio with a trailing <code>%</code>. It is <strong>not</strong> a mixed number: a non-whole percentage prints as <code>numerator/denominator%</code>, and a whole one prints as <code>numerator%</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.Create(3, 4).ToString(&quot;P&quot;);    // &quot;75%&quot;     — 300/4 reduces to 75/1
+Fraction&lt;int&gt;.Create(7, 4).ToString(&quot;P&quot;);    // &quot;175%&quot;    — 700/4 reduces to 175/1
+Fraction&lt;int&gt;.Create(7, 3).ToString(&quot;P&quot;);    // &quot;700/3%&quot;  — 700/3 already in lowest terms
+Fraction&lt;int&gt;.Create(1, 3).ToString(&quot;P&quot;);    // &quot;100/3%&quot;
+Fraction&lt;int&gt;.Zero.ToString(&quot;P&quot;);            // &quot;0%&quot;
+</code></pre>
+<p>The convenience method <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToPercentString(provider)</code> is an alias for <code>ToString(&quot;P&quot;, provider)</code>. The parser accepts the same form on input — a trailing <code>%</code> divides the parsed denominator by 100 — so <code>&quot;75%&quot;</code> round-trips to <code>3/4</code> and <code>&quot;100/3%&quot;</code> to <code>1/3</code>.</p>
+<h2 id="parsing">Parsing</h2>
+<p><code>Fraction&lt;T&gt;.Parse</code> and <code>TryParse</code> accept every output form the type produces, plus a few additional ergonomic shapes. The grammar, in order of recognition:</p>
+<table>
+<thead>
+<tr>
+<th>Input shape</th>
+<th>Example</th>
+<th>Parses as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Whole integer</td>
+<td><code>&quot;3&quot;</code>, <code>&quot;-5&quot;</code>, <code>&quot;+12&quot;</code></td>
+<td><code>3/1</code>, <code>-5/1</code>, <code>12/1</code></td>
+</tr>
+<tr>
+<td>Ratio</td>
+<td><code>&quot;3/4&quot;</code>, <code>&quot;-7/2&quot;</code></td>
+<td><code>3/4</code>, <code>-7/2</code></td>
+</tr>
+<tr>
+<td>Mixed number (space or tab separated)</td>
+<td><code>&quot;2 1/3&quot;</code>, <code>&quot;-1 3/4&quot;</code></td>
+<td><code>7/3</code>, <code>-7/4</code></td>
+</tr>
+<tr>
+<td>Vulgar-fraction glyph</td>
+<td><code>&quot;½&quot;</code>, <code>&quot;⅗&quot;</code></td>
+<td><code>1/2</code>, <code>3/5</code></td>
+</tr>
+<tr>
+<td>Whole + glyph</td>
+<td><code>&quot;2⅜&quot;</code>, <code>&quot;-1¾&quot;</code></td>
+<td><code>19/8</code>, <code>-7/4</code></td>
+</tr>
+<tr>
+<td>Percentage</td>
+<td><code>&quot;75%&quot;</code>, <code>&quot;100/3%&quot;</code></td>
+<td><code>3/4</code>, <code>1/3</code></td>
+</tr>
+</tbody>
+</table>
+<p>Parsing is lenient about whitespace — leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A <code>+</code> or <code>-</code> sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing <code>%</code> divides the parsed denominator by 100 in lowest terms.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.Parse(&quot;3/4&quot;);          // 3/4
+Fraction&lt;int&gt;.Parse(&quot;  2 1/3  &quot;);    // 7/3       — whitespace trimmed
+Fraction&lt;int&gt;.Parse(&quot;-2 1/3&quot;);       // -7/3      — sign covers whole + fraction
+Fraction&lt;int&gt;.Parse(&quot;⅗&quot;);            // 3/5
+Fraction&lt;int&gt;.Parse(&quot;2⅜&quot;);           // 19/8
+Fraction&lt;int&gt;.Parse(&quot;75%&quot;);          // 3/4
+Fraction&lt;int&gt;.TryParse(&quot;nope&quot;, out var _);   // false
+</code></pre>
+<p>The numeric components are read with <code>NumberStyles.None</code>, so scientific notation and group separators are rejected; the parser is intentionally strict about the shape so the wire format remains unambiguous. A <code>0</code> denominator is rejected (<code>TryParse</code> returns <code>false</code>; <code>Parse</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>), as is any input whose canonical form does not fit in the backing type <code>T</code> — overflow is reported through <code>false</code> from <code>TryParse</code> and through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> from <code>Parse</code>.</p>
+<p><code>Fraction&lt;T&gt;</code> implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable&lt;TSelf&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>, so the same call sites work for <code>string</code> and <code>ReadOnlySpan&lt;char&gt;</code> inputs.</p>
+<h2 id="culture-handling">Culture handling</h2>
+<p><code>Fraction&lt;T&gt;</code> text is digit-slash-digit by construction, so most cultures behave identically — there is no decimal separator, group separator, or percent sign placement to vary. The <code>IFormatProvider</code> argument is forwarded to <code>BigInteger.ToString(provider)</code> and <code>BigInteger.TryParse(text, NumberStyles.None, provider, ...)</code> for the numeric components, so culture-specific digit shapes are respected (e.g. Arabic-Indic digits when the culture's <code>NumberFormatInfo</code> calls for them), but the structural characters — <code>/</code>, the mixed-number space, glyph codepoints, and the trailing <code>%</code> — are invariant.</p>
+<p>The JSON converter passes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a>.<code>InvariantCulture</code> to both <code>ToString</code> and <code>Parse</code> so the wire form remains stable regardless of the ambient culture. For application-level formatting where you want the structural form to be the same on every machine, prefer passing <code>CultureInfo.InvariantCulture</code> explicitly:</p>
+<pre><code class="lang-csharp">var text = value.ToString(&quot;M&quot;, CultureInfo.InvariantCulture);
+var back = Fraction&lt;int&gt;.Parse(text, CultureInfo.InvariantCulture);
+</code></pre>
+<p><code>Parse(string)</code> without a provider is equivalent to <code>Parse(string, null)</code>, which delegates to <code>BigInteger.TryParse</code> with a <code>null</code> provider — that uses the current culture, matching the BCL convention.</p>
+<h2 id="span-and-utf-8-surfaces">Span and UTF-8 surfaces</h2>
+<p><code>Fraction&lt;T&gt;</code> implements the span and UTF-8 formatting / parsing interfaces so it slots into low-allocation pipelines:</p>
+<ul>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a>.<code>TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</code> — writes the formatted text into a char buffer; returns <code>false</code> when the destination is too small.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a>.<code>TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</code> — writes the same text UTF-8 encoded into a byte buffer.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>.<code>TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Fraction&lt;T&gt;)</code> — parses without allocating a <code>string</code>.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable&lt;TSelf&gt;</a>.<code>Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)</code> and <code>TryParse(...)</code> — accept UTF-8 input.</li>
+</ul>
+<pre><code class="lang-csharp">Span&lt;char&gt; buffer = stackalloc char[16];
+if (value.TryFormat(buffer, out int written, &quot;M&quot;, CultureInfo.InvariantCulture))
+{
+    ReadOnlySpan&lt;char&gt; text = buffer[..written];
+    // text is &quot;1 3/4&quot; for value 7/4
+}
+
+Fraction&lt;int&gt; parsed = Fraction&lt;int&gt;.Parse(&quot;3/4&quot;u8, null);
+</code></pre>
+<h2 id="round-tripping-json">Round-tripping JSON</h2>
+<p>JSON support ships in the companion <code>Bodu.Numerics.Serialization.Json</code> package (the core library is serialization-agnostic). Register the converters with <code>AddNumericsJsonConverters</code>; the default <code>Strict</code> policy emits the canonical <em>object</em> form:</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();
+
+string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), options);
+// {&quot;numerator&quot;:3,&quot;denominator&quot;:4}
+
+Fraction&lt;int&gt; roundTrip = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(json, options);
+</code></pre>
+<p>The compact single-string form documented above (<code>&quot;3/4&quot;</code>) is the wire shape of the <code>Compact</code> <em>policy</em>, opt-in via <code>AddNumericsJsonConverters(NumericsJsonPolicy.Compact)</code>; its read path delegates to <code>Fraction&lt;T&gt;.TryParse(text, CultureInfo.InvariantCulture, …)</code>, and the percentage and mixed-number text forms feed back through that same parser. See <a href="json-serialization.html">JSON serialization</a> for the policy table and failure modes, and the <a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> guide for the equivalent XML helpers <code>ToXml()</code> / <code>FromXml(string)</code>.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> — construction, arithmetic, continued fractions, approximation.</li>
+<li><a href="../../docs/numerics/concepts.html">Bodu.Numerics core concepts</a> — canonical form, mixed-number, Unicode vulgar fraction.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> — API reference.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a> — JSON converter reference.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

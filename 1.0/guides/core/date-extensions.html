@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Date and time extensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Date and time extensions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="date-and-time-extensions">Date and time extensions</h1>
+
+<p><a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> and <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> are two parallel families of extension methods — 66 and 56 partial files respectively — that answer the calendar questions <code>DateTime</code> and <code>DateOnly</code> leave to the caller: the first and last date of a week, month, quarter, or year; the next Friday; the third Monday of the month; the ISO week number; the fiscal quarter under a July-to-June year; whether a day is a rest day under a Sunday-to-Thursday working week; an age; a value truncated to the hour. The <code>DateOnly</code> family mirrors the <code>DateTime</code> family member for member, minus the time-of-day and conversion members that have no meaning for a date.</p>
+<p>Two rules apply everywhere:</p>
+<ul>
+<li><strong>Boundary results are dates.</strong> Every <code>First…</code> / <code>Last…</code> / <code>Next…</code> / <code>Previous…</code> member returns midnight (<code>TimeOfDay == 00:00</code>) with the receiver's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> preserved.</li>
+<li><strong>Defaults are explicit.</strong> A parameterless overload uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> for week rules and names, a January-to-December calendar year for quarters, and a Saturday–Sunday weekend for weekday tests. Every one of those defaults has an overload that takes the rule as a parameter — see the <a href="#overload-matrix">overload matrix</a> below.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Five members — <code>IsoWeekOfYear</code>, <code>IsoYear</code>, <code>WeekOrdinalOfMonth</code>, <code>IsFirstDateOfMonth</code>, and <code>IsLastDateOfMonth</code> — are C# 14 <strong>extension properties</strong> in the shipped library, so they are read without parentheses (<code>date.IsoWeekOfYear</code>). Consuming them needs <code>&lt;LangVersion&gt;14&lt;/LangVersion&gt;</code> (or <code>latest</code> on the .NET 10 SDK); the API reference renders them in method form because DocFX cannot yet model extension blocks. Everything else is a classic extension method.</p>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>There is <strong>no <code>TimeOnly</code> extension surface</strong> in <code>Bodu.Core</code>. <code>TimeOnly</code> appears only as <code>TimeOnly.MinValue</code> when a <code>DateOnly</code> is lifted to a <code>DateTime</code> internally.</p>
+</div>
+<h2 id="pattern-1--boundaries-of-a-week-month-quarter-or-year">Pattern 1 — boundaries of a week, month, quarter, or year</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu;
+using Bodu.Extensions;
+
+var date = new DateTime(2024, 5, 15, 14, 30, 0);   // Wednesday 15 May 2024
+
+DateTime weekStartGb = date.FirstDateOfWeek(CultureInfo.GetCultureInfo(&quot;en-GB&quot;));   // 2024-05-13 (Monday)
+DateTime weekStartUs = date.FirstDateOfWeek(CultureInfo.GetCultureInfo(&quot;en-US&quot;));   // 2024-05-12 (Sunday)
+DateTime weekStartGulf = date.FirstDateOfWeek(WorkingDaysOfWeek.SundayToThursday);  // 2024-05-12 (Sunday)
+DateTime weekEnd     = date.LastDateOfWeek();          // 2024-05-19 under en-GB (Sunday)
+
+DateTime monthStart   = date.FirstDateOfMonth();       // 2024-05-01
+DateTime monthEnd     = date.LastDateOfMonth();        // 2024-05-31
+DateTime quarterStart = date.FirstDateOfQuarter();     // 2024-04-01 — calendar quarters by default
+DateTime quarterEnd   = date.LastDateOfQuarter();      // 2024-06-30
+DateTime yearStart    = date.FirstDateOfYear();        // 2024-01-01
+DateTime yearEnd      = date.LastDateOfYear();         // 2024-12-31
+
+DateTime firstFriday  = date.FirstDateOfWeekInMonth(DayOfWeek.Friday);     // 2024-05-03
+DateTime lastFriday   = date.LastDateOfWeekInMonth(DayOfWeek.Friday);      // 2024-05-31
+DateTime firstMonQ    = date.FirstDateOfWeekInQuarter(DayOfWeek.Monday);   // 2024-04-01
+DateTime lastSunYear  = date.LastDateOfWeekInYear(DayOfWeek.Sunday);       // 2024-12-29
+
+TimeSpan tod = monthStart.TimeOfDay;                    // 00:00:00 — boundaries drop the time of day
+</code></pre>
+<p><code>FirstDateOfWeek()</code> / <code>LastDateOfWeek()</code> read <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.datetimeformatinfo.firstdayofweek">FirstDayOfWeek</a> from the culture (Monday for <code>en-GB</code>, Sunday for <code>en-US</code> and the invariant culture). The <code>WorkingDaysOfWeek</code> overload starts the week on the first working day of that preset — Saturday for <code>SaturdayToThursday</code>, Sunday for <code>SundayToThursday</code>, Monday for <code>MondayToFriday</code>.</p>
+<h2 id="pattern-2--navigating-by-day-of-week">Pattern 2 — navigating by day of week</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Extensions;
+
+var date = new DateTime(2024, 5, 15);   // Wednesday
+
+DateTime nextWed     = date.NextDateOfWeek(DayOfWeek.Wednesday);           // 2024-05-22 — strictly after
+DateTime sameWed     = date.NextOrSameDateOfWeek(DayOfWeek.Wednesday);     // 2024-05-15 — today qualifies
+DateTime prevMon     = date.PreviousDateOfWeek(DayOfWeek.Monday);          // 2024-05-13
+DateTime prevOrSame  = date.PreviousOrSameDateOfWeek(DayOfWeek.Wednesday); // 2024-05-15
+DateTime nearestSun  = date.NearestDateOfWeek(DayOfWeek.Sunday);           // 2024-05-12 — 3 days back beats 4 forward
+DateTime nearestSat  = date.NearestDateOfWeek(DayOfWeek.Saturday);         // 2024-05-18
+
+DateTime nextWorking = date.NextWeekday(WorkingDaysOfWeek.MondayToFriday); // 2024-05-16 (Thursday)
+DateTime afterFriday = new DateTime(2024, 5, 17).NextWeekday(WorkingDaysOfWeek.MondayToFriday);   // 2024-05-20 (Monday)
+DateTime mwfOnly     = new DateTime(2024, 5, 17).NextWeekday(WeekPattern.Parse(&quot;_M_W_F_&quot;));       // 2024-05-20
+DateTime prevWorking = date.PreviousWeekday(WorkingDaysOfWeek.SundayToThursday);                  // 2024-05-14
+
+DateTime lastMonday  = date.NthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Last);    // 2024-05-27
+DateTime fifthFriday = date.NthDateOfWeekInMonth(DayOfWeek.Friday, WeekOrdinal.Fifth);   // 2024-05-31
+DateTime thanksgiving = DateTimeExtensions.GetNthDateOfWeekInMonth(2024, 11, DayOfWeek.Thursday, WeekOrdinal.Fourth);   // 2024-11-28
+
+var seriesStart = new DateTime(2024, 1, 1, 9, 0, 0);
+DateTime nextRun = seriesStart.NextOccurrence(TimeSpan.FromDays(7), after: date);        // 2024-05-20 09:00
+DateTime lastRun = seriesStart.PreviousOccurrence(TimeSpan.FromDays(7), before: date);   // 2024-05-13 09:00
+</code></pre>
+<ul>
+<li><code>Next…</code> / <code>Previous…</code> are strict; the <code>…OrSame…</code> variants accept the receiver's own day. <code>NearestDateOfWeek</code> prefers the earlier date on a tie.</li>
+<li><code>NextWeekday</code> / <code>PreviousWeekday</code> step one day at a time until the day is a working day under the supplied <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset, <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>, or <code>Custom</code> + <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> — see <a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a>.</li>
+<li><code>NthDateOfWeekInMonth</code> takes a <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> (<code>First</code> … <code>Fifth</code>, <code>Last</code>) and throws <code>ArgumentOutOfRangeException</code> when the month has no such day (a fifth Monday in May 2024, for example); <code>Last</code> never throws.</li>
+<li><code>NextOccurrence(interval, after)</code> / <code>PreviousOccurrence(interval, before)</code> treat the receiver as the start of a fixed-interval series and return the first occurrence strictly after (or before) the bound, preserving the start's time of day. When <code>after</code> is at or before the start, the start itself is returned.</li>
+</ul>
+<h2 id="pattern-3--iso-8601-weeks">Pattern 3 — ISO 8601 weeks</h2>
+<p>The ISO members are independent of culture: weeks start on Monday and week 1 is the week containing the first Thursday.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var date = new DateTime(2024, 12, 30);   // Monday — ISO week 1 of 2025
+
+int week    = date.IsoWeekOfYear;                                   // 1   (C# 14 extension property)
+int isoYear = date.IsoYear;                                         // 2025
+int mid     = new DateTime(2024, 5, 15).IsoWeekOfYear;              // 20
+
+DateTime w1Start = DateTimeExtensions.GetFirstDateOfIsoWeek(2025, 1);   // 2024-12-30
+DateTime w1End   = DateTimeExtensions.GetLastDateOfIsoWeek(2025, 1);    // 2025-01-05
+int weeks2026    = DateTimeExtensions.GetIsoWeeksInYear(2026);          // 53
+int weeks2024    = DateTimeExtensions.GetIsoWeeksInYear(2024);          // 52
+</code></pre>
+<h2 id="pattern-4--culture-week-numbers-and-week-of-month">Pattern 4 — culture week numbers and week-of-month</h2>
+<p><code>WeekOfYear</code> and <code>WeekOfMonth</code> follow the BCL's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendarweekrule">CalendarWeekRule</a> and first-day-of-week — from the current culture, an explicit culture, or an explicit rule pair.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Extensions;
+
+var date = new DateTime(2024, 12, 30);
+
+int cultureWeek = date.WeekOfYear(CultureInfo.GetCultureInfo(&quot;en-US&quot;));                 // 53
+int ruleWeek    = date.WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // 53 — BCL numbering, not ISO
+int weekOfMonth = date.WeekOfMonth(CalendarWeekRule.FirstDay, DayOfWeek.Sunday);        // 5
+WeekOrdinal ordinal = date.WeekOrdinalOfMonth;                                          // Fifth (the 30th is in the 5th group of 7)
+WeekOrdinal third   = new DateTime(2024, 5, 15).WeekOrdinalOfMonth;                     // Third
+
+DateTime week20 = DateTimeExtensions.GetStartDateOfWeek(2024, 20, CultureInfo.GetCultureInfo(&quot;en-GB&quot;));   // 2024-05-13
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><code>WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)</code> reproduces <code>Calendar.GetWeekOfYear</code>, which numbers the last days of December as week 53 even when ISO 8601 assigns them to week 1 of the next year. Use <code>IsoWeekOfYear</code> / <code>IsoYear</code> when you need ISO semantics.</p>
+</div>
+<p><code>WeekOrdinalOfMonth</code> is <em>not</em> a week number: it reports which seven-day group of the month the date falls in (days 1–7 → <code>First</code>, 8–14 → <code>Second</code>, …, 29–31 → <code>Fifth</code>), which is exactly the ordinal <code>NthDateOfWeekInMonth</code> would need to land on that date.</p>
+<h2 id="pattern-5--quarters-and-fiscal-years">Pattern 5 — quarters and fiscal years</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var date = new DateTime(2024, 5, 15);
+
+int calendarQ = date.Quarter();                                            // 2
+int auQ       = date.Quarter(CalendarQuarterDefinition.JulyToJune);        // 4 — Australian financial year
+int inQ       = date.Quarter(CalendarQuarterDefinition.AprilToMarch);      // 1
+int ukTaxQ    = date.Quarter(CalendarQuarterDefinition.April6ToApril5);    // 1
+
+DateTime q4Start = date.FirstDateOfQuarter(CalendarQuarterDefinition.JulyToJune);      // 2024-04-01
+DateTime q1End   = date.LastDateOfQuarter(CalendarQuarterDefinition.April6ToApril5);   // 2024-07-05
+DateTime fyQ1    = DateTimeExtensions.GetFirstDateOfQuarter(2024, 1, CalendarQuarterDefinition.JulyToJune);   // 2024-07-01
+bool isStart     = date.IsFirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);   // false
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> covers the month- and day-anchored calendars (<code>JanuaryToDecember</code>, <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code>, <code>March25ToMarch24</code>, <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>). Passing <code>CalendarQuarterDefinition.Custom</code> to any of these overloads throws <code>InvalidOperationException</code> — a custom shape needs an <a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>, which unlocks the fiscal-year members (<code>FiscalYear</code>, <code>FirstDateOfFiscalYear</code>, <code>LastDateOfFiscalYear</code>, <code>IsFirstDateOfFiscalYear</code>, <code>IsLastDateOfFiscalYear</code>, <code>AddFiscalYears</code>). Both are covered in <a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a>.</p>
+<h2 id="pattern-6--predicates">Pattern 6 — predicates</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu;
+using Bodu.Extensions;
+
+var saturday = new DateTime(2024, 5, 18);
+
+bool weekend    = saturday.IsWeekend();                                         // true  — Saturday–Sunday default
+bool weekday    = saturday.IsWeekday();                                         // false
+bool sixDayWeek = saturday.IsWeekday(WorkingDaysOfWeek.MondayToSaturday);       // true
+bool gulfRest   = saturday.IsWeekend(WorkingDaysOfWeek.SundayToThursday);       // true
+bool working    = saturday.IsInWorkingWeek(WorkingDaysOfWeek.SaturdayToWednesday);   // true
+bool rest       = saturday.IsRestDay(WeekPattern.Weekdays);                     // true
+bool friOff     = DateTimeExtensions.IsWeekend(DayOfWeek.Friday, WorkingDaysOfWeek.SundayToThursday);   // true
+
+bool lastOfQ    = new DateTime(2024, 6, 30).IsLastDateOfQuarter();              // true
+bool firstOfM   = new DateTime(2024, 5, 1).IsFirstDateOfMonth;                  // true  (extension property)
+bool leap       = saturday.IsLeapYear();                                        // true
+bool inMay      = saturday.IsInRange(new DateTime(2024, 5, 1), new DateTime(2024, 5, 31));   // true — inclusive
+int daysInMay   = saturday.DaysInMonth();                                       // 31
+int daysInYear  = saturday.DaysInYear();                                        // 366
+string dayName  = saturday.DayName(CultureInfo.GetCultureInfo(&quot;fr-FR&quot;));        // &quot;samedi&quot;
+string month    = saturday.MonthName(CultureInfo.InvariantCulture);             // &quot;May&quot;
+</code></pre>
+<p><code>IsWeekday</code> / <code>IsWeekend</code> and <code>IsInWorkingWeek</code> / <code>IsRestDay</code> are complementary pairs. The first pair takes the named <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset (and, for <code>Custom</code>, a weekend provider); the second takes either the preset or a raw <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>. <code>IsInRange</code> has an overload on <code>DateTime?</code> that returns <code>false</code> for <code>null</code>.</p>
+<h2 id="pattern-7--age-truncation-and-day-boundaries">Pattern 7 — age, truncation, and day boundaries</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var born = new DateTime(1990, 2, 28);
+var asAt = new DateTime(2024, 5, 15, 14, 30, 45, 123);
+
+int age = born.Age(asAt);                                     // 34 — the receiver is the earlier date
+DateTime hour    = asAt.Truncate(DateTimeResolution.Hour);    // 2024-05-15 14:00:00
+DateTime month   = asAt.Truncate(DateTimeResolution.Month);   // 2024-05-01 00:00:00
+DateTime start   = asAt.StartOfDay();                         // 2024-05-15 00:00:00 (Midnight() is the same)
+DateTime end     = asAt.EndOfDay();                           // 2024-05-15 23:59:59.9999999 — the last tick
+DateTime noon    = asAt.Midday();                             // 2024-05-15 12:00:00
+DateTime shifted = asAt.Add(years: 1, months: -1, days: 0.5); // 2025-04-16 02:30:45 — fractional days allowed
+</code></pre>
+<p><code>Age()</code> without an argument measures against today; the two-argument form is deterministic. A 29 February birth date is treated as 28 February in non-leap years, and a reference date before the birth date yields 0. <a class="xref" href="../../api/Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a> has the eight stops <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, <code>Minute</code>, <code>Second</code>, <code>Millisecond</code>, and <code>Tick</code>.</p>
+<h2 id="pattern-8--conversions-and-static-companions">Pattern 8 — conversions and static companions</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Extensions;
+
+var utc = new DateTime(2024, 5, 15, 14, 30, 0, DateTimeKind.Utc);
+
+DateOnly day            = utc.ToDateOnly();                          // 2024-05-15
+DateTimeOffset asOffset = utc.ToDateTimeOffset();                    // 2024-05-15 14:30 +00:00 — offset from Kind
+DateTimeOffset explicitOffset = new DateTime(2024, 5, 15, 14, 30, 0).ToDateTimeOffset(TimeSpan.FromHours(10));   // +10:00
+string iso    = utc.ToIsoString();                                   // &quot;2024-05-15T14:30:00.0000000Z&quot;
+long unix     = utc.ToUnixTimeSeconds();                             // 1715783400
+DateTime back = DateTimeExtensions.FromUnixTimeSeconds(1715783400);  // 2024-05-15 14:30:00
+
+DateTime leapDay = DateTimeExtensions.FromDayOfYear(2024, 60);           // 2024-02-29
+DateTime febEnd  = DateTimeExtensions.GetLastDateOfMonth(2024, 2);       // 2024-02-29
+DateTime firstFri = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 5, DayOfWeek.Friday);   // 2024-05-03
+string mai       = DateTimeExtensions.GetMonthName(5, CultureInfo.GetCultureInfo(&quot;de-DE&quot;));   // &quot;Mai&quot;
+DateTime later   = DateTimeExtensions.Max(utc, utc.AddDays(1));           // the later of the two
+DateTime? maybe  = DateTimeExtensions.Min((DateTime?)null, utc);          // null-aware overloads
+TimeSpan elapsed = utc.ElapsedTimeSince();                                // now - utc
+</code></pre>
+<p><code>ToDateTimeOffset(TimeSpan offset)</code> requires a non-UTC receiver — a <code>DateTimeKind.Utc</code> value with a non-zero offset throws <code>ArgumentException</code>, exactly as the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> constructor does. <code>ToIsoString</code> has overloads for suppressing fractional seconds, for stamping a <code>DateTimeKind</code>, and for an arbitrary format plus culture.</p>
+<p>Every <code>Get…</code> static on <code>DateTimeExtensions</code> is the year/month-addressed companion of an instance member, for when you have no <code>DateTime</code> to start from: <code>GetFirstDateOfMonth</code>, <code>GetLastDateOfMonth</code>, <code>GetFirstDateOfQuarter</code>, <code>GetLastDateOfQuarter</code> (each with an optional <code>CalendarQuarterDefinition</code>), <code>GetFirstDateOfWeekInMonth</code>, <code>GetLastDateOfWeekInMonth</code>, <code>GetFirstDateOfWeekInQuarter</code>, <code>GetLastDateOfWeekInQuarter</code>, <code>GetNthDateOfWeekInMonth</code>, <code>GetNearestDateOfWeek</code>, <code>GetFirstDateOfIsoWeek</code>, <code>GetLastDateOfIsoWeek</code>, <code>GetIsoWeeksInYear</code>, <code>GetStartDateOfWeek</code>, <code>GetMonthName</code>, <code>GetDayNumber</code>, <code>FromDayOfYear</code>, <code>FromUnixTimeSeconds</code> / <code>FromUnixTimeMilliseconds</code>, <code>FirstDateOfFiscalYear</code> / <code>LastDateOfFiscalYear</code>, and <code>Max</code> / <code>Min</code>.</p>
+<h2 id="pattern-9--the-dateonly-family">Pattern 9 — the <code>DateOnly</code> family</h2>
+<p>Every calendar member above exists on <code>DateOnly</code> with the same name and rules. The differences are the members that need a time of day or an instant:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Extensions;
+
+var day = new DateOnly(2024, 5, 15);
+
+DateOnly weekStart = day.FirstDateOfWeek();                            // 2024-05-13 under en-GB
+DateOnly friday    = day.NextDateOfWeek(DayOfWeek.Friday);             // 2024-05-17
+int isoWeek        = day.IsoWeekOfYear;                                // 20
+int auQ            = day.Quarter(CalendarQuarterDefinition.JulyToJune);// 4
+DateOnly lastMon   = day.NthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Last);   // 2024-05-27
+DateOnly moved     = day.Add(years: 0, months: 1, days: -1);           // 2024-06-14 — whole days only
+int age            = new DateOnly(1990, 2, 28).Age(day);               // 34
+DateOnly nextRun   = new DateOnly(2024, 1, 1).NextOccurrence(intervalDays: 7, after: day);   // 2024-05-20
+DateOnly w1        = DateOnlyExtensions.GetFirstDateOfIsoWeek(2025, 1);// 2024-12-30
+long unix          = day.ToUnixTimeSeconds();                          // 1715731200 — midnight UTC
+</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>DateTime</code> member</th>
+<th><code>DateOnly</code> counterpart</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add(years, months, double days)</code></td>
+<td><code>Add(years, months, int days)</code></td>
+</tr>
+<tr>
+<td><code>NextOccurrence(TimeSpan, after)</code> / <code>PreviousOccurrence(TimeSpan, before)</code></td>
+<td><code>NextOccurrence(int intervalDays, after)</code> / <code>PreviousOccurrence(int intervalDays, before)</code></td>
+</tr>
+<tr>
+<td><code>StartOfDay</code>, <code>EndOfDay</code>, <code>Midnight</code>, <code>Midday</code>, <code>Truncate(DateTimeResolution)</code></td>
+<td>— (no time of day)</td>
+</tr>
+<tr>
+<td><code>ToDateOnly</code>, <code>ToDateTimeOffset</code>, <code>ToTimeSpan</code>, <code>ToIsoString</code>, <code>ElapsedTimeSince</code></td>
+<td>— (use <code>DateOnly.ToDateTime</code> / <code>ToString(&quot;O&quot;)</code>)</td>
+</tr>
+<tr>
+<td><code>GetDayNumber</code>, <code>GetMonthName</code>, static <code>IsWeekday(DayOfWeek, …)</code> / <code>IsWeekend(DayOfWeek, …)</code></td>
+<td>— (call the <code>DateTimeExtensions</code> statics)</td>
+</tr>
+<tr>
+<td>everything else — boundaries, navigation, ISO and culture weeks, quarters and fiscal years, predicates, <code>Age</code>, Unix time, <code>Max</code> / <code>Min</code>, the <code>Get…</code> companions</td>
+<td>same name, same rules</td>
+</tr>
+</tbody>
+</table>
+<h2 id="overload-matrix">Overload matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Member family</th>
+<th>Parameterless default</th>
+<th><code>CultureInfo?</code></th>
+<th><code>WorkingDaysOfWeek</code> / <code>WeekPattern</code></th>
+<th><code>CalendarQuarterDefinition</code></th>
+<th><code>IQuarterDefinitionProvider</code></th>
+<th><code>IWeekendDefinitionProvider</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstDateOfWeek</code>, <code>LastDateOfWeek</code></td>
+<td>current culture's first day</td>
+<td>✓</td>
+<td><code>WorkingDaysOfWeek</code> (first working day starts the week)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Quarter</code>, <code>FirstDateOfQuarter</code>, <code>LastDateOfQuarter</code>, <code>IsFirstDateOfQuarter</code>, <code>IsLastDateOfQuarter</code>, <code>FirstDateOfWeekInQuarter</code>, <code>LastDateOfWeekInQuarter</code></td>
+<td><code>JanuaryToDecember</code></td>
+<td>—</td>
+<td>—</td>
+<td>✓ (not <code>Custom</code>)</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>FiscalYear</code>, <code>AddFiscalYears</code>, <code>IsFirstDateOfFiscalYear</code>, <code>IsLastDateOfFiscalYear</code>, static <code>FirstDateOfFiscalYear</code> / <code>LastDateOfFiscalYear</code></td>
+<td>— (provider required)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>IsWeekday</code>, <code>IsWeekend</code></td>
+<td>Saturday–Sunday weekend</td>
+<td>—</td>
+<td><code>WorkingDaysOfWeek</code></td>
+<td>—</td>
+<td>—</td>
+<td>✓ optional; <strong>required</strong> with <code>WorkingDaysOfWeek.Custom</code></td>
+</tr>
+<tr>
+<td><code>IsInWorkingWeek</code>, <code>IsRestDay</code></td>
+<td>— (pattern required)</td>
+<td>—</td>
+<td><code>WorkingDaysOfWeek</code> or <code>WeekPattern</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>NextWeekday</code>, <code>PreviousWeekday</code></td>
+<td>— (pattern required)</td>
+<td>—</td>
+<td><code>WorkingDaysOfWeek</code> or <code>WeekPattern</code></td>
+<td>—</td>
+<td>—</td>
+<td>✓ with <code>WorkingDaysOfWeek.Custom</code></td>
+</tr>
+<tr>
+<td><code>WeekOfYear</code>, <code>WeekOfMonth</code></td>
+<td>current culture's rule + first day</td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>— (also <code>(CalendarWeekRule, DayOfWeek)</code>)</td>
+</tr>
+<tr>
+<td><code>DayName</code>, <code>MonthName</code>, static <code>GetMonthName</code></td>
+<td>current culture</td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DaysInMonth</code></td>
+<td>Gregorian</td>
+<td>✓ (also <code>Calendar?</code>)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DaysInYear</code></td>
+<td>Gregorian</td>
+<td>— (<code>Calendar?</code> only)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>static <code>GetStartDateOfWeek(year, week, culture)</code></td>
+<td>current culture</td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>A <code>null</code> <code>CultureInfo?</code> or <code>Calendar?</code> argument falls back to the same default as the parameterless overload.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th><code>DateTime</code> members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boundaries</td>
+<td><code>FirstDateOfWeek</code>, <code>LastDateOfWeek</code>, <code>FirstDateOfMonth</code>, <code>LastDateOfMonth</code>, <code>FirstDateOfQuarter</code>, <code>LastDateOfQuarter</code>, <code>FirstDateOfYear</code>, <code>LastDateOfYear</code>, <code>FirstDateOfWeekInMonth</code>, <code>LastDateOfWeekInMonth</code>, <code>FirstDateOfWeekInQuarter</code>, <code>LastDateOfWeekInQuarter</code>, <code>FirstDateOfWeekInYear</code>, <code>LastDateOfWeekInYear</code></td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td><code>NextDateOfWeek</code>, <code>PreviousDateOfWeek</code>, <code>NextOrSameDateOfWeek</code>, <code>PreviousOrSameDateOfWeek</code>, <code>NearestDateOfWeek</code>, <code>NextWeekday</code>, <code>PreviousWeekday</code>, <code>NthDateOfWeekInMonth</code>, <code>NextOccurrence</code>, <code>PreviousOccurrence</code>, <code>Add</code></td>
+</tr>
+<tr>
+<td>ISO weeks</td>
+<td><code>IsoWeekOfYear</code>, <code>IsoYear</code> (properties); static <code>GetFirstDateOfIsoWeek</code>, <code>GetLastDateOfIsoWeek</code>, <code>GetIsoWeeksInYear</code></td>
+</tr>
+<tr>
+<td>Culture weeks</td>
+<td><code>WeekOfYear</code>, <code>WeekOfMonth</code>, <code>WeekOrdinalOfMonth</code> (property); static <code>GetStartDateOfWeek</code></td>
+</tr>
+<tr>
+<td>Quarters and fiscal years</td>
+<td><code>Quarter</code>, <code>FiscalYear</code>, <code>AddFiscalYears</code>, <code>IsFirstDateOfQuarter</code>, <code>IsLastDateOfQuarter</code>, <code>IsFirstDateOfFiscalYear</code>, <code>IsLastDateOfFiscalYear</code>; static <code>FirstDateOfFiscalYear</code>, <code>LastDateOfFiscalYear</code></td>
+</tr>
+<tr>
+<td>Predicates</td>
+<td><code>IsWeekday</code>, <code>IsWeekend</code>, <code>IsInWorkingWeek</code>, <code>IsRestDay</code>, <code>IsFirstDateOfMonth</code>, <code>IsLastDateOfMonth</code> (properties), <code>IsLeapYear</code>, <code>IsInRange</code></td>
+</tr>
+<tr>
+<td>Time of day</td>
+<td><code>StartOfDay</code>, <code>EndOfDay</code>, <code>Midnight</code>, <code>Midday</code>, <code>Truncate(DateTimeResolution)</code></td>
+</tr>
+<tr>
+<td>Measures and names</td>
+<td><code>Age</code>, <code>DaysInMonth</code>, <code>DaysInYear</code>, <code>DayName</code>, <code>MonthName</code>, <code>ElapsedTimeSince</code></td>
+</tr>
+<tr>
+<td>Conversions</td>
+<td><code>ToDateOnly</code>, <code>ToDateTimeOffset</code>, <code>ToTimeSpan</code>, <code>ToIsoString</code>, <code>ToUnixTimeSeconds</code>, <code>ToUnixTimeMilliseconds</code>; static <code>FromUnixTimeSeconds</code>, <code>FromUnixTimeMilliseconds</code>, <code>FromDayOfYear</code>, <code>GetDayNumber</code>, <code>GetMonthName</code>, <code>Max</code>, <code>Min</code></td>
+</tr>
+<tr>
+<td>Static companions</td>
+<td><code>GetFirstDateOfMonth</code>, <code>GetLastDateOfMonth</code>, <code>GetFirstDateOfQuarter</code>, <code>GetLastDateOfQuarter</code>, <code>GetFirstDateOfWeekInMonth</code>, <code>GetLastDateOfWeekInMonth</code>, <code>GetFirstDateOfWeekInQuarter</code>, <code>GetLastDateOfWeekInQuarter</code>, <code>GetNthDateOfWeekInMonth</code>, <code>GetNearestDateOfWeek</code>, <code>IsWeekday(DayOfWeek, …)</code>, <code>IsWeekend(DayOfWeek, …)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a> — <code>CalendarQuarterDefinition</code>, <code>IQuarterDefinitionProvider</code>, <code>FiscalWeekQuarterProvider</code>, <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</li>
+<li><a href="week-pattern.html">WeekPattern</a> — the seven-day bitmask the working-week overloads consume.</li>
+<li><a href="string-extensions.html">String extensions</a> — the sibling <code>string</code> surface.</li>
+<li><a href="../calendar/index.html">Working-day and notable-date calculations</a> — when a plain working week is not enough and public holidays matter, <code>Bodu.Globalization.Calendar</code> layers on top of these extensions.</li>
+<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> — every overload with full signatures.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

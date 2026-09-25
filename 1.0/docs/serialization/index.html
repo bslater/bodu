@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu serializers — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu serializers — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodu-serializers-bencode-toml-and-yaml">Bodu serializers (Bencode, TOML, and YAML)</h1>
+
+<p><img src="../../images/hero-serializers.svg" alt="Bodu serializers"></p>
+<p><strong>Bodu.Text.Bencode</strong>, <strong>Bodu.Text.Toml</strong>, and <strong>Bodu.Text.Yaml</strong> are three libraries that map your own types (POCOs, records, collections) to and from a document format. Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic, each ships its own reader, writer, DOMs, and converters, and each references the shared <strong>Bodu.Text.Serialization</strong> package (namespace <a class="xref" href="../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>) for the vocabulary they have in common — the attribute family (<code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[Required]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, …), the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces. The per-format packages also compile the shared metadata resolver and converter engine from that package's source under their own format symbol:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Namespace</th>
+<th>Format</th>
+<th>Entry point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bodu.Text.Bencode</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.html">Bodu.Text.Bencode</a></td>
+<td><a href="https://www.bittorrent.org/beps/bep_0003.html">Bencode (BEP 3)</a> (binary)</td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a></td>
+</tr>
+<tr>
+<td><strong>Bodu.Text.Toml</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.html">Bodu.Text.Toml</a></td>
+<td><a href="https://toml.io/">TOML</a> v1.0.0 / v1.1.0 (text)</td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a></td>
+</tr>
+<tr>
+<td><strong>Bodu.Text.Yaml</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.html">Bodu.Text.Yaml</a></td>
+<td><a href="https://yaml.org/">YAML</a> 1.2 core schema (text)</td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a></td>
+</tr>
+</tbody>
+</table>
+<p>The libraries are built to the <strong>same architecture</strong>: the same three-tier layering, the same <code>System.Text.Json</code>-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They are <em>not</em> identical surfaces — Bencode and TOML are member-for-member twins, while YAML tunes its serializer surface to the format (more on this below) — but the mental model is shared across all three.</p>
+<h2 id="the-three-members">The three members</h2>
+<p>This page is the family parent: it describes the architecture the libraries share. What is <em>specific</em> to each format lives on its own introduction:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Introduction</th>
+<th>In one line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bodu.Text.Bencode</strong></td>
+<td><a href="bencode/index.html">Bodu.Text.Bencode</a></td>
+<td>The binary BEP 3 format — byte strings as first-class values, canonical dictionary ordering, and the converter bridge for the kinds Bencode cannot represent.</td>
+</tr>
+<tr>
+<td><strong>Bodu.Text.Toml</strong></td>
+<td><a href="toml/index.html">Bodu.Text.Toml</a></td>
+<td>The human-readable configuration format — a rich native value model (floats, Booleans, RFC 3339 date-times), spec-version selection (v1.0.0 / v1.1.0), and positional parse diagnostics.</td>
+</tr>
+<tr>
+<td><strong>Bodu.Text.Yaml</strong></td>
+<td><a href="yaml/index.html">Bodu.Text.Yaml</a></td>
+<td>The indentation-structured format — block and flow collections, quoted and block scalars, anchors and aliases, multi-document streams, and the 1.2 core schema (opt-in 1.1 typing).</td>
+</tr>
+</tbody>
+</table>
+<p>Each library's introduction is backed by its own <strong>core concepts</strong> and <strong>getting-started</strong> pages, linked at the foot of this page.</p>
+<h2 id="core-mental-model">Core mental model</h2>
+<p>Each library layers three surfaces over one format:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Bodu.Text.Bencode</th>
+<th>Bodu.Text.Toml</th>
+<th>Bodu.Text.Yaml</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Serializer</strong> (POCO ↔ format)</td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a></td>
+</tr>
+<tr>
+<td><strong>Mutable DOM</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Nodes.TomlNode.html">TomlNode</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a></td>
+</tr>
+<tr>
+<td><strong>Read-only DOM</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Document.TomlDocument.html">TomlDocument</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a></td>
+</tr>
+<tr>
+<td><strong>Low-level reader / writer</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> / <a class="xref" href="../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Reader.Utf8TomlReader.html">Utf8TomlReader</a> / <a class="xref" href="../../api/Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a></td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> / <a class="xref" href="../../api/Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a></td>
+</tr>
+</tbody>
+</table>
+<p>Reach for the <strong>serializer</strong> for object mapping, a <strong>DOM</strong> to inspect or edit a document without a model, and the <strong><code>Utf8…Reader</code> / <code>Utf8…Writer</code></strong> pair for forward-only token processing. The serializer is built on the reader/writer pair; a custom converter receives them directly.</p>
+<h2 id="choosing-a-format">Choosing a format</h2>
+<table>
+<thead>
+<tr>
+<th>Reach for…</th>
+<th>When you want…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TOML</strong></td>
+<td>A configuration file a human will edit, with typed scalars and tables and exact parse positions.</td>
+</tr>
+<tr>
+<td><strong>YAML</strong></td>
+<td>An indentation-structured document — multi-document streams, anchors and aliases, or interop with an existing YAML toolchain.</td>
+</tr>
+<tr>
+<td><strong>Bencode</strong></td>
+<td>A compact, deterministic binary envelope — <code>.torrent</code> metadata, content-addressed payloads, byte strings as first-class values.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="surface-differences-at-a-glance">Surface differences at a glance</h2>
+<p>The architecture is shared, but the serializer surfaces differ where the format warrants it:</p>
+<ul>
+<li><strong>Bencode and TOML</strong> expose the full <code>System.Text.Json</code>-style surface — converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.</li>
+<li><strong>YAML</strong> keeps the serializer, both DOMs, the reader/writer pair, and the shared attribute/naming/callback layer, shaping members exactly like its siblings. It adds YAML-specific richness on top — anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.</li>
+</ul>
+<p>Each library's own pages document its exact surface.</p>
+<h2 id="shared-behaviours">Shared behaviours</h2>
+<p>Three contracts hold identically across all three libraries, so they are worth learning once:</p>
+<ul>
+<li><strong>Options are frozen on first use.</strong> A <code>…SerializerOptions</code> instance is mutable only until the first serialize or deserialize call binds it; after that it is read-only and further mutation throws. Configure an options object fully, then reuse the <em>same frozen instance</em> across calls — it caches per-type metadata, so a shared instance is both correct and faster than a fresh one per call.</li>
+<li><strong>Two exception types, two failure stages.</strong> Malformed <em>input</em> — bytes or text that do not parse — raises a <code>…FormatException</code> (<a class="xref" href="../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>, <a class="xref" href="../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a>, <a class="xref" href="../../api/Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a>). Input that parses but cannot <em>bind</em> to your type raises a <code>…SerializationException</code> (<a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>, <a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>, <a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>). The text formats carry line / column / offset on the format exception; catch the two separately when you need to distinguish a syntactically broken document from a schema mismatch.</li>
+<li><strong>UTF-8 is the native encoding.</strong> Every <code>Utf8…Reader</code> / <code>Utf8…Writer</code> operates on UTF-8 bytes, and the serializers accept <code>ReadOnlySpan&lt;byte&gt;</code> and write to <code>IBufferWriter&lt;byte&gt;</code> without a string detour.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>All three serializers ship the same stream facade: <code>Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, …)</code>, <code>SerializeAsync(Stream, …)</code>, <code>Deserialize&lt;T&gt;(Stream, …)</code>, and <code>DeserializeAsync&lt;T&gt;(Stream, …)</code>. The stream overloads buffer the whole document in memory — only the stream copy itself is asynchronous — so they are conveniences over the span / string entry points rather than incremental parsers.</p>
+</div>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>You want to…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Map a config record to and from TOML</td>
+<td><code>TomlSerializer.Serialize</code> / <code>Deserialize&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Round-trip an object through YAML</td>
+<td><code>YamlSerializer.Serialize</code> / <code>Deserialize&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Encode a torrent-style object to Bencode bytes</td>
+<td><code>BencodeSerializer.Serialize</code> / <code>Deserialize&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>Rename members on the wire</td>
+<td>the shared <code>[PropertyName]</code> attribute or a naming policy</td>
+</tr>
+<tr>
+<td>Control how a tricky type is written</td>
+<td>a <code>…Converter&lt;T&gt;</code>, attached with the shared <code>[Converter]</code> attribute or registered on the options</td>
+</tr>
+<tr>
+<td>Edit a document in place without a model</td>
+<td>the mutable <code>…Node</code> DOM</td>
+</tr>
+<tr>
+<td>Inspect a document with minimal allocation</td>
+<td>the read-only <code>…Document</code> / <code>…Element</code> DOM</td>
+</tr>
+<tr>
+<td>Process tokens by hand</td>
+<td>the <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong>Member introductions</strong> — <a href="bencode/index.html">Bodu.Text.Bencode</a>, <a href="toml/index.html">Bodu.Text.Toml</a>, and <a href="yaml/index.html">Bodu.Text.Yaml</a> for what is specific to each format, each with its own <strong>core concepts</strong> and <strong>getting-started</strong> pages.</li>
+<li><strong>Guides</strong> — the <a href="../../guides/serialization/index.html">serializer guides hub</a>, with a full set of recipes per library.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization topic</a></strong> — how the serializers sit alongside <code>Bodu.Text.Encoding</code> and <code>Bodu.Text.Formats</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

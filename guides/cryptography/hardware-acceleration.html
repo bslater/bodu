@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hardware acceleration and the SIMD opt-out | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Hardware acceleration and the SIMD opt-out | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="hardware-acceleration-and-the-simd-opt-out">Hardware acceleration and the SIMD opt-out</h1>
+
+<p>Several primitives in <code>Bodu.Security.Cryptography</code> ship an AVX-512 vectorised kernel alongside their scalar reference implementation, and dispatch to it automatically when the host CPU supports the required instructions. This page documents exactly <em>which</em> algorithms are accelerated, <em>when</em> the fast path engages, and <em>how</em> to force the scalar path process-wide.</p>
+<h2 id="which-algorithms-are-accelerated">Which algorithms are accelerated</h2>
+<p>Every accelerated primitive has a scalar reference implementation and an AVX-512 kernel in a sibling <code>*.Avx512.cs</code> file. The dispatch is per-operation and transparent — the public API and output are identical either way.</p>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>Accelerated operation</th>
+<th>Instruction set gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Blake2b</code></td>
+<td>Block compression</td>
+<td>AVX-512F + VL</td>
+</tr>
+<tr>
+<td><code>Blake2s</code></td>
+<td>Block compression</td>
+<td>AVX-512F + VL</td>
+</tr>
+<tr>
+<td><code>Blake3</code></td>
+<td>Compression function</td>
+<td>AVX-512F + VL</td>
+</tr>
+<tr>
+<td><code>Threefish256</code></td>
+<td>Encrypt / decrypt block</td>
+<td>AVX-512F + VL</td>
+</tr>
+<tr>
+<td><code>Threefish512</code></td>
+<td>Encrypt / decrypt block</td>
+<td>AVX-512F</td>
+</tr>
+<tr>
+<td><code>Threefish1024</code></td>
+<td>Encrypt / decrypt block</td>
+<td>AVX-512F</td>
+</tr>
+<tr>
+<td><code>CubeHash</code></td>
+<td>Round permutation</td>
+<td>AVX-512F</td>
+</tr>
+</tbody>
+</table>
+<p>There are two gate forms. The 128- and 256-bit-lane kernels (BLAKE2b, BLAKE2s, BLAKE3, Threefish-256) require the AVX-512 <strong>Vector Length</strong> extension (<code>Avx512F.VL.IsSupported</code>); the 512-bit-lane kernels (Threefish-512/1024, CubeHash) require only AVX-512 <strong>Foundation</strong> (<code>Avx512F.IsSupported</code>). Separately from the AVX-512 kernels, the GHASH multiplication shared by <code>GcmModeTransform</code> and <code>GcmSivModeTransform</code> has a carry-less-multiply fast path built on <strong>PCLMULQDQ</strong> (with SSSE3 for the byte shuffles); it is gated by <code>Pclmulqdq.IsSupported &amp;&amp; Ssse3.IsSupported</code>, honours the same <code>DisableSimd</code> switch, and falls back to the constant-time scalar GF(2¹²⁸) reference otherwise. No other SIMD instruction set (AVX2, ARM AdvSimd) is used as a standalone fast path.</p>
+<h2 id="when-the-fast-path-engages">When the fast path engages</h2>
+<p>By default the vectorised path is taken whenever the CPU reports the required instruction set. The check is a JIT intrinsic: on a host without AVX-512 it folds to a compile-time constant and the vectorised branch is eliminated entirely, so there is no runtime probing cost.</p>
+<h2 id="forcing-the-scalar-path">Forcing the scalar path</h2>
+<p>For scenarios that need a single, deterministic code path — reproducing a result bit-for-bit across heterogeneous hardware, differential testing against the scalar reference, or an audit that wants one implementation to reason about — the vectorised paths can be disabled process-wide with the feature switch:</p>
+<pre><code>Bodu.Security.Cryptography.DisableSimd = true
+</code></pre>
+<p>When set, every accelerated primitive runs its scalar reference implementation regardless of the host CPU. The switch is read <strong>once</strong>, the first time any accelerated primitive is used, so it must be set before that point. Any of the standard mechanisms works:</p>
+<ul>
+<li><p><strong><code>runtimeconfig.json</code> / project file</strong> (recommended — applied before any managed code runs):</p>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+  &lt;RuntimeHostConfigurationOption Include=&quot;Bodu.Security.Cryptography.DisableSimd&quot; Value=&quot;true&quot; Trim=&quot;false&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+</li>
+<li><p><strong>In code, at startup</strong>, before touching any hashing or cipher type:</p>
+</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">AppContext.SetSwitch(&quot;Bodu.Security.Cryptography.DisableSimd&quot;, true);
+</code></pre>
+<p>As a coarser alternative, the .NET runtime's own knob <code>DOTNET_EnableAVX512F=0</code> (or <code>DOTNET_EnableHWIntrinsic=0</code>) makes <code>Avx512F.IsSupported</code> report <code>false</code>, which also forces the scalar path — but it affects the whole process including the BCL, not just this library. Prefer the library switch when you only want to pin <em>these</em> primitives.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The opt-out exists for <strong>determinism, reproducibility, and audit</strong>, not because the vectorised paths are unsafe. BLAKE2, BLAKE3, and Threefish are ARX constructions — addition, rotation, and XOR only, with no secret-dependent branches or table lookups — so the scalar and AVX-512 paths are both inherently constant-time and produce bit-identical output. The switch only selects which of two equivalent implementations runs; it makes no additional constant-time <em>guarantee</em> beyond what the algorithms already provide, and this library is not independently audited.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="blake.html">Using BLAKE2 and BLAKE3</a></li>
+<li><a href="threefish-256.html">Using Threefish-256</a> · <a href="threefish-512.html">Threefish-512</a> · <a href="threefish-1024.html">Threefish-1024</a></li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography API reference</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

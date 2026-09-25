@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Collections.Generic.Graphs | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Collections.Generic.Graphs | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Graphs">
+
+  <h1 id="Bodu_Collections_Generic_Graphs" data-uid="Bodu.Collections.Generic.Graphs" class="text-break">Namespace Bodu.Collections.Generic.Graphs</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-collections.svg" alt="Bodu.Collections.Generic.Graphs"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Collections.Generic.Graphs</strong> is a small, self-contained graph toolkit in the <code>Bodu.Collections</code> package (which depends on <code>Bodu.Core</code>): a vertex-and-edge container, a static catalogue of classic graph algorithms, and a union-find (disjoint-set) structure. It is built for in-memory adjacency-list graphs of arbitrary vertex types — integers, strings, or your own value/reference types — with optional non-negative edge weights.</p>
+<p>The container, <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a>, stores an adjacency map and is fixed as either directed or undirected at construction via <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a>. The algorithms in <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a> — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — are decoupled from the container: they accept the read-only interfaces <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a> and <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a>, so they run over any conforming representation. The algorithms reuse the library's own primitives — <a class="xref" href="Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> for breadth-first frontiers and Kahn's ready queue, and <a class="xref" href="Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> for Dijkstra relaxation — and evaluate iteratively so they do not overflow the stack on deep graphs.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/collections/index.html">Bodu.Collections introduction</a></strong> — the headline collections and where the graph types sit among them.</li>
+<li><strong><a href="../guides/core/graphs.html">Graphs and graph algorithms</a></strong> — build a graph, run a traversal or shortest path, sort topologically, find components, and use union-find.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Graph container</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a> — the adjacency-list graph. Construct with a <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a> and an optional vertex comparer; mutate with <code>AddVertex</code> / <code>RemoveVertex</code> / <code>AddEdge</code> (unweighted or weighted) / <code>TryAddEdge</code> / <code>RemoveEdge</code> / <code>Clear</code>; query with <code>Vertices</code>, <code>Neighbors</code>, <code>WeightedNeighbors</code>, <code>ContainsVertex</code>, <code>ContainsEdge</code>, <code>TryGetEdgeWeight</code>, <code>Degree</code>, <code>VertexCount</code>, <code>EdgeCount</code>, and <code>IsDirected</code>. Implements <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a> (<code>double</code> weights).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a> — <code>Undirected</code> (the default; an edge makes each vertex a neighbor of the other) or <code>Directed</code> (an edge does not imply its reverse).</li>
+</ul>
+<p><strong>Read-only views (algorithm inputs)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a> — the unweighted topology surface (<code>IsDirected</code>, <code>VertexCount</code>, <code>EdgeCount</code>, <code>Comparer</code>, <code>Vertices</code>, <code>ContainsVertex</code>, <code>Neighbors</code>, <code>Degree</code>) that traversal, topological sort, and connectivity accept.</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a> — extends the above with <code>WeightedNeighbors</code>, <code>ContainsEdge</code>, and <code>TryGetEdgeWeight</code>; the input to the shortest-path algorithms.</li>
+</ul>
+<p><strong>Algorithms</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a> — a static class with <code>BreadthFirstSearch</code> / <code>DepthFirstSearch</code> (lazy reachability sequences), <code>ShortestPath</code> / <code>TryShortestPath</code> / <code>ShortestPathLengths</code> (Dijkstra over non-negative weights), <code>TopologicalSort</code> / <code>TryTopologicalSort</code> (Kahn's algorithm, directed graphs only), and <code>ConnectedComponents</code> (weakly connected components via union-find).</li>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.ShortestPathResult-1.html">ShortestPathResult&lt;TVertex&gt;</a> — the readonly record struct returned by <code>TryShortestPath</code>: <code>Found</code>, <code>Distance</code>, and <code>Path</code>.</li>
+</ul>
+<p><strong>Union-find (disjoint set)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a> — an element-keyed union-find for arbitrary non-nullable keys: <code>MakeSet</code> / <code>Add</code>, <code>Contains</code>, <code>Union</code>, <code>Find</code> / <code>TryFind</code>, <code>AreConnected</code>, <code>SizeOf</code>, <code>Clear</code>, with an optional <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a>. Path-halving compression with union by size, amortized near-constant per operation.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+// Build a small weighted directed graph; referenced vertices are created on demand.
+var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge(&quot;A&quot;, &quot;B&quot;, 1.0);
+graph.AddEdge(&quot;B&quot;, &quot;C&quot;, 2.0);
+graph.AddEdge(&quot;A&quot;, &quot;C&quot;, 5.0);
+
+// Breadth-first reachability from A.
+var reachable = GraphAlgorithms.BreadthFirstSearch(graph, &quot;A&quot;).ToList();
+
+// Cheapest route A -&gt; B -&gt; C (total 3) beats the direct A -&gt; C (5).
+ShortestPathResult&lt;string&gt; result = GraphAlgorithms.TryShortestPath(graph, &quot;A&quot;, &quot;C&quot;);
+// result.Found is true, result.Distance is 3.0, result.Path is [A, B, C]
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Directedness is fixed at construction.</strong> Choose <a class="xref" href="Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a> when you create the graph. In an undirected graph each edge is stored symmetrically, so one <code>AddEdge</code> makes both vertices mutual neighbors and <code>EdgeCount</code> counts the connection once.</li>
+<li><strong>Weights are finite and non-negative.</strong> Edges default to weight <code>1.0</code>; <code>AddEdge</code> and <code>TryAddEdge</code> reject <code>NaN</code>, infinity, and negative weights with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>. Algorithms that ignore weight treat the graph as unweighted. Dijkstra requires non-negative weights — there is no Bellman-Ford for negative edges.</li>
+<li><strong>Vertex identity follows the comparer.</strong> Pass an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> at construction (for example, <code>StringComparer.OrdinalIgnoreCase</code>) to control how vertices are deduplicated; the same comparer flows into the algorithms' internal sets.</li>
+<li><strong>Algorithms take the interfaces, not the concrete graph.</strong> Because they accept <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a> / <a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a>, you can run them over a custom graph representation as well as the built-in <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a>.</li>
+<li><strong>Topological sort is directed-only.</strong> <code>TopologicalSort</code> / <code>TryTopologicalSort</code> throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on an undirected graph; <code>TopologicalSort</code> additionally throws on a cycle, while <code>TryTopologicalSort</code> returns <code>false</code> and an empty list.</li>
+<li><strong>Connected components are weakly connected.</strong> <code>ConnectedComponents</code> treats every edge as undirected and partitions with a <a class="xref" href="Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a>; for a directed graph the result is the weakly connected components.</li>
+<li><strong>Not thread-safe.</strong> A <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a> is not safe for concurrent mutation; coordinate writes externally.</li>
+<li><strong>See also:</strong> the <a href="../docs/collections/index.html">Bodu.Collections introduction</a> and the <a href="../guides/core/graphs.html">graphs guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.DisjointSet-1.html">DisjointSet&lt;T&gt;</a></h4>
+      <section><p>Provides an element-keyed disjoint-set (union-find) structure that tracks a partition of added elements into
+disjoint subsets and supports near-constant-time union and connectivity queries.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.GraphAlgorithms.html">GraphAlgorithms</a></h4>
+      <section><p>Provides traversal, ordering, connectivity, and shortest-path algorithms over <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a></h4>
+      <section><p>Represents a graph of vertices connected by weighted edges, backed by an adjacency list and supporting either
+directed or undirected edge semantics.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.ShortestPathResult-1.html">ShortestPathResult&lt;TVertex&gt;</a></h4>
+      <section><p>Represents the outcome of a shortest-path search: whether the target was reachable, the total distance, and the
+reconstructed path.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a></h4>
+      <section><p>Defines a read-only view over a vertex-and-edge graph: the topology queries the graph algorithms depend on,
+independent of how the graph is stored.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyWeightedGraph-1.html">IReadOnlyWeightedGraph&lt;TVertex&gt;</a></h4>
+      <section><p>Defines a read-only view over a graph whose edges carry <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> weights, extending
+<a class="xref" href="Bodu.Collections.Generic.Graphs.IReadOnlyGraph-1.html">IReadOnlyGraph&lt;TVertex&gt;</a> with weight queries.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Generic.Graphs.GraphKind.html">GraphKind</a></h4>
+      <section><p>Specifies whether a <a class="xref" href="Bodu.Collections.Generic.Graphs.Graph-1.html">Graph&lt;T&gt;</a> treats its edges as directed or undirected.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

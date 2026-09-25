@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-label="Bodu.Financial.ExchangeRates.Imf — IMF representative-rates provider">
+  <title>Bodu.Financial.ExchangeRates.Imf</title>
+  <defs>
+    <linearGradient id="fximf-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="220" rx="12" fill="url(#fximf-bg)"/>
+
+  <!-- Left panel -->
+  <g transform="translate(28 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="150" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="150" height="22" rx="8" fill="#FBBF24"/>
+    <rect y="14" width="150" height="8" fill="#FBBF24"/>
+    <text x="75" y="16" fill="#422006" text-anchor="middle" font-weight="700" font-size="11">IMF</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
+      <text x="10" y="44">representative</text>
+      <text x="10" y="61"><tspan fill="#94A3B8">rates · monthly TSV</tspan></text>
+    </g>
+    <rect x="10" y="74" width="86" height="18" rx="9" fill="#0F172A" stroke="#FBBF24" stroke-width="1.2"/>
+    <text x="53" y="87" fill="#FBBF24" text-anchor="middle" font-family="'Consolas','Menlo',monospace" font-size="9.5">USD base</text>
+    <g transform="translate(10 100)">
+      <polyline points="0,30 22,26 43,18 65,22 87,12 108,16 130,8" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="130" cy="8" r="3" fill="#FBBF24"/>
+      <text x="0" y="52" fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="9">daily · units per USD</text>
+    </g>
+  </g>
+
+  <!-- Bidirectional pipeline arrows -->
+  <g transform="translate(186 80)" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linecap="round">
+    <line x1="0" y1="0" x2="104" y2="0"/>
+    <polygon points="104,0 96,-4 96,4" fill="#FBBF24" stroke="none"/>
+    <line x1="104" y1="36" x2="0" y2="36"/>
+    <polygon points="0,36 8,32 8,40" fill="#FBBF24" stroke="none"/>
+  </g>
+  <g transform="translate(186 80)" fill="#FBBF24" font-family="'Consolas','Menlo',monospace" font-size="10" text-anchor="middle">
+    <text x="52" y="-6">download</text>
+    <text x="52" y="56">normalize</text>
+  </g>
+
+  <!-- Right panel -->
+  <g transform="translate(310 30)" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="11">
+    <rect width="142" height="160" rx="8" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect width="142" height="22" rx="8" fill="#3B82F6"/>
+    <rect y="14" width="142" height="8" fill="#3B82F6"/>
+    <text x="71" y="16" fill="#F8FAFC" text-anchor="middle" font-weight="700" font-size="11">Provider</text>
+
+    <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="9.5">
+      <text x="10" y="46">IDatedRateProvider</text>
+      <text x="10" y="70">RateBook</text>
+      <text x="10" y="94"><tspan fill="#FBBF24">base USD</tspan></text>
+      <text x="10" y="118"><tspan fill="#94A3B8" font-size="9">WebRateProvider</tspan></text>
+    </g>
+  </g>
+
+  <!-- Bottom caption -->
+  <g fill="#94A3B8" font-family="'Consolas','Menlo',monospace" font-size="10">
+    <text x="240" y="206" text-anchor="middle">services.AddImfExchangeRates()</text>
+  </g>
+</svg>

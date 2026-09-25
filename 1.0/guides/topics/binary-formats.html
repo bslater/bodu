@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Binary Formats &amp; I/O — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Binary Formats &amp; I/O — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="binary-formats--io--guides">Binary Formats &amp; I/O — Guides</h1>
+
+<p>Recipe-style walk-throughs for the <strong>Binary Formats &amp; I/O</strong> topic — readers (and, for <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>, writers) for legacy binary container and document formats. The packages form a strictly layered stack: general-purpose container readers at the bottom (<code>Bodu.IO.Compound</code> and <code>Bodu.IO.Pst</code>), a record codec in the middle (<code>Bodu.IO.Biff</code>), and narrower format readers built on top.</p>
+<p><code>Bodu.IO.Compound</code> reads the OLE2 / Compound File Binary (CFB) envelope — the structured-storage &quot;file system in a file&quot; used by legacy Microsoft Office documents — and exposes the embedded named streams with no application-format knowledge. <code>Bodu.IO.Biff</code> is a low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. <code>Bodu.Formats.Excel.Binary</code> builds on both to surface raw worksheet cell values from BIFF5 and BIFF8 <code>.xls</code> workbooks, and <code>Bodu.Formats.Outlook.Msg</code> builds on the container to open <code>.msg</code> messages. <code>Bodu.IO.Pst</code> reads the second container in the topic — the Outlook personal-folders (PST) node database — and <code>Bodu.Formats.Outlook.Pst</code> builds on it to open a <code>.pst</code> mail store in the same <code>Bodu.Formats.Outlook</code> MAPI value model.</p>
+<h2 id="boduiocompound-guides">Bodu.IO.Compound guides</h2>
+<p>The CFB container reader and writer — the storage hierarchy, the stream cursor, editing and authoring, and the OLE property sets.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../io-compound/index.html">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.IO.Compound</code> — namespace map, the storage-hierarchy mental model, and which guide covers each concern.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-compound/reading-compound-files.html">Reading compound files</a></h3>
+  <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></h3>
+  <p>The <code>buffered</code> flag, the <code>CompoundStream</code> cursor, <code>AsMemory</code> vs chunked <code>Read</code>, and bounding memory for large files.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-compound/property-sets.html">Reading property sets</a></h3>
+  <p>The <code>SummaryInformation</code> and <code>DocumentSummaryInformation</code> metadata streams, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../io-compound/office-format-nuances.html">Office format nuances</a></h3>
+  <p>How the legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) lay out their named streams inside the CFB envelope, and the quirks to expect when reading them.</p>
+</div>
+</div>
+<h2 id="boduformatsexcelbinary-guides">Bodu.Formats.Excel.Binary guides</h2>
+<p>The BIFF5 and BIFF8 <code>.xls</code> reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../excel/index.html">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.Formats.Excel.Binary</code> — the layered BIFF-on-compound-file model, the namespace map, and which guide covers each concern.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../excel/reading-workbooks.html">Reading workbooks</a></h3>
+  <p>Open an <code>.xls</code> from a path or stream, list the sheets and used ranges, control stream ownership and optional metadata work, and read document properties.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../excel/cell-values-and-dates.html">Cell values and dates</a></h3>
+  <p>The <code>ExcelCell</code> kinds and value projections, a formula cell's cached result, date-format detection, serial-date conversion, and A1 references.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../excel/worksheets-and-rows.html">Streaming vs materialized</a></h3>
+  <p>The forward-only <code>ExcelWorksheetReader</code> versus the randomly addressable <code>ExcelWorksheet</code> — when to reach for each, and how to bound allocation.</p>
+</div>
+</div>
+<h2 id="boduformatsoutlook-guides">Bodu.Formats.Outlook guides</h2>
+<p>The Outlook format readers — the shared MAPI value model in <code>Bodu.Formats.Outlook</code>, and the read-only <code>.msg</code> reader <code>Bodu.Formats.Outlook.Msg</code> built on <code>Bodu.IO.Compound</code>. (The <code>.pst</code> mail-store reader, <code>Bodu.Formats.Outlook.Pst</code>, is introduced with its container in the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>.)</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../outlook/index.html">Overview</a></h3>
+  <p>The full guide index for the Outlook readers — how a <code>.msg</code> file sits inside the CFB container, the namespace map, and which guide covers each concern.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../outlook/reading-msg-files.html">Reading .msg files</a></h3>
+  <p>Open a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../outlook/properties-and-named-properties.html">Properties and named properties</a></h3>
+  <p>The raw property surface, typed accessors, tags and wire types, and resolving named properties.</p>
+</div>
+</div>
+<h2 id="start-here">Start here</h2>
+<ol>
+<li><strong><a href="../../docs/topics/binary-formats.html">Topic overview</a></strong> — the layered container-vs-format split and package selection on the docs side.</li>
+<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Topic concepts</a></strong> — container, storage, stream, sector chain, BIFF record.</li>
+<li><strong><a href="../io-compound/reading-compound-files.html">Reading compound files</a></strong> — the core open → navigate → read recipe that every other use builds on.</li>
+<li><strong><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></strong> — once the file is too large to hold whole, or you need to control the source's lifetime.</li>
+<li><strong><a href="../io-compound/property-sets.html">Reading property sets</a></strong> — when you want the authored document metadata rather than the format payload.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../docs/topics/binary-formats.html">Binary Formats &amp; I/O overview</a></strong> — the topic landing page on the docs side.</li>
+<li><strong><a href="../../docs/topics/binary-formats-concepts.html">Binary Formats &amp; I/O concepts</a></strong> — the cross-package vocabulary.</li>
+<li><strong>Member introductions:</strong> <a href="../../docs/io-compound/index.html">Bodu.IO.Compound</a> · <a href="../../docs/io-biff/index.html">Bodu.IO.Biff</a> · <a href="../../docs/excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="../../docs/io-pst/index.html">Bodu.IO.Pst</a>.</li>
+<li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../io-compound/index.html">Bodu.IO.Compound</a> · <a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="../io-pst/index.html">Bodu.IO.Pst</a> · <a href="../outlook/index.html">Bodu.Formats.Outlook</a>.</li>
+<li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../../api/Bodu.IO.Biff.html">Bodu.IO.Biff</a> · <a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel</a> · <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a> · <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

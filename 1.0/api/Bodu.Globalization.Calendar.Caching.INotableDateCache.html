@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface INotableDateCache | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface INotableDateCache | BODU ">
+    
+    <meta name="description" content="Persists computed notable-date resolutions so an expensive per-year resolution need not be recomputed while it remains fresh, keyed by territory, civil year, and resource version.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Caching.INotableDateCache">
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Caching_INotableDateCache" data-uid="Bodu.Globalization.Calendar.Caching.INotableDateCache" class="text-break">Interface INotableDateCache</h1>
+  <div class="markdown level0 summary"><p>Persists computed notable-date resolutions so an expensive per-year resolution need not be recomputed while it
+remains fresh, keyed by territory, civil year, and resource version.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Caching.html">Caching</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Caching.dll</h6>
+  <h5 id="Bodu_Globalization_Calendar_Caching_INotableDateCache_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface INotableDateCache</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Calendar_Caching_INotableDateCache_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The cache stores one <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.html">NotableDateCacheEntry</a> per <code>(territory, year, resource version)</code>: the
+unfiltered occurrences the notable-date engine emits for a whole civil year. A range query is served by assembling
+the per-year entries it spans and clipping to the requested window, so the cache unit is always a single civil year.
+</p>
+<p>
+The cache owns expiry. A caller supplies a time-to-live and an evaluation instant on every call:
+<a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.GetYear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_GetYear_System_String_System_Int32_System_String_System_TimeSpan_System_DateTimeOffset_">GetYear(string, int, string, TimeSpan, DateTimeOffset)</a> returns an entry only while it is fresh, and <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.StoreYear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a> prunes stale and
+superseded-version entries as it merges, so the backing store self-cleans over time. An entry is served only when
+its <a class="xref" href="Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.ResourceVersion.html#Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_ResourceVersion">ResourceVersion</a> matches the requested version, so a resource reload —
+signalled by a changed version token — forces a recompute rather than serving stale data.
+</p>
+<p>
+Territory is normalized case-insensitively for keying, so <code>us</code> and <code>US</code> address the same entry; a
+subdivision (<code>CA-ON</code>) and its parent country (<code>CA</code>) are distinct keys, matching the engine's own
+resolution.
+</p>
+<p>
+<strong>Ordering contract.</strong> An entry's occurrences must round-trip in the order they were supplied to
+<a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.StoreYear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a> — the notable-date service's date-then-identity order. The caching service relies on this
+to assemble ordered range results without re-sorting; a backend that cannot preserve order forces a sort fallback on
+every read it serves.
+</p>
+<p>
+Implementations are expected to be resilient: a cache failure should manifest as an empty read or a no-op write
+rather than an exception that breaks notable-date resolution. Argument validation still throws.
+</p>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_INotableDateCache_Clear" data-uid="Bodu.Globalization.Calendar.Caching.INotableDateCache.Clear">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.Clear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_Clear">Clear()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes every cached entry, returning the cache to its empty state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_INotableDateCache_GetYear_System_String_System_Int32_System_String_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Globalization.Calendar.Caching.INotableDateCache.GetYear(System.String,System.Int32,System.String,System.TimeSpan,System.DateTimeOffset)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.GetYear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_GetYear_System_String_System_Int32_System_String_System_TimeSpan_System_DateTimeOffset_">GetYear(string, int, string, TimeSpan, DateTimeOffset)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the cached entry for the requested territory, civil year, and resource version when one is present and
+still fresh, evaluated against <code class="paramref">asOf</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_INotableDateCache_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_" data-uid="Bodu.Globalization.Calendar.Caching.INotableDateCache.StoreYear(Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry,System.TimeSpan,System.DateTimeOffset)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.StoreYear.html#Bodu_Globalization_Calendar_Caching_INotableDateCache_StoreYear_Bodu_Globalization_Calendar_Caching_NotableDateCacheEntry_System_TimeSpan_System_DateTimeOffset_">StoreYear(NotableDateCacheEntry, TimeSpan, DateTimeOffset)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Stores a computed year, merging it into the territory's cached entries so the most recently computed entry wins
+per year, and pruning entries that are stale or belong to a superseded resource version.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

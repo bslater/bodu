@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Indexed priority queue | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Indexed priority queue | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="indexed-priority-queue">Indexed priority queue</h1>
+
+<p><code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code> is a binary min-heap priority queue keyed by element identity. It maintains an auxiliary element-to-index map alongside the heap, so containment and re-prioritisation are O(1) and O(log n) respectively — the operations that turn the BCL <code>PriorityQueue&lt;TElement, TPriority&gt;</code> into a clumsy fit for Dijkstra's algorithm, Prim's algorithm, A* search, and other graph algorithms that need to <em>update</em> an element's priority rather than re-enqueue it.</p>
+<p>The standard <code>PriorityQueue&lt;TElement, TPriority&gt;</code> does not enforce element uniqueness and does not support priority updates; the canonical workaround is to enqueue a duplicate at the new priority and tombstone the stale entry on dequeue. That works, but burns memory and lookup time for every relaxation step. <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code> is the alternative: each element appears at most once; updating a priority moves the element through the heap in O(log n) without enqueuing a duplicate.</p>
+<h2 id="construction">Construction</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+// Empty queue.
+var pq = new IndexedPriorityQueue&lt;string, int&gt;();
+
+// With a capacity hint.
+var sized = new IndexedPriorityQueue&lt;string, int&gt;(capacity: 1024);
+
+// With a custom priority comparer (descending).
+var desc = new IndexedPriorityQueue&lt;string, int&gt;(
+    Comparer&lt;int&gt;.Create((a, b) =&gt; b.CompareTo(a)));
+
+// With both an element-equality comparer (for case-insensitive keys) and a priority comparer.
+var both = new IndexedPriorityQueue&lt;string, int&gt;(
+    capacity: 1024,
+    priorityComparer: Comparer&lt;int&gt;.Default,
+    elementComparer: StringComparer.OrdinalIgnoreCase);
+
+// Heapified initialisation in O(n) instead of n × O(log n).
+var fromPairs = new IndexedPriorityQueue&lt;int, double&gt;(
+    new[] { new KeyValuePair&lt;int, double&gt;(7, 1.5), new KeyValuePair&lt;int, double&gt;(3, 0.5) });
+</code></pre>
+<p>The constraint is <code>where TElement : notnull</code> — the auxiliary map cannot accept a null key. Strings, value-type identifiers, and class instances with proper equality all work.</p>
+<h2 id="core-operations">Core operations</h2>
+<pre><code class="lang-csharp">pq.Enqueue(&quot;source&quot;, priority: 0);
+pq.Enqueue(&quot;a&quot;, priority: 7);
+pq.Enqueue(&quot;b&quot;, priority: 3);
+pq.Enqueue(&quot;c&quot;, priority: 12);
+
+pq.Count;                           // 4
+pq.Contains(&quot;a&quot;);                   // True
+pq.GetPriority(&quot;a&quot;);                // 7
+
+var (element, priority) = pq.Peek();   // (&quot;source&quot;, 0) — smallest priority
+pq.Dequeue();                          // (&quot;source&quot;, 0)
+</code></pre>
+<p>Element uniqueness is enforced. Calling <code>Enqueue(&quot;a&quot;, 5)</code> when <code>&quot;a&quot;</code> is already present throws <code>ArgumentException</code>. Use <code>TryEnqueue</code> for a safe non-throwing add, or <code>EnqueueOrUpdate</code> — the canonical &quot;relax this edge&quot; primitive — to add or update in one call:</p>
+<pre><code class="lang-csharp">// True if added, false if already present (and priority updated).
+bool added = pq.EnqueueOrUpdate(&quot;b&quot;, newPriority: 2);
+</code></pre>
+<h2 id="priority-updates">Priority updates</h2>
+<pre><code class="lang-csharp">pq.Update(&quot;a&quot;, newPriority: 0);     // O(log n) — re-position in the heap
+pq.TryUpdate(&quot;missing&quot;, 0);         // False — no exception
+</code></pre>
+<p><code>Update</code> throws <code>KeyNotFoundException</code> when the element is absent; <code>TryUpdate</code> returns <code>false</code>. This is the operation that makes the type useful for graph algorithms — when a shorter path to <code>a</code> is discovered, <code>Update(&quot;a&quot;, newDistance)</code> re-positions it in O(log n) without enqueueing a duplicate.</p>
+<h2 id="removal">Removal</h2>
+<pre><code class="lang-csharp">pq.Remove(&quot;a&quot;);                     // True if removed, false if absent
+pq.Clear();                         // Empty the queue; capacity preserved
+</code></pre>
+<p><code>Remove(TElement)</code> removes by element identity in O(log n). For the head-only removal, prefer <code>Dequeue</code> / <code>TryDequeue</code> — they avoid the auxiliary lookup.</p>
+<h2 id="capacity-management">Capacity management</h2>
+<pre><code class="lang-csharp">pq.Capacity;                         // Current heap-array length
+pq.EnsureCapacity(10_000);          // Grow if needed; returns new capacity
+pq.TrimExcess();                    // Shrink to fit
+</code></pre>
+<p><code>TrimExcess</code> does <em>not</em> bump the enumeration version, so an enumerator outstanding at the time of the call continues to walk the original snapshot.</p>
+<h2 id="enumeration">Enumeration</h2>
+<pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, int&gt; entry in pq)
+    Console.WriteLine($&quot;{entry.Key} = {entry.Value}&quot;);
+</code></pre>
+<p>The enumerator walks the underlying heap array in storage order, not priority order. For a sorted result, drain the queue with <code>Dequeue</code>:</p>
+<pre><code class="lang-csharp">var sorted = new List&lt;KeyValuePair&lt;string, int&gt;&gt;();
+while (pq.TryDequeue(out string? element, out int priority))
+    sorted.Add(new(element!, priority));
+</code></pre>
+<p>The enumerator is a struct, so a <code>foreach</code> loop allocates nothing.</p>
+<h2 id="worked-example--dijkstras-algorithm">Worked example — Dijkstra's algorithm</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+Dictionary&lt;string, double&gt; ShortestPaths(
+    string source,
+    Func&lt;string, IEnumerable&lt;(string To, double Weight)&gt;&gt; edges)
+{
+    var distances = new Dictionary&lt;string, double&gt; { [source] = 0 };
+    var pq = new IndexedPriorityQueue&lt;string, double&gt;();
+    pq.Enqueue(source, 0);
+
+    while (pq.TryDequeue(out string? u, out double du))
+    {
+        foreach ((string v, double w) in edges(u!))
+        {
+            double alt = du + w;
+            if (!distances.TryGetValue(v, out double dv) || alt &lt; dv)
+            {
+                distances[v] = alt;
+                pq.EnqueueOrUpdate(v, alt);   // O(log n), no duplicates
+            }
+        }
+    }
+
+    return distances;
+}
+</code></pre>
+<p>This is the textbook Dijkstra without the standard duplicate-and-tombstone workaround — <code>EnqueueOrUpdate</code> keeps the queue at most |V| in size, with each node updated O(deg) times in O(log n).</p>
+<h2 id="performance">Performance</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Contains</code>, <code>GetPriority</code>, <code>TryGetPriority</code></td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td><code>Peek</code>, <code>TryPeek</code></td>
+<td>O(1)</td>
+</tr>
+<tr>
+<td><code>Enqueue</code>, <code>TryEnqueue</code>, <code>EnqueueOrUpdate</code></td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td><code>Dequeue</code>, <code>TryDequeue</code></td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td><code>Update</code>, <code>TryUpdate</code></td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td><code>Remove(TElement)</code></td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>Heapified construction from <code>IEnumerable</code></td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td>Enumeration (storage order)</td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td>Drain to sorted order</td>
+<td>O(n log n)</td>
+</tr>
+</tbody>
+</table>
+<p>The auxiliary element-to-index map doubles memory cost compared to a plain heap — the trade is worth it for any workload that needs containment, retrieval, or update by element identity.</p>
+<h2 id="when-not-to-use-indexedpriorityqueue">When <em>not</em> to use <code>IndexedPriorityQueue</code></h2>
+<ul>
+<li><strong>No update or containment queries.</strong> If you only need enqueue + dequeue and elements can appear more than once, the BCL <code>PriorityQueue&lt;TElement, TPriority&gt;</code> is simpler and avoids the auxiliary map overhead.</li>
+<li><strong>Unbounded priority types.</strong> The heap re-positions on <code>Update</code> by comparing priorities — if your priority type has comparison cost proportional to length (e.g. arbitrary-precision rationals), the constant factor dominates.</li>
+<li><strong>Multi-element priority changes per call.</strong> The type is one-at-a-time. For bulk re-prioritisation, drain and rebuild.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html"><code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> namespace landing</a></li>
+<li><a href="range-dictionary.html">Range-keyed lookups</a> — the other &quot;lookup-by-key&quot; collection family.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> — for thread-safe queue scenarios.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

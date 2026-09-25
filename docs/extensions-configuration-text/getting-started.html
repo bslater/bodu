@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Extensions.Configuration.Text — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Extensions.Configuration.Text — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduextensionsconfigurationtext--getting-started">Bodu.Extensions.Configuration.Text — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>source</em>, <em>provider</em>, <em>target path</em>, <em>conventional probe</em>, <em>reload-on-change</em>, or <em>options
+binding</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Extensions.Configuration.Text
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on:</p>
+<ul>
+<li><code>Bodu.Core</code> and <code>Bodu.Text.Configuration</code> (the parser, resolver, and view).</li>
+<li><code>Microsoft.Extensions.Configuration</code>, <code>Microsoft.Extensions.Configuration.FileExtensions</code>,
+<code>Microsoft.Extensions.Configuration.Binder</code>, <code>Microsoft.Extensions.FileProviders.Physical</code>,
+<code>Microsoft.Extensions.Options.ConfigurationExtensions</code>, and the associated abstractions packages — all at the .NET
+8.0 LTS line.</li>
+</ul>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="add-a-configuration-file">Add a configuration file</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(&quot;appsettings.bodu&quot;)
+    .Build();
+
+string? logLevel = configuration[&quot;logging:level:default&quot;];
+</code></pre>
+<p>The overload is named to match the JSON provider's <code>AddJsonFile</code> — same arguments, same defaults, same shape. The
+file is required by default; pass <code>optional: true</code> to tolerate a missing file.</p>
+<h3 id="conventional-file-probe">Conventional file probe</h3>
+<pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfiguration(optional: true, reloadOnChange: true)
+    .Build();
+</code></pre>
+<p>The no-argument overload probes the builder's base path for <code>.boduconfig</code>, then <code>bodu.config</code>. The first file found
+is loaded; if neither exists and <code>optional</code> is <code>true</code>, the call is a no-op. Use this when your application has a
+single conventional configuration file in its working directory.</p>
+<h3 id="anchor-glob-resolution-to-a-source-path">Anchor glob resolution to a source path</h3>
+<pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(
+        path: &quot;team.boduconfig&quot;,
+        targetPath: &quot;src/MyApp/Program.cs&quot;,
+        optional: false,
+        reloadOnChange: true)
+    .Build();
+</code></pre>
+<p>The <code>targetPath</code> is handed to <code>ConfigurationDocument.Resolve(targetPath)</code> — sections whose header globs match
+contribute to the resolved view, in source order, last-wins.</p>
+<h3 id="configure-via-callback">Configure via callback</h3>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+using Microsoft.Extensions.FileProviders;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(source =&gt;
+    {
+        source.FileProvider     = new PhysicalFileProvider(&quot;/etc/myapp&quot;);
+        source.Path             = &quot;settings.bodu&quot;;
+        source.TargetPath       = &quot;src/Foo.cs&quot;;
+        source.Optional         = true;
+        source.ReloadOnChange   = true;
+        source.ParseOptions     = ConfigurationParseOptions.EditorConfigCompatible;
+        source.ResolveOptions   = new ConfigurationResolveOptions
+        {
+            UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
+        };
+    })
+    .Build();
+</code></pre>
+<p>The callback receives the <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> directly, so every
+property is reachable. Use this overload when several knobs need to be set together — a one-liner overload exists for
+the common &quot;just give me the file&quot; case.</p>
+<h3 id="load-from-a-stream">Load from a stream</h3>
+<pre><code class="lang-csharp">using MemoryStream stream = new(Encoding.UTF8.GetBytes(&quot;&quot;&quot;
+service.name = Bodu
+service.port = 8080
+&quot;&quot;&quot;));
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationStream(stream)
+    .Build();
+
+string? name = configuration[&quot;service:name&quot;];   // &quot;Bodu&quot;
+int port = configuration.GetValue&lt;int&gt;(&quot;service:port&quot;);
+</code></pre>
+<p>Stream sources are one-shot — no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
+configuration.</p>
+<h3 id="add-a-toml-file-or-stream">Add a TOML file or stream</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlFile(&quot;appsettings.toml&quot;, optional: true)
+    .Build();
+
+string? level = configuration[&quot;logging:level&quot;];   // from [logging] level = &quot;...&quot;
+</code></pre>
+<p>The TOML bridge flattens the table hierarchy into the same colon-delimited key space — <code>[logging.console]</code> with
+<code>includeScopes = true</code> surfaces as <code>configuration[&quot;logging:console:includeScopes&quot;]</code>. It is read-once and read-only, so
+there is no <code>reloadOnChange</code> parameter; for stream input use <code>AddTomlStream(stream)</code>.</p>
+<h3 id="add-a-bencode-file-or-stream">Add a Bencode file or stream</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddBencodeFile(&quot;appsettings.bencode&quot;, optional: true)
+    .Build();
+
+string? level = configuration[&quot;logging:level&quot;];   // from d7:loggingd5:level5:Debugee
+</code></pre>
+<p>The Bencode bridge has the same read-once, read-only shape as the TOML bridge; for stream input use
+<code>AddBencodeStream(stream)</code>. The document root must be a Bencode dictionary — nested dictionaries flatten to one
+colon-delimited segment per level and list elements to zero-based index segments.</p>
+<h3 id="add-a-pre-parsed-document">Add a pre-parsed document</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(&quot;&quot;&quot;
+    service.name = Bodu
+    service.port = 8080
+    &quot;&quot;&quot;);
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationDocument(document)
+    .Build();
+</code></pre>
+<p><code>AddTextConfigurationDocument</code> resolves the document once and adds the flattened pairs in-memory. It takes a one-shot
+snapshot — later edits to the document do not flow into the built configuration, and there is no reload-on-change.</p>
+<h3 id="bind-to-a-poco-via-di">Bind to a POCO via DI</h3>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+ServiceCollection services = new();
+services.AddOptions();
+services.AddConfigurationOptions&lt;ServiceOptions&gt;(configuration, &quot;service&quot;);
+
+using ServiceProvider provider = services.BuildServiceProvider();
+ServiceOptions options = provider.GetRequiredService&lt;IOptions&lt;ServiceOptions&gt;&gt;().Value;
+
+Console.WriteLine($&quot;{options.Name} on port {options.Port}&quot;);
+
+sealed class ServiceOptions
+{
+    public string? Name { get; set; }
+    public int Port { get; set; }
+}
+</code></pre>
+<p>The section-overload is equivalent and useful when the section is already projected:</p>
+<pre><code class="lang-csharp">services.AddConfigurationOptions&lt;ServiceOptions&gt;(configuration.GetSection(&quot;service&quot;));
+</code></pre>
+<h3 id="combine-with-other-providers">Combine with other providers</h3>
+<p>The Bodu source layers with anything else in the builder. Standard MEC precedence applies — later sources override
+earlier ones for the same key:</p>
+<pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile(&quot;appsettings.json&quot;, optional: true)
+    .AddTextConfigurationFile(&quot;appsettings.bodu&quot;, optional: true)
+    .AddEnvironmentVariables()
+    .Build();
+</code></pre>
+<p>Defaults come from <code>appsettings.json</code>, project-specific overrides from <code>appsettings.bodu</code>, deployment overrides from
+environment variables.</p>
+<h3 id="watch-for-changes">Watch for changes</h3>
+<pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(&quot;appsettings.bodu&quot;, reloadOnChange: true)
+    .Build();
+
+ChangeToken.OnChange(
+    () =&gt; configuration.GetReloadToken(),
+    () =&gt; Console.WriteLine(&quot;Configuration reloaded&quot;));
+</code></pre>
+<p>The file watcher is attached through the configured <code>IFileProvider</code>. Edits, atomic replaces, and <code>touch</code> all trigger
+a reload.</p>
+<h2 id="pattern--bodu--ioptionsmonitor-for-hot-swappable-settings">Pattern — Bodu + IOptionsMonitor for hot-swappable settings</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(&quot;settings.bodu&quot;, optional: false, reloadOnChange: true)
+    .Build();
+
+ServiceCollection services = new();
+services.AddSingleton(configuration);
+services.AddOptions();
+services.AddConfigurationOptions&lt;FeatureOptions&gt;(configuration, &quot;features&quot;);
+
+using ServiceProvider provider = services.BuildServiceProvider();
+IOptionsMonitor&lt;FeatureOptions&gt; monitor = provider.GetRequiredService&lt;IOptionsMonitor&lt;FeatureOptions&gt;&gt;();
+
+monitor.OnChange(updated =&gt; Console.WriteLine($&quot;Reload — beta = {updated.BetaEnabled}&quot;));
+</code></pre>
+<p><code>IOptionsMonitor&lt;T&gt;</code> re-binds automatically whenever the underlying file changes — there is no manual reload step.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — type map and scenario index.</li>
+<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> — the underlying parser, resolver, and view.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

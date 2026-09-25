@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum RecursiveSelectControl | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum RecursiveSelectControl | BODU ">
+    
+    <meta name="description" content="Represents composable control flags for how an element is processed during recursive selection.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Extensions.RecursiveSelectControl">
+
+
+
+
+  <h1 id="Bodu_Collections_Extensions_RecursiveSelectControl" data-uid="Bodu.Collections.Extensions.RecursiveSelectControl" class="text-break">Enum RecursiveSelectControl</h1>
+  <div class="markdown level0 summary"><p>Represents composable control flags for how an element is processed during recursive selection.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Collections_Extensions_RecursiveSelectControl_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Flags]
+public enum RecursiveSelectControl</code></pre>
+  </div>
+  <h5 id="Bodu_Collections_Extensions_RecursiveSelectControl_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>This enum defines composable control flags that determine whether an element should be yielded, whether its children
+should be traversed, and whether traversal should stop after the current element. It is a genuine
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.flagsattribute">FlagsAttribute</a> bitmask: the primitive flags <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Yield">Yield</a>, <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Recurse">Recurse</a>,
+<a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Skip">Skip</a>, <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Break">Break</a>, and <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Exit">Exit</a> may be combined with the bitwise-OR operator, and
+the named combinations below are provided for the common cases.</p>
+<p>
+<a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Break">Break</a> and <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Recurse">Recurse</a> are orthogonal and compose: <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Break">Break</a> stops iteration of
+the remaining siblings at the current level, whereas <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Recurse">Recurse</a> requests descent into the current
+element's children. When both are set, the current element's children are visited first and only then are the
+remaining siblings skipped.
+</p>
+<p>
+Typical usage includes returning one of these values from a <code>Func&lt;T, RecursiveSelectControl&gt;</code> to control
+behavior dynamically within a recursive traversal method.
+</p>
+<p>
+<strong>Behavior Matrix</strong>
+</p>
+<table><thead><tr><th class="term">Combination</th><th class="description">Yield</th><th class="description">Recurse</th><th class="description">Break Level</th><th class="description">Exit All</th></tr></thead><tbody><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_SkipOnly">SkipOnly</a></td><td class="description">No</td><td class="description">No</td><td class="description">No</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_YieldOnly">YieldOnly</a></td><td class="description">Yes</td><td class="description">No</td><td class="description">No</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndRecurse">YieldAndRecurse</a></td><td class="description">Yes</td><td class="description">Yes</td><td class="description">No</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndBreak">YieldAndBreak</a></td><td class="description">Yes</td><td class="description">No</td><td class="description">Yes</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndExit">YieldAndExit</a></td><td class="description">Yes</td><td class="description">No</td><td class="description">No</td><td class="description">Yes</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_RecurseOnly">RecurseOnly</a></td><td class="description">No</td><td class="description">Yes</td><td class="description">No</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndRecurse">SkipAndRecurse</a></td><td class="description">No</td><td class="description">Yes</td><td class="description">No</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndBreak">SkipAndBreak</a></td><td class="description">No</td><td class="description">No</td><td class="description">Yes</td><td class="description">No</td></tr><tr><td class="term"><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndExit">SkipAndExit</a></td><td class="description">No</td><td class="description">No</td><td class="description">No</td><td class="description">Yes</td></tr></tbody></table>
+</div>
+  <h5 id="Bodu_Collections_Extensions_RecursiveSelectControl_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Common input structure
+var root = new[]
+{
+    new Node { Name = "A", Children = { new Node { Name = "B" }, new Node { Name = "C" } } },
+    new Node { Name = "D" }
+};
+//
+// RecursiveSelect using different control values
+
+// YieldAndRecurse
+var all = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.YieldAndRecurse);
+// Output: A, B, C, D
+
+// SkipOnly
+var skip = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.SkipOnly);
+// Output: (empty)
+
+// YieldOnly
+var yieldOnly = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.YieldOnly);
+// Output: A, D
+
+// RecurseOnly
+var recurseOnly = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.RecurseOnly);
+// Output: B, C
+
+// SkipAndRecurse
+var skipAndRecurse = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.SkipAndRecurse);
+// Output: B, C
+
+// YieldAndBreak
+var yieldAndBreak = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.YieldAndBreak);
+// Output: A
+
+// SkipAndBreak
+var skipAndBreak = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.SkipAndBreak);
+// Output: (empty)
+
+// YieldAndExit
+var yieldAndExit = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.YieldAndExit);
+// Output: A
+
+// SkipAndExit
+var skipAndExit = root.RecursiveSelect(
+    n =&gt; n.Children,
+    (n, i, d) =&gt; n.Name,
+    n =&gt; RecursiveSelectControl.SkipAndExit);
+// Output: (empty)</code></pre>
+
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_None">None</td>
+        <td><p>No flags set: the current element is neither yielded nor recursed into.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_Yield">Yield</td>
+        <td><p>Primitive flag that includes the current element in the output sequence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_Recurse">Recurse</td>
+        <td><p>Primitive flag that requests recursion into the current element's children.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_Skip">Skip</td>
+        <td><p>Primitive flag that skips yielding the current element. Overrides <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html#Bodu_Collections_Extensions_RecursiveSelectControl_Yield">Yield</a> when both are set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_Break">Break</td>
+        <td><p>Primitive flag that stops iteration of the remaining siblings at the current recursion level.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_Exit">Exit</td>
+        <td><p>Primitive flag that terminates the entire recursive traversal immediately.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_YieldOnly">YieldOnly</td>
+        <td><p>Yield the current element only, without recursing into children.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_RecurseOnly">RecurseOnly</td>
+        <td><p>Recurse into children without yielding the current element.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndRecurse">YieldAndRecurse</td>
+        <td><p>Yield the current element and recurse into its children. This is the default behavior.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_SkipOnly">SkipOnly</td>
+        <td><p>Skip yielding the current element and do not recurse.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndRecurse">SkipAndRecurse</td>
+        <td><p>Skip yielding the current element, but still recurse into its children.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndBreak">YieldAndBreak</td>
+        <td><p>Yield the current element, then stop traversal at the current level (like a break).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndBreak">SkipAndBreak</td>
+        <td><p>Skip yielding the current element and stop traversal at the current level.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_YieldAndExit">YieldAndExit</td>
+        <td><p>Yield the current element, then stop traversal completely across all levels.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Extensions_RecursiveSelectControl_SkipAndExit">SkipAndExit</td>
+        <td><p>Skip yielding the current element and stop traversal completely across all levels.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl?, RecursiveSelectControl?, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl, IComparer&lt;RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;RecursiveSelectControl&gt;(RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;RecursiveSelectControl&gt;(RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, RecursiveSelectControl)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;RecursiveSelectControl&gt;(RecursiveSelectControl, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using CityHash | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using CityHash | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-cityhash">Using CityHash</h1>
+
+<p>CityHash is Google's family of fast, high-quality non-cryptographic hash functions. Each variant is carefully tuned for the input lengths it is asked to hash — short-key paths avoid loops entirely, medium-length paths use Murmur-style mixing, and long-input paths split the buffer into 64-byte chunks that are mixed in parallel. The result is a hash that is substantially faster than FNV or Adler on long inputs while distributing at least as well on short ones.</p>
+<p><strong>Bodu.IO.Hashing</strong> ships three widths:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Width</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CityHash32.html">CityHash32</a></td>
+<td>32 bits</td>
+<td>Small, fast, drop-in replacement for FNV-1a-32 as a hash-table function.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a></td>
+<td>64 bits</td>
+<td>The most common CityHash choice — 64-bit fingerprints for de-duplication, sharding, content addressing.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CityHash128.html">CityHash128</a></td>
+<td>128 bits</td>
+<td>Longer fingerprint space, still cheaper than a cryptographic digest.</td>
+</tr>
+</tbody>
+</table>
+<p>All three derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> via a shared <code>CityHash</code> base.</p>
+<h2 id="pattern-1--compute-a-digest-in-one-call">Pattern 1 — compute a digest in one call</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var city = new CityHash64();
+city.Append(data);
+byte[] digest = city.GetCurrentHash();
+string hex    = Convert.ToHexString(digest);   // 8 bytes, 16 hex characters
+</code></pre>
+<p>Substitute <code>CityHash32</code> or <code>CityHash128</code> when the width needs to change.</p>
+<h2 id="pattern-2--64-bit-fingerprint-for-deduplication-or-sharding">Pattern 2 — 64-bit fingerprint for deduplication or sharding</h2>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+ulong FingerprintFor(ReadOnlySpan&lt;byte&gt; data)
+{
+    using var city = new CityHash64();
+    city.Append(data);
+    return BitConverter.ToUInt64(city.GetCurrentHash());
+}
+
+int shardFor = (int)(FingerprintFor(recordBytes) % (ulong)shardCount);
+</code></pre>
+<p>The distribution is good enough that <code>% shardCount</code> gives very close to uniform spread. The hash is <strong>not</strong> keyed — do not use this for adversary-facing sharding where crafted input could be used to overload a shard.</p>
+<h2 id="pattern-3--append--getcurrenthash--reset">Pattern 3 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
+<p>CityHash's reference implementation is a one-shot algorithm: it reads the whole buffer, decides which length-specialized path to take, and returns a result. To plug that into the streaming <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract, the Bodu implementation <strong>buffers the appended bytes</strong> and applies the final mixing on <code>GetCurrentHash</code>.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+using var city = new CityHash64();
+
+city.Append(chunk1);                       // stored
+city.Append(chunk2);                       // stored
+byte[] partial = city.GetCurrentHash();    // snapshot — mixes the buffered bytes
+city.Append(chunk3);                       // state preserved after GetCurrentHash
+byte[] full = city.GetCurrentHash();
+
+city.Reset();                              // discards the buffer
+</code></pre>
+<p>The practical consequence is that memory use grows linearly with the amount of data appended between <code>Reset</code> calls. If you need to hash a long stream without buffering, reach for <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, or one of the <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>-family types — they update in place.</p>
+<h2 id="pattern-4--file-hashing">Pattern 4 — file hashing</h2>
+<p>For files that comfortably fit in memory (tens or hundreds of MB), the streaming form is fine:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+using var city = new CityHash64();
+
+using (var stream = File.OpenRead(&quot;asset.bin&quot;))
+    city.Append(stream);
+
+byte[] fingerprint = city.GetCurrentHash();
+</code></pre>
+<p>For very large files where you do not want the whole buffer in memory, do the hashing chunk-by-chunk with an incremental non-cryptographic algorithm (<a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>) or use a Merkle tree — see the <a href="../cryptography/hashing.html">cryptography hashing guide</a> for the <code>MerkleTree</code> pattern.</p>
+<h2 id="cityhash-vs-the-other-non-cryptographic-hashes-in-this-package">CityHash vs the other non-cryptographic hashes in this package</h2>
+<ul>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a></strong> — CityHash is faster on long inputs (SIMD-friendly); FNV uses constant memory regardless of input size.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a></strong> — Adler is tuned for short checksums and has a fixed 4-byte digest. CityHash dominates for general-purpose in-memory fingerprinting.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></strong> — CRC is defined by wire specifications and has provable burst-error detection; CityHash is a better default when you control both endpoints and want the best speed/quality trade-off.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></strong> — SipHash is keyed and resists adversarial collisions; CityHash does not. Use SipHash whenever untrusted input can reach the hash function.</li>
+</ul>
+<p>CityHash is <strong>not cryptographic</strong>. An attacker who can choose inputs can construct collisions trivially. Do not use it to authenticate or to key-derive.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="fnv.html">Using FNV</a> — the simpler, streaming-friendly alternative.</li>
+<li><a href="adler.html">Using Adler</a>, <a href="crc.html">Using CRC</a>, <a href="fletcher.html">Using Fletcher</a> — the checksum families.</li>
+<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> — when you need SipHash's adversarial resistance or a cryptographic digest.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

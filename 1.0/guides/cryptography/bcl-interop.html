@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interoperating with System.Security.Cryptography | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interoperating with System.Security.Cryptography | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="interoperating-with-systemsecuritycryptography">Interoperating with System.Security.Cryptography</h1>
+
+<p><code>Bodu.Security.Cryptography</code> is built on the BCL's own abstractions rather than beside them: every hash is a <code>System.Security.Cryptography.HashAlgorithm</code>, every block-cipher wrapper is a <code>SymmetricAlgorithm</code> (through <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a> or <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>), the raw-key asymmetric types derive from <code>AsymmetricAlgorithm</code>, and the KDF and OTP surfaces take <code>HashAlgorithmName</code> or an equivalent enum. This page shows, with verified round trips, exactly where a Bodu type drops into a BCL-shaped call site — and the two places where it deliberately does not.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Bodu.Security.Cryptography</code> is not independently audited and offers best-effort, not guaranteed, side-channel resistance. Where the BCL implements the same algorithm, prefer the BCL; see <a href="choosing-a-primitive.html">Choosing a primitive</a>.</p>
+</div>
+<h2 id="pattern-1--one-shot-versus-incremental-hashing">Pattern 1 — one-shot versus incremental hashing</h2>
+<p>A Bodu hash is a <code>HashAlgorithm</code>, so the BCL lifecycle applies unchanged: <code>ComputeHash</code> for one shot, <code>TransformBlock</code> … <code>TransformFinalBlock</code> then <code>Hash</code> for incremental use. <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> adds a span-friendly <code>AppendData</code> that forwards to <code>TransformBlock</code>, so you can mix the two freely.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] part1 = &quot;The quick brown fox &quot;u8.ToArray();
+byte[] part2 = &quot;jumps over the lazy dog&quot;u8.ToArray();
+
+// One shot: ComputeHash resets, hashes, and finalizes.
+using var oneShot = new Blake2b(256);
+byte[] whole = oneShot.ComputeHash([.. part1, .. part2]);
+
+// Incremental, the BCL way.
+using var incremental = new Blake2b(256);
+incremental.TransformBlock(part1, 0, part1.Length, null, 0);
+incremental.TransformFinalBlock(part2, 0, part2.Length);
+byte[] streamed = incremental.Hash!;
+
+// Incremental, the Bodu way: AppendData over spans, then an empty final block.
+using var appended = new Blake2b(256);
+appended.AppendData(part1);
+appended.AppendData(part2);
+appended.TransformFinalBlock([], 0, 0);
+byte[] appendedHash = appended.Hash!;
+
+// All three: 01718CEC35CD3D796DD00020E0BFECB473AD23457D063B75EFF29C0FFA2E58A9
+</code></pre>
+<p><code>HashAlgorithm.ComputeHash(Stream)</code> and <code>ComputeHashAsync(Stream, CancellationToken)</code> work too — they are inherited, not reimplemented. See <a href="streaming-and-async.html">Streams and async</a> for the buffer sizes and the verify helpers.</p>
+<h2 id="pattern-2--incrementalhash-has-no-bodu-equivalent-and-does-not-need-one">Pattern 2 — <code>IncrementalHash</code> has no Bodu equivalent, and does not need one</h2>
+<p><code>System.Security.Cryptography.IncrementalHash</code> only accepts algorithms a <code>HashAlgorithmName</code> can name, so it cannot host BLAKE2, Skein, or Tiger. The equivalent shape on a Bodu hash is <code>AppendData</code> followed by an empty <code>TransformFinalBlock</code>, and <code>Initialize()</code> plays the part of <code>GetHashAndReset</code>'s reset:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] data = &quot;abc&quot;u8.ToArray();
+
+using IncrementalHash bcl = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+bcl.AppendData(data);
+byte[] sha = bcl.GetHashAndReset();          // BA7816BF…F20015AD
+
+using var bodu = new Blake3();
+bodu.AppendData(data);
+bodu.TransformFinalBlock([], 0, 0);
+byte[] blake3 = bodu.Hash!;                  // 6437B3AC…BD9D85
+bodu.Initialize();                           // ready for the next message
+</code></pre>
+<p>Do not look for <code>GetHashAndReset</code> on a Bodu hash — it does not exist on any public type.</p>
+<h2 id="pattern-3--cryptostream-over-a-bodu-cipher">Pattern 3 — <code>CryptoStream</code> over a Bodu cipher</h2>
+<p><code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> on any wrapper return an <code>ICryptoTransform</code> (a <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>, or a stream-cipher transform), so <code>CryptoStream</code> composes as it would with <code>Aes</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] plaintext = &quot;CryptoStream over a Bodu block cipher&quot;u8.ToArray();
+
+using var camellia = new Camellia { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 };
+camellia.Key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+camellia.IV  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+
+byte[] ciphertext;
+using (var output = new MemoryStream())
+{
+    using (var crypto = new CryptoStream(output, camellia.CreateEncryptor(), CryptoStreamMode.Write))
+        crypto.Write(plaintext);
+    ciphertext = output.ToArray();           // 48 bytes: 6265D259…D92B2B2A
+}
+
+byte[] recovered;
+using (var input = new MemoryStream(ciphertext))
+using (var crypto = new CryptoStream(input, camellia.CreateDecryptor(), CryptoStreamMode.Read))
+using (var sink = new MemoryStream())
+{
+    crypto.CopyTo(sink);
+    recovered = sink.ToArray();
+}
+</code></pre>
+<p>Set the mode through <code>BlockMode</code> (<a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>) rather than the inherited <code>Mode</code>, because only <code>BlockMode</code> can name CTR; the two properties stay in sync for the values both enums share. See <a href="cipher-composition-reference.html">Modes, transforms, and factories</a>.</p>
+<h2 id="pattern-4--bcl-one-shots-that-do-not-work">Pattern 4 — BCL one-shots that do <em>not</em> work</h2>
+<p>The BCL <code>SymmetricAlgorithm</code> one-shot helpers (<code>EncryptCbc</code>, <code>EncryptEcb</code>, and the CFB variants) call the protected <code>System.Security.Cryptography.SymmetricAlgorithm.TryEncryptCbcCore</code> family, which the Bodu wrappers do not override — those calls throw <code>NotSupportedException</code> (&quot;Method not supported. Derived class must override.&quot;). Use <code>CreateEncryptor</code> with <code>CryptoStream</code>, or the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a> one-shots (<code>alg.Encrypt(byte[])</code>, <code>alg.Encrypt(Stream, Stream)</code>), which route through <code>CreateEncryptor</code>.</p>
+<h2 id="pattern-5--aes-gcm-is-wire-compatible-with-aesgcm">Pattern 5 — AES-GCM is wire-compatible with <code>AesGcm</code></h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> over <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> implements the same 96-bit-nonce, 128-bit-tag profile of NIST SP 800-38D that <code>System.Security.Cryptography.AesGcm</code> does. The only difference is layout: Bodu returns <code>ciphertext ‖ tag</code> in one array, the BCL takes the ciphertext and tag as separate buffers. Split or concatenate at the boundary and the bytes match in both directions — this run uses the SP 800-38D test-case-4 material:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key   = Convert.FromHexString(&quot;feffe9928665731c6d6a8f9467308308&quot;);
+byte[] nonce = Convert.FromHexString(&quot;cafebabefacedbaddecaf888&quot;);
+byte[] plaintext = Convert.FromHexString(
+    &quot;d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72&quot; +
+    &quot;1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255&quot;);
+byte[] aad = Convert.FromHexString(&quot;feedfacedeadbeeffeedfacedeadbeefabaddad2&quot;);
+
+// Bodu encrypts: ciphertext ‖ tag.
+byte[] boduSealed;
+using (var cipher = new AesBlockCipher(key))
+    boduSealed = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, associatedData: aad);
+
+// The BCL decrypts the same bytes.
+byte[] ciphertext = boduSealed[..^16];
+byte[] tag        = boduSealed[^16..];          // DA80CE830CFDA02DA2A218A1744F4C76
+byte[] bclPlain   = new byte[ciphertext.Length];
+using (var bcl = new AesGcm(key, tagSizeInBytes: 16))
+    bcl.Decrypt(nonce, ciphertext, tag, bclPlain, aad);
+
+// And the other way round: BCL encrypts, Bodu decrypts.
+byte[] bclCiphertext = new byte[plaintext.Length];
+byte[] bclTag = new byte[16];
+using (var bcl = new AesGcm(key, tagSizeInBytes: 16))
+    bcl.Encrypt(nonce, plaintext, bclCiphertext, bclTag, aad);     // same tag: DA80CE83…744F4C76
+
+byte[] boduPlain;
+using (var cipher = new AesBlockCipher(key))
+    boduPlain = new GcmModeTransform(cipher, nonce).Decrypt([.. bclCiphertext, .. bclTag], associatedData: aad);
+</code></pre>
+<p>Both <code>bclPlain</code> and <code>boduPlain</code> equal <code>plaintext</code>. The BCL type supports 12- to 16-byte tags; the Bodu transform always produces 16, so pass <code>tagSizeInBytes: 16</code> on the BCL side.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Write <code>Encrypt(plaintext, associatedData: aad)</code>, naming the argument. With two positional <code>byte[]</code> arguments the public span overload <code>Encrypt(plaintext, output)</code> wins, the AAD array becomes the <em>output buffer</em>, and the call returns an <code>int</code>.</p>
+</div>
+<h2 id="pattern-6--xchacha20poly1305-is-not-chacha20poly1305">Pattern 6 — <code>XChaCha20Poly1305</code> is not <code>ChaCha20Poly1305</code></h2>
+<p>The BCL's <code>ChaCha20Poly1305</code> is RFC 8439 with a 96-bit nonce. Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> is the extended-nonce construction (<code>draft-irtf-cfrg-xchacha</code>, libsodium <code>crypto_aead_xchacha20poly1305_ietf</code>): it derives a subkey with HChaCha20 from the first 16 nonce bytes and runs ChaCha20 on the remaining 8. They are different constructions and are <strong>not</strong> wire-compatible, even under the same key. Bodu ships no plain ChaCha20-Poly1305 because the BCL already does.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = Convert.FromHexString(&quot;808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f&quot;);
+byte[] plaintext = &quot;same key, different constructions&quot;u8.ToArray();
+
+using var xchacha = new XChaCha20Poly1305(key, Convert.FromHexString(&quot;404142434445464748494a4b4c4d4e4f5051525354555657&quot;));
+byte[] boduSealed = xchacha.Encrypt(plaintext);            // 24-byte nonce
+
+byte[] bclCiphertext = new byte[plaintext.Length];
+byte[] bclTag = new byte[16];
+using var bcl = new ChaCha20Poly1305(key);                 // check ChaCha20Poly1305.IsSupported first
+bcl.Encrypt(Convert.FromHexString(&quot;070000004041424344454647&quot;), plaintext, bclCiphertext, bclTag);
+</code></pre>
+<p>Choose by the nonce discipline: a counter you can guarantee never repeats → the BCL type; nonces drawn at random → <code>XChaCha20Poly1305</code>. Both accept associated data; see <a href="stream-aead.html">Authenticated stream ciphers</a>.</p>
+<h2 id="pattern-7--pem-pkcs8-and-spki-for-x25519-and-ed25519">Pattern 7 — PEM, PKCS#8, and SPKI for X25519 and Ed25519</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a> and <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> override the <code>AsymmetricAlgorithm</code> import/export core (<code>ImportPkcs8PrivateKey</code>, <code>ImportSubjectPublicKeyInfo</code>, <code>TryExportPkcs8PrivateKey</code>, <code>TryExportSubjectPublicKeyInfo</code>) with the RFC 8410 encodings, so the <strong>inherited</strong> convenience members work unchanged: <code>ExportPkcs8PrivateKey()</code>, <code>ExportSubjectPublicKeyInfo()</code>, <code>ExportPkcs8PrivateKeyPem()</code>, <code>ExportSubjectPublicKeyInfoPem()</code>, and <code>ImportFromPem(string)</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var signer = new Ed25519();
+signer.ImportPrivateKey(Convert.FromHexString(&quot;9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60&quot;));
+
+string privatePem = signer.ExportPkcs8PrivateKeyPem();       // -----BEGIN PRIVATE KEY-----  (48-byte DER)
+string publicPem  = signer.ExportSubjectPublicKeyInfoPem();  // -----BEGIN PUBLIC KEY-----   (44-byte DER)
+byte[] spki       = signer.ExportSubjectPublicKeyInfo();     // 302A300506032B6570032100 D75A9801…F707511A
+
+using var verifier = new Ed25519();
+verifier.ImportFromPem(publicPem);                           // dispatches to ImportSubjectPublicKeyInfo
+
+byte[] message = &quot;pem round trip&quot;u8.ToArray();
+bool ok = verifier.VerifyData(message, signer.SignData(message));     // true
+
+using var restored = new Ed25519();
+restored.ImportFromPem(privatePem);                          // dispatches to ImportPkcs8PrivateKey
+bool same = restored.SignData(message).AsSpan().SequenceEqual(signer.SignData(message));   // true
+</code></pre>
+<p>The same members work on <code>X25519</code> (<code>-----BEGIN PUBLIC KEY-----</code> with the id-X25519 OID), which is how peers exchange agreement keys in PEM. What does <strong>not</strong> work, by design — each throws <code>NotSupportedException</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>X25519 / Ed25519</th>
+<th>ML-KEM / ML-DSA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ImportPkcs8PrivateKey</code>, <code>ImportSubjectPublicKeyInfo</code>, <code>ImportFromPem</code></td>
+<td>Supported</td>
+<td><code>NotSupportedException</code></td>
+</tr>
+<tr>
+<td><code>ExportPkcs8PrivateKey[Pem]</code>, <code>ExportSubjectPublicKeyInfo[Pem]</code></td>
+<td>Supported</td>
+<td><code>NotSupportedException</code></td>
+</tr>
+<tr>
+<td><code>ImportEncryptedPkcs8PrivateKey</code>, <code>ExportEncryptedPkcs8PrivateKey[Pem]</code></td>
+<td><code>NotSupportedException</code></td>
+<td><code>NotSupportedException</code></td>
+</tr>
+<tr>
+<td><code>ToXmlString</code>, <code>FromXmlString</code></td>
+<td><code>NotSupportedException</code></td>
+<td><code>NotSupportedException</code></td>
+</tr>
+</tbody>
+</table>
+<p>The post-quantum types expose raw encodings only (<code>ExportEncapsulationKey</code>, <code>ExportDecapsulationKey</code>, <code>ImportPrivateSeed</code>, and their ML-DSA equivalents); see <a href="ml-kem.html">ML-KEM</a> and <a href="ml-dsa.html">ML-DSA</a>.</p>
+<h2 id="pattern-8--hashalgorithmname-in-hkdf-an-enum-in-otp">Pattern 8 — <code>HashAlgorithmName</code> in HKDF, an enum in OTP</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> takes a <code>HashAlgorithmName</code> and accepts SHA-1, SHA-256, SHA-384, and SHA-512 — anything else throws <code>ArgumentException</code> (<code>hashAlgorithm</code>). Its output is identical to the BCL <code>HKDF</code> for the same inputs, so the two are interchangeable (this is RFC 5869 test case 1):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] ikm  = Convert.FromHexString(&quot;0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b&quot;);
+byte[] salt = Convert.FromHexString(&quot;000102030405060708090a0b0c&quot;);
+byte[] info = Convert.FromHexString(&quot;f0f1f2f3f4f5f6f7f8f9&quot;);
+
+byte[] bodu = Hkdf.DeriveKey(HashAlgorithmName.SHA256, ikm, outputLength: 42, salt: salt, info: info);
+byte[] bcl  = HKDF.DeriveKey(HashAlgorithmName.SHA256, ikm, outputLength: 42, salt: salt, info: info);
+// both: 3CB25F25FAACD57A90434F64D0362F2A2D2D0A90CF1A5A4C5DB02D56ECC4C5BF34007208D5B887185865
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Hotp.html">Hotp</a> and <a class="xref" href="../../api/Bodu.Security.Cryptography.Totp.html">Totp</a> do not take a <code>HashAlgorithmName</code>; they take <a class="xref" href="../../api/Bodu.Security.Cryptography.OtpHashAlgorithm.html">OtpHashAlgorithm</a> (<code>Sha1</code>, <code>Sha256</code>, <code>Sha512</code>), which maps onto the BCL HMACs internally:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] secret = &quot;12345678901234567890&quot;u8.ToArray();                 // the RFC 4226 / 6238 test secret
+string hotp   = Hotp.GenerateCode(secret, counter: 0);              // &quot;755224&quot; (SHA-1, 6 digits)
+string hotp256 = Hotp.GenerateCode(secret, counter: 0, digits: 6, algorithm: OtpHashAlgorithm.Sha256);
+string totp   = Totp.GenerateCode(secret, DateTimeOffset.FromUnixTimeSeconds(59), digits: 8);   // &quot;94287082&quot;
+</code></pre>
+<h2 id="pattern-9--constant-time-comparison">Pattern 9 — constant-time comparison</h2>
+<p><code>System.Security.Cryptography.CryptographicOperations.FixedTimeEquals</code> is what the library itself uses. The value types wrap it: <a class="xref" href="../../api/Bodu.Security.Cryptography.HashValue.html">HashValue</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> compare in constant time through <code>Equals</code>, <code>==</code>, and an explicit <code>FixedTimeEquals</code>; the <code>VerifyHash</code> / <code>TryVerifyHash</code> extensions do the same over a freshly computed digest.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] expected = Convert.FromHexString(&quot;ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbffa2d17d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386edd4009923&quot;);
+using var blake = new Blake2b();                           // 512-bit default
+byte[] actual = blake.ComputeHash(&quot;abc&quot;u8.ToArray());
+
+bool a = CryptographicOperations.FixedTimeEquals(actual, expected);
+bool b = HashValue.FromBytes(actual).FixedTimeEquals(HashValue.FromBytes(expected));
+bool c = HashValue.FromBytes(actual) == HashValue.ParseHex(Convert.ToHexString(expected));
+bool d = blake.VerifyHash(&quot;abc&quot;u8.ToArray(), expected);
+// all true
+</code></pre>
+<p>See <a href="value-types.html">Nonces, salts, tags, and secrets</a> for the full value-type surface.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>BCL surface</th>
+<th>Bodu types that plug in</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HashAlgorithm</code> (<code>ComputeHash</code>, <code>TransformBlock</code>, <code>ComputeHashAsync</code>, <code>CryptoStream</code>)</td>
+<td>every hash: <code>Blake2b</code>, <code>Skein*</code>, <code>Tiger</code>, <code>Whirlpool</code>, <code>SipHash*</code>, <code>Poly1305</code>, <code>AsconHash*</code>, <code>Shake</code>, …</td>
+<td>plus <code>AppendData</code> / <code>AppendDataAsync</code> / <code>VerifyHash*</code> from <code>HashAlgorithmExtensions</code></td>
+</tr>
+<tr>
+<td><code>IncrementalHash</code></td>
+<td>—</td>
+<td>use <code>AppendData</code> + empty <code>TransformFinalBlock</code></td>
+</tr>
+<tr>
+<td><code>SymmetricAlgorithm</code> (<code>CreateEncryptor</code>, <code>CryptoStream</code>)</td>
+<td><code>Blowfish</code>, <code>Skipjack</code>, <code>Camellia</code>, <code>Twofish</code>, <code>Serpent128</code>, <code>Threefish*</code>, <code>Serpent256/512/1024</code></td>
+<td>BCL one-shots (<code>EncryptCbc</code> …) throw <code>NotSupportedException</code></td>
+</tr>
+<tr>
+<td><code>AesGcm</code></td>
+<td><code>GcmModeTransform</code> + <code>AesBlockCipher</code></td>
+<td>byte-identical; split <code>ciphertext ‖ tag</code></td>
+</tr>
+<tr>
+<td><code>ChaCha20Poly1305</code></td>
+<td>—</td>
+<td><code>XChaCha20Poly1305</code> is a different construction</td>
+</tr>
+<tr>
+<td><code>AsymmetricAlgorithm</code> PEM / PKCS#8 / SPKI</td>
+<td><code>X25519</code>, <code>Ed25519</code></td>
+<td>encrypted PKCS#8 and XML throw; ML-KEM / ML-DSA are raw-only</td>
+</tr>
+<tr>
+<td><code>HashAlgorithmName</code></td>
+<td><code>Hkdf</code> (SHA-1/256/384/512)</td>
+<td>OTP uses <code>OtpHashAlgorithm</code></td>
+</tr>
+<tr>
+<td><code>CryptographicOperations.FixedTimeEquals</code></td>
+<td><code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code>, <code>SecretBytes</code>, <code>VerifyHash*</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="choosing-a-primitive.html">Choosing a primitive</a> — which Bodu type, and when the BCL is the better answer.</li>
+<li><a href="streaming-and-async.html">Streams and async</a> — the stream and <code>Task</code> surfaces over these same abstractions.</li>
+<li><a href="stream-aead.html">Authenticated stream ciphers</a> — XChaCha20-Poly1305 and the NaCl secretbox layout.</li>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — key encodings across the four families.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

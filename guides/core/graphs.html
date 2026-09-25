@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Graphs and graph algorithms | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Graphs and graph algorithms | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="graphs-and-graph-algorithms">Graphs and graph algorithms</h1>
+
+<p>The <code>Bodu.Collections.Generic.Graphs</code> namespace is a compact graph toolkit: an adjacency-list container, <code>Graph&lt;T&gt;</code>; a static catalogue of classic algorithms, <code>GraphAlgorithms</code>; and a union-find structure, <code>DisjointSet&lt;T&gt;</code>. The container holds vertices of any non-nullable type connected by optionally weighted edges, and the algorithms — breadth-first and depth-first traversal, Dijkstra shortest path, Kahn topological sort, and connected components — run over read-only interfaces, so they are decoupled from how the graph is stored.</p>
+<p>Edge directedness is fixed at construction by <code>GraphKind</code>, weights are finite and non-negative <code>double</code>s defaulting to <code>1.0</code>, and vertex identity follows an optional <code>IEqualityComparer&lt;T&gt;</code>. The algorithms reuse the library's own <code>Deque&lt;T&gt;</code> and <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code> primitives and evaluate iteratively, so they do not overflow the stack on deep graphs. See the full API surface at <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.html">Bodu.Collections.Generic.Graphs</a>.</p>
+<h2 id="pattern-1--build-a-graph-and-enumerate-neighbors">Pattern 1 — Build a graph and enumerate neighbors</h2>
+<p><code>Graph&lt;T&gt;</code> is directed or undirected for its whole life, chosen with <code>GraphKind</code> at construction. Vertices referenced by <code>AddEdge</code> are created on demand; you only call <code>AddVertex</code> for an isolated vertex with no edges.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+// Undirected: one AddEdge makes both vertices mutual neighbors.
+var undirected = new Graph&lt;int&gt;(GraphKind.Undirected);
+undirected.AddEdge(1, 2);
+undirected.AddEdge(2, 3);
+undirected.AddVertex(20);            // isolated vertex, no edges
+
+foreach (int neighbor in undirected.Neighbors(2))
+    Console.WriteLine(neighbor);     // 1, 3 (2 is adjacent to both)
+
+Console.WriteLine(undirected.Degree(2));       // 2
+Console.WriteLine(undirected.VertexCount);     // 4  -&gt; 1, 2, 3, 20
+Console.WriteLine(undirected.EdgeCount);       // 2  -&gt; each undirected edge counts once
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">// Directed: an edge does not imply its reverse.
+var directed = new Graph&lt;string&gt;(GraphKind.Directed);
+directed.AddEdge(&quot;A&quot;, &quot;B&quot;);
+directed.AddEdge(&quot;A&quot;, &quot;C&quot;);
+
+Console.WriteLine(directed.ContainsEdge(&quot;A&quot;, &quot;B&quot;));   // true
+Console.WriteLine(directed.ContainsEdge(&quot;B&quot;, &quot;A&quot;));   // false (directed)
+Console.WriteLine(directed.IsDirected);               // true
+</code></pre>
+<p>Weighted edges carry a finite, non-negative <code>double</code>. <code>AddEdge</code> adds or updates; <code>TryAddEdge</code> refuses to overwrite an existing edge.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var weighted = new Graph&lt;string&gt;(GraphKind.Directed);
+weighted.AddEdge(&quot;A&quot;, &quot;B&quot;, 1.5);
+weighted.AddEdge(&quot;B&quot;, &quot;C&quot;, 2.0);
+
+if (weighted.TryGetEdgeWeight(&quot;A&quot;, &quot;B&quot;, out double w))
+    Console.WriteLine(w);            // 1.5
+
+foreach ((string neighbor, double weight) in weighted.WeightedNeighbors(&quot;A&quot;))
+    Console.WriteLine($&quot;{neighbor} @ {weight}&quot;);   // B @ 1.5
+
+bool added = weighted.TryAddEdge(&quot;A&quot;, &quot;B&quot;, 99.0);  // false: edge already exists
+</code></pre>
+<p>Use a comparer to control vertex identity — for example, case-insensitive string vertices:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var graph = new Graph&lt;string&gt;(GraphKind.Undirected, StringComparer.OrdinalIgnoreCase);
+graph.AddEdge(&quot;Node&quot;, &quot;Other&quot;);
+Console.WriteLine(graph.ContainsVertex(&quot;NODE&quot;));   // true
+</code></pre>
+<h2 id="pattern-2--traverse-with-bfs-and-dfs">Pattern 2 — Traverse with BFS and DFS</h2>
+<p><code>GraphAlgorithms.BreadthFirstSearch</code> and <code>DepthFirstSearch</code> return lazily evaluated sequences of the vertices reachable from a source, beginning with the source itself. They accept any <code>IReadOnlyGraph&lt;T&gt;</code>, which <code>Graph&lt;T&gt;</code> implements.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+var graph = new Graph&lt;int&gt;(GraphKind.Directed);
+graph.AddEdge(1, 2);
+graph.AddEdge(1, 3);
+graph.AddEdge(2, 4);
+
+// Breadth-first: source, then its neighbors, then theirs.
+var bfs = GraphAlgorithms.BreadthFirstSearch(graph, 1).ToList();   // 1, 2, 3, 4
+
+// Depth-first: dive down one branch before backtracking.
+var dfs = GraphAlgorithms.DepthFirstSearch(graph, 1).ToList();     // e.g. 1, 3, 2, 4
+</code></pre>
+<p>Both throw <code>ArgumentException</code> if the source is not in the graph. Because the sequences are lazy, you can short-circuit a search with LINQ:</p>
+<pre><code class="lang-csharp">bool reachable = GraphAlgorithms.BreadthFirstSearch(graph, 1).Contains(4);   // true
+</code></pre>
+<h2 id="pattern-3--shortest-path-with-dijkstra">Pattern 3 — Shortest path with Dijkstra</h2>
+<p>The shortest-path family runs Dijkstra's algorithm over non-negative weights and accepts an <code>IReadOnlyWeightedGraph&lt;T&gt;</code>. There are three entry points:</p>
+<ul>
+<li><code>ShortestPath</code> returns just the vertex list (empty when unreachable).</li>
+<li><code>TryShortestPath</code> returns a <code>ShortestPathResult&lt;T&gt;</code> carrying <code>Found</code>, <code>Distance</code>, and <code>Path</code>.</li>
+<li><code>ShortestPathLengths</code> returns the distance from the source to every reachable vertex.</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge(&quot;A&quot;, &quot;B&quot;, 1.0);
+graph.AddEdge(&quot;B&quot;, &quot;C&quot;, 2.0);
+graph.AddEdge(&quot;A&quot;, &quot;C&quot;, 5.0);
+
+// Cheapest route A -&gt; B -&gt; C (total 3) beats the direct A -&gt; C (5).
+IReadOnlyList&lt;string&gt; path = GraphAlgorithms.ShortestPath(graph, &quot;A&quot;, &quot;C&quot;);   // [A, B, C]
+
+ShortestPathResult&lt;string&gt; result = GraphAlgorithms.TryShortestPath(graph, &quot;A&quot;, &quot;C&quot;);
+Console.WriteLine(result.Found);      // true
+Console.WriteLine(result.Distance);   // 3.0
+Console.WriteLine(string.Join(&quot; -&gt; &quot;, result.Path));   // A -&gt; B -&gt; C
+</code></pre>
+<p>When no path exists, <code>TryShortestPath</code> reports it cleanly:</p>
+<pre><code class="lang-csharp">graph.AddVertex(&quot;Z&quot;);   // present but unreachable from A
+
+ShortestPathResult&lt;string&gt; miss = GraphAlgorithms.TryShortestPath(graph, &quot;A&quot;, &quot;Z&quot;);
+Console.WriteLine(miss.Found);                              // false
+Console.WriteLine(double.IsPositiveInfinity(miss.Distance)); // true
+Console.WriteLine(miss.Path.Count);                        // 0
+</code></pre>
+<p>To get every distance from a source in one pass:</p>
+<pre><code class="lang-csharp">IReadOnlyDictionary&lt;string, double&gt; distances =
+    GraphAlgorithms.ShortestPathLengths(graph, &quot;A&quot;);
+// { A: 0, B: 1, C: 3 }  — unreachable vertices (e.g. Z) are omitted
+</code></pre>
+<p>Dijkstra relaxation here is backed by <code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code>, whose O(log n) decrease-key is exactly what an efficient Dijkstra needs — see the <a href="indexed-priority-queue.html">indexed priority queue guide</a>. Because weights must be non-negative, there is no negative-edge (Bellman-Ford) variant.</p>
+<h2 id="pattern-4--topological-sort">Pattern 4 — Topological sort</h2>
+<p><code>TopologicalSort</code> orders the vertices of a directed acyclic graph so that every edge points from an earlier vertex to a later one, using Kahn's algorithm. It is directed-only: an undirected graph throws <code>InvalidOperationException</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+var graph = new Graph&lt;string&gt;(GraphKind.Directed);
+graph.AddEdge(&quot;compile&quot;, &quot;link&quot;);
+graph.AddEdge(&quot;link&quot;, &quot;run&quot;);
+
+IReadOnlyList&lt;string&gt; order = GraphAlgorithms.TopologicalSort(graph);
+// compile, link, run  — every edge respected
+</code></pre>
+<p><code>TopologicalSort</code> throws <code>InvalidOperationException</code> on a cycle. When a cycle is possible, prefer the non-throwing <code>TryTopologicalSort</code>, which returns <code>false</code> and an empty list instead:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var cyclic = new Graph&lt;string&gt;(GraphKind.Directed);
+cyclic.AddEdge(&quot;a&quot;, &quot;b&quot;);
+cyclic.AddEdge(&quot;b&quot;, &quot;c&quot;);
+cyclic.AddEdge(&quot;c&quot;, &quot;a&quot;);   // closes a cycle
+
+if (GraphAlgorithms.TryTopologicalSort(cyclic, out IReadOnlyList&lt;string&gt; sorted))
+{
+    // not reached: graph is cyclic
+}
+else
+{
+    Console.WriteLine(sorted.Count);   // 0
+}
+</code></pre>
+<h2 id="pattern-5--connected-components">Pattern 5 — Connected components</h2>
+<p><code>ConnectedComponents</code> partitions the vertices into groups that are mutually reachable, treating every edge as undirected. For a directed graph this yields the weakly connected components.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+var graph = new Graph&lt;int&gt;(GraphKind.Undirected);
+graph.AddEdge(1, 2);
+graph.AddEdge(2, 3);
+graph.AddEdge(10, 11);
+graph.AddVertex(20);   // isolated vertex
+
+IReadOnlyList&lt;IReadOnlyList&lt;int&gt;&gt; components = GraphAlgorithms.ConnectedComponents(graph);
+// Three components: { 1, 2, 3 }, { 10, 11 }, { 20 }
+Console.WriteLine(components.Count);   // 3
+</code></pre>
+<h2 id="pattern-6--union-find-with-disjointset">Pattern 6 — Union-find with DisjointSet</h2>
+<p>Sometimes you want the connectivity machinery without building a graph at all. <code>DisjointSet&lt;T&gt;</code> is an element-keyed union-find: each element starts in its own singleton set, <code>Union</code> merges two sets, and <code>Find</code> returns a set's canonical representative. Two elements are connected exactly when they share a representative.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Graphs;
+
+var groups = new DisjointSet&lt;string&gt;(new[] { &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot; });
+groups.Union(&quot;a&quot;, &quot;b&quot;);
+groups.Union(&quot;c&quot;, &quot;d&quot;);
+groups.Union(&quot;b&quot;, &quot;c&quot;);                 // merges both pairs into one set
+
+Console.WriteLine(groups.AreConnected(&quot;a&quot;, &quot;d&quot;));   // true
+Console.WriteLine(groups.SetCount);                 // 1
+Console.WriteLine(groups.SizeOf(&quot;a&quot;));              // 4
+
+// Same representative =&gt; same set.
+Console.WriteLine(groups.Find(&quot;a&quot;).Equals(groups.Find(&quot;d&quot;)));   // true
+</code></pre>
+<p>Add elements incrementally with <code>MakeSet</code> (or its alias <code>Add</code>), and probe membership with <code>Contains</code> / <code>TryFind</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var ds = new DisjointSet&lt;int&gt;();
+ds.MakeSet(1);
+ds.Add(2);                              // alias for MakeSet
+bool isNew = ds.MakeSet(1);             // false: already present
+
+if (ds.TryFind(2, out int root))
+    Console.WriteLine(root);            // 2 (its own representative)
+
+Console.WriteLine(ds.Contains(99));     // false
+</code></pre>
+<p><code>DisjointSet&lt;T&gt;</code> combines path-halving compression with union by size, giving amortized near-constant cost per operation. <code>ConnectedComponents</code> (Pattern 5) is itself built on <code>DisjointSet&lt;T&gt;</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="indexed-priority-queue.html">Indexed priority queue</a> — the decrease-key heap that powers Dijkstra in Pattern 3.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — where the graph types sit among the other <code>Bodu.Collections</code> collections.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — the headline <code>Bodu.Collections</code> building blocks.</li>
+<li><a href="../topics/core-foundations.html">Core foundations topic</a> — the wider tour of buffers, collections, and extensions.</li>
+<li>API reference: <a class="xref" href="../../api/Bodu.Collections.Generic.Graphs.html">Bodu.Collections.Generic.Graphs</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

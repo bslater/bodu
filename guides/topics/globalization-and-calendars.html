@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Globalization &amp; Calendars — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Globalization &amp; Calendars — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="globalization--calendars--guides">Globalization &amp; Calendars — Guides</h1>
+
+<p>Recipe-style walk-throughs for the calendar package family — the <code>Bodu.Globalization.Calendar</code> runtime, its companions (Builder, DependencyInjection, Plugins, Caching, Tool, Build), the five regional data packs, and the independent <code>Bodu.Globalization.Recurrence</code> sibling. This page is the topic-level map; the complete guide lists live in the <a href="../calendar/index.html">calendar guides index</a> and the <a href="../recurrence/index.html">Recurrence guides index</a>.</p>
+<p>If you are new to the family, start with the <a href="../../docs/topics/globalization-and-calendars.html">topic overview</a> for the package decision table and the <a href="../../docs/topics/globalization-and-calendars-concepts.html">topic concepts</a> for the shared vocabulary, then come back here for the hands-on material.</p>
+<h2 id="the-guides">The guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../calendar/index.html">Overview</a></h3>
+  <p>The full guide index for the calendar family — resolution pipeline, namespace map, and every walk-through grouped by namespace.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/notable-dates.html">Using NotableDateService</a></h3>
+  <p>The main entry point — loading a resource, resolving for a date, range, or year, filtering by territory and category, and the reloadable runtime-swap workflow.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/rule-authoring.html">Authoring notable date rules</a></h3>
+  <p>Writing rule documents in XML / JSON — definitions, rules, strategies, importing the bundled common catalogues with <code>&lt;Use&gt;</code> directives, and layering ID-targeted <code>&lt;Overrides&gt;</code>.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/working-days.html">Working-day arithmetic</a></h3>
+  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> — <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, snap operations, and the <code>WeekPattern</code> working week.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/data-packs.html">Calendar data packs</a></h3>
+  <p>The regional companion assemblies — <code>CreateService</code> / <code>LoadResource</code> factories, territory coverage, and composing several regions into one service.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/algorithms.html">Date calculation algorithms</a></h3>
+  <p>The six resolution strategies and the built-in <code>&lt;Algorithm key="…"&gt;</code> keys — Easter, equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals — plus a custom-algorithm walk-through.</p>
+</div>
+</div>
+<h2 id="companion-packages">Companion packages</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../calendar/notable-date-builder.html">Authoring with the notable-date builder</a></h3>
+  <p>The fluent C# peer of XML / JSON authoring — <code>NotableDateDocumentBuilder</code> assembles definitions, rules, policies, imports, and overrides, then serializes, saves, or builds a resource.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/dependency-injection.html">Calendar dependency injection</a></h3>
+  <p><code>services.AddNotableDateService(...)</code>, the resource-factory overload, and <code>AddReloadableNotableDateService(...)</code> for the runtime-swap workflow.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/building-the-service.html">Building and extending the service</a></h3>
+  <p>Composing the service with collaborators — algorithm and adjustment registries, collision resolvers, localizers, providers, and the trust-gated plugin system.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/plugin-trust.html">Calendar plugin trust</a></h3>
+  <p>What the deny-by-default plugin gate validates, what each bundled trust policy does and does not check, and how a rejected or failing plugin surfaces.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/caching/notable-date-caching.html">Caching notable dates</a></h3>
+  <p>The <code>Bodu.Globalization.Calendar.Caching</code> read-through decorator — per-territory, per-civil-year entries, the in-memory / file / SQLite / distributed backends, warm-up, and the DI registration.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/round-trip-guarantees.html">Builder round-trip guarantees</a></h3>
+  <p>Exactly what the builder's XML and JSON serialization, parsing, and resource materialization guarantee — and what they do not.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/validation-diagnostics.html">Calendar validation diagnostics</a></h3>
+  <p>The stable <code>BODU-CAL-*</code> code catalogue, severities, and the collect-mode lint surface (<code>TryLoad</code>, <code>Validate</code>, <code>TryBuild</code>).</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="../calendar/binary-rule-packs.html">Binary rule packs</a></h3>
+  <p>Compiling validated documents to sealed <code>.bcal</code> packs — the trim- and AOT-friendly load path — with the <code>bodu-calendar</code> tool and the MSBuild integration.</p>
+</div>
+</div>
+<h2 id="recurrence-and-scheduling">Recurrence and scheduling</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../recurrence/index.html">Recurrence and scheduling</a></h3>
+  <p><code>Bodu.Globalization.Recurrence</code> — RFC 5545 recurrence rules and rule sets, cron expressions, and anchored intervals behind one next / previous occurrence surface; an independent sibling that composes with the calendar from outside.</p>
+</div>
+</div>
+<h2 id="the-data">The data</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="../calendar/catalogue/index.html">Notable-date catalogue</a></h3>
+  <p>What notable dates the calendar resources include and how regions and territories differ — generated from the XML, organized by theme and by region, with a cross-region comparison matrix.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="../calendar/notable-dates.html">Using NotableDateService</a></strong> — resolve and filter dates with a data-pack service; the 80 % case.</li>
+<li><strong><a href="../calendar/data-packs.html">Calendar data packs</a></strong> — pick your regions and understand territory coverage.</li>
+<li><strong><a href="../calendar/working-days.html">Working-day arithmetic</a></strong> — business-day math over the resolved dates.</li>
+<li><strong><a href="../calendar/rule-authoring.html">Authoring notable date rules</a></strong> or the <strong><a href="../calendar/notable-date-builder.html">builder guide</a></strong> — when the shipped data is not enough.</li>
+<li><strong><a href="../calendar/algorithms.html">Date calculation algorithms</a></strong> and <strong><a href="../calendar/building-the-service.html">Building and extending the service</a></strong> — the extensibility seams, including plugins.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/topics/globalization-and-calendars.html">Globalization &amp; Calendars topic overview</a> — collective purpose, package table, and the which-package decision table.</li>
+<li><a href="../../docs/topics/globalization-and-calendars-concepts.html">Topic concepts</a> — the cross-package vocabulary.</li>
+<li><a href="../../docs/calendar/index.html">Bodu.Globalization.Calendar introduction</a> — the runtime's mental model and headline types.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> — full type-by-type docs.</li>
+<li><strong>Complete guide indexes</strong> (this page shows the highlights; each index lists every guide for its package): <a href="../calendar/index.html">Bodu.Globalization.Calendar</a> · <a href="../recurrence/index.html">Bodu.Globalization.Recurrence</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

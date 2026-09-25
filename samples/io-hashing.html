@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.IO.Hashing</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/IO.Hashing"><code>samples/IO.Hashing/</code></a>. All
+three are <strong>offline and deterministic</strong> — fixed inputs plus one small committed text file —
+and are members of <code>bodu.slnx</code>, built and executed by CI; the contract-test companion runs
+with the test suites. Each README documents every scenario individually: its intent, what the
+code does, the output to expect, and the APIs demonstrated.</p>
+<p>Run any of them from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/IO.Hashing/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="boduiohashingsampleschecksumtour">Bodu.IO.Hashing.Samples.ChecksumTour</h3>
+<p>The byte-integrity surface: the parametric <a class="xref" href="../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> engine over
+its 112-standard RevEng catalogue (<a class="xref" href="../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> parameter
+bundles, <code>FromName</code> resolution, the little-endian digest convention); CRC / Adler / Fletcher
+side by side over one committed file through the shared <code>NonCryptographicHashAlgorithm</code>
+surface, with single-bit corruption detection; the incremental surfaces — chunked <code>Append</code>,
+<a class="xref" href="../api/Bodu.IO.Hashing.HashingStream.html">HashingStream</a> checksumming as a side effect of stream I/O, and
+<a class="xref" href="../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> extending a stored digest without replaying
+the original input (the append-only-log pattern); and FNV-1a / MurmurHash3 / CityHash doing
+deterministic bucket routing, clearly labelled <em>not cryptographic</em>. <em>Package:
+<code>Bodu.IO.Hashing</code>.</em></p>
+<h3 id="boduiohashingsamplescheckdigits">Bodu.IO.Hashing.Samples.CheckDigits</h3>
+<p>The identifier-validation surface: <code>IsValid</code> across domains (IBAN, ISBN-10/13, EAN-13, Luhn
+card numbers, ABA routing) with one-character typos rejected; <code>Compute</code> for issuing —
+including ISBN-10's <code>'X'</code> check digit and the streaming <code>Append</code>/<code>GetCurrentCheckDigit</code>
+shape; and the error-class comparison that explains why multiple schemes exist — Luhn
+provably misses the <code>09 ↔ 90</code> adjacent transposition that
+<a class="xref" href="../api/Bodu.IO.Hashing.CheckDigits.Damm.html">Damm</a> and <a class="xref" href="../api/Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a>
+always catch. <em>Package: <code>Bodu.IO.Hashing</code>.</em></p>
+<h3 id="boduiohashingsamplescustomcheckdigit--test">Bodu.IO.Hashing.Samples.CustomCheckDigit (+ .Test)</h3>
+<p>Extending the catalogue: a weighted mod-10 SKU scheme (the repeating <code>7, 3, 1</code> cycle)
+implementing the four-member <a class="xref" href="../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>
+contract, exercised through its own surface and beside <code>Luhn</code>/<code>Damm</code> via base-class
+polymorphism. The companion test project derives the library's
+<code>CheckDigitContractTests&lt;SkuCheckDigit&gt;</code> with six known-answer rows, inheriting the
+compute/validate/corruption contract the built-in schemes pass. <em>Package:
+<code>Bodu.IO.Hashing</code>.</em></p>
+<h2 id="guarded-documentation">Guarded documentation</h2>
+<p>The guides under <a href="../guides/io-hashing/index.html"><code>docs/guides/io-hashing/</code></a> carry
+compile-guarded snippets: examples marked with a <code>&lt;!-- compile --&gt;</code> sentinel are compiled
+against the current public API by <code>DocumentationSnippetCompileTests</code> in the library's test
+project (Regression tier). Wiring the guard immediately caught — and fixed — 39 guide
+declarations that wrapped non-disposable hash types in <code>using var</code>.</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../guides/io-hashing/index.html">IO.Hashing guides</a> — per-family pages, the CRC catalogue,
+and the check-digit reference.</li>
+<li><a href="io-compound.html">IO.Compound samples</a> and <a href="excel.html">Excel samples</a> — the sibling IO-group
+sample families.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

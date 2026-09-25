@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Writing converters | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Writing converters | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="writing-converters">Writing converters</h1>
+
+<p>A converter customises how a single type is read and written: derive <code>BencodeConverter&lt;T&gt;</code> (<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>), reading through <a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and writing through <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a>. The set of converters the library already ships — and therefore the types you never need to write one for — is listed in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
+<p>The sibling <a href="../toml/index.html">TOML</a> and <a href="../yaml/index.html">YAML</a> serializers follow the identical pattern against their own reader/writer pair and <code>…Converter&lt;T&gt;</code> base class; the <code>[Converter]</code> attribute and the callback interfaces are shared through <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</p>
+<h2 id="pattern-1--convert-a-value-type">Pattern 1 — Convert a value type</h2>
+<p>A converter that stores a <code>Point</code> as an <code>&quot;x,y&quot;</code> byte string:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Reader;
+using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Bencode.Writer;
+
+public sealed class PointConverter : BencodeConverter&lt;Point&gt;
+{
+    public override Point Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
+    {
+        string[] parts = reader.GetString().Split(',');
+        return new Point(int.Parse(parts[0]), int.Parse(parts[1]));
+    }
+
+    public override void Write(Utf8BencodeWriter writer, Point value, BencodeSerializerOptions options) =&gt;
+        writer.WriteString($&quot;{value.X},{value.Y}&quot;);
+}
+</code></pre>
+<p>On entry to <code>Read</code>, the reader is already positioned on the value's first token; <code>Write</code> is called with the writer positioned to emit a value. A converter for a <em>structural</em> type (a list or dictionary) walks or emits the framing tokens itself — see <a href="polymorphic-converters.html">Polymorphic converters</a> for the dictionary case. The members each side exposes:</p>
+<table>
+<thead>
+<tr>
+<th><a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a></th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TokenType</code></td>
+<td>The current token's <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a> — check it before calling a typed getter.</td>
+</tr>
+<tr>
+<td><code>GetString()</code> / <code>GetBytes()</code></td>
+<td>The current byte-string (or property-name) token as UTF-8 text or raw bytes.</td>
+</tr>
+<tr>
+<td><code>GetInt32()</code> / <code>GetInt64()</code> / <code>GetUInt64()</code> and the <code>TryGet…</code> overloads</td>
+<td>The current integer token, range-checked; the <code>TryGet…</code> forms return <code>false</code> rather than throwing.</td>
+</tr>
+<tr>
+<td><code>Read()</code> / <code>Skip()</code></td>
+<td>Advance to the next token; step over the current value including a nested subtree.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a></th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WriteInteger(long)</code> / <code>WriteInteger(ulong)</code></td>
+<td>Emit an integer (<code>i…e</code>).</td>
+</tr>
+<tr>
+<td><code>WriteString(string)</code> / <code>WriteByteString(ReadOnlySpan&lt;byte&gt;)</code></td>
+<td>Emit a byte string — UTF-8 text or raw bytes.</td>
+</tr>
+<tr>
+<td><code>WriteStartList()</code> / <code>WriteEndList()</code>, <code>WriteStartDictionary()</code> / <code>WriteEndDictionary()</code>, <code>WritePropertyName(…)</code></td>
+<td>Frame a structural value and its keys; the writer re-sorts dictionary keys into canonical order on close.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-2--register-it">Pattern 2 — Register it</h2>
+<p>Two ways, highest precedence first:</p>
+<pre><code class="lang-csharp">// On a member or type:
+public sealed class Shape
+{
+    [Converter(typeof(PointConverter))]
+    public Point Origin { get; set; }
+}
+
+// Or on the options:
+var options = new BencodeSerializerOptions();
+options.Converters.Add(new PointConverter());
+</code></pre>
+<h2 id="pattern-3--understand-resolution-order">Pattern 3 — Understand resolution order</h2>
+<p>For a given type the serializer selects a converter by checking, in order:</p>
+<ol>
+<li>a member-level converter attribute (<code>[Converter(...)]</code>);</li>
+<li>a type-level converter attribute;</li>
+<li>the first matching converter in <code>options.Converters</code>;</li>
+<li>the built-in converters.</li>
+</ol>
+<p>The first match wins, and the result is cached on the options.</p>
+<h2 id="pattern-4--serve-a-family-of-types">Pattern 4 — Serve a family of types</h2>
+<p>To convert an open generic (say, every <code>Money&lt;TCurrency&gt;</code>), derive <code>BencodeConverterFactory</code> (<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>), return <code>true</code> from <code>CanConvert</code> for the family, and build the concrete converter in <code>CreateConverter</code>. This is the same pattern the built-in nullable, enum, collection, and dictionary converters use.</p>
+<pre><code class="lang-csharp">public sealed class MoneyConverterFactory : BencodeConverterFactory
+{
+    public override bool CanConvert(Type typeToConvert) =&gt;
+        typeToConvert.IsGenericType &amp;&amp; typeToConvert.GetGenericTypeDefinition() == typeof(Money&lt;&gt;);
+
+    public override BencodeConverter CreateConverter(Type typeToConvert, BencodeSerializerOptions options) =&gt;
+        (BencodeConverter)Activator.CreateInstance(
+            typeof(MoneyConverter&lt;&gt;).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+}
+</code></pre>
+<p>The factory itself never reads or writes a value: the serializer calls <code>CanConvert</code> to decide whether the factory applies, then <code>CreateConverter</code> once per closed type and caches the result. <code>MoneyConverter&lt;T&gt;</code> here is an ordinary <code>BencodeConverter&lt;Money&lt;T&gt;&gt;</code> written as in Pattern 1. The polymorphic factory pattern — including tagged hierarchies — is covered in <a href="polymorphic-converters.html">Polymorphic converters</a>.</p>
+<h2 id="pattern-5--map-a-type-the-format-cannot-represent">Pattern 5 — Map a type the format cannot represent</h2>
+<p>Bencode has exactly two scalar kinds — integers and byte strings — so several BCL types have no native form and are rejected unless a converter maps them: Booleans, floating-point types, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, and the date-time types. By design, the library never invents a lossy representation implicitly. A converter bridges the gap — for example, writing a <code>bool</code> as a Bencode integer:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Reader;
+using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Bencode.Writer;
+
+public sealed class BoolAsIntConverter : BencodeConverter&lt;bool&gt;
+{
+    public override bool Read(ref Utf8BencodeReader reader, Type t, BencodeSerializerOptions o) =&gt;
+        reader.GetInt64() != 0;
+
+    public override void Write(Utf8BencodeWriter writer, bool value, BencodeSerializerOptions o) =&gt;
+        writer.WriteInteger(value ? 1 : 0);
+}
+</code></pre>
+<h2 id="built-in-enum-converters">Built-in enum converters</h2>
+<p>For enums you usually do not need a hand-written converter. The library ships a string-enum converter (member names) and a number-enum converter; reference them from a <code>[Converter]</code> attribute on a member, property, or the enumeration itself, or register one on the options.</p>
+<p>On the enumeration itself, use the generic string-enum form (<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter-1.html">BencodeStringEnumConverter&lt;TEnum&gt;</a>), optionally renaming individual members:</p>
+<pre><code class="lang-csharp">[Converter(typeof(BencodeStringEnumConverter&lt;Status&gt;))]
+public enum Status
+{
+    Active,
+
+    [StringEnumMemberName(&quot;on-hold&quot;)]
+    OnHold,
+}
+
+// Status.OnHold serializes as the byte string 7:on-hold
+</code></pre>
+<p>On a single member, the generic number-enum form (<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter-1.html">BencodeNumberEnumConverter&lt;TEnum&gt;</a>) writes the underlying value instead:</p>
+<pre><code class="lang-csharp">public sealed class WorkItem
+{
+    [Converter(typeof(BencodeNumberEnumConverter&lt;Priority&gt;))]
+    public Priority Priority { get; set; }
+}
+
+// Priority.High (underlying value 2) serializes as the integer i2e
+</code></pre>
+<p>To cover <em>every</em> enumeration in one registration, add the non-generic string-enum factory (<a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a>) to the options, optionally with a naming policy:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new BencodeSerializerOptions();
+options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+
+// Status.OnHold now serializes as the byte string &quot;on_hold&quot; everywhere.
+</code></pre>
+<p>The generic forms expose a public parameterless constructor, which is what makes them usable from a <code>[Converter]</code> attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.</p>
+<h2 id="pattern-6--fail-clearly-on-malformed-data">Pattern 6 — Fail clearly on malformed data</h2>
+<p>By the time <code>Read</code> runs, the document has already parsed — a syntactically malformed document raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> before any converter is consulted. What a converter must handle is a <em>well-formed value that does not fit</em>: the wrong kind, or text that does not parse into the target type. Signal that by throwing <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> — the same type the built-in converters throw, so callers need one catch clause regardless of which converter rejected the value. Hardening the <code>PointConverter</code> from Pattern 1:</p>
+<pre><code class="lang-csharp">public override Point Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
+{
+    if (reader.TokenType != BencodeTokenType.ByteString)
+        throw new BencodeSerializationException($&quot;Expected a byte string but found '{reader.TokenType}'.&quot;);
+
+    string text = reader.GetString();
+    string[] parts = text.Split(',');
+
+    if (parts.Length != 2
+        || !int.TryParse(parts[0], CultureInfo.InvariantCulture, out int x)
+        || !int.TryParse(parts[1], CultureInfo.InvariantCulture, out int y))
+    {
+        throw new BencodeSerializationException($&quot;The value '{text}' is not a valid Point ('x,y').&quot;);
+    }
+
+    return new Point(x, y);
+}
+</code></pre>
+<p>Check the kind through <code>reader.TokenType</code> before calling a typed getter, and prefer <code>TryParse</code> plus an explicit throw over letting a <code>FormatException</code> escape — the serialization exception tells the caller <em>which contract</em> failed, in the exception family they already handle. Do not throw the format exception from a converter: that type is reserved for syntactically invalid documents.</p>
+<h2 id="error-recovery-and-partial-deserialization">Error recovery and partial deserialization</h2>
+<p>Pattern 6 shows the strict default: a value that does not fit throws the
+serialization exception. Some inputs are better served by recovering — an
+optional field that may be absent, a feed where one bad record should not abort
+the batch, a UI that wants to report <em>every</em> problem at once. A converter is the
+right place to encode that policy, because it sees the raw token before any typed
+getter runs. The strategies below all live inside <code>Read</code>.</p>
+<p><strong>Validate the token kind before reading.</strong> The first defence is to check
+<code>reader.TokenType</code> against the kind you expect (<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a>)
+and branch instead of letting a typed getter throw an opaque exception. This is
+what turns &quot;wrong type&quot; into a decision point rather than a failure.</p>
+<p><strong>Default on a missing or wrong-kind value.</strong> When a field is optional, return a
+fallback instead of throwing — useful for forward-compatible schemas where older
+documents simply omit a key:</p>
+<pre><code class="lang-csharp">public override TimeSpan Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
+{
+    // A non-byte-string value (or an absent one the caller mapped to a default) yields Zero
+    // rather than aborting the whole object graph.
+    if (reader.TokenType != BencodeTokenType.ByteString)
+        return TimeSpan.Zero;
+
+    return TimeSpan.TryParse(reader.GetString(), CultureInfo.InvariantCulture, out TimeSpan value)
+        ? value
+        : TimeSpan.Zero;
+}
+</code></pre>
+<p><strong>Partial object construction.</strong> A converter for a composite type can read the
+members it understands, skip what it does not, and return a usable instance —
+trading completeness for resilience. Read field by field, and substitute a
+default for any member that fails to parse rather than propagating the failure.</p>
+<p><strong>Collect multiple errors instead of failing fast.</strong> To surface every problem in
+one pass (IDE-style validation), have the converter append to a shared sink kept
+in a <code>readonly</code> field set at construction, then return a sentinel:</p>
+<pre><code class="lang-csharp">public sealed class CollectingPointConverter(List&lt;string&gt; errors) : BencodeConverter&lt;Point&gt;
+{
+    private readonly List&lt;string&gt; _errors = errors;
+
+    public override Point Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
+    {
+        if (reader.TokenType != BencodeTokenType.ByteString)
+        {
+            _errors.Add($&quot;Expected a byte string for Point but found '{reader.TokenType}'.&quot;);
+            return default;
+        }
+
+        string text = reader.GetString();
+        string[] parts = text.Split(',');
+        if (parts.Length != 2
+            || !int.TryParse(parts[0], CultureInfo.InvariantCulture, out int x)
+            || !int.TryParse(parts[1], CultureInfo.InvariantCulture, out int y))
+        {
+            _errors.Add($&quot;'{text}' is not a valid Point ('x,y').&quot;);
+            return default;
+        }
+
+        return new Point(x, y);
+    }
+
+    public override void Write(Utf8BencodeWriter writer, Point value, BencodeSerializerOptions options) =&gt;
+        writer.WriteString($&quot;{value.X},{value.Y}&quot;);
+}
+</code></pre>
+<p>The error list is shared, unsynchronized state, so this pattern is for a
+single-threaded validation pass over one options instance, not concurrent
+deserialization. After the call returns, inspect <code>errors</code> to decide whether the
+result is trustworthy.</p>
+<p><strong>Where the two exception families fit.</strong> Recovery only applies to <em>well-formed</em>
+documents — a syntactically broken document raises the format exception
+(<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>) during parsing, before any
+converter runs, and no converter can intercept it. Once <code>Read</code> is executing, the
+document parsed; from there you choose between recovering (default, partial, or
+collect) and rejecting with the serialization exception
+(<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>). Reserve the format
+exception for the parser; never throw it from a converter.</p>
+<h2 id="design-notes--statelessness-and-caching">Design notes — statelessness and caching</h2>
+<p><strong>Write converters stateless.</strong> The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter instance for every subsequent value of the type — across calls and across threads. Instance fields mutated during <code>Read</code> or <code>Write</code> are therefore shared, unsynchronized state. Keep configuration in <code>readonly</code> fields set at construction (the way the built-in string-enum converter takes its naming policy), and derive everything else from the arguments the serializer passes in.</p>
+<p><strong>Options freeze on first use.</strong> As described in <a href="../../../docs/serialization/bencode/concepts.html">core concepts</a>, a <code>BencodeSerializerOptions</code> instance becomes read-only the first time it is used — or eagerly via <code>MakeReadOnly()</code> — and from then on caches its resolved converters and type metadata; later mutation of <code>Converters</code> is rejected. Two practical consequences:</p>
+<ul>
+<li><strong>Reuse one options instance.</strong> The expensive work — reflection over your types, converter resolution — happens once per options instance. Constructing fresh options per call discards the caches and repeats it.</li>
+<li><strong>Register before first use.</strong> Converter changes after the options have been used (or frozen) throw; the resolution order in Pattern 3 is evaluated against the converter list as it stood when the type was first seen.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="polymorphic-converters.html">Polymorphic converters</a> — converter factories for open-generic families and tagged hierarchies.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> — the types that already have a converter, and their exact wire forms.</li>
+<li><a href="attributes.html">Mapping attributes</a> — declarative shaping; <code>[Converter]</code> placement and the precedence ladder.</li>
+<li><a href="using.html">Using Bencode</a> — the format walk-through, including the error-handling pattern.</li>
+<li><a href="../../../docs/serialization/bencode/concepts.html">Core concepts</a> — converter resolution and options caching in the Bencode vocabulary.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

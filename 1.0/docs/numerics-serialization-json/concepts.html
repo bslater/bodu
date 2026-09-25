@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics.Serialization.Json — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics.Serialization.Json — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumericsserializationjson--core-concepts">Bodu.Numerics.Serialization.Json — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/numerics/json-serialization.html">numerics JSON guide</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic. For the high-level shape of the package, start with the <a href="index.html">introduction</a>; the numeric vocabulary — canonical fractions, endpoint inclusivity, unbounded sides, discrete intervals, interval sets — lives in the <a href="../numerics/concepts.html">Bodu.Numerics concepts</a> page.</p>
+<h2 id="serialization-agnostic-core">Serialization-agnostic core</h2>
+<p><code>Bodu.Numerics</code> carries no <code>[JsonConverter]</code> attribute and no reference to <code>System.Text.Json</code>; this package supplies both. <strong>Registration is required</strong>: serializing a <code>Fraction&lt;int&gt;</code> with an options instance that has not had <code>AddNumericsJsonConverters</code> called on it does not throw — <code>JsonSerializer</code> falls back to its reflection-based object shape, which does not round-trip. Configure the options before first use; once an options instance has been used, its <code>Converters</code> collection is read-only and <code>AddNumericsJsonConverters</code> throws <code>InvalidOperationException</code>.</p>
+<h2 id="policy">Policy</h2>
+<p>A <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> is passed once — to <code>AddNumericsJsonConverters</code>, to a helper, or to a converter's constructor — and fixes the wire shape and parsing strictness for every numeric type serialized with that options instance:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Writes</th>
+<th>Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> (<code>0</code>, default)</td>
+<td>The canonical object and array shapes.</td>
+<td>Those shapes only; case-insensitive property names, duplicates rejected, unknown properties ignored.</td>
+</tr>
+<tr>
+<td><code>Lenient</code> (<code>1</code>)</td>
+<td>Exactly what <code>Strict</code> writes.</td>
+<td>Everything <code>Strict</code> reads, plus a top-level string routed through the compact parser, <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> aliases for <code>&quot;lower&quot;</code> / <code>&quot;upper&quot;</code>, and missing inclusivity flags defaulted to closed.</td>
+</tr>
+<tr>
+<td><code>Compact</code> (<code>2</code>)</td>
+<td>The single-string forms.</td>
+<td>The string forms, via each type's <code>Parse</code> / <code>TryParse</code> under the invariant culture.</td>
+</tr>
+</tbody>
+</table>
+<p>A converter or factory constructed without a policy defaults to <code>Strict</code>.</p>
+<h2 id="factories-vs-closed-converters">Factories vs closed converters</h2>
+<p><code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so <code>AddNumericsJsonConverters</code> registers a <strong>factory</strong> for each (<code>CanConvert</code> recognizes the closed generic; <code>CreateConverter</code> produces the matching closed converter bound to the request's <code>T</code>). You never need to instantiate the closed converters — but you can, for a narrower registration: <code>new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Compact)</code> covers <code>Fraction&lt;int&gt;</code> only, while <code>new FractionJsonConverterFactory(NumericsJsonPolicy.Compact)</code> covers every backing type. <code>BigDecimal</code> is non-generic and registers as a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a>.</p>
+<h2 id="fraction-shape">Fraction shape</h2>
+<pre><code class="lang-json">{ &quot;numerator&quot;: 3, &quot;denominator&quot;: 4 }
+&quot;3/4&quot;
+</code></pre>
+<p>Both components are written as <strong>raw</strong> JSON numbers — not through the writer's <code>Int64</code> / <code>decimal</code> primitives — so a <code>BigInteger</code>-backed fraction round-trips at any magnitude. On read, each component accepts a JSON number or a numeric <em>string</em>, parsed as <code>T</code> under the invariant culture, so systems that cannot carry arbitrary-precision JSON numbers can quote them. A zero denominator is rejected, and a payload whose canonical reduction overflows <code>T</code> is rejected rather than wrapped.</p>
+<h2 id="interval-shape">Interval shape</h2>
+<pre><code class="lang-json">{ &quot;lower&quot;: 1, &quot;upper&quot;: 5, &quot;lowerInclusive&quot;: true, &quot;upperInclusive&quot;: false }
+{ &quot;lower&quot;: 1, &quot;upperUnbounded&quot;: true, &quot;lowerInclusive&quot;: true }
+{ &quot;empty&quot;: true }
+&quot;[1, 5)&quot;   &quot;[1, +∞)&quot;   &quot;∅&quot;
+</code></pre>
+<p>A bounded side carries its endpoint and inclusivity flag; an unbounded side is a <code>lowerUnbounded</code> / <code>upperUnbounded</code> marker with no endpoint; the empty interval is the single-property object <code>{ &quot;empty&quot;: true }</code> and must stand alone. Under <code>Strict</code> a bounded side's inclusivity flag is required; <code>Lenient</code> defaults a missing flag to closed and accepts <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code> as endpoint aliases. The compact form is the same ISO 31-11 bracket notation <code>Interval&lt;T&gt;.ToString()</code> / <code>TryParse</code> use, with <code>&quot;∅&quot;</code> for empty (non-ASCII characters are escaped per the options' encoder).</p>
+<h2 id="discrete-interval-and-interval-set">Discrete interval and interval set</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> serializes <strong>through the <code>Interval&lt;T&gt;</code> shape</strong> over its canonical closed integer bounds — the integer domain has no open sides to express — so its compact form is always <code>&quot;[1, 5]&quot;</code>. <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> serializes as a JSON <strong>array</strong> of its <code>Interval&lt;T&gt;</code> pieces (<code>[]</code> when empty), each piece in the selected policy's shape; a non-array token is rejected.</p>
+<h2 id="bigdecimal-shape"><code>BigDecimal</code> shape</h2>
+<pre><code class="lang-json">{ &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }
+&quot;12.340&quot;
+</code></pre>
+<p><code>Strict</code> writes the exact pair — an arbitrary-magnitude unscaled mantissa as a raw JSON number plus the decimal scale — and <code>Compact</code> writes the plain decimal string. <code>Lenient</code> reads either. The string form is used for <code>Compact</code>, rather than a bare JSON number, because many consumers narrow long numbers to IEEE-754 <code>double</code>.</p>
+<h2 id="complex-shape"><code>Complex</code> shape</h2>
+<pre><code class="lang-json">{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }
+{ &quot;real&quot;: &quot;NaN&quot;, &quot;imaginary&quot;: &quot;-Infinity&quot; }
+&quot;&lt;3; 4&gt;&quot;
+</code></pre>
+<p>A finite component is a JSON number; a non-finite one is the string <code>&quot;NaN&quot;</code>, <code>&quot;Infinity&quot;</code>, or <code>&quot;-Infinity&quot;</code>, and either form is accepted on read. The compact form delegates to <code>Complex&lt;T&gt;.ToString</code> / <code>TryParse</code> under the invariant culture.</p>
+<h2 id="convenience-helpers">Convenience helpers</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a> offers <code>value.ToJson(policy)</code> and <code>FractionJsonExtensions.FromJson&lt;T&gt;(json, policy)</code>, each configuring a fresh <code>JsonSerializerOptions</code> per call. They exist for one-off calls; for repeated serialization build one options instance with <code>AddNumericsJsonConverters</code> and reuse it.</p>
+<h2 id="trimming-and-aot">Trimming and AOT</h2>
+<p>The converters are reflection-free at the value level, and the package is marked AOT-compatible. <code>AddNumericsJsonConverters</code> registers the factory set; point a source-generated <code>JsonSerializerContext</code> at your DTOs so the trimmer can see the closed types. The <code>ToJson</code> / <code>FromJson</code> helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code>, so using them in a trimmed or native-AOT application produces the standard analyzer warnings — prefer the options-based path there.</p>
+<h2 id="failure-modes">Failure modes</h2>
+<p>Every malformed payload surfaces as <code>JsonException</code>; the converters never coerce silently:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A token that is not an object (<code>Fraction</code>, <code>Interval</code>, <code>BigDecimal</code>, <code>Complex</code>) under <code>Strict</code></td>
+<td><code>JsonException</code> — object form expected. <code>Lenient</code> routes a top-level string through the compact parser instead.</td>
+</tr>
+<tr>
+<td>A token that is not a string under <code>Compact</code></td>
+<td><code>JsonException</code> — compact string expected.</td>
+</tr>
+<tr>
+<td>A non-array token for <code>IntervalSet&lt;T&gt;</code></td>
+<td><code>JsonException</code> — an interval set is a JSON array of pieces.</td>
+</tr>
+<tr>
+<td>Missing <code>&quot;numerator&quot;</code> / <code>&quot;denominator&quot;</code>, a bounded side's <code>&quot;lower&quot;</code> / <code>&quot;upper&quot;</code>, or a <code>BigDecimal</code> / <code>Complex</code> property</td>
+<td><code>JsonException</code> naming the missing property.</td>
+</tr>
+<tr>
+<td>Missing <code>&quot;lowerInclusive&quot;</code> / <code>&quot;upperInclusive&quot;</code> on a bounded side</td>
+<td><code>JsonException</code> under <code>Strict</code>; <code>Lenient</code> defaults to closed.</td>
+</tr>
+<tr>
+<td>A duplicate property</td>
+<td><code>JsonException</code> — duplicates are rejected, never last-wins.</td>
+</tr>
+<tr>
+<td><code>&quot;denominator&quot;: 0</code></td>
+<td><code>JsonException</code>.</td>
+</tr>
+<tr>
+<td>A fraction whose canonical reduction overflows <code>T</code></td>
+<td><code>JsonException</code>.</td>
+</tr>
+<tr>
+<td><code>{ &quot;empty&quot;: true }</code> carrying endpoint or unbounded properties</td>
+<td><code>JsonException</code> — the empty form must stand alone.</td>
+</tr>
+<tr>
+<td>A component that is neither a number nor a parseable numeric string; an inclusivity flag that is not a boolean</td>
+<td><code>JsonException</code> reporting the type mismatch.</td>
+</tr>
+<tr>
+<td>A compact string <code>TryParse</code> rejects (<code>&quot;3/&quot;</code>, <code>&quot;[1, )&quot;</code>, <code>&quot;&lt;3&gt;&quot;</code>)</td>
+<td><code>JsonException</code> carrying the offending text.</td>
+</tr>
+</tbody>
+</table>
+<p>Unknown properties are <em>ignored</em> (skipped), matching the BCL convention for forward compatibility.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples for every concept above.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the converter table and scenario index.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — the full wire-format reference with worked examples per policy.</li>
+<li><strong><a href="../numerics/concepts.html">Bodu.Numerics concepts</a></strong> — the numeric vocabulary.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

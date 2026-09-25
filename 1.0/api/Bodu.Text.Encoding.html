@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Encoding | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Encoding | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding">
+
+  <h1 id="Bodu_Text_Encoding" data-uid="Bodu.Text.Encoding" class="text-break">Namespace Bodu.Text.Encoding</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-text-encoding.svg" alt="Bodu.Text.Encoding"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Encoding</strong> is a focused, allocation-conscious library of <strong>binary-to-text encodings</strong>. The five core radix encodings .NET applications reach for — <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, <strong>Base85</strong> — each carry the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code>-returning streaming methods, length-prediction helpers, validation predicates, and the unified <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> interface that lets code select an encoding at runtime. Alongside them sit three special-purpose encodings — <strong>Base45</strong> (RFC 9285, for QR-code payloads), <strong>Base62</strong> (GMP-style, for compact identifiers), and <strong>Bech32 / Bech32m</strong> (BIP 173 / 350, checksummed addresses with a human-readable part) — plus the convenience wrappers <strong>Base58Check</strong> and <strong>Base64Url</strong>.</p>
+<p>The package fills two gaps that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert">Convert</a> and <code>System.Buffers.Text.Base64</code> leave open: <strong>variants</strong> the BCL does not cover (base32hex, Crockford Base32, z-base-32, Base58 Bitcoin / Flickr / Ripple, Ascii85, Z85, Base45, Base62, Bech32 / Bech32m), and <strong>lenient parsing</strong> / <strong>formatting decoration</strong> — <code>0x</code> prefix tolerance, whitespace stripping, byte spacing, line breaks every 64 / 76 characters — for the encodings that benefit from them.</p>
+<p>For self-framing document formats (CSV / TSV, DotEnv, INI), see the companion <code>Bodu.Text.Formats</code> umbrella package — namespaces <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>, <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, and <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a>. For <code>System.Text.Json</code>-style object mapping to TOML, Bencode, or YAML, see the <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>, <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, and <a class="xref" href="Bodu.Text.Yaml.html">Bodu.Text.Yaml</a> serializers.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/text-encoding/index.html">Bodu.Text.Encoding introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/text-encoding/concepts.html">Bodu.Text.Encoding core concepts</a></strong> — vocabulary: alphabet, variant, terminal quantum, padding, shortcut, decoration, <code>OperationStatus</code>.</li>
+<li><strong><a href="../docs/text-encoding/getting-started.html">Bodu.Text.Encoding getting started</a></strong> — install and minimal samples for each encoding.</li>
+<li><strong><a href="../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> — per-encoding deep dives plus the <code>IBinaryEncoding</code> runtime-selection pattern.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Core radix encodings (<code>Bodu.Text.Encoding</code>)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a> — hexadecimal; 4 bits per symbol; flexible formatting (case, <code>0x</code> prefix, line breaks, byte spacing); lenient parsing.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a> — 5 bits per symbol; four variants via <a class="xref" href="Bodu.Text.Encoding.Base32Variant.html">Base32Variant</a>: Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32; padding control.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a> — 6 bits per symbol; three variants via <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html">Base64Variant</a>: Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap). Delegates inner conversion to the BCL for SIMD speed.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a> — non-power-of-two radix using big-integer divmod; two variants via <a class="xref" href="Bodu.Text.Encoding.Base58Variant.html">Base58Variant</a>: BitcoinFlickr (default), Ripple. Preserves leading zeros.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> — 4-byte block → 5 chars; three variants via <a class="xref" href="Bodu.Text.Encoding.Base85Variant.html">Base85Variant</a>: Ascii85 (Adobe, with <code>z</code> shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), GitCompact (Git <code>base85.c</code> alphabet; compact self-delimiting tail plus the <code>EncodeGitPadded</code> / <code>DecodeGitPadded</code> line primitive).</li>
+</ul>
+<p><strong>Special-purpose encodings</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Encoding.Base45.html">Base45</a> — RFC 9285; the compact alphanumeric encoding carried inside a QR code's Alphanumeric mode. 45-character alphabet; no padding; not streamable.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base62.html">Base62</a> — GMP-style alphabet <code>0-9 A-Z a-z</code>; big-integer divmod; leading zero bytes preserved as leading <code>0</code> characters. Suited to short URLs and compact identifiers.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Bech32.html">Bech32</a> — BIP 173 (Bech32) and BIP 350 (Bech32m); a checksummed base-32 format comprising a human-readable part (HRP), the <code>1</code> separator, a 5-bit data part, and a six-symbol error-detecting checksum. The <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a> enum selects the scheme and is reported on decode.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a> — Base58 with the Bitcoin-style four-byte double-SHA-256 checksum appended on encode and verified on decode. The right entry point for address- and key-style payloads.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.Base64Url.html">Base64Url</a> — the RFC 4648 §5 URL- and filename-safe Base64 as a first-class type (mirrors <code>System.Buffers.Text.Base64Url</code>), with padding omitted by default and a UTF-8 byte path.</li>
+</ul>
+<p><strong>Escape-based encodings</strong></p>
+<p>These escape a subset of octets (<code>=HH</code> / <code>%HH</code>) while passing most printable ASCII through literally, so their output is content-dependent and mode-driven. They are intentionally not <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> members.</p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a> — MIME Quoted-Printable body encoding (RFC 2045 §6.7) with <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingMode.html">QuotedPrintableEncodingMode</a> (Binary / Text) and <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a> (line length, newline); strict-by-default decoding with opt-in lowercase-hex, bare-LF, and trailing-whitespace relaxations via <a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a>. Not RFC 2047 <code>Q</code> header encoding; not a MIME message parser.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html">PercentEncoding</a> — URI / form percent-encoding (RFC 3986 §2.1 plus the WHATWG <code>application/x-www-form-urlencoded</code> rules) with <a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a> (UriComponent / PathSegment / Query / FormUrlEncoded) and the <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.EncodeString.html">EncodeString</a> / <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.DecodeString.html">DecodeString</a> text helpers; uppercase hex emit, both-case accept, opt-in relaxed literals via <a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a>. Not a URL parser.</li>
+</ul>
+<p><strong>Runtime selection</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> — unified contract for runtime-pluggable encoding choice. <code>Encode</code>, <code>Decode</code>, <code>GetMaxEncodedLength</code>, <code>GetMaxDecodedLength</code>, <code>IsValid</code>, <code>TryEncode</code>, <code>TryDecode</code>, plus <code>Name</code> and <code>Description</code>.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> — pre-configured singleton instances (<code>Base16Lower</code>, <code>Base16Upper</code>, <code>Base32</code>, <code>Base32Hex</code>, <code>Base32Crockford</code>, <code>Base32ZBase32</code>, <code>Base45</code>, <code>Base58</code>, <code>Base58Ripple</code>, <code>Base62</code>, <code>Base64</code>, <code>Base64Mime</code>, <code>Base64UrlSafe</code>, <code>Ascii85</code>, <code>Base85Git</code>, <code>Z85</code>) plus the <code>Get(name)</code> lookup for configuration-driven selection. (Bech32 and Base58Check require an HRP / checksum, and the escape-based Quoted-Printable / percent-encoding carry mode information, so none are surfaced through <code>IBinaryEncoding</code>.)</li>
+<li><a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.html">BinaryEncodingExtensions</a> — fluent extension methods on <code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, and <code>string</code> (<code>ToBase16String</code>, <code>FromBase64String</code>, <code>ToBase64UrlString</code>, <code>Encode(IBinaryEncoding)</code>, …).</li>
+</ul>
+<p><strong>Shared option types</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a> — encode-side flags: <code>UpperCase</code>, <code>InsertLineBreaks</code>, <code>IncludePrefix</code>, <code>InsertSpacing</code>, <code>OmitPadding</code>.</li>
+<li><a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> — decode-side flags: <code>AllowPrefix</code>, <code>IgnoreWhitespace</code>, <code>AllowMissingPadding</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+using System.Buffers;
+using System.Security.Cryptography;
+
+// --- Base16: print a hash digest as a formatted hex dump ----------------------
+byte[] digest = SHA256.HashData(&quot;hello&quot;u8.ToArray());
+string dump   = Base16.Encode(digest,
+    BaseFormattingOptions.UpperCase
+        | BaseFormattingOptions.InsertSpacing
+        | BaseFormattingOptions.IncludePrefix);
+// dump → &quot;0x2C F2 4D BA ...&quot;
+
+// --- Base64 URL-safe: decode a JWT segment with no padding -------------------
+byte[] headerBytes = Base64.Decode(
+    &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&quot;,
+    Base64Variant.UrlSafe,
+    BaseFormatStyles.AllowMissingPadding);
+
+// --- Base32 Standard: TOTP secret for a user --------------------------------
+byte[] secret  = RandomNumberGenerator.GetBytes(20);
+string display = Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
+
+// --- Base58 BitcoinFlickr: decode a mainnet P2PKH address -------------------
+byte[] payload = Base58.Decode(&quot;1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L&quot;);
+
+// --- Base85 Ascii85 with the z shortcut -------------------------------------
+string ascii85 = Base85.Encode(new byte[] { 0, 0, 0, 0 }, Base85Variant.Ascii85);
+// ascii85 → &quot;z&quot;
+
+// --- Base85 Git: compact, self-delimiting binary-patch alphabet -------------
+string gitB85 = Base85.Encode(&quot;hello&quot;u8.ToArray(), Base85Variant.GitCompact);   // → &quot;Xk~0{Zv&quot;
+
+// --- Quoted-Printable: MIME message body ------------------------------------
+string qp = QuotedPrintable.Encode(&quot;café = møney&quot;u8.ToArray());   // printable + =HH escapes
+byte[] qpBack = QuotedPrintable.Decode(qp);
+
+// --- Percent-encoding: URI component and form field -------------------------
+string component = PercentEncoding.EncodeString(&quot;a/b?c=d&quot;);                       // → &quot;a%2Fb%3Fc%3Dd&quot;
+string formField = PercentEncoding.EncodeString(&quot;a b+c&quot;, mode: PercentEncodingMode.FormUrlEncoded); // → &quot;a+b%2Bc&quot;
+
+// --- Base45: encode a payload for a QR code (RFC 9285) -----------------------
+string qrPayload = Base45.Encode(&quot;AB&quot;u8.ToArray());   // → &quot;BB8&quot;
+
+// --- Base62: compact identifier from random bytes ---------------------------
+string shortId = Base62.Encode(RandomNumberGenerator.GetBytes(8));
+
+// --- Bech32m: encode raw bytes under a human-readable part ------------------
+byte[] program = Base16.Decode(&quot;751e76e8199196d454941c45d1b3a323f1433bd6&quot;);
+string addr = Bech32.EncodeFromBytes(&quot;bc&quot;, program, Bech32Encoding.Bech32m);   // 8-bit → 5-bit groups
+Bech32.DecodeToBytes(addr, out string hrp, out byte[] data, out Bech32Encoding scheme);
+// hrp → &quot;bc&quot;; data → program; scheme → Bech32Encoding.Bech32m
+
+// --- Base58Check: checksum-protected payload --------------------------------
+string wif = Base58Check.Encode(secret);
+byte[] recovered = Base58Check.Decode(wif);            // verifies, then strips checksum
+
+// --- Runtime selection via IBinaryEncoding ----------------------------------
+IBinaryEncoding encoding = BinaryEncodings.Get(&quot;base64-urlsafe&quot;);
+string token = encoding.Encode(secret);
+byte[] back  = encoding.Decode(token);
+
+// --- Streaming UTF-8 decode with OperationStatus ----------------------------
+OperationStatus status = Base16.DecodeFromUtf8(
+    utf8Source,
+    outputBuffer,
+    out int consumed,
+    out int written,
+    BaseFormatStyles.None,
+    isFinalBlock: true);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>ASCII alphabets / UTF-8 byte path.</strong> Every variant's alphabet is pure ASCII, so the UTF-8 byte form is bit-identical to the character form. The <code>EncodeToUtf8</code> / <code>DecodeFromUtf8</code> overloads are the natural choice when bytes come from a network or file pipeline — they avoid the allocation of an intermediate <code>string</code> or <code>char[]</code>.</li>
+<li><strong><code>OperationStatus</code> and streaming.</strong> Base16, Base32, and Base64 expose the <code>System.Buffers</code>-style <code>OperationStatus</code> return convention used by <code>System.Buffers.Text.Base64</code>: <code>Done</code>, <code>DestinationTooSmall</code>, <code>InvalidData</code>, and (streaming only, <code>isFinalBlock: false</code>) <code>NeedMoreData</code>. This makes them safe to drop into chunked stream pipelines without buffering the entire input.</li>
+<li><strong>Base58 and Base85 are not streamable.</strong> Base58 needs the entire input for its big-integer divmod; Base85 needs fixed-size block packing. Both surfaces accept <code>isFinalBlock</code> for API consistency but ignore the flag — pass the entire input as a single span.</li>
+<li><strong>The special-purpose encodings are single-shot.</strong> Base45, Base62, and Bech32 each require the whole input at once (Base45 packs in two/three-character groups, Base62 uses big-integer divmod, Bech32 must compute a checksum over the entire data part), so they expose no <code>OperationStatus</code> streaming path. They throw <code>FormatException</code> on invalid input and offer <code>Try*</code> variants that report failure as <code>false</code>.</li>
+<li><strong>Bech32 is HRP-aware and checksum-verified.</strong> <a class="xref" href="Bodu.Text.Encoding.Bech32.html">Bech32</a> encodes and decodes the <em>whole</em> string — human-readable part, <code>1</code> separator, data, and checksum — rather than a flat byte buffer, which is why it sits outside <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a>. Decode reports which scheme (Bech32 vs Bech32m) validated the checksum through an out parameter; the BIP 173 90-character limit is enforced on decode, and <code>ConvertBits</code> converts between 8-bit bytes and 5-bit groups. <a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a> likewise verifies its appended four-byte double-SHA-256 checksum on decode and throws on a corrupted string.</li>
+<li><strong>Stateless encodings.</strong> Every encoding type is a <code>static class</code> with no instance state. There is no lookup-table cache to share across instances (encodings are stateless), no thread-affinity, and no global configuration. The runtime-selection types in <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> are pre-configured singletons over the same static APIs.</li>
+<li><strong>Decoder strictness.</strong> Decoders are <strong>strict</strong> by default — only the canonical alphabet, padding, and quantum length are accepted — and <strong>lenient</strong> when one or more <a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> flags are set: <code>AllowPrefix</code> accepts a <code>0x</code> / <code>0X</code> prefix; <code>IgnoreWhitespace</code> strips ASCII space, tab, CR, LF anywhere; <code>AllowMissingPadding</code> accepts inputs without trailing <code>=</code>. <code>Decode</code> throws <code>FormatException</code> on validation failure; <code>TryDecode</code> returns <code>false</code>.</li>
+<li><strong>Determinism and portability.</strong> Encoders are deterministic — given a byte sequence and an option set they always produce the same canonical output across platforms and architectures, including the BCL-delegated Base64 path.</li>
+<li><strong>No coupling to other Bodu packages at the consumer surface.</strong> The only dependency is <code>Bodu.Core</code> for shared throw helpers. The package has no external NuGet references.</li>
+<li><strong>Escape-based encodings are not <code>IBinaryEncoding</code> members.</strong> <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a> and <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html">PercentEncoding</a> escape only a subset of octets and select behaviour through a mode / options object, so their output length is content-dependent and the parameterless <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> contract cannot represent them. Like the radix encodings they are stateless <code>static class</code>es with span-first <code>Try*</code> methods that never throw for malformed input or an undersized destination, throwing <code>Encode</code> / <code>Decode</code> wrappers, and deterministic length helpers. Quoted-Printable guarantees round-trip-safe output (it never emits decoder-rejected trailing whitespace); percent-encoding always emits uppercase hex and accepts both cases on decode.</li>
+<li><strong>See also:</strong> the <a href="../docs/text-encoding/index.html">introduction</a>, <a href="../docs/text-encoding/concepts.html">core concepts</a>, and <a href="../docs/text-encoding/getting-started.html">getting-started</a>; the per-encoding guides under <a href="../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a> — including <a href="../guides/text-encoding/quoted-printable.html">Quoted-Printable</a> and <a href="../guides/text-encoding/percent-encoding.html">percent-encoding</a>; and the <a href="../guides/text-encoding/binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a> for runtime selection.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a></h4>
+      <section><p>Provides Base16 (hexadecimal) encoding and decoding of binary data, with support for flexible output formatting
+(case selection, byte spacing, line wrapping, <code>0x</code> prefix) and lenient input parsing (prefix tolerance,
+whitespace stripping).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a></h4>
+      <section><p>Provides Base32 encoding and decoding of binary data across multiple variants (RFC 4648 standard and hex-extended,
+Crockford, z-base-32), with optional padding control and whitespace tolerance during parsing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base45.html">Base45</a></h4>
+      <section><p>Provides Base45 encoding and decoding of binary data as defined by RFC 9285 — the compact alphanumeric encoding used
+to carry binary payloads inside a QR code's Alphanumeric mode.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a></h4>
+      <section><p>Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base58Check.html">Base58Check</a></h4>
+      <section><p>Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and
+related protocols. The encoder appends a four-byte checksum derived from the leading bytes of
+<code>SHA-256(SHA-256(payload))</code> so that mistyped or truncated input can be detected at decode time.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base62.html">Base62</a></h4>
+      <section><p>Provides Base62 encoding and decoding of binary data using the GMP-style alphabet <code>0-9 A-Z a-z</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a></h4>
+      <section><p>Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants, with
+optional padding control and whitespace tolerance during parsing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base64Url.html">Base64Url</a></h4>
+      <section><p>Provides the RFC 4648 §5 URL- and filename-safe Base64 encoding as a first-class type, mirroring the shape of
+<code>System.Buffers.Text.Base64Url</code> introduced in .NET 9. URL-safe Base64 swaps <code>+</code> and <code>/</code> for <code>-</code>
+and <code>_</code>, and conventionally omits trailing <code>=</code> padding (matching JWT and OAuth practice).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a></h4>
+      <section><p>Provides Base85 encoding and decoding of binary data using the Adobe Ascii85, ZeroMQ Z85, or Git-style alphabets.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Bech32.html">Bech32</a></h4>
+      <section><p>Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a
+human-readable part (HRP), the <code>1</code> separator, a data part of 5-bit groups, and a six-symbol error-detecting
+checksum.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.BinaryEncodingExtensions.html">BinaryEncodingExtensions</a></h4>
+      <section><p>Provides fluent extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> arrays, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of byte and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that route through the canonical encoding implementations.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a></h4>
+      <section><p>Provides ready-made <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> instances for every variant supported by the library.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html">PercentEncoding</a></h4>
+      <section><p>Provides span-first percent-encoding and decoding of URI components and form-style values (RFC 3986 §2.1 with the
+WHATWG <code>application/x-www-form-urlencoded</code> rules), selecting the unescaped character set by component mode.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a></h4>
+      <section><p>Provides MIME Quoted-Printable body encoding and decoding (RFC 2045 §6.7) of binary data, with selectable binary or
+canonical-text line handling, configurable soft line wrapping, and strict-by-default decoding.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a></h4>
+      <section><p>Configures how <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a> produces Quoted-Printable output: the line-break treatment, the soft
+line-wrap column, and the newline sequence.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a></h4>
+      <section><p>Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant pre-bound,
+so that callers can pick or inject an encoding at runtime instead of dispatching through static classes.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base16Variant.html">Base16Variant</a></h4>
+      <section><p>Identifies the hexadecimal alphabet case used by <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base32Variant.html">Base32Variant</a></h4>
+      <section><p>Identifies the Base32 alphabet and decoding rules used by <a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base58Variant.html">Base58Variant</a></h4>
+      <section><p>Identifies the Base58 alphabet used by <a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base64Variant.html">Base64Variant</a></h4>
+      <section><p>Identifies the Base64 alphabet and formatting rules used by <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Base85Variant.html">Base85Variant</a></h4>
+      <section><p>Identifies the Base85 alphabet and framing rules used by <a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a></h4>
+      <section><p>Specifies formatting styles that influence how base-encoded input strings are parsed during decoding.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html">BaseFormattingOptions</a></h4>
+      <section><p>Defines formatting options that influence how encoded output is generated from binary data using any positional
+numeral system.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html">Bech32Encoding</a></h4>
+      <section><p>Identifies the checksum constant used by <a class="xref" href="Bodu.Text.Encoding.Bech32Encoding.html#Bodu_Text_Encoding_Bech32Encoding_Bech32">Bech32</a> — the original Bech32 scheme defined by BIP-173 or
+the Bech32m revision defined by BIP-350.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.PercentDecodingOptions.html">PercentDecodingOptions</a></h4>
+      <section><p>Specifies relaxations applied by the <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html">PercentEncoding</a> decoder over its strict RFC 3986 default.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.PercentEncodingMode.html">PercentEncodingMode</a></h4>
+      <section><p>Identifies the set of characters <a class="xref" href="Bodu.Text.Encoding.PercentEncoding.html">PercentEncoding</a> leaves unescaped, selecting the URI component or
+form-encoding rules to apply.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.QuotedPrintableDecodingOptions.html">QuotedPrintableDecodingOptions</a></h4>
+      <section><p>Specifies relaxations applied by the <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a> decoder over its strict RFC 2045 default.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Encoding.QuotedPrintableEncodingMode.html">QuotedPrintableEncodingMode</a></h4>
+      <section><p>Identifies how <a class="xref" href="Bodu.Text.Encoding.QuotedPrintable.html">QuotedPrintable</a> treats line breaks in the source when encoding.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

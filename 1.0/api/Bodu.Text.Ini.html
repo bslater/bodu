@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Ini | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Ini | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Ini">
+
+  <h1 id="Bodu_Text_Ini" data-uid="Bodu.Text.Ini" class="text-break">Namespace Bodu.Text.Ini</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-ini.svg" alt="Bodu.Text.Ini"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Ini</strong> parses and emits <strong>INI</strong> documents — global keys plus <code>[section]</code> blocks of <code>key=value</code> entries — as a standalone <code>System.Text.Json</code>-shaped library: a typed serializer, a two-reader token surface, a <strong>comment-preserving</strong> mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the <code>Bodu.Text.Formats</code> umbrella); see also <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a> and <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>. For EditorConfig-style layered configuration, use <code>Bodu.Text.Configuration</code> instead — it carries its own INI model.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> — static serializer: section POCOs / nested dictionaries ↔ INI text, with the <code>GlobalSectionName</code> mapping and the depth-2 gate.</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializerDefaults.html">IniSerializerDefaults</a> — naming policy, duplicate policies, and presets (<code>Strict</code> = configparser strict mode).</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a> with <a class="xref" href="Bodu.Text.Ini.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a> / <a class="xref" href="Bodu.Text.Ini.IniDuplicateKeyBehavior.html">IniDuplicateKeyBehavior</a> — how repeated sections and keys resolve when the document materializes.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> — forward-only <code>ref struct</code> reader over the file as authored (source order, comments included).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a> — normalized cursor over the logical object-of-objects shape (globals hoisted, duplicate sections merged).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html">Utf8IniWriter</a> — forward-only <code>ref struct</code> writer (section headers, entries, comment lines).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Document.IniDocument.html">IniDocument</a> / <a class="xref" href="Bodu.Text.Ini.Document.IniElement.html">IniElement</a> — read-only, trivia-free, disposable document model.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Nodes.IniNode.html">IniNode</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniObject.html">IniObject</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniValue.html">IniValue</a> — mutable, comment-preserving DOM for faithful rewrites of human-owned files.</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniFormatException.html">IniFormatException</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a> — malformed input / policy violations vs. binding failures.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
+
+IniObject root = IniNode.Parse(&quot;[server]\nhost=localhost\nport=8080\n&quot;u8);
+root[&quot;server&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;9090&quot;;
+byte[] back = root.ToUtf8Bytes();   // comments (had there been any) survive
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Conservative dialect.</strong> <code>=</code> only; values run literally to end of line (an inline <code>;</code> is content); <code>;</code> and <code>#</code> start full-line comments.</li>
+<li><strong>Duplicate handling is a document-model policy.</strong> The source-order reader reports the file verbatim; <code>Merge</code> / <code>LastWins</code> (the defaults) apply when the document materializes.</li>
+<li><strong>See also:</strong> the <a href="../docs/formats/index.html">line-formats introduction</a> and the <a href="../guides/formats/ini.html">INI guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniFormatException.html">IniFormatException</a></h4>
+      <section><p>Represents an error that occurs when INI data is malformed, such as an unterminated section header, an empty section
+name, or an entry with no assignment.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniSectionAttribute.html">IniSectionAttribute</a></h4>
+      <section><p>Marks a partial section POCO for compile-time INI binding: the <code>Bodu.Text.Formats.Generators</code> source generator
+emits an <a class="xref" href="Bodu.Text.Ini.IIniSectionFactory-1.html">IIniSectionFactory&lt;TSection&gt;</a> implementation for the type, exposed through a generated static
+<code>IniFactory</code> property.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a></h4>
+      <section><p>Represents an error that occurs while mapping a .NET object to or from INI with <a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a>, such
+as an unsupported root type, a member nested beyond INI's two levels, a missing required key, or a value that cannot
+be converted to the target type.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a></h4>
+      <section><p>Provides methods for serializing .NET objects to INI text and deserializing INI text into .NET objects, shaped after
+<code>System.Text.Json</code>'s <code>JsonSerializer</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a></h4>
+      <section><p>Provides configuration for <a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a>, controlling property naming, case sensitivity, field
+inclusion, null handling, the global-section mapping, and the duplicate-section/key policies.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a></h4>
+      <section><p>Provides configuration for the INI document model, controlling how duplicate sections and duplicate keys are
+resolved when a document is materialized.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Ini.IIniSectionFactory-1.html">IIniSectionFactory&lt;TSection&gt;</a></h4>
+      <section><p>Provides reflection-free conversion between a section type and its INI key/value representation, consumed by the
+<a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> section overloads.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniDuplicateKeyBehavior.html">IniDuplicateKeyBehavior</a></h4>
+      <section><p>Specifies how the INI document model resolves a key that appears more than once within the same section.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a></h4>
+      <section><p>Specifies how the INI document model resolves a section name that appears more than once.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniSerializerDefaults.html">IniSerializerDefaults</a></h4>
+      <section><p>Specifies a set of default settings an <a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a> can be initialized from.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniTokenType.html">IniTokenType</a></h4>
+      <section><p>Enumerates the token kinds a <a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> reports as it advances through an INI
+document in source order.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Ini.IniValueKind.html">IniValueKind</a></h4>
+      <section><p>Enumerates the value kinds an INI node or element can represent.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

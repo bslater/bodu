@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.Collections</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Collections"><code>samples/Collections/</code></a>. All
+three samples are <strong>offline and deterministic</strong> — string-keyed scenarios supply a stable ordinal
+comparer so that per-process string-hash randomization cannot vary the output — and are members
+of <code>bodu.slnx</code>, built and executed by CI, so the code they show cannot drift from the current
+API. Each sample's README documents every scenario individually: its intent, what the code does,
+the output to expect, and the APIs demonstrated.</p>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Collections/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="boducollectionssamplescollectioncatalogue">Bodu.Collections.Samples.CollectionCatalogue</h3>
+<p>The general-purpose collections: <a class="xref" href="../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> (overwrite on
+full) and <a class="xref" href="../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> with its overflow policy, the
+<a class="xref" href="../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> bounded cache with its eviction policies
+and <code>ItemEvicted</code> order, the <code>MultiValueDictionary</code> / <code>Multiset</code> / <code>OrderedSet</code> / <code>IndexedSet</code>
+family, the <code>BiDictionary</code> forward/inverse map, the <code>NavigableSet</code> / <code>NavigableDictionary</code>
+floor/ceiling/lower/higher navigation, and <code>SequencedDictionary</code> plus the update-priority
+<code>IndexedPriorityQueue</code>. <em>Package: <code>Bodu.Collections</code>.</em></p>
+<h3 id="boducollectionssamplesrangesgraphstrees">Bodu.Collections.Samples.RangesGraphsTrees</h3>
+<p>The structural collections: <code>RangeSet</code> / <code>RangeDictionary</code> coalescing and the <code>IntervalTree</code>
+point-stab and overlap queries; the <code>Graph&lt;T&gt;</code> with <code>GraphAlgorithms</code> breadth-first search,
+topological sort, and shortest path; <code>DisjointSet&lt;T&gt;</code> union-find connectivity; the <code>Tree&lt;T&gt;</code>,
+<code>Trie</code> / <code>Trie&lt;TValue&gt;</code>, and <code>RadixTrie</code> prefix structures; and the <code>AhoCorasickAutomaton</code>
+multi-pattern text scan. <em>Package: <code>Bodu.Collections</code>.</em></p>
+<h3 id="boducollectionssamplesprobabilisticsketches">Bodu.Collections.Samples.ProbabilisticSketches</h3>
+<p>The <code>Bodu.Collections.Probabilistic</code> approximate sketches over fixed inputs with a stable
+comparer so the observed error is reproducible: <code>BloomFilter&lt;T&gt;</code> (no false negatives across the
+added set, with one demonstrated false positive), <code>CountMinSketch&lt;T&gt;</code> (estimates never fall
+below the true count), and <code>HyperLogLog&lt;T&gt;</code> (a distinct-count estimate reported against the true
+cardinality and the ~1.04/√m standard error). <em>Package: <code>Bodu.Collections</code>.</em></p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="collections-concurrent.html">Collections.Concurrent samples</a> — the thread-safe variants.</li>
+<li><a href="core.html">Core samples</a> — the foundational library the collections build on.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

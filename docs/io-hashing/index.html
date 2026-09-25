@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.IO.Hashing — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.IO.Hashing — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduiohashing">Bodu.IO.Hashing</h1>
+
+<p><img src="../../images/hero-io.svg" alt="Bodu.IO.Hashing"></p>
+<p><strong>Bodu.IO.Hashing</strong> is the non-cryptographic hashing package of the Bodu suite, and one half of the <strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> topic. Everything in the package derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>, so the lifecycle (<code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>) is identical regardless of which algorithm you pick.</p>
+<blockquote>
+<p><strong>Adversary model: none.</strong> Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation — for anything security-sensitive, see <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.</p>
+</blockquote>
+<h2 id="the-shape-of-the-suite">The shape of the suite</h2>
+<p><img src="../../images/diagrams/algorithm-taxonomy.svg" alt="Algorithm taxonomy across both libraries"></p>
+<p>Nothing in this library is designed against an <strong>adversary model</strong>. Its fingerprints, checksums, and check digits are tuned for speed, even distribution, and the detection of accidental errors on <em>trusted</em> input — every one of them is trivially forgeable by anyone who controls the bytes. That is the line between this package and <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>, whose ciphers, keyed hashes (MACs), and cryptographic digests are each designed so that even an attacker who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively cannot forge, invert, or find collisions. Cross that line the moment an attacker can influence the input or the result protects a security decision.</p>
+<p>The library is organized around three subfamilies, each in its own namespace.</p>
+<p><img src="../../images/diagrams/io-hashing-families.svg" alt="Bodu.IO.Hashing subfamilies — Fingerprints, Checksums, and Check digits over a shared NonCryptographicHashAlgorithm base"></p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="boduiohashing--fingerprints"><code>Bodu.IO.Hashing</code> — Fingerprints</h3>
+<p>Fast, distribution-quality hash functions for hash-table keys, in-memory cache buckets, and content-addressable lookups.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Output</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a></td>
+<td>32 / 64 bits</td>
+<td>Constant-memory, streaming. Preferred over FNV-1 for better avalanche.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Fnv132.html">Fnv132</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv164.html">Fnv164</a></td>
+<td>32 / 64 bits</td>
+<td>Original FNV-1; legacy interoperability only.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CityHash32.html">CityHash32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash128.html">CityHash128</a></td>
+<td>32 / 64 / 128 bits</td>
+<td>SIMD-friendly; fastest on long inputs (buffers internally).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.MurmurHash3_32.html">MurmurHash3_32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.MurmurHash3_128.html">MurmurHash3_128</a></td>
+<td>32 / 128 bits</td>
+<td>Seeded; excellent avalanche; widely used in databases.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Pearson.html">Pearson</a></td>
+<td>8–2048 bits</td>
+<td>Table-driven; configurable output width in 8-bit steps.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Bernstein.html">Bernstein</a></td>
+<td>32 bits</td>
+<td>Classic djb2; configurable add-vs-XOR variant.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.BKDR.html">BKDR</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.SDBM.html">SDBM</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.JSHash.html">JSHash</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Elf64.html">Elf64</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.ApHash.html">ApHash</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Pjw32.html">Pjw32</a></td>
+<td>32–64 bits</td>
+<td>Classic string hashes from compilers and early web servers.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.SuperFastHash.html">SuperFastHash</a></td>
+<td>32 bits</td>
+<td>Paul Hsieh's hash; designed for short keys.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html">BlockNonCryptographicHashAlgorithm</a></td>
+<td>—</td>
+<td>Abstract base for buffered block-oriented algorithms; the block-hash extension point.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a></td>
+<td>—</td>
+<td>Optional contract: reverse-finalize a stored digest, append more bytes, finalize again. Implemented by <code>Crc</code>, the FNV family (<code>Fnv132</code> / <code>Fnv164</code> / <code>Fnv1a32</code> / <code>Fnv1a64</code>), <code>Fletcher16</code> / <code>Fletcher32</code> / <code>Fletcher64</code>, and <code>Adler32</code> / <code>Adler32C</code> / <code>Adler64</code>.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>BCL note.</strong> <code>XxHash32</code> / <code>XxHash64</code> / <code>XxHash3</code> / <code>XxHash128</code> from <code>System.IO.Hashing</code> already cover the xxHash family — Bodu does not duplicate them. Use the BCL types directly when you want xxHash.</p>
+</blockquote>
+<h3 id="boduiohashingchecksums--checksums"><code>Bodu.IO.Hashing.Checksums</code> — Checksums</h3>
+<p>Error-detection algorithms with characterized guarantees over specific error patterns, operating on binary buffers.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Output</th>
+<th>Subfamily</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> + <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> + <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a></td>
+<td>1–64 bits</td>
+<td>Polynomial-remainder; 112 named standards from the RevEng catalogue, plus custom parameter sets.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a></td>
+<td>—</td>
+<td>Shared lookup-table cache so identical CRC parameter sets share a table.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a></td>
+<td>16 / 32 / 64 bits</td>
+<td>Twin-accumulator; catches transpositions a simple sum or XOR misses.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></td>
+<td>32 / 32 / 64 bits</td>
+<td>Prime / power-of-two modulus twin accumulator; Adler-32 is the canonical zlib checksum.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boduiohashingcheckdigits--check-digits"><code>Bodu.IO.Hashing.CheckDigits</code> — Check digits</h3>
+<p>Check-digit algorithms for human-typed identifiers — single-character schemes over decimal alphabets (credit card numbers, barcodes), single-character schemes over alphanumeric alphabets (ISBN-10, ISIN, CUSIP, SEDOL), and the two-character ISO 7064 Mod 97-10 schemes (IBAN, LEI).</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a></td>
+<td>Credit cards (Visa, Mastercard, Amex), IMEI, SIN</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Damm.html">Damm</a></td>
+<td>General purpose; detects all single-digit and adjacent-transposition errors</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a></td>
+<td>German ID, medical device codes; widest decimal-alphabet error coverage</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Ean8.html">Ean8</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Ean13.html">Ean13</a></td>
+<td>Retail barcodes</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Gtin14.html">Gtin14</a></td>
+<td>Shipping cartons</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.UpcA.html">UpcA</a></td>
+<td>US/Canada retail barcodes</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isin.html">Isin</a></td>
+<td>International securities identifiers (ISO 6166)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber.html">AbaRoutingNumber</a></td>
+<td>US bank routing numbers</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn13.html">Isbn13</a></td>
+<td>Book identifiers (ISBN-10 is alphanumeric — the check character may be <code>X</code>)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a></td>
+<td>UK / US securities identifiers (alphanumeric)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a></td>
+<td>Bank account and legal-entity identifiers (two-character ISO 7064 Mod 97-10 check)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2.html">Iso7064Mod11_2</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10.html">Iso7064Mod97_10</a></td>
+<td>Generic ISO 7064 building blocks for custom alphanumeric schemes</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Code39Mod43.html">Code39Mod43</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Crockford32.html">Crockford32</a></td>
+<td>Code 39 barcode and Crockford base-32 check characters</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitInputAlphabet.html">CheckDigitInputAlphabet</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitOutputAlphabet.html">CheckDigitOutputAlphabet</a></td>
+<td>Character-set enums consumed by the alphanumeric check-digit algorithms</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a></td>
+<td>Abstract root of the check-digit hierarchy (<code>Append</code> / <code>GetCurrentCheckValue</code> / <code>Reset</code>)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a></td>
+<td>Abstract base classes under <code>CheckValueAlgorithm</code> — extension points for decimal, alphanumeric, and multi-character schemes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boduiohashingextensions"><code>Bodu.IO.Hashing.Extensions</code></h3>
+<p>Extension methods over <code>NonCryptographicHashAlgorithm</code> for ergonomic one-shot computation, async streaming, and verification.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Provides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.html">NonCryptographicHashAlgorithmExtensions</a></td>
+<td><code>AppendData</code>, <code>AppendDataAsync</code>, <code>ComputeHash</code>, <code>ComputeHashAsync</code>, <code>VerifyHash</code>, <code>VerifyHashAsync</code>, <code>TryVerifyHash</code>, <code>TryVerifyHashAsync</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-a-subfamily">Choosing a subfamily</h2>
+<p>All three subfamilies derive from the same base type, but they are tuned for different jobs — and the best algorithm for one job is a poor choice for another.</p>
+<table>
+<thead>
+<tr>
+<th>Subfamily</th>
+<th>Optimized for</th>
+<th>Operates on</th>
+<th>Adversary model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fingerprint</td>
+<td>Even distribution and speed</td>
+<td>Binary buffer</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Checksum</td>
+<td>Detecting specific error patterns</td>
+<td>Binary buffer</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Check digit</td>
+<td>Catching human transcription errors</td>
+<td>Character sequence</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Fingerprints</strong> map an arbitrary byte sequence to a fixed-size integer that distributes evenly across the output range. They are judged on <em>avalanche</em> (a single input-bit change flips roughly half the output bits), <em>distribution</em> (hash-table buckets fill evenly), and <em>streaming</em> behaviour (FNV and Pearson are constant-memory; CityHash and MurmurHash3 buffer internally for SIMD throughput). Reach for them for hash-table keys, cache bucketing, deduplication, and content-addressable lookups inside a trust boundary — never for error-pattern detection or authentication.</p>
+<p><strong>Checksums</strong> produce a short tag engineered to catch the error patterns of a transmission or storage channel — single-bit flips, burst errors, adjacent transpositions. Two structural shapes: <em>polynomial-remainder</em> (CRC — divides the input as a polynomial over GF(2) by a generator polynomial) and <em>twin-accumulator</em> (Fletcher and Adler — two running sums whose cross-position coupling catches transpositions a simple sum misses).</p>
+<p>The two shapes differ in the guarantees they offer, which is the axis to choose on:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>CRC</th>
+<th>Fletcher / Adler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-bit error</td>
+<td>Always detected</td>
+<td>Always detected</td>
+</tr>
+<tr>
+<td>Adjacent transposition</td>
+<td>Always detected</td>
+<td>Always detected</td>
+</tr>
+<tr>
+<td>Burst error of length ≤ width</td>
+<td><strong>Always detected</strong></td>
+<td>No per-position guarantee</td>
+</tr>
+<tr>
+<td>Odd number of bit-flips</td>
+<td>Always detected (most polynomials)</td>
+<td>Not guaranteed</td>
+</tr>
+<tr>
+<td>Per-byte cost</td>
+<td>Higher (table lookup + XOR)</td>
+<td>Lower (two adds + a fold)</td>
+</tr>
+<tr>
+<td>Documented blind spots</td>
+<td>None for accidental noise</td>
+<td>Zero-byte runs (Fletcher); short inputs (Adler)</td>
+</tr>
+</tbody>
+</table>
+<p>Reach for CRC when you must match a wire format or need the published burst guarantee; reach for Fletcher or Adler when you control both endpoints and want the cheapest position-dependent checksum. The <a href="concepts.html#crc-error-detection-guarantees">concepts page</a> carries the full guarantee tables.</p>
+<p><strong>Check digits</strong> operate on a <em>printed identifier</em> — a short, human-readable string — and append one or two characters so a later reader can confirm it was not mis-typed. Five mathematical subfamilies trade off error coverage:</p>
+<table>
+<thead>
+<tr>
+<th>Subfamily</th>
+<th>Detects</th>
+<th>Bodu types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mod 10 (weighted sum)</strong></td>
+<td>All single-digit substitutions; most adjacent transpositions</td>
+<td><code>Luhn</code>, <code>Ean8</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>AbaRoutingNumber</code>, <code>Isin</code></td>
+</tr>
+<tr>
+<td><strong>Quasigroup (Damm)</strong></td>
+<td>All single-digit substitutions and all adjacent transpositions</td>
+<td><code>Damm</code></td>
+</tr>
+<tr>
+<td><strong>Dihedral group D₅ (Verhoeff)</strong></td>
+<td>The widest error coverage of any decimal scheme</td>
+<td><code>Verhoeff</code></td>
+</tr>
+<tr>
+<td><strong>Mod 11</strong></td>
+<td>All single-digit errors; most transpositions</td>
+<td><code>Isbn10</code>, <code>Sedol</code>, <code>Cusip</code>, <code>Iso7064Mod11_2</code></td>
+</tr>
+<tr>
+<td><strong>Mod 97-10 (ISO 7064)</strong></td>
+<td>Almost all transcription errors at scale</td>
+<td><code>Iban</code>, <code>Lei</code>, <code>Iso7064Mod97_10</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Picking between them.</strong> A checksum guards a <em>binary payload</em> that only software sees; a check digit guards a <em>printed identifier</em> a human copies by hand; a fingerprint just needs fast, even distribution across a table. CRC and Fletcher distribute poorly as hash functions, and FNV and CityHash give weaker burst-error guarantees than CRC — match the algorithm to the job.</p>
+</blockquote>
+<blockquote>
+<p><strong>Need an adversary model?</strong> Everything in this package is forgeable by an attacker who controls the input. For keyed and cryptographic hashes — SipHash, Poly1305, Tiger, ASCON, Merkle trees — that resist a deliberate attacker, see <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.</p>
+</blockquote>
+<h2 id="selecting-a-specific-algorithm">Selecting a specific algorithm</h2>
+<p>Once the subfamily is chosen, this table compares the algorithms within each subfamily on the dimensions that matter most for picking one: output size, streaming behaviour, resumability, and the typical scenario the algorithm is tuned for.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Output</th>
+<th>Streaming</th>
+<th>Resumable</th>
+<th>Typical scenario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Fnv1a32</code> / <code>Fnv1a64</code> (and <code>Fnv132</code> / <code>Fnv164</code>)</td>
+<td>32 / 64 bits</td>
+<td>Constant memory</td>
+<td><strong>Yes</strong> (<code>IResumableHashAlgorithm</code>)</td>
+<td>Hash-table keys; the default fingerprint when in doubt.</td>
+</tr>
+<tr>
+<td><code>MurmurHash3_32</code> / <code>MurmurHash3_128</code></td>
+<td>32 / 128 bits</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Database index keys; widely used in distributed systems.</td>
+</tr>
+<tr>
+<td><code>CityHash32</code> / <code>CityHash64</code> / <code>CityHash128</code></td>
+<td>32 / 64 / 128 bits</td>
+<td>Buffered (SIMD)</td>
+<td>No</td>
+<td>Fastest on long inputs; CDN and large-blob fingerprints.</td>
+</tr>
+<tr>
+<td><code>Pearson</code></td>
+<td>8 – 2048 bits</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Configurable output width in 8-bit steps; embedded scenarios.</td>
+</tr>
+<tr>
+<td><code>Bernstein</code>, <code>BKDR</code>, <code>SDBM</code>, <code>JSHash</code>, <code>Elf64</code>, <code>ApHash</code>, <code>Pjw32</code>, <code>SuperFastHash</code></td>
+<td>32 / 64 bits</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Compiler-style string hashing; legacy interop.</td>
+</tr>
+<tr>
+<td><code>Crc</code> (any standard from <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>)</td>
+<td>1 – 64 bits</td>
+<td>Constant memory</td>
+<td><strong>Yes</strong> (<code>IResumableHashAlgorithm</code>)</td>
+<td>Error-detection checksum on transmission / storage channels; choice driven by published <code>CrcStandard</code> (e.g. CRC-32/ISO-HDLC for zlib / PNG / Ethernet).</td>
+</tr>
+<tr>
+<td><code>Fletcher16</code> / <code>Fletcher32</code> / <code>Fletcher64</code></td>
+<td>16 / 32 / 64 bits</td>
+<td>Constant memory</td>
+<td><strong>Yes</strong> (<code>IResumableHashAlgorithm</code>)</td>
+<td>Faster than CRC at comparable error coverage; protocol checksums.</td>
+</tr>
+<tr>
+<td><code>Adler32</code> / <code>Adler32C</code> / <code>Adler64</code></td>
+<td>32 / 32 / 64 bits</td>
+<td>Constant memory</td>
+<td><strong>Yes</strong> (<code>IResumableHashAlgorithm</code>)</td>
+<td>Used by zlib; checksum for short, low-entropy payloads.</td>
+</tr>
+<tr>
+<td><code>Luhn</code>, <code>Damm</code>, <code>Verhoeff</code>, <code>Ean8</code>, <code>Ean13</code>, <code>UpcA</code>, <code>Gtin14</code>, <code>AbaRoutingNumber</code></td>
+<td>1 character</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Single-character check digit for human-typed numeric identifiers.</td>
+</tr>
+<tr>
+<td><code>Isbn10</code>, <code>Sedol</code>, <code>Cusip</code>, <code>Isin</code>, <code>Iso7064Mod11_2</code></td>
+<td>1 character</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Single-character check digit for mixed numeric / alphanumeric identifiers.</td>
+</tr>
+<tr>
+<td><code>Iban</code>, <code>Lei</code>, <code>Iso7064Mod97_10</code></td>
+<td>2 characters</td>
+<td>Constant memory</td>
+<td>No</td>
+<td>Two-character check digit (ISO 7064 Mod 97-10) for high-coverage validation.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>Crc</code>, the FNV family, the Fletcher family, and the Adler family implement <code>IResumableHashAlgorithm</code> — the ability to reverse-finalize a stored digest, append more bytes, and finalize again. The buffered fingerprints (CityHash, MurmurHash3) and the classic string hashes do not.</p>
+</blockquote>
+<blockquote>
+<p>The <code>Bodu.IO.Hashing.Extensions</code> namespace adds ergonomic one-shot and async helpers (<code>ComputeHash</code>, <code>ComputeHashAsync</code>, <code>VerifyHash</code>, <code>TryVerifyHash</code>) over every algorithm in the table.</p>
+</blockquote>
+<h2 id="common-lifecycle">Common lifecycle</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
+
+using var hash = new Crc();      // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
+
+hash.Append(chunk1);
+hash.Append(chunk2);
+byte[] partial = hash.GetCurrentHash();   // snapshot, non-destructive
+hash.Append(chunk3);
+byte[] full    = hash.GetCurrentHash();
+
+hash.Reset();                              // back to the initial state
+</code></pre>
+<p><code>Crc</code>, the FNV family, the Fletcher family, and the Adler family also implement <code>IResumableHashAlgorithm</code> (reverse-finalize a stored digest, append more bytes, finalize again).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — glossary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + one minimal sample per subfamily.</li>
+<li><strong><a href="../../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> — recipe-style walk-throughs per algorithm.</li>
+<li><strong><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing API reference</a></strong> — full type-by-type docs.</li>
+<li><strong>For keyed and cryptographic hashes</strong> (SipHash, Poly1305, Tiger, ASCON, Merkle trees), see <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography topic</a></strong> — this package and its sibling Bodu.Security.Cryptography side by side.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

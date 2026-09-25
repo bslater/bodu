@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Collections.Concurrent — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Collections.Concurrent — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducollectionsconcurrent">Bodu.Collections.Concurrent</h1>
+
+<p><img src="../../images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent"></p>
+<p><strong>Bodu.Collections.Concurrent</strong> ships the thread-safe members of the Bodu collection catalogue — the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code>, the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and two bounded caches: the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> — as a focused companion package in the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. The dependency chain is <code>Bodu.Core</code> ← <a href="../collections/index.html"><code>Bodu.Collections</code></a> ← <code>Bodu.Collections.Concurrent</code>: this package references <code>Bodu.Collections</code> (and through it <code>Bodu.Core</code>), so installing it brings the whole family. The namespace is unchanged from the original split — every type lives in <code>Bodu.Collections.Generic.Concurrent</code>.</p>
+<p>Reach for this package when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock. External locking around <code>CircularBuffer&lt;T&gt;</code>, <code>HashSet&lt;T&gt;</code>, or <code>EvictingDictionary&lt;TKey,TValue&gt;</code> works, but it serialises every operation behind a single monitor; the concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.</p>
+<p><img src="../../images/diagrams/collections-concurrent-namespace-map.svg" alt="Bodu.Collections.Concurrent namespace map — the thread-safe types over the Bodu.Collections and Bodu.Core dependency chain"></p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="boducollectionsgenericconcurrent"><code>Bodu.Collections.Generic.Concurrent</code></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a></td>
+<td>Thread-safe variant of <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>: a lock-free multi-producer / multi-consumer ring over the Vyukov per-slot sequence protocol, implementing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a> with the same overwrite-on-full semantics as its single-threaded peer. Reference types only (<code>T : class?</code>).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
+<td>Thread-safe unordered set of unique elements backed by a lock-free split-ordered list: elements live in one Harris–Michael lock-free linked list keyed by bit-reversed hashes, so every operation is lock-free and growth never rehashes a node. Implements <code>ISet&lt;T&gt;</code>; elements must be non-null (<code>T : notnull</code>).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a></td>
+<td>Thread-safe variant of <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>: a fixed-capacity bounded cache over lock-striped segments supporting all six eviction policies (FIFO / LRU / LFU / MRU / SecondChance / Random), optional TTL expiry, single-flight <code>GetOrAdd</code>, and a post-commit <code>ItemEvicted</code> event. Eviction order is exact per segment, approximate globally; keys must be non-null (<code>TKey : notnull</code>).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentLruCache-2.html">ConcurrentLruCache&lt;TKey, TValue&gt;</a></td>
+<td>Read-optimized fixed-capacity cache with <strong>lock-free reads</strong> and a segmented pseudo-LRU policy (hot / warm / cold queues), with queue maintenance amortized onto writers and striped hit/miss telemetry. No TTL and no policy choice, <code>GetOrAdd</code> is not single-flight, and <code>Count</code> may transiently exceed <code>Capacity</code> by at most the number of in-flight writers; keys must be non-null (<code>TKey : notnull</code>).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fixed-capacity FIFO ring buffer shared by multiple threads</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Producer-consumer queue (optionally behind <code>BlockingCollection&lt;T&gt;</code>)</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Bounded telemetry / recent-items window under concurrent writers</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> with <code>AllowOverwrite = true</code></td>
+</tr>
+<tr>
+<td>Thread-safe set of active correlation ids, dedup of a concurrent stream</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Read-heavy membership tests that must never block writers</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> (<code>Contains</code> is lock-free)</td>
+</tr>
+<tr>
+<td>Bounded in-process cache (LRU / LFU / TTL) shared by request threads</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a></td>
+</tr>
+<tr>
+<td>Cache-stampede protection — expensive value built at most once per key</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> (<code>GetOrAdd</code> runs the factory single-flight per key)</td>
+</tr>
+<tr>
+<td>Read-heavy bounded cache where lookups must not take a lock</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentLruCache-2.html">ConcurrentLruCache&lt;TKey, TValue&gt;</a> (approximate LRU, no TTL)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-notes">Design notes</h2>
+<ul>
+<li><strong>Lock-free ring and set, lock-striped cache.</strong> The buffer coordinates producers and consumers with per-slot sequence numbers (CAS updates, 64-byte cache-line padding against false sharing); the set applies single-CAS mutations to a split-ordered list — neither takes a <code>lock</code> anywhere, so a preempted thread can never stall the others. The cache stripes its capacity across independently locked policy segments, so only same-segment writers contend.</li>
+<li><strong>Snapshot enumeration, never fail-fast.</strong> Every type enumerates without ever throwing on concurrent modification — the deliberate inverse of the fail-fast contract on the single-threaded catalogue, because a fail-fast version token cannot be maintained without a lock. The buffer and the cache capture coherent snapshots; the set performs a weakly consistent lock-free traversal.</li>
+<li><strong>Approximate reads are named as such.</strong> <code>Count</code> on the buffer is a point-in-time estimate that never blocks; the set's <code>Count</code> is a lock-free interlocked counter that is exact at quiescence; the cache's <code>ApproximateCount</code> sums per-segment counters lock-free while its exact <code>Count</code> acquires every segment lock for a coherent answer. Choose by need, not by habit.</li>
+<li><strong>Eviction under contention.</strong> With <code>AllowOverwrite = true</code>, a producer that finds the buffer full silently overwrites the oldest entry and raises <code>ItemEvicted</code> afterwards; the evicting dictionary raises the same post-commit <code>ItemEvicted</code> after releasing its segment lock. In both cases handler exceptions are swallowed and there is no pre-eviction veto — a committed concurrent eviction cannot be unwound. See <a href="concepts.html">concepts</a> for the contrast with the single-threaded event contracts.</li>
+<li><strong>Exact per segment, approximate globally.</strong> The evicting dictionary runs its policy exactly within each segment over a fixed slice of the capacity (slices sum to <code>Capacity</code> exactly), so global eviction order is approximate while the capacity bound stays strict — the standard trade of production concurrent caches.</li>
+<li><strong><code>SyncRoot</code> throws.</strong> Matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, the explicit <code>ICollection.SyncRoot</code> on every type throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> — there is nothing meaningful to lock on.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the concurrency vocabulary: MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run a minimal sample for each type.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> — the full walk-through: construction, consistency table, bulk operations, when <em>not</em> to use these types.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> — full namespace overview.</li>
+<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> — the single-threaded catalogue this package extends.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — how the three packages fit together.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

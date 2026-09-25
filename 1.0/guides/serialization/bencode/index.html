@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bencode guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bencode guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bencode-guides">Bencode guides</h1>
+
+<p>Recipe-style walk-throughs for <strong>Bodu.Text.Bencode</strong> (<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>). If you are new to the library, start with the <a href="../../../docs/serialization/bencode/index.html">introduction</a> for the format specifics — byte strings, canonical ordering, the kinds Bencode cannot represent — and the <a href="../../../docs/serialization/bencode/concepts.html">core concepts</a> for the three-tier mental model. The sibling <a href="../toml/index.html">TOML</a> and <a href="../yaml/index.html">YAML</a> serializers share the same shape; see the <a href="../index.html">family guide hub</a>.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="using.html">Using Bencode</a></h3>
+  <p>The walk-through: round-tripping objects, the type mapping, a torrent-style worked example, canonical ordering, both DOMs, streams, and raw tokens.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="attributes.html">Mapping attributes</a></h3>
+  <p>Shaping the wire form declaratively — renaming, ignoring, ordering, required keys, constructors, extension data, and the precedence ladder.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="converters.html">Writing converters</a></h3>
+  <p><code>BencodeConverter&lt;T&gt;</code> — convert a type the defaults do not, register and resolve it, the enum converters, and failing clearly on malformed data.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="polymorphic-converters.html">Polymorphic converters</a></h3>
+  <p><code>BencodeConverterFactory</code> — open-generic families and tagged (discriminated) hierarchies selected by a <code>"kind"</code> field.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="callbacks.html">Serialization callbacks</a></h3>
+  <p>The four shared <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> hooks — apply defaults, validate, derive state, and observe completed writes across the serialization lifecycle.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="builtin-converters.html">Built-in converter catalog</a></h3>
+  <p>Every type Bencode handles without a user converter — its wire form, what the read path accepts, and the types that need a converter.</p>
+</div>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../../samples/bencode.html">Runnable samples</a> — the offline torrent-file sample under <code>samples/Text.Bencode/</code>: DOM inspection, canonical round trips, the raw-slice info-hash, and POCO mapping.</li>
+<li><a href="../../../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> — the format specifics behind these guides.</li>
+<li><a href="../index.html">Bodu serializer guides</a> — the family hub, with the TOML and YAML guide sets.</li>
+<li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> — how these guides sit alongside the encoding and format guides.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

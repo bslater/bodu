@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.IO.Hashing — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.IO.Hashing — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduiohashing--core-concepts">Bodu.IO.Hashing — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/io-hashing/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> topic.</p>
+<p>For the high-level shape of the library and the family map, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="adversary-model">Adversary model</h2>
+<p>An <strong>adversary model</strong> is the formal statement of what an attacker is assumed to know, observe, and control. A cryptographic primitive carries an adversary model: even an attacker who knows the algorithm, sees many input/output pairs, and adaptively chooses inputs cannot forge, invert, or find collisions in feasible time.</p>
+<p><strong>Nothing in <code>Bodu.IO.Hashing</code> has an adversary model.</strong> Every algorithm here is unkeyed (or trivially keyed) and structurally simple — given the digest, anyone can compute another input that produces the same digest. That is fine for the jobs these algorithms are designed for and disqualifying for everything else.</p>
+<table>
+<thead>
+<tr>
+<th>Safe for</th>
+<th>Not safe for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detecting accidental bit-flips in transit or on disk</td>
+<td>Detecting tampering by an attacker</td>
+</tr>
+<tr>
+<td>Hash-table keys inside a trust boundary</td>
+<td>Hash-table keys exposed to attacker-chosen input (hash-flooding)</td>
+</tr>
+<tr>
+<td>Cache bucketing and content-addressable lookup</td>
+<td>Authentication, signatures, password hashing</td>
+</tr>
+<tr>
+<td>Catching human transcription errors in identifiers</td>
+<td>Identifier unforgeability</td>
+</tr>
+</tbody>
+</table>
+<p>When you need an adversary model — keyed hashes, MACs, cryptographic digests, AEAD — see <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>. The line between the two libraries is exactly this distinction.</p>
+<h2 id="fingerprint-vs-checksum-vs-check-digit">Fingerprint vs. checksum vs. check digit</h2>
+<p>The library is partitioned into three subfamilies, each tuned for a different job. Picking the wrong subfamily produces correct-looking output that fails the requirement.</p>
+<table>
+<thead>
+<tr>
+<th>Subfamily</th>
+<th>Operates on</th>
+<th>Optimized for</th>
+<th>Typical output</th>
+<th>Bodu namespace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fingerprint</strong></td>
+<td>Arbitrary byte buffer</td>
+<td>Even distribution and speed</td>
+<td>32–128 bits</td>
+<td><code>Bodu.IO.Hashing</code></td>
+</tr>
+<tr>
+<td><strong>Checksum</strong></td>
+<td>Arbitrary byte buffer</td>
+<td>Detecting specific error patterns</td>
+<td>16–64 bits</td>
+<td><code>Bodu.IO.Hashing.Checksums</code></td>
+</tr>
+<tr>
+<td><strong>Check digit</strong></td>
+<td>Printed character sequence</td>
+<td>Catching human transcription errors</td>
+<td>1–2 characters</td>
+<td><code>Bodu.IO.Hashing.CheckDigits</code></td>
+</tr>
+</tbody>
+</table>
+<p>A fingerprint such as <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a> distributes evenly but offers no guarantees about which error patterns it catches. A checksum such as <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> catches characterized error patterns but distributes poorly as a hash-table key. A check digit such as <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a> guards a printed identifier and is meaningless on a binary buffer.</p>
+<h2 id="noncryptographichashalgorithm-contract">NonCryptographicHashAlgorithm contract</h2>
+<p>Every binary hash in <code>Bodu.IO.Hashing</code> derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>. The contract is four members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Semantics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Append(ReadOnlySpan&lt;byte&gt;)</code></td>
+<td>Push more input into the running state. Idempotent across calls — equivalent to concatenating the spans and appending once.</td>
+</tr>
+<tr>
+<td><code>GetCurrentHash()</code></td>
+<td>Take a <strong>non-destructive snapshot</strong> of the current digest. The internal state continues; you can <code>Append</code> more and snapshot again.</td>
+</tr>
+<tr>
+<td><code>TryGetCurrentHash(Span&lt;byte&gt;, out int)</code></td>
+<td>Same as <code>GetCurrentHash</code> but writes into a caller-supplied buffer. Returns <code>false</code> when the destination is too small.</td>
+</tr>
+<tr>
+<td><code>Reset()</code></td>
+<td>Return the instance to its constructed initial state, ready to compute a fresh digest.</td>
+</tr>
+</tbody>
+</table>
+<p>This streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. The check-digit base classes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a> and its three derivatives <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a>) mirror the same shape over characters rather than bytes — <code>Append</code> / <code>GetCurrentCheckValue</code> (with the typed <code>GetCurrentCheckDigit</code> / <code>GetCurrentCheckDigits</code> on the derivatives) / <code>Reset</code>.</p>
+<h2 id="avalanche">Avalanche</h2>
+<p><strong>Avalanche</strong> is the property that flipping a single bit of input flips approximately half the bits of the output, and that each output bit is statistically independent of every other. A hash with good avalanche distributes keys evenly across hash-table buckets and resists trivial collisions on near-identical inputs (<code>&quot;foo1&quot;</code> vs <code>&quot;foo2&quot;</code>).</p>
+<p>Avalanche is what distinguishes a <em>fingerprint</em> (FNV-1a, MurmurHash3, CityHash, Pearson) from a <em>checksum</em> (CRC, Fletcher, Adler). Checksums are tuned for the error patterns of a channel — they can leave entire output regions sparsely populated for typical inputs. That is fine when you only want to detect a bit-flip; it is disastrous when you want a hash-table key.</p>
+<h2 id="polynomial">Polynomial</h2>
+<p>In a CRC, the <strong>polynomial</strong> is the divisor of a long polynomial division performed in <code>GF(2)</code> — the field of two elements, where addition and subtraction are both XOR. The input bytes form one big polynomial (each bit is a coefficient); dividing by the generator polynomial leaves a remainder, and that remainder is the CRC.</p>
+<p>Polynomials are written as their coefficient bit pattern. The CRC-32/ISO-HDLC polynomial <code>0x04C11DB7</code> encodes the polynomial <code>x^32 + x^26 + x^23 + x^22 + …</code> — bit 26 set, bit 23 set, and so on. The choice of polynomial dictates which error patterns the CRC is guaranteed to detect; a well-chosen 32-bit polynomial catches every burst error of length 32 or fewer and every odd number of bit-flips.</p>
+<h2 id="crc-error-detection-guarantees">CRC error-detection guarantees</h2>
+<p>A CRC of width <em>w</em> with a well-chosen generator polynomial gives concrete, provable guarantees over the error patterns a transmission or storage channel introduces. These are the properties that make CRC the checksum of choice for wire formats, and they are what a fingerprint or twin-accumulator checksum does <em>not</em> promise:</p>
+<table>
+<thead>
+<tr>
+<th>Error pattern</th>
+<th>Guarantee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Any single bit-flip</td>
+<td>Always detected.</td>
+</tr>
+<tr>
+<td>Any odd number of bit-flips</td>
+<td>Always detected, <em>provided</em> the polynomial has <code>(x + 1)</code> as a factor (true of most catalogue entries).</td>
+</tr>
+<tr>
+<td>Any burst error of length ≤ <em>w</em></td>
+<td>Always detected — the burst is shorter than the register, so it cannot divide cleanly.</td>
+</tr>
+<tr>
+<td>A burst of length <em>w</em> + 1</td>
+<td>Detected with probability <code>1 − 2^−(w−1)</code>.</td>
+</tr>
+<tr>
+<td>A longer burst</td>
+<td>Detected with probability <code>1 − 2^−w</code>.</td>
+</tr>
+<tr>
+<td>Two-bit errors anywhere in the message</td>
+<td>Detected as long as the message is shorter than the polynomial's <em>period</em> (for a primitive polynomial, <code>2^w − 1</code> bits).</td>
+</tr>
+</tbody>
+</table>
+<p>The width is the dominant lever: a 32-bit CRC leaves only one undetected error pattern in roughly four billion for an unstructured corruption, a 16-bit CRC one in 65 536. The polynomial choice is the second lever — the catalogue entries pair each name with a polynomial whose published <em>Hamming distance</em> tables state, for a given message length, the smallest number of bit-flips that can slip through undetected. Match the standard to the channel rather than picking a width in the abstract.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>These guarantees describe <em>accidental</em> corruption only. A CRC carries no adversary model — an attacker who can edit the payload can recompute the CRC, or craft a change that lands on a CRC collision, in constant time. CRC protects a channel against noise, never against tampering.</p>
+</div>
+<h2 id="crc-parameters">CRC parameters</h2>
+<p>The CRC family is one engine with five free parameters. The RevEng catalogue (Greg Cook's <em>Catalogue of parametrised CRC algorithms</em>) names them as follows; <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> exposes them with the same semantics:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Bodu property</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>width</strong></td>
+<td><code>Size</code></td>
+<td>Output bit width (1–64). Determines the register size and the final mask.</td>
+</tr>
+<tr>
+<td><strong>poly</strong></td>
+<td><code>Polynomial</code></td>
+<td>The generator polynomial, encoded as its coefficient bit pattern.</td>
+</tr>
+<tr>
+<td><strong>init</strong></td>
+<td><code>InitialValue</code></td>
+<td>The value the working register starts at before any input is consumed.</td>
+</tr>
+<tr>
+<td><strong>refin</strong></td>
+<td><code>ReflectIn</code></td>
+<td>When <code>true</code>, each input byte is bit-reversed before being fed into the register.</td>
+</tr>
+<tr>
+<td><strong>refout</strong></td>
+<td><code>ReflectOut</code></td>
+<td>When <code>true</code>, the final register is bit-reversed before the XOR-out step.</td>
+</tr>
+<tr>
+<td><strong>xorout</strong></td>
+<td><code>XOrOut</code></td>
+<td>A constant XOR-ed into the (possibly reflected) final register.</td>
+</tr>
+</tbody>
+</table>
+<p>Two variants that share <code>poly</code> and disagree on <code>refin</code>/<code>refout</code> produce completely different digests for the same input — <code>CRC-32/ISO-HDLC</code> and <code>CRC-32/BZIP2</code> are exactly that pair.</p>
+<h2 id="crc-catalogue">CRC catalogue</h2>
+<p>The <strong>CRC catalogue</strong> is the set of 112 named, parameter-fixed CRC variants Bodu ships out of the box, sourced from the RevEng project. Each entry pairs a name (<code>CRC32_ISOHDLC</code>, <code>CRC16_MODBUS</code>, <code>CRC64_XZ</code>, …) with a <code>CrcStandard</code> value bundling the five parameters above plus the width.</p>
+<p>Three ways to obtain a <code>CrcStandard</code>:</p>
+<ul>
+<li><strong>Catalogue properties</strong> — <code>CrcStandard.CRC32_ISOHDLC</code>, <code>CrcStandard.CRC16_MODBUS</code>, … for the well-known entries.</li>
+<li><strong><code>CrcStandard.Get(CrcStandards)</code></strong> — materialize any catalogue entry from the <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> enum, useful when the choice is data-driven.</li>
+<li><strong><code>CrcStandard.FromName(string)</code></strong> — look up by canonical name string.</li>
+</ul>
+<p>Custom variants (not in the catalogue) are constructed by passing the six parameters to <code>new CrcStandard(name, size, polynomial, initialValue, reflectIn, reflectOut, xorOut)</code>.</p>
+<h2 id="fletcher-twin-sum">Fletcher twin-sum</h2>
+<p>Fletcher's checksum maintains <strong>two running accumulators</strong>, A and B. A is the modular sum of all input bytes; B is the modular sum of <em>A after each byte</em>. The final digest concatenates the two.</p>
+<p>The cross-position coupling — B grows faster from a byte near the start than from the same byte near the end — is what makes Fletcher catch adjacent transpositions that a plain sum or XOR misses. <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a> differ only in the word size and the modulus. Adler-32 follows the same twin-accumulator shape with one critical change — see <em>Modular checksum</em> below.</p>
+<h2 id="modular-checksum">Modular checksum</h2>
+<p>Both Fletcher and Adler reduce their accumulators <strong>modulo</strong> some value after each byte to keep them in a fixed word size. The choice of modulus matters:</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Modulus</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fletcher-16</td>
+<td>255 (<code>2^8 - 1</code>)</td>
+<td>Largest 8-bit value; fast reduction.</td>
+</tr>
+<tr>
+<td>Fletcher-32</td>
+<td>65535 (<code>2^16 - 1</code>)</td>
+<td>Largest 16-bit value; fast reduction.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a></td>
+<td><strong>65521</strong> (largest prime ≤ <code>2^16</code>)</td>
+<td>Prime modulus catches more error patterns than the next-larger composite.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a></td>
+<td><code>2^16</code></td>
+<td>The &quot;C&quot; variant trades error coverage for a power-of-two modulus that branchlessly compiles to a bitmask.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></td>
+<td>Largest prime ≤ <code>2^32</code></td>
+<td>Wider variant of the same idea.</td>
+</tr>
+</tbody>
+</table>
+<p>Adler-32 is the canonical zlib trailer checksum.</p>
+<h2 id="twin-accumulator-error-coverage">Twin-accumulator error coverage</h2>
+<p>Both Fletcher and Adler catch every single-bit error and every adjacent transposition, and at far lower per-byte cost than a CRC. What they do <strong>not</strong> match is the CRC's burst guarantee or its uniform behaviour across the whole digest space — and both carry documented blind spots a CRC does not:</p>
+<ul>
+<li><strong>Fletcher's <code>2^k − 1</code> modulus</strong> means the value <code>0</code> and the value <code>2^k − 1</code> (here, <code>M</code>) are congruent, so a byte that should push an accumulator to <code>M</code> instead leaves it at <code>0</code>. A run of bytes that sums to a multiple of <code>M</code> can therefore go undetected, and a block of all-<code>0x00</code> bytes followed by an all-<code>0xFF</code> block of the right length can collide.</li>
+<li><strong>Adler's weakness on short inputs.</strong> Each byte first lands in accumulator <code>A</code>; <code>B</code> only accumulates the <em>running</em> <code>A</code>. For a short message <code>A</code> stays small, so <code>B</code> grows slowly and the high bits of the digest barely move — the effective digest space is much narrower than 32 bits until the message is a few hundred bytes long. This is the well-known reason Adler-32 is a poor checksum for very short payloads, and why CRC-32 is preferred there.</li>
+<li><strong>Neither catches a reordering of equal-sum blocks</strong> the way a polynomial CRC does, and neither gives a per-position burst guarantee.</li>
+</ul>
+<p>The trade is deliberate: reach for Fletcher or Adler when you control both endpoints, the channel is benign, and throughput matters; reach for CRC when you need the published burst-error guarantee or must match a wire format.</p>
+<h2 id="table-driven-evaluation">Table-driven evaluation</h2>
+<p>A naive CRC implementation processes one bit at a time. A <strong>table-driven</strong> implementation pre-computes a 256-entry lookup table for the CRC of every possible byte value at a given register position, then advances the register one byte at a time with a table lookup and an XOR. The cost is a small amount of memory (256 × <em>width-in-bytes</em> per parameter tuple); the gain is roughly an order of magnitude on throughput.</p>
+<p>Bodu's <code>Crc</code> engine builds the table lazily per <em>(width, polynomial, reflectIn)</em> tuple and caches it in <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a>. Multiple <code>Crc</code> instances that share parameters share the same table — building a hundred <code>Crc(CrcStandard.CRC32_ISOHDLC)</code> objects allocates one table, not one hundred.</p>
+<h2 id="check-digit">Check digit</h2>
+<p>A <strong>check digit</strong> is one or two characters appended to a printed identifier so a later reader can confirm it was not mis-typed. It is a <em>transcription guard</em>, not an integrity check and not an authenticator:</p>
+<ul>
+<li>It catches the error classes the algorithm was designed for — single-digit substitutions, adjacent transpositions, sometimes twin errors and jump transpositions.</li>
+<li>It does <strong>not</strong> catch deliberate forgery: anyone who knows the algorithm can compute a valid check digit for any payload they choose.</li>
+<li>It is meaningless when applied to a binary buffer; check digits are defined against a printed-character payload.</li>
+</ul>
+<p>The classic example is the Luhn check digit on the last digit of a credit-card number — if you transpose two adjacent digits, the Luhn sum changes and the card number is rejected before the network call.</p>
+<h2 id="single-character-vs-multi-character-check-digit">Single-character vs. multi-character check digit</h2>
+<p>Most check-digit schemes emit <strong>one character</strong>. Over a decimal payload — Luhn, Damm, Verhoeff, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check — the check is a decimal digit drawn from <code>0</code>–<code>9</code>, and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a> abstract base. Over an alphanumeric payload — ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 — the single check character may come from a wider alphabet (ISBN-10's <code>X</code>, for example), and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a> abstract base. Both bases, like the multi-character base below, derive from the root <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a>; everything lives in <code>Bodu.IO.Hashing.CheckDigits</code>.</p>
+<p>A few high-stakes identifiers use <strong>multi-character</strong> checks — two or more characters, often drawn from a larger alphabet:</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Check length</th>
+<th>Alphabet</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IBAN</td>
+<td>2 digits</td>
+<td>Alphanumeric (uppercase) payload, decimal check</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a> (ISO 7064 Mod-97-10)</td>
+</tr>
+<tr>
+<td>LEI</td>
+<td>2 digits</td>
+<td>Alphanumeric (uppercase) payload, decimal check</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a> (ISO 7064 Mod-97-10)</td>
+</tr>
+<tr>
+<td>ISBN-13</td>
+<td>1 digit</td>
+<td>Decimal</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn13.html">Isbn13</a></td>
+</tr>
+<tr>
+<td>ISBN-10</td>
+<td>1 character (<code>0</code>–<code>9</code> or <code>X</code>)</td>
+<td>Decimal payload, <code>X</code> permitted as check</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a></td>
+</tr>
+<tr>
+<td>CUSIP / SEDOL</td>
+<td>1 digit</td>
+<td>Alphanumeric</td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a></td>
+</tr>
+</tbody>
+</table>
+<p>Multi-character check algorithms live in <code>Bodu.IO.Hashing.CheckDigits</code> alongside the generic ISO 7064 building blocks (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2.html">Iso7064Mod11_2</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10.html">Iso7064Mod97_10</a>) and share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a> abstract base.</p>
+<h2 id="validate-vs-compute">Validate vs. compute</h2>
+<p>Every check-digit type exposes two surfaces that consumers reach for in different contexts:</p>
+<pre><code class="lang-csharp">// Single-character schemes — Bodu.IO.Hashing.CheckDigits
+char  digit = Luhn.Compute(payload);                  // payload excludes the check
+bool  ok    = Luhn.IsValid(payloadWithCheck);         // payload includes the check
+
+// Multi-character schemes — also Bodu.IO.Hashing.CheckDigits
+string check = Iban.Compute(body);                    // body excludes the two-digit check
+bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the check
+</code></pre>
+<ul>
+<li><strong>Compute</strong> runs the algorithm over a payload that does <em>not</em> yet contain the check, and emits the character(s) to append. Use it when you are minting a new identifier.</li>
+<li><strong>Validate (<code>IsValid</code>)</strong> runs the algorithm over a payload that <em>does</em> contain the check, and returns whether the check is consistent. Use it on user input.</li>
+</ul>
+<p>The streaming instance API (<code>Append</code> plus <code>GetCurrentCheckDigit</code> / <code>GetCurrentCheckDigits</code>) is available on every derivative of the base classes when you need to feed the payload in chunks.</p>
+<h2 id="transcription-error-classes">Transcription error classes</h2>
+<p>A check digit is judged by which of the documented human keying errors it catches. The four that matter, in roughly descending order of frequency, are:</p>
+<table>
+<thead>
+<tr>
+<th>Error class</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single-digit substitution</strong></td>
+<td><code>1234</code> → <code>1284</code></td>
+<td>One character mistyped. The most common error and the floor every scheme must clear.</td>
+</tr>
+<tr>
+<td><strong>Adjacent transposition</strong></td>
+<td><code>1234</code> → <code>1324</code></td>
+<td>Two neighbouring characters swapped.</td>
+</tr>
+<tr>
+<td><strong>Twin error</strong></td>
+<td><code>1**2**2</code> → <code>1**3**3</code></td>
+<td>A repeated digit changed to a different repeated digit.</td>
+</tr>
+<tr>
+<td><strong>Jump transposition</strong></td>
+<td><code>1**2**3 → 3**2**1</code></td>
+<td>Two characters one position apart swapped, across an intervening character.</td>
+</tr>
+</tbody>
+</table>
+<p>How each Bodu scheme fares — grounded in the algorithm each one implements:</p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>Single substitution</th>
+<th>Adjacent transposition</th>
+<th>Twin</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a> (mod 10)</td>
+<td>All</td>
+<td>All <strong>except</strong> <code>09 ↔ 90</code></td>
+<td>No</td>
+<td>The <code>09 ↔ 90</code> swap preserves the Luhn sum and slips through.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Damm.html">Damm</a> (quasigroup)</td>
+<td>All</td>
+<td><strong>All</strong>, including <code>09 ↔ 90</code></td>
+<td>Many</td>
+<td>Closes the one gap Luhn leaves, with a single character.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a> (dihedral D₅)</td>
+<td>All</td>
+<td>All</td>
+<td>All</td>
+<td>The widest coverage of any single decimal check digit.</td>
+</tr>
+<tr>
+<td>Mod 11 — <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a></td>
+<td>All</td>
+<td>Most</td>
+<td>Some</td>
+<td>A check value of 10 needs an extra symbol (ISBN-10 uses <code>X</code>).</td>
+</tr>
+<tr>
+<td>Mod 97-10 — <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a></td>
+<td>Effectively all</td>
+<td>Effectively all</td>
+<td>Effectively all</td>
+<td>Two check digits over a large modulus catch essentially every realistic transcription error.</td>
+</tr>
+</tbody>
+</table>
+<p>Damm and Verhoeff buy strictly better coverage than Luhn from the <em>same</em> single character; the price is a small lookup table rather than a weighted sum. Reach for Luhn only when an existing standard mandates it (payment cards, IMEI). For a free choice of a general decimal identifier, Damm is the better default, and Verhoeff better still where the table cost is acceptable.</p>
+<h2 id="endianness">Endianness</h2>
+<p>Two different bit-order questions arise in this library and they are easy to confuse:</p>
+<ul>
+<li><strong>CRC bit reflection</strong> — controlled by the <code>ReflectIn</code> and <code>ReflectOut</code> parameters on a <code>CrcStandard</code>. <code>ReflectIn = true</code> means every input byte is bit-reversed before being fed into the CRC register; <code>ReflectOut = true</code> means the final register is bit-reversed before the XOR-out step. The two together capture whether a channel transmits its bytes least-significant-bit-first (Ethernet, MODBUS, USB) or most-significant-bit-first. They are part of the algorithm, not a presentation choice — <code>CRC-32/ISO-HDLC</code> and <code>CRC-32/BZIP2</code> differ exactly here.</li>
+<li><strong>Digest byte order on the wire</strong> — the order in which the final hash word is serialized into the byte array returned by <code>GetCurrentHash</code>. This is <strong>not</strong> uniform across the library, so it is the detail most likely to trip up a cross-tool comparison:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Byte order of the digest</th>
+<th>Matches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fingerprints — FNV, CityHash, MurmurHash3, Pearson, the classic string hashes</td>
+<td><strong>Little-endian</strong></td>
+<td><code>BitConverter.ToUInt32</code> / <code>ToUInt64</code> on a little-endian platform.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></td>
+<td><strong>Little-endian</strong></td>
+<td>the width-byte register, low byte first.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <code>Fletcher32</code> / <code>Fletcher64</code></td>
+<td><strong>Big-endian</strong>, <code>B ‖ A</code></td>
+<td>the high accumulator <code>B</code> precedes <code>A</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <code>Adler32C</code> / <code>Adler64</code></td>
+<td><strong>Big-endian</strong>, <code>(B &lt;&lt; k) | A</code></td>
+<td>RFC 1950 §2.2 — the zlib trailer is written big-endian directly.</td>
+</tr>
+</tbody>
+</table>
+<p>When you compare digests across platforms or against published test vectors, confirm both: that the algorithm parameters match (for CRC, the reflection bits) and that the byte order on the wire matches the source you are comparing to. The Adler and Fletcher big-endian layout is what makes <code>GetCurrentHash</code> drop straight into a zlib trailer without a byte swap.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape of the library.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples.</li>
+<li><strong><a href="../../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> — per-algorithm walk-throughs.</li>
+<li><strong>For keyed and cryptographic hashes</strong> — SipHash, Poly1305, Tiger, ASCON, Merkle trees — see <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography topic</a></strong> — this package and its sibling Bodu.Security.Cryptography; the <a href="../topics/hashing-and-cryptography-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

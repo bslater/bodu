@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Collections.Extensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Collections.Extensions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Extensions">
+
+  <h1 id="Bodu_Collections_Extensions" data-uid="Bodu.Collections.Extensions" class="text-break">Namespace Bodu.Collections.Extensions</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Collections.Extensions</strong> holds the non-generic / shape-agnostic enumeration helpers that complement <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>. Reach for this namespace when you want recursive-descent helpers or count helpers that work against <code>IEnumerable</code> rather than <code>IEnumerable&lt;T&gt;</code>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a> — <code>CountOrDefault</code>, <code>RecursiveSelect</code> for non-generic shapes.</li>
+<li><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> — <code>[Flags]</code> value returned by a recursion-control callback to decide, per element, whether to yield it, descend into its children, and whether to stop: the primitive flags <code>None</code>, <code>Yield</code>, <code>Recurse</code>, <code>Skip</code>, <code>Break</code>, <code>Exit</code>, and the named combinations <code>YieldOnly</code>, <code>RecurseOnly</code>, <code>YieldAndRecurse</code>, <code>SkipOnly</code>, <code>SkipAndRecurse</code>, <code>YieldAndBreak</code>, <code>SkipAndBreak</code>, <code>YieldAndExit</code>, <code>SkipAndExit</code>. Shared with the typed <code>RecursiveSelect</code> overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Extensions;
+
+// Counts a non-generic IEnumerable — O(1) when the source is an ICollection, otherwise it enumerates.
+int n = source.CountOrDefault();
+
+// Recursive-select over a non-generic IEnumerable: the child selector and the result are untyped.
+IEnumerable flattened = root.RecursiveSelect(node =&gt; ((Node)node).Children);
+
+// Fine-grained descent control on the non-generic surface: yield visible nodes and descend into
+// them, skip invisible subtrees, and stop the whole walk at the first node flagged as terminal.
+IEnumerable visible = root.RecursiveSelect(
+    node =&gt; ((Node)node).Children,
+    (node, index, depth) =&gt; node,
+    node =&gt; ((Node)node).IsTerminal ? RecursiveSelectControl.YieldAndExit
+          : ((Node)node).IsVisible  ? RecursiveSelectControl.YieldAndRecurse
+                                    : RecursiveSelectControl.SkipOnly);
+</code></pre>
+<p>When the source is already an <code>IEnumerable&lt;T&gt;</code>, prefer the typed overloads in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> — the same <code>RecursiveSelectControl</code> vocabulary with strongly typed selectors and an <code>IEnumerable&lt;TResult&gt;</code> result.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Counterpart to the generic surface.</strong> Sequence helpers parameterised on <code>T</code> live in <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a>; this namespace covers the cases where the source is shape-agnostic.</li>
+<li><strong>Packaging.</strong> This extension namespace ships in the <code>Bodu.Core</code> package; the concrete collection types in the sibling <code>Bodu.Collections.*</code> namespaces ship in the <code>Bodu.Collections</code> package, except the thread-safe <code>Bodu.Collections.Generic.Concurrent</code> variants, which ship in <code>Bodu.Collections.Concurrent</code>.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, the companion <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> namespace.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.html">IEnumerableExtensions</a></h4>
+      <section><p>Provides operations over the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a> surface — counting without
+enumerating where the source is already a collection, and walking heterogeneous tree structures recursively — for
+code that has to deal with reflection-shaped or legacy sequences.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a></h4>
+      <section><p>Represents composable control flags for how an element is processed during recursive selection.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface IStreamCipher | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface IStreamCipher | BODU ">
+    
+    <meta name="description" content="Defines a synchronous, additive stream cipher engine that produces a key- and nonce-dependent keystream in fixed-size blocks.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.IStreamCipher">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_IStreamCipher" data-uid="Bodu.Security.Cryptography.IStreamCipher" class="text-break">Interface IStreamCipher</h1>
+  <div class="markdown level0 summary"><p>Defines a synchronous, additive stream cipher engine that produces a key- and nonce-dependent keystream in
+fixed-size blocks.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">IDisposable.Dispose()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_IStreamCipher_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IStreamCipher : IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_IStreamCipher_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Implementations represent primitives such as ChaCha20, Salsa20, Rabbit, and HC-128. Unlike
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, a stream cipher never observes plaintext: it emits a pseudo-random keystream that the
+caller combines with the message by XOR. Confidentiality therefore depends entirely on never reusing a
+<code>(key, nonce)</code> pair, because the XOR of two ciphertexts produced under the same keystream reveals the XOR of
+their plaintexts.
+</p>
+<p>
+The key and nonce are bound when the implementation is constructed, mirroring the way an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>
+binds its key. The engine owns its own keystream position: each call to
+<a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.NextKeystreamBlock.html#Bodu_Security_Cryptography_IStreamCipher_NextKeystreamBlock_System_Span_System_Byte__">NextKeystreamBlock(Span&lt;byte&gt;)</a> emits the next block and advances the internal counter or
+state. This keeps the abstraction uniform across ciphers with a seekable block counter (ChaCha20, Salsa20) and those
+whose keystream is produced by an evolving internal state with no random access (Rabbit, HC-128). Partial-block
+buffering across calls is the responsibility of the higher-level <span class="xref">Bodu.Security.Cryptography.StreamCipherTransform</span>.
+</p>
+<p>
+<strong>How this fits with the rest of the library.</strong> <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a> is the stream-cipher
+counterpart to <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>. A <span class="xref">Bodu.Security.Cryptography.StreamCipherTransform</span> wraps it to satisfy the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> contract, and a <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a>
+composes the two so callers can use it through a <code>CryptoStream</code> like any other algorithm in this library.
+</p>
+<p>
+Implementations must release all sensitive key material when <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">Dispose()</a> is called.
+</p>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_IStreamCipher_BlockSize" data-uid="Bodu.Security.Cryptography.IStreamCipher.BlockSize">
+          <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.BlockSize.html#Bodu_Security_Cryptography_IStreamCipher_BlockSize">BlockSize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the keystream block size, in bytes (for example, 64 bytes for ChaCha20).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_IStreamCipher_NextKeystreamBlock_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.IStreamCipher.NextKeystreamBlock(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.NextKeystreamBlock.html#Bodu_Security_Cryptography_IStreamCipher_NextKeystreamBlock_System_Span_System_Byte__">NextKeystreamBlock(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits the next keystream block and advances the engine's internal counter or state.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></div>
+      <div><span class="xref">StreamCipherTransform</span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

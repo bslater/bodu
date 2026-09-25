@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Formats.Outlook | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Formats.Outlook | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Formats.Outlook">
+
+  <h1 id="Bodu_Formats_Outlook" data-uid="Bodu.Formats.Outlook" class="text-break">Namespace Bodu.Formats.Outlook</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-outlook.svg" alt="Bodu.Formats.Outlook"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Formats.Outlook</strong> is the single, flattened namespace shared by three packages: the container-free MAPI value model (<code>Bodu.Formats.Outlook</code>) and the two read-only readers built on it — <code>Bodu.Formats.Outlook.Msg</code>, which opens one message (<code>.msg</code> / MS-OXMSG) over the <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a> OLE2 container, and <code>Bodu.Formats.Outlook.Pst</code>, which opens a personal-folders mail store (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <a class="xref" href="Bodu.IO.Pst.html">Bodu.IO.Pst</a> node database. The package names keep their suffixes; the public types do not — a <code>.msg</code> recipient and a <code>.pst</code> recipient are the same <a class="xref" href="Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> over the same <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>, and code written against one reader's property surface carries over to the other. The container-specific decoders stay <code>internal</code> under <code>Bodu.Formats.Outlook.Msg</code> and <code>Bodu.Formats.Outlook.Pst</code>.</p>
+<p>Both readers open a disposable <strong>session</strong> that owns the container, decode every MAPI property into the shared model, and layer curated conveniences (subject, sender, time stamps, recipients, attachments, the text / HTML / compressed-RTF bodies, named-property resolution) over the raw tag-addressed surface. Neither writes, emulates a MAPI session, or de-encapsulates RTF.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/outlook/index.html">Introduction</a></strong> — the three packages, the &quot;which package do I need&quot; table, and the headline types.</li>
+<li><strong><a href="../docs/outlook/concepts.html">Core concepts</a></strong> — property-tag anatomy, named-property resolution, recipients and attachment methods, code pages, compressed RTF, validation levels, and the resource limits.</li>
+<li><strong><a href="../docs/outlook/getting-started.html">Getting started</a></strong> — install and minimal samples for both readers.</li>
+<li><strong><a href="../guides/outlook/reading-msg-files.html">Reading <code>.msg</code> files</a></strong> — opening a message, the conveniences, recipients, attachments, nested messages.</li>
+<li><strong><a href="../guides/outlook/properties-and-named-properties.html">Properties and named properties</a></strong> — the raw property surface, tags and wire types, resolving named properties.</li>
+<li><strong><a href="../docs/io-pst/index.html">Bodu.IO.Pst introduction</a></strong> and the <strong><a href="../samples/io-pst.html">PST runnable sample</a></strong> — the container beneath the mail-store reader.</li>
+<li><strong><a href="../docs/topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> — the readers alongside their containers.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Value model — <code>Bodu.Formats.Outlook</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a> — the 32-bit tag (MS-OXCDATA §2.11.4): <code>Id</code> in the high word, base <code>Type</code> in the low word with the <code>0x1000</code> multi-valued flag stripped, <code>IsMultiValued</code>, and <code>IsNamed</code> (identifier ≥ <code>0x8000</code>); constructed from <code>(id, type)</code> or a raw <code>uint</code>, or via <code>ForMultiValue(id, elementType)</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyType.html">MapiPropertyType</a> — the 16-bit wire-type codes: <code>Int16</code> / <code>Int32</code> / <code>Int64</code>, <code>Float</code> / <code>Double</code>, <code>Currency</code>, <code>AppTime</code>, <code>ErrorCode</code>, <code>Boolean</code>, <code>Object</code>, <code>String8</code> (code-paged) / <code>Unicode</code>, <code>SystemTime</code>, <code>Guid</code>, <code>Binary</code>, plus <code>Unspecified</code> / <code>Null</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a> — one decoded property: <code>Tag</code> and a CLR <code>Value</code> (arrays for multi-valued properties).</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a> — the tag-addressed, first-occurrence-ordered bag on every object. <code>TryGetValue</code> by tag or by identifier, <code>GetAll(id)</code>, <code>Contains(tag)</code>, <code>Count</code>, the shared <code>Empty</code>, and the typed accessors that probe the plausible wire types and return <code>null</code> when absent: <code>GetString</code>, <code>GetInt32</code>, <code>GetInt64</code>, <code>GetBoolean</code>, <code>GetDouble</code>, <code>GetDateTime</code>, <code>GetGuid</code>, <code>GetBinary</code>, <code>GetStringArray</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a> — the durable identity behind a named identifier: a property-set GUID with either a numeric <code>Id</code> or a string <code>Name</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyIds.html">MapiPropertyIds</a> — the curated <code>PidTag*</code> identifiers the conveniences use (<code>Subject</code>, <code>SenderName</code>, <code>ClientSubmitTime</code>, <code>Body</code>, <code>Html</code>, <code>RtfCompressed</code>, <code>AttachMethod</code>, <code>AttachLongFilename</code>, <code>MessageCodepage</code>, <code>ContainerClass</code>, …); any property is reachable by raw identifier regardless.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> — one recipient: <code>RecipientType</code>, <code>DisplayName</code>, <code>EmailAddress</code>, <code>AddressType</code>, and its <code>Properties</code>. <a class="xref" href="Bodu.Formats.Outlook.OutlookRecipientType.html">OutlookRecipientType</a> — <code>Originator</code> / <code>To</code> / <code>Cc</code> / <code>Bcc</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookAttachmentMethod.html">OutlookAttachmentMethod</a> — <code>None</code> / <code>ByValue</code> / <code>ByReference</code> / <code>ByReferenceResolve</code> / <code>ByReferenceOnly</code> / <code>EmbeddedMessage</code> / <code>Ole</code>.</li>
+</ul>
+<p><strong>Message session — <code>Bodu.Formats.Outlook.Msg</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> — the disposable <code>.msg</code> session. Factories <code>OpenRead</code> (path / <code>Stream</code>) and <code>Open(Stream, options, leaveOpen)</code>, the cheap <code>IsMsgFile</code> probe; <code>Properties</code>; the conveniences <code>Subject</code> (prefix marker stripped), <code>SenderName</code>, <code>SenderEmailAddress</code>, <code>MessageClass</code>, <code>InternetMessageId</code>, <code>TransportMessageHeaders</code>, <code>SentTime</code>, <code>ReceivedTime</code>; <code>Recipients</code> and <code>Attachments</code> (lazy, storage-index order); <code>BodyText</code> / <code>BodyHtml</code> / <code>BodyRtf</code>; <code>TryGetNamedPropertyId</code> / <code>TryGetPropertyName</code> over the <code>__nameid_version1.0</code> mapping shared with nested messages; <code>EmbeddedDepth</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.html">OutlookAttachment</a> — one attachment: <code>Method</code> (inferred as <code>ByValue</code> when a payload exists but the property is absent), <code>FileName</code>, <code>ContentId</code>, <code>MimeTag</code>, <code>Size</code>; <code>OpenContentStream()</code> for a by-value payload, <code>OpenMessage()</code> for an embedded message (a nested session sharing the root's container — disposing it is a no-op).</li>
+</ul>
+<p><strong>Mail-store session — <code>Bodu.Formats.Outlook.Pst</code></strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> — the disposable <code>.pst</code> session. Factories <code>OpenRead</code> (path / <code>Stream</code>) and <code>Open(Stream, options, leaveOpen)</code>, the <code>IsPstFile</code> probe; <code>Properties</code>, <code>DisplayName</code>, <code>RootFolder</code>; the store-wide <code>TryGetNamedPropertyId</code> / <code>TryGetPropertyName</code> over the name-to-id map node. Single-threaded; every view is bound to the session's lifetime.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a> — one folder: <code>DisplayName</code>, <code>ContainerClass</code>, the declared <code>MessageCount</code> / <code>UnreadCount</code>, <code>HasSubfolders</code>; the streaming <code>EnumerateSubfolders</code> (search folders excluded), <code>EnumerateMessages</code>, and <code>EnumerateAssociatedMessages</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a> — one message: the same convenience surface as <code>OutlookMessage</code> (<code>Subject</code>, <code>SenderName</code>, <code>MessageClass</code>, <code>InternetMessageId</code>, <code>TransportMessageHeaders</code>, the time stamps), <code>Recipients</code> (recipient-table order), <code>Attachments</code>, the three bodies, <code>EmbeddedDepth</code>.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMailAttachment.html">OutlookMailAttachment</a> — one attachment with the same surface as <code>OutlookAttachment</code>; <code>OpenContentStream()</code> streams a deferred payload block by block, <code>OpenMessage()</code> returns the embedded <code>OutlookMailMessage</code> with code-page inheritance.</li>
+</ul>
+<p><strong>Options</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a> — <code>ValidationLevel</code> (<a class="xref" href="Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>, <code>Compatible</code>), <code>ReadStrategy</code> (<a class="xref" href="Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a>, <code>Buffered</code>), <code>DecompressRtf</code> (<code>true</code>), <code>MaxEmbeddedMessageDepth</code> (16), <code>MaxDecompressedRtfBytes</code> (64 MiB), <code>MaxInlineAttachmentBytes</code> (1 MiB).</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a> — <code>ValidationLevel</code> (<a class="xref" href="Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a>, <code>Compatible</code>), <code>BlockCacheSize</code> (256; <code>0</code> disables), <code>DecompressRtf</code> (<code>true</code>), <code>MaxNodeDataLength</code> (256 MiB), <code>MaxEmbeddedMessageDepth</code> (16), <code>MaxDecompressedRtfBytes</code> (64 MiB), <code>MaxInlineAttachmentBytes</code> (1 MiB).</li>
+</ul>
+<p><strong>Errors</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a> — the family base; catch it to handle both formats.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> — not a compound file, a malformed container (the <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> is wrapped as <code>InnerException</code>), an MS-OXMSG violation under strict validation, or a tripped depth / RTF limit.</li>
+<li><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> — a messaging-level MS-PST violation (an invalid table row under strict validation, a malformed name-to-id map, a tripped limit). Container corruption is not wrapped: it propagates as the <a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a> family, and a failed open throws <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> or <a class="xref" href="Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> directly.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+// Value model: address a property by tag, or by identifier through a typed accessor.
+var subjectTag = new MapiPropertyTag(MapiPropertyIds.Subject, MapiPropertyType.Unicode);
+Console.WriteLine($&quot;{subjectTag} named={subjectTag.IsNamed} multi={subjectTag.IsMultiValued}&quot;);   // 0x0037001F named=False multi=False
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+// .msg: open, read the conveniences, save the by-value attachments.
+using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
+Console.WriteLine($&quot;{message.Subject} — {message.SenderName} ({message.SentTime:u})&quot;);
+
+foreach (OutlookAttachment attachment in message.Attachments)
+{
+    if (attachment.Method != OutlookAttachmentMethod.ByValue)
+        continue;
+
+    using Stream content = attachment.OpenContentStream();
+    using FileStream target = File.Create(attachment.FileName ?? &quot;attachment.bin&quot;);
+    content.CopyTo(target);
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+// .pst: walk the folder hierarchy and resolve a named property store-wide.
+using var store = OutlookMailStore.OpenRead(&quot;archive.pst&quot;);
+
+var keywords = new MapiNamedProperty(new Guid(&quot;00020329-0000-0000-C000-000000000046&quot;), &quot;Keywords&quot;);
+store.TryGetNamedPropertyId(keywords, out ushort keywordsId);
+
+foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+{
+    foreach (OutlookMailMessage item in folder.EnumerateMessages())
+    {
+        string[] categories = item.Properties.GetStringArray(keywordsId) ?? Array.Empty&lt;string&gt;();
+        Console.WriteLine($&quot;{folder.DisplayName}: {item.Subject} [{string.Join(&quot;, &quot;, categories)}]&quot;);
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+// Options and errors: strict validation, tighter limits, and the two failure surfaces.
+var options = new OutlookMailStoreReaderOptions
+{
+    ValidationLevel = PstValidationLevel.Strict,
+    MaxEmbeddedMessageDepth = 4,
+    MaxInlineAttachmentBytes = 256 * 1024,
+};
+
+try
+{
+    using var store = OutlookMailStore.Open(File.OpenRead(&quot;suspect.pst&quot;), options);
+    Console.WriteLine(store.DisplayName);
+}
+catch (PstFileException ex)          { Console.WriteLine($&quot;container: {ex.Error}&quot;); }
+catch (OutlookPstFormatException ex) { Console.WriteLine($&quot;messaging: {ex.Message}&quot;); }
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>One namespace, three packages.</strong> Install <code>Bodu.Formats.Outlook.Msg</code> or <code>Bodu.Formats.Outlook.Pst</code> for a format; both reference <code>Bodu.Formats.Outlook</code> transitively. Reference the model package alone from a library that only handles properties.</li>
+<li><strong>Conveniences never throw for absence.</strong> <code>Subject</code>, <code>SenderName</code>, the time stamps, <code>FileName</code>, and the rest return <code>null</code> when the property is missing; the typed <code>Get*</code> accessors do the same. Only structural violations and tripped limits raise the format exceptions.</li>
+<li><strong>Code pages.</strong> <code>String8</code> properties decode through the object's message code page, then its internet code page, then Windows-1252, with child objects inheriting; the readers register <code>CodePagesEncodingProvider</code> so Windows code pages resolve on every platform.</li>
+<li><strong>Compressed RTF is bounded.</strong> <code>BodyRtf</code> decompresses <code>PidTagRtfCompressed</code> (MS-OXRTFCP) on first access; the declared size lies outside the payload's checksum, so <code>MaxDecompressedRtfBytes</code> is enforced before allocation at every validation level. Set <code>DecompressRtf = false</code> to keep the raw payload only.</li>
+<li><strong>Large attachments stream.</strong> A by-value payload above <code>MaxInlineAttachmentBytes</code> is left in the container and served only through <code>OpenContentStream()</code> — in the <code>.msg</code> reader sector by sector under <code>CompoundReadStrategy.Streaming</code>, in the <code>.pst</code> reader block by block always.</li>
+<li><strong>Two error styles.</strong> The <code>.msg</code> reader wraps container failures in <a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>; the <code>.pst</code> reader lets <a class="xref" href="Bodu.IO.Pst.PstFileException.html">PstFileException</a> propagate and reserves <a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> for messaging-level violations. Catch <a class="xref" href="Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a> for the family and the container family beneath it.</li>
+<li><strong>See also:</strong> the <a href="../docs/outlook/index.html">introduction</a>, <a href="../docs/outlook/concepts.html">core concepts</a>, and <a href="../docs/outlook/getting-started.html">getting started</a>; the <a href="../guides/outlook/index.html">Bodu.Formats.Outlook guides</a>; and the containers <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a> and <a class="xref" href="Bodu.IO.Pst.html">Bodu.IO.Pst</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a></h4>
+      <section><p>Represents a single decoded MAPI property: a <a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a> paired with its CLR value.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a></h4>
+      <section><p>Provides a read-only, tag-addressed collection of decoded MAPI properties with typed convenience accessors.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyIds.html">MapiPropertyIds</a></h4>
+      <section><p>Provides curated well-known MAPI property identifiers (the <code>PidTag*</code> constants of MS-OXPROPS).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookAttachment.html">OutlookAttachment</a></h4>
+      <section><p>Represents one attachment of an <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a>: a typed view over the attachment storage's decoded
+properties, with access to the by-value payload or the nested attached message.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a></h4>
+      <section><p>Represents an error raised when Outlook-format content is structurally invalid or cannot be decoded.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMailAttachment.html">OutlookMailAttachment</a></h4>
+      <section><p>Represents one attachment of an <a class="xref" href="Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a>: a typed view over the attachment object's decoded
+properties, with access to the by-value payload or the nested attached message.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a></h4>
+      <section><p>Represents one folder of a mail store: its decoded properties and streaming access to its subfolders and messages.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a></h4>
+      <section><p>Represents one message of a mail store: its decoded properties with typed conveniences over the well-known scalars.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a></h4>
+      <section><p>Provides a disposable, read-only session over an Outlook personal-folders mail store (a <code>.pst</code> file, MS-PST
+Unicode or ANSI format): the store properties, the folder hierarchy, and the messages within it, decoded into the
+shared MAPI value model.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a></h4>
+      <section><p>Controls how an <a class="xref" href="Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> reads its PST container and decodes message content.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a></h4>
+      <section><p>Provides a disposable, read-only session over an Outlook message (<code>.msg</code> / MS-OXMSG), exposing every decoded
+MAPI property together with curated conveniences for the common message fields.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a></h4>
+      <section><p>Controls how an <a class="xref" href="Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> opens its container and handles malformed content.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></h4>
+      <section><p>Represents an error raised when a <code>.msg</code> file is structurally invalid or violates the MS-OXMSG format.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></h4>
+      <section><p>Represents a violation of the Outlook personal-folders messaging conventions (MS-PST) while reading a mail store.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a></h4>
+      <section><p>Represents one recipient of a message: a typed view over the recipient's decoded properties.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a></h4>
+      <section><p>Represents the identity of a MAPI named property: a property-set GUID combined with either a numeric identifier or a
+string name.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a></h4>
+      <section><p>Represents a 32-bit MAPI property tag: a 16-bit property identifier in the high word and a 16-bit property type in
+the low word.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.MapiPropertyType.html">MapiPropertyType</a></h4>
+      <section><p>Specifies the 16-bit MAPI property type codes (the <code>PT_*</code> constants) carried in the low word of a
+<a class="xref" href="Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookAttachmentMethod.html">OutlookAttachmentMethod</a></h4>
+      <section><p>Specifies how an attachment's content is stored or referenced (the <code>PidTagAttachMethod</code> values).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Formats.Outlook.OutlookRecipientType.html">OutlookRecipientType</a></h4>
+      <section><p>Specifies how a recipient participates in a message (the <code>PidTagRecipientType</code> values).</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

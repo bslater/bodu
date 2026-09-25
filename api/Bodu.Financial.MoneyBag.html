@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class MoneyBag | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class MoneyBag | BODU ">
+    
+    <meta name="description" content="Aggregates monetary balances across multiple currencies. Immutable; every mutator returns a new instance.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.MoneyBag">
+
+
+
+  <h1 id="Bodu_Financial_MoneyBag" data-uid="Bodu.Financial.MoneyBag" class="text-break">Class MoneyBag</h1>
+  <div class="markdown level0 summary"><p>Aggregates monetary balances across multiple currencies. Immutable; every mutator returns a new instance.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">MoneyBag</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Bodu.Financial.Money.html">Money</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.dll</h6>
+  <h5 id="Bodu_Financial_MoneyBag_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class MoneyBag : IEquatable&lt;MoneyBag&gt;, IEnumerable&lt;Money&gt;, IEnumerable</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_MoneyBag_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> is the multi-currency aggregate used to model portfolios, ledger totals that span
+currencies, FX positions, or any other context where amounts in different currencies must be tracked together but
+not silently merged. Zero balances are pruned automatically on every operation.
+</p>
+<p>
+Enumeration yields one <a class="xref" href="Bodu.Financial.Money.html">Money</a> per non-zero currency, in ISO-code lexicographic order so the iteration
+is stable and reproducible across runs.
+</p>
+<p>
+JSON serialization ships in the companion <code>Bodu.Financial.Serialization.Json</code> package; the type carries no
+<code>[JsonConverter]</code> attribute, so register the financial converters on the target <code>JsonSerializerOptions</code>
+via its <code>AddFinancialJsonConverters</code> extension.
+</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+// Every mutator returns a new bag; same-currency amounts are summed automatically.
+MoneyBag portfolio = MoneyBag.Empty
+    .Add(new Money(1_000m, CurrencyCode.USD))
+    .Add(new Money(250m, CurrencyCode.USD))      // folds into the USD slot -&gt; 1,250.00 USD
+    .Add&lt;EUR&gt;(new Money&lt;EUR&gt;(500m));             // typed overload
+
+// Merge two bags, summing per currency.
+MoneyBag combined = portfolio.Combine(new MoneyBag([new Money(200m, CurrencyCode.GBP)]));
+
+// Read a single currency back, typed and null-safe.
+Money&lt;USD&gt;? usd = combined.GetBalance&lt;USD&gt;();    // 1,250.00 USD
+int currencies = combined.Count;                 // 3 (USD, EUR, GBP)</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag__ctor" data-uid="Bodu.Financial.MoneyBag.#ctor">
+          <a class="xref" href="Bodu.Financial.MoneyBag.-ctor.html#Bodu_Financial_MoneyBag__ctor">MoneyBag()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> class.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag__ctor_System_Collections_Generic_IEnumerable_Bodu_Financial_Money__" data-uid="Bodu.Financial.MoneyBag.#ctor(System.Collections.Generic.IEnumerable{Bodu.Financial.Money})">
+          <a class="xref" href="Bodu.Financial.MoneyBag.-ctor.html#Bodu_Financial_MoneyBag__ctor_System_Collections_Generic_IEnumerable_Bodu_Financial_Money__">MoneyBag(IEnumerable&lt;Money&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> class from a sequence of <a class="xref" href="Bodu.Financial.Money.html">Money</a>
+balances, summing amounts with the same currency.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Empty" data-uid="Bodu.Financial.MoneyBag.Empty">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Empty.html">Empty</a>
+        </td>
+        <td class="markdown level1 summary"><p>The shared empty bag instance.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Balances" data-uid="Bodu.Financial.MoneyBag.Balances">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Balances.html#Bodu_Financial_MoneyBag_Balances">Balances</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a read-only view of the balance map keyed by <a class="xref" href="Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>, in ISO-code lexicographic order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Count" data-uid="Bodu.Financial.MoneyBag.Count">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Count.html#Bodu_Financial_MoneyBag_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of distinct currencies carrying a non-zero balance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_IsEmpty" data-uid="Bodu.Financial.MoneyBag.IsEmpty">
+          <a class="xref" href="Bodu.Financial.MoneyBag.IsEmpty.html#Bodu_Financial_MoneyBag_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this bag carries no balances.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Add_Bodu_Financial_Money_" data-uid="Bodu.Financial.MoneyBag.Add(Bodu.Financial.Money)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Add.html#Bodu_Financial_MoneyBag_Add_Bodu_Financial_Money_">Add(Money)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new bag with <code class="paramref">amount</code> added to the balance for its currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Add__1_Bodu_Financial_Money___0__" data-uid="Bodu.Financial.MoneyBag.Add``1(Bodu.Financial.Money{``0})">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Add.html#Bodu_Financial_MoneyBag_Add__1_Bodu_Financial_Money___0__">Add&lt;TCurrency&gt;(Money&lt;TCurrency&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new bag with the typed <code class="paramref">amount</code> added to the balance for its currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Combine_Bodu_Financial_MoneyBag_" data-uid="Bodu.Financial.MoneyBag.Combine(Bodu.Financial.MoneyBag)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Combine.html#Bodu_Financial_MoneyBag_Combine_Bodu_Financial_MoneyBag_">Combine(MoneyBag)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new bag containing the union of this bag's balances and <code class="paramref">other</code>'s, summing
+per-currency amounts.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertToWithAudit__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_MoneyBagConversionRoundingPolicy_" data-uid="Bodu.Financial.MoneyBag.ConvertToWithAudit``1(Bodu.Financial.ExchangeRates.IDatedRateProvider,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions,Bodu.Financial.MoneyBagConversionRoundingPolicy)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertToWithAudit.html#Bodu_Financial_MoneyBag_ConvertToWithAudit__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_MoneyBagConversionRoundingPolicy_">ConvertToWithAudit&lt;TTarget&gt;(IDatedRateProvider, DateOnly, RateLookupOptions?, MoneyBagConversionRoundingPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency and returns the audit metadata describing which observation
+was used for each per-currency line.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(Bodu.Financial.ExchangeRates.IDatedRateProvider,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">ConvertTo&lt;TTarget&gt;(IDatedRateProvider, DateOnly, RateLookupOptions?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency by resolving every non-target balance through a dated
+provider at the supplied valuation date and options. Uses the
+<a class="xref" href="Bodu.Financial.MoneyBagConversionRoundingPolicy.html#Bodu_Financial_MoneyBagConversionRoundingPolicy_SumRawThenRound">SumRawThenRound</a> policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_MoneyBagConversionRoundingPolicy_" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(Bodu.Financial.ExchangeRates.IDatedRateProvider,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions,Bodu.Financial.MoneyBagConversionRoundingPolicy)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_MoneyBagConversionRoundingPolicy_">ConvertTo&lt;TTarget&gt;(IDatedRateProvider, DateOnly, RateLookupOptions?, MoneyBagConversionRoundingPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency through a dated provider, using the supplied rounding
+policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IRateProvider_" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(Bodu.Financial.ExchangeRates.IRateProvider)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IRateProvider_">ConvertTo&lt;TTarget&gt;(IRateProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency by applying the supplied rate provider to every non-target
+balance and aggregating into the destination precision per
+<a class="xref" href="Bodu.Financial.MoneyBagConversionRoundingPolicy.html#Bodu_Financial_MoneyBagConversionRoundingPolicy_SumRawThenRound">SumRawThenRound</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IRateProvider_Bodu_Financial_MoneyBagConversionRoundingPolicy_" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(Bodu.Financial.ExchangeRates.IRateProvider,Bodu.Financial.MoneyBagConversionRoundingPolicy)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_Bodu_Financial_ExchangeRates_IRateProvider_Bodu_Financial_MoneyBagConversionRoundingPolicy_">ConvertTo&lt;TTarget&gt;(IRateProvider, MoneyBagConversionRoundingPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency using the explicit rounding policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_System_Func_System_String_System_String_System_Decimal__" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(System.Func{System.String,System.String,System.Decimal})">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_System_Func_System_String_System_String_System_Decimal__">ConvertTo&lt;TTarget&gt;(Func&lt;string, string, decimal&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency using a delegate-based rate lookup.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_ConvertTo__1_System_Func_System_String_System_String_System_Decimal__Bodu_Financial_MoneyBagConversionRoundingPolicy_" data-uid="Bodu.Financial.MoneyBag.ConvertTo``1(System.Func{System.String,System.String,System.Decimal},Bodu.Financial.MoneyBagConversionRoundingPolicy)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.ConvertTo.html#Bodu_Financial_MoneyBag_ConvertTo__1_System_Func_System_String_System_String_System_Decimal__Bodu_Financial_MoneyBagConversionRoundingPolicy_">ConvertTo&lt;TTarget&gt;(Func&lt;string, string, decimal&gt;, MoneyBagConversionRoundingPolicy)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts the entire bag to a single target currency using a delegate-based rate lookup and the supplied rounding
+policy.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Equals_Bodu_Financial_MoneyBag_" data-uid="Bodu.Financial.MoneyBag.Equals(Bodu.Financial.MoneyBag)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Equals.html#Bodu_Financial_MoneyBag_Equals_Bodu_Financial_MoneyBag_">Equals(MoneyBag?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two bags carry the same balances.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Equals_System_Object_" data-uid="Bodu.Financial.MoneyBag.Equals(System.Object)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Equals.html#Bodu_Financial_MoneyBag_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified object is equal to the current object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_FromBalances_System_Collections_Generic_IEnumerable_Bodu_Financial_Money__" data-uid="Bodu.Financial.MoneyBag.FromBalances(System.Collections.Generic.IEnumerable{Bodu.Financial.Money})">
+          <a class="xref" href="Bodu.Financial.MoneyBag.FromBalances.html#Bodu_Financial_MoneyBag_FromBalances_System_Collections_Generic_IEnumerable_Bodu_Financial_Money__">FromBalances(IEnumerable&lt;Money&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> from a sequence of balances, summing amounts with the same ISO code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_GetBalance_Bodu_Financial_Currencies_CurrencyCode_" data-uid="Bodu.Financial.MoneyBag.GetBalance(Bodu.Financial.Currencies.CurrencyCode)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.GetBalance.html#Bodu_Financial_MoneyBag_GetBalance_Bodu_Financial_Currencies_CurrencyCode_">GetBalance(CurrencyCode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the balance for the currency identified by <code class="paramref">code</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the
+bag has no entry for that currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_GetBalance_Bodu_Financial_Currencies_CurrencyInfo_" data-uid="Bodu.Financial.MoneyBag.GetBalance(Bodu.Financial.Currencies.CurrencyInfo)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.GetBalance.html#Bodu_Financial_MoneyBag_GetBalance_Bodu_Financial_Currencies_CurrencyInfo_">GetBalance(CurrencyInfo)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the balance for <code class="paramref">currency</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the bag has no entry for
+that currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_GetBalance__1" data-uid="Bodu.Financial.MoneyBag.GetBalance``1">
+          <a class="xref" href="Bodu.Financial.MoneyBag.GetBalance.html#Bodu_Financial_MoneyBag_GetBalance__1">GetBalance&lt;TCurrency&gt;()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the typed balance for <code class="typeparamref">TCurrency</code>, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_GetEnumerator" data-uid="Bodu.Financial.MoneyBag.GetEnumerator">
+          <a class="xref" href="Bodu.Financial.MoneyBag.GetEnumerator.html#Bodu_Financial_MoneyBag_GetEnumerator">GetEnumerator()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the non-zero balances in ISO-code lexicographic order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_GetHashCode" data-uid="Bodu.Financial.MoneyBag.GetHashCode">
+          <a class="xref" href="Bodu.Financial.MoneyBag.GetHashCode.html#Bodu_Financial_MoneyBag_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serves as the default hash function.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Of_Bodu_Financial_Money___" data-uid="Bodu.Financial.MoneyBag.Of(Bodu.Financial.Money[])">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Of.html#Bodu_Financial_MoneyBag_Of_Bodu_Financial_Money___">Of(params Money[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> from the supplied balances, summing amounts with the same ISO code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Subtract_Bodu_Financial_Money_" data-uid="Bodu.Financial.MoneyBag.Subtract(Bodu.Financial.Money)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Subtract.html#Bodu_Financial_MoneyBag_Subtract_Bodu_Financial_Money_">Subtract(Money)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new bag with <code class="paramref">amount</code> subtracted from the balance for its currency.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_Subtract__1_Bodu_Financial_Money___0__" data-uid="Bodu.Financial.MoneyBag.Subtract``1(Bodu.Financial.Money{``0})">
+          <a class="xref" href="Bodu.Financial.MoneyBag.Subtract.html#Bodu_Financial_MoneyBag_Subtract__1_Bodu_Financial_Money___0__">Subtract&lt;TCurrency&gt;(Money&lt;TCurrency&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new bag with the typed <code class="paramref">amount</code> subtracted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_TryGetBalance_Bodu_Financial_Currencies_CurrencyCode_Bodu_Financial_Money__" data-uid="Bodu.Financial.MoneyBag.TryGetBalance(Bodu.Financial.Currencies.CurrencyCode,Bodu.Financial.Money@)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.TryGetBalance.html#Bodu_Financial_MoneyBag_TryGetBalance_Bodu_Financial_Currencies_CurrencyCode_Bodu_Financial_Money__">TryGetBalance(CurrencyCode, out Money)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the balance for the currency identified by <code class="paramref">code</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_op_Addition_Bodu_Financial_MoneyBag_Bodu_Financial_Money_" data-uid="Bodu.Financial.MoneyBag.op_Addition(Bodu.Financial.MoneyBag,Bodu.Financial.Money)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.op_Addition.html#Bodu_Financial_MoneyBag_op_Addition_Bodu_Financial_MoneyBag_Bodu_Financial_Money_">operator +(MoneyBag, Money)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds a single <a class="xref" href="Bodu.Financial.Money.html">Money</a> to a bag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_op_Addition_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_" data-uid="Bodu.Financial.MoneyBag.op_Addition(Bodu.Financial.MoneyBag,Bodu.Financial.MoneyBag)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.op_Addition.html#Bodu_Financial_MoneyBag_op_Addition_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_">operator +(MoneyBag, MoneyBag)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Combines two bags.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_op_Equality_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_" data-uid="Bodu.Financial.MoneyBag.op_Equality(Bodu.Financial.MoneyBag,Bodu.Financial.MoneyBag)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.op_Equality.html#Bodu_Financial_MoneyBag_op_Equality_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_">operator ==(MoneyBag?, MoneyBag?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two bags are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_op_Inequality_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_" data-uid="Bodu.Financial.MoneyBag.op_Inequality(Bodu.Financial.MoneyBag,Bodu.Financial.MoneyBag)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.op_Inequality.html#Bodu_Financial_MoneyBag_op_Inequality_Bodu_Financial_MoneyBag_Bodu_Financial_MoneyBag_">operator !=(MoneyBag?, MoneyBag?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two bags differ.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_MoneyBag_op_Subtraction_Bodu_Financial_MoneyBag_Bodu_Financial_Money_" data-uid="Bodu.Financial.MoneyBag.op_Subtraction(Bodu.Financial.MoneyBag,Bodu.Financial.Money)">
+          <a class="xref" href="Bodu.Financial.MoneyBag.op_Subtraction.html#Bodu_Financial_MoneyBag_op_Subtraction_Bodu_Financial_MoneyBag_Bodu_Financial_Money_">operator -(MoneyBag, Money)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts a <a class="xref" href="Bodu.Financial.Money.html">Money</a> from a bag.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

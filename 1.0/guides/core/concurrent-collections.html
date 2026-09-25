@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Concurrent collections | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Concurrent collections | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="concurrent-collections">Concurrent collections</h1>
+
+<p><code>Bodu.Collections.Generic.Concurrent</code> ships four thread-safe collections. Three pair with a non-concurrent peer in <code>Bodu.Collections.Generic</code>: <code>ConcurrentCircularBuffer&lt;T&gt;</code> for fixed-capacity FIFO under multi-producer / multi-consumer load, <code>ConcurrentHashSet&lt;T&gt;</code> for an unordered set of unique elements under concurrent add / remove / lookup, and <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> for a bounded cache with policy-driven eviction under concurrent reads and writes. The fourth, <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>, has no non-concurrent peer — it is a second bounded cache that trades exactness for lock-free reads. The namespace ships in the <strong><code>Bodu.Collections.Concurrent</code></strong> package (which depends on <code>Bodu.Collections</code>) — install with <code>dotnet add package Bodu.Collections.Concurrent</code>.</p>
+<p>Reach for them when the same collection is accessed by multiple producers and consumers — external locking around <code>CircularBuffer&lt;T&gt;</code>, <code>HashSet&lt;T&gt;</code>, or <code>EvictingDictionary&lt;TKey,TValue&gt;</code> works, but it serialises every operation behind a single monitor. The concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.</p>
+<h2 id="concurrentcircularbuffert"><code>ConcurrentCircularBuffer&lt;T&gt;</code></h2>
+<p>A lock-free MPMC ring buffer using the <strong>Vyukov per-slot sequence protocol</strong>. Each slot carries a sequence number that producers and consumers CAS-update to coordinate without taking a global lock; the per-slot 64-byte cache-line padding prevents false sharing on x86 / x64.</p>
+<h3 id="construction">Construction</h3>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+// Default capacity 16, overwrite enabled.
+var ring = new ConcurrentCircularBuffer&lt;Message&gt;();
+
+// Capacity hint; overwrite enabled.
+var sized = new ConcurrentCircularBuffer&lt;Message&gt;(capacity: 1024);
+
+// Capacity + overwrite control.
+var strict = new ConcurrentCircularBuffer&lt;Message&gt;(capacity: 1024, allowOverwrite: false);
+
+// Pre-fill from an enumerable.
+var seeded = new ConcurrentCircularBuffer&lt;Message&gt;(initial, capacity: 1024, allowOverwrite: true);
+</code></pre>
+<p>The constraint is <code>where T : class?</code> — reference types only. Slot publication relies on <code>Volatile</code> reads / writes of object references for atomic visibility.</p>
+<p>The capacity minimum is 2; smaller values are rejected at construction because the Vyukov protocol cannot distinguish &quot;data published&quot; from &quot;slot released&quot; on a single-slot ring.</p>
+<h3 id="core-operations">Core operations</h3>
+<pre><code class="lang-csharp">ring.Enqueue(message);                      // Throws if full and !AllowOverwrite
+ring.TryEnqueue(message);                   // Returns false if full and !AllowOverwrite
+Message m = ring.Dequeue();                 // Throws if empty
+if (ring.TryDequeue(out Message? m2)) { … } // Safe variant
+Message head = ring.Peek();                 // Throws if empty
+if (ring.TryPeek(out Message? p)) { … }     // Safe variant
+ring.Clear();                                // Acquires all slots; expensive
+</code></pre>
+<p>Single-element operations (<code>Enqueue</code>, <code>Dequeue</code>, <code>Peek</code>, and their <code>Try…</code> variants) are individually atomic and lock-free on the hot path. The buffer also implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.iproducerconsumercollection-1">IProducerConsumerCollection&lt;T&gt;</a> (<code>TryAdd</code> / <code>TryTake</code> forward to <code>TryEnqueue</code> / <code>TryDequeue</code>), so it can back a <code>BlockingCollection&lt;T&gt;</code>.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>Count</code> is <strong>approximate</strong> under concurrency — the head and tail positions are read independently (no lock), so the value is a point-in-time estimate that can momentarily disagree with the true contents. <code>ToArray</code> is the way to obtain a <em>coherent</em> FIFO snapshot: it uses a per-slot seqlock that restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. <code>Clear</code> drains at most the count observed at the call (bounded so a continuous producer cannot livelock it) and does <strong>not</strong> raise <code>ItemEvicted</code>.</p>
+</div>
+<h3 id="overwrite-semantics">Overwrite semantics</h3>
+<p><code>AllowOverwrite</code> is a settable property. When <code>true</code>, a producer that finds the buffer full silently overwrites the oldest entry; the <code>ItemEvicted</code> event fires with the evicted item:</p>
+<pre><code class="lang-csharp">ring.AllowOverwrite = true;
+ring.ItemEvicted += evicted =&gt; log.Warn(&quot;Dropped {Id}&quot;, evicted.Id);
+ring.Enqueue(message);   // may evict; ItemEvicted fires after
+</code></pre>
+<p><code>ItemEvicted</code> exceptions are caught and suppressed — the event handler must not assume it can fail the producer. When <code>AllowOverwrite</code> is <code>false</code>, <code>Enqueue</code> throws <code>InvalidOperationException</code> on full; <code>TryEnqueue</code> returns <code>false</code>.</p>
+<h3 id="snapshot-enumeration">Snapshot enumeration</h3>
+<pre><code class="lang-csharp">foreach (Message m in ring)
+    Process(m);
+
+Message[] snap = ring.ToArray();
+</code></pre>
+<p>The enumerator is a true snapshot captured at the moment <code>GetEnumerator()</code> runs — concurrent mutation does not throw <code>InvalidOperationException</code> and the snapshot is consistent. <code>ToArray()</code> materialises the same snapshot; concurrent writers are not blocked beyond the point-in-time scan.</p>
+<h3 id="observable-consistency">Observable consistency</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Consistency</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Enqueue</code>, <code>TryEnqueue</code></td>
+<td>Per-element atomic</td>
+<td>Lock-free hot path</td>
+</tr>
+<tr>
+<td><code>Dequeue</code>, <code>TryDequeue</code></td>
+<td>Per-element atomic</td>
+<td>Lock-free hot path</td>
+</tr>
+<tr>
+<td><code>Peek</code>, <code>TryPeek</code></td>
+<td>Per-element atomic</td>
+<td>Lock-free</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td><strong>Approximate</strong></td>
+<td>Two independent position reads</td>
+</tr>
+<tr>
+<td><code>this[int]</code></td>
+<td>Single-slot, sequence-validated</td>
+<td>Lock-free; two index reads are <em>not</em> jointly atomic</td>
+</tr>
+<tr>
+<td><code>Clear</code></td>
+<td>Bounded drain at observed count</td>
+<td>No <code>ItemEvicted</code> raised</td>
+</tr>
+<tr>
+<td><code>ToArray</code>, enumeration</td>
+<td>Coherent snapshot (seqlock)</td>
+<td>Restarts on churn; best-effort after retry budget</td>
+</tr>
+</tbody>
+</table>
+<p>For lightweight throughput sampling, prefer <code>TryDequeue</code> / <code>TryPeek</code> over reading <code>Count</code>. The explicit <code>ICollection.SyncRoot</code> <strong>throws <code>NotSupportedException</code></strong> — matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, there is no lock object to expose — so do not attempt to <code>lock</code> on the buffer.</p>
+<h2 id="concurrenthashsett"><code>ConcurrentHashSet&lt;T&gt;</code></h2>
+<p>A thread-safe unordered set of unique elements backed by a <strong>lock-free split-ordered list</strong> (Shalev &amp; Shavit): all elements live in one Harris–Michael lock-free ordered linked list keyed by bit-reversed hash codes, and the bucket array holds lazily created shortcut pointers into it. Every operation — <code>Add</code>, <code>Remove</code>, <code>Contains</code>, <code>Count</code>, <code>Clear</code>, <code>ToArray</code> — is lock-free; growing the table copies shortcuts but never rehashes or moves a node.</p>
+<h3 id="construction-1">Construction</h3>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var set = new ConcurrentHashSet&lt;string&gt;();
+var caseInsensitive = new ConcurrentHashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+var sized = new ConcurrentHashSet&lt;string&gt;(capacity: 1024);
+var both  = new ConcurrentHashSet&lt;string&gt;(capacity: 1024, StringComparer.Ordinal);
+var seeded = new ConcurrentHashSet&lt;string&gt;(initial);
+var seededInsensitive = new ConcurrentHashSet&lt;string&gt;(initial, StringComparer.OrdinalIgnoreCase);
+</code></pre>
+<p>The constraint is <code>where T : notnull</code> — null elements are rejected, matching the BCL <code>HashSet&lt;T&gt;</code> contract.</p>
+<h3 id="core-operations-1">Core operations</h3>
+<pre><code class="lang-csharp">set.Add(&quot;alpha&quot;);        // True if added, false if already present
+set.Remove(&quot;alpha&quot;);     // True if removed, false if absent
+set.Contains(&quot;alpha&quot;);   // Pure lock-free read — never blocks a writer
+set.Clear();             // Atomic lock-free swap of the whole backing structure
+</code></pre>
+<p>Single-element operations (<code>Add</code>, <code>Remove</code>, <code>Contains</code>) are atomic per element and lock-free — a preempted thread can never stall the others, and readers never block writers, which makes the set well suited to read-heavy workloads (membership tests on a working set, deduplication of a stream).</p>
+<h3 id="snapshot-enumeration-1">Snapshot enumeration</h3>
+<pre><code class="lang-csharp">foreach (string item in set)
+    Process(item);
+
+string[] snap = set.ToArray();
+</code></pre>
+<p><code>ToArray</code> and the enumerator capture a <strong>weakly consistent</strong> snapshot via a lock-free traversal: every element present for the entire duration of the capture is included and no element appears twice, but concurrent additions and removals may or may not be observed. Enumeration is safe under concurrent mutation, never throws, and does not see writes that occur after the snapshot is taken.</p>
+<h3 id="counting">Counting</h3>
+<pre><code class="lang-csharp">int count = set.Count;                 // Lock-free interlocked counter read; exact at quiescence
+bool empty = set.IsEmpty;
+</code></pre>
+<p><code>Count</code> is a single lock-free counter read — exact whenever no mutation is in flight, and never off by more than the operations currently executing. <code>IsEmpty</code> is the equivalent lock-free emptiness probe.</p>
+<h3 id="bulk-set-operations">Bulk set operations</h3>
+<p><code>ConcurrentHashSet&lt;T&gt;</code> implements <code>ISet&lt;T&gt;</code>, so the standard <code>UnionWith</code>, <code>IntersectWith</code>, <code>ExceptWith</code>, <code>SymmetricExceptWith</code>, <code>IsSubsetOf</code>, etc. are available. They are <em>not</em> atomic — each is a sequence of per-element atomic operations over a snapshot, so concurrent mutation may interleave. For atomic snapshot-and-mutate, capture <code>ToArray()</code>, mutate the array, and bulk-update.</p>
+<h2 id="concurrentevictingdictionarytkeytvalue"><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code></h2>
+<p>The thread-safe variant of <a href="evicting-dictionary.html"><code>EvictingDictionary&lt;TKey,TValue&gt;</code></a>: a fixed-capacity dictionary that evicts per a configurable policy, backed by <strong>lock-striped segments</strong>. The key comparer's hash routes each key to one of up to 32 segments; each segment is a small, exact policy cache over its own slice of the capacity, guarded by its own monitor. In an evicting cache <em>reads are writes</em> — a lookup repositions the key for recency-tracked policies — so even <code>TryGetValue</code> takes its segment's lock; the striping keeps that contention local instead of global.</p>
+<h3 id="construction-2">Construction</h3>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+// Capacity + policy; all six EvictingDictionaryPolicy values are supported.
+var cache = new ConcurrentEvictingDictionary&lt;string, Payload&gt;(
+    capacity: 1024, EvictingDictionaryPolicy.LeastRecentlyUsed);
+
+// Optional TTL layer — same EvictingDictionaryExpiration as the non-concurrent type.
+var expiring = new ConcurrentEvictingDictionary&lt;string, Payload&gt;(
+    capacity: 1024,
+    new EvictingDictionaryExpiration(TimeSpan.FromMinutes(5), EvictingDictionaryExpirationKind.Sliding));
+</code></pre>
+<h3 id="core-operations-2">Core operations</h3>
+<pre><code class="lang-csharp">cache.Add(&quot;k&quot;, payload);                    // Add-or-replace; may evict when the segment is full
+cache.TryAdd(&quot;k&quot;, payload);                 // Add only when absent
+cache.TryGetValue(&quot;k&quot;, out var value);      // Counts as a policy access; slides a sliding TTL
+cache.Touch(&quot;k&quot;);                           // Policy access without reading or sliding
+cache.TryRemove(&quot;k&quot;, out var removed);      // Explicit removal — not an eviction, no event
+Payload p = cache.GetOrAdd(&quot;k&quot;, key =&gt; Load(key)); // Single-flight: factory runs at most once per key
+</code></pre>
+<p><code>GetOrAdd</code> runs its factory <em>inside</em> the owning segment's lock, so concurrent misses on the same key invoke the factory exactly once — the cache-stampede guard. Keep factories short and never call back into the dictionary from one.</p>
+<h3 id="approximate-global-eviction-order">Approximate global eviction order</h3>
+<p>Eviction order is <strong>exact within a segment, approximate globally</strong>: each segment runs the configured policy over its own capacity slice (the slices sum to <code>Capacity</code> exactly), so a hot segment may evict while a cold one has free slots. The global capacity bound is strict — the dictionary never stores more than <code>Capacity</code> entries. This is the same trade every production concurrent cache makes; a cache that maintained one global recency order would serialise all reads behind a single lock.</p>
+<h3 id="eviction-notifications">Eviction notifications</h3>
+<p>The <code>ItemEvicted</code> event is raised <strong>after</strong> an eviction has been committed and after the segment lock has been released, so handlers can safely call back into the dictionary. Handler exceptions are suppressed (except <code>OutOfMemoryException</code>) because the eviction cannot be undone. There is no pre-removal <code>ItemEvicting</code> event — under concurrency it could not be honored. Explicit <code>TryRemove</code> and <code>Clear</code> are not evictions and raise no event.</p>
+<h3 id="snapshots-and-counts">Snapshots and counts</h3>
+<p><code>ToArray</code>, <code>Keys</code>, <code>Values</code>, enumeration, <code>Count</code>, and <code>IsEmpty</code> acquire every segment lock for a coherent point-in-time view; <code>ApproximateCount</code> is lock-free. Enumeration iterates a detached snapshot and never throws on concurrent modification; its order is unspecified. With TTL configured, <code>Count</code> reports the raw stored count <em>including</em> expired-but-unpurged entries — call <code>RemoveExpired()</code> to reconcile, exactly as with the non-concurrent type.</p>
+<h2 id="concurrentlrucachetkeytvalue"><code>ConcurrentLruCache&lt;TKey,TValue&gt;</code></h2>
+<p>The package's second bounded cache, and the read-optimized one. Entries live in a <code>ConcurrentDictionary&lt;TKey,Node&gt;</code> and recency is tracked by three internal FIFO queues — <strong>hot</strong> (new arrivals), <strong>warm</strong> (entries that have proven reuse), and <strong>cold</strong> (entries one unaccessed pass from eviction). A successful lookup is entirely lock-free: a dictionary probe plus a single volatile write to the entry's accessed flag. Queue maintenance — promoting accessed entries, demoting idle ones, evicting from the cold end — is amortized onto writers, so at most one thread briefly cycles the queues after a mutation while other writers proceed.</p>
+<p>This is the design BitFaster.Caching and Caffeine use, and it buys read throughput by giving up exact recency ordering.</p>
+<h3 id="construction-3">Construction</h3>
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
+
+var cache = new ConcurrentLruCache&lt;string, byte[]&gt;(capacity: 1024);
+
+// Optional comparer, and an optional seed sequence.
+var ordinal = new ConcurrentLruCache&lt;string, byte[]&gt;(1024, StringComparer.OrdinalIgnoreCase);
+var seeded = new ConcurrentLruCache&lt;string, byte[]&gt;(1024, initialEntries);
+</code></pre>
+<h3 id="core-operations-3">Core operations</h3>
+<pre><code class="lang-csharp">cache.Add(&quot;k&quot;, payload);                       // Add-or-replace
+cache.TryAdd(&quot;k&quot;, payload);                    // Add only when absent
+cache.TryGetValue(&quot;k&quot;, out var value);         // Lock-free; records a hit or a miss
+cache.TryRemove(&quot;k&quot;, out var removed);         // Explicit removal - not an eviction, no event
+byte[] p = cache.GetOrAdd(&quot;k&quot;, key =&gt; Load(key));
+</code></pre>
+<h3 id="choosing-between-the-two-caches">Choosing between the two caches</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>ConcurrentLruCache&lt;TKey,TValue&gt;</code></th>
+<th><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reads</td>
+<td><strong>Lock-free</strong></td>
+<td>Take the owning segment's lock</td>
+</tr>
+<tr>
+<td>Policy</td>
+<td>Pseudo-LRU only, approximate</td>
+<td>All six <code>EvictingDictionaryPolicy</code> values, exact per segment</td>
+</tr>
+<tr>
+<td>Capacity</td>
+<td>May <strong>transiently</strong> exceed <code>Capacity</code> by at most the number of in-flight writers</td>
+<td>Strict — never more than <code>Capacity</code></td>
+</tr>
+<tr>
+<td><code>GetOrAdd</code></td>
+<td><code>ConcurrentDictionary</code> semantics: racing callers may each run the factory; one produced value is stored and returned to all</td>
+<td><strong>Single-flight</strong> — the factory runs at most once per key</td>
+</tr>
+<tr>
+<td>TTL</td>
+<td>Not supported</td>
+<td><code>EvictingDictionaryExpiration</code>, sliding or absolute</td>
+</tr>
+</tbody>
+</table>
+<p>Reach for <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> when reads dominate and approximate recency is fine. Reach for <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> when you need a policy other than LRU, a strict bound, TTL, or cache-stampede protection — a duplicated factory call that is expensive enough to matter is on its own sufficient reason.</p>
+<p>The transient overshoot is bounded by write back-pressure: a writer that observes the cache over capacity converges maintenance before returning, so sustained insert pressure against a full cache serializes writes on the maintenance lock while reads stay lock-free.</p>
+<h3 id="telemetry">Telemetry</h3>
+<p><code>HitCount</code>, <code>MissCount</code>, and <code>HitRatio</code> aggregate striped, cache-line-padded counters on demand, so the lock-free read path never contends on a shared counter. <code>EvictionCount</code> is a running total. <code>Count</code> is the backing dictionary's count; <code>ApproximateCount</code> is the lock-free estimate used by the debugger display.</p>
+<h3 id="eviction-notifications-1">Eviction notifications</h3>
+<p><code>ItemEvicted</code> is raised <strong>after</strong> the eviction is committed and all internal coordination is released, so a handler may call back into the cache. Handler exceptions are suppressed (except <code>OutOfMemoryException</code>) — the same post-commit contract the rest of the package's concurrent collections use. Explicit <code>TryRemove</code> and <code>Clear</code> are not evictions and raise no event.</p>
+<h3 id="snapshots">Snapshots</h3>
+<p><code>ToArray</code>, <code>Keys</code>, <code>Values</code>, and enumeration observe a coherent point-in-time snapshot of the backing dictionary, never throw because of concurrent modification, and have unspecified order. Explicitly removed entries keep their queue slot until the maintenance cycle drains them, so internal occupancy accounting is eventual rather than instantaneous.</p>
+<h2 id="when-not-to-use-these-collections">When <em>not</em> to use these collections</h2>
+<ul>
+<li><strong>Single-threaded scenarios.</strong> The Vyukov and split-ordered CAS coordination is a tax that single-threaded code pays for nothing. Use the non-concurrent peers in <a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code></a>.</li>
+<li><strong>Value types.</strong> <code>ConcurrentCircularBuffer&lt;T&gt;</code> constrains <code>T : class?</code> because slot publication relies on <code>Volatile</code> reference reads. For a concurrent queue of value types, use the BCL <code>ConcurrentQueue&lt;T&gt;</code>.</li>
+<li><strong>Bounded waiting.</strong> None of the collections has a blocking dequeue / blocking add. Compose with <code>BlockingCollection&lt;T&gt;</code> if you need consumer threads to block until an item is available.</li>
+<li><strong>Exact recency, a strict bound, or TTL from <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>.</strong> It offers none of the three by design; that is what <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> is for.</li>
+<li><strong>Ordered set semantics.</strong> <code>ConcurrentHashSet&lt;T&gt;</code> does not maintain insertion order. For ordered concurrent semantics, an external lock around <code>SortedSet&lt;T&gt;</code> is usually clearer than a custom concurrent implementation.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html"><code>ConcurrentCircularBuffer&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html"><code>ConcurrentHashSet&lt;T&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html"><code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentLruCache-2.html"><code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> API reference</a></li>
+<li><a href="circular-buffer.html">Circular buffer guide</a> — the non-concurrent peer.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary guide</a> — the non-concurrent peer of the evicting cache.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html"><code>Bodu.Collections.Generic.Concurrent</code> namespace landing</a></li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Configuration — Concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Configuration — Concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuration--concepts">Configuration — Concepts</h1>
+
+<p>The shared vocabulary for the <a href="configuration.html">Configuration topic</a> — the terms that cross the boundary between <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> and <a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a>. Each member library has its own deeper concepts page (linked in the closing table); this page covers only what you need to navigate both at once.</p>
+<h2 id="profile">Profile</h2>
+<p>A <strong>profile</strong> is a named, validated combination of parse, resolve, and write options. Four ship in the box, and each option type exposes them as static presets plus a <code>For(profile)</code> factory:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Intent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu</code> <em>(default)</em></td>
+<td>Permissive Bodu defaults: dotted-to-colon key mapping, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve.</td>
+</tr>
+<tr>
+<td><code>EditorConfigCompatible</code></td>
+<td>Strict alignment with EditorConfig 0.17.2: inline comments disabled, identity key mapping, only the <code>root</code> key honoured from the preamble.</td>
+</tr>
+<tr>
+<td><code>Strict</code></td>
+<td>Deterministic parsing for generated files: duplicate keys rejected, key-only properties not permitted.</td>
+</tr>
+<tr>
+<td><code>Relaxed</code></td>
+<td>Permissive parsing of user-authored files: diagnostics are collected rather than thrown, duplicates last-wins.</td>
+</tr>
+</tbody>
+</table>
+<p>Profiles are starting points, not contracts — every property on every options bag is mutable through <code>init</code> setters.</p>
+<h2 id="preamble-vs-glob-anchored-section">Preamble vs glob-anchored section</h2>
+<p>The <strong>preamble</strong> is the file's global section: properties that appear before any <code>[...]</code> header. Under the default <code>Bodu</code> profile, preamble properties act as defaults that any matching section can override; under <code>EditorConfigCompatible</code>, only the well-known <code>root</code> key is honoured.</p>
+<p>A <strong>glob-anchored section</strong> is everything else. Its header is a glob pattern (<code>[*.cs]</code>, <code>[src/**/*.cs]</code>) matched against the resolver's <strong>target path</strong> — the value passed to <code>Resolve(targetPath)</code>. Anchored patterns (those containing <code>/</code>) are tested against <code>PathRoot + targetPath</code>; unanchored patterns are tested against the filename only.</p>
+<h2 id="layered-resolution">Layered resolution</h2>
+<p>The resolver walks the document once, in source order: preamble first (when enabled), then each section whose pattern matches the target path, copying properties into a working dictionary with <strong>last-wins</strong> overwrite. There is no precedence rule beyond &quot;later wins for a given key&quot; — the same single-pass semantics EditorConfig defines. Nearer, more specific sections therefore appear later in well-organized files so they win over broad defaults.</p>
+<h2 id="configurationview-and-typed-accessors"><code>ConfigurationView</code> and typed accessors</h2>
+<p>A <strong>view</strong> (<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a>) is the resolved, flattened snapshot for one target path — a one-shot dictionary of colon-delimited keys to effective string values:</p>
+<pre><code>source text ──► ConfigurationDocument.Parse ──► ConfigurationDocument
+ConfigurationDocument ──► .Resolve(targetPath) ──► ConfigurationView
+ConfigurationView ──► .GetXxx(key) ──────────► typed value
+</code></pre>
+<p>Subsequent mutation of the originating document does not retroactively update the view — take a fresh view whenever the document or the target path changes. On top of the raw strings it layers typed getters: <code>GetString</code>, <code>GetInt32</code>, <code>GetBoolean</code>, <code>GetEnum&lt;T&gt;</code>, and <code>GetValue&lt;T&gt;</code> for any <code>ISpanParsable&lt;T&gt;</code>, each with throwing, fallback, and <code>Try</code> shapes. Lookups accept either the dotted or the colon-delimited key form; parsing uses the invariant culture so behaviour is deterministic across locales.</p>
+<h2 id="diagnostics">Diagnostics</h2>
+<p>A <strong>diagnostic</strong> (<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a>) is a structured record — severity, code, message, source location — describing a recoverable parse issue. The <strong>diagnostic mode</strong> routes them: <code>Throw</code> (default) raises <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> on the first issue, <code>Collect</code> runs the parser to completion and attaches every issue to a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseResult.html">ConfigurationParseResult</a>, and <code>Ignore</code> discards them.</p>
+<h2 id="source-and-provider-microsoftextensions-side">Source and provider (Microsoft.Extensions side)</h2>
+<p>The bridge follows the three-part contract every <code>Microsoft.Extensions.Configuration</code> provider uses. A <strong>source</strong> (<a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a>, or the stream sibling <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a>) holds the description of <em>what to load and how</em> — path, target path, parse and resolve options, reload behaviour. A <strong>provider</strong> (<a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationProvider.html">TextConfigurationProvider</a>) performs the actual load when the builder calls <code>Build</code>, parsing and resolving via <code>Bodu.Text.Configuration</code> and populating the standard <code>Data</code> dictionary.</p>
+<h2 id="flattened-colon-delimited-keys">Flattened colon-delimited keys</h2>
+<p><code>IConfiguration</code> keys are colon-delimited by convention — <code>service:name</code>, <code>logging:level:default</code>. The Bodu reader projects raw dotted keys to the same shape under the default <code>DotToColon</code> mapping, so the provider copies the resolved view into <code>IConfiguration</code> verbatim. <code>configuration.GetSection(&quot;logging&quot;)</code> and POCO binding then work exactly as they do for the JSON provider.</p>
+<p>A configuration key has three concurrent forms, all held by <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a>: the <strong>raw key</strong> as authored in the file (<code>logging.level.default</code>), the <strong>segments</strong> split on the configured separators, and the canonical <strong>path</strong> (<code>logging:level:default</code>) stored in the view. Lookups accept the raw and the canonical forms interchangeably.</p>
+<h2 id="precedence-among-providers">Precedence among providers</h2>
+<p>Within a single Bodu document, precedence is the layered resolution described above. Across providers in one <code>IConfigurationBuilder</code>, the standard <code>Microsoft.Extensions.Configuration</code> rule applies instead: <strong>later-added sources override earlier ones</strong> for any key both define. A Bodu file added after <code>appsettings.json</code> overrides matching JSON keys; added before, it supplies defaults the JSON file can override.</p>
+<h2 id="reload-token">Reload token</h2>
+<p>When a file source sets <code>ReloadOnChange</code>, the provider attaches a file watcher through its <code>IFileProvider</code>; a change triggers a reparse and re-resolve, and the standard <code>IConfiguration</code> <strong>reload tokens</strong> fire so <code>IOptionsMonitor&lt;T&gt;</code> consumers re-bind automatically. Stream sources are one-shot and do not reload — rebuild the configuration for dynamic stream-backed inputs.</p>
+<h2 id="going-deeper">Going deeper</h2>
+<table>
+<thead>
+<tr>
+<th>Concept area</th>
+<th>Where it is covered in full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Document vs view, key mapping, glob grammar, unset sentinel, diagnostic catalogue, round-trip save</td>
+<td><a href="../text-configuration/concepts.html">Bodu.Text.Configuration — Core concepts</a></td>
+</tr>
+<tr>
+<td>Source vs provider vs loader, target path, option propagation, conventional file probe, reload-on-change, options binding</td>
+<td><a href="../extensions-configuration-text/concepts.html">Bodu.Extensions.Configuration.Text — Core concepts</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="configuration.html">Configuration overview</a></strong> — the topic landing page.</li>
+<li><strong><a href="../../guides/topics/configuration.html">Configuration guides</a></strong> — recipe-style walk-throughs across both packages.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

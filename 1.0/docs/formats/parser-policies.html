@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Line formats — parser policies | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Line formats — parser policies | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="parser-policies">Parser policies</h1>
+
+<p>Real-world CSV, <code>.env</code>, and INI files break their specs constantly. Each reader therefore couples a strict default with explicit, opt-in leniency knobs on its options struct.</p>
+<h2 id="common-diagnostic-surface">Common diagnostic surface</h2>
+<p>Every reader throws its format's <code>*FormatException</code> (<code>DelimitedFormatException</code>, <code>DotEnvFormatException</code>, <code>IniFormatException</code>) carrying the 1-based line number and byte offset at which the problem was detected. Serializer binding failures throw the format's <code>*SerializationException</code> instead.</p>
+<h2 id="delimited">Delimited</h2>
+<p><code>DelimitedReaderOptions</code> carries the RFC 4180 dialect knobs:</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Values</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FieldCountBehavior</code></td>
+<td><code>Strict</code> (every record matches the header's field count) / <code>Ragged</code></td>
+<td><code>Strict</code></td>
+</tr>
+<tr>
+<td><code>MalformedRecordBehavior</code></td>
+<td><code>Throw</code> / <code>SkipRecord</code> (truncate the record at the structural error)</td>
+<td><code>Throw</code></td>
+</tr>
+<tr>
+<td><code>DuplicateHeaderBehavior</code></td>
+<td><code>Throw</code> / <code>TakeFirst</code> / <code>TakeLast</code></td>
+<td><code>Throw</code></td>
+</tr>
+<tr>
+<td><code>Delimiter</code>, <code>Quote</code></td>
+<td>any character</td>
+<td><code>,</code> / <code>&quot;</code></td>
+</tr>
+<tr>
+<td><code>NoHeader</code></td>
+<td>treat the first record as data (records become positional arrays)</td>
+<td>header mode</td>
+</tr>
+<tr>
+<td><code>TrimFields</code></td>
+<td>trim unquoted fields</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>AllowComments</code>, <code>CommentChar</code></td>
+<td>skip comment lines</td>
+<td>off / <code>#</code></td>
+</tr>
+</tbody>
+</table>
+<p>Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.</p>
+<p>Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to <code>MalformedRecordBehavior</code>).</p>
+<h2 id="dotenv">DotEnv</h2>
+<p>The DotEnv dialect follows the mainstream <code>dotenv</code> implementations:</p>
+<ul>
+<li><code>export KEY=value</code> binds as <code>KEY</code>; the prefix is shell syntax (preserved by the mutable DOM, surfaced via <code>Utf8DotEnvReader.CurrentIsExport</code>).</li>
+<li>Double-quoted values resolve escape sequences and may span lines; single-quoted values are literal; unquoted values end at an inline <code>#</code> comment.</li>
+<li>An empty value is a real value, distinct from an absent key.</li>
+<li><code>DotEnvReaderOptions</code> can disable the <code>export</code> prefix, inline comments, or comment tokens (<code>DisallowExportPrefix</code>, <code>DisallowInlineComments</code>, <code>SkipComments</code>).</li>
+</ul>
+<h2 id="ini">INI</h2>
+<p>The <code>Utf8IniReader</code> dialect is deliberately conservative (the <code>configparser</code>-compatible reading):</p>
+<ul>
+<li><code>=</code> is the only key/value delimiter; a <code>:</code> line is malformed.</li>
+<li>A value runs literally to the end of the line — quotes are preserved and an inline <code>;</code> or <code>#</code> is <strong>content</strong>, not a comment.</li>
+<li>Both <code>;</code> and <code>#</code> start full-line comments (<code>IniReaderOptions.DisallowHashComments</code> restricts to <code>;</code>).</li>
+<li>A leading UTF-8 BOM is skipped; LF, CRLF, and lone-CR line endings are equivalent.</li>
+</ul>
+<p>Duplicate handling is a <strong>document-model</strong> policy (<code>IniDocumentOptions</code>, also surfaced on <code>IniSerializerOptions</code>), because the source-order reader reports the file verbatim:</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Values</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DuplicateSectionBehavior</code></td>
+<td><code>Merge</code> (later <code>[section]</code> blocks append to the first) / <code>Disallowed</code></td>
+<td><code>Merge</code></td>
+</tr>
+<tr>
+<td><code>DuplicateKeyBehavior</code></td>
+<td><code>LastWins</code> / <code>FirstWins</code> / <code>Disallowed</code></td>
+<td><code>LastWins</code></td>
+</tr>
+</tbody>
+</table>
+<p>A global key that collides with a section of the same name is always rejected (<code>IniFormatException</code>), because both would claim the same root property; <code>IniSerializerOptions.GlobalSectionName</code> maps the global entries to a reserved root key instead of hoisting them, which removes the ambiguity. <code>IniSerializerDefaults.Strict</code> selects <code>Disallowed</code> for both duplicate policies — Python <code>configparser</code> strict mode.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li>The per-format guides: <a href="../../guides/formats/delimited.html">Delimited</a>, <a href="../../guides/formats/dotenv.html">DotEnv</a>, <a href="../../guides/formats/ini.html">INI</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

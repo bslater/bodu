@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CityHash | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CityHash | BODU ">
+    
+    <meta name="description" content="Base class for the CityHash family of non-cryptographic hash algorithms developed by Google. See the CityHash reference repository for the specification.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.CityHash">
+
+
+
+  <h1 id="Bodu_IO_Hashing_CityHash" data-uid="Bodu.IO.Hashing.CityHash" class="text-break">Class CityHash</h1>
+  <div class="markdown level0 summary"><p>Base class for the <code>CityHash</code> family of non-cryptographic hash algorithms developed by Google. See the
+<a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a></div>
+    <div class="level2"><span class="xref">CityHash</span></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CityHash128.html">CityHash128</a></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CityHash32.html">CityHash32</a></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-byte())">NonCryptographicHashAlgorithm.Append(byte[])</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-io-stream)">NonCryptographicHashAlgorithm.Append(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.appendasync">NonCryptographicHashAlgorithm.AppendAsync(Stream, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.getcurrenthash#system-io-hashing-noncryptographichashalgorithm-getcurrenthash">NonCryptographicHashAlgorithm.GetCurrentHash()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.trygetcurrenthash">NonCryptographicHashAlgorithm.TryGetCurrentHash(Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.getcurrenthash#system-io-hashing-noncryptographichashalgorithm-getcurrenthash(system-span((system-byte)))">NonCryptographicHashAlgorithm.GetCurrentHash(Span&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.gethashandreset#system-io-hashing-noncryptographichashalgorithm-gethashandreset">NonCryptographicHashAlgorithm.GetHashAndReset()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.trygethashandreset">NonCryptographicHashAlgorithm.TryGetHashAndReset(Span&lt;byte&gt;, out int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.gethashandreset#system-io-hashing-noncryptographichashalgorithm-gethashandreset(system-span((system-byte)))">NonCryptographicHashAlgorithm.GetHashAndReset(Span&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.gethashandresetcore">NonCryptographicHashAlgorithm.GetHashAndResetCore(Span&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.hashlengthinbytes">NonCryptographicHashAlgorithm.HashLengthInBytes</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_CityHash_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class CityHash : NonCryptographicHashAlgorithm, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_CityHash_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+CityHash is a one-shot algorithm. To satisfy the incremental input contract of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>, this base class accumulates all bytes delivered through
+<a class="xref" href="Bodu.IO.Hashing.CityHash.Append.html#Bodu_IO_Hashing_CityHash_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a> into an internal buffer and invokes the derived variant's
+<a class="xref" href="Bodu.IO.Hashing.CityHash.ComputeHashCore.html#Bodu_IO_Hashing_CityHash_ComputeHashCore_System_ReadOnlySpan_System_Byte__">ComputeHashCore(ReadOnlySpan&lt;byte&gt;)</a> from <a class="xref" href="Bodu.IO.Hashing.CityHash.GetCurrentHashCore.html#Bodu_IO_Hashing_CityHash_GetCurrentHashCore_System_Span_System_Byte__">GetCurrentHashCore(Span&lt;byte&gt;)</a> once all input
+is available.
+</p>
+<p>
+Shared 32-bit mixing primitives (<a class="xref" href="Bodu.IO.Hashing.CityHash.Mix.html#Bodu_IO_Hashing_CityHash_Mix_System_UInt32_">Mix(uint)</a>, <a class="xref" href="Bodu.IO.Hashing.CityHash.Mur.html#Bodu_IO_Hashing_CityHash_Mur_System_UInt32_System_UInt32_">Mur(uint, uint)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CityHash.Permute3.html#Bodu_IO_Hashing_CityHash_Permute3_System_UInt32__System_UInt32__System_UInt32__">Permute3(ref uint, ref uint, ref uint)</a>) and shared 64-bit primitives (<a class="xref" href="Bodu.IO.Hashing.CityHash.ShiftMix.html#Bodu_IO_Hashing_CityHash_ShiftMix_System_UInt64_">ShiftMix(ulong)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CityHash.HashLen16.html#Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_">HashLen16(ulong, ulong)</a>, <a class="xref" href="Bodu.IO.Hashing.CityHash.HashLen16.html#Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_System_UInt64_">HashLen16(ulong, ulong, ulong)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds.html#Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_">WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds.html#Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_ReadOnlySpan_System_Byte__System_UInt64_System_UInt64_">WeakHashLen32WithSeeds(ReadOnlySpan&lt;byte&gt;, ulong, ulong)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CityHash.Hash64Len0to16.html#Bodu_IO_Hashing_CityHash_Hash64Len0to16_System_ReadOnlySpan_System_Byte__">Hash64Len0to16(ReadOnlySpan&lt;byte&gt;)</a>) and algorithm constants are defined here and are available to all
+derived variants. Supported output sizes are 32, 64, and 128 bits.
+</p>
+<p>
+<strong>When to choose CityHash.</strong> CityHash was designed for short-to-medium strings on 64-bit CPUs and tends
+to outperform <a class="xref" href="Bodu.IO.Hashing.MurmurHash3.html">MurmurHash3</a> on long inputs while matching it on short ones. It is the typical choice
+for in-memory hash tables, fingerprinting, and content-based sharding when both throughput and distribution quality
+matter. Pick <a class="xref" href="Bodu.IO.Hashing.CityHash32.html">CityHash32</a> for 32-bit slot indexes, <a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a> for general-purpose 64-bit
+hashing, and <a class="xref" href="Bodu.IO.Hashing.CityHash128.html">CityHash128</a> for low-collision fingerprinting of large key spaces. For very small
+fixed-length keys, <a class="xref" href="Bodu.IO.Hashing.Fnv.html">Fnv</a> is simpler and competitive; for adversarial inputs use a member of
+<code>Bodu.Security.Cryptography</code> instead.
+</p>
+<p>
+<strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base class
+buffers every appended byte until <a class="xref" href="Bodu.IO.Hashing.CityHash.GetCurrentHashCore.html#Bodu_IO_Hashing_CityHash_GetCurrentHashCore_System_Span_System_Byte__">GetCurrentHashCore(Span&lt;byte&gt;)</a> is called. Memory consumption grows
+linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
+share behind explicit synchronization.
+</p>
+<div class="IMPORTANT"><h5>important</h5><p> CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
+hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
+</p></div>
+<example>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Extensions;
+
+// 64-bit fingerprint of a content blob — typical use case.
+var city = new CityHash64();
+byte[] fingerprint = city.ComputeHash(blob);
+
+// Stream-hash a moderately sized file.
+// Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
+using FileStream fs = File.OpenRead("payload.bin");
+byte[] streamDigest = city.ComputeHash(fs);</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash__ctor_System_Int32_" data-uid="Bodu.IO.Hashing.CityHash.#ctor(System.Int32)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.-ctor.html#Bodu_IO_Hashing_CityHash__ctor_System_Int32_">CityHash(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.CityHash.html">CityHash</a> class with the specified hash output size.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_C1" data-uid="Bodu.IO.Hashing.CityHash.C1">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.C1.html">C1</a>
+        </td>
+        <td class="markdown level1 summary"><p>The first Murmur-style mixing constant used in 32-bit operations.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_C2" data-uid="Bodu.IO.Hashing.CityHash.C2">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.C2.html">C2</a>
+        </td>
+        <td class="markdown level1 summary"><p>The second Murmur-style mixing constant used in 32-bit operations.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_HashMagic" data-uid="Bodu.IO.Hashing.CityHash.HashMagic">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.HashMagic.html">HashMagic</a>
+        </td>
+        <td class="markdown level1 summary"><p>The 32-bit finalization magic constant applied during the iterative mixing phase.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_K0" data-uid="Bodu.IO.Hashing.CityHash.K0">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.K0.html">K0</a>
+        </td>
+        <td class="markdown level1 summary"><p>The first 64-bit mixing constant, derived from the CityHash reference implementation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_K1" data-uid="Bodu.IO.Hashing.CityHash.K1">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.K1.html">K1</a>
+        </td>
+        <td class="markdown level1 summary"><p>The second 64-bit mixing constant, derived from the CityHash reference implementation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_K2" data-uid="Bodu.IO.Hashing.CityHash.K2">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.K2.html">K2</a>
+        </td>
+        <td class="markdown level1 summary"><p>The third 64-bit mixing constant, derived from the CityHash reference implementation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_K3" data-uid="Bodu.IO.Hashing.CityHash.K3">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.K3.html">K3</a>
+        </td>
+        <td class="markdown level1 summary"><p>The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16 bytes of input.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_KMul" data-uid="Bodu.IO.Hashing.CityHash.KMul">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.KMul.html">KMul</a>
+        </td>
+        <td class="markdown level1 summary"><p>The prime multiplier used by the 64-bit <a class="xref" href="Bodu.IO.Hashing.CityHash.HashLen16.html#Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_">HashLen16(ulong, ulong)</a> finalization step.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.CityHash.Append(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Append.html#Bodu_IO_Hashing_CityHash_Append_System_ReadOnlySpan_System_Byte__">Append(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, appends the contents of <code class="paramref">source</code> to the data already processed for the current hash computation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_ComputeHashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.CityHash.ComputeHashCore(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.ComputeHashCore.html#Bodu_IO_Hashing_CityHash_ComputeHashCore_System_ReadOnlySpan_System_Byte__">ComputeHashCore(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs the full hash computation over the complete accumulated input in a single pass.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Dispose" data-uid="Bodu.IO.Hashing.CityHash.Dispose">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Dispose.html#Bodu_IO_Hashing_CityHash_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases all resources used by the current instance and clears its buffered input state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Dispose_System_Boolean_" data-uid="Bodu.IO.Hashing.CityHash.Dispose(System.Boolean)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Dispose.html#Bodu_IO_Hashing_CityHash_Dispose_System_Boolean_">Dispose(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases the resources used by the current instance, optionally clearing managed state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_GetCurrentHashCore_System_Span_System_Byte__" data-uid="Bodu.IO.Hashing.CityHash.GetCurrentHashCore(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.GetCurrentHashCore.html#Bodu_IO_Hashing_CityHash_GetCurrentHashCore_System_Span_System_Byte__">GetCurrentHashCore(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, writes the computed hash value to <code class="paramref">destination</code> without modifying accumulated state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Hash64Len0to16_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.CityHash.Hash64Len0to16(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Hash64Len0to16.html#Bodu_IO_Hashing_CityHash_Hash64Len0to16_System_ReadOnlySpan_System_Byte__">Hash64Len0to16(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on the exact
+input length.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_" data-uid="Bodu.IO.Hashing.CityHash.HashLen16(System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.HashLen16.html#Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_">HashLen16(ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Combines two 64-bit values into a single 64-bit hash using the default <a class="xref" href="Bodu.IO.Hashing.CityHash.KMul.html">KMul</a> multiplier.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_System_UInt64_" data-uid="Bodu.IO.Hashing.CityHash.HashLen16(System.UInt64,System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.HashLen16.html#Bodu_IO_Hashing_CityHash_HashLen16_System_UInt64_System_UInt64_System_UInt64_">HashLen16(ulong, ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying two rounds of
+multiply-shift-XOR to thoroughly distribute entropy across all output bits.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Mix_System_UInt32_" data-uid="Bodu.IO.Hashing.CityHash.Mix(System.UInt32)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Mix.html#Bodu_IO_Hashing_CityHash_Mix_System_UInt32_">Mix(uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a final avalanche mixing step to a 32-bit value, improving bit diffusion.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Mur_System_UInt32_System_UInt32_" data-uid="Bodu.IO.Hashing.CityHash.Mur(System.UInt32,System.UInt32)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Mur.html#Bodu_IO_Hashing_CityHash_Mur_System_UInt32_System_UInt32_">Mur(uint, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a single Murmur-style multiply-rotate-XOR step, combining two 32-bit values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Permute3_System_UInt32__System_UInt32__System_UInt32__" data-uid="Bodu.IO.Hashing.CityHash.Permute3(System.UInt32@,System.UInt32@,System.UInt32@)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Permute3.html#Bodu_IO_Hashing_CityHash_Permute3_System_UInt32__System_UInt32__System_UInt32__">Permute3(ref uint, ref uint, ref uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs a cyclic three-way permutation of the given values, assigning <code>a ← c</code>, <code>c ← b</code>, <code>b ← a</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_Reset" data-uid="Bodu.IO.Hashing.CityHash.Reset">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.Reset.html#Bodu_IO_Hashing_CityHash_Reset">Reset()</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, resets the hash computation to the initial state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_ShiftMix_System_UInt64_" data-uid="Bodu.IO.Hashing.CityHash.ShiftMix(System.UInt64)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.ShiftMix.html#Bodu_IO_Hashing_CityHash_ShiftMix_System_UInt64_">ShiftMix(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a final 64-bit entropy spreading step by XOR-ing the value with its own 47-bit right shift.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_ReadOnlySpan_System_Byte__System_UInt64_System_UInt64_" data-uid="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds(System.ReadOnlySpan{System.Byte},System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds.html#Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_ReadOnlySpan_System_Byte__System_UInt64_System_UInt64_">WeakHashLen32WithSeeds(ReadOnlySpan&lt;byte&gt;, ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
+<a class="xref" href="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds.html#Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_">WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)</a> along with the provided seeds.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_" data-uid="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds(System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64)">
+          <a class="xref" href="Bodu.IO.Hashing.CityHash.WeakHashLen32WithSeeds.html#Bodu_IO_Hashing_CityHash_WeakHashLen32WithSeeds_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_System_UInt64_">WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of independent 64-bit
+outputs.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_">NonCryptographicHashAlgorithmExtensions.AppendData(NonCryptographicHashAlgorithm, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__">NonCryptographicHashAlgorithmExtensions.AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendDataAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendDataAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.AppendDataAsync(NonCryptographicHashAlgorithm, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___">NonCryptographicHashAlgorithmExtensions.ComputeHash(NonCryptographicHashAlgorithm, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Int32_System_Int32_">NonCryptographicHashAlgorithmExtensions.ComputeHash(NonCryptographicHashAlgorithm, byte[], int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_">NonCryptographicHashAlgorithmExtensions.ComputeHash(NonCryptographicHashAlgorithm, Stream, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__">NonCryptographicHashAlgorithmExtensions.ComputeHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.ComputeHashAsync(NonCryptographicHashAlgorithm, Stream, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Boolean__">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, byte[], byte[], out bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___">NonCryptographicHashAlgorithmExtensions.TryVerifyHash(NonCryptographicHashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, byte[], byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, byte[], string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(NonCryptographicHashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, byte[], byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, byte[], string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, Stream, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, Stream, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___">NonCryptographicHashAlgorithmExtensions.VerifyHash(NonCryptographicHashAlgorithm, string, Encoding, byte[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.IO.Hashing.CityHash32.html">CityHash32</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.CityHash128.html">CityHash128</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

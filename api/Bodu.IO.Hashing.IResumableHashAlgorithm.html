@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface IResumableHashAlgorithm | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface IResumableHashAlgorithm | BODU ">
+    
+    <meta name="description" content="Marks a non-cryptographic hash algorithm whose internal state can be reconstructed from a previously emitted digest, so additional input can be folded into an existing hash without re-reading the bytes that produced it.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm">
+
+
+
+  <h1 id="Bodu_IO_Hashing_IResumableHashAlgorithm" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm" class="text-break">Interface IResumableHashAlgorithm</h1>
+  <div class="markdown level0 summary"><p>Marks a non-cryptographic hash algorithm whose internal state can be reconstructed from a previously emitted digest,
+so additional input can be folded into an existing hash <em>without</em> re-reading the bytes that produced it.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_IResumableHashAlgorithm_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IResumableHashAlgorithm</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_IResumableHashAlgorithm_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Many simple, additive non-cryptographic hashes — CRC, FNV, Jenkins-style mixes — are <em>linear</em> in the sense
+that the running accumulator at any point is fully determined by the bytes seen so far. The published digest hides
+that accumulator behind a finalization step (typically a final XOR, output reflection, or width mask), but the step
+is reversible. Implementing <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> declares that an algorithm supports that reverse
+step and exposes a stable contract for callers who want to incrementally hash a stream that arrives in chunks across
+process boundaries — a common pattern in tail-anchored log files, content-addressed stores, or streaming integrity
+checks where the running state is not in memory but the previous digest <em>is</em>.
+</p>
+<p>
+<strong>Usage shape.</strong> Pair the previous digest with the new bytes:
+</p>
+<ul><li><span class="term"><a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">ComputeHashFrom(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a></span>
+Returns a freshly allocated digest representing <code>hash(previousInput || newData)</code>. The two array overloads are
+conveniences for callers without spans.
+</li><li><span class="term">
+<a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.TryComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_TryComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryComputeHashFrom(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+</span>
+The allocation-free variant that writes into a caller-supplied buffer; returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the
+destination is too small, leaving <code>bytesWritten</code> at 0.
+</li></ul>
+<p>
+<strong>Implementation contract.</strong> Implementations must (a) accept any byte sequence of length
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.hashlengthinbytes">HashLengthInBytes</a> as a valid <code>previousHash</code>; (b)
+reverse any final XOR, reflection, or width mask before resuming; (c) re-apply finalization before returning the new
+digest; and (d) leave the algorithm instance in a clean state on return. The contract is not preserved across
+algorithms — a digest produced by <code>CRC-32/ISO-HDLC</code> can only be resumed by an instance configured with the same
+<a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.
+</p>
+<p>
+<strong>When this is the wrong tool.</strong> Cryptographic hashes (SHA-2, SHA-3, BLAKE) are <em>not</em> resumable
+in this sense — their finalization collapses internal state irreversibly, which is precisely the property that makes
+them cryptographically useful. For appending to an in-memory algorithm instance, prefer the standard
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-readonlyspan((system-byte)))">Append(ReadOnlySpan&lt;byte&gt;)</a> path.
+<a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> only earns its keep when the running accumulator has already been discarded
+and only the digest remains.
+</p>
+<example>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
+
+// 1. Compute a baseline digest of a file's first segment.
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+crc.Append(File.ReadAllBytes("part-1.bin"));
+byte[] digest1 = crc.GetCurrentHash();
+
+// 2. Hours (or processes) later, fold an additional segment into the same
+// digest using only `digest1`.
+var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC);
+byte[] digest2 = resumable.ComputeHashFrom(digest1, File.ReadAllBytes("part-2.bin"));
+
+// 3. Same result as if both segments had been appended in one session — without
+// holding the running state.</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_IResumableHashAlgorithm_HashLengthInBytes" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm.HashLengthInBytes">
+          <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.HashLengthInBytes.html#Bodu_IO_Hashing_IResumableHashAlgorithm_HashLengthInBytes">HashLengthInBytes</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the length, in bytes, of the digests this algorithm produces and accepts as <code>previousHash</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_Byte___System_Byte___" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom(System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_Byte___System_Byte___">ComputeHashFrom(byte[], byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
+new finalized hash result as a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_Byte___System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom(System.Byte[],System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_Byte___System_Byte___System_Int32_System_Int32_">ComputeHashFrom(byte[], byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resumes a hash computation from a previously finalized hash value and processes a specified range of new data,
+returning the new finalized hash result as a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.ComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_ComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">ComputeHashFrom(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resumes a hash computation from a previously finalized hash value and processes additional input, returning the
+new finalized hash result as a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_IResumableHashAlgorithm_TryComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.IO.Hashing.IResumableHashAlgorithm.TryComputeHashFrom(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.TryComputeHashFrom.html#Bodu_IO_Hashing_IResumableHashAlgorithm_TryComputeHashFrom_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryComputeHashFrom(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resumes a hash computation from a previously finalized hash value, processes additional input, and writes the
+new finalized hash to the specified destination span.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

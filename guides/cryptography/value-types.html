@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Nonces, salts, tags, and secrets | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Nonces, salts, tags, and secrets | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="nonces-salts-tags-and-secrets">Nonces, salts, tags, and secrets</h1>
+
+<p>Cryptographic APIs pass around a lot of look-alike byte buffers: a 32-byte key, a 32-byte digest, a 32-byte salt, and a 32-byte shared secret are all <code>byte[]</code>. <code>Bodu.Security.Cryptography</code> gives the important ones their own types so a nonce cannot be handed in where a tag belongs, so equality is constant-time by default, and so secrets are zeroed when they are released. This page covers the six: <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html">Nonce</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Salt.html">Salt</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.HashValue.html">HashValue</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> (with <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a>), and <a class="xref" href="../../api/Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>These are conveniences over <code>byte[]</code> and <code>ReadOnlySpan&lt;byte&gt;</code>; every algorithm in the library also accepts raw spans. Like the rest of the library they are not independently audited.</p>
+</div>
+<h2 id="two-shapes">Two shapes</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Nonce</code>, <code>Salt</code>, <code>HashValue</code>, <code>AuthenticationTag</code>, <code>SignatureValue</code></th>
+<th><code>SecretBytes</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kind</td>
+<td><code>readonly struct</code>, immutable, <code>IEquatable&lt;T&gt;</code></td>
+<td><code>sealed class</code>, <code>IDisposable</code></td>
+</tr>
+<tr>
+<td>Backing store</td>
+<td>a private defensive copy; <code>default</code> is the empty value (<code>IsEmpty</code>, <code>Length == 0</code>)</td>
+<td>a <strong>pinned</strong> array (<code>GC.AllocateArray(pinned: true)</code>) so the runtime never copies it during compaction</td>
+</tr>
+<tr>
+<td>Construction</td>
+<td><code>FromBytes(ReadOnlySpan&lt;byte&gt;)</code>; <code>Random(int)</code> on <code>Nonce</code> and <code>Salt</code>; <code>ParseHex</code> / <code>TryParseHex</code> on <code>HashValue</code>; <code>FromBytes(bytes, SignatureFormat)</code> on <code>SignatureValue</code></td>
+<td><code>CopyFrom(ReadOnlySpan&lt;byte&gt;)</code>, <code>Random(int)</code></td>
+</tr>
+<tr>
+<td>Read</td>
+<td><code>AsSpan()</code>, <code>ToArray()</code> (a fresh copy each call), <code>Length</code>, <code>IsEmpty</code></td>
+<td><code>AsSpan()</code>, <code>ToArray()</code>, <code>Length</code> — throw <code>ObjectDisposedException</code> after <code>Dispose</code></td>
+</tr>
+<tr>
+<td>Equality</td>
+<td><code>Equals</code>, <code>==</code>, <code>!=</code> — <strong>constant-time</strong> via <code>CryptographicOperations.FixedTimeEquals</code>; <code>GetHashCode</code> over the bytes</td>
+<td>no <code>Equals</code> override; <code>FixedTimeEquals(SecretBytes)</code> / <code>FixedTimeEquals(ReadOnlySpan&lt;byte&gt;)</code></td>
+</tr>
+<tr>
+<td>Explicit <code>FixedTimeEquals</code></td>
+<td><code>HashValue</code>, <code>AuthenticationTag</code> (also a span overload), <code>SignatureValue</code> — not on <code>Nonce</code> / <code>Salt</code>, whose <code>Equals</code> is already constant-time</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>ToString()</code></td>
+<td>lowercase hex of the bytes (<code>HashValue</code> / <code>SignatureValue</code> also <code>ToHexString()</code>, <code>ToBase64String()</code>)</td>
+<td><code>&quot;SecretBytes (Length = n)&quot;</code> — never the bytes</td>
+</tr>
+<tr>
+<td>Zeroization</td>
+<td>none — these are public values by design</td>
+<td><code>Clear()</code> zeroes in place; <code>Dispose()</code> zeroes once and latches</td>
+</tr>
+</tbody>
+</table>
+<p>None of the structs enforce semantics (uniqueness, length); they carry bytes and intent. <code>Nonce.Random</code> and <code>Salt.Random</code> draw from the library's cryptographic generator and reject lengths ≤ 0 with <code>ArgumentOutOfRangeException</code>.</p>
+<h2 id="pattern-1--a-nonce-into-aes-gcm">Pattern 1 — a <code>Nonce</code> into AES-GCM</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> is the one transform with a <code>Nonce</code>-typed constructor beside its <code>byte[]</code> and span constructors; it still requires exactly 12 bytes and throws <code>ArgumentException</code> otherwise. Reconstruct the nonce from the wire on the receiving side with <code>FromBytes</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = Convert.FromHexString(&quot;feffe9928665731c6d6a8f9467308308&quot;);
+byte[] plaintext = &quot;nonce as a value type&quot;u8.ToArray();
+
+Nonce nonce = Nonce.Random(12);                    // per message; unique, not secret
+
+byte[] sealed_;
+using (var aes = new AesBlockCipher(key))
+    sealed_ = new GcmModeTransform(aes, nonce).Encrypt(plaintext);
+
+// The nonce travels with the ciphertext. On the other side:
+Nonce received = Nonce.FromBytes(nonce.ToArray());
+byte[] recovered;
+using (var aes = new AesBlockCipher(key))
+    recovered = new GcmModeTransform(aes, received).Decrypt(sealed_);
+
+bool same = nonce == received;                     // true, compared in constant time
+</code></pre>
+<p>The stream AEADs and <code>AsconAead128</code> take <code>byte[]</code> / span nonces; pass <code>nonce.AsSpan()</code>.</p>
+<h2 id="pattern-2--secretbytes-and-salt-into-scrypt">Pattern 2 — <code>SecretBytes</code> and <code>Salt</code> into scrypt</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> has the one overload in the library typed on these values: <code>DeriveKey(SecretBytes password, Salt salt, int costN, int blockSizeR, int parallelization, int length)</code>. The password buffer is pinned for its lifetime and zeroed on <code>Dispose</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+Salt salt = Salt.Random(16);                                                   // store beside the hash
+using SecretBytes password = SecretBytes.CopyFrom(&quot;correct horse battery staple&quot;u8);
+
+byte[] key = Scrypt.DeriveKey(password, salt, costN: 1 &lt;&lt; 14, blockSizeR: 8, parallelization: 1, length: 32);
+
+bool matches = password.FixedTimeEquals(&quot;correct horse battery staple&quot;u8);    // true
+Console.WriteLine(password);                                                   // &quot;SecretBytes (Length = 28)&quot; — never the bytes
+</code></pre>
+<p>After <code>Dispose</code> — or the end of the <code>using</code> — <code>AsSpan</code>, <code>ToArray</code>, <code>FixedTimeEquals</code>, and <code>Clear</code> throw <code>ObjectDisposedException</code>. With the fixed salt <code>000102…0f</code> the derived key is <code>D7590ACA2C9801CF06EEBA772A69DC31CE3862591D96522AC4E6BBA6AD1F31A5</code>.</p>
+<h2 id="pattern-3--hashvalue-for-stored-digests">Pattern 3 — <code>HashValue</code> for stored digests</h2>
+<p><code>HashValue</code> is the type for a digest you keep and compare: parse it from configuration with <code>ParseHex</code> (throws <code>FormatException</code>) or <code>TryParseHex</code>, emit it with <code>ToHexString</code> / <code>ToBase64String</code>, and compare with <code>==</code> or <code>FixedTimeEquals</code> — both constant-time.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var blake = new Blake2b(256);
+HashValue computed = HashValue.FromBytes(blake.ComputeHash(&quot;abc&quot;u8.ToArray()));
+HashValue stored   = HashValue.ParseHex(&quot;bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319&quot;);
+
+bool ok = computed == stored;                          // true
+bool ok2 = computed.FixedTimeEquals(stored);           // true
+string hex = computed.ToHexString();                   // bddd813c…d52319
+string b64 = computed.ToBase64String();                // vd2BPGNCOXIxce8/7phXm5SWTjuxyz5CcmLIwGjVIxk=
+bool parsed = HashValue.TryParseHex(&quot;not hex&quot;, out _); // false
+</code></pre>
+<h2 id="pattern-4--authenticationtag-and-detached-aead">Pattern 4 — <code>AuthenticationTag</code> and detached AEAD</h2>
+<p><code>EncryptDetached</code> / <code>DecryptDetached</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> split the tag out of the <code>ciphertext ‖ tag</code> layout for protocols that carry it out of band. They are defined for <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> (GCM, GCM-SIV, CCM, OCB, EAX, SIV, and <code>AsconAead128</code>); a tag of the wrong length throws <code>ArgumentException</code>, a wrong tag <code>CryptographicException</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key   = Convert.FromHexString(&quot;feffe9928665731c6d6a8f9467308308&quot;);
+byte[] nonce = Convert.FromHexString(&quot;cafebabefacedbaddecaf888&quot;);
+byte[] plaintext = &quot;detached tag&quot;u8.ToArray();
+byte[] aad = &quot;hdr&quot;u8.ToArray();
+
+(byte[] ciphertext, AuthenticationTag tag) result;
+using (var aes = new AesBlockCipher(key))
+    result = new GcmModeTransform(aes, nonce).EncryptDetached(plaintext, associatedData: aad);
+// tag: 8D192FEC98549A247E2823F469780A38 (16 bytes)
+
+AuthenticationTag fromWire = AuthenticationTag.FromBytes(result.tag.ToArray());
+byte[] recovered;
+using (var aes = new AesBlockCipher(key))
+    recovered = new GcmModeTransform(aes, nonce).DecryptDetached(result.ciphertext, fromWire, associatedData: aad);
+
+bool same = result.tag.FixedTimeEquals(fromWire.AsSpan());   // true
+</code></pre>
+<p>The stream AEADs have no detached overloads; slice the tag off the combined output and rebuild it with <code>AuthenticationTag.FromBytes</code> — see <a href="stream-aead.html#pattern-5--detached-tags">Authenticated stream ciphers</a>.</p>
+<h2 id="pattern-5--signaturevalue-and-signatureformat">Pattern 5 — <code>SignatureValue</code> and <code>SignatureFormat</code></h2>
+<p><code>SignatureValue</code> records not only the bytes but the encoding they use: <code>SignatureFormat.Raw</code> (the fixed-width <code>r ‖ s</code> form Ed25519 and ML-DSA produce), <code>Der</code> (ASN.1 <code>SEQUENCE</code>), or <code>P1363</code> (the IEEE fixed-width form BCL <code>ECDsa</code> emits by default); <code>Unknown</code> is the zero value. <code>FromBytes</code> rejects an undefined format with <code>ArgumentOutOfRangeException</code>. <code>Equals</code> / <code>==</code> compare <strong>format and bytes</strong>; <code>FixedTimeEquals</code> compares bytes only.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var signer = new Ed25519();
+signer.ImportPrivateKey(Convert.FromHexString(&quot;9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60&quot;));
+byte[] message = [];
+
+SignatureValue signature = SignatureValue.FromBytes(signer.SignData(message), SignatureFormat.Raw);   // 64 bytes, E5564300…8E7A100B
+SignatureValue again     = SignatureValue.FromBytes(signer.SignData(message), SignatureFormat.Raw);   // Ed25519 is deterministic
+SignatureValue asDer     = SignatureValue.FromBytes(signature.AsSpan(), SignatureFormat.Der);         // same bytes, other label
+
+bool a = signature == again;                        // true
+bool b = signature == asDer;                        // false — the format is part of equality
+bool c = signature.FixedTimeEquals(asDer);          // true — bytes only
+bool verifies = signer.VerifyData(message, signature.AsSpan());
+</code></pre>
+<p>No library member consumes <code>SignatureValue</code>; the signers and verifiers take spans. It is the type to store, log (<code>ToHexString</code> / <code>ToBase64String</code>), and compare signatures with, and to record the wire format a peer expects.</p>
+<h2 id="equality-semantics-at-a-glance">Equality semantics at a glance</h2>
+<ul>
+<li>All five structs implement <code>IEquatable&lt;T&gt;</code> with constant-time content comparison, so they work as <code>HashSet&lt;T&gt;</code> / dictionary keys (<code>GetHashCode</code> hashes the bytes with <code>HashCode.AddBytes</code> — it is <strong>not</strong> constant-time, and it is not meant to be).</li>
+<li><code>default(T)</code> equals <code>FromBytes(ReadOnlySpan&lt;byte&gt;.Empty)</code>; both report <code>IsEmpty</code> and print as an empty string.</li>
+<li><code>ToArray()</code> returns a fresh copy every time; mutate it freely.</li>
+<li><code>SecretBytes</code> deliberately has no value equality or hash code — a secret should never be a dictionary key.</li>
+</ul>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Create</th>
+<th>Compare</th>
+<th>Emit</th>
+<th>Consumed by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html">Nonce</a></td>
+<td><code>FromBytes</code>, <code>Random(int)</code></td>
+<td><code>==</code>, <code>Equals</code> (constant-time)</td>
+<td><code>AsSpan</code>, <code>ToArray</code>, <code>ToString</code> (hex)</td>
+<td><code>GcmModeTransform(IBlockCipher, Nonce)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Salt.html">Salt</a></td>
+<td><code>FromBytes</code>, <code>Random(int)</code></td>
+<td><code>==</code>, <code>Equals</code> (constant-time)</td>
+<td><code>AsSpan</code>, <code>ToArray</code>, <code>ToString</code></td>
+<td><code>Scrypt.DeriveKey(SecretBytes, Salt, …)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a></td>
+<td><code>CopyFrom</code>, <code>Random(int)</code></td>
+<td><code>FixedTimeEquals(SecretBytes \| span)</code></td>
+<td><code>AsSpan</code>, <code>ToArray</code>; <code>Clear</code>, <code>Dispose</code></td>
+<td><code>Scrypt.DeriveKey(SecretBytes, Salt, …)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.HashValue.html">HashValue</a></td>
+<td><code>FromBytes</code>, <code>ParseHex</code>, <code>TryParseHex</code></td>
+<td><code>==</code>, <code>FixedTimeEquals</code></td>
+<td><code>ToHexString</code>, <code>ToBase64String</code>, <code>ToString</code></td>
+<td>— (storage and comparison)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a></td>
+<td><code>FromBytes</code></td>
+<td><code>==</code>, <code>FixedTimeEquals(tag \| span)</code></td>
+<td><code>AsSpan</code>, <code>ToArray</code>, <code>ToString</code></td>
+<td><code>EncryptDetached</code> (returns), <code>DecryptDetached</code> (accepts)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a></td>
+<td><code>FromBytes(bytes, SignatureFormat)</code></td>
+<td><code>==</code> (format + bytes), <code>FixedTimeEquals</code> (bytes)</td>
+<td><code>Format</code>, <code>ToHexString</code>, <code>ToBase64String</code></td>
+<td>— (storage and comparison)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="stream-aead.html">Authenticated stream ciphers</a> — detaching a tag from the stream AEADs.</li>
+<li><a href="scrypt.html">Using scrypt</a> and <a href="argon2.html">Using Argon2</a> — the password KDFs that salts feed.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> — zeroization and constant-time claims across the library.</li>
+<li><a href="bcl-interop.html#pattern-9--constant-time-comparison">Interoperating with System.Security.Cryptography</a> — <code>CryptographicOperations.FixedTimeEquals</code> beside the value types.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

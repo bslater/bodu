@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Delimited | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Delimited | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Delimited">
+
+  <h1 id="Bodu_Text_Delimited" data-uid="Bodu.Text.Delimited" class="text-break">Namespace Bodu.Text.Delimited</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-delimited.svg" alt="Bodu.Text.Delimited"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Delimited</strong> parses and emits <strong>delimited</strong> records — CSV, TSV, and other character-separated value documents — as a standalone <code>System.Text.Json</code>-shaped library: a typed record serializer, a forward-only UTF-8 token reader/writer pair, a mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the <code>Bodu.Text.Formats</code> umbrella); see also <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>, <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a>, <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, and <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a> — static serializer: typed records ↔ delimited text, including the <code>IAsyncEnumerable</code> record-streaming overloads.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a> — naming policy, case sensitivity, dialect characters, and header mode for binding.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.Reader.Utf8DelimitedReader.html">Utf8DelimitedReader</a> / <a class="xref" href="Bodu.Text.Delimited.Writer.Utf8DelimitedWriter.html">Utf8DelimitedWriter</a> — forward-only <code>ref struct</code> token surfaces over UTF-8, with <a class="xref" href="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> carrying the dialect policies.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.DelimitedFieldCountBehavior.html">DelimitedFieldCountBehavior</a> / <a class="xref" href="Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.html">DelimitedMalformedRecordBehavior</a> / <a class="xref" href="Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior.html">DelimitedDuplicateHeaderBehavior</a> — the strictness knobs for real-world files.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.Document.DelimitedDocument.html">DelimitedDocument</a> / <a class="xref" href="Bodu.Text.Delimited.Document.DelimitedElement.html">DelimitedElement</a> — read-only, disposable document model (records as header-keyed objects or positional arrays).</li>
+<li><a class="xref" href="Bodu.Text.Delimited.Nodes.DelimitedNode.html">DelimitedNode</a> — mutable DOM root for parse → edit → write scenarios.</li>
+<li><a class="xref" href="Bodu.Text.Delimited.DelimitedFormatException.html">DelimitedFormatException</a> / <a class="xref" href="Bodu.Text.Delimited.DelimitedSerializationException.html">DelimitedSerializationException</a> — malformed input vs. binding failures.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+using Bodu.Text.Serialization;
+
+var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+List&lt;Trade&gt; trades = DelimitedSerializer.Deserialize&lt;Trade&gt;(&quot;trade_id,symbol\n1,AAPL\n&quot;, options);
+string csv = DelimitedSerializer.Serialize(trades, options);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Streaming preferred for large inputs.</strong> Use <code>DeserializeAsyncEnumerableAsync&lt;TRecord&gt;</code> for typed rows, or the <code>Utf8DelimitedReader</code> token loop for full control.</li>
+<li><strong>Round-trip determinism.</strong> Writing quotes only the fields that require it under the configured delimiter/quote characters.</li>
+<li><strong>See also:</strong> the <a href="../docs/formats/index.html">line-formats introduction</a> and the <a href="../guides/formats/delimited.html">delimited guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedFormatException.html">DelimitedFormatException</a></h4>
+      <section><p>Represents an error that occurs when delimited (CSV/TSV) data is malformed, such as an unterminated quoted field or
+a record whose field count violates the configured policy.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedRecordAttribute.html">DelimitedRecordAttribute</a></h4>
+      <section><p>Marks a partial record POCO for compile-time delimited binding: the <code>Bodu.Text.Formats.Generators</code> source
+generator emits an <a class="xref" href="Bodu.Text.Delimited.IDelimitedRecordFactory-1.html">IDelimitedRecordFactory&lt;TRecord&gt;</a> implementation for the type, exposed through a
+generated static <code>DelimitedFactory</code> property.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializationException.html">DelimitedSerializationException</a></h4>
+      <section><p>Represents an error that occurs while mapping .NET records to or from delimited text with
+<a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a>, such as a non-collection root or a value that cannot be converted to the target
+column type.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a></h4>
+      <section><p>Provides methods for serializing collections of .NET records to delimited (RFC 4180 CSV/TSV) text and deserializing
+delimited text into records, shaped after <code>System.Text.Json</code>'s <code>JsonSerializer</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a></h4>
+      <section><p>Provides configuration for <a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a>, controlling column naming, case sensitivity, field
+inclusion, and the output delimiter, quote, and header behaviour.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Delimited.IDelimitedRecordFactory-1.html">IDelimitedRecordFactory&lt;TRecord&gt;</a></h4>
+      <section><p>Provides reflection-free conversion between a record type and its delimited field representation, consumed by the
+<a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a> factory overloads.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior.html">DelimitedDuplicateHeaderBehavior</a></h4>
+      <section><p>Specifies how a delimited reader resolves a header row that contains the same column name more than once.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedFieldCountBehavior.html">DelimitedFieldCountBehavior</a></h4>
+      <section><p>Specifies how a delimited reader treats a data record whose field count differs from the header's.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.html">DelimitedMalformedRecordBehavior</a></h4>
+      <section><p>Specifies how a delimited reader responds to a record that violates the configured field-count policy.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedSerializerDefaults.html">DelimitedSerializerDefaults</a></h4>
+      <section><p>Specifies a set of default settings a <a class="xref" href="Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a> can be initialized from.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedTokenType.html">DelimitedTokenType</a></h4>
+      <section><p>Enumerates the token kinds a <a class="xref" href="Bodu.Text.Delimited.Reader.Utf8DelimitedReader.html">Utf8DelimitedReader</a> reports as it advances
+through a delimited (CSV/TSV) document.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Delimited.DelimitedValueKind.html">DelimitedValueKind</a></h4>
+      <section><p>Enumerates the value kinds a delimited node or element can represent.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

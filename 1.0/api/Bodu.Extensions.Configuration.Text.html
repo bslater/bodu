@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Extensions.Configuration.Text | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Extensions.Configuration.Text | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.Configuration.Text">
+
+  <h1 id="Bodu_Extensions_Configuration_Text" data-uid="Bodu.Extensions.Configuration.Text" class="text-break">Namespace Bodu.Extensions.Configuration.Text</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-extensions-config.svg" alt="Bodu.Extensions.Configuration.Text"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Extensions.Configuration.Text</strong> bridges <a class="xref" href="Bodu.Text.Configuration.html">Bodu.Text.Configuration</a> to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft">Microsoft.Extensions.Configuration</a>. It exposes the <code>AddTextConfiguration*</code> entry points on <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a> — the overload set mirrors <code>Microsoft.Extensions.Configuration.Json</code>'s <code>AddJsonFile</code> / <code>AddJsonStream</code> — so a Bodu Text Configuration file can be layered alongside JSON, INI, XML, and environment-variable sources with no learning curve.</p>
+<p>Once added, the source loads the file (or stream, or pre-parsed document), parses it with <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>, resolves it for the configured <code>TargetPath</code>, and copies the flattened view into the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a> dictionary as colon-delimited keys. A companion <a class="xref" href="Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions.html">ConfigurationOptionsExtensions</a> helper binds a section to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptions-1">IOptions&lt;TOptions&gt;</a> instance through the standard DI container.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text introduction</a></strong> — shape of the library, headline types, scenarios.</li>
+<li><strong><a href="../docs/extensions-configuration-text/concepts.html">Bodu.Extensions.Configuration.Text core concepts</a></strong> — vocabulary: source vs provider, target path, parse/resolve option propagation, reload-on-change, options binding.</li>
+<li><strong><a href="../docs/extensions-configuration-text/getting-started.html">Bodu.Extensions.Configuration.Text getting started</a></strong> — install and minimal samples for the file overload, stream overload, conventional probe, options binding.</li>
+<li><strong><a href="../docs/text-configuration/index.html">Bodu.Text.Configuration</a></strong> — the underlying parser, resolver, and view model.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Builder extensions</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.html">TextConfigurationExtensions</a> — the primary entry point. The <code>AddTextConfiguration*</code> overload family:
+<ul>
+<li><code>AddTextConfigurationFile(builder, string path, string? targetPath, bool optional, bool reloadOnChange)</code> — file path.</li>
+<li><code>AddTextConfigurationFile(builder, IFileProvider?, string path, string? targetPath, bool optional, bool reloadOnChange)</code> — file path through a specific file provider.</li>
+<li><code>AddTextConfigurationFile(builder, Action&lt;TextConfigurationSource&gt; configureSource)</code> — configure callback.</li>
+<li><code>AddTextConfiguration(builder, bool optional, bool reloadOnChange)</code> — conventional file probe (<code>.boduconfig</code> → <code>bodu.config</code>).</li>
+<li><code>AddTextConfigurationStream(builder, Stream)</code> — stream source (no reload-on-change).</li>
+<li><code>AddTextConfigurationDocument(builder, IniDocumentBase, string? targetPath)</code> — pre-parsed document source (e.g. a <code>ConfigurationDocument</code>).</li>
+</ul>
+</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions.html">TomlConfigurationExtensions</a> — TOML provider entry points that bridge <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a> into the configuration pipeline, mirroring the <code>AddJsonFile</code> / <code>AddJsonStream</code> shape:
+<ul>
+<li><code>AddTomlFile(builder, string path, bool optional = false)</code> — read-once, read-only file source.</li>
+<li><code>AddTomlStream(builder, Stream stream)</code> — read-once, read-only stream source (UTF-8 TOML text).</li>
+</ul>
+</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions.html">BencodeConfigurationExtensions</a> — Bencode provider entry points that bridge <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a> into the configuration pipeline, with the same shape as the TOML bridge:
+<ul>
+<li><code>AddBencodeFile(builder, string path, bool optional = false)</code> — read-once, read-only file source.</li>
+<li><code>AddBencodeStream(builder, Stream stream)</code> — read-once, read-only stream source (a Bencode document with a dictionary root).</li>
+</ul>
+</li>
+</ul>
+<p><strong>Sources and providers</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> — file-backed configuration source. Subclasses <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a>; inherits <code>Path</code>, <code>Optional</code>, <code>ReloadOnChange</code>, <code>FileProvider</code>; adds <code>TargetPath</code>, <code>ParseOptions</code>, <code>ResolveOptions</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationProvider.html">TextConfigurationProvider</a> — the matching <code>FileConfigurationProvider</code>. Reads the file via the standard MEC pipeline and projects the resolved view into the inherited <code>Data</code> dictionary.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a> — stream-backed configuration source. Subclasses <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.streamconfigurationsource">StreamConfigurationSource</a>; adds the same <code>TargetPath</code> / <code>ParseOptions</code> / <code>ResolveOptions</code> triple. One-shot — no reload-on-change.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider.html">TextStreamConfigurationProvider</a> — the matching <code>StreamConfigurationProvider</code>.</li>
+<li>An internal loader (not part of the public surface) shared by both <code>Text*</code> providers parses a stream into a <code>ConfigurationDocument</code>, resolves it for <code>TargetPath</code>, and flattens the resolved view into <code>Dictionary&lt;string, string?&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html">TomlConfigurationSource</a> — TOML configuration source backed by either a one-shot <code>Stream</code> or a file <code>Path</code>. Implements <code>IConfigurationSource</code>; exposes <code>Stream</code>, <code>Path</code>, and <code>Optional</code> (a set <code>Stream</code> takes precedence over <code>Path</code>). Read once when the configuration is built — no reload-on-change machinery.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a> — the matching read-only provider. Implements <code>IConfigurationProvider</code> directly (rather than deriving from the mutable <code>ConfigurationProvider</code> base) and consumes <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a>'s read-only document model, flattening it into the colon-delimited configuration key space; <code>Set</code> is rejected with <code>NotSupportedException</code>, and <code>GetReloadToken</code> returns a non-firing token.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.html">BencodeConfigurationSource</a> — Bencode configuration source backed by either a one-shot <code>Stream</code> or a file <code>Path</code>. Implements <code>IConfigurationSource</code>; exposes <code>Stream</code>, <code>Path</code>, and <code>Optional</code> (a set <code>Stream</code> takes precedence over <code>Path</code>). Read once when the configuration is built — no reload-on-change machinery.</li>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider.html">BencodeConfigurationProvider</a> — the matching read-only provider, one-for-one with the TOML shape. Consumes <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>'s read-only document model with its strict canonical defaults; the document root must be a dictionary, integers render invariant across the full unsigned 64-bit range, and byte strings decode as UTF-8 with U+FFFD replacement. <code>Set</code> is rejected with <code>NotSupportedException</code>.</li>
+</ul>
+<p><strong>Options binding</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions.html">ConfigurationOptionsExtensions</a> — DI helpers:
+<ul>
+<li><code>AddConfigurationOptions&lt;TOptions&gt;(services, IConfiguration configuration, string sectionName)</code> — section by name.</li>
+<li><code>AddConfigurationOptions&lt;TOptions&gt;(services, IConfigurationSection section)</code> — already-projected section.
+Both are thin shims over <code>services.Configure&lt;TOptions&gt;(...)</code> — provided for IntelliSense discoverability.</li>
+</ul>
+</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Bodu.Text.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(src =&gt;
+    {
+        src.FileProvider     = new PhysicalFileProvider(&quot;/etc/myapp&quot;);
+        src.Path             = &quot;settings.boduconfig&quot;;
+        src.TargetPath       = &quot;src/Foo.cs&quot;;
+        src.Optional         = true;
+        src.ReloadOnChange   = true;
+        src.ParseOptions     = ConfigurationParseOptions.EditorConfigCompatible;
+        src.ResolveOptions   = new ConfigurationResolveOptions
+        {
+            UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
+        };
+    })
+    .Build();
+
+string? logLevel = configuration[&quot;logging:level:default&quot;];
+
+// Bind a section to a POCO through the DI container.
+ServiceCollection services = new();
+services.AddOptions();
+services.AddConfigurationOptions&lt;ServiceOptions&gt;(configuration, &quot;service&quot;);
+
+using ServiceProvider provider = services.BuildServiceProvider();
+ServiceOptions options = provider.GetRequiredService&lt;IOptions&lt;ServiceOptions&gt;&gt;().Value;
+
+sealed class ServiceOptions
+{
+    public string? Name { get; set; }
+    public int Port { get; set; }
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Conventional file probe.</strong> The no-argument overload probes the builder's default file provider for <code>.boduconfig</code>, then <code>bodu.config</code>. The first file present is loaded; if neither exists and <code>optional</code> is <code>true</code>, the call is a no-op. This matches the dotfile / plain-file convention common in version-controlled repos.</li>
+<li><strong>Reload-on-change.</strong> <a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> inherits <code>ReloadOnChange</code> from <code>FileConfigurationSource</code>. When set, the provider attaches a file watcher via the configured <code>IFileProvider</code>, reparses on change, and triggers the standard <code>IConfiguration</code> reload tokens — so consumers using <code>Microsoft.Extensions.Options.IOptionsMonitor&lt;T&gt;</code> rebind automatically. <a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a> does <strong>not</strong> support reload; the stream is parsed once when <code>Build</code> is called.</li>
+<li><strong>File-provider precedence.</strong> When <code>AddTextConfigurationFile</code> is given an explicit <code>IFileProvider</code>, that wins; otherwise the source's <code>FileProvider</code> wins; otherwise the builder's default applies. Standard MEC precedence is preserved.</li>
+<li><strong>Parse / resolve option propagation.</strong> Both <code>ParseOptions</code> and <code>ResolveOptions</code> default to <code>null</code>, in which case <code>ConfigurationParseOptions.Bodu</code> and <code>ConfigurationResolveOptions.Bodu</code> are used. Set them per-source to mix profiles within a single builder (an EditorConfig-strict file alongside a Bodu-permissive one).</li>
+<li><strong>Target path.</strong> <code>TargetPath</code> is per-source. Each source resolves the document for its own target; multiple sources with the same path but different targets are a supported pattern when the application needs configuration evaluated for several paths in parallel.</li>
+<li><strong>DI integration.</strong> <a class="xref" href="Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions.html">ConfigurationOptionsExtensions</a> is a discoverability shim. Calls to <code>services.Configure&lt;TOptions&gt;(configuration.GetSection(name))</code> produce equivalent bindings. Callers comfortable with the MEC pattern may use either form interchangeably.</li>
+<li><strong>Validation.</strong> All public entry points validate inputs via <code>ThrowHelper</code>. <code>ArgumentNullException</code> covers null builders / configurations / streams / sections; <code>ArgumentException</code> covers null, empty, or whitespace path / section-name strings.</li>
+<li><strong>See also:</strong> the <a href="../docs/extensions-configuration-text/index.html">introduction</a>, <a href="../docs/extensions-configuration-text/concepts.html">core concepts</a>, and <a href="../docs/extensions-configuration-text/getting-started.html">getting-started</a>; the underlying parser, resolver, and view in <a href="../docs/text-configuration/index.html">Bodu.Text.Configuration</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions.html">BencodeConfigurationExtensions</a></h4>
+      <section><p>Provides extension methods for adding a read-only Bencode configuration source to an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a>, mirroring the <code>AddJsonFile</code> / <code>AddJsonStream</code> shape.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider.html">BencodeConfigurationProvider</a></h4>
+      <section><p>A read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> that consumes Bencode through the <code>Bodu.Text.Bencode</code>
+read-only document model and flattens it into the colon-delimited configuration key model. Because the provider
+exposes no mutation surface, <a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider.Set.html#Bodu_Extensions_Configuration_Text_BencodeConfigurationProvider_Set_System_String_System_String_">Set(string, string?)</a> is rejected.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationSource.html">BencodeConfigurationSource</a></h4>
+      <section><p>Represents a Bencode configuration source — either a one-shot <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> or a file path — that
+produces a read-only <a class="xref" href="Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider.html">BencodeConfigurationProvider</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions.html">ConfigurationOptionsExtensions</a></h4>
+      <section><p>Provides convenience extension methods for binding a Bodu Text Configuration section to an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.options.ioptions-1">IOptions&lt;TOptions&gt;</a> instance through an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.dependencyinjection.iservicecollection">IServiceCollection</a>
+.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.html">TextConfigurationExtensions</a></h4>
+      <section><p>Provides convenience extension methods for adding a Bodu Text Configuration source to an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a>. The overload set mirrors <code>Microsoft.Extensions.Configuration.Json</code>'s
+<code>AddJsonFile</code> / <code>AddJsonStream</code> shape so that consumers familiar with the JSON provider can swap in this
+provider with no learning curve.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationProvider.html">TextConfigurationProvider</a></h4>
+      <section><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationprovider">FileConfigurationProvider</a> that parses a Bodu Text Configuration file and populates the
+configuration data dictionary with the resolved colon-delimited keys.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a></h4>
+      <section><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.fileconfigurationsource">FileConfigurationSource</a> that reads a Bodu Text Configuration file and projects its resolved view
+into the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a> hierarchy as colon-delimited keys.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider.html">TextStreamConfigurationProvider</a></h4>
+      <section><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.streamconfigurationprovider">StreamConfigurationProvider</a> that parses a Bodu Text Configuration stream and populates the
+configuration data dictionary with the resolved colon-delimited keys.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource.html">TextStreamConfigurationSource</a></h4>
+      <section><p>A <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.streamconfigurationsource">StreamConfigurationSource</a> that reads a Bodu Text Configuration document from an arbitrary
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> and projects its resolved view into the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfiguration">IConfiguration</a> hierarchy as
+colon-delimited keys.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions.html">TomlConfigurationExtensions</a></h4>
+      <section><p>Provides extension methods for adding a read-only TOML configuration source to an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a>, mirroring the <code>AddJsonFile</code> / <code>AddJsonStream</code> shape.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a></h4>
+      <section><p>A read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationprovider">IConfigurationProvider</a> that consumes TOML through the <code>Bodu.Text.Toml</code> read-only
+document model and flattens it into the colon-delimited configuration key model. Because the provider exposes no
+mutation surface, <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.Set.html#Bodu_Extensions_Configuration_Text_TomlConfigurationProvider_Set_System_String_System_String_">Set(string, string?)</a> is rejected.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationSource.html">TomlConfigurationSource</a></h4>
+      <section><p>Represents a TOML configuration source — either a one-shot <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> or a file path — that
+produces a read-only <a class="xref" href="Bodu.Extensions.Configuration.Text.TomlConfigurationProvider.html">TomlConfigurationProvider</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

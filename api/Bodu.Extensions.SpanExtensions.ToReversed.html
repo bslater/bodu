@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method ToReversed | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method ToReversed | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*">
+
+
+
+<h1 id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*">Method ToReversed</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0})">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Creates a new array containing all elements of <code class="paramref">source</code> in reverse order, leaving
+<code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this ReadOnlySpan&lt;T&gt; source)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span whose elements are copied in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> backed by a heap-allocated array containing all elements of
+<code class="paramref">source</code> in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> with <code>start = 0</code> and
+<code>length = source.Length</code>. See that overload for full performance and allocation details.
+</p>
+</div>
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0},System.Int32,System.Int32)">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified range reversed,
+leaving all other elements in their original positions and <code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this ReadOnlySpan&lt;T&gt; source, int index, int count)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">index</span></td>
+      <td><p>The zero-based index of the first element in the range to reverse. Must be non-negative and less than or equal
+to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">count</span></td>
+      <td><p>The number of elements to reverse. Must be non-negative and, together with <code class="paramref">index</code>, must not
+exceed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>. A value of zero or one results in a straight copy with no reversal
+performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of the same length as <code class="paramref">source</code>, where elements in the range [
+<code class="paramref">index</code>, <code class="paramref">index</code> + <code class="paramref">count</code>) appear in reverse order and
+all other elements are copied unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+This is the canonical public implementation. The full-span overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)</a>)
+and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>-based overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, Range)</a>) both resolve
+their arguments and delegate here after validation.
+</p>
+<p>
+Bounds validation uses unsigned comparison so that a single branch catches both negative values and values that
+exceed the span length, matching the pattern used throughout <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions">MemoryExtensions</a>.
+</p>
+<p>
+Once validated, execution is forwarded to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>, which performs the allocation and the
+SIMD-accelerated copy and reversal.
+</p>
+</div>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+
+// Reverse a middle section; first and last elements are untouched.
+Span&lt;int&gt; result = data.AsSpan().ToReversed(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">index</code> is negative or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>, or when
+<code class="paramref">count</code> is negative or would extend the range beyond the end of <code class="paramref">source</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0},System.Range)">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, Range)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions and
+<code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this ReadOnlySpan&lt;T&gt; source, Range range)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a></td>
+      <td><span class="parametername">range</span></td>
+      <td><p>The range of elements to reverse. Both start-relative (e.g. <code>1..4</code>) and end-relative (e.g. <code>^4..^1</code>)
+index expressions are supported. A range covering zero or one element results in a straight copy with no
+reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of the same length as <code class="paramref">source</code>, where elements within
+<code class="paramref">range</code> appear in reverse order and all elements outside <code class="paramref">range</code> are copied
+unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+Resolves <code class="paramref">range</code> to an offset and length via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and
+delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>. Prefer that overload when the start and
+length are already available as integers to avoid constructing an intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> value.
+</p>
+<p>
+This overload is most ergonomic when the range is expressed as a C# 8+ index expression at the call site (e.g.
+<code>1..4</code> or <code>^3..^1</code>), where the compiler handles <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> construction automatically.
+</p>
+</div>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+Span&lt;int&gt; fromStart = data.AsSpan().ToReversed(1..4); // [ 1, 4, 3, 2, 5 ]
+Span&lt;int&gt; fromEnd = data.AsSpan().ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">range</code> resolves to a start index that is negative or to an end index that exceeds
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>. Resolution is performed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a>; the
+resulting offset and length are then validated and forwarded to
+<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0})">ToReversed&lt;T&gt;(Span&lt;T&gt;)</h4>
+<div class="markdown level1 summary"><p>Creates a new array containing all elements of <code class="paramref">source</code> in reverse order, leaving
+<code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this Span&lt;T&gt; source)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span whose elements are copied in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> backed by a heap-allocated array containing all elements of
+<code class="paramref">source</code> in reverse order.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0___remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> with <code>start = 0</code> and
+<code>length = source.Length</code>. See that overload for full performance and allocation details.
+</p>
+</div>
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Int32_System_Int32_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0},System.Int32,System.Int32)">ToReversed&lt;T&gt;(Span&lt;T&gt;, int, int)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified range reversed,
+leaving all other elements in their original positions and <code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this Span&lt;T&gt; source, int index, int count)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">index</span></td>
+      <td><p>The zero-based index of the first element in the range to reverse. Must be non-negative and less than or equal
+to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">count</span></td>
+      <td><p>The number of elements to reverse. Must be non-negative and, together with <code class="paramref">index</code>, must not
+exceed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>. A value of zero or one results in a straight copy with no reversal
+performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of the same length as <code class="paramref">source</code>, where elements in the range [
+<code class="paramref">index</code>, <code class="paramref">index</code> + <code class="paramref">count</code>) appear in reverse order and
+all other elements are copied unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+This is the canonical public implementation. The full-span overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)</a>)
+and the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>-based overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, Range)</a>) both resolve
+their arguments and delegate here after validation.
+</p>
+<p>
+Bounds validation uses unsigned comparison so that a single branch catches both negative values and values that
+exceed the span length, matching the pattern used throughout <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions">MemoryExtensions</a>.
+</p>
+<p>
+Once validated, execution is forwarded to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReverseCore&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>, which performs the allocation and the
+SIMD-accelerated copy and reversal.
+</p>
+</div>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Int32_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+
+// Reverse a middle section; first and last elements are untouched.
+Span&lt;int&gt; result = data.AsSpan().ToReversed(index: 1, count: 3); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">index</code> is negative or greater than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>, or when
+<code class="paramref">count</code> is negative or would extend the range beyond the end of <code class="paramref">source</code>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<a id="Bodu_Extensions_SpanExtensions_ToReversed_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed*"></a>
+<h4 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Range_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0},System.Range)">ToReversed&lt;T&gt;(Span&lt;T&gt;, Range)</h4>
+<div class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions and
+<code class="paramref">source</code> unmodified.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static Span&lt;T&gt; ToReversed&lt;T&gt;(this Span&lt;T&gt; source, Range range)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><span class="parametername">source</span></td>
+      <td><p>The span to copy and partially reverse.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a></td>
+      <td><span class="parametername">range</span></td>
+      <td><p>The range of elements to reverse. Both start-relative (e.g. <code>1..4</code>) and end-relative (e.g. <code>^4..^1</code>)
+index expressions are supported. A range covering zero or one element results in a straight copy with no
+reversal performed.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;T&gt;</td>
+      <td><p>A new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> of the same length as <code class="paramref">source</code>, where elements within
+<code class="paramref">range</code> appear in reverse order and all elements outside <code class="paramref">range</code> are copied
+unchanged.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="typeParameters">Type Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="parametername">T</span></td>
+      <td><p>The type of elements in the span.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Range__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
+this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+</p>
+<p>
+Resolves <code class="paramref">range</code> to an offset and length via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and
+delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>. Prefer that overload when the start and
+length are already available as integers to avoid constructing an intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> value.
+</p>
+<p>
+This overload is most ergonomic when the range is expressed as a C# 8+ index expression at the call site (e.g.
+<code>1..4</code> or <code>^3..^1</code>), where the compiler handles <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> construction automatically.
+</p>
+</div>
+<h5 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Range__examples">Examples</h5>
+<pre><code class="lang-csharp">int[] data = { 1, 2, 3, 4, 5 };
+Span&lt;int&gt; fromStart = data.AsSpan().ToReversed(1..4); // [ 1, 4, 3, 2, 5 ]
+Span&lt;int&gt; fromEnd = data.AsSpan().ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">range</code> resolves to a start index that is negative or to an end index that exceeds
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.length">Length</a>. Resolution is performed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a>; the
+resulting offset and length are then validated and forwarded to
+<a class="xref" href="Bodu.Extensions.SpanExtensions.ToReversed.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

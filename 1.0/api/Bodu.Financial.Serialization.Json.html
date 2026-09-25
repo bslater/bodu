@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.Serialization.Json | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.Serialization.Json | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.Serialization.Json">
+
+  <h1 id="Bodu_Financial_Serialization_Json" data-uid="Bodu.Financial.Serialization.Json" class="text-break">Namespace Bodu.Financial.Serialization.Json</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-financial-json.svg" alt="Bodu.Financial.Serialization.Json"></p>
+<h1 id="bodufinancialserializationjson">Bodu.Financial.Serialization.Json</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.Serialization.Json</strong> carries the <code>System.Text.Json</code> integration for <a href="../apidoc/Bodu.Financial.md"><code>Bodu.Financial</code></a>. It supplies the six converters that round-trip <a class="xref" href="Bodu.Financial.Money.html">Money</a>, <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> to and from JSON, together with a one-call extension that registers them under a chosen policy and a dependency-injection registration for containers.</p>
+<p>The core <code>Bodu.Financial</code> library is serialization-agnostic — its monetary types carry no <code>[JsonConverter]</code> attribute. Add this package and call <code>AddFinancialJsonConverters</code> to opt into JSON support and select a wire policy across a whole <code>JsonSerializerOptions</code> instance.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/financial-serialization-json/index.html">Introduction</a></strong> — the six converters, the policy model, and the scenario index.</li>
+<li><strong><a href="../docs/financial-serialization-json/concepts.html">Core concepts</a></strong> — canonical object shape, compact form, scale, verbatim <code>CalculatedMoney</code>, the rate and pair shapes, keyed options, failure modes.</li>
+<li><strong><a href="../docs/financial-serialization-json/getting-started.html">Getting started</a></strong> — install + minimal samples for each policy, each converter, and the DI registration.</li>
+<li><strong><a href="../guides/financial/json-serialization.html">Financial JSON serialization guide</a></strong> — every converter's wire shape under every policy, scale handling, DI, and migration notes.</li>
+<li><strong><a href="../docs/financial/index.html">Bodu.Financial introduction</a></strong> — how the converters fit into the broader monetary surface.</li>
+<li><strong><a href="../docs/financial/getting-started.html">Bodu.Financial getting started</a></strong> — the JSON section shows how to register the policy.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.html">FinancialJsonSerializerOptionsExtensions</a> — <code>AddFinancialJsonConverters(JsonSerializerOptions, FinancialJsonPolicy)</code> registers the converter set on an options instance and returns it for chaining.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> — selects the wire shape (<code>Strict</code>, <code>Lenient</code>, <code>Compact</code>).</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter-1.html">MoneyOfTCurrencyJsonConverter&lt;TCurrency&gt;</a>, <a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory.html">MoneyOfTCurrencyJsonConverterFactory</a> — converter and factory for <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyJsonConverter.html">MoneyJsonConverter</a> — converter for <a class="xref" href="Bodu.Financial.Money.html">Money</a>.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.html">CalculatedMoneyJsonConverter</a> — converter for <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>; writes the unrounded <code>decimal</code> verbatim (trailing zeros included) so a high-precision unit price survives the round trip.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyBagJsonConverter.html">MoneyBagJsonConverter</a> — converter for <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a>.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.ExchangeRateJsonConverter.html">ExchangeRateJsonConverter</a>, <a class="xref" href="Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter.html">CurrencyPairJsonConverter</a> — converters for the FX value objects.</li>
+<li><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions.html">FinancialJsonServiceCollectionExtensions</a> — the dependency-injection registration <code>AddFinancialJson(services, policy)</code>, a keyed <code>JsonSerializerOptions</code> singleton under <code>JsonOptionsKey</code> (<code>&quot;Financial&quot;</code>).</li>
+</ul>
+<h2 id="wire-shapes">Wire shapes</h2>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th><code>Money&lt;TCurrency&gt;</code> / <code>Money</code></th>
+<th><code>MoneyBag</code></th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> <em>(default)</em></td>
+<td><code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code></td>
+<td><code>{ &quot;balances&quot;: { &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00 } }</code></td>
+<td>Storing canonical ledger payloads. Validates currency match, rejects duplicate keys.</td>
+</tr>
+<tr>
+<td><code>Lenient</code></td>
+<td>Same as Strict</td>
+<td>Same as Strict</td>
+<td>Importing third-party data. Normalises lowercase ISO codes, trims whitespace before validation.</td>
+</tr>
+<tr>
+<td><code>Compact</code></td>
+<td><code>&quot;19.99 USD&quot;</code></td>
+<td><code>{ &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00 }</code></td>
+<td>Log lines, API payloads where verbosity matters. Accepts either <code>&quot;19.99 USD&quot;</code> or <code>&quot;USD 19.99&quot;</code> on read.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.Serialization.Json;
+
+// Registration is required — the core types carry no [JsonConverter] attribute.
+var strict = new JsonSerializerOptions().AddFinancialJsonConverters();
+
+string ledger = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), strict);
+// { &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
+
+// Compact for log lines.
+var options = new JsonSerializerOptions()
+    .AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+
+string compact = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);
+// &quot;19.99 USD&quot;
+
+// Lenient for ingest workflows.
+var lenient = new JsonSerializerOptions()
+    .AddFinancialJsonConverters(FinancialJsonPolicy.Lenient);
+
+Money&lt;USD&gt; imported = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(
+    &quot;{ \&quot;amount\&quot;: 19.99, \&quot;currency\&quot;: \&quot;usd\&quot; }&quot;, lenient)!;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Registration is required.</strong> The core monetary types carry no <code>[JsonConverter]</code> attribute, so JSON support is opt-in: call <code>AddFinancialJsonConverters</code> (or add converters to <code>JsonSerializerOptions.Converters</code>) before serializing. Without registration, <code>JsonSerializer</code> silently falls back to reflection-shaped output rather than throwing.</li>
+<li><strong>Currency-mismatch on <code>Money&lt;TCurrency&gt;</code>.</strong> Strict and Lenient policies both reject payloads whose <code>&quot;currency&quot;</code> field does not match <code>TCurrency.IsoCode</code> — drift surfaces as <code>JsonException</code> rather than a silently re-interpreted amount. <code>Money</code> accepts any ISO code and rounds to the registry's <code>MinorUnits</code> for that code.</li>
+<li><strong>MoneyBag pruning.</strong> Zero balances are pruned on round-trip — the deserialised bag matches the canonical form, not the verbatim wire shape.</li>
+<li><strong>Strict vs. Lenient on Compact.</strong> The compact policy accepts both <code>&quot;19.99 USD&quot;</code> and <code>&quot;USD 19.99&quot;</code> regardless of <code>Strict</code> / <code>Lenient</code> because there is no ambiguity to be strict about; lenient and strict behave identically under <code>Compact</code>.</li>
+<li><strong>AddFinancialJsonConverters.</strong> Registers every converter on the same <code>JsonSerializerOptions</code> instance under a single policy. Call this once per options instance; mixing policies across types is not supported.</li>
+<li><strong>See also:</strong> the <a class="xref" href="Bodu.Financial.html"><code>Bodu.Financial</code> reference</a>, the <a href="../guides/financial/money.html"><code>Money&lt;TCurrency&gt;</code> guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.html">CalculatedMoneyJsonConverter</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> to and from JSON using the policy supplied at construction. Because
+<a class="xref" href="Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> is the unrounded, deferred-arithmetic tier, its full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> precision</p>
+<ul>
+<li>including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price survives a
+round-trip without settling to the currency's minor units.</li>
+</ul>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter.html">CurrencyPairJsonConverter</a></h4>
+      <section><p>Converts an <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.ExchangeRateJsonConverter.html">ExchangeRateJsonConverter</a></h4>
+      <section><p>Converts an <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> observation to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.html">FinancialJsonSerializerOptionsExtensions</a></h4>
+      <section><p>Extension methods that register the <a class="xref" href="Bodu.Financial.html">Bodu.Financial</a> JSON converters on a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>, picking a coherent shape for every shipped monetary type from a single
+<a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> value.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions.html">FinancialJsonServiceCollectionExtensions</a></h4>
+      <section><p>Provides the dependency-injection registration surface for the financial <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyBagJsonConverter.html">MoneyBagJsonConverter</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Financial.MoneyBag.html">MoneyBag</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyJsonConverter.html">MoneyJsonConverter</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Financial.Money.html">Money</a> to and from JSON using the policy supplied at construction. Mirrors the shape
+vocabulary of <a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter-1.html">MoneyOfTCurrencyJsonConverter&lt;TCurrency&gt;</a> so a single <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a>
+selection produces a coherent on-the-wire format across the monetary types.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory.html">MoneyOfTCurrencyJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter-1.html">MoneyOfTCurrencyJsonConverter&lt;TCurrency&gt;</a> instances for closed <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>
+types, applying a configurable <a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter-1.html">MoneyOfTCurrencyJsonConverter&lt;TCurrency&gt;</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a></h4>
+      <section><p>Selects the JSON serialization shape and parsing strictness applied by the <a class="xref" href="Bodu.Financial.html">Bodu.Financial</a> JSON
+converters.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

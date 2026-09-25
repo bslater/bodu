@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Generic math with Fraction&lt;T&gt; and Interval&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Generic math with Fraction&lt;T&gt; and Interval&lt;T&gt; | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="generic-math-with-fractiont-and-intervalt">Generic math with <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code></h1>
+
+<p><code>Bodu.Numerics</code> is built on the .NET 7+ generic-math interfaces
+(<code>System.Numerics.INumber&lt;TSelf&gt;</code> and friends), and that shows up in two
+distinct places:</p>
+<ul>
+<li><strong><code>Fraction&lt;T&gt;</code> constrains its backing type</strong> to
+<code>IBinaryInteger&lt;T&gt;</code> — the numerator and denominator are stored in <code>T</code> —
+and <strong>the fraction type itself implements <code>INumber&lt;Fraction&lt;T&gt;&gt;</code> and
+<code>ISignedNumber&lt;Fraction&lt;T&gt;&gt;</code></strong>, so a <code>Fraction&lt;int&gt;</code> is a first-class
+<code>INumber</code>.</li>
+<li><strong><code>Interval&lt;T&gt;</code> constrains its endpoint type</strong> to <code>INumber&lt;T&gt;</code>, so the
+same interval code carries an <code>int</code> window, a <code>double</code> percentage band,
+or a <code>BigInteger</code> magnitude bound.</li>
+</ul>
+<p>This guide covers what those constraints buy you: writing one generic
+method that accepts every <code>Fraction&lt;int&gt;</code> / <code>Fraction&lt;BigInteger&gt;</code>,
+choosing the backing integer type, and the overflow versus
+<code>BigInteger</code>-promotion trade-off.</p>
+<h2 id="the-two-constraint-layers-on-fractiont">The two constraint layers on <code>Fraction&lt;T&gt;</code></h2>
+<p>There are two separate generic-math relationships in play, and keeping
+them apart removes most of the confusion:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Constraint</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backing component <code>T</code></td>
+<td><code>where T : IBinaryInteger&lt;T&gt;</code></td>
+<td>The numerator and denominator are integers of type <code>T</code>.</td>
+</tr>
+<tr>
+<td>The fraction itself</td>
+<td><code>Fraction&lt;T&gt; : INumber&lt;Fraction&lt;T&gt;&gt;, ISignedNumber&lt;Fraction&lt;T&gt;&gt;</code></td>
+<td><code>Fraction&lt;T&gt;</code> <em>is</em> a number and composes with any <code>INumber</code>-constrained algorithm.</td>
+</tr>
+</tbody>
+</table>
+<p>So <code>Fraction&lt;int&gt;</code> stores two <code>int</code>s, and <code>Fraction&lt;int&gt;</code> is itself an
+<code>INumber&lt;Fraction&lt;int&gt;&gt;</code>. The first layer governs storage and overflow;
+the second governs composability.</p>
+<p><code>Interval&lt;T&gt;</code> has only the first kind of relationship — its endpoints are
+<code>INumber&lt;T&gt;</code> — and the interval struct is <em>not</em> itself an <code>INumber</code>,
+because a range is not a scalar.</p>
+<h2 id="writing-a-method-constrained-to-inumbertself">Writing a method constrained to <code>INumber&lt;TSelf&gt;</code></h2>
+<p>Because <code>Fraction&lt;T&gt;</code> implements <code>INumber&lt;Fraction&lt;T&gt;&gt;</code>, any algorithm
+written against the generic-math abstractions accepts it without a bespoke
+overload. A single constrained method works for <code>Fraction&lt;int&gt;</code>,
+<code>Fraction&lt;BigInteger&gt;</code>, and the built-in numeric types alike:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+// One implementation, every INumber: int, double, decimal, Fraction&lt;T&gt;, …
+static TSelf Mean&lt;TSelf&gt;(ReadOnlySpan&lt;TSelf&gt; values)
+    where TSelf : INumber&lt;TSelf&gt;
+{
+    if (values.IsEmpty)
+        return TSelf.Zero;
+
+    TSelf sum = TSelf.Zero;
+    foreach (TSelf v in values)
+        sum += v;
+
+    // TSelf.CreateChecked lifts the element count into TSelf.
+    return sum / TSelf.CreateChecked(values.Length);
+}
+</code></pre>
+<p>The same method body now serves exact rational inputs and ordinary
+floating-point inputs:</p>
+<pre><code class="lang-csharp">// Exact: the mean of 1/2, 1/3, 1/6 is exactly 1/3 — no rounding.
+Fraction&lt;int&gt;[] fractions =
+{
+    Fraction&lt;int&gt;.Create(1, 2),
+    Fraction&lt;int&gt;.Create(1, 3),
+    Fraction&lt;int&gt;.Create(1, 6),
+};
+Fraction&lt;int&gt; exact = Mean&lt;Fraction&lt;int&gt;&gt;(fractions);   // 1/3
+
+// The identical method over double — inexact, as floating point always is.
+double approx = Mean&lt;double&gt;(stackalloc[] { 0.5, 0.3333, 0.1667 });
+</code></pre>
+<p>The static abstract members of <code>INumber&lt;TSelf&gt;</code> — <code>TSelf.Zero</code>,
+<code>TSelf.One</code>, <code>TSelf.CreateChecked</code>, the operators, the <code>IsXxx</code>
+predicates — all resolve to the <code>Fraction&lt;T&gt;</code> implementations, so nothing
+in the generic body special-cases the rational type.</p>
+<p>A handful of these are worth knowing when you write the generic body:</p>
+<table>
+<thead>
+<tr>
+<th>Generic-math member</th>
+<th><code>Fraction&lt;T&gt;</code> behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TSelf.Zero</code> / <code>TSelf.One</code></td>
+<td><code>0/1</code> and <code>1/1</code>.</td>
+</tr>
+<tr>
+<td><code>TSelf.AdditiveIdentity</code> / <code>TSelf.MultiplicativeIdentity</code></td>
+<td><code>Zero</code> and <code>One</code>.</td>
+</tr>
+<tr>
+<td><code>TSelf.CreateChecked&lt;TOther&gt;(x)</code></td>
+<td>Exact for integer and <code>decimal</code> <code>x</code>; via nearest <code>double</code> otherwise; non-finite <code>x</code> is rejected; overflow throws.</td>
+</tr>
+<tr>
+<td><code>TSelf.CreateSaturating</code> / <code>CreateTruncating</code></td>
+<td>As checked, but clamp to <code>MinValue</code> / <code>MaxValue</code> on overflow instead of throwing.</td>
+</tr>
+<tr>
+<td><code>TSelf.IsFinite</code> / <code>IsNaN</code> / <code>IsInfinity</code></td>
+<td><code>true</code> / <code>false</code> / <code>false</code> — a rational is always a finite real.</td>
+</tr>
+<tr>
+<td><code>TSelf.Abs</code> / <code>MaxMagnitude</code> / <code>MinMagnitude</code></td>
+<td>Magnitude operations; the magnitude helpers break a tie by sign per the BCL convention.</td>
+</tr>
+</tbody>
+</table>
+<p><code>CreateChecked</code> over a non-bounded backing type never overflows from the
+conversion — <code>TSelf.CreateChecked(anyInteger)</code> with <code>TSelf</code> bound to
+<code>Fraction&lt;BigInteger&gt;</code> always succeeds — which is another reason a routine that must accept arbitrary
+magnitudes should be left parameterised over <code>T</code>.</p>
+<p><code>Fraction&lt;T&gt;</code> additionally implements <code>ISignedNumber&lt;Fraction&lt;T&gt;&gt;</code>, so a
+method that needs a signed-only operation (for example
+<code>TSelf.NegativeOne</code>) can tighten the constraint to
+<code>where TSelf : ISignedNumber&lt;TSelf&gt;</code> and still accept every signed
+<code>Fraction&lt;T&gt;</code>.</p>
+<h2 id="choosing-the-backing-integer-type">Choosing the backing integer type</h2>
+<p>The backing type <code>T</code> is a storage-and-overflow decision, not a
+correctness decision: every <code>Fraction&lt;T&gt;</code> holds the same canonical
+reduced form regardless of <code>T</code>. The choice trades compactness against the
+risk of an <code>OverflowException</code> on narrowing.</p>
+<table>
+<thead>
+<tr>
+<th>Backing <code>T</code></th>
+<th>Use when</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td>Values and denominators stay small; storage matters.</td>
+<td>Compact (8 bytes); overflows near <code>int.MaxValue</code> on narrowing.</td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td>Headroom for chained arithmetic over moderate magnitudes.</td>
+<td>16 bytes; still bounded, so still narrows.</td>
+</tr>
+<tr>
+<td><code>Int128</code> / <code>UInt128</code></td>
+<td>Large fixed-width magnitudes without <code>BigInteger</code> allocation.</td>
+<td>32 bytes; bounded.</td>
+</tr>
+<tr>
+<td><code>BigInteger</code></td>
+<td>Long chains of multiplications / divisions, or unknown magnitude.</td>
+<td>Unbounded — never overflows; heap-allocates per component.</td>
+</tr>
+</tbody>
+</table>
+<p>Unsigned backing types (<code>uint</code>, <code>ulong</code>, <code>byte</code>, …) are accepted but
+cannot represent negative rationals: any operation that would produce a
+negative numerator — unary <code>-</code>, <code>Negate()</code>, <code>MinusOne</code>, certain
+subtractions — throws <code>OverflowException</code> at run time. Pick a signed
+backing type whenever negative values are possible.</p>
+<h2 id="overflow-versus-biginteger-promotion">Overflow versus <code>BigInteger</code> promotion</h2>
+<p>Every <code>Fraction&lt;T&gt;</code> arithmetic operation promotes its operands to
+<code>BigInteger</code>, evaluates the result exactly, reduces to canonical form,
+then <strong>narrows the canonical components back to <code>T</code></strong>. The intermediate is
+always exact; the narrowing step is where a fixed-width <code>T</code> can fail:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+// int backing: the canonical result does not fit back into int.
+var huge = Fraction&lt;int&gt;.Create(int.MaxValue, 1);
+var doubled = huge + huge;   // throws OverflowException on narrowing
+</code></pre>
+<p>Switching the backing type to <code>BigInteger</code> removes the narrowing step
+entirely — the exact intermediate <em>is</em> the stored value, so overflow is
+impossible:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var hugeBig = Fraction&lt;BigInteger&gt;.Create(int.MaxValue, 1);
+var doubledBig = hugeBig + hugeBig;   // 4294967294/1 — no overflow
+</code></pre>
+<p>The trade-off is the usual one: <code>Fraction&lt;BigInteger&gt;</code> allocates for its
+components and runs slower per operation, while <code>Fraction&lt;int&gt;</code> is compact
+and fast but bounded. A practical rule:</p>
+<ul>
+<li><strong>Bounded inputs, no chaining, hot loop →</strong> a fixed-width <code>T</code>
+(<code>int</code> / <code>long</code>). The exactness is free; you only pay GCD reduction.</li>
+<li><strong>Long arithmetic chains, accumulation, or unknown magnitude →</strong>
+<code>Fraction&lt;BigInteger&gt;</code>. Pay the allocation to make overflow unreachable.</li>
+</ul>
+<p>A generic algorithm can defer the decision to its caller by staying
+parameterised over the backing type, so the same routine runs in either
+mode:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// Works for Fraction&lt;int&gt; in the fast path and Fraction&lt;BigInteger&gt;
+// when the caller needs overflow safety.
+static Fraction&lt;T&gt; Harmonic&lt;T&gt;(int n)
+    where T : IBinaryInteger&lt;T&gt;
+{
+    Fraction&lt;T&gt; sum = Fraction&lt;T&gt;.Zero;
+    for (int k = 1; k &lt;= n; k++)
+        sum += Fraction&lt;T&gt;.Create(T.One, T.CreateChecked(k));
+
+    return sum;
+}
+
+Harmonic&lt;int&gt;(8);          // fast; fits in int for small n
+Harmonic&lt;BigInteger&gt;(50);  // exact; the int backing would overflow here
+</code></pre>
+<p>To move an existing value between backing types without recomputing, use
+<code>As&lt;TOther&gt;()</code>, which re-validates the canonical components against the
+target type:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Fraction&lt;int&gt; half = Fraction&lt;int&gt;.Create(1, 2);
+Fraction&lt;BigInteger&gt; wide = half.As&lt;BigInteger&gt;();   // 1/2, now unbounded
+// As&lt;TOther&gt;() throws OverflowException if the components do not fit TOther.
+</code></pre>
+<h2 id="intervalt-over-a-generic-endpoint-type"><code>Interval&lt;T&gt;</code> over a generic endpoint type</h2>
+<p><code>Interval&lt;T&gt;</code> constrains <code>T</code> to <code>INumber&lt;T&gt;</code>, so a range routine can be
+written once and reused across endpoint types. The body relies only on
+the <code>INumber</code> surface (<code>T.Zero</code>, the comparison operators, subtraction
+for <code>Length</code>):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Numerics;
+using Bodu.Numerics;
+
+// Clamp a value into a closed interval, for any numeric endpoint type.
+static T ClampTo&lt;T&gt;(T value, Interval&lt;T&gt; range)
+    where T : INumber&lt;T&gt;
+{
+    if (value &lt; range.Lower) return range.Lower;
+    if (value &gt; range.Upper) return range.Upper;
+    return value;
+}
+
+ClampTo(150, Interval&lt;int&gt;.Closed(0, 100));            // 100
+ClampTo(1.5, Interval&lt;double&gt;.Closed(0.0, 1.0));       // 1.0
+ClampTo(42m, Interval&lt;decimal&gt;.Closed(0m, 1000m));     // 42m
+</code></pre>
+<p>Because the endpoint type is just <code>INumber&lt;T&gt;</code>, the same interval value
+can carry an integer scheduling window, a <code>double</code> percentage band, or a
+<code>BigInteger</code> magnitude bound — and <code>Length</code> (computed as
+<code>Upper - Lower</code>) is exact for <code>decimal</code> and <code>BigInteger</code> endpoints where a
+<code>double</code> range would accumulate floating-point error.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> — the rational type's full surface: construction, arithmetic, parsing, formatting.</li>
+<li><a href="interval.html">Working with <code>Interval&lt;T&gt;</code></a> and <a href="interval-algebra.html">Interval algebra</a> — the range type and its set operations.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html"><code>Fraction&lt;T&gt;</code> API reference</a> and <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html"><code>Interval&lt;T&gt;</code> API reference</a>.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ibinaryinteger-1">IBinaryInteger&lt;TSelf&gt;</a> — the BCL generic-math interfaces these types build on.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

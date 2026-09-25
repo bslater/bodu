@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships a runnable, self-contained sample project for <code>Bodu.IO.Biff</code>, the BIFF
+record codec beneath the Excel reader, under
+<a href="https://github.com/bslater/bodu/tree/master/samples/IO.Biff"><code>samples/IO.Biff/</code></a>.
+It is <strong>offline and deterministic</strong>: it reads the committed <code>Data/sample-biff8.xls</code> (the BIFF8
+fixture the Excel reader's tests use), extracting the <code>Workbook</code> stream with <code>Bodu.IO.Compound</code>
+since the codec itself has no container dependency, and it authors its own BIFF8 stream with
+<code>BiffWriter</code> for the round-trip scenario. It is a member of <code>bodu.slnx</code>, built and executed by
+CI. The README documents every scenario individually.</p>
+<p>Run it from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics
+</code></pre>
+<h2 id="the-sample">The sample</h2>
+<h3 id="boduiobiffsamplesbiffbasics">Bodu.IO.Biff.Samples.BiffBasics</h3>
+<p>The codec from the physical record view to authoring:</p>
+<ul>
+<li><strong>RecordCensus</strong> — <a class="xref" href="../api/Bodu.IO.Biff.BiffReader.html">BiffReader</a> over a real workbook stream: every physical
+record framed, the <code>BOF</code> records marking each substream and establishing
+<a class="xref" href="../api/Bodu.IO.Biff.BiffVersion.html">BiffVersion</a>, and a tally by identifier that includes records the codec does
+not name.</li>
+<li><strong>CellsAndSharedStrings</strong> — the typed accessors: the sheet directory from <code>BOUNDSHEET</code>, the
+shared string table read one string at a time through <a class="xref" href="../api/Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a> across
+its <code>CONTINUE</code> records, and the first sheet's cell records decoded into values with the version
+seeded through <a class="xref" href="../api/Bodu.IO.Biff.BiffReaderOptions.html">BiffReaderOptions</a>.</li>
+<li><strong>WriteAndReadBack</strong> — <a class="xref" href="../api/Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> assembling a BIFF8 workbook stream with
+fonts, formats, a shared string table, a bound sheet, and a sheet holding every cell kind, with
+<code>BytesCommitted</code> supplying the sheet offset, then read straight back.</li>
+<li><strong>MalformedInput</strong> — the error contract: truncated headers and payloads and short known records
+as <a class="xref" href="../api/Bodu.IO.Biff.BiffFormatException.html">BiffFormatException</a>, a BIFF4 stream as
+<a class="xref" href="../api/Bodu.IO.Biff.BiffUnsupportedVersionException.html">BiffUnsupportedVersionException</a>, an unknown record as no error at all, and
+chunked reading with <code>isFinalBlock: false</code>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../docs/io-biff/index.html">Bodu.IO.Biff introduction</a></strong> — the package at a glance.</li>
+<li><strong><a href="../docs/io-biff/getting-started.html">Getting started</a></strong> — install and minimal samples.</li>
+<li><strong><a href="excel.html">Bodu.Formats.Excel.Binary samples</a></strong> — the same fixture read as a workbook.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

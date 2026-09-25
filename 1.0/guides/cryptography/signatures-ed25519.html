@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Signatures with Ed25519 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Signatures with Ed25519 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="signatures-with-ed25519">Signatures with Ed25519</h1>
+
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> is the EdDSA signature scheme over edwards25519 defined in RFC 8032 (the &quot;pure&quot; variant). It produces <strong>deterministic</strong> 64-byte signatures from a 32-byte private seed at a 128-bit security level: the same message signed twice under the same key yields the identical signature, and no per-signature nonce is consumed — which removes the catastrophic nonce-reuse failure mode of ECDSA-style schemes. This guide is for developers signing messages and verifying them with a distributed public key.</p>
+<p>Ed25519 signs and verifies; it agrees no keys. For establishing a shared secret, see <a href="key-agreement-x25519.html">X25519</a>. For a quantum-resistant signature scheme, see <a href="ml-dsa.html">ML-DSA</a>.</p>
+<h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Size</th>
+<th>Constant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Private key (seed)</td>
+<td>32 bytes</td>
+<td><code>Ed25519.PrivateKeySizeInBytes</code></td>
+</tr>
+<tr>
+<td>Public key</td>
+<td>32 bytes</td>
+<td><code>Ed25519.PublicKeySizeInBytes</code></td>
+</tr>
+<tr>
+<td>Signature (R ‖ S)</td>
+<td>64 bytes</td>
+<td><code>Ed25519.SignatureSizeInBytes</code></td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>SHA-512</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Security level</td>
+<td>128 bits</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signing-and-verifying">Signing and verifying</h2>
+<p>Generate a key pair, sign with <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.SignData.html#Bodu_Security_Cryptography_Ed25519_SignData_System_ReadOnlySpan_System_Byte__">SignData(ReadOnlySpan&lt;byte&gt;)</a>, and verify with <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.VerifyData.html#Bodu_Security_Cryptography_Ed25519_VerifyData_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyData(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;transfer 100 to account 42&quot;);
+
+using var signer = Ed25519.Create();
+signer.GenerateKey();
+
+byte[] signature = signer.SignData(message);   // 64 bytes
+
+bool valid = signer.VerifyData(message, signature);   // true
+</code></pre>
+<p>The same instance can both sign and verify while it holds the private key, but the typical deployment splits the two roles across machines.</p>
+<p><code>SignData</code> and <code>VerifyData</code> each have a span overload — <code>SignData(data, destination)</code> writes the 64-byte signature into a caller-supplied buffer with no allocation — for hot paths or pooled buffers. Query <code>HasPrivateKey</code> / <code>HasPublicKey</code> to see which halves an instance currently holds: a signer holds both, a verifier holds only the public half.</p>
+<h2 id="key-distribution">Key distribution</h2>
+<p>The signer keeps the private seed secret; the public key is distributed to every party that needs to verify. The public key carries no secret and can be embedded in config, served over the network, or pinned in source.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var signer = Ed25519.Create();
+signer.GenerateKey();
+
+byte[] privateSeed = signer.ExportPrivateKey();   // 32 bytes — keep secret, store in a vault
+byte[] publicKey = signer.ExportPublicKey();      // 32 bytes — distribute freely
+</code></pre>
+<p>To restore a signer from stored material, import the seed; the public key is re-derived automatically:</p>
+<pre><code class="lang-csharp">using var restored = Ed25519.Create();
+restored.ImportPrivateKey(privateSeed);   // public key re-derived from the seed
+</code></pre>
+<h2 id="verifying-with-only-the-public-key">Verifying with only the public key</h2>
+<p>A verifier never needs the private seed. Import the public key with <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.ImportPublicKey.html#Bodu_Security_Cryptography_Ed25519_ImportPublicKey_System_ReadOnlySpan_System_Byte__">ImportPublicKey(ReadOnlySpan&lt;byte&gt;)</a> and verify. Importing a public key onto an instance discards any private key it held, leaving a verify-only instance.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;transfer 100 to account 42&quot;);
+byte[] signature = ReceiveSignature();   // 64 bytes, off the wire
+byte[] publicKey = LoadPinnedPublicKey();
+
+using var verifier = Ed25519.Create();
+verifier.ImportPublicKey(publicKey);
+
+if (!verifier.VerifyData(message, signature))
+    throw new InvalidOperationException(&quot;Signature verification failed.&quot;);
+</code></pre>
+<p><code>ImportPublicKey</code> validates the encoding by fully decompressing the point — a non-canonical or off-curve 32-byte value throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at import time, so a malformed key never reaches verification.</p>
+<h2 id="verification-never-throws-on-a-bad-signature">Verification never throws on a bad signature</h2>
+<p><code>VerifyData</code> returns <code>false</code> for <strong>every</strong> invalid input — a wrong-length signature, a tampered message, a non-canonical R, or an S component at or above the group order (the RFC 8032 malleability check). It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>). Treat the boolean result as the sole signal:</p>
+<pre><code class="lang-csharp">bool ok = verifier.VerifyData(message, signature);
+if (!ok)
+{
+    // Reject — do not branch on why; any failure is a failure.
+}
+</code></pre>
+<p>Because all inputs to verification are public, verification time may vary with the inputs; that is acceptable and expected.</p>
+<h2 id="recording-the-signatures-wire-format">Recording the signature's wire format</h2>
+<p>An Ed25519 signature is the raw 64-byte <code>R ‖ S</code> string with no framing — <code>SignatureFormat.Raw</code>. That is unambiguous on its own, but when a signature travels through a layer that also handles ECDSA (which circulates as both ASN.1 DER and fixed-width P1363), wrap it in a <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> so the consumer reads the encoding instead of inferring it:</p>
+<pre><code class="lang-csharp">SignatureValue value = SignatureValue.FromBytes(signature, SignatureFormat.Raw);
+
+// 'value.FixedTimeEquals(other)' compares the bytes in constant time;
+// 'value.Format' tells a polymorphic verifier this is a raw EdDSA signature, not DER or P1363.
+</code></pre>
+<h2 id="determinism">Determinism</h2>
+<p>Ed25519 signatures are deterministic by design: identical key and message always produce identical output. This is a feature — there is no signing randomness to mismanage — but it means you cannot distinguish two signings of the same message. If you need each signing to differ, include a unique element (timestamp, counter, nonce) in the signed message itself.</p>
+<h2 id="what-ed25519-is-not">What Ed25519 is not</h2>
+<ul>
+<li><strong>Not key agreement.</strong> It establishes no shared secret; use <a href="key-agreement-x25519.html">X25519</a> for that.</li>
+<li><strong>Not quantum-resistant.</strong> A future quantum computer breaks it. For long-lived signatures, use <a href="ml-dsa.html">ML-DSA</a>.</li>
+<li><strong>Not the pre-hash or context variants.</strong> Only pure Ed25519 is implemented; Ed25519ph and Ed25519ctx are out of scope. If you need a domain-separation context on signatures, <a href="ml-dsa.html#context-strings">ML-DSA</a> supports one.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where Ed25519 sits in the family.</li>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> — the companion curve algorithm for shared secrets.</li>
+<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> — the quantum-resistant signature scheme.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — API reference.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

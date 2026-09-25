@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class EncodingExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class EncodingExtensions | BODU ">
+    
+    <meta name="description" content="Provides span-friendly, allocation-aware, and pool-aware extension methods on ,  of  and , and on  / .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.EncodingExtensions">
+
+
+
+  <h1 id="Bodu_Text_EncodingExtensions" data-uid="Bodu.Text.EncodingExtensions" class="text-break">Class EncodingExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides span-friendly, allocation-aware, and pool-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>, and on
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoder">Encoder</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoder">Decoder</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">EncodingExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Text_EncodingExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class EncodingExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Text_EncodingExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The extensions are split into focused partial files by concern (encode, decode, UTF-8 fast paths, transcoding,
+fallback handling, preamble / BOM, pooled allocation, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> writes,
+classification, and chunked encoder/decoder operations). Two receiver shapes coexist:
+</p>
+<ul><li>
+<code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code> receivers express the <em>data-first</em> form —
+discoverable via IntelliSense from a span variable.
+</li><li>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> receivers express the <em>encoding-first</em> form — useful when an encoding
+instance is the obvious starting point (for example, encoder-fluent fallback configuration).
+</li></ul>
+<p>
+Pooled allocation surfaces are aligned with <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> so that all pool-returning
+extensions share a single implementation path and the same lifetime semantics.
+</p>
+</div>
+  <h5 id="Bodu_Text_EncodingExtensions_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Encode a chunk of UTF-16 text to UTF-8 bytes via the span receiver.
+ReadOnlySpan&lt;char&gt; chars = "héllo".AsSpan();
+byte[] utf8 = chars.ToUtf8Bytes();
+
+// Round-trip via the encoding receiver, using the pooled builder for zero unnecessary allocations.
+using PooledBufferBuilder&lt;byte&gt; pooled = System.Text.Encoding.UTF8.GetBytesPooled(chars);
+ReadOnlySpan&lt;byte&gt; encoded = pooled.WrittenSpan;
+
+// Detect a UTF-8 byte-order-mark and decode the remainder.
+if (System.Text.Encoding.UTF8.StartsWithPreamble(encoded))
+    encoded = System.Text.Encoding.UTF8.StripPreamble(encoded);
+
+string decoded = encoded.DecodeToString(System.Text.Encoding.UTF8);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_DecodeChunk_System_Text_Decoder_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Boolean_System_Int32__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.DecodeChunk(System.Text.Decoder,System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Boolean,System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.DecodeChunk.html#Bodu_Text_EncodingExtensions_DecodeChunk_System_Text_Decoder_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Boolean_System_Int32__System_Int32__">DecodeChunk(Decoder, ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, bool, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a chunk of bytes from <code class="paramref">source</code> into <code class="paramref">destination</code> via the stateful
+<code class="paramref">decoder</code> and returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> indicating whether the destination was
+sufficient.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_DecodeExactlyTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__" data-uid="Bodu.Text.EncodingExtensions.DecodeExactlyTo(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Span{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.DecodeExactlyTo.html#Bodu_Text_EncodingExtensions_DecodeExactlyTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__">DecodeExactlyTo(ReadOnlySpan&lt;byte&gt;, Encoding, Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+asserts that <code class="paramref">destination</code> is exactly the size required.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_DecodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__" data-uid="Bodu.Text.EncodingExtensions.DecodeTo(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Span{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.DecodeTo.html#Bodu_Text_EncodingExtensions_DecodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__">DecodeTo(ReadOnlySpan&lt;byte&gt;, Encoding, Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+returns the number of characters written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_DecodeToString_System_ReadOnlySpan_System_Byte__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.DecodeToString(System.ReadOnlySpan{System.Byte},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.DecodeToString.html#Bodu_Text_EncodingExtensions_DecodeToString_System_ReadOnlySpan_System_Byte__System_Text_Encoding_">DecodeToString(ReadOnlySpan&lt;byte&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> using <code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_DecodeUtf8To_System_ReadOnlySpan_System_Byte__System_Span_System_Char__" data-uid="Bodu.Text.EncodingExtensions.DecodeUtf8To(System.ReadOnlySpan{System.Byte},System.Span{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.DecodeUtf8To.html#Bodu_Text_EncodingExtensions_DecodeUtf8To_System_ReadOnlySpan_System_Byte__System_Span_System_Char__">DecodeUtf8To(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> as UTF-8 into <code class="paramref">destination</code> and returns the number of
+characters written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_EncodeChunk_System_Text_Encoder_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Boolean_System_Int32__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.EncodeChunk(System.Text.Encoder,System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Boolean,System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.EncodeChunk.html#Bodu_Text_EncodingExtensions_EncodeChunk_System_Text_Encoder_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Boolean_System_Int32__System_Int32__">EncodeChunk(Encoder, ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, bool, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a chunk of characters from <code class="paramref">source</code> into <code class="paramref">destination</code> via the
+stateful <code class="paramref">encoder</code> and returns an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> indicating whether the
+destination was sufficient.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_EncodeExactlyTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.EncodeExactlyTo(System.ReadOnlySpan{System.Char},System.Text.Encoding,System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.EncodeExactlyTo.html#Bodu_Text_EncodingExtensions_EncodeExactlyTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__">EncodeExactlyTo(ReadOnlySpan&lt;char&gt;, Encoding, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+asserts that <code class="paramref">destination</code> is exactly the size required.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_EncodeTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.EncodeTo(System.ReadOnlySpan{System.Char},System.Text.Encoding,System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.EncodeTo.html#Bodu_Text_EncodingExtensions_EncodeTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__">EncodeTo(ReadOnlySpan&lt;char&gt;, Encoding, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+returns the number of bytes written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_EncodeUtf8To_System_ReadOnlySpan_System_Char__System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.EncodeUtf8To(System.ReadOnlySpan{System.Char},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.EncodeUtf8To.html#Bodu_Text_EncodingExtensions_EncodeUtf8To_System_ReadOnlySpan_System_Char__System_Span_System_Byte__">EncodeUtf8To(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> as UTF-8 into <code class="paramref">destination</code> and returns the number of bytes
+written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_FromUtf8_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.FromUtf8(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.FromUtf8.html#Bodu_Text_EncodingExtensions_FromUtf8_System_ReadOnlySpan_System_Byte__">FromUtf8(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> as UTF-8 into a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetByteCountWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetByteCountWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetByteCountWithPreamble.html#Bodu_Text_EncodingExtensions_GetByteCountWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__">GetByteCountWithPreamble(Encoding, ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of bytes required to encode <code class="paramref">chars</code> together with
+<code class="paramref">encoding</code>'s preamble.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesExactly_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.GetBytesExactly(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesExactly.html#Bodu_Text_EncodingExtensions_GetBytesExactly_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__">GetBytesExactly(Encoding, ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+asserts that <code class="paramref">destination</code> is exactly the size required.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesOwner_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_MemoryPool_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.GetBytesOwner(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Buffers.MemoryPool{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesOwner.html#Bodu_Text_EncodingExtensions_GetBytesOwner_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_MemoryPool_System_Byte__">GetBytesOwner(Encoding, ReadOnlySpan&lt;char&gt;, MemoryPool&lt;byte&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a pool-backed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a> using
+<code class="paramref">encoding</code> and the supplied <code class="paramref">memoryPool</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesPooled_System_Text_Encoding_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetBytesPooled(System.Text.Encoding,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesPooled.html#Bodu_Text_EncodingExtensions_GetBytesPooled_System_Text_Encoding_System_ReadOnlySpan_System_Char__">GetBytesPooled(Encoding, ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> using
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesRented_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.GetBytesRented(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesRented.html#Bodu_Text_EncodingExtensions_GetBytesRented_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Int32__">GetBytesRented(Encoding, ReadOnlySpan&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a buffer rented from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a> using
+<code class="paramref">encoding</code> and reports the exact byte count via <code class="paramref">bytesWritten</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetBytesWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesWithPreamble.html#Bodu_Text_EncodingExtensions_GetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__">GetBytesWithPreamble(Encoding, ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a freshly allocated byte array preceded by <code class="paramref">encoding</code>'s
+preamble.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.GetBytesWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetBytesWithPreamble.html#Bodu_Text_EncodingExtensions_GetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__">GetBytesWithPreamble(Encoding, ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into <code class="paramref">destination</code> preceded by <code class="paramref">encoding</code>
+'s preamble and returns the total number of bytes written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetCharsExactly_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Span_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetCharsExactly(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Span{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetCharsExactly.html#Bodu_Text_EncodingExtensions_GetCharsExactly_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Span_System_Char__">GetCharsExactly(Encoding, ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into <code class="paramref">destination</code> using <code class="paramref">encoding</code> and
+asserts that <code class="paramref">destination</code> is exactly the size required.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetCharsOwner_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Buffers_MemoryPool_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetCharsOwner(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Buffers.MemoryPool{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetCharsOwner.html#Bodu_Text_EncodingExtensions_GetCharsOwner_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Buffers_MemoryPool_System_Char__">GetCharsOwner(Encoding, ReadOnlySpan&lt;byte&gt;, MemoryPool&lt;char&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into a pool-backed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a> using
+<code class="paramref">encoding</code> and the supplied <code class="paramref">memoryPool</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetCharsPooled_System_Text_Encoding_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.GetCharsPooled(System.Text.Encoding,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetCharsPooled.html#Bodu_Text_EncodingExtensions_GetCharsPooled_System_Text_Encoding_System_ReadOnlySpan_System_Byte__">GetCharsPooled(Encoding, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into a <a class="xref" href="Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> using
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetCharsRented_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.GetCharsRented(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetCharsRented.html#Bodu_Text_EncodingExtensions_GetCharsRented_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Int32__">GetCharsRented(Encoding, ReadOnlySpan&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into a buffer rented from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1.shared">Shared</a> using
+<code class="paramref">encoding</code> and reports the exact character count via <code class="paramref">charsWritten</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetDecodedCharCount_System_ReadOnlySpan_System_Byte__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.GetDecodedCharCount(System.ReadOnlySpan{System.Byte},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetDecodedCharCount.html#Bodu_Text_EncodingExtensions_GetDecodedCharCount_System_ReadOnlySpan_System_Byte__System_Text_Encoding_">GetDecodedCharCount(ReadOnlySpan&lt;byte&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of characters produced by decoding <code class="paramref">bytes</code> with
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetDisplayName_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.GetDisplayName(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetDisplayName.html#Bodu_Text_EncodingExtensions_GetDisplayName_System_Text_Encoding_">GetDisplayName(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a human-readable display name for <code class="paramref">encoding</code> that distinguishes BOM-emitting UTF
+variants from their plain counterparts (for example, <code>&quot;UTF-8-BOM&quot;</code> versus <code>&quot;UTF-8&quot;</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetEncodedByteCount_System_ReadOnlySpan_System_Char__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.GetEncodedByteCount(System.ReadOnlySpan{System.Char},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetEncodedByteCount.html#Bodu_Text_EncodingExtensions_GetEncodedByteCount_System_ReadOnlySpan_System_Char__System_Text_Encoding_">GetEncodedByteCount(ReadOnlySpan&lt;char&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of bytes produced by encoding <code class="paramref">chars</code> with
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetPreambleLength_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.GetPreambleLength(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetPreambleLength.html#Bodu_Text_EncodingExtensions_GetPreambleLength_System_Text_Encoding_">GetPreambleLength(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the length in bytes of <code class="paramref">encoding</code>'s preamble.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetStringSkippingPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.GetStringSkippingPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetStringSkippingPreamble.html#Bodu_Text_EncodingExtensions_GetStringSkippingPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__">GetStringSkippingPreamble(Encoding, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> after skipping <code class="paramref">encoding</code>'s preamble.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetTranscodedByteCount_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.GetTranscodedByteCount(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetTranscodedByteCount.html#Bodu_Text_EncodingExtensions_GetTranscodedByteCount_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_">GetTranscodedByteCount(Encoding, ReadOnlySpan&lt;byte&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of bytes that <code class="paramref">source</code> would produce when re-encoded from
+<code class="paramref">sourceEncoding</code> into <code class="paramref">destinationEncoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_GetUtf8ByteCount_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.EncodingExtensions.GetUtf8ByteCount(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.GetUtf8ByteCount.html#Bodu_Text_EncodingExtensions_GetUtf8ByteCount_System_ReadOnlySpan_System_Char__">GetUtf8ByteCount(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the exact number of UTF-8 bytes required to encode <code class="paramref">chars</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_HasPreamble_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.HasPreamble(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.HasPreamble.html#Bodu_Text_EncodingExtensions_HasPreamble_System_Text_Encoding_">HasPreamble(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> emits a byte-order-mark preamble.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsAnyUtf_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsAnyUtf(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsAnyUtf.html#Bodu_Text_EncodingExtensions_IsAnyUtf_System_Text_Encoding_">IsAnyUtf(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is any UTF encoding (UTF-8, UTF-16 LE, UTF-16
+BE, UTF-32 LE, or UTF-32 BE).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsAscii_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsAscii(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsAscii.html#Bodu_Text_EncodingExtensions_IsAscii_System_Text_Encoding_">IsAscii(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is US-ASCII (Windows codepage 20127).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsUtf16BigEndian_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsUtf16BigEndian(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsUtf16BigEndian.html#Bodu_Text_EncodingExtensions_IsUtf16BigEndian_System_Text_Encoding_">IsUtf16BigEndian(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is UTF-16 big endian (Windows codepage 1201, the
+value of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.bigendianunicode">BigEndianUnicode</a>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsUtf16LittleEndian_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsUtf16LittleEndian(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsUtf16LittleEndian.html#Bodu_Text_EncodingExtensions_IsUtf16LittleEndian_System_Text_Encoding_">IsUtf16LittleEndian(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is UTF-16 little endian (Windows codepage 1200,
+the value of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.unicode">Unicode</a>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsUtf32BigEndian_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsUtf32BigEndian(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsUtf32BigEndian.html#Bodu_Text_EncodingExtensions_IsUtf32BigEndian_System_Text_Encoding_">IsUtf32BigEndian(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is UTF-32 big endian (Windows codepage 12001).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsUtf32LittleEndian_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsUtf32LittleEndian(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsUtf32LittleEndian.html#Bodu_Text_EncodingExtensions_IsUtf32LittleEndian_System_Text_Encoding_">IsUtf32LittleEndian(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is UTF-32 little endian (Windows codepage 12000,
+the value of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf32">UTF32</a>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_IsUtf8_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.IsUtf8(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.IsUtf8.html#Bodu_Text_EncodingExtensions_IsUtf8_System_Text_Encoding_">IsUtf8(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> is UTF-8 (Windows codepage 65001).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_StartsWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.StartsWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.StartsWithPreamble.html#Bodu_Text_EncodingExtensions_StartsWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__">StartsWithPreamble(Encoding, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">bytes</code> begins with the preamble of
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_StripPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.StripPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.StripPreamble.html#Bodu_Text_EncodingExtensions_StripPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Byte__">StripPreamble(Encoding, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code class="paramref">bytes</code> with <code class="paramref">encoding</code>'s preamble removed if present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ThrowIfTooSmallForDecoding_System_Span_System_Char__System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_String_" data-uid="Bodu.Text.EncodingExtensions.ThrowIfTooSmallForDecoding(System.Span{System.Char},System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.String)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ThrowIfTooSmallForDecoding.html#Bodu_Text_EncodingExtensions_ThrowIfTooSmallForDecoding_System_Span_System_Char__System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_String_">ThrowIfTooSmallForDecoding(Span&lt;char&gt;, ReadOnlySpan&lt;byte&gt;, Encoding, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when <code class="paramref">destination</code> is too small to receive the
+characters produced by decoding <code class="paramref">bytes</code> with <code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ThrowIfTooSmallForEncoding_System_Span_System_Byte__System_ReadOnlySpan_System_Char__System_Text_Encoding_System_String_" data-uid="Bodu.Text.EncodingExtensions.ThrowIfTooSmallForEncoding(System.Span{System.Byte},System.ReadOnlySpan{System.Char},System.Text.Encoding,System.String)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ThrowIfTooSmallForEncoding.html#Bodu_Text_EncodingExtensions_ThrowIfTooSmallForEncoding_System_Span_System_Byte__System_ReadOnlySpan_System_Char__System_Text_Encoding_System_String_">ThrowIfTooSmallForEncoding(Span&lt;byte&gt;, ReadOnlySpan&lt;char&gt;, Encoding, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when <code class="paramref">destination</code> is too small to receive the
+bytes produced by encoding <code class="paramref">chars</code> with <code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ToBytes_System_ReadOnlySpan_System_Char__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.ToBytes(System.ReadOnlySpan{System.Char},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ToBytes.html#Bodu_Text_EncodingExtensions_ToBytes_System_ReadOnlySpan_System_Char__System_Text_Encoding_">ToBytes(ReadOnlySpan&lt;char&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a freshly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array using
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ToChars_System_ReadOnlySpan_System_Byte__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.ToChars(System.ReadOnlySpan{System.Byte},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ToChars.html#Bodu_Text_EncodingExtensions_ToChars_System_ReadOnlySpan_System_Byte__System_Text_Encoding_">ToChars(ReadOnlySpan&lt;byte&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> into a freshly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a> array using
+<code class="paramref">encoding</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ToOwnedBytes_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Buffers_MemoryPool_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.ToOwnedBytes(System.ReadOnlySpan{System.Char},System.Text.Encoding,System.Buffers.MemoryPool{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ToOwnedBytes.html#Bodu_Text_EncodingExtensions_ToOwnedBytes_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Buffers_MemoryPool_System_Byte__">ToOwnedBytes(ReadOnlySpan&lt;char&gt;, Encoding, MemoryPool&lt;byte&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> into a pool-backed <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a> using
+<code class="paramref">encoding</code> and the supplied <code class="paramref">memoryPool</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_ToUtf8Bytes_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.EncodingExtensions.ToUtf8Bytes(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.ToUtf8Bytes.html#Bodu_Text_EncodingExtensions_ToUtf8Bytes_System_ReadOnlySpan_System_Char__">ToUtf8Bytes(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> to a freshly allocated UTF-8 byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_Transcode_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.Transcode(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.Transcode.html#Bodu_Text_EncodingExtensions_Transcode_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_">Transcode(ReadOnlySpan&lt;byte&gt;, Encoding, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transcodes <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> and returns the result as a freshly allocated byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_Transcode_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.Transcode(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.Transcode.html#Bodu_Text_EncodingExtensions_Transcode_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_">Transcode(Encoding, ReadOnlySpan&lt;byte&gt;, Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transcodes <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> and returns the result as a freshly allocated byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TranscodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.TranscodeTo(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Text.Encoding,System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TranscodeTo.html#Bodu_Text_EncodingExtensions_TranscodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_System_Span_System_Byte__">TranscodeTo(ReadOnlySpan&lt;byte&gt;, Encoding, Encoding, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transcodes <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> into <code class="paramref">destination</code> and returns the byte count.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TranscodeTo_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.TranscodeTo(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TranscodeTo.html#Bodu_Text_EncodingExtensions_TranscodeTo_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Byte__">TranscodeTo(Encoding, ReadOnlySpan&lt;byte&gt;, Encoding, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Transcodes <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> into <code class="paramref">destination</code> and returns the byte count.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryDecodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryDecodeTo(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryDecodeTo.html#Bodu_Text_EncodingExtensions_TryDecodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Char__System_Int32__">TryDecodeTo(ReadOnlySpan&lt;byte&gt;, Encoding, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode <code class="paramref">bytes</code> into <code class="paramref">destination</code> using
+<code class="paramref">encoding</code> without throwing when the destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryDecodeUtf8To_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryDecodeUtf8To(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryDecodeUtf8To.html#Bodu_Text_EncodingExtensions_TryDecodeUtf8To_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryDecodeUtf8To(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode <code class="paramref">bytes</code> as UTF-8 into <code class="paramref">destination</code> without throwing when
+the destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryEncodeTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryEncodeTo(System.ReadOnlySpan{System.Char},System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryEncodeTo.html#Bodu_Text_EncodingExtensions_TryEncodeTo_System_ReadOnlySpan_System_Char__System_Text_Encoding_System_Span_System_Byte__System_Int32__">TryEncodeTo(ReadOnlySpan&lt;char&gt;, Encoding, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">chars</code> into <code class="paramref">destination</code> using
+<code class="paramref">encoding</code> without throwing when the destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryEncodeUtf8To_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryEncodeUtf8To(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryEncodeUtf8To.html#Bodu_Text_EncodingExtensions_TryEncodeUtf8To_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__">TryEncodeUtf8To(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">chars</code> as UTF-8 into <code class="paramref">destination</code> without throwing when
+the destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryGetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryGetBytesWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryGetBytesWithPreamble.html#Bodu_Text_EncodingExtensions_TryGetBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__">TryGetBytesWithPreamble(Encoding, ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">chars</code> into <code class="paramref">destination</code> preceded by
+<code class="paramref">encoding</code>'s preamble without throwing when the destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryTranscodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryTranscodeTo(System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryTranscodeTo.html#Bodu_Text_EncodingExtensions_TryTranscodeTo_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Text_Encoding_System_Span_System_Byte__System_Int32__">TryTranscodeTo(ReadOnlySpan&lt;byte&gt;, Encoding, Encoding, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to transcode <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> into <code class="paramref">destination</code> without throwing when the
+destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryTranscodeTo_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryTranscodeTo(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryTranscodeTo.html#Bodu_Text_EncodingExtensions_TryTranscodeTo_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Text_Encoding_System_Span_System_Byte__System_Int32__">TryTranscodeTo(Encoding, ReadOnlySpan&lt;byte&gt;, Encoding, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to transcode <code class="paramref">source</code> from <code class="paramref">sourceEncoding</code> to
+<code class="paramref">destinationEncoding</code> into <code class="paramref">destination</code> without throwing when the
+destination is too small.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_TryWritePreamble_System_Text_Encoding_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.EncodingExtensions.TryWritePreamble(System.Text.Encoding,System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.TryWritePreamble.html#Bodu_Text_EncodingExtensions_TryWritePreamble_System_Text_Encoding_System_Span_System_Byte__System_Int32__">TryWritePreamble(Encoding, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to write <code class="paramref">encoding</code>'s preamble into <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_UsesExceptionFallbacks_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.UsesExceptionFallbacks(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.UsesExceptionFallbacks.html#Bodu_Text_EncodingExtensions_UsesExceptionFallbacks_System_Text_Encoding_">UsesExceptionFallbacks(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> uses
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderexceptionfallback">EncoderExceptionFallback</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoderexceptionfallback">DecoderExceptionFallback</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_UsesReplacementFallbacks_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.UsesReplacementFallbacks(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.UsesReplacementFallbacks.html#Bodu_Text_EncodingExtensions_UsesReplacementFallbacks_System_Text_Encoding_">UsesReplacementFallbacks(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a value indicating whether <code class="paramref">encoding</code> uses
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderreplacementfallback">EncoderReplacementFallback</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoderreplacementfallback">DecoderReplacementFallback</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WithExceptionFallbacks_System_Text_Encoding_" data-uid="Bodu.Text.EncodingExtensions.WithExceptionFallbacks(System.Text.Encoding)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WithExceptionFallbacks.html#Bodu_Text_EncodingExtensions_WithExceptionFallbacks_System_Text_Encoding_">WithExceptionFallbacks(Encoding)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a clone of <code class="paramref">encoding</code> whose encoder and decoder fallbacks both throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoderfallbackexception">EncoderFallbackException</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoderfallbackexception">DecoderFallbackException</a> on
+invalid sequences.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WithReplacementFallbacks_System_Text_Encoding_System_String_System_String_" data-uid="Bodu.Text.EncodingExtensions.WithReplacementFallbacks(System.Text.Encoding,System.String,System.String)">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WithReplacementFallbacks.html#Bodu_Text_EncodingExtensions_WithReplacementFallbacks_System_Text_Encoding_System_String_System_String_">WithReplacementFallbacks(Encoding, string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a clone of <code class="paramref">encoding</code> whose encoder fallback substitutes
+<code class="paramref">encoderReplacement</code> and whose decoder fallback substitutes
+<code class="paramref">decoderReplacement</code> for invalid sequences.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WriteBytes_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.WriteBytes(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WriteBytes.html#Bodu_Text_EncodingExtensions_WriteBytes_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_IBufferWriter_System_Byte__">WriteBytes(Encoding, ReadOnlySpan&lt;char&gt;, IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">chars</code> with <code class="paramref">encoding</code> and writes the bytes into
+<code class="paramref">writer</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WriteBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.WriteBytesWithPreamble(System.Text.Encoding,System.ReadOnlySpan{System.Char},System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WriteBytesWithPreamble.html#Bodu_Text_EncodingExtensions_WriteBytesWithPreamble_System_Text_Encoding_System_ReadOnlySpan_System_Char__System_Buffers_IBufferWriter_System_Byte__">WriteBytesWithPreamble(Encoding, ReadOnlySpan&lt;char&gt;, IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes <code class="paramref">encoding</code>'s preamble (BOM) followed by the bytes produced by encoding
+<code class="paramref">chars</code> into <code class="paramref">writer</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WriteChars_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__" data-uid="Bodu.Text.EncodingExtensions.WriteChars(System.Text.Encoding,System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WriteChars.html#Bodu_Text_EncodingExtensions_WriteChars_System_Text_Encoding_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__">WriteChars(Encoding, ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">bytes</code> with <code class="paramref">encoding</code> and writes the characters into
+<code class="paramref">writer</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_EncodingExtensions_WritePreamble_System_Text_Encoding_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.EncodingExtensions.WritePreamble(System.Text.Encoding,System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.Text.EncodingExtensions.WritePreamble.html#Bodu_Text_EncodingExtensions_WritePreamble_System_Text_Encoding_System_Buffers_IBufferWriter_System_Byte__">WritePreamble(Encoding, IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes <code class="paramref">encoding</code>'s preamble (BOM) into <code class="paramref">writer</code>. No bytes are written when
+the encoding has no preamble.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Probabilistic collections (sketches) | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Probabilistic collections (sketches) | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="probabilistic-collections-sketches">Probabilistic collections (sketches)</h1>
+
+<p>The <code>Bodu.Collections.Probabilistic</code> namespace ships three approximate &quot;sketch&quot; data structures that trade exactness for a fixed, small memory footprint: <a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> for approximate set membership, <a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a> for approximate per-element frequencies, and <a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> for approximate distinct-element counts. Each is sized once from its constructor arguments, never grows, and answers queries over arbitrarily long streams in O(1) space — the accuracy you paid for at construction is the accuracy you get, regardless of how many elements pass through.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>These types are <strong>approximate — do not use them for exact membership or exact counting.</strong> A <code>BloomFilter&lt;T&gt;</code> can report an element as present that was never added (a false positive); a <code>CountMinSketch&lt;T&gt;</code> can report a count higher than the truth (an overestimate); a <code>HyperLogLog&lt;T&gt;</code> estimate is a statistical figure with a known standard error, not a tally. When the answer must be exact, use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a>, or a plain <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> — the sketches are for the regime where the exact structure no longer fits in memory.</p>
+</div>
+<p>The error is one-sided and quantified, which is what makes the types usable as contracts rather than heuristics:</p>
+<ul>
+<li><strong><code>BloomFilter&lt;T&gt;</code> never produces a false negative.</strong> An added element is <em>always</em> reported as present; only never-added elements can be misreported. The filter is sized from <code>expectedItems</code> (n) and <code>falsePositiveRate</code> (p) using the standard Bloom formulas — <code>m = ⌈−n·ln(p) / ln(2)²⌉</code> bits and <code>k = max(1, round(m/n·ln 2))</code> hash probes — so the observed false-positive rate approaches the design rate <code>p</code> as the element count approaches <code>n</code>, and rises above it beyond that point. <code>EstimatedFalsePositiveRate</code> reports the rate implied by the current fill.</li>
+<li><strong><code>CountMinSketch&lt;T&gt;</code> never underestimates.</strong> <code>EstimateCount</code> returns at least the element's true count, and with probability at least <code>1 − δ</code> returns at most the true count plus <code>ε · TotalCount</code>. The <code>epsilon</code> / <code>delta</code> constructor arguments size the sketch (<code>w = ⌈e/ε⌉</code> counters per row, <code>d = ⌈ln(1/δ)⌉</code> rows). Negative updates are rejected by design — a removal could break the never-underestimate guarantee.</li>
+<li><strong><code>HyperLogLog&lt;T&gt;</code> carries a relative standard error of about <code>1.04/√m</code>,</strong> where <code>m = 2^precision</code> one-byte registers. Each extra bit of precision doubles the footprint and improves the error by √2: precision 4 is 16 registers at ~26% error, precision 14 is 16,384 registers (16 KiB) at ~0.81% error. <code>StandardError</code> exposes the figure; roughly 65% of estimates fall within one standard error of the truth and roughly 99% within three.</li>
+<li><strong>All entropy comes from the comparer's 32-bit hash.</strong> Each type hashes through the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> (or the default comparer): the 32-bit <code>GetHashCode</code> is expanded through a deterministic SplitMix64-style avalanche into the 64-bit values the sketch consumes (Kirsch–Mitzenmacher double hashing for the filter and sketch, a single hash for HyperLogLog). The expansion cannot manufacture entropy the comparer did not supply, so the achievable accuracy floor is bounded by the collision rate of that 32-bit hash — two elements with equal comparer hashes are indistinguishable to a sketch.</li>
+<li><strong>Randomized string hashes make exports process-local.</strong> The expansion is platform-stable, but <code>string.GetHashCode()</code> is randomized per process — exported state for <code>string</code> elements (or any type with a randomized hash) under the default comparer is only meaningful when re-imported within the same process. Supply a custom comparer with a stable hash when exports must cross process boundaries.</li>
+<li><strong>Merges require compatible instances.</strong> <code>UnionWith</code> / <code>MergeWith</code> demand identical geometry (bit count and hash count; width and depth; precision) and the same or an equal comparer — in practice, instances constructed with the same parameters. A Bloom union ORs the bits; a count-min merge adds counters cell-wise; a HyperLogLog merge takes the register-wise maximum and is lossless and idempotent (shared elements are not double-counted).</li>
+<li><strong>Export is an opaque, version-checked snapshot, not a wire contract.</strong> <code>TryExport</code> / <code>Export</code> / <code>GetExportByteCount</code> and the static <code>Import</code> round-trip a sketch's state as bytes, but the layout may change between library versions with a corresponding version-byte bump. The comparer is not part of the exported state — <code>Import</code> requires the caller to re-supply it.</li>
+<li><strong>None of the sketches is thread-safe.</strong> Concurrent reads and writes require external synchronization.</li>
+</ul>
+<h2 id="pattern-1--approximate-membership-with-bloomfiltert">Pattern 1 — approximate membership with <code>BloomFilter&lt;T&gt;</code></h2>
+<p>Use a Bloom filter as a cheap front gate: a <code>false</code> from <code>MightContain</code> is definitive (&quot;definitely never added&quot;) and lets you skip the expensive lookup; a <code>true</code> means &quot;probably added&quot; and falls through to the authoritative store.</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Probabilistic;
+
+// Track ~1,000,000 previously crawled URLs in ~1.14 MiB with a 1% false-positive budget.
+var crawled = new BloomFilter&lt;string&gt;(expectedItems: 1_000_000, falsePositiveRate: 0.01);
+
+crawled.Add(&quot;https://example.com/&quot;);
+
+if (!crawled.MightContain(candidateUrl))
+{
+    // Definitely not crawled yet — no false negatives, ever.
+    Enqueue(candidateUrl);
+    crawled.Add(candidateUrl);
+}
+// else: probably crawled — ~1% of never-crawled URLs are skipped as false positives.
+</code></pre>
+<p>Elements cannot be removed (<code>Clear</code> resets the whole filter), and filling past <code>ExpectedItems</code> pushes the observed false-positive rate above <code>DesignFalsePositiveRate</code> — watch <code>EstimatedFalsePositiveRate</code> when the stream size is uncertain. Shard-per-worker filters built with the same parameters can be combined with <code>UnionWith</code>.</p>
+<h2 id="pattern-2--approximate-frequencies-with-countminsketcht">Pattern 2 — approximate frequencies with <code>CountMinSketch&lt;T&gt;</code></h2>
+<p>Use a count-min sketch for heavy-hitter and rate questions over high-cardinality streams — &quot;roughly how many times has this key occurred?&quot; — where a <code>Dictionary&lt;TKey,long&gt;</code> would grow without bound.</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Probabilistic;
+
+// 1% additive error (relative to the total stream) at 99% confidence: 272 × 5 counters, ~10.6 KiB.
+var hits = new CountMinSketch&lt;string&gt;(epsilon: 0.01, delta: 0.01);
+
+hits.Add(&quot;GET /index&quot;);
+hits.Add(&quot;GET /search&quot;, 41);
+
+// &gt;= the true count; within true + 0.01 * TotalCount with probability &gt;= 0.99.
+var estimate = hits.EstimateCount(&quot;GET /search&quot;);
+</code></pre>
+<p>The bound is additive in <code>TotalCount</code>, so estimates for rare elements are dominated by noise from the heavy elements sharing their counters — the sketch shines at identifying <em>frequent</em> elements, not at counting rare ones precisely. Per-shard sketches with the same parameters combine with <code>MergeWith</code>, which sums the streams.</p>
+<h2 id="pattern-3--approximate-distinct-counts-with-hyperloglogt">Pattern 3 — approximate distinct counts with <code>HyperLogLog&lt;T&gt;</code></h2>
+<p>Use HyperLogLog to count <em>distinct</em> elements — unique visitors, distinct keys, cardinality of a join column — in a fixed few kilobytes where a <code>HashSet&lt;T&gt;</code> would hold every element.</p>
+<pre><code class="lang-csharp">using Bodu.Collections.Probabilistic;
+
+// 2^14 = 16,384 one-byte registers (~16 KiB) at ~0.81% standard error.
+var visitors = new HyperLogLog&lt;int&gt;(precision: 14);
+
+foreach (var visitorId in clickStream)
+    visitors.Add(visitorId); // duplicates leave the sketch unchanged
+
+Console.WriteLine(visitors.EstimateCardinality()); // ~ the number of distinct ids
+</code></pre>
+<p><code>MergeWith</code> is the standout feature: merging per-day (or per-shard) sketches yields exactly the sketch the concatenated stream would have produced, so distinct counts compose across partitions without double-counting elements seen on both sides. Note the estimate is not monotonic at fine granularity — adding one element can move it by more or less than one — and the 32-bit comparer hash caps the number of distinguishable elements at 2³².</p>
+<h2 id="when-to-use-which-sketch">When to use which sketch</h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Reach for</th>
+<th>Guarantee</th>
+<th>Exact alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Have I seen this element before?&quot;</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a></td>
+<td>No false negatives; false positives at the design rate <code>p</code> when filled to <code>ExpectedItems</code>.</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>&quot;Roughly how many times has this element occurred?&quot;</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a></td>
+<td>Never underestimates; overestimates by at most <code>ε · TotalCount</code> with probability ≥ <code>1 − δ</code>.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>&quot;Roughly how many <em>distinct</em> elements have I seen?&quot;</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></td>
+<td>Relative standard error ≈ <code>1.04/√m</code> in one byte per register.</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet&lt;T&gt;</a>.Count</td>
+</tr>
+</tbody>
+</table>
+<p>All three share the same operational shape — comparer-driven hashing, parameter-compatible merging, <code>Clear</code>, and the opaque version-checked export/import — so a pipeline that shards one sketch type can shard the others the same way.</p>
+<p>For the exact-semantics collections these types deliberately are not, see <a href="choosing-a-collection.html">Choosing a collection</a>; for exact multiplicity counting, see <a href="multiset.html">Multiset</a>. The <a class="xref" href="../../api/Bodu.Collections.Probabilistic.html">Bodu.Collections.Probabilistic API reference</a> has the full member-level contracts.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

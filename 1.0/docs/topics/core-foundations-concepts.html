@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Core Foundations — Concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Core Foundations — Concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="core-foundations--concepts">Core Foundations — Concepts</h1>
+
+<p>This page covers the vocabulary that spans the Core Foundations topic — the conventions shared by <code>Bodu.Core</code>'s buffers and guards, the <code>Bodu.Collections</code> catalogue and its <code>Bodu.Collections.Concurrent</code> thread-safe companion, and the <code>Bodu.Text</code> character-encoding helpers that ship inside <code>Bodu.Core</code>. Read the <a href="core-foundations.html">topic overview</a> first for the package map; come back here whenever a term feels imprecise.</p>
+<h2 id="the-guard-convention">The guard convention</h2>
+<p>Every Bodu library validates its public parameters through <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> rather than hand-rolled checks. The convention is <strong>validate-then-work</strong>: guards form a contiguous block at the top of a member, before any real logic runs, so a method either throws immediately with a precise <code>ArgumentException</code>-family error or proceeds knowing its inputs are sound.</p>
+<pre><code class="lang-csharp">public static double Average(IReadOnlyList&lt;int&gt; values)
+{
+    ThrowHelper.ThrowIfNull(values);
+    ThrowHelper.ThrowIfZero(values.Count);
+    return values.Average();
+}
+</code></pre>
+<p>Each helper accepts a <code>[CallerArgumentExpression]</code>-driven <code>paramName</code>, so the call site never repeats the argument name — the compiler captures the expression text (<code>values</code>, <code>values.Count</code>) and it surfaces as <code>ParamName</code> on the thrown exception. The helpers are partitioned by concern (null, numeric, comparison, array, collection, span, type, string), and <code>[StackTraceHidden]</code> keeps the helper frame out of stack traces. Centralizing the guards is what keeps exception messages and parameter-name capture identical across every Bodu package.</p>
+<h2 id="bounded-vs-growable">Bounded vs. growable</h2>
+<p>A <strong>fixed capacity is a contract</strong>, not a tuning knob. A bounded collection sizes its backing storage once; when <code>Count</code> reaches <code>Capacity</code>, it must either reject the next add or evict an existing element. Bodu's ring-backed types expose that choice as a single toggle:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> — <code>AllowOverwrite = true</code> silently evicts the oldest element (sliding-window semantics); <code>false</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> on overflow.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> — <code>AllowGrow = true</code> doubles the backing array like a <code>List&lt;T&gt;</code>; <code>false</code> fixes the capacity and throws on overflow. The toggle can be flipped at runtime.</li>
+</ul>
+<p>The <code>Try…</code> variants (<code>TryEnqueue</code>, <code>TryAddFirst</code>, <code>TryAddLast</code>) substitute a <code>false</code> return for the throw, so hot paths can stay exception-free without changing the configured behavior. Choose overwrite when the newest data matters most (telemetry windows, recent-items lists); choose throw or <code>Try…</code> when dropping data silently would be a bug.</p>
+<h2 id="eviction-policies">Eviction policies</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> is the one collection that evicts a <em>non-end</em> element: when a new key overflows the capacity, the configured <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> selects the victim — <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, or <code>SecondChance</code>. All six policies share the same <code>IDictionary&lt;TKey,TValue&gt;</code> surface and the same overflow trigger; only the selection differs. That makes the policy a deployment decision you can change without touching call sites — start with LRU, switch to Second-Chance if access-tracking overhead shows up in profiles.</p>
+<h2 id="pooled-buffers-vs-allocation">Pooled buffers vs. allocation</h2>
+<p>A <strong>pooled buffer</strong> trades garbage-collector pressure for an explicit ownership protocol. <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> rents its array from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1">ArrayPool&lt;T&gt;</a> instead of <code>new T[]</code>, grows by re-renting, and returns the array to the pool on <code>Dispose</code>. The rules that follow:</p>
+<ul>
+<li>The builder owns the rented array — always <code>using</code> it, or the array leaks from the pool.</li>
+<li><code>WrittenSpan</code> / <code>WrittenMemory</code> are zero-copy views valid only while the builder is alive; copy out before disposal if the data must outlive it.</li>
+<li><code>Reset</code> reuses the current rented array without a pool round-trip, which makes the builder cheap to recycle inside loops.</li>
+</ul>
+<p>Because it implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>, the builder drops into any span-based pipeline that the BCL's writer-style APIs accept. Prefer it over <code>MemoryStream</code> or <code>List&lt;byte&gt;</code> when buffers are short-lived, sized unpredictably, and built on hot paths.</p>
+<h2 id="character-encoding-vocabulary">Character-encoding vocabulary</h2>
+<p>The <code>Bodu.Text</code> namespace works in terms the BCL defines but does not always make ergonomic:</p>
+<ul>
+<li><strong>Preamble / BOM</strong> — the byte-order mark some encoders emit at the start of a stream (the five canonical Unicode preambles: UTF-8, UTF-16 LE/BE, UTF-32 LE/BE). <a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a> identifies an encoding from its preamble with a non-allocating <code>TryDetectByPreamble</code>, and the extension surface can decode while skipping a leading preamble or emit one when writing.</li>
+<li><strong>Transcoding</strong> — converting bytes from one character encoding to another without materializing an intermediate <code>string</code>. <a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a> provides span-based transcode overloads.</li>
+<li><strong>Validation</strong> — confirming that a byte span is well-formed for a given encoding before trusting it, rather than discovering malformed sequences mid-decode.</li>
+<li><strong>Span-first, UTF-8-first surfaces</strong> — every operation has overloads over <code>ReadOnlySpan&lt;char&gt;</code> / <code>ReadOnlySpan&lt;byte&gt;</code> and UTF-8-specific fast paths (<code>ToUtf8Bytes</code>, pooled conversions on <a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a>), so the common cases avoid intermediate allocations entirely.</li>
+</ul>
+<p>The distinction worth internalizing: <code>Bodu.Text</code> handles <strong>character encodings</strong> (bytes ↔ text through <code>System.Text.Encoding</code>); the separate <code>Bodu.Text.Encoding</code> package handles <strong>binary-to-text codecs</strong> (Base16/32/58/64/85). Similar names, different jobs.</p>
+<h2 id="member-concept-pages">Member concept pages</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Concepts coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bodu.Core</td>
+<td><a href="../core/concepts.html">Bodu.Core — Core concepts</a> — <code>WeekPattern</code>, pooled buffers, railway-oriented outcomes, natural ordering, async coordination, <code>ThrowHelper</code>, the random-generator abstraction, and the calendar-shape extensions.</td>
+</tr>
+<tr>
+<td>Bodu.Collections</td>
+<td><a href="../collections/concepts.html">Bodu.Collections — Core concepts</a> — fixed-capacity and ring-backed collections, overflow policies, eviction policies and time-based expiry, navigation and rank/select, overlap-storing intervals, approximate sketches, multi-value / multiset semantics, range-keyed lookups, and index-aware collections.</td>
+</tr>
+<tr>
+<td>Bodu.Collections.Concurrent</td>
+<td><a href="../collections-concurrent/concepts.html">Bodu.Collections.Concurrent — Core concepts</a> — lock-free MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency, and eviction events under contention.</td>
+</tr>
+<tr>
+<td>Bodu.Text</td>
+<td>No separate concepts page — the <a href="../text/index.html">Bodu.Text introduction</a> covers the encoding-detection and transcoding vocabulary alongside its type map.</td>
+</tr>
+</tbody>
+</table>
+<p>For the topic-level package map and decision table, return to the <a href="core-foundations.html">Core Foundations overview</a>; for hands-on walk-throughs, see the <a href="../../guides/topics/core-foundations.html">Core Foundations guides</a>.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

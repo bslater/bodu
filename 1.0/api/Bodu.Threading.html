@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Threading | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Threading | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Threading">
+
+  <h1 id="Bodu_Threading" data-uid="Bodu.Threading" class="text-break">Namespace Bodu.Threading</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Threading"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Threading</strong> is a set of asynchronous coordination primitives for <code>async</code>/<code>await</code> code — the awaitable counterparts of the BCL synchronous gates in <a class="xref" href="https://learn.microsoft.com/dotnet/api/system">System.Threading</a>. Each type lets a caller wait on a condition without blocking a thread: a held lock can span an <code>await</code>, a signal can be awaited, and a burst of triggers can be coalesced or rate-limited. The primitives own no operating-system handles (those that need explicit teardown implement <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> only to fault still-queued waiters at shutdown).</p>
+<p>The whole namespace follows two shared conventions. First, acquisition is exposed through a <code>ValueTask</code> that <strong>must be awaited exactly once</strong>, and a contention-free acquisition completes synchronously with no allocation. Second, <strong>success wins over cancellation</strong>: an acquisition that can be granted immediately is granted even when the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a> is already canceled — the token only cancels an acquisition that must queue, and cancellation removes only the calling waiter. Waiters that do queue are released in strict FIFO order, with continuations scheduled asynchronously so a releasing thread is never hijacked to run a waiter inline.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/core/index.html">Introduction</a></strong> — the Bodu.Core headline types and the scenarios the library covers.</li>
+<li><strong><a href="../guides/core/async-primitives.html">Async coordination primitives</a></strong> — each primitive mapped to its synchronous BCL analogue, with a compiling pattern per type.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Locks and gates</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a> — a non-reentrant async mutex. <code>LockAsync()</code> returns a <a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a> whose disposal releases the lock; scope it with <code>using (await gate.LockAsync())</code>. Implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
+<li><a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> — an async counting semaphore for bounded concurrency. <code>WaitAsync()</code> / <code>Release()</code> for manual permit management, or <code>LockAsync()</code> for a disposable <a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a>; ctors take <code>(initialCount)</code> or <code>(initialCount, maxCount)</code>.</li>
+<li><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> — a writer-preferring reader/writer lock. <code>ReaderAsync()</code> admits many concurrent readers; <code>WriterAsync()</code> grants one exclusive writer. Both yield an idempotent <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a>. Implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
+<li><a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a> — a synchronous leading-edge admission gate. <code>TryInvoke()</code> returns whether a call is admitted this interval; <code>TimeUntilNext</code> reports the remaining cool-down.</li>
+</ul>
+<p><strong>Events</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a> — auto-reset signal: each <code>Set()</code> releases exactly one waiter and reverts to unsignaled (latching at most one pending signal). Wait with <code>WaitAsync()</code>.</li>
+<li><a class="xref" href="Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a> — manual-reset gate: <code>Set()</code> releases all current and future waiters, <code>Reset()</code> closes the gate again, <code>IsSet</code> reports state.</li>
+<li><a class="xref" href="Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a> — fan-in countdown: <code>Signal()</code> decrements the count, <code>AddCount()</code> / <code>TryAddCount()</code> raise it, and <code>WaitAsync()</code> completes once the count reaches zero. Not resettable.</li>
+</ul>
+<p><strong>Lazy initialization</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a> — runs an initializer at most once and caches the resulting <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task&lt;TResult&gt;</a>, shared by every awaiter. Awaitable directly (<code>await lazy</code>) or via <code>Value</code> / <code>GetValueAsync(token)</code>; constructed from a <code>Func&lt;T&gt;</code> (offloaded to the thread pool) or a <code>Func&lt;Task&lt;T&gt;&gt;</code>.</li>
+</ul>
+<p><strong>Coalescing and rate limiting</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> — coalesces a burst of <code>Invoke()</code> triggers into a single callback that runs once a quiet period elapses. <code>FlushAsync()</code> runs a pending invocation now, <code>Cancel()</code> discards it, <code>DrainAsync()</code> awaits in-flight work; overlap behavior is set by <a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a>. Implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
+<li><a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a> — the overlap policy: <code>QueueOneTrailingRun</code> (default), <code>DropWhileRunning</code>, <code>CancelAndRestart</code>, <code>AllowOverlap</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+// Mutual exclusion: a held lock may span an await.
+private readonly AsyncLock _mutex = new();
+
+public async Task UpdateAsync()
+{
+    using (await _mutex.LockAsync())
+    {
+        // Exclusive section; safe to await here.
+        await SomeOperationAsync();
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.Threading;
+
+// Bounded concurrency: at most four operations run at once.
+private readonly AsyncSemaphore _throttle = new(initialCount: 4);
+
+public async Task DownloadAsync(Uri uri)
+{
+    using (await _throttle.LockAsync())
+    {
+        await HttpGetAsync(uri);
+    }
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Await exactly once.</strong> Every <code>WaitAsync</code> / <code>LockAsync</code> / <code>ReaderAsync</code> / <code>WriterAsync</code> returns a <code>ValueTask</code>; await it a single time. An uncontended acquisition completes synchronously and allocates nothing.</li>
+<li><strong>Success wins over cancellation.</strong> A free lock, an available permit, or a latched signal is taken even when the token passed to <code>…Async(token)</code> is already canceled. The token only cancels an acquisition that must queue.</li>
+<li><strong>FIFO ordering.</strong> <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>, <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>, and <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a> release queued waiters in strict first-in, first-out order. <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> is writer-preferring: queued writers go FIFO and readers are admitted in a batch when no writer is queued.</li>
+<li><strong>Not reentrant.</strong> <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a> and <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> deadlock if the same flow re-acquires access it already holds; the reader/writer lock also has no upgradeable mode.</li>
+<li><strong>Releasers dispose once.</strong> A <a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a> or <a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a> should be disposed exactly once; the <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a> is idempotent and tolerates repeat disposal.</li>
+<li><strong>Disposal is for shutdown.</strong> Disposing <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>, <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>, or <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> faults any still-queued waiter with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>; dispose only when no further acquisitions are expected. The event types and <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> own no handle and are not <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>.</li>
+<li><strong>Testable timing.</strong> <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> and <a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a> schedule through a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider">TimeProvider</a> (defaulting to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timeprovider.system">System</a>), so timing-dependent behavior can be driven deterministically in tests.</li>
+<li><strong>See also:</strong> the <a href="../guides/core/async-primitives.html">async coordination primitives guide</a> and the <a href="../docs/core/index.html">Bodu.Core introduction</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a></h4>
+      <section><p>Provides an asynchronous auto-reset signaling primitive: each call to <a class="xref" href="Bodu.Threading.AsyncAutoResetEvent.Set.html#Bodu_Threading_AsyncAutoResetEvent_Set">Set()</a> releases exactly one waiter
+and then automatically returns to the unsignaled state.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a></h4>
+      <section><p>Provides an asynchronous countdown synchronization primitive that becomes signaled once its count reaches zero,
+releasing all waiters.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a></h4>
+      <section><p>Coalesces a rapid burst of triggers into a single asynchronous invocation that runs once a quiet period has elapsed
+since the most recent trigger.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a></h4>
+      <section><p>Provides support for asynchronous lazy initialization: a value is produced at most once, on first access, and the
+resulting task is cached and shared by every awaiter.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a></h4>
+      <section><p>Provides an asynchronous, non-reentrant mutual-exclusion primitive whose acquisition can be awaited without blocking
+a thread.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a></h4>
+      <section><p>Provides an asynchronous, manually reset signaling primitive: once set, every current and future waiter is released
+until the event is explicitly reset.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a></h4>
+      <section><p>Provides an asynchronous, writer-preferring reader/writer lock whose acquisitions can be awaited without blocking a
+thread.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a></h4>
+      <section><p>Provides a lightweight asynchronous counting semaphore that admits a bounded number of concurrent holders and
+releases waiters in strict first-in, first-out order.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.RateGate.html">RateGate</a></h4>
+      <section><p>Provides a synchronous, leading-edge admission gate that admits at most one invocation per fixed interval, dropping
+any calls that arrive while the cool-down window opened by the previous admitted call is still open.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Threading.AsyncLock.Releaser.html">AsyncLock.Releaser</a></h4>
+      <section><p>Represents an acquired <a class="xref" href="Bodu.Threading.AsyncLock.html">AsyncLock</a>. Disposing the releaser releases the lock.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.Releaser.html">AsyncReaderWriterLock.Releaser</a></h4>
+      <section><p>Represents acquired access to an <a class="xref" href="Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a>. Disposing the releaser releases the read
+or write access it represents.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Threading.AsyncSemaphore.Releaser.html">AsyncSemaphore.Releaser</a></h4>
+      <section><p>Represents a permit taken from an <a class="xref" href="Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a>. Disposing the releaser returns the permit.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Threading.AsyncDebouncerExecutionPolicy.html">AsyncDebouncerExecutionPolicy</a></h4>
+      <section><p>Specifies how an <a class="xref" href="Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> behaves when a debounced run becomes due while a previous callback
+invocation is still in flight.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

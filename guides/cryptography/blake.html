@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>BLAKE2 and BLAKE3 hashing | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="BLAKE2 and BLAKE3 hashing | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="blake2-and-blake3-hashing">BLAKE2 and BLAKE3 hashing</h1>
+
+<p>The BLAKE family is the modern alternative to SHA-2 and SHA-3 for general-purpose cryptographic hashing. <code>Bodu.Security.Cryptography</code> ships all three variants:</p>
+<ul>
+<li><strong>BLAKE2b</strong> — 64-bit-platform-optimised; 128–512-bit output; built-in MAC mode.</li>
+<li><strong>BLAKE2s</strong> — 32-bit-platform-optimised; 128–256-bit output; built-in MAC mode.</li>
+<li><strong>BLAKE3</strong> — high-throughput, tree-structured; 256-bit fixed output; parallelisable across cores on long inputs.</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>All three ship an AVX-512 fast path that engages automatically on supporting hardware. See <a href="hardware-acceleration.html">Hardware acceleration &amp; SIMD opt-out</a> for when it runs and how to force the scalar path.</p>
+</div>
+<p>This guide covers all three on one page. For the broader &quot;which hash do I pick?&quot; framing, see <a href="hashing.html">Hashing</a>. For an RFC 6962 Merkle tree over BLAKE3 leaves, see <a href="merkle-trees.html">Merkle trees and proofs</a>.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Hash</th>
+<th>Output</th>
+<th>Key (MAC)</th>
+<th>Block</th>
+<th>Rounds</th>
+<th>Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BLAKE2b</strong></td>
+<td>128–512 bits (any multiple of 8 up to 512)</td>
+<td>0–64 bytes</td>
+<td>128 bytes</td>
+<td>12</td>
+<td>Faster than SHA-512 on 64-bit software</td>
+</tr>
+<tr>
+<td><strong>BLAKE2s</strong></td>
+<td>128–256 bits</td>
+<td>0–32 bytes</td>
+<td>64 bytes</td>
+<td>10</td>
+<td>Lightweight, 32-bit platforms / embedded</td>
+</tr>
+<tr>
+<td><strong>BLAKE3</strong></td>
+<td>256 bits (fixed; XOF can extend)</td>
+<td>None (in this implementation)</td>
+<td>64-byte blocks, 1024-byte chunks</td>
+<td>7 (chunk), 7 (parent)</td>
+<td>Tree-structured; parallel-friendly</td>
+</tr>
+</tbody>
+</table>
+<p>All three derive from RFC 7693 (BLAKE2) and the BLAKE3 spec respectively. None are known to be broken. BLAKE2b / BLAKE2s are <em>plain digests</em> (fixed output chosen at construction); BLAKE3 is <em>tree-structured</em> internally but still presents a fixed 256-bit digest here — for a true extendable output reach for <a href="shake.html">SHAKE</a>. As with any digest, an n-bit output gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance.</p>
+<p><code>Blake2b</code> and <code>Blake2s</code> sit on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> (the <code>Key</code> property drives MAC mode); <code>Blake3</code> sits on <a class="xref" href="../../api/Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> (no key surface). All three are <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instances, so the standard <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle and the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> helpers apply.</p>
+<h2 id="when-to-pick-which">When to pick which</h2>
+<ul>
+<li><strong>Pick BLAKE2b</strong> for general-purpose hashing on 64-bit platforms when the output size needs to be flexible (e.g. you want 384-bit output without paying for SHA-384's slower compression) or when keyed-MAC mode is convenient.</li>
+<li><strong>Pick BLAKE2s</strong> for the same reasons on 32-bit platforms or embedded devices where 64-bit arithmetic is expensive.</li>
+<li><strong>Pick BLAKE3</strong> when input is long enough to amortise the tree-structure overhead (typically multiple kilobytes) and when parallel hashing across cores is desirable.</li>
+<li><strong>Pick SHA-2 or SHA-3</strong> for interoperability with systems that already standardise on them. BLAKE2 / 3 are unbroken but less universally available.</li>
+</ul>
+<h2 id="blake2b">BLAKE2b</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Plain hash with the default 512-bit output.
+using var hasher = new Blake2b();
+byte[] hash = hasher.ComputeHash(payload);   // 64 bytes
+
+// Custom output size — 256 bits.
+using var blake2b256 = new Blake2b(hashSize: 256);
+byte[] hash256 = blake2b256.ComputeHash(payload);   // 32 bytes
+</code></pre>
+<p>Permitted output sizes: 128, 160, 192, 224, 256, 384, or 512 bits. <code>HashSize</code> is mutable before hashing starts; once <code>TransformBlock</code> / <code>ComputeHash</code> has been called, attempting to change it throws <code>CryptographicUnexpectedOperationException</code>.</p>
+<h3 id="blake2b-mac-mode">BLAKE2b-MAC mode</h3>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] macKey = RandomNumberGenerator.GetBytes(32);    // 0-64 bytes
+using var mac = new Blake2b(hashSize: 256);
+mac.Key = macKey;
+
+byte[] tag = mac.ComputeHash(payload);
+</code></pre>
+<p>Set <code>Key</code> to a non-empty byte array (0 – 64 bytes) to switch to BLAKE2b-MAC mode (RFC 7693 §2.8). The key is zero-padded to 128 bytes and prepended as the first message block. Empty key = plain hash.</p>
+<p>BLAKE2b-MAC is the right primitive when HMAC-SHA-512 would be overkill and you want a single algorithm that does plain hash and MAC.</p>
+<h3 id="streaming">Streaming</h3>
+<pre><code class="lang-csharp">using var hasher = new Blake2b(hashSize: 512);
+
+hasher.TransformBlock(buffer1, 0, n1, null, 0);
+hasher.TransformBlock(buffer2, 0, n2, null, 0);
+hasher.TransformFinalBlock(buffer3, 0, n3);
+
+byte[] hash = hasher.Hash!;
+</code></pre>
+<p><code>CanReuseTransform</code> and <code>CanTransformMultipleBlocks</code> are both <code>true</code>; the standard streaming <code>HashAlgorithm</code> pattern works without modification.</p>
+<h2 id="blake2s">BLAKE2s</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var hasher = new Blake2s();                                  // default 256-bit
+using var b160   = new Blake2s(hashSize: 160);                     // 160-bit
+using var mac    = new Blake2s(hashSize: 256) { Key = macKey };    // 0-32 byte key
+</code></pre>
+<p>Permitted output sizes: 128, 160, 192, 224, or 256 bits. Key length: 0 – 32 bytes (BLAKE2s-MAC mode). The streaming pattern is identical to BLAKE2b.</p>
+<p>The only meaningful difference from BLAKE2b is the platform-optimisation tier: BLAKE2s uses 32-bit arithmetic, so on 64-bit platforms BLAKE2b is faster per byte. On 32-bit platforms BLAKE2s is faster.</p>
+<h2 id="blake3">BLAKE3</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var hasher = new Blake3();
+byte[] hash = hasher.ComputeHash(payload);   // always 32 bytes (256 bits)
+</code></pre>
+<p>BLAKE3's output is fixed at 256 bits in this implementation. The underlying spec supports XOF-style squeezing of arbitrary-length output by repeatedly invoking the root compression; that surface is not exposed by <code>Bodu.Security.Cryptography.Blake3</code> — reach for <code>Bodu.Security.Cryptography.Shake</code> if you need a true XOF.</p>
+<p>BLAKE3's headline feature is the tree structure: input is split into 1024-byte chunks, each chunk is compressed block-by-block, and chunk chaining values are folded pairwise up a binary tree until a single root remains. The tree topology means hashing long inputs is naturally parallelisable across cores — though this implementation does the tree synchronously.</p>
+<h3 id="streaming-1">Streaming</h3>
+<pre><code class="lang-csharp">using var hasher = new Blake3();
+
+hasher.TransformBlock(buffer1, 0, n1, null, 0);
+hasher.TransformBlock(buffer2, 0, n2, null, 0);
+hasher.TransformFinalBlock(buffer3, 0, n3);
+
+byte[] hash = hasher.Hash!;
+</code></pre>
+<p><code>CanReuseTransform</code> and <code>CanTransformMultipleBlocks</code> are both <code>true</code>.</p>
+<h3 id="keyed-mode-and-kdf-mode">Keyed mode and KDF mode</h3>
+<p>The BLAKE3 spec defines a keyed-hash mode and a key-derivation mode. Both require initialisation with a key, and the chunk-flags input is set differently. <strong>This implementation does not expose either mode.</strong> For keyed hashing reach for BLAKE2b-MAC or BLAKE2s-MAC; for KDF, reach for the BCL <code>HKDF</code> class.</p>
+<h2 id="security-caveats">Security caveats</h2>
+<ul>
+<li><strong>Output truncation.</strong> All three algorithms are designed so that <em>truncating</em> a longer output to fewer bytes gives a hash with reduced security level. BLAKE2b's 128-bit output has only 64-bit collision resistance — adequate for non-cryptographic fingerprints but not for cryptographic commitment. Pick a size that matches your threat model.</li>
+<li><strong>Length extension.</strong> Unlike Merkle–Damgård designs (MD5, SHA-1, SHA-256, SHA-512), all three BLAKE variants are immune to length-extension attacks. You can use them as a MAC by simply prepending the key (BLAKE2b-MAC / BLAKE2s-MAC); HMAC is unnecessary.</li>
+<li><strong>Output size mutation.</strong> <code>HashSize</code> on BLAKE2b / BLAKE2s is mutable before the first <code>TransformBlock</code>. Once hashing begins, the algorithm parameters are fixed — changing them mid-stream throws.</li>
+</ul>
+<h2 id="when-not-to-use-blake">When <em>not</em> to use BLAKE</h2>
+<ul>
+<li><strong>You need a fixed-spec hash for interoperability.</strong> Reach for SHA-256 / SHA-512 (BCL) or SHA-3 (BCL on .NET 8+). BLAKE is unbroken but less universally available.</li>
+<li><strong>You need an XOF.</strong> Reach for <a href="shake.html">SHAKE</a> — BLAKE3 does support XOF in principle, but this implementation does not expose it.</li>
+<li><strong>You need authenticated encryption.</strong> Reach for <a href="aead-modes.html">AEAD modes</a> — combining a hash with a cipher correctly is the hard part; AEAD modes hide the foot-guns.</li>
+<li><strong>You need a non-cryptographic fingerprint.</strong> Reach for <a class="xref" href="../../api/Bodu.IO.Hashing.html"><code>Bodu.IO.Hashing</code></a> (FNV, MurmurHash3, CityHash, CRC) — much faster, no cryptographic guarantees.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — the framework's overall hash story.</li>
+<li><a href="merkle-trees.html">Merkle trees and proofs</a> — the RFC 6962 tree over any inner digest, for verifiable commitments.</li>
+<li><a href="tiger.html">Tiger</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a> — other digests in the package.</li>
+<li><a href="shake.html">SHAKE</a> — extendable output function.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html"><code>Bodu.Security.Cryptography.Blake2b</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2s.html"><code>Bodu.Security.Cryptography.Blake2s</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html"><code>Bodu.Security.Cryptography.Blake3</code> API reference</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

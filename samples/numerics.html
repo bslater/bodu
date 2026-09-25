@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for <code>Bodu.Numerics</code> (and its
+<code>Bodu.Numerics.Serialization.Json</code> companion) under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Numerics"><code>samples/Numerics/</code></a>. All four
+samples are <strong>offline and deterministic</strong> — they format with the invariant culture so output
+does not vary by machine — and are members of <code>bodu.slnx</code>, built and executed by CI, so the code
+they show cannot drift from the current API. Each sample's README documents every scenario
+individually: its intent, what the code does, the output to expect, and the APIs demonstrated.</p>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Numerics/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="bodunumericssamplesfractions">Bodu.Numerics.Samples.Fractions</h3>
+<p>Exact rational arithmetic with <a class="xref" href="../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>: construction and auto-reduction,
+<code>+ − × ÷</code> over <code>Fraction&lt;int&gt;</code> and <code>Fraction&lt;BigInteger&gt;</code>, parse/format, <code>Fraction&lt;T&gt;</code> as a
+first-class <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> in generic algorithms, and the continued-fraction
+surface (<code>ToContinuedFraction</code>, <code>Approximate</code>, <code>LimitDenominator</code> — e.g. approximating π to
+<code>355/113</code>). <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesintervals">Bodu.Numerics.Samples.Intervals</h3>
+<p>The interval algebra: <a class="xref" href="../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> closed/open/half-open factories with
+<code>Contains</code>/<code>Overlaps</code>; the convex-hull union and the two-piece <code>Difference</code> /
+<code>SymmetricDifference</code> results as <code>IntervalPair&lt;T&gt;</code>; the integer-aware
+<a class="xref" href="../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> with adjacency-merge and <code>DiscreteIntervalPair&lt;T&gt;</code>; and
+the normalizing <a class="xref" href="../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> with membership, union/intersect/except, and
+complement. <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesstreamingstatistics">Bodu.Numerics.Samples.StreamingStatistics</h3>
+<p>The single-pass statistics types: <code>RunningStatistics&lt;T&gt;</code> (Welford mean, population/sample
+variance and standard deviation, min/max), the sliding-window <code>MovingSum&lt;T&gt;</code> and
+<code>MovingMinMax&lt;T&gt;</code>, the streaming <code>RunningQuantile&lt;T&gt;</code> (median and p95 estimators), and
+<code>BigDecimal</code> exact scaled arithmetic with rounding modes. <em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplescomplexnumbers">Bodu.Numerics.Samples.ComplexNumbers</h3>
+<p><a class="xref" href="../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a>, the generic counterpart of the <code>double</code>-only
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a>: the arithmetic operators (including the non-componentwise
+multiply), <code>Conjugate</code> / <code>Reciprocal</code> / <code>Magnitude</code> / <code>Phase</code>, polar construction, and the
+transcendental surface (<code>Sqrt</code> of a negative real, Euler's identity through <code>Exp</code>, <code>Log</code>, <code>Pow</code>,
+and the trig functions) — each result printed beside <code>System.Numerics.Complex</code>'s answer for the
+same call. A closing scenario runs one generic Mandelbrot iteration over <code>Complex&lt;float&gt;</code>,
+<code>Complex&lt;double&gt;</code>, and <code>Complex&lt;Half&gt;</code> to show where the precision choice actually changes the
+answer, and covers parse/format round-tripping and the <code>Equals</code>-versus-<code>==</code> split on <code>NaN</code>.
+<em>Package: <code>Bodu.Numerics</code>.</em></p>
+<h3 id="bodunumericssamplesjsonconverters">Bodu.Numerics.Samples.JsonConverters</h3>
+<p><code>System.Text.Json</code> integration from the companion package: <code>AddNumericsJsonConverters()</code>
+registration round-tripping <code>Fraction&lt;T&gt;</code> / <code>Interval&lt;T&gt;</code> / <code>DiscreteInterval&lt;T&gt;</code> /
+<code>IntervalSet&lt;T&gt;</code>, the <code>NumericsJsonPolicy</code> string-vs-object wire shapes, the
+<code>FractionJsonExtensions</code> read/write helpers, and a nested POCO whose numeric-typed properties
+round-trip in one document. <em>Package: <code>Bodu.Numerics.Serialization.Json</code>.</em></p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="financial.html">Financial samples</a> — money and exchange-rate types, including a dedicated JSON
+sample built on the same companion-package pattern.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

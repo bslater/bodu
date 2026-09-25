@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reader options and resource limits | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reader options and resource limits | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reader-options-and-resource-limits">Reader options and resource limits</h1>
+
+<p>Both Outlook readers take an <code>init</code>-only options object on their <code>Open</code> overload — <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.html">OutlookMessageReaderOptions</a> for a <code>.msg</code> file, <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a> for a <code>.pst</code> store. The two share a design: the validation level is the <em>container's</em> own enumeration rather than a reader-specific one, a <code>DecompressRtf</code> switch controls the RTF body convenience, and three hardening limits bound what a crafted file can make the reader allocate or recurse into. Each type then adds the knobs its container needs.</p>
+<p>Every limit is validated at construction — a zero or negative value throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> from the initializer — so a misconfigured options object never reaches <code>Open</code>. The defaults suit real-world files; this page is for when you need to tighten them (untrusted input), loosen them (a legitimately huge archive), or know exactly what happens when one trips.</p>
+<h2 id="outlookmessagereaderoptions-msg"><code>OutlookMessageReaderOptions</code> (<code>.msg</code>)</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Compound;
+
+var options = new OutlookMessageReaderOptions
+{
+    ValidationLevel = CompoundValidationLevel.Strict,   // structural problems throw instead of being omitted
+    ReadStrategy = CompoundReadStrategy.Streaming,      // sectors are read on demand from the seekable source
+    DecompressRtf = true,
+    MaxEmbeddedMessageDepth = 4,
+    MaxDecompressedRtfBytes = 8 * 1024 * 1024,
+    MaxInlineAttachmentBytes = 256 * 1024,              // larger payloads stay in the container until streamed
+};
+
+using FileStream source = File.OpenRead(&quot;invoice.msg&quot;);
+using var message = OutlookMessage.Open(source, options);   // Streaming: the source must stay open
+Console.WriteLine(message.Subject);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+<th>When it trips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ValidationLevel</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a></td>
+<td><code>Compatible</code></td>
+<td>Forwarded to the container <strong>and</strong> used by the message decoder. <code>Compatible</code> omits a malformed property and continues; <code>Strict</code> makes structural problems throw; <code>Minimal</code> is passed to the container for best-effort recovery and behaves as <code>Compatible</code> in the decoder.</td>
+<td><code>Strict</code> only — see <a href="#what-strict-changes">What <code>Strict</code> changes</a>.</td>
+</tr>
+<tr>
+<td><code>ReadStrategy</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundReadStrategy.html">CompoundReadStrategy</a></td>
+<td><code>Buffered</code></td>
+<td>Forwarded to the container. <code>Buffered</code> reads the whole file into memory at open; <code>Streaming</code> reads sectors on demand from a seekable source that must stay open; <code>Auto</code> picks by size against the container's default 64 MiB cutoff.</td>
+<td>Not a limit. <code>Streaming</code> over a non-seekable stream throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at open.</td>
+</tr>
+<tr>
+<td><code>DecompressRtf</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>Whether <code>BodyRtf</code> decompresses <code>PidTagRtfCompressed</code>. When <code>false</code>, <code>BodyRtf</code> returns <code>null</code> and the raw payload stays reachable through <code>Properties</code>.</td>
+<td>Not a limit.</td>
+</tr>
+<tr>
+<td><code>MaxEmbeddedMessageDepth</code></td>
+<td><code>int</code></td>
+<td><code>16</code></td>
+<td>The deepest nesting <code>OpenMessage()</code> opens: the root message is depth 0, a message opened from one of its attachments is depth 1, and so on.</td>
+<td><code>OpenMessage()</code> on an attachment whose message would sit deeper throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> at every validation level.</td>
+</tr>
+<tr>
+<td><code>MaxDecompressedRtfBytes</code></td>
+<td><code>int</code></td>
+<td>64 MiB</td>
+<td>The largest decompressed RTF body the reader produces. The declared size sits outside the payload's CRC, so it is bounded rather than trusted.</td>
+<td><code>BodyRtf</code> on a payload whose declared or produced size exceeds the ceiling throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> before any allocation, at every validation level.</td>
+</tr>
+<tr>
+<td><code>MaxInlineAttachmentBytes</code></td>
+<td><code>int</code></td>
+<td>1 MiB</td>
+<td>The largest by-value payload decoded into an attachment's <code>Properties</code>. Above it the property is present with a <code>null</code> value and <code>OpenContentStream()</code> reads from the container.</td>
+<td><strong>Never</strong> — it is a decoding threshold, not a validation rule, and does not vary with the validation level.</td>
+</tr>
+</tbody>
+</table>
+<p>The reader forwards <code>ValidationLevel</code> and <code>ReadStrategy</code> to the underlying <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a>; the container's <code>MaxBufferedBytes</code> (the <code>Auto</code> cutoff) is not surfaced and keeps its 64 MiB default.</p>
+<h2 id="outlookmailstorereaderoptions-pst"><code>OutlookMailStoreReaderOptions</code> (<code>.pst</code>)</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+var options = new OutlookMailStoreReaderOptions
+{
+    ValidationLevel = PstValidationLevel.Strict,        // every checksum, signature, and table row enforced
+    BlockCacheSize = 512,                               // decoded-block LRU entries (0 disables the cache)
+    DecompressRtf = true,
+    MaxNodeDataLength = 64L * 1024 * 1024,              // largest node payload materialized at once
+    MaxEmbeddedMessageDepth = 4,
+    MaxDecompressedRtfBytes = 8 * 1024 * 1024,
+    MaxInlineAttachmentBytes = 256 * 1024,
+};
+
+using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+Console.WriteLine(store.DisplayName);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+<th>When it trips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ValidationLevel</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a></td>
+<td><code>Compatible</code></td>
+<td>Forwarded to the container <strong>and</strong> used by the MAPI decoder. <code>Compatible</code> checks structure plus the header CRC; <code>Strict</code> additionally verifies every page and block checksum and signature and makes messaging-level problems throw; <code>Minimal</code> skips every checksum for salvage reads and behaves as <code>Compatible</code> in the decoder.</td>
+<td><code>Strict</code> only — see <a href="#what-strict-changes">What <code>Strict</code> changes</a>.</td>
+</tr>
+<tr>
+<td><code>BlockCacheSize</code></td>
+<td><code>int</code></td>
+<td><code>256</code></td>
+<td>The container's least-recently-used cache of decoded pages and block payloads, in entries (each at most 8 KiB, so roughly 2 MB by default). <code>0</code> disables caching. Negative values throw.</td>
+<td>Not a limit.</td>
+</tr>
+<tr>
+<td><code>DecompressRtf</code></td>
+<td><code>bool</code></td>
+<td><code>true</code></td>
+<td>As for <code>.msg</code>: <code>false</code> makes <code>BodyRtf</code> return <code>null</code>; the compressed payload stays in <code>Properties</code>.</td>
+<td>Not a limit.</td>
+</tr>
+<tr>
+<td><code>MaxNodeDataLength</code></td>
+<td><code>long</code></td>
+<td>256 MiB</td>
+<td>Forwarded to the container as <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength.html#Bodu_IO_Pst_PstFileOptions_MaxNodeDataLength">MaxNodeDataLength</a>: the largest node payload materialized at once — the ceiling on any single property value, attachment payload, or table the store decodes whole. Streaming reads (<code>OpenContentStream()</code> on a deferred payload) are unbounded by design.</td>
+<td>The <strong>container</strong> refuses the read with <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> and <code>Error == PstFileError.LimitExceeded</code>, at every validation level. It propagates unwrapped.</td>
+</tr>
+<tr>
+<td><code>MaxEmbeddedMessageDepth</code></td>
+<td><code>int</code></td>
+<td><code>16</code></td>
+<td>As for <code>.msg</code>: a folder-level message is depth 0.</td>
+<td><code>OpenMessage()</code> past the limit throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> at every validation level.</td>
+</tr>
+<tr>
+<td><code>MaxDecompressedRtfBytes</code></td>
+<td><code>int</code></td>
+<td>64 MiB</td>
+<td>As for <code>.msg</code>.</td>
+<td><code>BodyRtf</code> throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> at every validation level.</td>
+</tr>
+<tr>
+<td><code>MaxInlineAttachmentBytes</code></td>
+<td><code>int</code></td>
+<td>1 MiB</td>
+<td>As for <code>.msg</code>: above it the payload is left in the store and served block by block by <code>OpenContentStream()</code>.</td>
+<td><strong>Never</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-the-mail-store-forwards-to-the-container">What the mail store forwards to the container</h3>
+<table>
+<thead>
+<tr>
+<th><a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a> member</th>
+<th>Forwarded?</th>
+<th>Value the container sees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ValidationLevel</code></td>
+<td>Yes</td>
+<td><code>OutlookMailStoreReaderOptions.ValidationLevel</code></td>
+</tr>
+<tr>
+<td><code>BlockCacheSize</code></td>
+<td>Yes</td>
+<td><code>OutlookMailStoreReaderOptions.BlockCacheSize</code></td>
+</tr>
+<tr>
+<td><code>MaxNodeDataLength</code></td>
+<td>Yes</td>
+<td><code>OutlookMailStoreReaderOptions.MaxNodeDataLength</code></td>
+</tr>
+<tr>
+<td><code>MaxDataTreeLeaves</code></td>
+<td><strong>No</strong></td>
+<td>The container default of 65,536 leaf blocks per node. A data tree fanning out further is refused with <code>PstFileFormatException</code> / <code>LimitExceeded</code> exactly like an oversized payload.</td>
+</tr>
+</tbody>
+</table>
+<p>To change <code>MaxDataTreeLeaves</code> — or anything else on <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a> — open the file with <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> directly; see <a href="../io-pst/streaming-and-validation.html">Streaming and validation</a>.</p>
+<h2 id="what-strict-changes">What <code>Strict</code> changes</h2>
+<p>Under the tolerant levels (<code>Compatible</code>, <code>Minimal</code>) each reader recovers from a malformed object by omitting the piece it cannot decode and continuing. Under <code>Strict</code> the same conditions throw the reader's format exception, and the container beneath enforces its own checksums and signatures as well.</p>
+<p><strong><code>.msg</code> — <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> under <code>Strict</code>:</strong></p>
+<ul>
+<li>A variable-length property whose value stream (<code>__substg1.0_XXXXYYYY</code>) or multi-value element stream is missing.</li>
+<li>A <code>Unicode</code> (<code>0x001F</code>) payload with an odd byte length.</li>
+<li>A malformed multi-valued property.</li>
+<li>A recipient or attachment child storage whose name suffix is not eight hexadecimal digits, indices that are not contiguous from zero, or a count that disagrees with the property stream's declared count.</li>
+<li>A malformed <code>__nameid_version1.0</code> entry stream (wrong record size, a GUID index that does not resolve, a string offset that does not resolve).</li>
+</ul>
+<p>At <em>every</em> level the reader still throws for a container that is not a compound file (the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> becomes the <code>InnerException</code>), a root without a <code>__properties_version1.0</code> stream, a property stream that is not a whole number of 16-byte records, a missing by-value content stream or embedded-message storage, and the depth and RTF limits above.</p>
+<p><strong><code>.pst</code> — <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> under <code>Strict</code>:</strong></p>
+<ul>
+<li>A hierarchy, contents, or associated-contents table row that does not reference a node of the expected type (<code>NormalFolder</code>, <code>NormalMessage</code>, <code>AssociatedMessage</code>); search-folder rows are skipped silently at every level.</li>
+<li>An attachment-table row that does not reference an attachment subnode of the message.</li>
+<li>A property or recipient cell whose value cannot be decoded, or a malformed multi-valued property.</li>
+<li>An undefined <code>PidTagAttachMethod</code> value (the tolerant levels infer <code>ByValue</code> / <code>None</code>).</li>
+<li>A malformed name-to-id map.</li>
+</ul>
+<p>At every level the reader throws for a missing by-value payload, a missing embedded-message subnode, and the depth and RTF limits. Container corruption is never wrapped: it surfaces as the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family (see <a href="reading-pst-mail-stores.html#errors-two-families-not-one">Reading .pst mail stores</a>), and under <code>Strict</code> the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.</p>
+<h2 id="the-inline-attachment-threshold-in-practice">The inline-attachment threshold in practice</h2>
+<p><code>MaxInlineAttachmentBytes</code> is the one <code>Max*</code> value that never throws. Set it to 1 byte and every by-value attachment is deferred:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+var options = new OutlookMailStoreReaderOptions { MaxInlineAttachmentBytes = 1 };
+using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    foreach (OutlookMailAttachment attachment in message.Attachments)
+    {
+        if (attachment.Method != OutlookAttachmentMethod.ByValue)
+            continue;
+
+        var tag = new MapiPropertyTag(MapiPropertyIds.AttachData, MapiPropertyType.Binary);
+        bool present = attachment.Properties.Contains(tag);                                       // true
+        ReadOnlyMemory&lt;byte&gt;? inline = attachment.Properties.GetBinary(MapiPropertyIds.AttachData);   // null above the threshold
+
+        using Stream content = attachment.OpenContentStream();                                     // streams from the store
+        Console.WriteLine($&quot;{attachment.FileName}: present={present} inline={inline is not null} size={attachment.Size} streamed={content.Length}&quot;);
+    }
+}
+
+// leah_thumper.jpg: present=True inline=False size=96808 streamed=93142
+</code></pre>
+<p><code>Contains</code> still answers <code>true</code> and <code>Method</code> still reports <code>ByValue</code> — the property is present, its value is simply <code>null</code> — while <code>GetBinary</code> returns <code>null</code> and <code>OpenContentStream()</code> reads the 93,142-byte payload block by block. (The depth-first <em>AllMessages</em> helper is the one defined in <a href="reading-pst-mail-stores.html">Reading .pst mail stores</a>.) The <code>.msg</code> reader behaves the same way; combined with <code>ReadStrategy = Streaming</code> the payload is never held in memory in full:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Compound;
+
+var options = new OutlookMessageReaderOptions
+{
+    ReadStrategy = CompoundReadStrategy.Streaming,
+    MaxInlineAttachmentBytes = 1,
+};
+
+using FileStream source = File.OpenRead(&quot;invoice.msg&quot;);
+using var message = OutlookMessage.Open(source, options);
+
+foreach (OutlookAttachment attachment in message.Attachments)
+{
+    if (attachment.Method != OutlookAttachmentMethod.ByValue)
+        continue;
+
+    ReadOnlyMemory&lt;byte&gt;? inline = attachment.Properties.GetBinary(MapiPropertyIds.AttachData);
+    using Stream content = attachment.OpenContentStream();
+    Console.WriteLine($&quot;{attachment.FileName}: inline={inline is not null} size={attachment.Size} streamed={content.Length}&quot;);
+}
+
+// test-unicode.doc: inline=False size=24064 streamed=24064
+// pj1.txt: inline=False size=89 streamed=89
+</code></pre>
+<h2 id="when-a-limit-trips">When a limit trips</h2>
+<p>The node-payload ceiling is enforced by the container, so it surfaces as the container's exception — and because the <code>.pst</code> reader does not wrap container faults, that is what you catch:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+var options = new OutlookMailStoreReaderOptions { MaxNodeDataLength = 1 };
+
+try
+{
+    using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+    Console.WriteLine(store.DisplayName);
+}
+catch (PstFileFormatException ex) when (ex.Error == PstFileError.LimitExceeded)
+{
+    Console.WriteLine($&quot;{ex.Error}: {ex.Message}&quot;);
+}
+
+// LimitExceeded: The data behind block 716 exceeds the session's configured resource limits.
+</code></pre>
+<p>The embedded-message depth is enforced by the reader and surfaces as the reader's exception, from <code>OpenMessage()</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+var options = new OutlookMailStoreReaderOptions { MaxEmbeddedMessageDepth = 1 };
+using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+    Descend(message);
+
+static void Descend(OutlookMailMessage message)
+{
+    foreach (OutlookMailAttachment attachment in message.Attachments)
+    {
+        if (attachment.Method != OutlookAttachmentMethod.EmbeddedMessage)
+            continue;
+
+        try
+        {
+            Descend(attachment.OpenMessage());
+        }
+        catch (OutlookPstFormatException ex)
+        {
+            Console.WriteLine($&quot;depth {message.EmbeddedDepth}: {ex.Message}&quot;);
+        }
+    }
+}
+</code></pre>
+<p>With <code>MaxEmbeddedMessageDepth = 1</code>, a folder-level message (depth 0) may open its embedded messages (depth 1), but each of those throws when asked to open its own. (The sample store nests nothing, so this prints nothing.) The <code>.msg</code> reader has the identical shape with <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Enforced by</th>
+<th><code>.msg</code> surfaces as</th>
+<th><code>.pst</code> surfaces as</th>
+<th>Member</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxEmbeddedMessageDepth</code></td>
+<td>Reader</td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></td>
+<td><code>OpenMessage()</code></td>
+</tr>
+<tr>
+<td><code>MaxDecompressedRtfBytes</code></td>
+<td>Reader</td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a></td>
+<td><code>BodyRtf</code></td>
+</tr>
+<tr>
+<td><code>MaxInlineAttachmentBytes</code></td>
+<td>Reader</td>
+<td>— (threshold)</td>
+<td>— (threshold)</td>
+<td><code>Properties</code> / <code>OpenContentStream()</code></td>
+</tr>
+<tr>
+<td><code>MaxNodeDataLength</code></td>
+<td>Container</td>
+<td>—</td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
+<td>Any read that materializes a node</td>
+</tr>
+<tr>
+<td><code>MaxDataTreeLeaves</code> (not surfaced)</td>
+<td>Container</td>
+<td>—</td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
+<td>Any read that walks a data tree</td>
+</tr>
+</tbody>
+</table>
+<h2 id="turning-rtf-decompression-off">Turning RTF decompression off</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+var options = new OutlookMailStoreReaderOptions { DecompressRtf = false };
+using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+
+foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
+{
+    string? rtf = message.BodyRtf;                                                       // always null
+    ReadOnlyMemory&lt;byte&gt;? compressed = message.Properties.GetBinary(MapiPropertyIds.RtfCompressed);
+    Console.WriteLine($&quot;{message.Subject}: BodyRtf is null={rtf is null}, compressed payload={compressed?.Length ?? 0} bytes&quot;);
+}
+
+// Here is a sample message: BodyRtf is null=True, compressed payload=0 bytes
+</code></pre>
+<p>Disable it when you archive the compressed payload verbatim, hand it to another decoder, or simply never read RTF and want to skip the work. The sample message stores no RTF body at all, which is why the payload reads as zero bytes.</p>
+<h2 id="invalid-values">Invalid values</h2>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+
+try
+{
+    _ = new OutlookMailStoreReaderOptions { MaxNodeDataLength = 0 };
+}
+catch (ArgumentOutOfRangeException ex)
+{
+    Console.WriteLine($&quot;{ex.ParamName}: {ex.Message}&quot;);
+}
+
+// value: The value must be a positive number. (Parameter 'value')
+</code></pre>
+<p>Every <code>Max*</code> limit rejects zero and negative values; <code>BlockCacheSize</code> rejects negative values only (<code>0</code> is the documented &quot;no cache&quot; setting).</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="reading-pst-mail-stores.html">Reading .pst mail stores</a> — the session, folder walk, messages, attachments, and the two exception families.</li>
+<li><a href="reading-msg-files.html">Reading .msg files</a> — the single-message reader these <code>.msg</code> options configure.</li>
+<li><a href="../io-pst/streaming-and-validation.html">Streaming and validation</a> — the container-level <code>PstFileOptions</code>, including <code>MaxDataTreeLeaves</code>, and the complete <code>PstFileError</code> catalogue.</li>
+<li><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a> — what <code>ReadStrategy</code> does inside the compound-file container.</li>
+<li><a href="../../docs/outlook/concepts.html#resource-limits">Bodu.Formats.Outlook core concepts</a> — the resource-limit rationale in the vocabulary page.</li>
+<li><a href="index.html">Bodu.Formats.Outlook guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

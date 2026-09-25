@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Financial.ExchangeRates.Testing | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Financial.ExchangeRates.Testing | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Testing">
+
+  <h1 id="Bodu_Financial_ExchangeRates_Testing" data-uid="Bodu.Financial.ExchangeRates.Testing" class="text-break">Namespace Bodu.Financial.ExchangeRates.Testing</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"><h1 id="bodufinancialexchangeratestesting">Bodu.Financial.ExchangeRates.Testing</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Financial.ExchangeRates.Testing</strong> holds the MSTest contract-test bases that every shipped exchange-rate provider and cache backend passes, plus a recording HTTP stub for driving a provider offline. It is an <strong>in-repository test-infrastructure project, not a NuGet package</strong>: its project file sets <code>IsPackable=false</code> and <code>IsTestProject=true</code>, it pre-imports <code>Microsoft.VisualStudio.TestTools.UnitTesting</code>, and the provider, cache, and sample test projects consume it by <code>ProjectReference</code> (<code>..\..\Bodu.Financial.ExchangeRates.Testing\src\Bodu.Financial.ExchangeRates.Testing.csproj</code>). It references <code>Bodu.Financial</code> and <code>Bodu.Financial.ExchangeRates</code> and nothing else.</p>
+<p>A consumer writing a custom <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> outside the repository does not get these bases from NuGet; the <a href="../guides/financial/testing-providers.html">testing guide</a> explains the recommended alternative — testing consumers against <a class="xref" href="Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> — and the shape the bases assert, which is easy to mirror in a local test project.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/financial/testing-providers.html">Testing your own provider</a></strong> — <code>FixedDatedRateProvider</code> as the recommended test double, deriving the dated-provider and pair-web-provider contracts, and running a provider hermetically over a stub.</li>
+<li><strong><a href="../docs/exchange-rates/index.html">Bodu.Financial.ExchangeRates introduction</a></strong> — the provider bases these contracts exercise.</li>
+<li><strong><a href="../samples/financial.html#bodufinancialsamplescustomprovider--test">Runnable samples</a></strong> — the <code>CustomProvider</code> sample and its companion test project, which derives the dated-provider contract in CI.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Contract-test bases</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html">DatedRateProviderContractTests&lt;TProvider&gt;</a> — the contract every <code>IDatedRateProvider</code> must satisfy, asserted against whatever data the subclass seeds. A <code>sealed</code> <code>[TestClass]</code> derives it and supplies:
+<ul>
+<li><code>CanonicalPair</code> (abstract <a class="xref" href="Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>), <code>KnownDate</code> (resolves under <code>RateLookupOptions.Exact</code>), <code>UnknownDate</code> (resolves in neither direction), and <code>CreateProvider()</code> (a cold, independent instance per call).</li>
+<li>Optional seams: <code>RangeStart</code> / <code>RangeEnd</code> (default <code>KnownDate</code>) widen the range assertions; <code>SupportsInverseLookup</code> and <code>SupportsIdentityRate</code> (default <code>true</code>) switch off the reciprocal and same-currency assertions; <code>SupportsDisposalGuard</code> (default <code>false</code>) opts in the post-dispose <code>ObjectDisposedException</code> sweep.</li>
+<li>The inherited <code>[TestMethod]</code>s: sync/async equivalence for a single date and for a range, <code>TryGetRate</code> returning <code>false</code> and <code>GetRate</code> throwing <code>KeyNotFoundException</code> on <code>UnknownDate</code>, self-consistent <a class="xref" href="Bodu.Financial.ExchangeRates.RateProvenance.html">RateProvenance</a>, null-options defaulting, the inverse reciprocal, the same-currency identity rate, and (opt-in) every member throwing after disposal.</li>
+</ul>
+</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.html">PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</a> — extends the dated contract for providers built on <a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a>. Adds one abstract member, <code>ExpectedHistoryAvailability</code> (a <a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a>), and four tests: the provider's declared <code>HistoryAvailability</code> matches it, <code>LoadPairAsync</code> over <code>RangeStart</code>–<code>RangeEnd</code> makes <code>KnownDate</code> resolve exactly, warming an already-covered window is idempotent, and <code>GetAvailablePairs()</code> is empty cold and reports the pair after the warm-up.</li>
+</ul>
+<p><strong>HTTP stub</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.html">StubHttpMessageHandler</a> — an <code>HttpMessageHandler</code> that returns fixed content for every request and records what it received. Constructed with <code>StubHttpMessageHandler(byte[] content, HttpStatusCode statusCode = HttpStatusCode.OK)</code> (throws <code>ArgumentNullException</code> for null content); exposes <code>RequestCount</code>, <code>LastRequestUri</code>, and <code>LastAuthorization</code> (the last request's <code>Authorization</code> header, or <code>null</code>). Wrap it in an <code>HttpClient</code> and hand that client to a provider's <code>HttpClient</code>-accepting constructor so the real <a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateSource-1.html">IPairRateSource&lt;TSeries&gt;</a> builds the request and parses the fixture — closing the gap a fixture-backed source alone leaves, namely the URL the provider actually constructs.</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>A derived contract test for a consumer-written provider, and a pair-web-provider contract driven hermetically over the stub handler:</p>
+<pre><code class="lang-csharp">using System.Net.Http;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.ExchangeRates.Testing;
+
+// A custom IDatedRateProvider: supply the seeded pair and the dates that characterise it;
+// the base exercises the whole lookup surface.
+[TestClass]
+public sealed class CsvFileRateProviderTests
+    : DatedRateProviderContractTests&lt;CsvFileRateProvider&gt;
+{
+    protected override CurrencyPair CanonicalPair =&gt; new(CurrencyCode.AUD, CurrencyCode.USD);
+
+    protected override DateOnly KnownDate =&gt; new(2024, 1, 15);
+
+    protected override DateOnly UnknownDate =&gt; new(2024, 6, 17);
+
+    protected override CsvFileRateProvider CreateProvider() =&gt;
+        new(&quot;Data/custom-feed.csv&quot;, &quot;CustomFeed&quot;);
+}
+
+// A pair-web provider over a canned response: the real source builds the request and parses
+// the fixture; the handler records the URL so the query string can be asserted too.
+[TestClass]
+public sealed class FixerRateProviderContractTests
+    : PairWebRateProviderContractTests&lt;FixerRateProvider, FixerSeriesInfo&gt;
+{
+    private static readonly byte[] s_fixture = File.ReadAllBytes(&quot;Fixtures/fixer-eurusd-2024-01.json&quot;);
+
+    protected override CurrencyPair CanonicalPair =&gt; new(CurrencyCode.EUR, CurrencyCode.USD);
+
+    protected override DateOnly KnownDate =&gt; new(2024, 1, 3);
+
+    protected override DateOnly UnknownDate =&gt; new(2023, 12, 25);
+
+    protected override DateOnly RangeStart =&gt; new(2024, 1, 1);
+
+    protected override DateOnly RangeEnd =&gt; new(2024, 1, 31);
+
+    protected override RateHistoryAvailability ExpectedHistoryAvailability =&gt;
+        RateHistoryAvailability.Since(new DateOnly(1999, 1, 1));
+
+    protected override FixerRateProvider CreateProvider()
+    {
+        var handler = new StubHttpMessageHandler(s_fixture);
+        var client = new HttpClient(handler);
+        var options = new FixerRateProviderOptions { ApiKey = &quot;test-key&quot; };
+
+        return new FixerRateProvider(client, options);
+    }
+
+    [TestMethod]
+    public async Task LoadPairAsync_WhenCalled_ShouldSendAccessKey()
+    {
+        var handler = new StubHttpMessageHandler(s_fixture);
+        using var provider = new FixerRateProvider(
+            new HttpClient(handler),
+            new FixerRateProviderOptions { ApiKey = &quot;test-key&quot; });
+
+        await provider.LoadPairAsync(&quot;EUR&quot;, &quot;USD&quot;, RangeStart, RangeEnd);
+
+        Assert.AreEqual(1, handler.RequestCount);
+        StringAssert.Contains(handler.LastRequestUri!.Query, &quot;access_key=test-key&quot;);
+    }
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Not published.</strong> Because the project is <code>IsPackable=false</code>, the types on this page are reachable only by project reference inside the repository. The <a href="../guides/financial/testing-providers.html">testing guide</a> covers what a consumer should do instead.</li>
+<li><strong>Seeded, not imposed.</strong> The dated contract asserts invariants — sync equals async, <code>GetRate</code> throws exactly where <code>TryGetRate</code> returns <code>false</code>, provenance is self-consistent — against the subclass's own data, so it applies equally to a fixed-base feed and to an arbitrary-pair feed, and to a cache-fronted provider (which reports <code>RateOrigin.Cache</code> where a direct one reports <code>RateOrigin.Live</code>).</li>
+<li><strong>Independent instances.</strong> <code>CreateProvider()</code> must return a fresh instance per call; the base never shares state between tests, and drives a cache-backed provider into a steady served-from-cache state itself before asserting.</li>
+<li><strong>Stub content is fixed per handler.</strong> The handler returns the same bytes and status code for every request; construct one per scenario when a test needs different responses.</li>
+<li><strong>See also:</strong> the <a class="xref" href="Bodu.Financial.ExchangeRates.html"><code>Bodu.Financial.ExchangeRates</code> reference</a> and the shipped provider test projects, which follow exactly this shape.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html">DatedRateProviderContractTests&lt;TProvider&gt;</a></h4>
+      <section><p>Provides the shared contract every <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> must satisfy, so a cache-fronted
+provider is indistinguishable from a direct one at the API surface. A test project asserts the contract for a
+concrete provider by deriving a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> <code>[TestClass]</code> from this base and supplying the seed
+knowledge through the abstract members.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.PairWebRateProviderContractTests-2.html">PairWebRateProviderContractTests&lt;TProvider, TSeries&gt;</a></h4>
+      <section><p>Provides the shared contract every pair-based web provider built on
+<a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.html">PairWebRateProvider&lt;TSeries&gt;</a> must satisfy, layered on top of the general
+<a class="xref" href="Bodu.Financial.ExchangeRates.Testing.DatedRateProviderContractTests-1.html">DatedRateProviderContractTests&lt;TProvider&gt;</a>. It exercises the per-pair warm-up surface —
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a> and
+<a class="xref" href="Bodu.Financial.ExchangeRates.PairWebRateProvider-1.GetAvailablePairs.html#Bodu_Financial_ExchangeRates_PairWebRateProvider_1_GetAvailablePairs">GetAvailablePairs()</a> — that the shared base contributes, so each
+concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/sealed">sealed</a> <code>[TestClass]</code> from this base.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler.html">StubHttpMessageHandler</a></h4>
+      <section><p>A test message handler that returns fixed content for every request and records what it received.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

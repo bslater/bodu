@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Serializer options — freezing, caching, and thread safety | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Serializer options — freezing, caching, and thread safety | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="serializer-options-freezing-caching-and-thread-safety">Serializer options: freezing, caching, and thread safety</h1>
+
+<p>Every Bodu serializer takes a <code>&lt;Format&gt;SerializerOptions</code> instance, and every one of the six treats that instance the same way <code>System.Text.Json</code> treats <code>JsonSerializerOptions</code>: it is mutable until it is first used, it freezes at that moment, and from then on it is an immutable, cache-bearing object that is safe to share across threads and cheaper to reuse than to rebuild. This guide covers that lifecycle once for the family — <a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a>, <a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>, <a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>, <a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a>, <a class="xref" href="../../api/Bodu.Text.DotEnv.DotEnvSerializerOptions.html">DotEnvSerializerOptions</a>, and <a class="xref" href="../../api/Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a> — and calls out where the three <em>structured</em> serializers (Bencode, TOML, YAML), which carry a converter pipeline, differ from the three <em>line formats</em> (Delimited, DotEnv, INI), which do not.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Bencode · TOML · YAML</th>
+<th>Delimited · DotEnv · INI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Freezes on first <code>Serialize</code> / <code>Deserialize</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>IsReadOnly</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Public <code>MakeReadOnly()</code></td>
+<td>yes</td>
+<td>no — freeze only by first use</td>
+</tr>
+<tr>
+<td>Pre-frozen static <code>Default</code></td>
+<td>no (a private default is used when you pass <code>null</code>)</td>
+<td>yes — <code>&lt;Format&gt;SerializerOptions.Default</code>, and what <code>null</code> resolves to</td>
+</tr>
+<tr>
+<td><code>Converters</code> list, converter cache, <code>GetConverter</code></td>
+<td>yes</td>
+<td>no converter pipeline</td>
+</tr>
+<tr>
+<td>Per-type metadata cache</td>
+<td>yes</td>
+<td>binder metadata, per call</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-1--configure-once-then-let-first-use-freeze-it">Pattern 1 — Configure once, then let first use freeze it</h2>
+<p>Set every property and register every converter <em>before</em> the first call that uses the instance. That call flips <code>IsReadOnly</code> and every setter afterwards throws:</p>
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions();
+bool before = options.IsReadOnly;                // false
+
+YamlSerializer.Serialize(new Settings(), options);
+bool after = options.IsReadOnly;                 // true
+
+options.PropertyNamingPolicy = NamingPolicy.CamelCase;
+// → throws InvalidOperationException: Serializer options cannot be changed after the options instance has been used to serialize or deserialize.
+
+options.Converters.Add(new UpperTagConverter());
+// → throws InvalidOperationException: Serializer options cannot be changed after the options instance has been used to serialize or deserialize.
+</code></pre>
+<p>The exception type is always <code>InvalidOperationException</code>; the message text comes from each package's resources and differs by family:</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YAML</td>
+<td><em>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</em></td>
+</tr>
+<tr>
+<td>TOML · Bencode</td>
+<td><em>Serializer options cannot be modified after they have been used to serialize or deserialize a value.</em></td>
+</tr>
+<tr>
+<td>Delimited · DotEnv · INI</td>
+<td><em>The serializer options are read-only and cannot be modified after first use.</em></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Converters</code> collection is guarded the same way as the scalar properties — <code>Add</code>, <code>Insert</code>, <code>Remove</code>, <code>Clear</code>, and the indexer setter all go through the same check — so a converter registered &quot;later&quot; is a bug that surfaces on the first line that tries it, not a silently ignored registration.</p>
+<h2 id="pattern-2--freeze-eagerly-with-makereadonly">Pattern 2 — Freeze eagerly with <code>MakeReadOnly</code></h2>
+<p>On the structured serializers, call <code>MakeReadOnly()</code> to freeze without a serialization call — useful when the options are built in one place and handed out from another, so that a misplaced mutation fails at the hand-off rather than at some later first use:</p>
+<pre><code class="lang-csharp">var eager = new TomlSerializerOptions();
+eager.MakeReadOnly();
+bool frozen = eager.IsReadOnly;                  // true
+
+eager.IncludeFields = true;
+// → throws InvalidOperationException: Serializer options cannot be modified after they have been used to serialize or deserialize a value.
+</code></pre>
+<p><code>MakeReadOnly()</code> is idempotent, and <code>GetConverter(Type)</code> calls it implicitly — asking the options which converter serves a type is itself a &quot;use&quot;. The line-format options have no public <code>MakeReadOnly()</code>: their <code>IsReadOnly</code> becomes <code>true</code> on the first serializer call, and the static <code>Default</code> instance is created already frozen:</p>
+<pre><code class="lang-csharp">var ini = new IniSerializerOptions();
+bool iniBefore = ini.IsReadOnly;                 // false
+IniSerializer.Serialize(new Settings(), ini);
+bool iniAfter = ini.IsReadOnly;                  // true
+
+DelimitedSerializerOptions.Default.NoHeader = true;
+// → throws InvalidOperationException: The serializer options are read-only and cannot be modified after first use.
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Freezing is by instance and there is no <code>Clone</code>. To vary one setting from an existing configuration, construct a second options object (Pattern 7).</p>
+</div>
+<h2 id="pattern-3--understand-converter-resolution-order">Pattern 3 — Understand converter resolution order</h2>
+<p>On the structured serializers the frozen instance owns the converter pipeline. For a requested type it consults, in order:</p>
+<ol>
+<li><code>[Converter(typeof(…))]</code> on the <strong>member</strong> — resolved by the metadata layer, for that member only;</li>
+<li><code>[Converter(typeof(…))]</code> on the <strong>type</strong> (looked up on the declared type, not inherited);</li>
+<li>the options' <code>Converters</code> list, <strong>in registration order</strong> — the first converter whose <code>CanConvert</code> returns <code>true</code> wins;</li>
+<li>the built-in converters, in the library's fixed order.</li>
+</ol>
+<p>A converter <em>factory</em> found at any step is asked to <code>CreateConverter</code>, and the product's own <code>CanConvert</code> must accept the type. Because step 3 is first-match-wins, two converters that both accept a type resolve to whichever was registered first:</p>
+<pre><code class="lang-csharp">var first = new YamlSerializerOptions();
+first.Converters.Add(new UpperTagConverter());
+first.Converters.Add(new LowerTagConverter());
+YamlSerializer.Serialize(new Tagged { Tag = new(&quot;Mixed&quot;) }, first);
+// Tag: MIXED
+
+var second = new YamlSerializerOptions();
+second.Converters.Add(new LowerTagConverter());
+second.Converters.Add(new UpperTagConverter());
+YamlSerializer.Serialize(new Tagged { Tag = new(&quot;Mixed&quot;) }, second);
+// Tag: mixed
+</code></pre>
+<p>Register the most specific converter (or factory) ahead of any broader one whose <code>CanConvert</code> would also match. A type with no converter at any step fails with <code>NotSupportedException</code> on first use.</p>
+<h2 id="pattern-4--know-what-is-cached-and-why-converters-must-be-stateless">Pattern 4 — Know what is cached, and why converters must be stateless</h2>
+<p>Freezing snapshots the <code>Converters</code> list, and the frozen instance then caches two things in concurrent dictionaries:</p>
+<ul>
+<li>the <strong>resolved converter per type</strong> — <code>GetConverter(typeof(Tag))</code> performs the four-step search once and returns the same instance for every later request;</li>
+<li>the <strong>type metadata per type</strong> — the reflected member list, wire names, constructor binding, required flags, and extension-data member that the object converter uses.</li>
+</ul>
+<pre><code class="lang-csharp">YamlConverter a = first.GetConverter(typeof(Tag));
+YamlConverter b = first.GetConverter(typeof(Tag));
+bool same = ReferenceEquals(a, b);               // true — one UpperTagConverter serves every Tag
+</code></pre>
+<p>Two consequences follow. <strong>Converters must be stateless</strong>: the one instance is reused across every value, every call, and every thread — keep configuration in <code>readonly</code> fields set at construction and derive everything else from the <code>reader</code>, <code>value</code>, and <code>options</code> arguments. And <strong>a fresh options instance per call discards both caches</strong>: the reflection and the resolution walk are repeated, and each factory's <code>CreateConverter</code> runs again. Reuse is not merely tidier; it is where the cost goes.</p>
+<h2 id="pattern-5--share-one-instance-across-threads">Pattern 5 — Share one instance across threads</h2>
+<p>A frozen instance is safe to share: reads of its properties are immutable, and the caches are <code>ConcurrentDictionary</code> instances. The idiomatic shape is a static holder that builds, configures, and freezes the options once:</p>
+<pre><code class="lang-csharp">public static class YamlDefaults
+{
+    public static YamlSerializerOptions Options { get; } = Create();
+
+    private static YamlSerializerOptions Create()
+    {
+        var options = new YamlSerializerOptions
+        {
+            PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+            DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
+        };
+        options.Converters.Add(new UpperTagConverter());
+        options.MakeReadOnly();
+        return options;
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp">var shared = YamlDefaults.Options;
+var results = new string[64];
+Parallel.For(0, results.Length, i =&gt; results[i] = YamlSerializer.Serialize(new Tagged { Tag = new($&quot;t{i}&quot;) }, shared));
+// every result is distinct; results[7] → &quot;tag: T7&quot;
+
+YamlSerializer.Serialize(new Settings { DisplayName = null }, YamlDefaults.Options);
+// max_retry_count: 3
+</code></pre>
+<p>Passing <code>null</code> (or omitting the argument) is the same pattern applied for you: each structured serializer keeps one private default-configured instance and each line-format serializer uses its public <code>Default</code>, so the argument-free calls already share a frozen, cache-warm object. Only when you need non-default settings do you need a holder of your own.</p>
+<h2 id="pattern-6--start-from-a-defaults-preset">Pattern 6 — Start from a defaults preset</h2>
+<p>Each options type has a constructor that takes the format's <code>&lt;Format&gt;SerializerDefaults</code> enum. The preset is applied <em>before</em> your own settings, so anything you set afterwards wins. The presets are not the same across the family:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Enum</th>
+<th><code>General</code> (the parameterless constructor)</th>
+<th>Second preset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YAML</td>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a></td>
+<td>no naming policy; case-sensitive names</td>
+<td><code>Web</code>: <code>PropertyNamingPolicy = NamingPolicy.CamelCase</code>, <code>PropertyNameCaseInsensitive = true</code></td>
+</tr>
+<tr>
+<td>TOML</td>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializerDefaults.html">TomlSerializerDefaults</a></td>
+<td>no naming policy; case-sensitive names</td>
+<td><code>Web</code>: camel case, case-insensitive</td>
+</tr>
+<tr>
+<td>Bencode</td>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a></td>
+<td>no naming policy; <strong>case-insensitive names by default</strong></td>
+<td><code>Web</code>: camel case, case-insensitive</td>
+</tr>
+<tr>
+<td>Delimited</td>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializerDefaults.html">DelimitedSerializerDefaults</a></td>
+<td>no naming policy; case-sensitive names</td>
+<td><code>Web</code>: <code>PropertyNamingPolicy = NamingPolicy.SnakeCaseLower</code>, case-insensitive</td>
+</tr>
+<tr>
+<td>DotEnv</td>
+<td><a class="xref" href="../../api/Bodu.Text.DotEnv.DotEnvSerializerDefaults.html">DotEnvSerializerDefaults</a></td>
+<td>no naming policy; case-sensitive names</td>
+<td><code>Web</code>: <code>PropertyNamingPolicy = NamingPolicy.SnakeCaseUpper</code>, case-insensitive</td>
+</tr>
+<tr>
+<td>INI</td>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.IniSerializerDefaults.html">IniSerializerDefaults</a></td>
+<td>duplicate sections merge, last duplicate key wins</td>
+<td><code>Strict</code>: <code>DuplicateSectionBehavior = Disallowed</code>, <code>DuplicateKeyBehavior = Disallowed</code> (Python <code>configparser</code> strict mode)</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Web</code> presets pick the naming convention native to each format's usual habitat — camel case for the structured formats, <code>snake_case</code> headers for CSV, <code>SCREAMING_SNAKE_CASE</code> keys for <code>.env</code> files — and all of them turn on case-insensitive reads:</p>
+<pre><code class="lang-csharp">YamlSerializer.Serialize(new Settings(), new YamlSerializerOptions(YamlSerializerDefaults.Web));
+// maxRetryCount: 3
+// displayName: null
+
+DelimitedSerializer.Serialize(new[] { new Settings() }, new DelimitedSerializerOptions(DelimitedSerializerDefaults.Web));
+// max_retry_count,display_name
+// 3,
+
+DotEnvSerializer.Serialize(new Settings(), new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
+// MAX_RETRY_COUNT=3
+
+int web = YamlSerializer.Deserialize&lt;Settings&gt;(&quot;MAXRETRYCOUNT: 9&quot;, new YamlSerializerOptions(YamlSerializerDefaults.Web))!.MaxRetryCount;   // 9
+int general = YamlSerializer.Deserialize&lt;Settings&gt;(&quot;MAXRETRYCOUNT: 9&quot;)!.MaxRetryCount;                                                    // 3 — key not matched
+</code></pre>
+<p>INI's <code>Strict</code> preset turns tolerated duplicates into hard errors, raised as the <em>format</em> exception because duplicate policy is a document-model rule:</p>
+<pre><code class="lang-csharp">IniSerializer.Deserialize&lt;Settings&gt;(&quot;MaxRetryCount=1\nMaxRetryCount=2&quot;, new IniSerializerOptions(IniSerializerDefaults.Strict));
+// → throws IniFormatException: The INI section '' defines the key 'MaxRetryCount' more than once.
+
+int lastWins = IniSerializer.Deserialize&lt;Settings&gt;(&quot;MaxRetryCount=1\nMaxRetryCount=2&quot;)!.MaxRetryCount;   // 2 — General: last wins
+</code></pre>
+<h2 id="pattern-7--vary-one-setting-without-a-clone">Pattern 7 — Vary one setting without a clone</h2>
+<p>There is no copy constructor. Keep a small factory that applies the shared configuration, and have each variant call it and adjust before its own freeze:</p>
+<pre><code class="lang-csharp">public static class TomlProfiles
+{
+    public static TomlSerializerOptions Strict { get; } = Configure(o =&gt; o.UnmappedMemberHandling = UnmappedMemberHandling.Disallow);
+
+    public static TomlSerializerOptions Lenient { get; } = Configure(o =&gt; o.UnmappedMemberHandling = UnmappedMemberHandling.Skip);
+
+    private static TomlSerializerOptions Configure(Action&lt;TomlSerializerOptions&gt; adjust)
+    {
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+        options.Converters.Add(new PointTomlConverter());
+        adjust(options);
+        options.MakeReadOnly();
+        return options;
+    }
+}
+</code></pre>
+<p>Each variant carries its own caches, which is the point: the converter and metadata resolved under one configuration must not be reused under another.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/serialization/core/concepts.html#options-lifecycle-freezing-and-thread-safety">Core concepts</a> — the lifecycle and <a href="../../docs/serialization/core/concepts.html#converter-resolution-order">converter resolution order</a> in the family vocabulary.</li>
+<li><a href="migrating-from-system-text-json.html">Migrating from System.Text.Json</a> — the <code>JsonSerializerOptions</code> → <code>&lt;Format&gt;SerializerOptions</code> property table.</li>
+<li>Per-format converter guides — <a href="toml/converters.html">TOML</a>, <a href="yaml/converters.html">YAML</a>, <a href="bencode/converters.html">Bencode</a> — for the statelessness rules from the converter author's side.</li>
+<li><a href="../formats/writer-options-and-dom-options.html">Writer options and DOM options</a> — the <em>other</em> option structs: the per-writer and per-DOM knobs that sit beside the serializer options.</li>
+<li><a href="../formats/index.html">Line-format guides</a> — the three serializers without a converter pipeline.</li>
+<li><a href="index.html">Bodu serializer guides</a> and the <a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

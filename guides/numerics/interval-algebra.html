@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interval algebra | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interval algebra | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="interval-algebra">Interval algebra</h1>
+
+<p>This guide works through the set algebra on
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.html"><code>Interval&lt;T&gt;</code></a> — chained <code>Intersect</code>,
+<code>TryUnion</code> over adjacent and disjoint operands, containment, gap and
+adjacency detection, and a complete &quot;merge overlapping windows&quot;
+walk-through. For the single-operation basics — constructing intervals,
+membership, formatting, parsing — see
+<a href="interval.html">Working with <code>Interval&lt;T&gt;</code></a>; this page builds on those and
+goes deeper.</p>
+<p>Two conventions thread through everything below.</p>
+<ul>
+<li><strong>The canonical empty interval.</strong> Every interval that admits no value —
+inverted bounds, or equal bounds with at least one open endpoint —
+compares equal to <a class="xref" href="../../api/Bodu.Numerics.Interval-1.Empty.html#Bodu_Numerics_Interval_1_Empty"><code>Interval&lt;T&gt;.Empty</code></a>,
+and <code>default(Interval&lt;T&gt;)</code> reads as empty. <code>Intersect</code> returns it for
+disjoint operands; <code>TryUnion</code> treats it as the identity element.</li>
+<li><strong>Half-open is the partitioning shape.</strong> Adjacent closed-open intervals
+<code>[a, b)</code> and <code>[b, c)</code> cover <code>[a, c)</code> with no overlap and no gap, which is
+what makes the merge algorithm at the end clean. When endpoint values tie,
+<code>Intersect</code> keeps the <em>stricter</em> (open) side so the result is a subset of
+both operands, and <code>TryUnion</code> keeps the <em>looser</em> (closed) side so the
+result is a superset of both.</li>
+</ul>
+<h2 id="chained-intersection">Chained intersection</h2>
+<p><code>Intersect</code> is associative and commutative, so a sequence of constraints
+folds cleanly. It is also idempotent (<code>a.Intersect(a) == a</code>) and has
+<code>Empty</code> as its absorbing element (<code>a.Intersect(Empty) == Empty</code>), which
+together make any fold order valid. The intersection narrows
+monotonically — each operand can only shrink the running result — and
+collapses to <code>Empty</code> the moment two constraints disagree:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+// Three independent constraints on an allowed value.
+var atLeastTen   = Interval&lt;int&gt;.Closed(10, 100);   // [10, 100]
+var underNinety  = Interval&lt;int&gt;.ClosedOpen(0, 90);  // [0, 90)
+var evenDecade   = Interval&lt;int&gt;.Closed(20, 80);    // [20, 80]
+
+Interval&lt;int&gt; allowed = atLeastTen
+    .Intersect(underNinety)   // [10, 90)
+    .Intersect(evenDecade);   // [20, 80]
+
+Console.WriteLine(allowed);   // &quot;[20, 80]&quot;
+</code></pre>
+<p>Because <code>Empty</code> is absorbing under intersection, a single conflicting
+constraint short-circuits the whole chain to the empty set:</p>
+<pre><code class="lang-csharp">var conflict = atLeastTen
+    .Intersect(Interval&lt;int&gt;.Closed(200, 300));  // disjoint with [10, 100]
+
+Console.WriteLine(conflict.IsEmpty);             // True
+Console.WriteLine(conflict.Intersect(evenDecade).IsEmpty);  // True — stays empty
+</code></pre>
+<p>To fold an arbitrary list of constraints, seed the accumulator with a
+range that contains everything you care about (or with the first element)
+and <code>Intersect</code> across the rest:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">static Interval&lt;int&gt; IntersectAll(IEnumerable&lt;Interval&lt;int&gt;&gt; constraints)
+{
+    using var e = constraints.GetEnumerator();
+    if (!e.MoveNext())
+        return Interval&lt;int&gt;.Empty;   // no constraints — nothing to intersect
+
+    Interval&lt;int&gt; result = e.Current;
+    while (e.MoveNext())
+        result = result.Intersect(e.Current);
+
+    return result;
+}
+</code></pre>
+<h2 id="union-of-adjacent-versus-disjoint-intervals">Union of adjacent versus disjoint intervals</h2>
+<p><code>TryUnion</code> returns <code>true</code> only when the union of the two operands is itself
+a single contiguous interval — that is, when they overlap <em>or</em> are
+adjacent. It never synthesizes a two-piece result; a true gap returns
+<code>false</code> and leaves <code>result</code> as <code>Empty</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// Adjacent — the half-open seam at 5 belongs to the second interval.
+bool a = Interval&lt;int&gt;.ClosedOpen(1, 5)
+    .TryUnion(Interval&lt;int&gt;.Closed(5, 10), out var merged);
+// a == true, merged == [1, 10]
+
+// Overlapping — shared interior.
+bool b = Interval&lt;int&gt;.Closed(1, 6)
+    .TryUnion(Interval&lt;int&gt;.Closed(4, 10), out var overlap);
+// b == true, overlap == [1, 10]
+
+// Disjoint with a gap — no contiguous representation exists.
+bool c = Interval&lt;int&gt;.Closed(1, 5)
+    .TryUnion(Interval&lt;int&gt;.Closed(8, 10), out var gapped);
+// c == false, gapped == Interval&lt;int&gt;.Empty
+</code></pre>
+<p>The adjacency rule is precise: two intervals are adjacent when the upper
+endpoint of one equals the lower endpoint of the other <strong>and at least one
+of those endpoints is inclusive</strong>. That single-inclusive requirement is
+why two half-open intervals that meet at a point still union, while two
+intervals that both <em>exclude</em> the meeting point do not:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// [1, 5) and [5, 10] — 5 is owned by the second interval → contiguous.
+Interval&lt;int&gt;.ClosedOpen(1, 5).TryUnion(Interval&lt;int&gt;.Closed(5, 10), out _);   // true
+
+// (1, 5) and (5, 10] — 5 is in neither interval → a one-point gap.
+Interval&lt;int&gt;.Open(1, 5).TryUnion(Interval&lt;int&gt;.OpenClosed(5, 10), out _);     // false
+</code></pre>
+<p>On endpoint ties the union keeps the looser side, so unioning a closed and
+an open interval over the same bounds yields the closed result:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).TryUnion(Interval&lt;int&gt;.Open(1, 5), out var u);
+// u == [1, 5] — inclusive wins on both ends
+</code></pre>
+<p>Unlike <code>Intersect</code>, <code>TryUnion</code> is <em>partial</em>: it is defined only when the
+result is a single contiguous interval. <code>Empty</code> is its identity (a union
+with <code>Empty</code> returns the other operand and <code>true</code>), but because the
+operation can fail on a gap, folding a list of intervals into a minimal
+cover requires sorting first — see the worked example below. This is the
+structural reason <code>TryUnion</code> returns <code>bool</code> rather than an
+<code>Interval&lt;T&gt;</code>: there is no contiguous value to return for a disjoint
+pair.</p>
+<h2 id="containment-and-overlap">Containment and overlap</h2>
+<p><code>Contains(Interval&lt;T&gt;)</code> tests the subset relation; <code>Overlaps</code> tests for a
+shared value. The two answer different questions and a worked comparison
+makes the distinction concrete:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var outer = Interval&lt;int&gt;.Closed(0, 10);
+var inner = Interval&lt;int&gt;.Closed(2, 8);
+var straddle = Interval&lt;int&gt;.Closed(8, 20);
+
+outer.Contains(inner);    // True  — every value of inner is in outer
+outer.Overlaps(inner);    // True  — they obviously share values
+
+outer.Contains(straddle); // False — straddle reaches 20, outside outer
+outer.Overlaps(straddle); // True  — they share [8, 10]
+
+outer.Contains(Interval&lt;int&gt;.Empty);  // True — ∅ ⊆ every set
+outer.Overlaps(Interval&lt;int&gt;.Empty);  // False — ∅ shares no value
+</code></pre>
+<p>Note that touching at a boundary is <em>not</em> overlap. <code>[1, 5)</code> and <code>[5, 10]</code>
+are adjacent — they union — but they share no value, so <code>Overlaps</code> returns
+<code>false</code>. Use <code>Overlaps</code> to detect double-booking and <code>TryUnion</code> (or the
+adjacency test below) to detect mergeable neighbours.</p>
+<h2 id="detecting-gaps-and-adjacency">Detecting gaps and adjacency</h2>
+<p><code>Interval&lt;T&gt;</code> exposes overlap, intersection, and union directly. Adjacency
+and the gap between two disjoint intervals are derived from the public
+endpoint properties. The following helpers express both as small,
+self-documenting functions:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// Two intervals are adjacent when they do not overlap yet still union.
+static bool AreAdjacent(Interval&lt;int&gt; a, Interval&lt;int&gt; b) =&gt;
+    !a.Overlaps(b) &amp;&amp; a.TryUnion(b, out _);
+
+// The gap between two disjoint, non-adjacent intervals, as an open interval.
+// Returns Empty when the intervals touch, overlap, or are out of order.
+static Interval&lt;int&gt; GapBetween(Interval&lt;int&gt; a, Interval&lt;int&gt; b)
+{
+    if (a.IsEmpty || b.IsEmpty || a.Overlaps(b) || a.TryUnion(b, out _))
+        return Interval&lt;int&gt;.Empty;
+
+    // Order the operands so the lower one is first.
+    (Interval&lt;int&gt; lo, Interval&lt;int&gt; hi) = a.Upper &lt;= b.Lower ? (a, b) : (b, a);
+
+    // The gap excludes whichever endpoints the neighbours already claim.
+    return new Interval&lt;int&gt;(
+        lo.Upper, hi.Lower,
+        lowerInclusive: !lo.UpperInclusive,
+        upperInclusive: !hi.LowerInclusive);
+}
+</code></pre>
+<pre><code class="lang-csharp">AreAdjacent(Interval&lt;int&gt;.ClosedOpen(1, 5), Interval&lt;int&gt;.Closed(5, 10)); // True
+AreAdjacent(Interval&lt;int&gt;.Closed(1, 5), Interval&lt;int&gt;.Closed(8, 10));     // False
+
+GapBetween(Interval&lt;int&gt;.Closed(1, 5), Interval&lt;int&gt;.Closed(8, 10));
+// [5, 8] excluded on the claimed ends → (5, 8) → &quot;(5, 8)&quot;
+</code></pre>
+<h2 id="worked-example--merging-overlapping-windows">Worked example — merging overlapping windows</h2>
+<p>The canonical interval-set task is <em>normalising</em> an unsorted list of
+ranges into the smallest set of disjoint intervals that covers the same
+values. This is the algorithm behind merging calendar bookings,
+coalescing byte ranges in a download, or collapsing overlapping log
+windows.</p>
+<p>The recipe is the classic sweep: sort by lower endpoint, then walk the
+sorted list folding each interval into the current run with <code>TryUnion</code>.
+Because <code>TryUnion</code> returns <code>false</code> exactly when the next interval neither
+overlaps nor abuts the current run, a <code>false</code> is the signal to close the
+run and start a new one:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+static List&lt;Interval&lt;int&gt;&gt; Merge(IEnumerable&lt;Interval&lt;int&gt;&gt; windows)
+{
+    // Drop empties; they contribute nothing and would not sort meaningfully.
+    var sorted = windows
+        .Where(w =&gt; !w.IsEmpty)
+        .OrderBy(w =&gt; w.Lower)
+        .ThenBy(w =&gt; w.Upper)
+        .ToList();
+
+    var merged = new List&lt;Interval&lt;int&gt;&gt;();
+    if (sorted.Count == 0)
+        return merged;
+
+    Interval&lt;int&gt; current = sorted[0];
+    for (int i = 1; i &lt; sorted.Count; i++)
+    {
+        if (current.TryUnion(sorted[i], out Interval&lt;int&gt; union))
+        {
+            current = union;          // overlaps or abuts — extend the run
+        }
+        else
+        {
+            merged.Add(current);      // a real gap — close the run
+            current = sorted[i];
+        }
+    }
+
+    merged.Add(current);
+    return merged;
+}
+</code></pre>
+<p>Running it over a deliberately messy input — out of order, overlapping,
+adjacent, and disjoint — produces the normalised cover:</p>
+<pre><code class="lang-csharp">var input = new[]
+{
+    Interval&lt;int&gt;.Closed(10, 14),     // disjoint tail
+    Interval&lt;int&gt;.ClosedOpen(1, 5),   // [1, 5)
+    Interval&lt;int&gt;.Closed(5, 8),       // adjacent to [1, 5) at 5
+    Interval&lt;int&gt;.Closed(3, 6),       // overlaps both above
+    Interval&lt;int&gt;.Closed(20, 22),     // disjoint
+};
+
+foreach (var window in Merge(input))
+    Console.WriteLine(window);
+
+// [1, 8]
+// [10, 14]
+// [20, 22]
+</code></pre>
+<p>The first three inputs collapse into <code>[1, 8]</code>: <code>[1, 5)</code> and <code>[3, 6]</code>
+overlap into <code>[1, 6]</code>, which abuts <code>[5, 8]</code> into <code>[1, 8]</code>. <code>[10, 14]</code> and
+<code>[20, 22]</code> survive as separate runs because a genuine gap separates them —
+exactly the <code>false</code> return from <code>TryUnion</code> that closes a run.</p>
+<p>Sorting by lower endpoint is what guarantees a single forward pass is
+enough: once the list is ordered, any interval that can merge with the
+current run will appear before any interval that cannot, so the algorithm
+never has to look back.</p>
+<h2 id="unbounded-and-half-bounded-intervals">Unbounded and half-bounded intervals</h2>
+<p>An interval need not have two finite endpoints. The factories
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.AtLeast.html#Bodu_Numerics_Interval_1_AtLeast__0_">AtLeast(T)</a> (<code>[a, +∞)</code>),
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.GreaterThan.html#Bodu_Numerics_Interval_1_GreaterThan__0_">GreaterThan(T)</a> (<code>(a, +∞)</code>),
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.AtMost.html#Bodu_Numerics_Interval_1_AtMost__0_">AtMost(T)</a> (<code>(-∞, b]</code>),
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.LessThan.html#Bodu_Numerics_Interval_1_LessThan__0_">LessThan(T)</a> (<code>(-∞, b)</code>), and
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.All.html#Bodu_Numerics_Interval_1_All">All</a> (<code>(-∞, +∞)</code>) build the half-bounded and
+unbounded shapes. The unbounded side is carried as explicit metadata — read
+it with <code>LowerUnbounded</code> / <code>UpperUnbounded</code> / <code>IsBounded</code> — <strong>not</strong> as a
+floating-point infinity, so the same model works for <code>int</code>, <code>decimal</code>, and
+<code>BigInteger</code>, none of which have an infinity value.</p>
+<pre><code class="lang-csharp">var nonNegative = Interval&lt;double&gt;.AtLeast(0.0);   // [0, +∞)
+nonNegative.Contains(1e308);                        // True
+nonNegative.IsBounded;                              // False
+
+// Set algebra composes with unbounded operands.
+Interval&lt;int&gt;.AtLeast(0) &amp; Interval&lt;int&gt;.AtMost(10);   // [0, 10]
+</code></pre>
+<p>An unbounded interval is never empty; its <code>Length</code> is infinite, so reading
+<code>Length</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Unbounded intervals
+format with the <code>±∞</code> glyphs (<code>[0, +∞)</code>, <code>(-∞, 5]</code>) and parse back from the
+same text.</p>
+<h2 id="difference-and-symmetric-difference">Difference and symmetric difference</h2>
+<p>Subtracting one interval from another can leave two pieces, so
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.Difference.html#Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0__">Difference(Interval&lt;T&gt;)</a> and
+<a class="xref" href="../../api/Bodu.Numerics.Interval-1.SymmetricDifference.html#Bodu_Numerics_Interval_1_SymmetricDifference_Bodu_Numerics_Interval__0__">SymmetricDifference(Interval&lt;T&gt;)</a>
+return an <a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> — an allocation-free value
+holding zero, one, or two disjoint intervals, lowest-first.</p>
+<pre><code class="lang-csharp">IntervalPair&lt;int&gt; gap = Interval&lt;int&gt;.Closed(0, 10).Difference(Interval&lt;int&gt;.Closed(3, 5));
+gap.Count;                       // 2
+foreach (var piece in gap)
+    Console.WriteLine(piece);    // &quot;[0, 3)&quot; then &quot;(5, 10]&quot;
+
+// The complement of a finite interval within the whole line is two half-lines.
+Interval&lt;double&gt;.All.Difference(Interval&lt;double&gt;.Closed(3, 5));   // (-∞, 3) ∪ (5, +∞)
+</code></pre>
+<h2 id="disconnected-sets-with-intervalsett">Disconnected sets with <code>IntervalSet&lt;T&gt;</code></h2>
+<p><code>IntervalPair&lt;T&gt;</code> covers the at-most-two pieces of a <em>binary</em> operation. When a
+union or complement can produce arbitrarily many disjoint ranges, use
+<a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> — an immutable, normalized collection of
+disjoint, non-adjacent intervals. Overlapping and adjacent inputs coalesce on
+construction, so equal sets share a canonical form.</p>
+<pre><code class="lang-csharp">var set = IntervalSet&lt;int&gt;.Of(
+    Interval&lt;int&gt;.Closed(1, 3),
+    Interval&lt;int&gt;.Closed(2, 5),
+    Interval&lt;int&gt;.Closed(8, 9));
+set.Count;                 // 2 — [1, 5] and [8, 9]
+set.Contains(4);           // True
+
+// N-ary algebra a single interval cannot express as one value:
+set.Except(Interval&lt;int&gt;.Closed(4, 4));   // [1, 3] ∪ (4, 5] ∪ [8, 9]  (three pieces)
+set.Complement();                          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
+</code></pre>
+<p><code>IntervalSet&lt;T&gt;</code> offers <code>Union</code>, <code>Intersect</code>, <code>Except</code>, and <code>Complement</code> over
+both an <code>Interval&lt;T&gt;</code> and another <code>IntervalSet&lt;T&gt;</code>, plus <code>Contains</code>,
+<code>Encloses</code>, indexing, and enumeration. <code>Complement</code> is taken over the whole
+line, so <code>set.Complement().Complement()</code> returns <code>set</code>.</p>
+<h2 id="operators">Operators</h2>
+<p><code>&amp;</code> is intersection and <code>|</code> is the contiguous union, for the common case
+where the two operands form a single interval:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var shared = Interval&lt;int&gt;.Closed(1, 5) &amp; Interval&lt;int&gt;.Closed(3, 7);   // [3, 5]
+var merged = Interval&lt;int&gt;.ClosedOpen(1, 5) | Interval&lt;int&gt;.Closed(5, 10);   // [1, 10]
+</code></pre>
+<p><code>|</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> when the operands are
+disjoint with a gap, since their union is not a single interval — reach for
+<code>Difference</code> or accumulate the pieces when a multi-interval result is
+possible.</p>
+<h2 id="continuous-versus-discrete">Continuous versus discrete</h2>
+<p><code>Interval&lt;T&gt;</code> is a <strong>continuous</strong> interval over ordered numeric coordinates —
+<code>Interval&lt;int&gt;.Open(1, 2)</code> is a non-empty continuous range even though it
+contains no integer. When you need the <em>discrete</em> integer semantics (an open
+interval over consecutive integers is empty; <code>[1, 2]</code> and <code>[3, 4]</code> are
+adjacent and merge), use <a href="discrete-intervals.html"><code>DiscreteInterval&lt;T&gt;</code></a>
+instead.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="interval.html">Working with <code>Interval&lt;T&gt;</code></a> — single-operation basics: construction, membership, formatting, parsing.</li>
+<li><a href="discrete-intervals.html">Discrete integer intervals</a> — <code>DiscreteInterval&lt;T&gt;</code> and successor-aware emptiness and adjacency.</li>
+<li><a href="generic-math-constraints.html">Generic math with <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code></a> — writing range and ratio code against the <code>INumber&lt;T&gt;</code> abstractions.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html"><code>Interval&lt;T&gt;</code> API reference</a> and the <a class="xref" href="../../api/Bodu.Numerics.Interval.html"><code>Interval</code> static factory helpers</a>.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

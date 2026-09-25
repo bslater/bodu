@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for the calendar packages under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Globalization.Calendar"><code>samples/Globalization.Calendar/</code></a>.
+Every sample is <strong>offline and deterministic by construction</strong> — the rule data ships as embedded
+XML resources in the engine and data-pack assemblies, so there is nothing to configure and no
+network to reach. The samples are members of <code>bodu.slnx</code> and are built and executed by CI, so
+the code they show cannot drift from the current API. Each sample's README documents every
+scenario individually: its intent, what the code does, the output to expect, and the APIs
+demonstrated.</p>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Globalization.Calendar/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="boduglobalizationcalendarsamplesnotabledatesbasics">Bodu.Globalization.Calendar.Samples.NotableDatesBasics</h3>
+<p>The front door: <a class="xref" href="../api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.html">AsiaPacificCalendarData</a> factories over the
+embedded packs, year/day/range queries through
+<a class="xref" href="../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a>, ISO 3166-2 subdivision shadowing (AU vs
+AU-VIC/AU-NSW Labour Day, pinned to published dates), composable
+<a class="xref" href="../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> predicates, observed-date substitution
+with full lineage (<code>IsObserved</code> / <code>ActualDate</code> / <code>AdjustmentReason</code> — the AU 2021 Christmas
+double-substitution), and expanding an observed-only result into the full actual + observed
+timeline with <code>WithActualOccurrences()</code> on
+<a class="xref" href="../api/Bodu.Globalization.Calendar.NotableDateSequenceExtensions.html">NotableDateSequenceExtensions</a>. <em>Packages:
+<code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.AsiaPacific</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplesworkingdays">Bodu.Globalization.Calendar.Samples.WorkingDays</h3>
+<p>The <code>Bodu.Extensions</code> business-day surface over a service: predicates, T+2 settlement with
+<code>AddWorkingDays</code>, next/snap navigation, <code>WorkingDaysBetween</code> counting and lazy enumeration,
+fiscal-period boundaries, and <code>WeekPattern</code> overrides for non-Mon–Fri working weeks. <em>Packages:
+<code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.AsiaPacific</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplescustomcalendar">Bodu.Globalization.Calendar.Samples.CustomCalendar</h3>
+<p>The &quot;bring your own data&quot; story:
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> fluent authoring — fixed
+and floating rules, a <strong>calculated-duration</strong> year-end shutdown (<code>UntilDate</code>), and
+<strong>frequency-based</strong> recurrences (daily-interval, weekly, monthly day, and monthly ordinal-weekday
+schedules) — declarative weekend-roll adjustment policies, importing the shared catalogues through
+<a class="xref" href="../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a> (including the offset-anchor
+dependency the validator enforces), and the XML and JSON save/load round trips that make the
+document a distributable artifact. Its <code>FrequencyBasedSchedules</code> and <code>AuthoringCompanyHolidays</code> scenarios are
+the runnable companions to the <a href="../guides/calendar/strategy-reference.html">Notable-date rule strategies</a>
+guide. <em>Packages: <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.Builder</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplesservicehosting">Bodu.Globalization.Calendar.Samples.ServiceHosting</h3>
+<p>Container wiring: <code>AddNotableDateService</code> singleton registration, and
+<code>AddReloadableNotableDateService</code> with a mid-run
+<a class="xref" href="../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a> <code>Reload</code> swap — held
+service references immediately serve the new data. <em>Packages: <code>Bodu.Globalization.Calendar</code>,
+<code>Bodu.Globalization.Calendar.DependencyInjection</code>, <code>Bodu.Globalization.Calendar.AsiaPacific</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplescustomalgorithm--test">Bodu.Globalization.Calendar.Samples.CustomAlgorithm (+ .Test)</h3>
+<p>Extending the date-calculation vocabulary: a consumer-written
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> registered on a
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>, referenced
+declaratively from rules (<code>Algorithm(&quot;key&quot;)</code>), validated by the loader and dispatched by the
+service — plus a five-line lambda adapter for one-off calculations. <em>Packages:
+<code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.Builder</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplescaching">Bodu.Globalization.Calendar.Samples.Caching</h3>
+<p>The caching layer: the read-through
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> decorator over the
+in-memory and JSON / TOML file backends (whole-territory, civil-year cache entries — warm queries,
+sub-range clipping, and filtered overloads all served without re-resolving; a file-backed cache
+lets a fresh service instance start warm), explicit <code>Warm</code> pre-resolution of a serving window,
+and <code>AddCachedNotableDateService</code> decorating an already-registered <code>INotableDateService</code>. The
+durable backends now run rather than being described: a SQLite-backed cache is read back by a
+second service after the first is disposed, and two services over one <code>IDistributedCache</code>
+stand in for two processes sharing a store — both proved by the engine call count not moving.
+The hosted warm-up remains a fenced comment block. A
+<code>CountingNotableDateService</code> wrapper counts the resolutions that reach the real engine, so every
+cache hit is proved by call count rather than by timing. <em>Packages: <code>Bodu.Globalization.Calendar</code>,
+<code>Bodu.Globalization.Calendar.Caching</code>, <code>Bodu.Globalization.Calendar.DependencyInjection</code>,
+<code>Bodu.Globalization.Calendar.AsiaPacific</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplesregionaldata">Bodu.Globalization.Calendar.Samples.RegionalData</h3>
+<p>The five regional data packs — <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>,
+<code>.MiddleEast</code>, and <code>.Africa</code>. Lists what each pack covers (63 territories between them) and
+resolves a year from each, then shows why a notable-date lookup is territory-scoped: 1 January is
+a public holiday in all five sample territories while 25 December is not one in <code>AE</code> at all. A
+closing pass prints AU's 2027 weekend substitutions with the <code>ActualDate</code> each shifted from, so
+the adjustment is auditable rather than implied. Every pack is an embedded resource, so nothing
+here reads a file or makes a request. <em>Packages: the five <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code>
+data packs.</em></p>
+<h3 id="boduglobalizationcalendarsamplesplugins--plugincontoso">Bodu.Globalization.Calendar.Samples.Plugins (+ .Plugin.Contoso)</h3>
+<p>Trust-gated plugin loading with <code>Bodu.Globalization.Calendar.Plugins</code>. A date-calculation algorithm
+is loaded out of a separate assembly at runtime and registered into a
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>, after which a rule
+document referencing it by key (<code>contoso.founding-day</code>) resolves alongside ordinary fixed rules —
+neither side needing a type from the other. The second scenario is the reason the package exists:
+loading a plugin executes arbitrary code in-process, so the loader takes no policy-free overload.
+It pins the assembly with a SHA-256 allow-list, shows the same load refused under a wrong hash with
+<code>PluginNotTrustedException</code> raised before any plugin code runs, then a <code>DelegatingPluginTrustPolicy</code>
+for a host's own rule and a <code>CompositePluginTrustPolicy</code> that can only narrow trust.</p>
+<p>The plugin is its own project, <code>…Samples.Plugin.Contoso</code>, referenced with
+<code>ReferenceOutputAssembly=&quot;false&quot;</code> so its types are genuinely unavailable to the host at compile
+time — the host reaches it only through the loader. That project is a class library with no entry
+point and is not run by the samples sweep. <em>Packages: <code>Bodu.Globalization.Calendar.Plugins</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplesrulepacktoolchain">Bodu.Globalization.Calendar.Samples.RulePackToolchain</h3>
+<p>The rule-pack toolchain — <code>Bodu.Globalization.Calendar.Build</code> and the <code>bodu-calendar</code> tool from
+<code>Bodu.Globalization.Calendar.Tool</code>. Unlike every other sample the interesting part happens at
+<strong>build</strong> time: the csproj declares <code>rules/company-holidays.xml</code> as a <code>NotableDatePack</code> item, the
+<code>CompileNotableDatePack</code> task lints and compiles it with the tool, and the sealed <code>.bcal</code> pack is
+copied beside the application. The program is the consumer side, loading that pack with
+<a class="xref" href="../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary.html">LoadBinary</a> and comparing it against
+parsing the same XML at runtime — same three holidays, 255 bytes against 1,946, and no schema
+validation on the deployment path. A NuGet consumer writes only the item group; the sample's
+explicit <code>.targets</code> import and task/tool path overrides are repository plumbing, needed because
+here the task and tool are projects rather than a restored package. <em>Packages:
+<code>Bodu.Globalization.Calendar.Build</code>, <code>Bodu.Globalization.Calendar.Tool</code>.</em></p>
+<h3 id="boduglobalizationcalendarsamplesvalidationlint">Bodu.Globalization.Calendar.Samples.ValidationLint</h3>
+<p>Collect-mode linting: <code>NotableDateDocumentBuilder.Validate()</code> / <code>TryBuild(...)</code> on clean,
+semantically invalid, and structurally incomplete builders, and
+<code>NotableDateResourceLoader.TryLoad</code> over arbitrary rule-pack text — malformed XML surfacing as
+<code>BODU-CAL-SYNTAX</code>, semantic problems as their stable codes, and a valid pack loading — every
+problem reported as a <a class="xref" href="../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> with a
+stable <code>BODU-CAL-*</code> code instead of an exception, the shape build tasks and editor integrations
+want. The code catalogue lives in the
+<a href="../guides/calendar/validation-diagnostics.html">validation diagnostics guide</a>. <em>Packages:
+<code>Bodu.Globalization.Calendar</code>, <code>Bodu.Globalization.Calendar.Builder</code>.</em></p>
+<h2 id="plugins-by-choice">Plugins, by choice</h2>
+<p>No sample ships a plugin assembly — a single-project plugin demo would have to load itself under
+the dev-only <code>AllowAllPluginTrustPolicy</code>, which is exactly what production hosts must not do.
+Instead, the CustomAlgorithm sample carries a fenced comment block showing the real switch: add
+<code>Bodu.Globalization.Calendar.Plugins</code>, mark the plugin assembly with
+<code>[assembly: NotableDatePlugin(...)]</code>, and load it through
+<a class="xref" href="../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader.html">NotableDatePluginLoader</a> under a pinned
+<code>StrongNamePluginTrustPolicy</code>, registering the discovered algorithms into the same registry the
+sample already uses.</p>
+<h2 id="testing-your-own-data-pack">Testing your own data pack</h2>
+<p><code>Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test</code> shows the in-repo pattern for
+validating a consumer-built calendar: shape it as a data-pack factory (<code>SupportedCountries</code> /
+<code>LoadResource</code> / <code>CreateService</code> — see the sample's <code>ContosoCalendarData</code>), derive
+<code>CalendarDataTestsBase</code> from the <code>Bodu.Globalization.Calendar.Data.Test.Common</code> project — the
+same base every regional <code>&lt;Region&gt;CalendarData</code> test derives — and add known-answer <code>[DataRow]</code>
+rows pinning deterministic dates (exact assertions for Gregorian/weekend-roll rules; the base's
+<code>AssertWithinDays</code> for lunar/astronomical tolerance). The base contributes the
+load-and-resolve smoke contract; the rows pin your rules to published expectations.</p>
+<p>The test-support project is repository-internal today (it is not packaged); if you consume the
+packages from NuGet, copy the small base class into your test project — it depends only on the
+engine and <code>MSTest.TestFramework</code>.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reading nodes and tables | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reading nodes and tables | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reading-nodes-and-tables">Reading nodes and tables</h1>
+
+<p><a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens a PST file as a read-only session over its node database. This guide covers the end-to-end recipe: open the file, address a node by identifier, walk the directory and a node's private subnodes, and read the two LTP views every object exposes — the property context (a property bag) and the table context (a table). Values keep their on-disk wire types throughout; nothing here knows what a &quot;subject&quot; is.</p>
+<p>The samples run against <code>sample1.pst</code> from the <a href="../../samples/io-pst.html">runnable PST sample</a>, copied as <code>archive.pst</code>; the quoted output is what they print.</p>
+<h2 id="pattern-1--open-a-file">Pattern 1 — open a file</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+Console.WriteLine($&quot;{file.Format} format, block data: {file.CryptMethod}&quot;);
+
+// Unicode format, block data: Permute
+</code></pre>
+<p><code>OpenRead(path)</code> owns the file it opens. <code>OpenRead(stream, leaveOpen)</code> and <code>Open(stream, options, leaveOpen)</code> read a stream that must be readable and seekable (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> otherwise); the container starts at the stream's <em>current position</em>, so a PST embedded in a larger stream opens without copying. Opening parses the header only — a wrong magic, an undeclared version, or (under <code>Strict</code>) a bad header CRC throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> here, and the 4 KiB-page OST variant throws <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>.</p>
+<p><a class="xref" href="../../api/Bodu.IO.Pst.PstFile.Format.html#Bodu_IO_Pst_PstFile_Format">Format</a> reports the variant (<code>Unicode</code>, 64-bit structures, or <code>Ansi</code>, 32-bit); every public type behaves identically over either. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.CryptMethod.html#Bodu_IO_Pst_PstFile_CryptMethod">CryptMethod</a> is the header's content encoding — <code>None</code>, <code>Permute</code>, or <code>Cyclic</code> — which the reader undoes transparently on every block read; you never see encoded bytes.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using FileStream stream = File.OpenRead(&quot;archive.pst&quot;);
+if (!PstFile.IsPstFile(stream))
+    return;
+
+var options = new PstFileOptions { ValidationLevel = PstValidationLevel.Strict };
+using PstFile file = PstFile.Open(stream, options, leaveOpen: true);
+Console.WriteLine(file.Format);
+</code></pre>
+<p><code>IsPstFile</code> checks the magic only and restores the position. The options are covered in <a href="streaming-and-validation.html">Streaming and validation</a>.</p>
+<h2 id="node-identifiers">Node identifiers</h2>
+<p>Every object in the file is addressed by a <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a>: a 32-bit value whose five low bits carry the <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> and whose 27 high bits carry an index. The type bits make identifiers self-describing, and the format leans on it — a folder's hierarchy, contents, and associated-contents tables reuse the folder's <em>index</em> with the corresponding <em>table</em> type bits, so you can compute them without any lookup.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+PstNodeId root = PstNodeId.RootFolder;                                    // 0x00000122
+var hierarchy = new PstNodeId(PstNodeType.HierarchyTable, root.Index);   // same index, table type bits
+var contents = new PstNodeId(PstNodeType.ContentsTable, root.Index);
+var raw = new PstNodeId(0x00002223u);                                     // from a value read out of a table
+
+Console.WriteLine($&quot;{root} type={root.Type} index={root.Index}&quot;);
+Console.WriteLine($&quot;{hierarchy} type={hierarchy.Type} index={hierarchy.Index}&quot;);
+Console.WriteLine($&quot;{contents} type={contents.Type}&quot;);
+Console.WriteLine($&quot;{raw} type={raw.Type} index={raw.Index}&quot;);
+Console.WriteLine(PstNodeId.MessageStore == new PstNodeId(0x21));        // True
+
+// 0x00000122 type=NormalFolder index=9
+// 0x0000012D type=HierarchyTable index=9
+// 0x0000012E type=ContentsTable
+// 0x00002223 type=SearchFolder index=273
+// True
+</code></pre>
+<p><code>new PstNodeId(type, index)</code> rejects an index above <code>0x07FFFFFF</code> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>; <code>new PstNodeId(uint)</code> wraps any raw value. <code>ToString</code> renders <code>0x</code> plus eight upper-case hexadecimal digits, and the struct is <code>IEquatable</code> with <code>==</code> / <code>!=</code>.</p>
+<p>Three fixed identifiers anchor every file and are exposed as well-known values:</p>
+<table>
+<thead>
+<tr>
+<th>Well-known</th>
+<th>Value</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PstNodeId.MessageStore</code></td>
+<td><code>0x21</code></td>
+<td>The store object's property context (display name, record key, …).</td>
+</tr>
+<tr>
+<td><code>PstNodeId.NameToIdMap</code></td>
+<td><code>0x61</code></td>
+<td>The named-property mapping the messaging layer resolves <code>0x8000</code>+ identifiers through.</td>
+</tr>
+<tr>
+<td><code>PstNodeId.RootFolder</code></td>
+<td><code>0x122</code></td>
+<td>The root folder; user folders hang beneath it.</td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a> values you will meet most: <code>NormalFolder</code> (<code>0x02</code>), <code>SearchFolder</code> (<code>0x03</code>), <code>NormalMessage</code> (<code>0x04</code>), <code>Attachment</code> (<code>0x05</code>), <code>AssociatedMessage</code> (<code>0x08</code>), the table kinds <code>HierarchyTable</code> (<code>0x0D</code>), <code>ContentsTable</code> (<code>0x0E</code>), <code>AssociatedContentsTable</code> (<code>0x0F</code>), <code>AttachmentTable</code> (<code>0x11</code>), <code>RecipientTable</code> (<code>0x12</code>), plus <code>Internal</code> (<code>0x01</code>) and <code>Ltp</code> (<code>0x1F</code>) for bookkeeping nodes. A file may carry type values MS-PST does not name; they surface as the raw number.</p>
+<h2 id="pattern-2--walk-the-directory-and-look-nodes-up">Pattern 2 — walk the directory and look nodes up</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+var census = new SortedDictionary&lt;PstNodeType, int&gt;();
+long largest = 0;
+foreach (PstNodeInfo info in file.EnumerateNodes())
+{
+    census[info.NodeId.Type] = census.GetValueOrDefault(info.NodeId.Type) + 1;
+    largest = Math.Max(largest, info.DataLength);
+}
+
+foreach ((PstNodeType type, int count) in census)
+    Console.WriteLine($&quot;{type,-24}{count,5}&quot;);
+Console.WriteLine($&quot;largest payload: {largest} bytes&quot;);
+
+PstNode store = file.GetNode(PstNodeId.MessageStore);             // throws PstNodeNotFoundException when absent
+Console.WriteLine($&quot;{store} parent={store.ParentId} subnodes={store.HasSubnodes} data={store.DataLength} bytes&quot;);
+
+if (!file.TryGetNode(new PstNodeId(PstNodeType.NormalFolder, 0x7FFFFFF), out PstNode? missing))
+    Console.WriteLine(&quot;no such node&quot;);
+
+// Internal                   12
+// NormalFolder                5
+// SearchFolder                2
+// NormalMessage               1
+// SearchUpdateQueue           2
+// SearchCriteria              2
+// ReceiveFolderTable          1
+// OutgoingQueueTable          1
+// HierarchyTable              6
+// ContentsTable               6
+// AssociatedContentsTable     6
+// SearchContentsTable         3
+// AttachmentTable             1
+// RecipientTable              1
+// 22                          1
+// 23                          1
+// 24                          1
+// largest payload: 4198 bytes
+// 0x00000021 (Internal) parent=0x00000000 subnodes=False data=290 bytes
+// no such node
+</code></pre>
+<p><code>EnumerateNodes</code> walks the node B-tree in identifier order and yields a <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeInfo.html">PstNodeInfo</a> snapshot per node — <code>NodeId</code>, <code>ParentNodeId</code>, <code>DataLength</code>, <code>HasSubnodes</code> — resolving the length from the block B-tree without reading any payload. <code>GetNode</code> throws <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeNotFoundException.html">PstNodeNotFoundException</a> (<code>Error == PstFileError.NodeNotFound</code>) for an absent identifier; <code>TryGetNode</code> returns <code>false</code>. Either returns a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> that caches its data-tree leaf list and subnode directory for its own lifetime, so keep the instance around when you will read it more than once.</p>
+<h2 id="pattern-3--dump-the-store-nodes-property-context">Pattern 3 — dump the store node's property context</h2>
+<p><code>ReadPropertyContext</code> parses the node's heap and returns a <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a>: a read-only collection of <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> keyed by 16-bit property identifier, in ascending identifier order. The records are materialized when the context is read, but each value's payload resolves only when accessed, so listing identifiers and wire types costs nothing per value.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+PstNode store = file.GetNode(PstNodeId.MessageStore);
+PstPropertyContext properties = store.ReadPropertyContext();
+
+Console.WriteLine($&quot;{properties.Count} properties&quot;);
+foreach (ushort id in properties.EnumeratePropertyIds())
+{
+    properties.TryGetWireType(id, out ushort wireType);
+    Console.WriteLine($&quot;  0x{id:X4} wire 0x{wireType:X4}&quot;);
+}
+
+// PidTagDisplayName (0x3001): a UTF-16 string in a Unicode-format file.
+if (properties.TryGetValue(0x3001, out PstPropertyValue displayName) &amp;&amp; displayName.WireType == 0x001F)
+    Console.WriteLine($&quot;display name: {displayName.GetString()}&quot;);
+
+// PidTagRecordKey (0x0FF9): opaque bytes.
+if (properties.Contains(0x0FF9))
+    Console.WriteLine($&quot;record key: {Convert.ToHexString(properties.GetValue(0x0FF9).GetBytes())}&quot;);
+
+// Every value at once, with its diagnostic form.
+foreach (PstPropertyValue value in properties)
+    Console.WriteLine($&quot;  {value}&quot;);
+
+// 12 properties
+//   0x0E34 wire 0x0102
+//   0x0E38 wire 0x0003
+//   0x0FF9 wire 0x0102
+//   0x3001 wire 0x001F
+//   ...
+// display name: sample1
+// record key: 6A552B813C43F94384F18B7DA2393E95
+//   0x0E34 (0x0102, 24 bytes)
+//   0x0E38 (0x0003, 4 bytes)
+//   0x3001 (0x001F, 14 bytes)
+//   ...
+</code></pre>
+<p>The lookup surface: <code>Count</code>, <code>Contains(id)</code>, <code>EnumeratePropertyIds()</code>, <code>TryGetWireType(id, out wireType)</code> (no payload read), <code>TryGetValue(id, out value)</code>, and <code>GetValue(id)</code>, which throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> with <code>Error == PstFileError.PropertyNotFound</code> for an absent identifier. Enumerating the context resolves every payload in turn. <code>TryGetValueLength</code> and <code>TryOpenValueStream</code> are the streaming pair, covered in <a href="streaming-and-validation.html">Streaming and validation</a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>ReadPropertyContext</code> and <code>ReadTableContext</code> re-read the heap from the source on every call. Retain the returned instance for the duration of your reads rather than calling them per property or per row.</p>
+</div>
+<h3 id="typed-accessors">Typed accessors</h3>
+<p>A <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> carries <code>PropertyId</code>, the raw <code>WireType</code> (the MS-OXCDATA code, unchanged from the file), and <code>RawData</code> — the resolved little-endian payload (empty for a null value). The typed accessors require the matching wire type and at least the type's width; a mismatch throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Accessor</th>
+<th>Accepts wire type</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetInt16()</code></td>
+<td><code>0x0002</code></td>
+<td><code>short</code></td>
+</tr>
+<tr>
+<td><code>GetInt32()</code></td>
+<td><code>0x0003</code>, or the 32-bit error code <code>0x000A</code></td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>GetInt64()</code></td>
+<td><code>0x0014</code>, the currency <code>0x0006</code>, or the FILETIME <code>0x0040</code></td>
+<td><code>long</code> — for <code>0x0040</code>, pass to <code>DateTime.FromFileTimeUtc</code></td>
+</tr>
+<tr>
+<td><code>GetBoolean()</code></td>
+<td><code>0x000B</code></td>
+<td><code>bool</code> (any nonzero byte)</td>
+</tr>
+<tr>
+<td><code>GetSingle()</code></td>
+<td><code>0x0004</code></td>
+<td><code>float</code></td>
+</tr>
+<tr>
+<td><code>GetDouble()</code></td>
+<td><code>0x0005</code>, or the floating time <code>0x0007</code></td>
+<td><code>double</code></td>
+</tr>
+<tr>
+<td><code>GetGuid()</code></td>
+<td><code>0x0048</code></td>
+<td><code>Guid</code></td>
+</tr>
+<tr>
+<td><code>GetString()</code></td>
+<td><code>0x001F</code> only</td>
+<td><code>string</code> (UTF-16LE)</td>
+</tr>
+<tr>
+<td><code>GetBytes()</code></td>
+<td>any</td>
+<td>a copy of <code>RawData</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>GetString</code> deliberately handles only the UTF-16 type: a code-page string (<code>0x001E</code>) stays bytes because choosing its encoding is a format-layer decision, as are multi-valued (<code>0x1000</code> flag) and object-typed payloads, which surface raw. The mail-store reader is where those decode.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+PstPropertyContext properties = file.GetNode(PstNodeId.MessageStore).ReadPropertyContext();
+
+try
+{
+    _ = properties.GetValue(0x3001).GetInt32();   // the display name is a string
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+
+try
+{
+    _ = properties.GetValue(0x0001);              // not present
+}
+catch (PstFileException ex) when (ex.Error == PstFileError.PropertyNotFound)
+{
+    Console.WriteLine(ex.Message);
+}
+
+// The property value has wire type 0x001F and cannot be read as 0003.
+// No property 0x0001 exists in the property context of node 0x00000021.
+</code></pre>
+<h2 id="pattern-4--list-the-root-hierarchy-table">Pattern 4 — list the root hierarchy table</h2>
+<p><code>ReadTableContext</code> returns a <a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a>: <code>Columns</code> (a <a class="xref" href="../../api/Bodu.IO.Pst.PstTableColumn.html">PstTableColumn</a> per column — property identifier, wire type, cell width), <code>RowCount</code> from the table's row index, and rows whose identifier names the object the row stands for. A folder's hierarchy table lists its child folders, so each <code>RowId</code> is a child folder's node identifier.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+var hierarchyId = new PstNodeId(PstNodeType.HierarchyTable, PstNodeId.RootFolder.Index);
+PstNode tableNode = file.GetNode(hierarchyId);
+PstTableContext table = tableNode.ReadTableContext();
+
+Console.WriteLine($&quot;{table.RowCount} rows x {table.Columns.Count} columns&quot;);
+foreach (PstTableColumn column in table.Columns)
+    Console.WriteLine($&quot;  {column}&quot;);
+
+foreach (PstTableRow row in table.EnumerateRows())
+{
+    var childId = new PstNodeId(row.RowId);                  // each row stands for a child folder node
+
+    string name = row.TryGetCell(0x3001, out PstPropertyValue display) &amp;&amp; display.WireType == 0x001F
+        ? display.GetString()
+        : &quot;(unnamed)&quot;;
+    int messages = row.TryGetCell(0x3602, out PstPropertyValue count) ? count.GetInt32() : 0;   // PidTagContentCount
+    bool hasChildren = row.TryGetCell(0x360A, out PstPropertyValue sub) &amp;&amp; sub.GetBoolean();     // PidTagSubfolders
+
+    Console.WriteLine($&quot;  {childId} ({childId.Type}) {name}: {messages} messages, subfolders={hasChildren}&quot;);
+}
+
+// 4 rows x 13 columns
+//   0x0E30 (0x0102, 4 bytes)
+//   0x0E33 (0x0014, 8 bytes)
+//   ...
+//   0x3001 (0x001F, 4 bytes)
+//   0x3602 (0x0003, 4 bytes)
+//   0x360A (0x000B, 1 bytes)
+//   ...
+//   0x00008022 (NormalFolder) Top of Outlook data file: 0 messages, subfolders=True
+//   0x00008042 (NormalFolder) Search Root: 0 messages, subfolders=False
+//   0x00002223 (SearchFolder) SPAM Search Folder 2: 0 messages, subfolders=False
+//   0x00080023 (SearchFolder) ItemProcSearch: 0 messages, subfolders=False
+</code></pre>
+<p>Note the widths: a variable-size column such as the <code>0x001F</code> display name occupies four bytes in the row — a value reference into the heap or a subnode — and resolves when the cell is read, exactly like a property-context value. Fixed-width cells (<code>Int32</code>, <code>Boolean</code>, the eight-byte <code>Int64</code>) sit inline. The container lists the two search folders the mail-store reader deliberately hides.</p>
+<p><code>EnumerateRows</code> streams the row matrix one block at a time and never materializes the whole table; each yielded <a class="xref" href="../../api/Bodu.IO.Pst.PstTableRow.html">PstTableRow</a> copies its own bytes, so rows stay valid after the enumeration advances. The row surface is <code>RowId</code>, <code>TryGetCell(id, out value)</code> — <code>true</code> only when the table declares the column <em>and</em> the row's existence bitmap marks the cell present — <code>EnumerateCells()</code> over the present cells, and the streaming pair <code>TryGetCellLength</code> / <code>TryOpenCellStream</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+var hierarchyId = new PstNodeId(PstNodeType.HierarchyTable, PstNodeId.RootFolder.Index);
+PstTableContext table = file.GetNode(hierarchyId).ReadTableContext();
+
+uint[] rowIds = table.EnumerateRowIds().ToArray();          // no row materialized
+Console.WriteLine(string.Join(&quot;, &quot;, rowIds.Select(id =&gt; new PstNodeId(id))));
+
+if (table.TryGetRow(rowIds[0], out PstTableRow? row))
+{
+    foreach (PstPropertyValue cell in row.EnumerateCells())
+        Console.WriteLine($&quot;  {cell}&quot;);
+}
+
+// 0x00008022, 0x00008042, 0x00002223, 0x00080023
+//   0x3001 (0x001F, 48 bytes)
+//   0x3602 (0x0003, 4 bytes)
+//   0x3603 (0x0003, 4 bytes)
+//   0x360A (0x000B, 1 bytes)
+//   0x67F2 (0x0003, 4 bytes)
+//   0x67F3 (0x0003, 4 bytes)
+</code></pre>
+<p><code>EnumerateRowIds</code> reads the leading dword of each row slot in place and allocates nothing per row — the right call when, as with hierarchy, contents, and attachment tables, you only want the referenced node identifiers. <code>TryGetRow(rowId, out row)</code> goes through the row index for a keyed lookup; it returns <code>false</code> for an unknown identifier and throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> when the index names a row the matrix does not hold.</p>
+<h2 id="pattern-5--read-a-message-node-without-mapi-semantics">Pattern 5 — read a message node without MAPI semantics</h2>
+<p>A message is a <code>NormalMessage</code> node whose property context holds the message's properties and whose private <strong>subnode tree</strong> holds its recipient table, attachment table, and attachment objects — invisible to the node B-tree, reachable only through the owning node.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+PstNodeInfo first = file.EnumerateNodes().First(n =&gt; n.NodeId.Type == PstNodeType.NormalMessage);
+PstNode message = file.GetNode(first.NodeId);
+PstPropertyContext properties = message.ReadPropertyContext();
+
+Console.WriteLine($&quot;{message}: {properties.Count} properties, parent folder {message.ParentId}&quot;);
+
+// 0x0037 PidTagSubject, 0x001A PidTagMessageClass — UTF-16 (0x001F) in a Unicode-format file.
+if (properties.TryGetValue(0x0037, out PstPropertyValue subject) &amp;&amp; subject.WireType == 0x001F)
+    Console.WriteLine($&quot;subject: {subject.GetString()}&quot;);
+if (properties.TryGetValue(0x001A, out PstPropertyValue messageClass) &amp;&amp; messageClass.WireType == 0x001F)
+    Console.WriteLine($&quot;class: {messageClass.GetString()}&quot;);
+
+// 0x0E06 PidTagMessageDeliveryTime — a FILETIME (0x0040), read as Int64 ticks.
+if (properties.TryGetValue(0x0E06, out PstPropertyValue delivered) &amp;&amp; delivered.WireType == 0x0040)
+    Console.WriteLine($&quot;delivered: {DateTime.FromFileTimeUtc(delivered.GetInt64()):u}&quot;);
+
+// 0x0E07 PidTagMessageFlags — Int32; bit 0 is MSGFLAG_READ.
+if (properties.TryGetValue(0x0E07, out PstPropertyValue flags))
+    Console.WriteLine($&quot;flags: 0x{flags.GetInt32():X8}&quot;);
+
+// The message's private subnodes: recipient table, attachment table, attachment objects.
+foreach (PstNodeInfo subnode in message.EnumerateSubnodes())
+    Console.WriteLine($&quot;  subnode {subnode.NodeId} ({subnode.NodeId.Type}), {subnode.DataLength} bytes&quot;);
+
+if (message.TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? recipientTable))
+{
+    foreach (PstTableRow row in recipientTable.ReadTableContext().EnumerateRows())
+    {
+        string name = row.TryGetCell(0x3001, out PstPropertyValue display) &amp;&amp; display.WireType == 0x001F ? display.GetString() : &quot;?&quot;;
+        int type = row.TryGetCell(0x0C15, out PstPropertyValue recipientType) ? recipientType.GetInt32() : 0;   // 1 = To, 2 = Cc, 3 = Bcc
+        Console.WriteLine($&quot;  recipient type {type}: {name}&quot;);
+    }
+}
+
+// 0x00200024 (NormalMessage): 110 properties, parent folder 0x00008082
+// subject: Here is a sample message
+// class: IPM.Note
+// delivered: 2010-03-15 17:12:07Z
+// flags: 0x00000031
+//   subnode 0x00000671 (AttachmentTable), 514 bytes
+//   subnode 0x00000692 (RecipientTable), 1000 bytes
+//   subnode 0x00008025 (Attachment), 326 bytes
+//   subnode 0x0000807F (Ltp), 1701 bytes
+//   subnode 0x0000809F (Ltp), 2196 bytes
+//   recipient type 1: Terry Mahaffey
+</code></pre>
+<p><code>EnumerateSubnodes</code> yields <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeInfo.html">PstNodeInfo</a> snapshots in stored order, with <code>ParentNodeId</code> set to the owning node; <code>TryGetSubnode(id, out node)</code> resolves one by identifier and <code>TryGetSubnodeOfType(type, out node)</code> the first of a type in a single pass — the natural way to reach a message's recipient and attachment tables. A subnode is a full <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a>: it has its own payload, its own LTP views, and (for an attachment object) may carry a subnode tree of its own holding an embedded message. The two <code>Ltp</code> subnodes above hold large property values that overflowed the message's heap-on-node; the property context resolves them transparently when their property is read.</p>
+<p>Which of these identifiers <em>means</em> subject, delivery time, or recipient type is MS-OXPROPS knowledge the container does not carry — that is the <a href="../outlook/reading-pst-mail-stores.html">mail-store reader's</a> job, and the reason this layer exists separately.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a></td>
+<td><code>OpenRead(path)</code> · <code>OpenRead(stream, leaveOpen)</code> · <code>Open(stream, options, leaveOpen)</code> · <code>IsPstFile(stream)</code> · <code>Format</code> · <code>CryptMethod</code> · <code>EnumerateNodes()</code> · <code>GetNode(id)</code> · <code>TryGetNode(id, out node)</code> · <code>Dispose</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a></td>
+<td><code>.ctor(uint)</code> · <code>.ctor(type, index)</code> · <code>MessageStore</code> · <code>NameToIdMap</code> · <code>RootFolder</code> · <code>Value</code> · <code>Type</code> · <code>Index</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a></td>
+<td><code>Id</code> · <code>ParentId</code> · <code>HasSubnodes</code> · <code>DataLength</code> · <code>ReadAllBytes()</code> · <code>OpenDataStream()</code> · <code>EnumerateSubnodes()</code> · <code>TryGetSubnode(id, out node)</code> · <code>TryGetSubnodeOfType(type, out node)</code> · <code>ReadPropertyContext()</code> · <code>ReadTableContext()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a></td>
+<td><code>Count</code> · <code>Contains(id)</code> · <code>EnumeratePropertyIds()</code> · <code>TryGetWireType(id, out wireType)</code> · <code>TryGetValue(id, out value)</code> · <code>GetValue(id)</code> · <code>TryGetValueLength(id, out length)</code> · <code>TryOpenValueStream(id, out stream)</code> · enumeration</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a></td>
+<td><code>PropertyId</code> · <code>WireType</code> · <code>RawData</code> · <code>GetInt16()</code> · <code>GetInt32()</code> · <code>GetInt64()</code> · <code>GetBoolean()</code> · <code>GetSingle()</code> · <code>GetDouble()</code> · <code>GetGuid()</code> · <code>GetString()</code> · <code>GetBytes()</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a></td>
+<td><code>Columns</code> · <code>RowCount</code> · <code>EnumerateRows()</code> · <code>EnumerateRowIds()</code> · <code>TryGetRow(rowId, out row)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstTableRow.html">PstTableRow</a></td>
+<td><code>RowId</code> · <code>TryGetCell(id, out value)</code> · <code>EnumerateCells()</code> · <code>TryGetCellLength(id, out length)</code> · <code>TryOpenCellStream(id, out stream)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="streaming-and-validation.html">Streaming and validation</a> — the length/stream pairs for large payloads, <code>PstFileOptions</code>, and the full <code>PstFileError</code> catalogue.</li>
+<li><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a> — the same nodes with MAPI meaning attached.</li>
+<li><a href="../../docs/io-pst/concepts.html">Bodu.IO.Pst core concepts</a> — NDB, NID/BID, data and subnode trees, heap-on-node, and the two contexts in depth.</li>
+<li><a href="../../samples/io-pst.html">Runnable PST sample</a> — the fixtures these samples ran against.</li>
+<li><a href="index.html">Bodu.IO.Pst guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

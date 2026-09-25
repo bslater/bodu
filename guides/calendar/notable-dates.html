@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using NotableDateService | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using NotableDateService | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-notabledateservice">Using NotableDateService</h1>
+
+<p><code>NotableDateService</code> is the main entry point for resolving notable dates — public holidays, observances, religious festivals, regional events — for a given date, range, or year and territory. It is built over an immutable, already-validated <code>NotableDateResource</code> and resolves <code>NotableDate</code> occurrences on demand.</p>
+<p>For the vocabulary used below (document vs. resource, rule vs. resolved date, nominal vs. observed, territory containment, …) see <a href="../../docs/calendar/concepts.html">Core concepts</a>.</p>
+<h2 id="pattern-1--a-minimal-service-from-a-bundled-catalogue">Pattern 1 — a minimal service from a bundled catalogue</h2>
+<p>Load one of the bundled common catalogues to create a service without referencing a companion data pack — handy for smoke tests and demos. <code>default-minimal</code> carries just New Year's Day:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateResource resource = NotableDateResourceLoader.Load(
+    CommonNotableDateResources.Resolve(&quot;default-minimal&quot;)!);
+var service = new NotableDateService(resource);
+
+IReadOnlyList&lt;NotableDate&gt; dates = service.Resolve(DateTime.Today.Year, &quot;XX&quot;);
+// → New Year's Day on 1 January
+</code></pre>
+<p>Region-specific public holidays ship in dedicated <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages. See <a href="data-packs.html">Calendar data packs</a>.</p>
+<h2 id="pattern-2--load-a-data-pack-and-filter-by-territory">Pattern 2 — load a data pack and filter by territory</h2>
+<p>Each pack exposes a static factory with <code>CreateService(territory)</code> (and <code>LoadResource(territory)</code> if you want the resource alone):</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+// Loads Australia's resource (imports resolved against the bundled catalogues).
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+// By-year resolution is an extension (NotableDateServiceExtensions.Resolve):
+IReadOnlyList&lt;NotableDate&gt; auDates  = service.Resolve(2026, &quot;AU&quot;);
+IReadOnlyList&lt;NotableDate&gt; nswDates = service.Resolve(2026, &quot;AU-NSW&quot;);
+
+foreach (NotableDate date in nswDates)
+    Console.WriteLine($&quot;{date.Date:d MMM yyyy}  {date.DisplayName}&quot;);
+</code></pre>
+<p><code>TerritoryCode</code> containment applies: a query for <code>&quot;AU-NSW&quot;</code> returns dates scoped to <code>AU</code> <em>and</em> <code>AU-NSW</code> (plus any unscoped rules), but not other states. See <a href="territories.html">Territories and regional composition</a>.</p>
+<p>All examples below assume a service constructed with the relevant data pack.</p>
+<h2 id="pattern-3--filter-by-category">Pattern 3 — filter by category</h2>
+<p><code>NotableDateFilter</code> is a composable predicate built from static factory methods. Pass it to the filtered <code>Resolve</code> overloads:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = EuropeCalendarData.CreateService(&quot;GB&quot;);
+
+// Only public holidays for Great Britain.
+NotableDateFilter publicFilter = NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday);
+IReadOnlyList&lt;NotableDate&gt; holidays = service.Resolve(2026, &quot;GB&quot;, publicFilter);
+
+// Non-working public holidays — combine predicates with And:
+NotableDateFilter nonWorkingFilter = NotableDateFilter
+    .ForCategory(NotableDateCategory.PublicHoliday)
+    .And(NotableDateFilter.IsNonWorkingDay());
+IReadOnlyList&lt;NotableDate&gt; nonWorking = service.Resolve(2026, &quot;GB&quot;, nonWorkingFilter);
+
+// Multiple categories in one call:
+NotableDateFilter culturalOrObservance =
+    NotableDateFilter.ForAnyCategory(NotableDateCategory.Cultural, NotableDateCategory.Observance);
+</code></pre>
+<h2 id="pattern-4--query-a-date-range">Pattern 4 — query a date range</h2>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+var window = new DateRange(new DateOnly(2026, 3, 1), new DateOnly(2026, 4, 30));
+IReadOnlyList&lt;NotableDate&gt; autumn = service.Resolve(window, &quot;AU&quot;);
+</code></pre>
+<p>Multi-day events (<code>DurationDays &gt; 1</code>) are included when their span intersects the query window; which occurrence (actual or observed) controls inclusion is governed by the resource's <a href="identity-and-resolution.html"><code>ObservedDateRangePolicy</code></a>.</p>
+<h2 id="pattern-5--query-a-single-day">Pattern 5 — query a single day</h2>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+IReadOnlyList&lt;NotableDate&gt; onDay = service.Resolve(new DateOnly(2026, 4, 25), &quot;AU&quot;);  // ANZAC Day
+</code></pre>
+<p>This overload also returns multi-day spans whose nominal date lies on a preceding day but whose span covers the queried date.</p>
+<h2 id="pattern-6--check-non-working-days-and-weekends">Pattern 6 — check non-working days and weekends</h2>
+<p>These are working-day extension methods in <code>Bodu.Extensions</code> (over <code>DateOnly</code>, <code>DateTime</code>, and <code>DateTimeOffset</code>):</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Extensions;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+DateOnly christmas = new DateOnly(2026, 12, 25);
+
+bool isWeekend       = christmas.IsWeekend();                       // weekend per the default Mon–Fri working week
+bool isNonWorking    = christmas.IsNonWorkingDay(service, &quot;AU&quot;);    // weekend or a non-working notable date
+bool isNonWorkingNSW = christmas.IsNonWorkingDay(service, &quot;AU-NSW&quot;);
+</code></pre>
+<p>For full working-day arithmetic (<code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>NextWorkingDay</code>, <code>SnapToWorkingDay</code>, <code>WorkingDaysBetween</code>, …) see <a href="working-days.html">Working-day arithmetic</a>.</p>
+<h2 id="pattern-7--enumerate-and-walk-notable-dates-from-a-date">Pattern 7 — enumerate and walk notable dates from a date</h2>
+<p>Beyond <code>Resolve</code>, the <code>Bodu.Extensions</code> surface offers date-anchored convenience methods over <code>DateOnly</code> — the same set exists over <code>DateTime</code> and <code>DateTimeOffset</code> — that fold the year/month boundary calculation and the territory query into a single call:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Extensions;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+DateOnly anchor = new DateOnly(2026, 4, 1);
+
+// All notable dates in the anchor's calendar month / year:
+IReadOnlyList&lt;NotableDate&gt; inApril = anchor.GetNotableDatesInMonth(service, &quot;AU-NSW&quot;);
+IReadOnlyList&lt;NotableDate&gt; in2026  = anchor.GetNotableDatesInYear(service, &quot;AU-NSW&quot;);
+
+// The next / previous notable date relative to the anchor (optionally filtered):
+NotableDate? next = anchor.NextNotableDate(service, &quot;AU-NSW&quot;,
+    NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
+NotableDate? prev = anchor.PreviousNotableDate(service, &quot;AU-NSW&quot;);
+
+// Lazy enumeration across an arbitrary span (deferred — materialise with ToList where needed):
+foreach (NotableDate d in anchor.EnumerateNotableDates(new DateOnly(2026, 12, 31), service, &quot;AU-NSW&quot;))
+    Console.WriteLine($&quot;{d.Date:d MMM}  {d.DisplayName}&quot;);
+</code></pre>
+<p><code>GetNotableDates(service, territory)</code> returns the occurrences <em>on the anchor day itself</em> (the same set as <code>service.Resolve(date, territory)</code>), while <code>EnumerateWorkingDays</code> / <code>EnumerateNonWorkingDays</code> yield the bare <code>DateOnly</code> values across a span. <code>NextNotableDate</code> / <code>PreviousNotableDate</code> return a nullable <code>NotableDate?</code> — <code>null</code> when none exists within the search horizon. See <a href="working-days.html">Working-day arithmetic</a> for the full method roster.</p>
+<h2 id="pattern-8--id-targeted-overrides-at-load-time">Pattern 8 — ID-targeted overrides at load time</h2>
+<p>Because a resource is immutable, edits to imported concepts are authored as ID-targeted <code>&lt;Overrides&gt;</code> in the document and applied during loading — add a rule, patch one, or remove one:</p>
+<pre><code class="lang-xml">&lt;Overrides&gt;
+  &lt;!-- Suppress a base rule … --&gt;
+  &lt;RemoveRule notableDateRef=&quot;boxing-day&quot; ruleRef=&quot;default&quot; /&gt;
+  &lt;!-- … and add a company event. --&gt;
+  &lt;AddRule notableDateRef=&quot;company-founding-day&quot;&gt;
+    &lt;Rule id=&quot;default&quot;&gt;&lt;Strategy&gt;&lt;Fixed month=&quot;June&quot; day=&quot;15&quot; /&gt;&lt;/Strategy&gt;&lt;/Rule&gt;
+  &lt;/AddRule&gt;
+&lt;/Overrides&gt;
+</code></pre>
+<p>See <a href="rule-authoring.html">Authoring notable date rules</a> for the full override vocabulary.</p>
+<h2 id="pattern-9--swap-the-rule-set-at-runtime">Pattern 9 — swap the rule set at runtime</h2>
+<p>A <em>live</em> change means loading a new resource and swapping it in. Build the service over a <code>MutableNotableDateResourceProvider</code> via <code>ReloadableNotableDateService</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+var provider = new MutableNotableDateResourceProvider(NotableDateResourceLoader.Load(initialXml));
+INotableDateService service = new ReloadableNotableDateService(provider);
+
+// later, when the rules change — the live service picks it up atomically:
+provider.Reload(NotableDateResourceLoader.Load(updatedXml));
+</code></pre>
+<h2 id="pattern-10--discover-what-a-resource-covers">Pattern 10 — discover what a resource covers</h2>
+<p>A service projects two read-only views off its immutable resource, each computed once at construction:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+IReadOnlyList&lt;string&gt;         territories = service.GetSupportedTerritories();  // e.g. &quot;AU&quot;, &quot;AU-NSW&quot;, &quot;AU-VIC&quot;, …
+IReadOnlyList&lt;CalendarSystem&gt; calendars   = service.GetSupportedCalendars();   // e.g. Gregorian (+ Hijri / Hebrew where used)
+</code></pre>
+<p><code>GetSupportedTerritories</code> returns every distinct territory mentioned by a rule's <code>&lt;Territory&gt;</code> scope; <code>GetSupportedCalendars</code> returns the distinct <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a> values across the rules' <code>&lt;Applicability calendar=&quot;…&quot;&gt;</code> (<code>Gregorian</code>, <code>Hijri</code>, <code>UmmAlQura</code>, <code>Hebrew</code>, <code>Persian</code>, <code>ChineseLunisolar</code>). Both are stable for the life of the service; a reload via the <a href="#pattern-9--swap-the-rule-set-at-runtime">reloadable workflow</a> recomputes them for the new resource.</p>
+<h2 id="pattern-11--supply-custom-collaborators">Pattern 11 — supply custom collaborators</h2>
+<p>The single-argument <code>new NotableDateService(resource)</code> covers documents that reference only built-in algorithms and policies. Documents that reference a custom <code>&lt;Algorithm key=&quot;…&quot;&gt;</code>, a <code>CollisionPolicy.Custom</code> resolver, custom adjustment trigger / action handlers, or code-first occurrence providers wire those collaborators through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> — an object with five <code>init</code>-only slots — passed to the second constructor:</p>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+var service = new NotableDateService(resource, new NotableDateServiceOptions
+{
+    Algorithms        = algorithmRegistry,      // INotableDateAlgorithmRegistry — custom &lt;Algorithm key&gt;
+    CollisionResolver = collisionResolver,      // INotableDateCollisionResolver — CollisionPolicy.Custom
+    Handlers          = actionHandlers,         // IAdjustmentHandlerRegistry    — AdjustmentAction.Custom
+    TriggerHandlers   = triggerHandlers,        // IAdjustmentTriggerHandlerRegistry — AdjustmentTrigger.Custom
+    Providers         = codeFirstProviders,     // IEnumerable&lt;INotableDateProvider&gt;
+});
+</code></pre>
+<p>Every slot is optional and defaults to <code>null</code>. There is no positional-collaborator constructor — pass only the slots a document needs. See <a href="building-the-service.html">Building and extending the service</a>.</p>
+<h2 id="working-with-notabledate-results">Working with <code>NotableDate</code> results</h2>
+<p><code>NotableDate</code> is an immutable record. Key members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Date</code></td>
+<td>The emitted (observed) date — the post-adjustment date to display.</td>
+</tr>
+<tr>
+<td><code>ActualDate</code></td>
+<td>The originally calculated (nominal) date.</td>
+</tr>
+<tr>
+<td><code>IsObserved</code></td>
+<td>Whether <code>Date</code> differs from <code>ActualDate</code> because an adjustment applied.</td>
+</tr>
+<tr>
+<td><code>EndDate</code></td>
+<td>The inclusive last day (<code>Date + DurationDays − 1</code>).</td>
+</tr>
+<tr>
+<td><code>DurationDays</code></td>
+<td>Span in days (1 for single-day events).</td>
+</tr>
+<tr>
+<td><code>DisplayName</code></td>
+<td>The display name (subject to optional localisation).</td>
+</tr>
+<tr>
+<td><code>Category</code></td>
+<td><code>NotableDateCategory</code> value.</td>
+</tr>
+<tr>
+<td><code>Priority</code></td>
+<td>Tie-break weight carried from the rule; consulted by the collision policy when several dates share a day.</td>
+</tr>
+<tr>
+<td><code>TerritoryCode</code></td>
+<td>The territory the date applies to.</td>
+</tr>
+<tr>
+<td><code>IsNonWorkingDay</code></td>
+<td>Whether the date is flagged as a non-working day.</td>
+</tr>
+<tr>
+<td><code>AdjustmentPolicyId</code>, <code>AdjustmentReason</code></td>
+<td>Which adjustment policy moved the date, and why (when <code>IsObserved</code>).</td>
+</tr>
+<tr>
+<td><code>Identity</code> (<code>NotableDateId</code>, <code>RuleId</code>)</td>
+<td>The originating concept and rule.</td>
+</tr>
+<tr>
+<td><code>Tags</code></td>
+<td>Optional non-exclusive classification tags.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">foreach (NotableDate date in service.Resolve(2026, &quot;AU&quot;))
+{
+    Console.WriteLine($&quot;{date.Date:d}  {date.DisplayName}&quot;);
+
+    if (date.DurationDays &gt; 1)
+        Console.WriteLine($&quot;  Multi-day: ends {date.EndDate:d}&quot;);
+
+    if (date.IsObserved)
+        Console.WriteLine($&quot;  Observed (nominal was {date.ActualDate:d}, via {date.AdjustmentPolicyId})&quot;);
+}
+</code></pre>
+<h3 id="expanding-observed-only-results-into-a-full-timeline">Expanding observed-only results into a full timeline</h3>
+<p>Data packs whose adjustment policies emit <code>ObservedOnly</code> return a single occurrence per adjusted date, anchored on the observed (substitute) day — the nominal day survives only in <code>ActualDate</code>. When you want the full sequential story, <code>WithActualOccurrences()</code> on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateSequenceExtensions.html">NotableDateSequenceExtensions</a> synthesizes the missing actual occurrences and re-sorts by the standard <code>Resolve</code> ordering — the consumer-side equivalent of an <code>ActualAndObserved</code> emission:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateService service = AsiaPacificCalendarData.CreateService(&quot;AU&quot;);
+
+// 2021: Christmas (Sat 25th) and Boxing Day (Sun 26th) were both observed on the following
+// working days, so the observed-only pack returns occurrences dated 27 and 28 December.
+IReadOnlyList&lt;NotableDate&gt; resolved = service.Resolve(
+    new DateRange(new DateOnly(2021, 12, 24), new DateOnly(2021, 12, 29)), &quot;AU&quot;);
+
+// Expand: 25 and 26 December reappear as actual occurrences → 24, 25, 26, 27, 28.
+IReadOnlyList&lt;NotableDate&gt; timeline = resolved.WithActualOccurrences();
+
+foreach (NotableDate date in timeline)
+    Console.WriteLine($&quot;{date.Date:d}  {date.DisplayName}  {(date.IsObserved ? &quot;(observed)&quot; : &quot;(actual)&quot;)}&quot;);
+</code></pre>
+<p>Synthesized occurrences match the shape the engine emits for the actual half of <code>ActualAndObserved</code> (<code>IsObserved</code> is <code>false</code>, no adjustment policy or reason, all other fields — including <code>DisplayName</code> — unchanged), and expansion skips occurrences whose actual day is already present, so the method is idempotent and a no-op for packs that already emit both. A synthesized date can precede the range you originally queried; apply <code>NotableDateFilter.InDateRange</code> afterwards if strict containment matters.</p>
+<h2 id="composing-filters">Composing filters</h2>
+<p><img src="../../images/diagrams/calendar-filter-gates.svg" alt="NotableDateFilter composition"></p>
+<p><code>NotableDateFilter</code> is a predicate over resolved occurrences (<code>Matches(NotableDate)</code>). Build one from the static factories and combine them:</p>
+<pre><code class="lang-csharp">// Category + non-working:
+NotableDateFilter nonWorkingHolidays = NotableDateFilter
+    .ForCategory(NotableDateCategory.PublicHoliday)
+    .And(NotableDateFilter.IsNonWorkingDay());
+
+// Observed (adjusted) occurrences only:
+NotableDateFilter adjusted = NotableDateFilter.WasAdjusted();
+
+// Category pre-screen + date-range:
+NotableDateFilter easterWeek = NotableDateFilter
+    .ForCategory(NotableDateCategory.PublicHoliday)
+    .And(NotableDateFilter.InDateRange(new DateOnly(2026, 4, 1), new DateOnly(2026, 4, 14)));
+
+// AllOf / AnyOf for multi-filter composition:
+NotableDateFilter combined = NotableDateFilter.AllOf(
+    NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday),
+    NotableDateFilter.IsNonWorkingDay(),
+    NotableDateFilter.WithTag(&quot;national&quot;));
+</code></pre>
+<p>The factory set: <code>ForCategory</code>, <code>ForAnyCategory</code>, <code>WithName</code>, <code>WithAnyName</code>, <code>WithId</code>, <code>WithTag</code>, <code>WithAnyTag</code>, <code>WithAllTags</code>, <code>WithMinDuration</code>, <code>IsNonWorkingDay</code>, <code>WasAdjusted</code>, <code>InDateRange</code>, combined with <code>And</code>, <code>Or</code>, <code>Not</code>, <code>AllOf</code>, <code>AnyOf</code>.</p>
+<h2 id="understanding-the-resolution-pipeline">Understanding the resolution pipeline</h2>
+<p>Loading turns a document into a resource; querying turns a resource into occurrences:</p>
+<pre><code>NotableDateResourceLoader.Load(xml[, resolver][, algorithms])
+   parse → resolve &lt;Imports&gt; → apply &lt;Overrides&gt; → assemble → validate
+      → immutable NotableDateResource
+NotableDateService.Resolve(date | range | year, territory[, filter])
+   strategy → nominal date → adjustment policies → observed date
+      → duplicate/collision settlement → emission → NotableDate set
+</code></pre>
+<ol>
+<li><strong>Load</strong> — <code>NotableDateResourceLoader</code> parses the document, resolves <code>&lt;Imports&gt;</code> through the supplied resolver, applies <code>&lt;Overrides&gt;</code>, assembles the definitions, and runs semantic validation, throwing <code>NotableDateValidationException</code> on any error-severity diagnostic.</li>
+<li><strong>Resolve</strong> — for each applicable rule the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> computes the nominal date; the referenced <a class="xref" href="../../api/Bodu.Globalization.Calendar.AdjustmentPolicy.html">AdjustmentPolicy</a> shifts it to the observed date when a trigger matches.</li>
+<li><strong>Settle</strong> — the resource's <a class="xref" href="../../api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> reconciles duplicates and same-day collisions and decides which occurrences are emitted.</li>
+</ol>
+<p>See <a href="resolution-pipeline.html">The resolution pipeline</a> for the full walk-through with a concrete trace.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/calendar/concepts.html">Core concepts</a> — the vocabulary used throughout this guide.</li>
+<li><a href="territories.html">Territories and regional composition</a> — how <code>TerritoryCode</code> and containment govern query results.</li>
+<li><a href="working-days.html">Working-day arithmetic</a> — <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>NextWorkingDay</code>, snap operations.</li>
+<li><a href="data-packs.html">Calendar data packs</a> — the official Americas / Asia-Pacific / Europe / Middle East / Africa companion packages.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — XML / JSON documents, imports, and overrides.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> — the built-in keys and how to implement a custom algorithm.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> — full type reference.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

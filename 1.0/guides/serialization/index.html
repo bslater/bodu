@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu serializers — Guides | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu serializers — Guides | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodu-serializer-guides">Bodu serializer guides</h1>
+
+<p>Recipe-style walk-throughs for the three Bodu serializers — <strong>Bodu.Text.Bencode</strong> (<a class="xref" href="../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>), <strong>Bodu.Text.Toml</strong> (<a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializer.html">TomlSerializer</a>), and <strong>Bodu.Text.Yaml</strong> (<a class="xref" href="../../api/Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>). The libraries share an architecture and a <code>System.Text.Json</code>-aligned shape, so a pattern learned in one transfers to the next by swapping the <code>Bencode</code> / <code>Toml</code> / <code>Yaml</code> prefix. Each library has its own guide set below, written against its real surface.</p>
+<p>If you are new to the family, start with the <a href="../../docs/serialization/index.html">introduction</a> for the three-tier mental model (serializer, DOMs, reader/writer) and how to choose a format, then open the guide hub for the library you need.</p>
+<h2 id="per-library-guides">Per-library guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="toml/index.html">TOML guides</a></h3>
+  <p><code>TomlSerializer</code> — type mapping, spec-version selection (v1.0.0 / v1.1.0), both DOMs, the full attribute family, converters and factories, callbacks, and the built-in catalog.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="bencode/index.html">Bencode guides</a></h3>
+  <p><code>BencodeSerializer</code> — byte strings as first-class values, canonical key ordering, a torrent-style worked example, the full attribute family, converters and factories, callbacks, and the built-in catalog.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="yaml/index.html">YAML guides</a></h3>
+  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema (opt-in 1.1 typing), both DOMs, multi-document streams, member shaping with the shared <code>Bodu.Text.Serialization</code> attributes and naming policies, custom converters, and the built-in catalog.</p>
+</div>
+</div>
+<h2 id="cross-format-guides">Cross-format guides</h2>
+<p>These guides apply to every serializer in the family — the three above and the three <a href="../formats/index.html">line formats</a> — because they describe the shared <code>Bodu.Text.Serialization</code> layer and the options lifecycle all six implement.</p>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="migrating-from-system-text-json.html">Migrating from System.Text.Json</a></h3>
+  <p>The rename table — attributes, options, converters, naming policies, callbacks, DOMs, <code>using</code> directives — followed by the behavioral differences: null handling per format, string-only line formats, YAML implicit typing, the two exception types.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a></h3>
+  <p>First-use freeze and <code>MakeReadOnly</code>, <code>IsReadOnly</code>, the <code>InvalidOperationException</code> on a frozen instance, converter resolution order, what is cached, sharing one instance across threads, and the <code>&lt;Format&gt;SerializerDefaults</code> presets.</p>
+</div>
+</div>
+<h2 id="suggested-reading-path">Suggested reading path</h2>
+<ol>
+<li><strong><a href="../../docs/serialization/index.html">Introduction</a></strong> — the shared shape and how to choose a format.</li>
+<li>The <strong>guide hub</strong> for your library — <a href="toml/index.html">TOML</a>, <a href="bencode/index.html">Bencode</a>, or <a href="yaml/index.html">YAML</a> — starting with its <em>Using…</em> walk-through.</li>
+<li><strong>Mapping attributes</strong> and <strong>naming policies</strong> — declarative shaping covers most customization needs.</li>
+<li><strong>Writing converters</strong> — when a type needs a wire form the defaults do not provide; check the <strong>built-in catalog</strong> first so you do not rewrite a provisioned one.</li>
+<li><strong><a href="options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a></strong> — once the options carry converters, learn when they freeze and how to share them. Coming from <code>System.Text.Json</code>? Start instead with the <strong><a href="migrating-from-system-text-json.html">migration guide</a></strong>.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/serialization/index.html">Bodu serializers introduction</a> — the family parent: tiers, headline types, format selection.</li>
+<li>Member introductions — <a href="../../docs/serialization/bencode/index.html">Bodu.Text.Bencode</a>, <a href="../../docs/serialization/toml/index.html">Bodu.Text.Toml</a>, and <a href="../../docs/serialization/yaml/index.html">Bodu.Text.Yaml</a>.</li>
+<li><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a> — how these guides sit alongside the encoding and format guides.</li>
+<li>API reference — <a class="xref" href="../../api/Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, <a class="xref" href="../../api/Bodu.Text.Toml.html">Bodu.Text.Toml</a>, and <a class="xref" href="../../api/Bodu.Text.Yaml.html">Bodu.Text.Yaml</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

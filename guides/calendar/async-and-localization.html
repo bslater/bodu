@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Async resolution, localized names, and typed catalogues | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Async resolution, localized names, and typed catalogues | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="async-resolution-localized-names-and-typed-catalogues">Async resolution, localized names, and typed catalogues</h1>
+
+<p>Four smaller surfaces of <code>Bodu.Globalization.Calendar</code> sit beside the main service and are easy to miss: streaming a wide range with <code>ResolveAsync</code>, presenting culture-specific display names with <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateNameLocalizer.html">NotableDateNameLocalizer</a>, loading the bundled catalogues by their strongly-typed <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.html">CommonNotableDateCatalog</a> names, and reading a loaded rule's duration and applicability model. This page covers each, in that order.</p>
+<h2 id="pattern-1--stream-a-multi-year-range-with-resolveasync">Pattern 1 — stream a multi-year range with <code>ResolveAsync</code></h2>
+<p><code>NotableDateServiceAsyncExtensions.ResolveAsync(range, territory, filter = null, cancellationToken = default)</code> is an extension on <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> that returns <code>IAsyncEnumerable&lt;NotableDate&gt;</code>. Resolution is synchronous, CPU-bound work with nothing to overlap, so the method does <strong>not</strong> offload to the thread pool; instead it resolves the range <strong>one civil year at a time</strong>, yields that year's occurrences, and then yields control (<code>Task.Yield</code>) before the next year. The consumer therefore sees progress — and cancellation — at year granularity instead of waiting for the whole decade.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var cts = new CancellationTokenSource();
+
+INotableDateService service = AmericasCalendarData.CreateService(&quot;US&quot;);
+var decade = new DateRange(new DateOnly(2020, 1, 1), new DateOnly(2029, 12, 31));
+
+await foreach (NotableDate occurrence in service.ResolveAsync(decade, &quot;US&quot;, cancellationToken: cts.Token))
+{
+    Console.WriteLine($&quot;{occurrence.Date:yyyy-MM-dd} {occurrence.DisplayName}&quot;);
+}
+</code></pre>
+<p>The streamed sequence is element-for-element identical to <code>service.Resolve(range, territory)</code> — the same occurrences, in the same date-then-identity order, with a multi-day occurrence that spans a year boundary yielded exactly once. Pass a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> to restrict it exactly as the synchronous overload would.</p>
+<p>Two contract details:</p>
+<ul>
+<li><strong>Arguments are validated eagerly</strong>, when <code>ResolveAsync</code> is called (<code>ArgumentNullException</code> for a <code>null</code> service or territory, <code>ArgumentOutOfRangeException</code> for an inverted range); resolution starts on the first <code>MoveNextAsync</code>.</li>
+<li><strong>Cancellation is observed between years.</strong> The token — passed directly or through <code>WithCancellation</code> — is checked before each year resolves, so a request over a single year cancels only before or after that year; an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a> surfaces from the enumeration.</li>
+</ul>
+<p>Over the caching decorator the same extension applies unchanged: each year is one cache lookup, which is exactly the cache's unit.</p>
+<h2 id="pattern-2--localized-display-names">Pattern 2 — localized display names</h2>
+<p>Resolution is culture-agnostic: every <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> carries the invariant <code>DisplayName</code> authored in the resource. Localization is applied <em>afterwards</em> to resolved occurrences through <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateNameLocalizer.html">INotableDateNameLocalizer</a>, so a single service can answer any culture. <code>NotableDateNameLocalizer</code> is the dictionary-backed implementation:</p>
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Globalization.Calendar;
+
+var names = new NotableDateNameLocalizer()
+    .Register(&quot;new-years-day&quot;, CultureInfo.GetCultureInfo(&quot;fr&quot;), &quot;Jour de l'An&quot;)
+    .Register(&quot;new-years-day&quot;, CultureInfo.GetCultureInfo(&quot;de-AT&quot;), &quot;Neujahrstag&quot;)
+    .Register(&quot;new-years-day&quot;, CultureInfo.InvariantCulture, &quot;New Year&quot;);
+
+INotableDateService service = AmericasCalendarData.CreateService(&quot;US&quot;);
+IReadOnlyList&lt;NotableDate&gt; january1 = service.Resolve(new DateOnly(2026, 1, 1), &quot;US&quot;);
+NotableDate newYear = january1[0];
+
+string? frCa = names.GetDisplayName(newYear, CultureInfo.GetCultureInfo(&quot;fr-CA&quot;));   // &quot;Jour de l'An&quot; — fr-CA → fr
+string? deAt = names.GetDisplayName(newYear, CultureInfo.GetCultureInfo(&quot;de-AT&quot;));   // &quot;Neujahrstag&quot;  — exact match
+string? deDe = names.GetDisplayName(newYear, CultureInfo.GetCultureInfo(&quot;de-DE&quot;));   // &quot;New Year&quot;     — de-DE → de → invariant
+string? none = new NotableDateNameLocalizer().GetDisplayName(newYear, CultureInfo.GetCultureInfo(&quot;fr&quot;));   // null — nothing registered
+</code></pre>
+<p><strong>How names resolve.</strong> <code>Register(notableDateId, culture, displayName)</code> stores a name against the <em>concept id</em> (<code>NotableDate.NotableDateId</code>, the <code>id</code> of the <code>&lt;NotableDate&gt;</code> element — <code>new-years-day</code> above) and the culture's <code>Name</code>; a later registration for the same pair replaces the earlier one, and the method returns the localizer for chaining. <code>GetDisplayName</code> walks the requested culture's parent chain — <code>fr-CA</code> → <code>fr</code> → invariant — and returns the first registered name, or <code>null</code> when the chain is exhausted. Registering against <code>CultureInfo.InvariantCulture</code> therefore supplies the default that every culture falls back to. Lookups are keyed by concept id only, so one registration covers every rule and territory that emits that concept.</p>
+<p>Apply a localizer to results with the <code>Localize</code> extensions on <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateLocalizationExtensions.html">NotableDateLocalizationExtensions</a>, which return copies whose <code>DisplayName</code> is replaced when the localizer answers and left unchanged when it returns <code>null</code>:</p>
+<pre><code class="lang-csharp">using System.Globalization;
+using Bodu.Globalization.Calendar;
+
+var names = new NotableDateNameLocalizer()
+    .Register(&quot;new-years-day&quot;, CultureInfo.GetCultureInfo(&quot;fr&quot;), &quot;Jour de l'An&quot;);
+
+INotableDateService service = AmericasCalendarData.CreateService(&quot;US&quot;);
+IReadOnlyList&lt;NotableDate&gt; january1 = service.Resolve(new DateOnly(2026, 1, 1), &quot;US&quot;);
+
+NotableDate french = january1[0].Localize(names, CultureInfo.GetCultureInfo(&quot;fr-FR&quot;));            // DisplayName &quot;Jour de l'An&quot;
+IReadOnlyList&lt;NotableDate&gt; japanese = january1.Localize(names, CultureInfo.GetCultureInfo(&quot;ja&quot;));  // DisplayName unchanged
+</code></pre>
+<p>For names sourced from <code>.resx</code> files or a database, implement <code>INotableDateNameLocalizer</code> yourself — it is a single method — as <a href="building-the-service.html#localizing-display-names">Building and extending the service</a> shows.</p>
+<h2 id="pattern-3--typed-access-to-the-bundled-catalogues">Pattern 3 — typed access to the bundled catalogues</h2>
+<p>The runtime embeds the shared catalogues that territory packs import — <code>global-core</code>, <code>christian-western</code>, <code>global-islamic</code>, and so on. <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a> exposes them three ways, and <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.html">CommonNotableDateCatalog</a> gives each a strongly-typed name so the raw string never has to be spelled:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Returns</th>
+<th>Use it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetResourceName(CommonNotableDateCatalog)</code></td>
+<td>the bare kebab-case name (<code>ChristianWestern</code> → <code>christian-western</code>)</td>
+<td>you are writing an <code>Import</code> directive or building a resolver by name</td>
+</tr>
+<tr>
+<td><code>Resolve(string)</code> / <code>Resolve(CommonNotableDateCatalog)</code></td>
+<td>the catalogue's raw XML, or <code>null</code> when not bundled</td>
+<td>you need the document text — to inspect, embed, or hand to your own loader</td>
+</tr>
+<tr>
+<td><code>Resolver</code></td>
+<td>a <code>Func&lt;string, string?&gt;</code> over <code>Resolve(string)</code></td>
+<td>you are loading a territory document whose imports must resolve against the bundled catalogues</td>
+</tr>
+<tr>
+<td><code>Load(CommonNotableDateCatalog)</code></td>
+<td>a validated <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a></td>
+<td>you want to use a catalogue directly as a service's resource</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+string name = CommonNotableDateResources.GetResourceName(CommonNotableDateCatalog.ChristianWestern);   // &quot;christian-western&quot;
+string? xml = CommonNotableDateResources.Resolve(CommonNotableDateCatalog.GlobalCore);                   // the catalogue's XML
+
+// Materialize a catalogue as a resource and query it directly.
+NotableDateResource western = CommonNotableDateResources.Load(CommonNotableDateCatalog.ChristianWestern);   // resourceId &quot;common.christian-western&quot;
+var service = new NotableDateService(western);
+IReadOnlyList&lt;NotableDate&gt; easter = service.Resolve(new DateOnly(2026, 4, 5), &quot;US&quot;);   // easter-sunday
+
+// Load a territory document of your own whose &lt;Use&gt; imports name the bundled catalogues.
+string myDocumentXml = File.ReadAllText(&quot;rules/holidays.xml&quot;);
+NotableDateResource mine = NotableDateResourceLoader.Load(myDocumentXml, CommonNotableDateResources.Resolver);
+</code></pre>
+<p><code>Load</code> caches the materialized resource per catalogue — a <code>NotableDateResource</code> is immutable, so repeated calls return the <strong>same instance</strong> and the parse-and-validate cost is paid once per process. Every member that takes the enum throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> for an undefined value, and <code>Load</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> if the catalogue's content is not bundled with the assembly. Catalogue resources declare no territories of their own — rules in them are global and apply to any territory you query with — which is why the territory packs import them and add scope rather than the reverse. The full list of members and what each catalogue contains is in the <a href="catalogue/index.html">notable-date catalogue</a>.</p>
+<h2 id="pattern-4--reading-a-rules-duration-and-applicability">Pattern 4 — reading a rule's duration and applicability</h2>
+<p>A loaded <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a> carries two value objects that the resolution pipeline consults and that are useful to inspect when you generate rules or explain results:</p>
+<p><strong><code>Duration</code></strong> is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateDurationDefinition.html">NotableDateDurationDefinition</a>, or <code>null</code> when the rule inherits the concept's <code>DefaultDurationDays</code>. It is an abstract record with exactly two concrete kinds, mutually exclusive by construction:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.FixedDurationDefinition.html">FixedDurationDefinition</a><code>(int Days)</code> — a fixed span of calendar days including the start; the resolved end date is <code>Date + Days − 1</code>, and values below one are clamped to one at resolution. Authored as the <code>durationDays</code> attribute.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.html">CalculatedEndDateDurationDefinition</a> — a span whose end is computed by a second strategy (<code>&lt;Duration&gt;&lt;UntilDate&gt;</code>), so it can vary in length and cross a year boundary. See <a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a>.</li>
+</ul>
+<p><strong><code>Applicability</code></strong> is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.RuleApplicability.html">RuleApplicability</a> describing <em>where and when</em> the rule applies: <code>Calendar</code> (the calendar system the strategy is expressed in), optional <code>FromYear</code> / <code>ToYear</code> bounds, the explicit <code>Territories</code> list, <code>OnlyYears</code> / <code>ExceptYears</code>, and the <code>EveryYears</code> cadence with its <code>AnchorYear</code>. Three methods answer the questions the pipeline asks:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AppliesTo(territory, year)</code></td>
+<td>Does the rule apply to this territory in this year — territory match <strong>and</strong> every year constraint.</td>
+</tr>
+<tr>
+<td><code>MatchesTerritory(territory)</code></td>
+<td>Does the rule's territory list include the territory or one of its parents (a rule scoped to <code>US</code> matches a query for <code>US-CA</code>; a rule scoped to <code>US-CA</code> does not match <code>US</code>). A rule with no territories is global and matches everything.</td>
+</tr>
+<tr>
+<td><code>MatchSpecificity(territory)</code></td>
+<td>The length of the most specific matching code (<code>2</code> for <code>US</code>, <code>5</code> for <code>US-CA</code>), <code>0</code> for a global rule, <code>-1</code> for no match — the number the pipeline uses to let a narrower same-concept rule shadow a broader one.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+
+NotableDateResource us = AmericasCalendarData.LoadResource(&quot;US&quot;);
+
+// Inauguration Day is authored for DC only, every fourth year anchored on 1937.
+NotableDateRule inauguration = us.NotableDates
+    .SelectMany(definition =&gt; definition.Rules)
+    .First(rule =&gt; rule.Applicability.EveryYears is not null);
+
+RuleApplicability when = inauguration.Applicability;
+int? every  = when.EveryYears;                         // 4
+int? anchor = when.AnchorYear;                         // 1937
+bool in2025 = when.AppliesTo(&quot;US-DC&quot;, 2025);           // true
+bool in2026 = when.AppliesTo(&quot;US-DC&quot;, 2026);           // false — off-cadence year
+
+NotableDateRule newYear = us.NotableDates.First(d =&gt; d.Id == &quot;new-years-day&quot;).Rules[0];
+bool national   = newYear.Applicability.MatchesTerritory(&quot;US-CA&quot;);    // true — US is a parent of US-CA
+int specificity = newYear.Applicability.MatchSpecificity(&quot;US-CA&quot;);    // 2 — matched via &quot;US&quot;
+int noMatch     = newYear.Applicability.MatchSpecificity(&quot;CA&quot;);       // -1
+
+NotableDateDurationDefinition? duration = newYear.Duration;           // null — inherits DefaultDurationDays (1)
+</code></pre>
+<p>Applicability is an input to the pipeline, not the whole story: an occurrence can still be suppressed by an override, a collision, or an adjustment policy. <a href="resolution-pipeline.html">The resolution pipeline</a> and <a href="identity-and-resolution.html">Rule identity, priority, and observed-date resolution</a> describe those later stages.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> — the synchronous resolution surface <code>ResolveAsync</code> mirrors.</li>
+<li><strong><a href="building-the-service.html">Building and extending the service</a></strong> — implementing <code>INotableDateNameLocalizer</code> over resources, and the other collaborators.</li>
+<li><strong><a href="rule-authoring.html">Authoring notable date rules</a></strong> — the <code>&lt;Use&gt;</code> imports that <code>CommonNotableDateResources.Resolver</code> satisfies.</li>
+<li><strong><a href="catalogue/index.html">Notable-date catalogue</a></strong> — what each bundled catalogue contains.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — <code>NotableDateServiceAsyncExtensions</code>, <code>NotableDateNameLocalizer</code>, <code>CommonNotableDateResources</code>, <code>RuleApplicability</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

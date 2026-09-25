@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics.Serialization.Json — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics.Serialization.Json — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumericsserializationjson--getting-started">Bodu.Numerics.Serialization.Json — Getting started</h1>
+
+<p>Unfamiliar with terms like <em>policy</em>, <em>factory vs closed converter</em>, <em>raw JSON number</em>, or <em>unbounded marker</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Numerics.Serialization.Json
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Numerics</code> (and transitively <code>Bodu.Core</code>); <code>System.Text.Json</code> is part of the shared framework. The package is marked AOT-compatible.</p>
+<h2 id="minimal-samples">Minimal samples</h2>
+<h3 id="register-the-converters-and-round-trip-a-fraction">Register the converters and round-trip a fraction</h3>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
+
+// Registration is required — the core types carry no [JsonConverter] attribute.
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();   // Strict
+
+string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), options);
+// {&quot;numerator&quot;:3,&quot;denominator&quot;:4}
+
+Fraction&lt;int&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(json, options);
+// 3/4
+</code></pre>
+<p><code>AddNumericsJsonConverters</code> returns the same options instance, so it chains inline. Call it once per options instance, before that instance is first used.</p>
+<h3 id="choose-a-policy">Choose a policy</h3>
+<pre><code class="lang-csharp">var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
+var lenient = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Lenient);
+
+JsonSerializer.Serialize(new Fraction&lt;int&gt;(8, 15), compact);            // &quot;8/15&quot;
+
+// Lenient accepts a top-level string and the min/max aliases on read; it writes the Strict shape.
+Fraction&lt;int&gt; fromText = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(&quot;\&quot;8/15\&quot;&quot;, lenient);
+Interval&lt;int&gt; fromFeed = JsonSerializer.Deserialize&lt;Interval&lt;int&gt;&gt;(
+    &quot;&quot;&quot;{ &quot;min&quot;: 1, &quot;max&quot;: 5 }&quot;&quot;&quot;, lenient);                               // [1, 5] — flags default to closed
+</code></pre>
+<h3 id="intervals-discrete-intervals-and-sets">Intervals, discrete intervals, and sets</h3>
+<pre><code class="lang-csharp">Interval&lt;int&gt; window = Interval&lt;int&gt;.ClosedOpen(1, 5);
+
+JsonSerializer.Serialize(window, options);
+// {&quot;lower&quot;:1,&quot;upper&quot;:5,&quot;lowerInclusive&quot;:true,&quot;upperInclusive&quot;:false}
+JsonSerializer.Serialize(window, compact);                              // &quot;[1, 5)&quot;
+
+JsonSerializer.Serialize(Interval&lt;int&gt;.AtLeast(1), options);
+// {&quot;lower&quot;:1,&quot;upperUnbounded&quot;:true,&quot;lowerInclusive&quot;:true}
+
+JsonSerializer.Serialize(Interval&lt;int&gt;.Empty, options);                 // {&quot;empty&quot;:true}
+
+IntervalSet&lt;int&gt; set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(8, 9));
+JsonSerializer.Serialize(set, compact);                                 // [&quot;[1, 3]&quot;,&quot;[8, 9]&quot;]
+</code></pre>
+<p><code>DiscreteInterval&lt;T&gt;</code> serializes through the same interval shape over its canonical closed bounds. The pair result types (<code>IntervalPair&lt;T&gt;</code>, <code>DiscreteIntervalPair&lt;T&gt;</code>) are not serializable — convert them with <code>ToIntervalSet()</code> first.</p>
+<h3 id="arbitrary-precision-without-loss">Arbitrary precision without loss</h3>
+<pre><code class="lang-csharp">using System.Numerics;
+
+var precise = new Fraction&lt;BigInteger&gt;(BigInteger.Parse(&quot;123456789012345678901234567890&quot;), 7);
+
+string exact = JsonSerializer.Serialize(precise, options);
+// {&quot;numerator&quot;:123456789012345678901234567890,&quot;denominator&quot;:7} — raw JSON numbers, nothing truncated
+
+// Consumers that cannot carry big JSON numbers may quote the components instead.
+Fraction&lt;BigInteger&gt; quoted = JsonSerializer.Deserialize&lt;Fraction&lt;BigInteger&gt;&gt;(
+    &quot;&quot;&quot;{ &quot;numerator&quot;: &quot;123456789012345678901234567890&quot;, &quot;denominator&quot;: &quot;7&quot; }&quot;&quot;&quot;, options);
+</code></pre>
+<h3 id="bigdecimal-and-complext"><code>BigDecimal</code> and <code>Complex&lt;T&gt;</code></h3>
+<pre><code class="lang-csharp">BigDecimal price = BigDecimal.Parse(&quot;12.340&quot;);
+
+JsonSerializer.Serialize(price, options);                               // {&quot;unscaledValue&quot;:12340,&quot;scale&quot;:3}
+JsonSerializer.Serialize(price, compact);                               // &quot;12.340&quot;
+
+var z = new Complex&lt;double&gt;(3, 4);
+
+JsonSerializer.Serialize(z, options);                                   // {&quot;real&quot;:3,&quot;imaginary&quot;:4}
+JsonSerializer.Serialize(z, compact);                                   // &quot;&lt;3; 4&gt;&quot;
+
+JsonSerializer.Serialize(new Complex&lt;double&gt;(double.NaN, double.NegativeInfinity), options);
+// {&quot;real&quot;:&quot;NaN&quot;,&quot;imaginary&quot;:&quot;-Infinity&quot;}
+</code></pre>
+<h3 id="one-shot-helpers-for-fractions">One-shot helpers for fractions</h3>
+<pre><code class="lang-csharp">using Bodu.Numerics.Serialization.Json;
+
+string text = new Fraction&lt;int&gt;(-7, 8).ToJson();                        // {&quot;numerator&quot;:-7,&quot;denominator&quot;:8}
+Fraction&lt;int&gt; parsed = FractionJsonExtensions.FromJson&lt;int&gt;(text);
+
+string compactText = new Fraction&lt;int&gt;(-7, 8).ToJson(NumericsJsonPolicy.Compact);   // &quot;-7/8&quot;
+</code></pre>
+<p>Each helper configures a fresh options instance per call and uses the reflection-based serializer (it is annotated for trimming and AOT). For repeated work, build one options instance with <code>AddNumericsJsonConverters</code> and reuse it.</p>
+<h3 id="register-one-factory-or-one-closed-converter-by-hand">Register one factory or one closed converter by hand</h3>
+<pre><code class="lang-csharp">var fractionsOnly = new JsonSerializerOptions();
+fractionsOnly.Converters.Add(new FractionJsonConverterFactory(NumericsJsonPolicy.Compact));   // every Fraction&lt;T&gt;
+
+var intOnly = new JsonSerializerOptions();
+intOnly.Converters.Add(new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Compact));          // Fraction&lt;int&gt; only
+intOnly.Converters.Add(new BigDecimalJsonConverter());                                       // Strict by default
+</code></pre>
+<h3 id="use-with-a-source-generated-context">Use with a source-generated context</h3>
+<p>The converters are reflection-free at the value level; add them to the options a <code>JsonSerializerContext</code> is built from so the closed types stay visible to the trimmer:</p>
+<pre><code class="lang-csharp">using System.Text.Json.Serialization;
+
+[JsonSerializable(typeof(Measurement))]
+internal partial class AppJsonContext : JsonSerializerContext
+{
+}
+
+sealed class Measurement
+{
+    public Fraction&lt;int&gt; Ratio { get; set; }
+    public Interval&lt;double&gt; Range { get; set; }
+}
+
+var contextOptions = new JsonSerializerOptions().AddNumericsJsonConverters();
+var context = new AppJsonContext(contextOptions);
+
+string payload = JsonSerializer.Serialize(
+    new Measurement { Ratio = new Fraction&lt;int&gt;(1, 3), Range = Interval&lt;double&gt;.Closed(0.5, 1.5) },
+    context.Measurement);
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the converter table and scenario index.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — the full wire-format reference, worked examples per policy, and the failure-mode table.</li>
+<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — the value types being serialized.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> — <code>Bodu.Numerics.Samples.JsonConverters</code> runs every shape on this page.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

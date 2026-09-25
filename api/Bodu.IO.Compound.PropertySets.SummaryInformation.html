@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class SummaryInformation | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class SummaryInformation | BODU ">
+    
+    <meta name="description" content="Provides a strongly-typed view over the standard summary-information property set (\x05SummaryInformation) of a compound file.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation">
+
+
+
+  <h1 id="Bodu_IO_Compound_PropertySets_SummaryInformation" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation" class="text-break">Class SummaryInformation</h1>
+  <div class="markdown level0 summary"><p>Provides a strongly-typed view over the standard summary-information property set (<code>\x05SummaryInformation</code>) of
+a compound file.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">SummaryInformation</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_PropertySets_SummaryInformation_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class SummaryInformation</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_PropertySets_SummaryInformation_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>The summary-information set carries document metadata such as the title, author, and revision times. Each property
+is optional; a property that is absent or of an unexpected type is surfaced as <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+<example>
+The following example reads the standard summary-information set from a compound file and prints a few fields.
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+using CompoundFile file = CompoundFile.OpenRead("book.xls");
+if (file.TryGetSummaryInformation(out SummaryInformation? summary))
+{
+    Console.WriteLine($"Title:   {summary.Title}");
+    Console.WriteLine($"Author:  {summary.Author}");
+    Console.WriteLine($"Created: {summary.CreateTime:u}");
+}</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation__ctor_Bodu_IO_Compound_PropertySets_OlePropertySet_" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.#ctor(Bodu.IO.Compound.PropertySets.OlePropertySet)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.-ctor.html#Bodu_IO_Compound_PropertySets_SummaryInformation__ctor_Bodu_IO_Compound_PropertySets_OlePropertySet_">SummaryInformation(OlePropertySet)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a> class over a parsed property set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_StreamName" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.StreamName">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.StreamName.html">StreamName</a>
+        </td>
+        <td class="markdown level1 summary"><p>The directory name of the summary-information stream, including its control prefix.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_ApplicationName" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.ApplicationName">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.ApplicationName.html#Bodu_IO_Compound_PropertySets_SummaryInformation_ApplicationName">ApplicationName</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the name of the application that created the document.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Author" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Author">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Author.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Author">Author</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document author.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_CharacterCount" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.CharacterCount">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.CharacterCount.html#Bodu_IO_Compound_PropertySets_SummaryInformation_CharacterCount">CharacterCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the character count.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Comments" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Comments">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Comments.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Comments">Comments</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document comments.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_CreateTime" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.CreateTime">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.CreateTime.html#Bodu_IO_Compound_PropertySets_SummaryInformation_CreateTime">CreateTime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the time the document was created.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Keywords" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Keywords">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Keywords.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Keywords">Keywords</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document keywords.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_LastAuthor" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.LastAuthor">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.LastAuthor.html#Bodu_IO_Compound_PropertySets_SummaryInformation_LastAuthor">LastAuthor</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the name of the user who last saved the document.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_LastPrinted" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.LastPrinted">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.LastPrinted.html#Bodu_IO_Compound_PropertySets_SummaryInformation_LastPrinted">LastPrinted</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the time the document was last printed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_LastSaveTime" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.LastSaveTime">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.LastSaveTime.html#Bodu_IO_Compound_PropertySets_SummaryInformation_LastSaveTime">LastSaveTime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the time the document was last saved.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_PageCount" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.PageCount">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.PageCount.html#Bodu_IO_Compound_PropertySets_SummaryInformation_PageCount">PageCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the page count.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_PropertySet" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.PropertySet">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.PropertySet.html#Bodu_IO_Compound_PropertySets_SummaryInformation_PropertySet">PropertySet</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the underlying parsed property set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_RevisionNumber" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.RevisionNumber">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.RevisionNumber.html#Bodu_IO_Compound_PropertySets_SummaryInformation_RevisionNumber">RevisionNumber</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document revision number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Security" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Security">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Security.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Security">Security</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document security flags.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Subject" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Subject">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Subject.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Subject">Subject</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document subject.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Template" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Template">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Template.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Template">Template</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document template name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Title" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Title">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Title.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Title">Title</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the document title.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_TotalEditTime" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.TotalEditTime">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.TotalEditTime.html#Bodu_IO_Compound_PropertySets_SummaryInformation_TotalEditTime">TotalEditTime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the total editing time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_WordCount" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.WordCount">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.WordCount.html#Bodu_IO_Compound_PropertySets_SummaryInformation_WordCount">WordCount</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the word count.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_SummaryInformation_Read_System_IO_Stream_" data-uid="Bodu.IO.Compound.PropertySets.SummaryInformation.Read(System.IO.Stream)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.Read.html#Bodu_IO_Compound_PropertySets_SummaryInformation_Read_System_IO_Stream_">Read(Stream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads and parses a summary-information property set from a stream, consuming it to the end.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

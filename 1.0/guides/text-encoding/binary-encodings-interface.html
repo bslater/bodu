@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>The IBinaryEncoding interface | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="The IBinaryEncoding interface | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="the-ibinaryencoding-interface">The <code>IBinaryEncoding</code> interface</h1>
+
+<p>The per-encoding static classes (<code>Base16</code>, <code>Base32</code>, <code>Base64</code>, <code>Base58</code>, <code>Base85</code>) are the recommended entry point
+when the encoding is known at compile time. They are fast, support variant-specific options (line breaks, padding
+control, MIME wrapping), and produce the cleanest call sites.</p>
+<p>For code that must select the encoding <strong>at runtime</strong> — configuration-driven serializers, plugin pipelines,
+generic utilities — the library exposes a unified contract:</p>
+<pre><code class="lang-csharp">public interface IBinaryEncoding
+{
+    string Name { get; }
+    string Description { get; }
+    int GetMaxEncodedLength(int byteCount);
+    int GetMaxDecodedLength(int charCount);
+    string Encode(ReadOnlySpan&lt;byte&gt; bytes);
+    byte[] Decode(ReadOnlySpan&lt;char&gt; chars);
+    bool TryEncode(ReadOnlySpan&lt;byte&gt; source, Span&lt;char&gt; destination, out int charsWritten);
+    bool TryDecode(ReadOnlySpan&lt;char&gt; source, Span&lt;byte&gt; destination, out int bytesWritten);
+    bool IsValid(ReadOnlySpan&lt;char&gt; source);
+}
+</code></pre>
+<p>The interface deliberately hides variant-specific encoding options. Code that needs <code>OmitPadding</code>,
+<code>InsertLineBreaks</code>, MIME wrapping, or other per-variant flags should keep using the static classes.</p>
+<h2 id="ready-made-instances">Ready-made instances</h2>
+<p>The <code>BinaryEncodings</code> static class exposes thread-safe singleton instances for every variant the library ships:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Underlying static call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BinaryEncodings.Base16Lower</code></td>
+<td><code>Base16.Encode(bytes)</code> (default lower case)</td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base16Upper</code></td>
+<td><code>Base16.Encode(bytes, BaseFormattingOptions.UpperCase)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base32</code></td>
+<td><code>Base32.Encode(bytes, Base32Variant.Standard)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base32Hex</code></td>
+<td><code>Base32.Encode(bytes, Base32Variant.HexExtended)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base32Crockford</code></td>
+<td><code>Base32.Encode(bytes, Base32Variant.Crockford)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base32ZBase32</code></td>
+<td><code>Base32.Encode(bytes, Base32Variant.ZBase32)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base64</code></td>
+<td><code>Base64.Encode(bytes, Base64Variant.Standard)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base64UrlSafe</code></td>
+<td><code>Base64.Encode(bytes, Base64Variant.UrlSafe)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base64Mime</code></td>
+<td><code>Base64.Encode(bytes, Base64Variant.Mime)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base45</code></td>
+<td><code>Base45.Encode(bytes)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base58</code></td>
+<td><code>Base58.Encode(bytes, Base58Variant.BitcoinFlickr)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base58Ripple</code></td>
+<td><code>Base58.Encode(bytes, Base58Variant.Ripple)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base62</code></td>
+<td><code>Base62.Encode(bytes)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Ascii85</code></td>
+<td><code>Base85.Encode(bytes, Base85Variant.Ascii85)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Z85</code></td>
+<td><code>Base85.Encode(bytes, Base85Variant.Z85)</code></td>
+</tr>
+<tr>
+<td><code>BinaryEncodings.Base85Git</code></td>
+<td><code>Base85.Encode(bytes, Base85Variant.GitCompact)</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+IBinaryEncoding encoding = BinaryEncodings.Base64UrlSafe;
+
+string token = encoding.Encode(secretKey);
+byte[] back  = encoding.Decode(token);
+</code></pre>
+<h2 id="runtime-lookup-by-name">Runtime lookup by name</h2>
+<p><code>BinaryEncodings.Get(name)</code> resolves a case-insensitive string identifier to the matching instance. The recognised
+names include canonical forms and common aliases:</p>
+<table>
+<thead>
+<tr>
+<th>Canonical</th>
+<th>Aliases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base16-lower</code></td>
+<td><code>base16</code>, <code>hex</code></td>
+</tr>
+<tr>
+<td><code>base16-upper</code></td>
+<td><code>hex-upper</code></td>
+</tr>
+<tr>
+<td><code>base32</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base32hex</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base32-crockford</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>z-base-32</code></td>
+<td><code>zbase32</code></td>
+</tr>
+<tr>
+<td><code>base64</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base64-urlsafe</code></td>
+<td><code>base64url</code></td>
+</tr>
+<tr>
+<td><code>base64-mime</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base45</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base58</code></td>
+<td><code>base58-bitcoin</code>, <code>base58-flickr</code></td>
+</tr>
+<tr>
+<td><code>base58-ripple</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base62</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ascii85</code></td>
+<td><code>base85</code></td>
+</tr>
+<tr>
+<td><code>base85-git</code></td>
+<td><code>git-base85</code>, <code>b85</code></td>
+</tr>
+<tr>
+<td><code>z85</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">string encodingName = configuration[&quot;TokenEncoding&quot;];   // e.g. &quot;base64-urlsafe&quot;
+IBinaryEncoding encoding = BinaryEncodings.Get(encodingName);
+
+string encoded = encoding.Encode(rawBytes);
+byte[] decoded = encoding.Decode(encoded);
+</code></pre>
+<p>Unknown names throw <code>ArgumentException</code>.</p>
+<h2 id="extension-methods">Extension methods</h2>
+<p>The <code>BinaryEncodingExtensions</code> class includes two generic extensions that route through <code>IBinaryEncoding</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = { 0xDE, 0xAD, 0xBE, 0xEF };
+IBinaryEncoding encoding = BinaryEncodings.Get(name);
+
+string s    = data.Encode(encoding);   // dispatches through the interface
+byte[] back = s.Decode(encoding);
+</code></pre>
+<p>It also exposes per-encoding fluent shortcuts that dispatch through the static classes (no virtual call):</p>
+<pre><code class="lang-csharp">data.ToBase16String();     // &quot;deadbeef&quot;
+data.ToBase32String();     // &quot;32W6P3XO&quot;
+data.ToBase64String();     // &quot;3q2+7w==&quot;
+data.ToBase58String();     // &quot;6h8cQN&quot;
+data.ToBase85String();     // &quot;.(0%g&quot;
+
+&quot;deadbeef&quot;.FromBase16String();
+&quot;3q2+7w==&quot;.FromBase64String();
+&quot;6h8cQN&quot;.FromBase58String();
+</code></pre>
+<h2 id="common-patterns">Common patterns</h2>
+<h3 id="configuration-driven-serialization">Configuration-driven serialization</h3>
+<pre><code class="lang-csharp">public sealed class TokenEncoder
+{
+    private readonly IBinaryEncoding _encoding;
+
+    public TokenEncoder(string encodingName)
+    {
+        _encoding = BinaryEncodings.Get(encodingName);
+    }
+
+    public string Encode(ReadOnlySpan&lt;byte&gt; payload) =&gt; _encoding.Encode(payload);
+    public byte[] Decode(string token) =&gt; _encoding.Decode(token);
+}
+</code></pre>
+<h3 id="plugin-pipeline">Plugin pipeline</h3>
+<pre><code class="lang-csharp">public interface ITokenStage
+{
+    IBinaryEncoding InputEncoding { get; }
+    IBinaryEncoding OutputEncoding { get; }
+    byte[] Process(byte[] input);
+}
+
+public static byte[] Run(ITokenStage stage, string input)
+{
+    byte[] bytes = stage.InputEncoding.Decode(input);
+    byte[] output = stage.Process(bytes);
+    return output; // caller wraps with stage.OutputEncoding.Encode
+}
+</code></pre>
+<h3 id="generic-round-trip-helper">Generic round-trip helper</h3>
+<pre><code class="lang-csharp">public static bool TryRoundTrip(IBinaryEncoding encoding, ReadOnlySpan&lt;byte&gt; data)
+{
+    string encoded = encoding.Encode(data);
+    byte[] back = encoding.Decode(encoded);
+    return data.SequenceEqual(back);
+}
+</code></pre>
+<h2 id="when-to-not-use-the-interface">When to <em>not</em> use the interface</h2>
+<p>The interface is a convenience for the runtime-selection use case. Skip it when:</p>
+<ul>
+<li>The encoding is known at compile time — use the static class directly for the cleanest call site.</li>
+<li>You need variant-specific options like <code>BaseFormattingOptions.InsertLineBreaks</code>,
+<code>BaseFormattingOptions.OmitPadding</code>, or <code>BaseFormatStyles.AllowPrefix</code> — those are not exposed via the interface
+by design (each encoding has different option semantics).</li>
+<li>You need the <code>UTF-8</code> byte path or the <code>OperationStatus</code> streaming decode — those are only available on the
+static classes.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base16.html">Base16 guide</a></strong>, <strong><a href="base32.html">Base32 guide</a></strong>, <strong><a href="base64.html">Base64 guide</a></strong>,
+<strong><a href="base58.html">Base58 guide</a></strong>, <strong><a href="base85.html">Base85 guide</a></strong> — the static-class entry points with the full
+option set.</li>
+<li><strong><a href="../../docs/text-encoding/concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

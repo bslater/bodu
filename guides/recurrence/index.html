@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Recurrence and scheduling | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Recurrence and scheduling | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="recurrence-and-scheduling">Recurrence and scheduling</h1>
+
+<p><strong>Bodu.Globalization.Recurrence</strong> answers two questions for a recurring schedule — &quot;when is the next occurrence?&quot; and &quot;when was the previous one?&quot; — deterministically, testably, and without ever touching the wall clock. It models four schedule forms behind one uniform query surface:</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Type</th>
+<th>Shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RFC 5545 recurrence rule</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a></td>
+<td>Calendar-aligned: <code>FREQ=WEEKLY;BYDAY=MO,FR</code>, anchored to a caller-supplied series start</td>
+</tr>
+<tr>
+<td>Composed rule set</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a></td>
+<td>One or more rules plus explicit <code>RDATE</code> additions and <code>EXDATE</code> exclusions</td>
+</tr>
+<tr>
+<td>Cron expression</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a></td>
+<td>Calendar-aligned: Vixie five-field, optional-seconds six-field, and the <code>@</code> macros</td>
+</tr>
+<tr>
+<td>Anchored interval</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a></td>
+<td>Instant-aligned: occurrences at <code>anchor + k·interval</code> for <code>k ≥ 1</code>, e.g. &quot;every 4 hours after the last completed run&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>Every form parses from a canonical text (<code>TryParse</code>, including an overload that reports the specific parse defect as a message), renders back to text that re-parses to an equal value, and compares by value — so a host can persist schedules as text and detect configuration changes by comparison.</p>
+<h2 id="choosing-a-form">Choosing a form</h2>
+<ul>
+<li><strong>&quot;Daily at 02:00&quot;, &quot;weekdays at 9&quot;, &quot;last Friday of the month&quot;</strong> — calendar-aligned schedules. Use a cron expression for operational shapes, or an <code>RRULE</code> when you need the richer RFC 5545 grammar (<code>BYSETPOS</code>, <code>BYWEEKNO</code>, count/until bounds) or interoperability with iCalendar data.</li>
+<li><strong>&quot;Every 4 hours after the previous run completed&quot;</strong> — an anchored interval. The anchor is passed to every query, never stored; its meaning (&quot;last completed run&quot;, &quot;enrolment&quot;, &quot;contract start&quot;) is entirely yours.</li>
+<li><strong>&quot;The daily rule, plus these extra dates, minus these excluded dates&quot;</strong> — a recurrence set.</li>
+</ul>
+<h2 id="the-due-ness-recipe">The due-ness recipe</h2>
+<p>The library never stores a last-run, marks an occurrence consumed, or owns a timer. Due-ness is a one-line comparison over library answers:</p>
+<pre><code class="lang-csharp">bool IsDue(DateTimeOffset lastCompleted, DateTimeOffset now) =&gt;
+    lastCompleted &lt; schedule.GetPreviousOccurrence(now, inclusive: true);
+
+DateTimeOffset? NextRun(DateTimeOffset now) =&gt;
+    schedule.GetNextOccurrence(now);
+</code></pre>
+<p>Because the answer is an instant rather than a backlog, missed occurrences coalesce structurally: a host asleep through five occurrences owes exactly one catch-up run, and an evaluation five days late answers the same boolean as one evaluated a minute late. Every form answers both <code>GetNextOccurrence(after, inclusive)</code> and <code>GetPreviousOccurrence(before, inclusive)</code> over both <code>DateTime</code> and <code>DateTimeOffset</code>.</p>
+<p>For an anchored interval the anchor itself is <em>not</em> an occurrence — a run completed at <code>now</code> is not immediately due again:</p>
+<pre><code class="lang-csharp">var interval = AnchoredInterval.Parse(&quot;PT4H&quot;);
+
+// Occurrences: anchor + 4h, anchor + 8h, ...
+bool isDue = lastCompleted &lt; interval.GetPreviousOccurrence(anchor: lastCompleted, before: now, inclusive: true);
+</code></pre>
+<h2 id="offsets-purity-and-daylight-saving">Offsets, purity, and daylight saving</h2>
+<p>Every answer is a pure function of the arguments. No API in the package reads the wall clock (<code>DateTime.Now</code>, <code>Stopwatch</code>, <code>Environment.TickCount</code>) or the machine time zone (<code>TimeZoneInfo</code>, <code>ToLocalTime</code>), and a metadata-level test in the repository fails the build if such a reference is ever introduced. The caller owns the clock: pass <code>DateTimeOffset.Now</code> (or a simulated or test-fixed instant) in.</p>
+<p>The <code>DateTimeOffset</code> overloads interpret the wall-clock time in the argument's own offset and return occurrences carrying that offset. The library performs no offset conversion beyond normalising <em>between the arguments it was given</em> — an <code>AnchoredInterval</code> anchor supplied in UTC composes correctly with a <code>now</code> in +10:00, because those two are compared as absolute instants.</p>
+<p>The library operates on offsets, not time zones, so daylight-saving transitions are the caller's concern: a host that wants &quot;02:30 local&quot; across a DST change re-derives the offset on each evaluation (for example by passing <code>DateTimeOffset.Now</code> each time). On a transition day two wall-clock cases arise, and the occurrence math is deliberately naive about both:</p>
+<ul>
+<li><strong>A local time that occurs twice</strong> (clocks fall back): the schedule's wall-clock answer, interpreted in whichever offset the caller supplied, names one instant; the library does not know the time occurred twice.</li>
+<li><strong>A local time that never occurs</strong> (clocks spring forward): the library still answers the wall-clock instant; it is the caller's decision whether to run at the shifted equivalent.</li>
+</ul>
+<h2 id="calendar-aware-filtering-is-composition-not-a-feature">Calendar-aware filtering is composition, not a feature</h2>
+<p>&quot;Daily at 02:00, but not on public holidays&quot; is a filter over an occurrence stream, applied from outside — the recurrence package carries no holiday, locale, or business-day data and takes no dependency on <code>Bodu.Globalization.Calendar</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions;                  // working-day extensions over INotableDateService
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Recurrence;
+
+INotableDateService holidays = AmericasCalendarData.CreateService(&quot;US&quot;);
+RecurrenceRule rule = RecurrenceRule.Parse(&quot;FREQ=DAILY&quot;);
+
+DateTime? nextWorkingRun = rule
+    .GetOccurrences(start, from: now, to: now.AddDays(30))
+    .Where(occurrence =&gt; !occurrence.IsNonWorkingDay(holidays, &quot;US&quot;))
+    .Select(occurrence =&gt; (DateTime?)occurrence)
+    .FirstOrDefault();
+</code></pre>
+<p>Any predicate works; the calendar package is just the in-repo source of holiday truth. Here <code>IsNonWorkingDay</code> (from <code>Bodu.Extensions</code>) skips both weekends and the territory's resolved non-working notable dates; <code>IsNotableDate</code> tests the notable dates alone. The <code>Select</code> to <code>DateTime?</code> is what lets <code>FirstOrDefault</code> report &quot;no occurrence&quot; as <code>null</code> rather than <code>default(DateTime)</code>.</p>
+<h2 id="bounded-searches">Bounded searches</h2>
+<p>Occurrence enumeration over a window is lazy and terminates for every input, including rules that can never match:</p>
+<ul>
+<li>A <code>RecurrenceRule</code> such as <code>FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=30</code> (30 February) enumerates empty and answers <code>null</code> from both point queries; the search bound is the end of the representable calendar (year 9999).</li>
+<li>A <code>CronExpression</code> search scans a twelve-year horizon in each direction — enough to cover the largest gap of any satisfiable expression (a 29 February schedule crossing a non-leap century year) — and answers <code>null</code> past it.</li>
+<li>An <code>AnchoredInterval</code> needs no scanning at all: its queries are O(1) arithmetic, and the sequence ends at the last representable occurrence.</li>
+</ul>
+<h2 id="conformance">Conformance</h2>
+<p>Occurrence semantics are pinned against the defining documents — RFC 5545 §3.3.10 and §3.8.5.3 for recurrence rules, RFC 5545 §3.3.6 for interval durations, and Vixie/cronie behaviour for cron — and additionally against a corpus distilled from defects reported to other implementations (python-dateutil, rrule.js, ical4j, ical.net, ical.js, libical, lib-recur, ice_cube, Cronos, NCrontab, croniter, robfig/cron, Quartz). A few behaviours in that corpus are worth stating outright, because implementations disagree on them:</p>
+<ul>
+<li><strong>Invalid generated dates are skipped, never clamped.</strong> <code>FREQ=MONTHLY</code> from a 31st yields 31 March, 31 May, 31 July — April and June are omitted rather than rolled back to the 30th. RFC 5545 requires this, and it is the single most common false bug report against recurrence libraries.</li>
+<li><strong>The occurrence set is a set.</strong> Two <code>BY</code> values that resolve to the same date contribute one occurrence: <code>BYMONTHDAY=1,-31</code> yields one occurrence in a 31-day month, and deduplication happens before <code>BYSETPOS</code> indexes the candidates and before <code>COUNT</code> counts them.</li>
+<li><strong><code>BYSETPOS</code> indexes the whole frequency period</strong>, including candidates that precede the series start; those are dropped only afterwards. A rule anchored mid-week therefore selects the same positions as one anchored on the week start.</li>
+<li><strong>A <code>BY</code> filter never re-anchors an interval.</strong> <code>FREQ=DAILY;INTERVAL=14;BYMONTH=10,12</code> counts every fourteenth day from the start unconditionally and drops the ones falling outside October and December.</li>
+<li><strong><code>WKST</code> reparameterises week numbering</strong>, not just weekly intervals: it changes which dates <code>BYWEEKNO</code> resolves to <em>and</em> which years have a fifty-third week. Numbered weeks straddle the calendar year, so week 1 may begin in the preceding December.</li>
+<li><strong>The day-of-month and day-of-week cron fields combine by union only when both are restricted</strong>, and Vixie decides &quot;restricted&quot; from the field's leading character — so <code>*/2</code> and <code>1-31/2</code> denote the same days but select different branches.</li>
+<li><strong>A cron step wider than its range selects the range start</strong>, rather than being rejected: <code>*/60</code> in the minute field means minute 0. cronie only warns about it, and some libraries throw.</li>
+</ul>
+<p>Those semantics are reconciled row by row against three committed corpora — the RFC's own worked examples, libical's occurrence counts, and a cron vector table derived from Cronos's test suite — currently 830 in-scope rows with zero differences. Where a corpus row exercises a dialect this library does not model (Quartz's <code>L</code>/<code>W</code>/<code>#</code> cron tokens, <code>EXRULE</code>, sub-daily frequencies), the row is flagged and reported by the test run rather than silently skipped. <code>corpus/recurrence/README.md</code> records the provenance of each table and every deliberate divergence.</p>
+<h2 id="parse-defects-are-named">Parse defects are named</h2>
+<p>Hosts surface configuration errors verbatim, without exception-driven control flow:</p>
+<pre><code class="lang-csharp">if (!AnchoredInterval.TryParse(text, out AnchoredInterval? interval, out string? failureMessage))
+{
+    logger.LogError(&quot;Invalid schedule '{Text}': {FailureMessage}&quot;, text, failureMessage);
+}
+</code></pre>
+<p>The message names the offending token — &quot;The duration component '4X' is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S.&quot; beats &quot;invalid format&quot; — and the same overload shape exists on all four forms.</p>
+<h2 id="guides">Guides</h2>
+<div class="bodu-cards">
+<div class="bodu-card">
+  <h3><a href="rrule.html">RFC 5545 recurrence rules</a></h3>
+  <p><code>RecurrenceRule</code> parse / format / typed parts, <code>RecurrenceRuleBuilder</code> and <code>WeekDayNum</code>, occurrence enumeration and the inclusive point queries, the <code>BY*</code> interactions implementations disagree on, and the effect of <code>WKST</code> — with run-verified examples.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="cron.html">Cron expressions</a></h3>
+  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the twelve-year search horizon, and <code>DateTimeOffset</code> handling.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="anchored-intervals.html">Anchored intervals</a></h3>
+  <p><code>AnchoredInterval</code> over a <code>TimeSpan</code> or RFC 5545 duration text, the exact grammar accepted, occurrences at <code>anchor + k·interval</code>, the anchor boundary, and heartbeat / back-off / daylight-saving patterns.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="recurrence-sets.html">Recurrence sets</a></h3>
+  <p><code>RecurrenceSet</code> composition — rules plus <code>RDATE</code> minus <code>EXDATE</code> — the canonical <code>DTSTART</code> / <code>RRULE</code> / <code>RDATE</code> / <code>EXDATE</code> property block, and importing from or exporting to a <code>VEVENT</code> fragment.</p>
+</div>
+<div class="bodu-card">
+  <h3><a href="scheduling-host.html">Hosting schedules</a></h3>
+  <p>One adapter over the four forms, a reproducible catch-up loop over <code>TimeProvider</code>, persisting the last-run instant, daylight-saving and time-zone conversion at the host boundary, and skipping non-working days with <code>Bodu.Globalization.Calendar</code>.</p>
+</div>
+</div>
+<h2 id="runnable-samples">Runnable samples</h2>
+<p>Five sample projects under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Globalization.Recurrence"><code>samples/Globalization.Recurrence/</code></a>
+demonstrate every surface described here, one form per project plus an integrating scheduling host.
+They are offline, deterministic, and executed by CI, so the code they show cannot drift from the
+current API — see the <a href="../../samples/recurrence.html">samples catalogue</a> for what each one covers.</p>
+<pre><code class="lang-bash">dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurrence.Samples.SchedulingHost
+</code></pre>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface IAeadBlockCipherModeTransform | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface IAeadBlockCipherModeTransform | BODU ">
+    
+    <meta name="description" content="Represents an authenticated encryption with associated data (AEAD) block cipher mode transform that encrypts or decrypts data and produces or verifies an integrity tag.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform" class="text-break">Interface IAeadBlockCipherModeTransform</h1>
+  <div class="markdown level0 summary"><p>Represents an authenticated encryption with associated data (AEAD) block cipher mode transform that encrypts or
+decrypts data and produces or verifies an integrity tag.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.TagSize.html#Bodu_Security_Cryptography_IAeadTransform_TagSize">IAeadTransform.TagSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">IAeadTransform.Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">IAeadTransform.Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable.dispose">IDisposable.Dispose()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IAeadBlockCipherModeTransform : IAeadTransform, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Unlike <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>, which only encrypts or decrypts, AEAD transforms combine
+confidentiality with data integrity. The caller supplies optional associated data (AAD) that is authenticated but
+not encrypted, plus plaintext or ciphertext to be transformed. The output includes an authentication tag that binds
+the ciphertext and AAD together.
+</p>
+<p>
+Usage pattern for encryption:
+<pre><code class="lang-csharp">transform.ProcessAssociatedData(aad);
+int written = transform.Encrypt(plaintext, output); // output = ciphertext || tag</code></pre>
+<p>Usage pattern for decryption:</p>
+<pre><code class="lang-csharp">transform.ProcessAssociatedData(aad);
+int written = transform.Decrypt(ciphertextWithTag, output); // throws if tag invalid</code></pre>
+
+<p>
+All implementations are stateful, not thread-safe, and <strong>single-use per message</strong>. A second call to
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> on the same instance — including after a tag-mismatch failure —
+throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Construct a fresh transform for every message and dispose it
+when finished.
+</p>
+<p>
+<strong>API surface.</strong> The library ships several implementations clustered by trade-off:
+</p>
+<ul><li><span class="term">Default high-throughput AEAD</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> — single-pass, hardware-accelerated, fragile under nonce reuse.
+</li><li><span class="term">Constrained-environment AEAD</span>
+<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> — flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) — nonce reuse only
+leaks message-equality.
+</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> — RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
+<p>
+Most callers should reach for the helper methods on
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> instead of calling
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly — those wrappers size
+the output buffer correctly and return a single freshly allocated array.
+</p>
+<p>
+<strong>API surface.</strong> The library ships several implementations clustered by trade-off:
+</p>
+<ul><li><span class="term">Default high-throughput AEAD</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> — single-pass, hardware-accelerated, fragile under nonce reuse.
+</li><li><span class="term">Constrained-environment AEAD</span>
+<a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> — two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
+</li><li><span class="term">Two-pass alternatives</span><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> — flexible nonce length, OMAC-based authentication.</li><li><span class="term">Misuse-resistant</span>
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> (RFC 8452) and <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (RFC 5297) — nonce reuse only
+leaks message-equality.
+</li><li><span class="term">Single-pass without GCM's failure profile</span><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> — RFC 7253, single-pass, graceful nonce-reuse failure.</li></ul>
+<p>
+Most callers should reach for the helper methods on
+<a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> instead of calling
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a> + <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>/<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> directly — those wrappers size
+the output buffer correctly and return a single freshly allocated array.
+</p>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decrypts <code class="paramref">ciphertextWithTag</code> and verifies the authentication tag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code> and appends the authentication tag to <code class="paramref">output</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.DecryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, AuthenticationTag, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.EncryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with GCM, CCM, OCB3, SIV, and GCM-SIV
+     examples)</a></span></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Yaml | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Yaml | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Yaml">
+
+  <h1 id="Bodu_Text_Yaml" data-uid="Bodu.Text.Yaml" class="text-break">Namespace Bodu.Text.Yaml</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-yaml.svg" alt="Bodu.Text.Yaml"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Yaml</strong> is a <a href="https://yaml.org/">YAML</a> library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a buffered token reader and a forward-only writer, with both a mutable and a read-only document object model.</p>
+<p>The library is the third member of the <a href="../docs/serialization/index.html">Bodu serializer family</a>, alongside <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a> and <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>. It shares the family's architecture — a static serializer façade, a low-level reader/writer pair, a mutable DOM, and a read-only DOM — but tunes the serializer surface to YAML and exposes YAML's richer presentation model. The types are organised into folders/namespaces by surface (<code>Reader</code>, <code>Writer</code>, <code>Document</code>, <code>Nodes</code>, <code>Serialization</code>).</p>
+<p>Bodu.Text.Yaml implements the <strong>Bodu YAML Core Tree Profile</strong>: a YAML 1.2 core-schema, JSON-compatible tree model. Mapping keys resolve to unique scalar strings, anchors are unique and acyclic, and tabs are rejected as indentation. It supports block and flow collections, quoted and block scalars, comments, anchors and aliases, opt-in YAML 1.1 merge keys, core tags, and multi-document streams. The reader is <strong>buffered</strong> — it parses into an in-memory node store rather than scanning in a single pass. For EditorConfig-style INI configuration, see <a class="xref" href="Bodu.Text.Ini.html">Bodu.Text.Ini</a>; for binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85), see the companion <a class="xref" href="Bodu.Text.Encoding.html">Bodu.Text.Encoding</a> package.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/serialization/index.html">Bodu serializers introduction</a></strong> — the three libraries, the shared tiers, and how to choose a format.</li>
+<li><strong><a href="../docs/serialization/yaml/index.html">Bodu.Text.Yaml introduction</a></strong> — what is specific to YAML: the value model, presentation, multi-document streams, and diagnostics.</li>
+<li><strong><a href="../docs/serialization/yaml/concepts.html">Core concepts</a></strong> — the serializer, the converter model, the two DOMs, and the reader/writer seam.</li>
+<li><strong><a href="../docs/serialization/yaml/getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
+<li><strong><a href="../guides/serialization/yaml/using.html">Using YAML</a></strong> — type mapping, spec-version selection, the DOMs, and multi-document streams.</li>
+<li><strong><a href="../guides/serialization/yaml/converters.html">Writing converters</a></strong> — custom shapes with <code>YamlConverter&lt;T&gt;</code>.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Serializer (<code>Bodu.Text.Yaml</code>)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> — static façade. <code>Serialize</code> to a <code>string</code> (from a typed value or an <code>object</code> + <code>Type</code>) or an <code>IBufferWriter&lt;byte&gt;</code>, <code>SerializeAsync</code> to a <code>Stream</code>; <code>Deserialize&lt;T&gt;</code> from a <code>string</code>, a UTF-8 <code>ReadOnlySpan&lt;byte&gt;</code>, or a <code>Stream</code>, and <code>DeserializeAsync&lt;T&gt;</code> from a <code>Stream</code>. The stream overloads are buffered in full — only the stream copy is asynchronous.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> — naming policy, converters, <code>IncludeFields</code>, <code>DefaultIgnoreCondition</code>, <code>WriteEnumsAsStrings</code>, <code>PropertyNameCaseInsensitive</code>, <code>SpecVersion</code>, <code>NumberHandling</code>, <code>DuplicateKeyBehavior</code>, <code>MergeKeyBehavior</code>, <code>UnmappedMemberHandling</code>, <code>PreferredObjectCreationHandling</code>, and <code>MaxDepth</code>; constructed plain or from a <a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> preset (<code>General</code> / <code>Web</code>); cached and frozen on first use.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> — camel, snake (lower/upper), and kebab (lower/upper) casing policies.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.YamlTokenType.html">YamlTokenType</a>, <a class="xref" href="Bodu.Text.Yaml.YamlValueKind.html">YamlValueKind</a> — the token and value-kind enumerations.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html">YamlSpecVersion</a> — the spec selector: <code>V1_2</code> (default core schema) or <code>V1_1</code> (adds <code>yes</code>/<code>no</code>/<code>on</code>/<code>off</code> booleans and sexagesimal numbers). <a class="xref" href="Bodu.Text.Yaml.YamlNumberHandling.html">YamlNumberHandling</a> — float-to-integer coercion. <a class="xref" href="Bodu.Text.Yaml.YamlScalarStyle.html">YamlScalarStyle</a> — the plain / quoted / literal / folded scalar styles. <a class="xref" href="Bodu.Text.Yaml.YamlBlockChomping.html">YamlBlockChomping</a> — block-scalar trailing-newline handling. <a class="xref" href="Bodu.Text.Yaml.YamlDuplicateKeyBehavior.html">YamlDuplicateKeyBehavior</a>, <a class="xref" href="Bodu.Text.Yaml.YamlMergeKeyBehavior.html">YamlMergeKeyBehavior</a>, <a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> — mapping-key policies.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> — malformed input (with line / column / offset). <a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> — binding failures (with offset and member path).</li>
+</ul>
+<p><strong>Low-level reader / writer</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> (+ <a class="xref" href="Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a>) — forward-only, buffered token reader over parsed YAML.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a> (+ <a class="xref" href="Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a>) — forward-only token writer; emits block-style YAML with configurable indentation.</li>
+</ul>
+<p><strong>Document object models</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> / <a class="xref" href="Bodu.Text.Yaml.Nodes.YamlObject.html">YamlObject</a> / <a class="xref" href="Bodu.Text.Yaml.Nodes.YamlArray.html">YamlArray</a> / <a class="xref" href="Bodu.Text.Yaml.Nodes.YamlValue.html">YamlValue</a> — the mutable, editable DOM.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Document.YamlDocument.html">YamlDocument</a> / <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> / <a class="xref" href="Bodu.Text.Yaml.Document.YamlProperty.html">YamlProperty</a> — the read-only, low-allocation DOM; <code>ParseAllDocuments</code> returns every document in a multi-document stream (parsing tuned by <a class="xref" href="Bodu.Text.Yaml.Document.YamlDocumentOptions.html">YamlDocumentOptions</a>).</li>
+</ul>
+<p><strong>Converters and attributes (<code>Bodu.Text.Yaml.Serialization</code>)</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter-1.html">YamlConverter&lt;T&gt;</a> / <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverter.html">YamlConverter</a> / <a class="xref" href="Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a> — base types for custom per-type converters and converter factories; a converter reads through the <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> and writes through the <a class="xref" href="Bodu.Text.Yaml.Writer.Utf8YamlWriter.html">Utf8YamlWriter</a>.</li>
+<li><a class="xref" href="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.html">YamlStringEnumConverter</a> (+ <code>YamlStringEnumConverter&lt;TEnum&gt;</code>) and <code>YamlNumberEnumConverter&lt;TEnum&gt;</code> — the public enum converters: member-name strings (with optional naming policy) or the underlying numeric value.</li>
+<li><a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a>, <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>, <a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a>, and the wider shared attribute family (<code>[PropertyOrder]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[Constructor]</code>, <code>[ObjectCreationHandling]</code>, <code>[NamingPolicy]</code>, <code>[StringEnumMemberName]</code>) — the declarative member-shaping layer.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+}
+
+string yaml = YamlSerializer.Serialize(new ServerConfig { Host = &quot;localhost&quot;, Port = 8080 });
+ServerConfig config = YamlSerializer.Deserialize&lt;ServerConfig&gt;(yaml)!;
+
+// Edit a document without a model:
+using Bodu.Text.Yaml.Nodes;
+YamlNode node = YamlNode.Parse(yamlText)!;
+node[&quot;server&quot;]![&quot;port&quot;] = YamlValue.Create(9090);
+string back = node.ToYamlString();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Shared serialization core.</strong> The library references <a class="xref" href="Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> for the attribute family, the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces, and compiles that package's shared metadata resolver and converter engine under its own format symbol — the same arrangement as its siblings <a class="xref" href="Bodu.Text.Toml.html">Bodu.Text.Toml</a> and <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>. The reader, writer, DOMs, and scalar converters are format-local.</li>
+<li><strong>Full family serializer surface.</strong> Member shaping is covered by the naming policies, the shared <code>Bodu.Text.Serialization</code> attribute family, the serialization callback interfaces, the options flags, and custom <code>YamlConverter&lt;T&gt;</code> converters and <code>YamlConverterFactory</code> factories — the same surface as the TOML and Bencode siblings. YAML's scalar converters remain format-local so implicit typing coerces across scalar kinds.</li>
+<li><strong>Value mapping.</strong> <code>string</code> / <code>char</code> / <code>Guid</code> / <code>Uri</code> and the integer family → string or integer scalars, <code>double</code> / <code>float</code> → float scalars, <code>bool</code> → boolean, <code>null</code> → the null scalar; enums → member-name strings (or integers when <code>WriteEnumsAsStrings</code> is <code>false</code>). Collections map to sequences; dictionaries and objects map to mappings in insertion order. An <code>object</code>-typed member reads back as a loosely-typed graph (<code>Dictionary&lt;string, object?&gt;</code> / <code>List&lt;object?&gt;</code> / scalars); members typed <a class="xref" href="Bodu.Text.Yaml.Nodes.YamlNode.html">YamlNode</a> or <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.html">YamlElement</a> bind through the DOM bridges. Public fields participate via <code>IncludeFields</code>.</li>
+<li><strong>Presentation is resolved, not stored.</strong> Scalar style (plain / quoted / literal / folded), block vs. flow layout, and anchors and aliases are handled by the reader and chosen by the writer rather than surfaced as distinct value kinds; <a class="xref" href="Bodu.Text.Yaml.Document.YamlElement.ScalarStyle.html#Bodu_Text_Yaml_Document_YamlElement_ScalarStyle">ScalarStyle</a> records the original scalar style.</li>
+<li><strong>Spec-version selection.</strong> Parsing defaults to the strict <strong>1.2 core schema</strong> (only <code>true</code>/<code>false</code> are booleans); setting <code>SpecVersion</code> to <code>V1_1</code> additionally accepts <code>yes</code>/<code>no</code>/<code>on</code>/<code>off</code> booleans and sexagesimal numbers, and the <code>%YAML</code> directive overrides typing per document.</li>
+<li><strong>Multi-document streams.</strong> <code>YamlDocument.ParseAllDocuments</code> returns every document delimited by <code>---</code> / <code>...</code>; the single-document methods read the first.</li>
+<li><strong>Errors.</strong> Malformed input surfaces through <a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a> (with line, column, and offset); binding failures through <a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> (with offset and a dotted member path).</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/index.html">introduction</a>, <a href="../docs/serialization/yaml/concepts.html">core concepts</a>, and <a href="../docs/serialization/yaml/getting-started.html">getting-started</a>; the <a href="../guides/serialization/yaml/using.html">Using YAML</a> and <a href="../guides/serialization/yaml/converters.html">writing converters</a> guides; and the sibling <a class="xref" href="Bodu.Text.Toml.html">TOML</a> and <a class="xref" href="Bodu.Text.Bencode.html">Bencode</a> libraries.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlFormatException.html">YamlFormatException</a></h4>
+      <section><p>Represents an error that occurs when YAML data is malformed or violates the YAML specification.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a></h4>
+      <section><p>The exception thrown when a value cannot be bound to or from a YAML document during serialization — for example a
+type mismatch, a missing required member, or a value YAML cannot represent.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a></h4>
+      <section><p>Provides static methods to serialize objects to YAML and deserialize YAML to objects, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializer">JsonSerializer</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a></h4>
+      <section><p>Provides options that configure <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a>, in the manner of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlBlockChomping.html">YamlBlockChomping</a></h4>
+      <section><p>Specifies how trailing line breaks are handled in a block scalar (the literal <code>|</code> or folded <code>&gt;</code>
+styles), corresponding to the chomping indicator in the block scalar header.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlDuplicateKeyBehavior.html">YamlDuplicateKeyBehavior</a></h4>
+      <section><p>Specifies how the reader and document layers treat a mapping that declares the same key more than once.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlMergeKeyBehavior.html">YamlMergeKeyBehavior</a></h4>
+      <section><p>Specifies how the reader treats the YAML merge key (<code>&lt;&lt;</code>).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlNumberHandling.html">YamlNumberHandling</a></h4>
+      <section><p>Specifies how <a class="xref" href="Bodu.Text.Yaml.YamlSerializer.html">YamlSerializer</a> coerces numeric scalars when binding to integral targets.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlScalarStyle.html">YamlScalarStyle</a></h4>
+      <section><p>Specifies the presentation style of a YAML scalar node. The style controls how a scalar's content is delimited and
+escaped when emitted, and records how it was delimited when read.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a></h4>
+      <section><p>Specifies a base set of defaults applied when a <a class="xref" href="Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a> instance is created for a
+particular usage scenario.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html">YamlSpecVersion</a></h4>
+      <section><p>Identifies the version of the YAML specification whose implicit type resolution the reader applies. The version
+controls how unquoted (plain) scalars are interpreted as booleans, null, and numbers.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlTokenType.html">YamlTokenType</a></h4>
+      <section><p>Identifies the kind of token surfaced by <a class="xref" href="Bodu.Text.Yaml.Reader.Utf8YamlReader.html">Utf8YamlReader</a> as it traverses a YAML
+document in document order.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Yaml.YamlValueKind.html">YamlValueKind</a></h4>
+      <section><p>Specifies the resolved kind of a YAML node, as surfaced by the document object models after implicit type resolution
+has been applied to scalars.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class BencodeNode | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class BencodeNode | BODU ">
+    
+    <meta name="description" content="Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three concrete node kinds — , , and .">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode">
+
+
+
+  <h1 id="Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode" class="text-break">Class BencodeNode</h1>
+  <div class="markdown level0 summary"><p>Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three
+concrete node kinds — <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>, <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a>, and <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">BencodeNode</span></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a></div>
+      <div class="level2"><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Bencode.html">Bencode</a>.<a class="xref" href="Bodu.Text.Bencode.Nodes.html">Nodes</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Bencode.dll</h6>
+  <h5 id="Bodu_Text_Bencode_Nodes_BencodeNode_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class BencodeNode</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Bencode_Nodes_BencodeNode_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
+and any node can be re-serialized to canonical Bencode through <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.WriteTo.html#Bodu_Text_Bencode_Nodes_BencodeNode_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_">WriteTo(Utf8BencodeWriter)</a> or <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.ToByteArray.html#Bodu_Text_Bencode_Nodes_BencodeNode_ToByteArray">ToByteArray()</a>.
+Bencode has no boolean, null, or floating-point values, so the model defines only the four value kinds the format
+supports; in particular there is no null node, so a tree that still contains a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> entry cannot
+be written.
+</p>
+<p>
+Each node has at most one parent. Adding a node that already belongs to another container throws an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+<example>
+<pre><code class="lang-csharp">// Parse, edit in place, and re-serialize to canonical Bencode.
+BencodeNode? root = BencodeNode.Parse("d3:cowi42ee"u8);
+BencodeObject dict = root!.AsObject();
+
+long age = dict["cow"]!.AsValue().GetValue&lt;long&gt;();   // 42
+dict["pig"] = BencodeValue.Create("oink");
+
+byte[] bytes = dict.ToByteArray();   // "d3:cow i42e 3:pig 4:oink e" (sorted)</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Item_System_Int32_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Item(System.Int32)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Item.html#Bodu_Text_Bencode_Nodes_BencodeNode_Item_System_Int32_">this[int]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the element at the specified index, treating this node as a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Item_System_String_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Item(System.String)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Item.html#Bodu_Text_Bencode_Nodes_BencodeNode_Item_System_String_">this[string]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the value associated with the specified property name, treating this node as a
+<a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Parent" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Parent">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Parent.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parent">Parent</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the node that contains this node, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when this node is the root of its tree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Root" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Root">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Root.html#Bodu_Text_Bencode_Nodes_BencodeNode_Root">Root</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the topmost node of the tree this node belongs to.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_AsArray" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.AsArray">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.AsArray.html#Bodu_Text_Bencode_Nodes_BencodeNode_AsArray">AsArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_AsObject" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.AsObject">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.AsObject.html#Bodu_Text_Bencode_Nodes_BencodeNode_AsObject">AsObject()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_AsValue" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.AsValue">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.AsValue.html#Bodu_Text_Bencode_Nodes_BencodeNode_AsValue">AsValue()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns this node as a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_DeepClone" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.DeepClone">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.DeepClone.html#Bodu_Text_Bencode_Nodes_BencodeNode_DeepClone">DeepClone()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a deep copy of this node and its entire subtree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_DeepEquals_Bodu_Text_Bencode_Nodes_BencodeNode_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.DeepEquals(Bodu.Text.Bencode.Nodes.BencodeNode,Bodu.Text.Bencode.Nodes.BencodeNode)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.DeepEquals.html#Bodu_Text_Bencode_Nodes_BencodeNode_DeepEquals_Bodu_Text_Bencode_Nodes_BencodeNode_Bodu_Text_Bencode_Nodes_BencodeNode_">DeepEquals(BencodeNode?, BencodeNode?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two node trees are structurally equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_GetPath" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.GetPath">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.GetPath.html#Bodu_Text_Bencode_Nodes_BencodeNode_GetPath">GetPath()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the path from the root of this node's tree to this node.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_GetValueKind" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.GetValueKind">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.GetValueKind.html#Bodu_Text_Bencode_Nodes_BencodeNode_GetValueKind">GetValueKind()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the kind of value this node represents.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_GetValue__1" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.GetValue``1">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.GetValue.html#Bodu_Text_Bencode_Nodes_BencodeNode_GetValue__1">GetValue&lt;T&gt;()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the scalar value of this node converted to the requested type, treating this node as a
+<a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Parse(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Parse.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__">Parse(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a single Bencode document into a node tree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Nodes_BencodeNodeOptions_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Parse(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.Nodes.BencodeNodeOptions)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Parse.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Nodes_BencodeNodeOptions_">Parse(ReadOnlySpan&lt;byte&gt;, BencodeNodeOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a single Bencode document into a node tree, using the supplied options for every object created while
+parsing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Nodes_BencodeNodeOptions_Bodu_Text_Bencode_Document_BencodeDocumentOptions_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.Parse(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.Nodes.BencodeNodeOptions,Bodu.Text.Bencode.Document.BencodeDocumentOptions)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.Parse.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parse_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Nodes_BencodeNodeOptions_Bodu_Text_Bencode_Document_BencodeDocumentOptions_">Parse(ReadOnlySpan&lt;byte&gt;, BencodeNodeOptions, BencodeDocumentOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a single Bencode document into a node tree, using the supplied node options for every object created
+while parsing and the supplied document options for the parse itself.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_ReplaceWith_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.ReplaceWith(Bodu.Text.Bencode.Nodes.BencodeNode)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.ReplaceWith.html#Bodu_Text_Bencode_Nodes_BencodeNode_ReplaceWith_Bodu_Text_Bencode_Nodes_BencodeNode_">ReplaceWith(BencodeNode?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Replaces this node within its parent container with the supplied value, detaching this node. The implicit
+conversions from <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/reference-types">string</a>, integers, and byte arrays let scalars be passed directly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_ToByteArray" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.ToByteArray">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.ToByteArray.html#Bodu_Text_Bencode_Nodes_BencodeNode_ToByteArray">ToByteArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes this node to a new canonical Bencode byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_ToString" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.ToString">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.ToString.html#Bodu_Text_Bencode_Nodes_BencodeNode_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this node.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.WriteTo(Bodu.Text.Bencode.Writer.Utf8BencodeWriter)">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.WriteTo.html#Bodu_Text_Bencode_Nodes_BencodeNode_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_">WriteTo(Utf8BencodeWriter)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the canonical Bencode encoding of this node to the supplied writer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Byte__" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit(Bodu.Text.Bencode.Nodes.BencodeNode)~System.Byte[]">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Byte__">explicit operator byte[](BencodeNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Int32" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit(Bodu.Text.Bencode.Nodes.BencodeNode)~System.Int32">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Int32">explicit operator int(BencodeNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a 32-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Int64" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit(Bodu.Text.Bencode.Nodes.BencodeNode)~System.Int64">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_Int64">explicit operator long(BencodeNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a 64-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_String" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit(Bodu.Text.Bencode.Nodes.BencodeNode)~System.String">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_String">explicit operator string(BencodeNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as a string, decoding the byte string as UTF-8.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_UInt64" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit(Bodu.Text.Bencode.Nodes.BencodeNode)~System.UInt64">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Explicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Explicit_Bodu_Text_Bencode_Nodes_BencodeNode__System_UInt64">explicit operator ulong(BencodeNode)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads the scalar value of the supplied node as an unsigned 64-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Byte____Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit(System.Byte[])~Bodu.Text.Bencode.Nodes.BencodeNode">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Byte____Bodu_Text_Bencode_Nodes_BencodeNode">implicit operator BencodeNode(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> that wraps the supplied byte array as a byte string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Int32__Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit(System.Int32)~Bodu.Text.Bencode.Nodes.BencodeNode">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Int32__Bodu_Text_Bencode_Nodes_BencodeNode">implicit operator BencodeNode(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> that wraps the supplied 32-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Int64__Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit(System.Int64)~Bodu.Text.Bencode.Nodes.BencodeNode">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_Int64__Bodu_Text_Bencode_Nodes_BencodeNode">implicit operator BencodeNode(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> that wraps the supplied 64-bit integer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_String__Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit(System.String)~Bodu.Text.Bencode.Nodes.BencodeNode">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_String__Bodu_Text_Bencode_Nodes_BencodeNode">implicit operator BencodeNode(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> that wraps the supplied string as a byte string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_UInt64__Bodu_Text_Bencode_Nodes_BencodeNode" data-uid="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit(System.UInt64)~Bodu.Text.Bencode.Nodes.BencodeNode">
+          <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.op_Implicit.html#Bodu_Text_Bencode_Nodes_BencodeNode_op_Implicit_System_UInt64__Bodu_Text_Bencode_Nodes_BencodeNode">implicit operator BencodeNode(ulong)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> that wraps the supplied unsigned 64-bit integer, permitting the full
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a> range.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

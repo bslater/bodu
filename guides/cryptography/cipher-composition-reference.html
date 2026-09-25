@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Modes, transforms, and factories | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Modes, transforms, and factories | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="modes-transforms-and-factories">Modes, transforms, and factories</h1>
+
+<p>This is the reference for how a block cipher becomes an encryptor in <code>Bodu.Security.Cryptography</code>: which <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> values the <code>SymmetricAlgorithm</code> wrappers accept, which modes exist only as direct transforms, where padding sizes are expressed in bits, and how the pieces — <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> — fit together. Every row below was checked against <code>BlockCipherModeFactory</code> and the transform classes, and every sample compiles and runs.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Bodu.Security.Cryptography</code> is not independently audited and offers best-effort, not guaranteed, side-channel resistance. For authenticated encryption start from the <a href="aead-modes.html">AEAD modes</a>; the classic modes on this page give confidentiality only.</p>
+</div>
+<h2 id="the-ciphermodekind-support-matrix">The <code>CipherModeKind</code> support matrix</h2>
+<p><code>CipherModeKind</code> has ten members. Five of them are what <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.Create.html#Bodu_Security_Cryptography_BlockCipherModeFactory_Create_Bodu_Security_Cryptography_CipherModeKind_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">Create(CipherModeKind, IBlockCipher, byte[]?)</a> can build — and therefore what the wrappers' <code>BlockMode</code> property can drive. The other five are declared in the enum but the factory throws <code>NotSupportedException</code> for them; they are reachable only by constructing the transform yourself.</p>
+<table>
+<thead>
+<tr>
+<th><code>CipherModeKind</code></th>
+<th>Value</th>
+<th>Through <code>BlockMode</code> / <code>BlockCipherModeFactory</code></th>
+<th>Direct transform</th>
+<th>IV</th>
+<th>Input alignment (raw transform)</th>
+<th>Padding through the wrapper</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ECB</code></td>
+<td>2</td>
+<td>Yes → <a class="xref" href="../../api/Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a></td>
+<td><code>new EcbModeTransform(cipher)</code></td>
+<td>none (<code>null</code> accepted)</td>
+<td>whole blocks</td>
+<td>yes (default PKCS7)</td>
+</tr>
+<tr>
+<td><code>CBC</code></td>
+<td>1</td>
+<td>Yes → <a class="xref" href="../../api/Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a></td>
+<td><code>new CbcModeTransform(cipher, iv)</code></td>
+<td>= block size</td>
+<td>whole blocks</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>CFB</code></td>
+<td>4</td>
+<td>Yes → <a class="xref" href="../../api/Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a></td>
+<td><code>new CfbModeTransform(cipher, iv)</code></td>
+<td>= block size</td>
+<td>whole blocks</td>
+<td>yes — <code>PaddingMode.None</code> still requires aligned input</td>
+</tr>
+<tr>
+<td><code>OFB</code></td>
+<td>3</td>
+<td>Yes → <a class="xref" href="../../api/Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a></td>
+<td><code>new OfbModeTransform(cipher, iv)</code></td>
+<td>= block size</td>
+<td>whole blocks</td>
+<td>same as CFB</td>
+</tr>
+<tr>
+<td><code>CTR</code></td>
+<td>1024</td>
+<td>Yes → <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a></td>
+<td><code>new CtrModeTransform(cipher, iv)</code></td>
+<td>= block size (initial counter)</td>
+<td><strong>partial final block accepted</strong> by the raw transform</td>
+<td><code>PaddingMode.None</code> still requires aligned input through the wrapper</td>
+</tr>
+<tr>
+<td><code>CTS</code></td>
+<td>5</td>
+<td><strong>No</strong> — <code>NotSupportedException</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> <code>(cipher, iv)</code></td>
+<td>= block size</td>
+<td>≥ one block, any length; output length = input length</td>
+<td>n/a (never pad CTS)</td>
+</tr>
+<tr>
+<td><code>XTS</code></td>
+<td>2048</td>
+<td><strong>No</strong> — <code>NotSupportedException</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> <code>(dataCipher, tweakCipher, sector)</code></td>
+<td>16-byte sector number</td>
+<td>whole 16-byte blocks only (no ciphertext stealing); 128-bit block ciphers only</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><code>OCB</code></td>
+<td>4096</td>
+<td><strong>No</strong> — <code>NotSupportedException</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a> (AEAD)</td>
+<td>16-byte IV, first 12 used</td>
+<td>any</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><code>EAX</code></td>
+<td>8192</td>
+<td><strong>No</strong> — <code>NotSupportedException</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> (AEAD)</td>
+<td>16-byte nonce</td>
+<td>any</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><code>SIV</code></td>
+<td>16384</td>
+<td><strong>No</strong> — <code>NotSupportedException</code></td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a> (AEAD)</td>
+<td>ignored</td>
+<td>any</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><em>(no member)</em></td>
+<td>—</td>
+<td>—</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> (AEAD)</td>
+<td>12-byte nonce</td>
+<td>any</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<p>Two consequences worth stating plainly:</p>
+<ul>
+<li>Setting <code>BlockMode = CipherModeKind.CTS</code> (or <code>XTS</code>, <code>OCB</code>, <code>EAX</code>, <code>SIV</code>) on a wrapper compiles and does not fail at assignment; the <code>NotSupportedException</code> surfaces when <code>CreateEncryptor</code> / <code>CreateDecryptor</code> runs the factory. The <a href="cipher-modes.html">cipher block modes</a> page's CTS and XTS sections describe the direct transforms.</li>
+<li>The wrapper never produces an unaligned stream-mode ciphertext. Its <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a> pads on <code>TransformFinalBlock</code>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.NoPadding.html">NoPadding</a> throws <code>ArgumentException</code> for input that is not a block multiple. For CTR over an arbitrary length, use the raw <code>CtrModeTransform</code> (Pattern 3) or accept PKCS7 padding.</li>
+</ul>
+<h3 id="blockmode-and-the-inherited-mode"><code>BlockMode</code> and the inherited <code>Mode</code></h3>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a> keeps <code>BlockMode</code> and the BCL <code>Mode</code> in sync where a value exists in both enums (<code>CBC</code>, <code>ECB</code>, <code>OFB</code>, <code>CFB</code>, <code>CTS</code>). Values with no <code>CipherMode</code> equivalent leave <code>Mode</code> untouched, so after <code>BlockMode = CipherModeKind.CTR</code> the inherited property still reports the previous value. Read <code>BlockMode</code>, not <code>Mode</code>, to know what a Bodu wrapper will do. The tweakable wrappers (<a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a> and siblings, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a> and siblings) declare their own <code>BlockMode</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>-derived bases and do not mirror it into <code>Mode</code> at all.</p>
+<h2 id="pattern-1--the-five-wrapper-modes">Pattern 1 — the five wrapper modes</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+byte[] unaligned = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();          // 38 bytes
+byte[] aligned   = &quot;composition reference: exactly forty-eight bytes&quot;u8.ToArray(); // 48 bytes = 3 blocks
+
+foreach (CipherModeKind mode in new[] { CipherModeKind.ECB, CipherModeKind.CBC, CipherModeKind.CFB, CipherModeKind.OFB, CipherModeKind.CTR })
+{
+    using var alg = new Camellia { BlockMode = mode, Key = key, IV = iv };
+    alg.Padding = mode is CipherModeKind.ECB or CipherModeKind.CBC ? PaddingMode.PKCS7 : PaddingMode.None;
+
+    byte[] input = alg.Padding == PaddingMode.None ? aligned : unaligned;   // None demands block-aligned input
+    byte[] ciphertext = alg.Encrypt(input);
+    byte[] recovered  = alg.Decrypt(ciphertext);
+    // ECB/CBC: 38 -&gt; 48 bytes; CFB/OFB/CTR: 48 -&gt; 48 bytes; all round-trip
+}
+</code></pre>
+<p><code>ECB</code> is the one mode that accepts a <code>null</code> IV; the other four validate <code>iv.Length == BlockSize / 8</code> and throw <code>CryptographicException</code> otherwise.</p>
+<h2 id="pattern-2--composing-by-hand-with-the-factories">Pattern 2 — composing by hand with the factories</h2>
+<p>The wrappers are a convenience over three parts you can assemble yourself: an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine, an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> from <code>BlockCipherModeFactory</code>, and an <a class="xref" href="../../api/Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> from <code>PaddingFactory</code>. Both factories and the strategies express <strong>block size in bits</strong> — pass <code>cipher.BlockSize</code> (128), never the byte count.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+byte[] plaintext = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();
+
+using IBlockCipher cipher = new CamelliaBlockCipher(key);
+using IBlockCipherModeTransform cbc = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
+IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
+
+byte[] padded = padding.Pad(plaintext, cipher.BlockSize);     // blockSize is in BITS: 128, not 16 → 48 bytes
+byte[] ciphertext = new byte[padded.Length];
+int written = cbc.Transform(padded, ciphertext, encrypt: true);  // 48
+
+// Decrypt with a fresh mode transform (the chaining state is per instance).
+using IBlockCipher cipher2 = new CamelliaBlockCipher(key);
+using IBlockCipherModeTransform cbc2 = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher2, iv);
+byte[] decrypted = new byte[ciphertext.Length];
+cbc2.Transform(ciphertext, decrypted, encrypt: false);
+byte[] recovered = padding.Unpad(decrypted, cipher2.BlockSize);
+</code></pre>
+<p><code>IPaddingStrategy.StripsPaddingOnUnpad</code> tells a decryptor whether <code>Unpad</code> can shorten the output: <code>true</code> for PKCS7, ANSI X.923, ISO 10126, and ISO/IEC 7816-4; <code>false</code> for <code>Zeros</code> and <code>None</code>, whose <code>Unpad</code> returns the input unchanged. <code>BlockCipherTransform</code> uses that flag to hold back the final block during decryption so it can strip padding safely.</p>
+<h2 id="pattern-3--ctr-with-a-partial-final-block">Pattern 3 — CTR with a partial final block</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+byte[] plaintext = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();
+
+// Through the wrapper, PaddingMode.None insists on block-aligned input even for CTR.
+using var alg = new Camellia { BlockMode = CipherModeKind.CTR, Padding = PaddingMode.None, Key = key, IV = iv };
+try { alg.Encrypt(plaintext); }
+catch (ArgumentException) { /* &quot;Input must be a multiple of block size when using no padding.&quot; */ }
+
+// The raw CtrModeTransform handles the trailing partial block itself.
+using IBlockCipher cipher = new CamelliaBlockCipher(key);
+using IBlockCipherModeTransform ctr = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
+byte[] ciphertext = new byte[plaintext.Length];
+int written = ctr.Transform(plaintext, ciphertext, encrypt: true);      // 38 — same length as the input
+</code></pre>
+<p><code>CfbModeTransform</code> and <code>OfbModeTransform</code> do not: their <code>Transform</code> throws <code>CryptographicException</code> for input that is not a block multiple.</p>
+<h2 id="pattern-4--cts-and-xts-as-direct-transforms">Pattern 4 — CTS and XTS as direct transforms</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+byte[] plaintext = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();
+
+// CTS (CS3 / IEEE 1619 order): no padding, ciphertext length == plaintext length, input &gt;= one block.
+using IBlockCipher cipher = new AesBlockCipher(key);
+using var cts = new CtsModeTransform(cipher, iv);
+byte[] ciphertext = new byte[plaintext.Length];
+cts.Transform(plaintext, ciphertext, encrypt: true);
+
+using IBlockCipher cipher2 = new AesBlockCipher(key);
+using var cts2 = new CtsModeTransform(cipher2, iv);
+byte[] recovered = new byte[ciphertext.Length];
+cts2.Transform(ciphertext, recovered, encrypt: false);
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// XTS: two independently keyed 128-bit-block ciphers and a 16-byte little-endian sector number.
+byte[] key1 = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] key2 = Convert.FromHexString(&quot;f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff&quot;);
+byte[] sector = new byte[16];
+BitConverter.TryWriteBytes(sector, 42L);
+
+byte[] sectorData = new byte[64];                 // whole 16-byte blocks only — no ciphertext stealing
+Array.Fill(sectorData, (byte)0xA5);
+
+using IBlockCipher data  = new AesBlockCipher(key1);
+using IBlockCipher tweak = new AesBlockCipher(key2);
+using var xts = new XtsModeTransform(data, tweak, sector);
+byte[] ciphertext = new byte[sectorData.Length];
+xts.Transform(sectorData, ciphertext, encrypt: true);   // first block EB3C020DDDDBCF88932217B467047B56
+</code></pre>
+<p>An <code>XtsModeTransform</code> given input that is not a multiple of 16 bytes throws <code>CryptographicException</code>; both ciphers must report a 128-bit block or the constructor throws <code>ArgumentException</code>.</p>
+<h2 id="pattern-5--the-aead-transforms">Pattern 5 — the AEAD transforms</h2>
+<p><code>OCB</code>, <code>EAX</code>, and <code>SIV</code> appear in <code>CipherModeKind</code> but only as names; the factory rejects them. All six block-cipher AEADs implement <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> (and through it <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>), take an <code>AesBlockCipher</code>, and are single-use per message:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key   = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] key2  = Convert.FromHexString(&quot;f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff&quot;);
+byte[] nonce = Convert.FromHexString(&quot;cafebabefacedbaddecaf888&quot;);     // 12 bytes
+byte[] iv16  = new byte[16]; nonce.CopyTo(iv16, 0);                    // 16-byte IV whose first 12 bytes are the nonce
+byte[] iv    = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+byte[] plaintext = &quot;composition reference: 37 bytes long!!&quot;u8.ToArray();
+byte[] aad = &quot;hdr&quot;u8.ToArray();
+
+using (var c = new AesBlockCipher(key)) _ = new GcmModeTransform(c, nonce).Encrypt(plaintext, associatedData: aad);
+using (var c = new AesBlockCipher(key)) _ = new CcmModeTransform(c, iv16).Encrypt(plaintext, associatedData: aad);
+using (var c = new AesBlockCipher(key)) _ = new OcbModeTransform(c, iv16, tagSize: 96).Encrypt(plaintext, associatedData: aad);
+using (var c = new AesBlockCipher(key)) _ = new EaxModeTransform(c, iv).Encrypt(plaintext, associatedData: aad);
+using (var a = new AesBlockCipher(key)) using (var b = new AesBlockCipher(key2))
+    _ = new SivModeTransform(a, b, new byte[16]).Encrypt(plaintext, associatedData: aad);
+using (var c = new AesBlockCipher(key))
+    _ = new GcmSivModeTransform(c, static k =&gt; new AesBlockCipher(k), iv16).Encrypt(plaintext, associatedData: aad);
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Name the <code>associatedData:</code> argument. Each AEAD also has a public <code>Encrypt(ReadOnlySpan&lt;byte&gt; plaintext, Span&lt;byte&gt; output)</code> instance method; with two positional <code>byte[]</code> arguments that overload wins, writes the ciphertext into your AAD array, and returns an <code>int</code>.</p>
+</div>
+<h2 id="padding--paddingmode-paddingmodekind-and-the-dual-properties">Padding — <code>PaddingMode</code>, <code>PaddingModeKind</code>, and the dual properties</h2>
+<p><code>PaddingFactory</code> has two overloads. <code>Create(PaddingMode)</code> covers the BCL enum — <code>PKCS7</code>, <code>Zeros</code>, <code>None</code>, <code>ANSIX923</code>, <code>ISO10126</code> — and throws <code>CryptographicException</code> for anything else. <code>Create(PaddingModeKind)</code> adds <code>ISO7816_4</code> (value 1024), the one scheme the BCL enum cannot name.</p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a> exposes both: <code>BlockPadding</code> (<a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) and the inherited <code>Padding</code> (<code>PaddingMode</code>). Setting either updates the other when the value exists in both enums; <code>ISO7816_4</code> updates only <code>BlockPadding</code>. <code>CreateEncryptor</code> reads <code>BlockPadding</code>, so ISO 7816-4 is honoured.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+using var alg = new Camellia();
+// defaults: BlockMode CBC / Mode CBC, BlockPadding PKCS7 / Padding PKCS7
+
+alg.BlockPadding = PaddingModeKind.ISO7816_4;   // BlockPadding ISO7816_4, Padding still PKCS7 (no BCL value)
+alg.Padding = PaddingMode.ANSIX923;             // both ANSIX923
+alg.BlockMode = CipherModeKind.CTR;             // BlockMode CTR, Mode still CBC
+alg.Mode = CipherMode.ECB;                      // both ECB
+</code></pre>
+<p>The tweakable wrappers (<code>Threefish*</code>, <code>Serpent256/512/1024</code>) derive from <code>TweakableSymmetricAlgorithm</code>, not <code>ExtendedSymmetricAlgorithm</code>: they have <code>BlockMode</code> but only the BCL <code>Padding</code> property, so ISO 7816-4 is not selectable on them. <a href="padding.html">Padding</a> describes what each scheme emits; its <code>Pad</code> calls take the block size in bits.</p>
+<h2 id="blockciphertransform--what-the-wrappers-hand-back"><code>BlockCipherTransform</code> — what the wrappers hand back</h2>
+<p><code>CreateEncryptor()</code> on every block-cipher wrapper returns a <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>: an <code>ICryptoTransform</code> that owns one engine, one mode transform, and one padding strategy. Its constructors are <code>protected internal</code>, so you obtain one from a wrapper or by subclassing (see <a href="extending.html">Extending the library</a>). Contract, as observed:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InputBlockSize</code> / <code>OutputBlockSize</code></td>
+<td>the cipher block size in <strong>bytes</strong> (16 for Camellia)</td>
+</tr>
+<tr>
+<td><code>CanTransformMultipleBlocks</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>CanReuseTransform</code></td>
+<td><code>false</code> — after <code>TransformFinalBlock</code>, any further call throws <code>InvalidOperationException</code></td>
+</tr>
+<tr>
+<td><code>TransformBlock</code></td>
+<td>encrypt: input must be block-aligned; decrypt with a stripping padding: the last block is held back</td>
+</tr>
+<tr>
+<td><code>TransformFinalBlock</code></td>
+<td>encrypt: pads then encrypts (an empty input still emits a padding block for PKCS7-style schemes); decrypt: validates alignment, decrypts, unpads</td>
+</tr>
+<tr>
+<td><code>Dispose</code></td>
+<td>disposes the mode transform <strong>and the engine</strong></td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+byte[] iv  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+
+using var alg = new Twofish { Key = key, IV = iv, BlockMode = CipherModeKind.CBC };
+using ICryptoTransform encryptor = alg.CreateEncryptor();               // a BlockCipherTransform
+byte[] ciphertext = encryptor.Transform(&quot;composition reference: 37 bytes long!!&quot;u8.ToArray());   // one-shot extension
+// encryptor.InputBlockSize == 16; encryptor.CanReuseTransform == false; a second final block throws InvalidOperationException
+</code></pre>
+<h2 id="the-engine-contracts">The engine contracts</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Members</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></td>
+<td><code>BlockSize</code> (bits), <code>Encrypt(input, output)</code>, <code>Decrypt(input, output)</code>, default <code>EncryptBlocks</code> / <code>DecryptBlocks</code>, <code>Dispose</code></td>
+<td>One block per call; the default block-loop members process whole blocks and ignore a trailing partial block. Engines: <code>AesBlockCipher(byte[])</code>, <code>CamelliaBlockCipher</code>, <code>TwofishBlockCipher</code>, <code>Serpent128Cipher</code>, <code>BlowfishBlockCipher</code>, <code>SkipjackBlockCipher</code> (span key), <code>Threefish256Cipher</code> / <code>Serpent256Cipher</code> … <code>(key, tweak)</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a></td>
+<td><code>Transform(input, output, bool encrypt)</code>, <code>Dispose</code></td>
+<td>Stateful, not thread-safe; a new instance per message. <code>Dispose</code> clears chaining state but does <strong>not</strong> dispose the engine.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a></td>
+<td><code>BlockSize</code>, <code>NextKeystreamBlock(Span&lt;byte&gt;)</code></td>
+<td>The keystream engine behind the stream ciphers. The shipped engines are internal; the interface is public so a <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> subclass can supply its own through <code>CreateEngine()</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></td>
+<td>(marker) <code>: IAeadTransform</code></td>
+<td>Implemented by <code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305</code>, <code>XSalsa20Poly1305Aead</code> — see <a href="stream-aead.html">Authenticated stream ciphers</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></td>
+<td><code>Key</code>, <code>Nonce</code>, <code>KeySize</code>, <code>NonceSize</code>, <code>GenerateKey</code>, <code>GenerateNonce</code>, <code>CreateEncryptor</code> / <code>CreateDecryptor</code> / <code>CreateTransform</code></td>
+<td>The stream-cipher wrapper base (not a <code>SymmetricAlgorithm</code>). The parameterless <code>Create*</code> overloads allow <strong>one transform per nonce</strong>; pass <code>(key, nonce)</code> explicitly to create a second (decrypting) transform.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.TransformMode.html">TransformMode</a></td>
+<td><code>Encrypt</code>, <code>Decrypt</code></td>
+<td>A public enum that no public member currently consumes; the transforms take a <code>bool encrypt</code> instead.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a></td>
+<td>Ten mode names; five are factory-buildable.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a></td>
+<td><code>Create(mode, cipher, iv)</code> → ECB / CBC / CFB / OFB / CTR; <code>NotSupportedException</code> otherwise; <code>ArgumentException</code> for a missing or mis-sized IV.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a></td>
+<td><code>Create(PaddingMode)</code> (five schemes) and <code>Create(PaddingModeKind)</code> (adds ISO 7816-4); <code>CryptographicException</code> for unknown values.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a></td>
+<td><code>Pad(input, blockSizeBits)</code>, <code>Unpad(input, blockSizeBits)</code>, <code>StripsPaddingOnUnpad</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a></td>
+<td><code>BlockMode</code> ↔ <code>Mode</code>, <code>BlockPadding</code> ↔ <code>Padding</code> synchronization for the standard wrappers.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a></td>
+<td>The <code>ICryptoTransform</code> the wrappers return; <code>protected internal</code> constructors.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a></td>
+<td>Direct-only modes.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="composing-primitives.html">Composing primitives</a> — the manual-versus-wrapper walk-through this page tabulates.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> — one round trip per mode with the IV rules.</li>
+<li><a href="padding.html">Padding</a> — what each scheme emits and the padding-oracle caveat.</li>
+<li><a href="aead-modes.html">AEAD modes</a> — the six authenticated transforms in depth.</li>
+<li><a href="extending.html">Extending the library</a> — a custom <code>IBlockCipher</code> behind <code>BlockCipherTransform</code>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Serialization — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Serialization — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="core-concepts">Core concepts</h1>
+
+<p>This page is the vocabulary of <strong>Bodu.Text.Serialization</strong> — the rules that hold identically in every serializer that consumes the package. Where a rule applies only to the structured serializers (<a href="../bencode/index.html">Bencode</a>, <a href="../toml/index.html">TOML</a>, <a href="../yaml/index.html">YAML</a>), which compile the shared metadata resolver and converter engine, the page says so; the <a href="../../formats/index.html">line formats</a> honor the subset listed in the <a href="index.html#who-uses-what">introduction</a>.</p>
+<p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
+<h2 id="attribute-versus-options-precedence">Attribute versus options precedence</h2>
+<p>Every setting that can be expressed both on the model and on the serializer options resolves <strong>closest-wins</strong>: a member-level attribute beats a type-level attribute, which beats the options.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Member attribute</th>
+<th>Type attribute</th>
+<th>Options property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wire name</td>
+<td><code>[PropertyName]</code></td>
+<td><code>[NamingPolicy]</code></td>
+<td><code>PropertyNamingPolicy</code></td>
+</tr>
+<tr>
+<td>Ignore condition</td>
+<td><code>[Ignore(Condition = …)]</code></td>
+<td>—</td>
+<td><code>DefaultIgnoreCondition</code></td>
+</tr>
+<tr>
+<td>Converter</td>
+<td><code>[Converter]</code></td>
+<td><code>[Converter]</code></td>
+<td><code>Converters</code>, then the built-ins</td>
+</tr>
+<tr>
+<td>Object creation</td>
+<td><code>[ObjectCreationHandling]</code></td>
+<td><code>[ObjectCreationHandling]</code></td>
+<td><code>PreferredObjectCreationHandling</code></td>
+</tr>
+<tr>
+<td>Unmapped keys</td>
+<td>—</td>
+<td><code>[UnmappedMemberHandling]</code></td>
+<td><code>UnmappedMemberHandling</code></td>
+</tr>
+<tr>
+<td>Field participation</td>
+<td><code>[Include]</code></td>
+<td>—</td>
+<td><code>IncludeFields</code></td>
+</tr>
+</tbody>
+</table>
+<p>The options object is therefore the <em>default</em> for everything the model has not pinned, which is why one options instance can serve many model types without per-type configuration.</p>
+<h2 id="naming-policy-application-order">Naming-policy application order</h2>
+<p>The wire key of a member is resolved once, when the type's metadata is built, in this order:</p>
+<ol>
+<li><code>[PropertyName(&quot;…&quot;)]</code> on the member — always wins, and is never passed through a policy.</li>
+<li><code>[NamingPolicy(KnownNamingPolicy.…)]</code> on the declaring type — converts the CLR name with that policy.</li>
+<li><code>PropertyNamingPolicy</code> on the options — converts the CLR name with the configured policy.</li>
+<li>Otherwise the CLR member name is used verbatim.</li>
+</ol>
+<p>Two members that resolve to the <strong>same</strong> wire key (ordinal comparison) are a model error: metadata resolution throws rather than emitting a document that cannot be canonical. Keys that differ only by case remain distinct on the wire; when <code>PropertyNameCaseInsensitive</code> is on, reads match either.</p>
+<p>The policy converts <em>member</em> names. It does not rewrite <code>[PropertyName]</code> values, dictionary keys, or <code>[ExtensionData]</code> keys, and an enumeration member serialized by name takes <code>[StringEnumMemberName]</code> over anything else.</p>
+<h2 id="ignore-conditions">Ignore conditions</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> has two different kinds of member:</p>
+<ul>
+<li><strong><code>Always</code></strong> removes the member at metadata-resolution time. It is neither written nor read — an input key with that name is treated as unmapped.</li>
+<li><strong><code>WhenWritingNull</code></strong> and <strong><code>WhenWritingDefault</code></strong> are evaluated at <em>write</em> time only. The effective condition for a member is <code>[Ignore(Condition = …)]</code> when present, otherwise the options-level <code>DefaultIgnoreCondition</code>; a member-level <code>Never</code> therefore opts a member <em>out</em> of an options-level default. Reading is never affected by these two values.</li>
+</ul>
+<p>Formats with no null literal behave as though <code>WhenWritingNull</code> were always on — TOML omits a <code>null</code> member regardless of the condition — while YAML writes <code>null</code> unless a condition suppresses it.</p>
+<h2 id="required-members-and-constructor-binding">Required members and constructor binding</h2>
+<p>A member is <strong>required</strong> when it carries <code>[Required]</code>, when it is declared with the C# <code>required</code> keyword, or when it binds to a constructor parameter that has no default value. On deserialization the structured serializers check every required member for presence <em>before</em> the instance is constructed and throw the format's serialization exception naming the missing wire key. (INI and DotEnv honor <code>[Required]</code> through their own binders; Delimited does not.)</p>
+<p>Constructor selection follows a fixed ladder:</p>
+<ol>
+<li>the constructor marked <code>[Constructor]</code>;</li>
+<li>otherwise a public parameterless constructor (a value type always takes this branch);</li>
+<li>otherwise the single declared constructor, or the one with the most parameters.</li>
+</ol>
+<p>Parameters bind to members by <strong>name, case-insensitively</strong> — a <code>host</code> parameter binds the <code>Host</code> property. A bound member is passed to the constructor and not assigned again afterwards; an unbound parameter receives its declared default (or <code>default(T)</code>). Members with no constructor parameter are assigned through their setters after construction.</p>
+<h2 id="include-fields-and-non-public-accessors">Include, fields, and non-public accessors</h2>
+<p>By default a property participates when it has a public getter, and is assigned only through a public setter. <code>[Include]</code> binds through the declared accessors regardless of visibility, so <code>{ get; private set; }</code> and <code>{ get; init; }</code> round-trip. Public fields participate only when <code>IncludeFields</code> is on or the field carries <code>[Include]</code>; non-public fields are never surfaced.</p>
+<h2 id="extension-data">Extension data</h2>
+<p>A type may declare at most one <code>[ExtensionData]</code> member — two is a metadata error. The member's type must be dictionary-shaped and keyed by <code>string</code>: for Bencode and TOML the format's object node (<code>BencodeObject</code> / <code>TomlObject</code>) or an <code>IDictionary&lt;string, …Node?&gt;</code> / <code>Dictionary&lt;string, …Node?&gt;</code> of the format's node type; for YAML any <code>IDictionary&lt;string, object?&gt;</code>. On read, every key that maps to no member lands in the dictionary — extension data takes precedence over <code>UnmappedMemberHandling</code>, so a captured key never triggers <code>Disallow</code>. On write, the captured entries are emitted after the type's declared members; an entry whose key collides with a declared member's wire key is a serialization error.</p>
+<h2 id="unmapped-members">Unmapped members</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> decides what happens to an input key with no member and no extension-data member: <code>Skip</code> (the default) discards it, <code>Disallow</code> throws the format's serialization exception naming the key and type. <code>[UnmappedMemberHandling]</code> on the type overrides the options.</p>
+<h2 id="object-creation-handling">Object creation handling</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandling.html">ObjectCreationHandling</a> applies to collection and dictionary members. <code>Replace</code> (the default) builds a new instance and assigns it; <code>Populate</code> adds the entries read from the input into the instance the member already holds, which is how a get-only <code>List&lt;T&gt;</code> initialized in the type round-trips. When the existing value is <code>null</code> or the member is not a populatable collection the serializer falls back to <code>Replace</code>. A member-level attribute beats a type-level one, and both beat <code>PreferredObjectCreationHandling</code>.</p>
+<h2 id="property-order">Property order</h2>
+<p>Members are presented to the writer in ascending <code>[PropertyOrder]</code> value, ties broken by declaration order; unannotated members are <code>0</code>. This governs the order in which the object mapper <em>visits</em> members. A format that canonicalizes its output — Bencode sorts dictionary keys — applies its own on-wire order afterwards, so use <code>[PropertyOrder]</code> to control presentation in document-order formats such as TOML and YAML.</p>
+<h2 id="callback-order">Callback order</h2>
+<p>The four interfaces are invoked by the object-mapping converter — the catch-all that writes a class or struct as a keyed table. Within one instance the order is always:</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Deserialization</th>
+<th>Serialization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Member values are read, each through its member converter.</td>
+<td>A non-null value is selected for writing.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Required members are checked; the instance is constructed.</td>
+<td><strong><code>OnSerializing</code></strong> fires.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong><code>OnDeserializing</code></strong> fires — after construction, before any settable member is assigned.</td>
+<td>The table is opened.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Settable members are assigned; extension data is populated.</td>
+<td>Members are written in order; extension data follows.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong><code>OnDeserialized</code></strong> fires on the fully materialized instance.</td>
+<td>The table is closed; <strong><code>OnSerialized</code></strong> fires.</td>
+</tr>
+</tbody>
+</table>
+<p>Consequences: <code>OnDeserializing</code> cannot influence how values are parsed (phase 1 has already run), only what the instance looks like before assignment; with a parameterized constructor it already observes the constructor-bound members. <code>OnSerializing</code> runs before the table opens, so any mutation it makes is reflected in the output. Nested objects fire their own callbacks, innermost completing first. A type claimed by a <em>custom</em> converter bypasses the object mapper entirely, so none of its callbacks fire — put that logic inside the converter. The line formats invoke the same four hooks around their own binders.</p>
+<h2 id="options-lifecycle-freezing-and-thread-safety">Options lifecycle: freezing and thread safety</h2>
+<p>A <code>…SerializerOptions</code> instance is mutable until it is first used. The first <code>Serialize</code> / <code>Deserialize</code> call (or an explicit <code>MakeReadOnly()</code>) freezes it: <code>IsReadOnly</code> becomes <code>true</code>, every property setter and every mutating operation on <code>Converters</code> throws <code>InvalidOperationException</code>, and the snapshot of registered converters is captured. A frozen instance caches its resolved converters and per-type metadata in concurrent dictionaries, so it is <strong>safe to share across threads</strong> and cheaper to reuse than to rebuild — configure one instance per configuration, freeze it (or let first use do so), and pass it everywhere. The static <code>Default</code> instance on the line-format options types is created already frozen; an instance you construct yourself freezes on first use.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Freezing is by <em>instance</em>. Cloning is not provided; to vary one setting, construct a second options object.</p>
+</div>
+<h2 id="converter-resolution-order">Converter resolution order</h2>
+<p>Converters are a structured-serializer concept (the line formats convert scalars with the invariant culture and expose no converter pipeline). For a given type the engine resolves a converter by checking, in order:</p>
+<ol>
+<li><code>[Converter(typeof(…))]</code> on the <strong>member</strong> — instantiated for that member only;</li>
+<li><code>[Converter(typeof(…))]</code> on the <strong>type</strong>;</li>
+<li>the options' <code>Converters</code> list, <strong>in registration order</strong> — the first converter whose <code>CanConvert</code> returns <code>true</code> wins, so register the more specific converter first;</li>
+<li>the built-in converters.</li>
+</ol>
+<p>A converter type named by the attribute must derive from the format's converter base and declare a public parameterless constructor. A converter <em>factory</em> found at any step is asked to create the concrete converter, which is then verified to accept the type. The result is cached on the options per type, which is one more reason the options must be frozen before use.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Text.Serialization introduction</a></strong> — the attribute family, naming policies, enums, callbacks, and which serializers use which parts.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install and the first annotated DTO.</li>
+<li><strong><a href="../../../guides/serialization/toml/attributes.html">TOML attribute patterns</a></strong> and <strong><a href="../../../guides/serialization/toml/callbacks.html">TOML callbacks</a></strong> — twelve worked attribute recipes and the callback pipeline in detail (the same recipes apply to Bencode and YAML by swapping the prefix).</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the shared architecture of the three structured serializers.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

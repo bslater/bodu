@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Core — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Core — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boducore--core-concepts">Bodu.Core — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/core/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic.</p>
+<p>For the high-level shape of the library and the namespace map, start with the <a href="index.html">introduction</a>. The collection vocabulary — fixed capacity, ring backing, eviction policies, navigation, sketches — lives on the <a href="../collections/concepts.html">Bodu.Collections concepts page</a>, and the concurrency vocabulary on the <a href="../collections-concurrent/concepts.html">Bodu.Collections.Concurrent concepts page</a>.</p>
+<h2 id="weekpattern">WeekPattern</h2>
+<p><a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> is an immutable <code>readonly struct</code> that represents a set of days within a seven-day week, packed into a 7-bit bitmask. It supports:</p>
+<ul>
+<li><strong>Composition</strong> — <code>With(DayOfWeek)</code> and <code>Without(DayOfWeek)</code> return new patterns; the bitwise operators <code>|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code> compose set union, intersection, symmetric difference, and complement.</li>
+<li><strong>Parsing</strong> — <code>WeekPattern.Parse(&quot;_MTWTF_&quot;)</code> produces the weekday set; the text form is a seven-character mask of day initials in Sunday-first order (Monday-first is auto-detected, or forced with <code>ParseExact(input, &quot;M&quot;)</code>), with <code>_</code> for absent days, or seven <code>0</code>/<code>1</code> bits. Presets <code>WeekPattern.Empty</code>, <code>WeekPattern.Weekdays</code>, <code>WeekPattern.Weekend</code>, and <code>WeekPattern.AllDays</code> cover the common cases, and the regional working-week presets (<code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>SundayToThursday</code>, <code>SaturdayToWednesday</code>, …) mirror the members of <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>.</li>
+<li><strong>Enumeration</strong> — implements <code>IEnumerable&lt;DayOfWeek&gt;</code>, yielding selected days in <code>DayOfWeek</code> order.</li>
+</ul>
+<p>Because the receiver is a value type, every mutation returns a new instance. <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> is the companion enum naming the common working-week patterns; conversion to and from <code>WeekPattern</code> is via the extension methods on <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>.</p>
+<h2 id="pooled-buffer">Pooled buffer</h2>
+<p>A <strong>pooled buffer</strong> is a writer-style builder backed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.arraypool-1">ArrayPool&lt;T&gt;</a> rather than <code>new T[]</code>. <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> rents an array on construction, grows it by re-renting when needed, exposes <code>WrittenSpan</code> for zero-copy reads, and returns the array to the pool on <code>Dispose</code>.</p>
+<p>Ownership semantics:</p>
+<ul>
+<li>The builder owns the rented array; callers must call <code>Dispose</code> (or use <code>using</code>) to return it.</li>
+<li><code>WrittenSpan</code> and <code>WrittenMemory</code> are valid only while the builder is alive. Copy out before disposal if the data must outlive the <code>using</code> block.</li>
+<li>For reference-typed <code>T</code>, the live portion is cleared before the array is returned, preventing unintended object retention.</li>
+<li><code>Reset</code> discards the accumulated content and reuses the current rented buffer without a pool round-trip.</li>
+</ul>
+<p>The builder implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.imemoryowner-1">IMemoryOwner&lt;T&gt;</a>, so it slots into standard <code>Span&lt;T&gt;</code> / <code>Memory&lt;T&gt;</code> pipelines.</p>
+<h2 id="railway-oriented-outcomes">Railway-oriented outcomes</h2>
+<p>The <code>Bodu.Functional</code> namespace models &quot;this might not produce a value&quot; as data rather than control flow. Three value types cover the three shapes of the problem:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Functional.Option-1.html">Option&lt;T&gt;</a> — a value that may be absent: <code>Some(value)</code> or <code>None</code>. Reach for it when absence is <em>normal</em> and carries no explanation (a cache miss, an optional setting).</li>
+<li><a class="xref" href="../../api/Bodu.Functional.Result.html">Result</a> / <a class="xref" href="../../api/Bodu.Functional.Result-1.html">Result&lt;T&gt;</a> — success or failure, where failure carries a <a class="xref" href="../../api/Bodu.Functional.ResultError.html">ResultError</a> (optional code, never-null message, optional captured exception). Reach for it when the caller needs to know <em>why</em> an operation failed without paying for a thrown exception.</li>
+<li><a class="xref" href="../../api/Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a> — a symmetric disjoint union of two equally valid alternatives, with no success/failure bias.</li>
+</ul>
+<p>The <strong>railway</strong> style chains these through combinators instead of <code>if</code>/<code>throw</code> ladders: <code>Map</code> transforms the value on the success track, <code>Bind</code> sequences a fallible step, <code>Filter</code> demotes a <code>Some</code> to <code>None</code>, and <code>Match</code> forces both tracks to be handled at the exit. Task-based companions (<code>MapAsync</code> / <code>BindAsync</code> / <code>MatchAsync</code> / <code>TapAsync</code> on <a class="xref" href="../../api/Bodu.Functional.OptionAsyncExtensions.html">OptionAsyncExtensions</a> and <a class="xref" href="../../api/Bodu.Functional.ResultAsyncExtensions.html">ResultAsyncExtensions</a>) keep the chain flowing through async steps.</p>
+<p>Because all three are <code>readonly struct</code>s, each defines its <strong>default contract</strong> — what an unassigned field means:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th><code>default</code> means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Option&lt;T&gt;</code></td>
+<td><code>None</code> — absence, safely.</td>
+</tr>
+<tr>
+<td><code>Result&lt;T&gt;</code></td>
+<td>A <strong>failure</strong> carrying an empty error — never a phantom success.</td>
+</tr>
+<tr>
+<td><code>Either&lt;TLeft,TRight&gt;</code></td>
+<td>An explicit <strong>uninitialized</strong> state — neither side is fabricated.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="natural-ordering">Natural ordering</h2>
+<p>Ordinal string comparison sorts <code>file10</code> before <code>file2</code> because <code>'1' &lt; '2'</code> — correct for code, wrong for humans. <strong>Natural ordering</strong> compares embedded digit runs <em>numerically</em> while comparing the surrounding text as text, so <code>file2</code> sorts before <code>file10</code>.</p>
+<p><a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> implements this as a standard <code>IComparer&lt;string&gt;</code> with ordinal, case-insensitive, and culture-aware modes, so it drops into <code>OrderBy</code>, <code>SortedSet&lt;string&gt;</code>, <code>Array.Sort</code>, or any API that accepts a comparer. Its companions <a class="xref" href="../../api/Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a> and <a class="xref" href="../../api/Bodu.Extensions.ComparableHelper.html">ComparableHelper</a> round out ordering ergonomics for any <code>IComparable&lt;T&gt;</code> — <code>Min</code>, <code>Max</code>, <code>Clamp</code>, and readable comparison predicates (<code>IsGreaterThan</code>, <code>IsGreaterThanOrEqual</code>). See the <a href="../../guides/core/natural-string-comparer.html">Natural string comparer</a> guide.</p>
+<h2 id="async-coordination">Async coordination</h2>
+<p>The <code>Bodu.Threading</code> namespace provides the <strong>async-friendly peers of the BCL synchronization types</strong>: where <code>lock</code>, <code>Monitor</code>, and <code>ManualResetEvent</code> block a thread, these primitives return awaitables, so a waiting caller yields its thread back to the pool.</p>
+<ul>
+<li><strong>Mutual exclusion and gating</strong> — <a class="xref" href="../../api/Bodu.Threading.AsyncLock.html">AsyncLock</a> (an awaitable mutex whose <code>LockAsync</code> result releases on dispose), <a class="xref" href="../../api/Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> (bounded concurrency), and <a class="xref" href="../../api/Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> (many readers / one writer).</li>
+<li><strong>Signalling</strong> — <a class="xref" href="../../api/Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a>, and <a class="xref" href="../../api/Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a> re-express the BCL event types as awaitables.</li>
+<li><strong>Flow shaping</strong> — <a class="xref" href="../../api/Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a> (one-time async initialization with a single shared invocation), <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> (trailing-edge coalescing of bursts), and <a class="xref" href="../../api/Bodu.Threading.RateGate.html">RateGate</a> (N-operations-per-window rate limiting).</li>
+</ul>
+<p>The common contract: waiting never blocks a thread, cancellation is honoured through <code>CancellationToken</code> parameters, and lock releases are scoped by <code>IDisposable</code> so a <code>using</code> guarantees the release path. See the <a href="../../guides/core/async-primitives.html">Async coordination primitives</a> guide.</p>
+<h2 id="throwhelper">ThrowHelper</h2>
+<p><a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> centralises the <code>ArgumentException</code> family for the entire Bodu suite — every Bodu library calls into it rather than rolling its own checks. The pattern is:</p>
+<pre><code class="lang-csharp">public static double Average(IReadOnlyList&lt;int&gt; values)
+{
+    ThrowHelper.ThrowIfNull(values);
+    ThrowHelper.ThrowIfZero(values.Count);
+    return values.Average();
+}
+</code></pre>
+<p>The helpers are partitioned by concern across partial files: <code>Null</code>, <code>Numeric</code>, <code>Comparison</code>, <code>Equality</code>, <code>Array</code>, <code>Collection</code>, <code>Span</code>, <code>Type</code>, <code>String</code>, <code>Ascii</code>. Each helper accepts a <code>[CallerArgumentExpression(nameof(value))] string? paramName = null</code> parameter, so the call site does not need to repeat the argument name. Two parallel partial-class sets target the modern (.NET 8) and netstandard runtimes; the public surface is identical across both.</p>
+<p>Centralising the guards means the exception messages, parameter-name capture, and <code>[StackTraceHidden]</code> behaviour stay consistent across every Bodu library — and <code>ThrowHelper</code> is the primary dependency the other Bodu packages take on <code>Bodu.Core</code>.</p>
+<h2 id="random-generator-abstraction">Random generator abstraction</h2>
+<p>Several extension helpers — shuffles, sampling, randomised access — and the <code>Bodu.Collections</code> catalogue depend on a pluggable random source rather than a hard-coded <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.random">Random</a>. The seam is <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a>, a one-method interface (<code>int Next(int maxValue)</code>).</p>
+<p>Two implementations ship in <code>Bodu.Core</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a></td>
+<td>Tight inner loops, reproducible tests, or shuffle code where the BCL's <code>Random</code> is the measured bottleneck. Subclasses <code>System.Random</code> and implements <code>IRandomGenerator</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a></td>
+<td>An existing <code>System.Random</code> instance must be reused — for example a seeded <code>Random</code> shared across multiple helpers. Wraps the <code>Random</code> and forwards calls.</td>
+</tr>
+</tbody>
+</table>
+<p>Neither implementation is cryptographically secure; both are deterministic given a seed. Callers that need cryptographic randomness should use <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.randomnumbergenerator">RandomNumberGenerator</a> directly. Helpers that accept an <code>IRandomGenerator</code> make the dependency explicit so tests can supply a deterministic generator without monkey-patching globals.</p>
+<h2 id="calendar-shape-extensions">Calendar-shape extensions</h2>
+<p>The <code>Bodu.Extensions</code> namespace ships several enums that encode the <em>shape</em> of a calendar without implementing one — they parameterise the date arithmetic on <a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> and <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> without pulling in <code>Bodu.Globalization.Calendar</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Encodes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a></td>
+<td>The start month of Q1 — <code>JanuaryToDecember</code>, <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code> (UK tax year), <code>March25ToMarch24</code> (Lady Day), <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, plus <code>Custom</code> for externally defined rules. Drives <code>FirstDateOfQuarter</code>, <code>LastDateOfQuarter</code>, <code>Quarter</code>, <code>FiscalYear</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></td>
+<td>The ordinal position of a weekday in a month — <code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>. Drives <code>NthDateOfWeekInMonth</code> and the recurrence-rule patterns.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a></td>
+<td>The 4-4-5 / 4-5-4 / 5-4-4 split for retail-style 13-week fiscal quarters. Each quarter is always 13 weeks; the pattern only affects fiscal-period boundaries inside the quarter. The extra week in a 53-week fiscal year is always appended to the final period of Q4.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></td>
+<td>Named working-week presets — <code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, and others — plus <code>Custom</code> for caller-supplied <code>WeekPattern</code> schedules. Drives <code>IsWeekday</code>, <code>IsWeekend</code>, <code>IsInWorkingWeek</code>, <code>NextWeekday</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></td>
+<td>The injection seam for non-enumerable weekend rules — pass an implementation to override the built-in <code>WorkingDaysOfWeek</code> presets when an application needs hybrid, rotating, or domain-specific weekend logic.</td>
+</tr>
+</tbody>
+</table>
+<p>These types are pure data carriers. The actual algorithms live on the extension classes (<code>DateTimeExtensions.*</code>, <code>DateOnlyExtensions.*</code>) so the same shapes can be passed to a <code>DateTime</code>, <code>DateOnly</code>, or any future date type without duplicating the enums.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — the namespace map and headline types.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + runnable minimal samples for each scenario.</li>
+<li><strong><a href="../../guides/core/index.html">Core Foundations guides</a></strong> — recipe-style walk-throughs for the headline types.</li>
+<li><strong><a href="../collections/concepts.html">Bodu.Collections concepts</a></strong> — the collection vocabulary (fixed capacity, eviction, navigation, sketches).</li>
+<li><strong><a href="../collections-concurrent/concepts.html">Bodu.Collections.Concurrent concepts</a></strong> — the concurrency vocabulary for the thread-safe collections.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — Bodu.Core alongside the collection packages and the <code>Bodu.Text</code> namespace utilities; the <a href="../topics/core-foundations-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

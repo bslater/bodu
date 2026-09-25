@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Streaming and validation | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Streaming and validation | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="streaming-and-validation">Streaming and validation</h1>
+
+<p>Two things separate reading a PST you trust from reading one you do not: how much of it you let into memory at once, and how much of it you insist is well-formed. This guide covers both — the streaming twins of every payload accessor, the four knobs on <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a>, what each <a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> actually checks, and the complete <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> catalogue so you can say <em>why</em> a file was rejected.</p>
+<p>The samples run against <code>sample1.pst</code> from the <a href="../../samples/io-pst.html">runnable PST sample</a>, copied as <code>archive.pst</code>; the quoted output is what they print.</p>
+<h2 id="pattern-1--price-a-payload-then-stream-it">Pattern 1 — price a payload, then stream it</h2>
+<p>Every payload has a cheap length and a streaming read beside its buffered convenience. On a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a>: <code>DataLength</code> sums the data tree's leaf lengths from its index blocks without reading any leaf; <code>ReadAllBytes()</code> flattens the tree into one array; <code>OpenDataStream()</code> returns a seekable read-only <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> that keeps one leaf block resident, so the logical payload can exceed available memory.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+PstNodeInfo biggest = file.EnumerateNodes().MaxBy(n =&gt; n.DataLength)!;
+PstNode node = file.GetNode(biggest.NodeId);
+
+Console.WriteLine($&quot;{node}: {node.DataLength} bytes&quot;);   // priced from the data tree's index blocks only
+
+using Stream data = node.OpenDataStream();                // one leaf block resident at a time
+byte[] buffer = new byte[16 * 1024];
+long total = 0;
+int read;
+while ((read = data.Read(buffer, 0, buffer.Length)) &gt; 0)
+    total += read;
+
+Console.WriteLine($&quot;streamed {total} bytes; ReadAllBytes would allocate {node.ReadAllBytes().Length}&quot;);
+
+// 0x00200024 (NormalMessage): 4198 bytes
+// streamed 4198 bytes; ReadAllBytes would allocate 4198
+</code></pre>
+<p>The interesting payloads are usually not node data but <em>property values</em> — an attachment's bytes live behind <code>PidTagAttachDataBinary</code> (<code>0x3701</code>) in the attachment object's property context. <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a> offers the same pair: <code>TryGetValueLength(id, out length)</code> reads only the value's index blocks, and <code>TryOpenValueStream(id, out stream)</code> serves a subnode-resident value block by block — the same stream <code>OpenDataStream</code> returns — while a heap-resident value is served from the decoded heap bytes.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+foreach (PstNodeInfo info in file.EnumerateNodes())
+{
+    if (info.NodeId.Type != PstNodeType.NormalMessage || !info.HasSubnodes)
+        continue;
+
+    PstNode message = file.GetNode(info.NodeId);
+    foreach (PstNodeInfo child in message.EnumerateSubnodes())
+    {
+        if (child.NodeId.Type != PstNodeType.Attachment || !message.TryGetSubnode(child.NodeId, out PstNode? attachment))
+            continue;
+
+        PstPropertyContext properties = attachment.ReadPropertyContext();
+
+        // 0x3701 PidTagAttachDataBinary: price it without reading it...
+        if (!properties.TryGetValueLength(0x3701, out long length))
+            continue;
+
+        Console.WriteLine($&quot;{message.Id} -&gt; {child.NodeId}: {length}-byte payload&quot;);
+
+        // ...then copy it block by block; MaxNodeDataLength never applies here.
+        if (properties.TryOpenValueStream(0x3701, out Stream? payload))
+        {
+            using (payload)
+            using (FileStream target = File.Create($&quot;{child.NodeId.Index}.bin&quot;))
+                payload.CopyTo(target);
+        }
+    }
+}
+
+// 0x00200024 -&gt; 0x00008025: 93142-byte payload
+</code></pre>
+<p>Both <code>Try*</code> members return <code>false</code> when the property is absent and throw <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> when its storage is malformed. Inline and fixed-width values are exposed through the stream as their raw little-endian bytes for uniformity; the typed accessors on <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> remain the natural way to read those.</p>
+<p>Table cells have the identical pair on <a class="xref" href="../../api/Bodu.IO.Pst.PstTableRow.html">PstTableRow</a> — <code>TryGetCellLength(id, out length)</code> and <code>TryOpenCellStream(id, out stream)</code> — which answer <code>false</code> when the column is missing <em>or</em> the row's existence bitmap marks the cell absent:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+using PstFile file = PstFile.OpenRead(&quot;archive.pst&quot;);
+
+foreach (PstNodeInfo info in file.EnumerateNodes())
+{
+    if (info.NodeId.Type != PstNodeType.ContentsTable)
+        continue;
+
+    PstTableContext contents = file.GetNode(info.NodeId).ReadTableContext();
+    foreach (PstTableRow row in contents.EnumerateRows())
+    {
+        // 0x0037 PidTagSubject as the contents table stores it: priced, then opened.
+        if (row.TryGetCellLength(0x0037, out long length) &amp;&amp; row.TryOpenCellStream(0x0037, out Stream? cell))
+        {
+            using (cell)
+                Console.WriteLine($&quot;{info.NodeId} row {new PstNodeId(row.RowId)}: subject cell {length} bytes, stream length {cell.Length}&quot;);
+        }
+    }
+}
+
+// 0x0000808E row 0x00200024: subject cell 52 bytes, stream length 52
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>Every stream these members return is bound to the session. After the <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> is disposed, each read throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> — even for blocks already in the cache. Dispose the stream before the session, and never hand one across a <code>using</code> boundary that outlives the file.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Buffered</th>
+<th>Priced</th>
+<th>Streamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A node's payload</td>
+<td><code>PstNode.ReadAllBytes()</code></td>
+<td><code>PstNode.DataLength</code></td>
+<td><code>PstNode.OpenDataStream()</code></td>
+</tr>
+<tr>
+<td>A property value</td>
+<td><code>PstPropertyContext.GetValue</code> / <code>TryGetValue</code></td>
+<td><code>TryGetValueLength</code></td>
+<td><code>TryOpenValueStream</code></td>
+</tr>
+<tr>
+<td>A table cell</td>
+<td><code>PstTableRow.TryGetCell</code></td>
+<td><code>TryGetCellLength</code></td>
+<td><code>TryOpenCellStream</code></td>
+</tr>
+</tbody>
+</table>
+<p>The buffered column is governed by <code>MaxNodeDataLength</code> (below); the priced and streamed columns are not.</p>
+<h2 id="pstfileoptions"><code>PstFileOptions</code></h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+var options = new PstFileOptions
+{
+    ValidationLevel = PstValidationLevel.Strict,   // every CRC and trailer signature enforced
+    BlockCacheSize = 512,                          // decoded pages/blocks kept (0 disables the cache)
+    MaxNodeDataLength = 64L * 1024 * 1024,         // refuse to materialize a node payload above 64 MiB
+    MaxDataTreeLeaves = 16_384,                    // refuse a data tree fanning out to more leaf blocks
+};
+
+using PstFile file = PstFile.Open(File.OpenRead(&quot;archive.pst&quot;), options);
+Console.WriteLine(file.Format);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Default</th>
+<th>Effect</th>
+<th>When it trips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ValidationLevel</code></td>
+<td><code>Compatible</code></td>
+<td>How much cross-checking each read performs — see the next section.</td>
+<td>Depends on the level.</td>
+</tr>
+<tr>
+<td><code>BlockCacheSize</code></td>
+<td><code>256</code></td>
+<td>The least-recently-used cache of decoded pages and block payloads, in entries. Each entry is at most one 8 KiB block, so the default bounds the cache near 2 MB per session. Repeated structural reads — B-tree walks, the same node's contexts read twice — are served from it instead of re-reading and re-decoding the source. <code>0</code> disables caching; negative values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>.</td>
+<td>Not a limit.</td>
+</tr>
+<tr>
+<td><code>MaxNodeDataLength</code></td>
+<td>256 MiB</td>
+<td>The largest node payload the session <strong>materializes</strong>: it governs <code>ReadAllBytes</code>, the heap-on-node parse behind <code>ReadPropertyContext</code> / <code>ReadTableContext</code>, and subnode-resident property values read whole. The <em>declared</em> size is what is bounded — a crafted tree can reference the same physical block thousands of times, so the file size proves nothing. <code>OpenDataStream</code> and the <code>TryOpen*Stream</code> members are unaffected by design. Zero or negative values throw.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> with <code>Error == PstFileError.LimitExceeded</code>, at every validation level.</td>
+</tr>
+<tr>
+<td><code>MaxDataTreeLeaves</code></td>
+<td>65,536</td>
+<td>The most leaf data blocks one node's data tree may reference (about 512 MiB of 8 KiB blocks). Enforced while the tree's internal blocks are walked, before any leaf is read, for streaming and buffered reads alike — the leaf list itself is the allocation it bounds. Zero or negative values throw.</td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> with <code>Error == PstFileError.LimitExceeded</code>, at every validation level.</td>
+</tr>
+</tbody>
+</table>
+<p>The mail-store reader forwards the first three from <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html">OutlookMailStoreReaderOptions</a> and leaves <code>MaxDataTreeLeaves</code> at its default; open the file with <code>PstFile</code> when you need to change it.</p>
+<h2 id="what-each-validation-level-checks">What each validation level checks</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> governs only how the reader treats <em>recoverable</em> inconsistencies. The memory-safety invariants — the magic, a declared version, a header of the right size, the sentinel byte, page and block geometry, every bounds check on every offset, and the two resource limits above — hold at every level.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th><code>Minimal</code></th>
+<th><code>Compatible</code> (default)</th>
+<th><code>Strict</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Header structure (magic, version, size, sentinel)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Header CRC (<code>dwCRCPartial</code> over 471 bytes)</td>
+<td>—</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Header file length within the stream</td>
+<td>—</td>
+<td>—</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Page trailer type and B-tree page geometry</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Page CRC, trailer signature, and recorded block identifier</td>
+<td>—</td>
+<td>—</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Block geometry and trailer length</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Block CRC, trailer signature, and recorded block identifier</td>
+<td>—</td>
+<td>—</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Unknown wire type in a property-context record</td>
+<td>tolerated (kept as a raw dword)</td>
+<td>tolerated</td>
+<td>rejected (<code>InvalidPropertyValue</code>)</td>
+</tr>
+<tr>
+<td>Unordered property-context keys</td>
+<td>re-sorted</td>
+<td>re-sorted</td>
+<td>rejected</td>
+</tr>
+<tr>
+<td>BTree-on-heap key order</td>
+<td>—</td>
+<td>—</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Row matrix holding more rows than the row index declares</td>
+<td>tolerated</td>
+<td>tolerated</td>
+<td>rejected (<code>InvalidTableContext</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>Compatible</code> is the choice for real-world files — writers have shipped stores with stale trailer CRCs that Outlook reads happily. <code>Strict</code> is for validating a corpus or refusing tampered input. <code>Minimal</code> is for salvage: it still walks structure safely but will follow a checksum-failed page as far as the geometry allows.</p>
+<h2 id="pattern-2--open-under-strict-and-handle-a-truncated-file">Pattern 2 — open under <code>Strict</code> and handle a truncated file</h2>
+<p>A truncated PST is the commonest damage. Under <code>Strict</code> the header's declared file length is compared with the stream at open, so the file is rejected before a single node is read:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+byte[] bytes = File.ReadAllBytes(&quot;archive.pst&quot;);
+var strict = new PstFileOptions { ValidationLevel = PstValidationLevel.Strict };
+
+try
+{
+    using var truncated = new MemoryStream(bytes, 0, bytes.Length / 2, writable: false);
+    using PstFile file = PstFile.Open(truncated, strict);
+    Console.WriteLine($&quot;opened: {file.Format}&quot;);
+}
+catch (PstUnsupportedFormatException ex)
+{
+    Console.WriteLine($&quot;unsupported: {ex.Message}&quot;);
+}
+catch (PstFileFormatException ex) when (ex.Error == PstFileError.InvalidHeader)
+{
+    Console.WriteLine($&quot;rejected at open: {ex.Error} — {ex.Message}&quot;);
+}
+catch (PstFileException ex)
+{
+    Console.WriteLine($&quot;rejected: {ex.Error} — {ex.Message}&quot;);
+}
+
+// rejected at open: InvalidHeader — The header declares a file length beyond the end of the stream.
+</code></pre>
+<p>Catch <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> first when you want to say &quot;this is an OST&quot; rather than &quot;this is corrupt&quot;; it is a sibling of <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, not a subclass, so the order between those two does not matter, but both derive from <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a>, which must come last.</p>
+<p>The tolerant default opens the same stream — the header is intact and the B-tree pages sit in the surviving half — and fails only when a read reaches past the end:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+byte[] bytes = File.ReadAllBytes(&quot;archive.pst&quot;);
+
+using var truncated = new MemoryStream(bytes, 0, bytes.Length / 2, writable: false);
+using PstFile file = PstFile.OpenRead(truncated);
+Console.WriteLine($&quot;opened: {file.Format}&quot;);
+
+try
+{
+    int nodes = 0;
+    long bytesRead = 0;
+    foreach (PstNodeInfo info in file.EnumerateNodes())      // the B-tree pages survived the cut
+    {
+        nodes++;
+        bytesRead += file.GetNode(info.NodeId).ReadAllBytes().Length;   // the payloads did not
+    }
+
+    Console.WriteLine($&quot;{nodes} nodes, {bytesRead} bytes&quot;);
+}
+catch (PstFileFormatException ex)
+{
+    Console.WriteLine($&quot;failed while reading: {ex.Error} — {ex.Message}&quot;);
+}
+
+// opened: Unicode
+// failed while reading: InvalidBlock — The block at offset 153152 is malformed or failed its trailer validation.
+</code></pre>
+<p>A read that escapes the file surfaces as <code>InvalidBlock</code> (or <code>InvalidPage</code> for a page), which is why a salvage tool can enumerate what survived and stop cleanly at the cut. Corruption never escapes as any other exception type.</p>
+<p>Damage that leaves the geometry intact is where the levels diverge. Flip one byte inside a block's payload and <code>Compatible</code> reads straight through it — the bytes are wrong, but nothing structural disagrees — while <code>Strict</code> catches the CRC:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Pst;
+
+byte[] bytes = File.ReadAllBytes(&quot;archive.pst&quot;);
+bytes[0x4D10] ^= 0xFF;   // one byte inside a data block's payload
+
+foreach (PstValidationLevel level in new[] { PstValidationLevel.Compatible, PstValidationLevel.Strict })
+{
+    try
+    {
+        using PstFile file = PstFile.Open(new MemoryStream(bytes), new PstFileOptions { ValidationLevel = level });
+        int nodes = file.EnumerateNodes().Count();
+        long payload = 0;
+        foreach (PstNodeInfo info in file.EnumerateNodes())
+            payload += file.GetNode(info.NodeId).ReadAllBytes().Length;
+        Console.WriteLine($&quot;{level}: read {nodes} nodes, {payload} payload bytes&quot;);
+    }
+    catch (PstFileFormatException ex)
+    {
+        Console.WriteLine($&quot;{level}: {ex.Error} — {ex.Message}&quot;);
+    }
+}
+
+// Compatible: read 52 nodes, 16650 payload bytes
+// Strict: InvalidBlock — The block at offset 19648 is malformed or failed its trailer validation.
+</code></pre>
+<h2 id="the-pstfileerror-catalogue">The <code>PstFileError</code> catalogue</h2>
+<p>Every failure surfaces through <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> or a subclass, and every one carries a <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html">PstFileError</a> in <code>Error</code> so you can branch without parsing the message.</p>
+<table>
+<thead>
+<tr>
+<th><code>PstFileError</code></th>
+<th>Thrown as</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a></td>
+<td>No category was recorded (the base constructors without a category).</td>
+</tr>
+<tr>
+<td><code>InvalidHeader</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>The stream does not begin with the <code>!BDN</code> magic; the version word is not a known PST version (and is below the OST range); the header is shorter than the format's header size; the header CRC does not verify (<code>Compatible</code> / <code>Strict</code>); the sentinel byte is not <code>0x80</code>; or, under <code>Strict</code>, the declared file length lies beyond the end of the stream.</td>
+</tr>
+<tr>
+<td><code>UnsupportedFormat</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a></td>
+<td>The version word is 36 or above (the 4 KiB-page OST variant), or the content-encoding byte names Windows Information Protection encryption (<code>0x10</code>) rather than none / permute / cyclic.</td>
+</tr>
+<tr>
+<td><code>InvalidPage</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>A B-tree page's trailer type does not match what was expected; a page's entry stride, entry count, depth, or level is out of range; a node identifier in a page exceeds 32 bits; or, under <code>Strict</code>, the page's CRC, signature, or recorded block identifier disagrees.</td>
+</tr>
+<tr>
+<td><code>InvalidBlock</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>A block's declared length is zero or its on-disk size exceeds the 8 KiB maximum; the trailer's length field disagrees; a read at the block's offset escapes the end of the stream; or, under <code>Strict</code>, the block's CRC, signature, or recorded block identifier disagrees.</td>
+</tr>
+<tr>
+<td><code>InvalidDataTree</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>An <code>XBLOCK</code> / <code>XXBLOCK</code> header has the wrong type or level, its entry count overruns the block, a child is not at the level the parent implies, or a referenced block is missing from the block B-tree.</td>
+</tr>
+<tr>
+<td><code>InvalidSubnodeTree</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>An <code>SLBLOCK</code> / <code>SIBLOCK</code> is malformed, or a value reference names a subnode the owning node's subnode tree does not contain.</td>
+</tr>
+<tr>
+<td><code>InvalidHeap</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>A heap-on-node header or page map is malformed, a heap identifier does not resolve to an item, or a BTree-on-heap is malformed (including, under <code>Strict</code>, keys out of order).</td>
+</tr>
+<tr>
+<td><code>InvalidPropertyContext</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>The node's heap does not carry a property context, a record is malformed, or a fixed-width value's payload is shorter than its declared width.</td>
+</tr>
+<tr>
+<td><code>InvalidTableContext</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>The node's heap does not carry a table context, the <code>TCINFO</code> header is malformed, the row matrix does not resolve or holds fewer rows than the row index records, the row index names a row the matrix does not hold, or, under <code>Strict</code>, the matrix holds more rows than the index records.</td>
+</tr>
+<tr>
+<td><code>InvalidPropertyValue</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>Under <code>Strict</code>, a property-context record carries a wire type the reader does not know (the tolerant levels keep it as a raw dword).</td>
+</tr>
+<tr>
+<td><code>NodeNotFound</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstNodeNotFoundException.html">PstNodeNotFoundException</a></td>
+<td><code>PstFile.GetNode</code> was asked for an identifier the node B-tree does not contain. Use <code>TryGetNode</code> to avoid the exception.</td>
+</tr>
+<tr>
+<td><code>PropertyNotFound</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a></td>
+<td><code>PstPropertyContext.GetValue</code> was asked for an identifier the context does not contain. Use <code>TryGetValue</code> to avoid the exception.</td>
+</tr>
+<tr>
+<td><code>LimitExceeded</code></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a></td>
+<td>A data tree's declared total exceeds <code>MaxNodeDataLength</code> on a materializing read, or its leaf count exceeds <code>MaxDataTreeLeaves</code> while the tree is walked.</td>
+</tr>
+</tbody>
+</table>
+<p>The three subclasses partition the space: <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> for anything structurally wrong, <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> for a file that is well-formed but a variant the library does not read, and <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeNotFoundException.html">PstNodeNotFoundException</a> for a lookup miss on a well-formed file. <code>PropertyNotFound</code> is the one category raised on the base type.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The typed accessors on <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyValue.html">PstPropertyValue</a> are the one place the library throws something other than the family: a wire-type or width mismatch is a <em>caller</em> error and surfaces as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. An unreadable or non-seekable stream at open is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, and anything after <code>Dispose</code> is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="reading-nodes-and-tables.html">Reading nodes and tables</a> — the open → look up → read recipe and the typed accessors.</li>
+<li><a href="../outlook/reader-options-and-limits.html">Reader options and resource limits</a> — how the mail-store reader forwards these options, and its own limits on top.</li>
+<li><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a> — the two exception families as the mail-store reader surfaces them.</li>
+<li><a href="../../docs/io-pst/concepts.html">Bodu.IO.Pst core concepts</a> — header, trailers, and the decoded-block cache in the vocabulary page.</li>
+<li><a href="../../samples/io-pst.html">Runnable PST sample</a> — the StreamingAndValidation scenario over the same fixtures.</li>
+<li><a href="index.html">Bodu.IO.Pst guides</a> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

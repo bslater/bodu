@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class AggregatingRateProvider | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class AggregatingRateProvider | BODU ">
+    
+    <meta name="description" content="Groups several named  children behind a single entry point, combining them through a configurable  with optional per-currency-pair routing.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider">
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider" class="text-break">Class AggregatingRateProvider</h1>
+  <div class="markdown level0 summary"><p>Groups several named <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> children behind a single entry point, combining them through
+a configurable <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html">IRateAggregationStrategy</a> with optional per-currency-pair routing.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">AggregatingRateProvider</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.html">Caching</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Caching.dll</h6>
+  <h5 id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AggregatingRateProvider : IDatedRateProvider, IRateProvider, IHistoricalRateProvider</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The aggregator is itself a provider on both the dated <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> and timeless
+<a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> surfaces, so it composes anywhere a provider is expected — including wrapping each
+child in its own <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> so the grouping sits above the per-source cache. Same-currency
+identity is handled here before any strategy is consulted.
+</p>
+<p>
+Aggregation combines <em>distinct sources</em> — children that differ in who published the rate — for resilience and
+coverage, and is orthogonal to the tiered read-through that a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> forms by stacking
+caches over a <em>single</em> source. The two nest: an aggregator child can itself be a stacked cache over a source.
+Reach for aggregation for fallback, an averaged rate, or per-pair routing across providers; reach for stacking to
+cut latency and survive restarts on one provider.
+</p>
+<p>
+To target a specific source rather than the routed result, resolve it by name through <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.TryGetProvider.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_TryGetProvider_System_String_Bodu_Financial_ExchangeRates_IDatedRateProvider__">TryGetProvider(string, out IDatedRateProvider)</a>
+(or, under dependency injection, a keyed service); the lookup methods always apply the configured strategy and
+routing.
+</p>
+<p>
+When <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability">RespectHistoryAvailability</a> is enabled (the default), children that
+advertise their history depth through <a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a> and have declared they cannot serve any
+part of the requested date or window are dropped from the candidate set before the strategy runs, so a priority
+fallback does not waste a call on a source that cannot answer. A non-aware child is treated as unbounded and always
+kept, and the group's own <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_HistoryAvailability">HistoryAvailability</a> composes the most generous declaration across the
+children.
+</p>
+<p>
+Routing is frozen at construction: the per-pair routes and default order are resolved to their candidate sets once,
+after the constructor validates every referenced name. Mutating the supplied
+<a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.Routes.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_Routes">Routes</a> or <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.DefaultProviderOrder.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_DefaultProviderOrder">DefaultProviderOrder</a> after
+construction has no effect on this instance; construct a new provider to change routing.
+</p>
+</div>
+  <h5 id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Wrap each source in its own cache, then group them with per-FX-pair routing.
+var rba = new CachingRateProvider(rbaSource, new TomlFileRateCache(
+    new FileRateCacheOptions { Provider = "RBA", CacheDirectory = "/var/cache/fx" }), options);
+var ecb = new CachingRateProvider(ecbSource, new InMemoryRateCache("ECB"), options);
+
+var aggregation = new RateAggregationOptions();
+aggregation.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "RBA", "ECB" });
+aggregation.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { "ECB", "RBA" });
+aggregation.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { "ECB", "RBA" }, new AverageStrategy());
+
+IDatedRateProvider provider = new AggregatingRateProvider(
+    new[]
+    {
+        new NamedDatedRateProvider("RBA", rba),
+        new NamedDatedRateProvider("ECB", ecb),
+    },
+    aggregation);
+
+// AUD/USD is routed RBA-then-ECB; EUR/USD is averaged across both.
+RateLookupResult aud = provider.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), RateLookupOptions.Exact);
+
+// Reach a specific source directly when the routed result is not what you want.
+if (((AggregatingRateProvider)provider).TryGetProvider("ECB", out IDatedRateProvider ecbOnly))
+{
+    RateLookupResult ecbRate = ecbOnly.GetRate("AUD", "USD", new DateOnly(2024, 1, 3), RateLookupOptions.Exact);
+}</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider__ctor_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_Caching_NamedDatedRateProvider__Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_System_TimeProvider_Microsoft_Extensions_Logging_ILogger_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.#ctor(System.Collections.Generic.IEnumerable{Bodu.Financial.ExchangeRates.Caching.NamedDatedRateProvider},Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions,System.TimeProvider,Microsoft.Extensions.Logging.ILogger)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider__ctor_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_Caching_NamedDatedRateProvider__Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_System_TimeProvider_Microsoft_Extensions_Logging_ILogger_">AggregatingRateProvider(IEnumerable&lt;NamedDatedRateProvider&gt;, RateAggregationOptions?, TimeProvider?, ILogger?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> class.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_HistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.HistoryAvailability">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_HistoryAvailability">HistoryAvailability</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the history depth this group advertises: the most generous availability across the grouped children,
+because a date any single child can serve is a date the group can serve.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_ProviderNames" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.ProviderNames">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.ProviderNames.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_ProviderNames">ProviderNames</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the names of the grouped children.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRate(System.String,System.String,Bodu.Financial.ExchangeRates.RateLookupOptions)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">GetRate(string, string, RateLookupOptions?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the most recent available exchange rate from <code class="paramref">fromIsoCode</code> to
+<code class="paramref">toIsoCode</code> under <code class="paramref">options</code>, throwing if no rate is available.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRate(System.String,System.String,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">GetRate(string, string, DateOnly, RateLookupOptions?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the exchange rate from <code class="paramref">fromIsoCode</code> to <code class="paramref">toIsoCode</code> on
+<code class="paramref">date</code> under <code class="paramref">options</code>, throwing if no rate is available.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRateAsync(System.String,System.String,Bodu.Financial.ExchangeRates.RateLookupOptions,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">GetRateAsync(string, string, RateLookupOptions?, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously resolves the most recent available exchange rate from <code class="paramref">fromIsoCode</code> to
+<code class="paramref">toIsoCode</code> under <code class="paramref">options</code>, throwing if no rate is available.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRateAsync(System.String,System.String,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">GetRateAsync(string, string, DateOnly, RateLookupOptions?, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously resolves the exchange rate from <code class="paramref">fromIsoCode</code> to <code class="paramref">toIsoCode</code>
+on <code class="paramref">date</code> under <code class="paramref">options</code>, throwing if no rate is available.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRates(System.String,System.String,System.DateOnly,System.DateOnly)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRates.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_">GetRates(string, string, DateOnly, DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns every available rate from <code class="paramref">fromIsoCode</code> to <code class="paramref">toIsoCode</code> whose
+observation date falls within the inclusive range <code class="paramref">startDate</code> to <code class="paramref">endDate</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRatesAsync(System.String,System.String,System.DateOnly,System.DateOnly,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.GetRatesAsync.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously returns every available rate from <code class="paramref">fromIsoCode</code> to
+<code class="paramref">toIsoCode</code> whose observation date falls within the inclusive range
+<code class="paramref">startDate</code> to <code class="paramref">endDate</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_TryGetProvider_System_String_Bodu_Financial_ExchangeRates_IDatedRateProvider__" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.TryGetProvider(System.String,Bodu.Financial.ExchangeRates.IDatedRateProvider@)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.TryGetProvider.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_TryGetProvider_System_String_Bodu_Financial_ExchangeRates_IDatedRateProvider__">TryGetProvider(string, out IDatedRateProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to resolve a grouped child by name, for callers that need a specific source rather than the routed
+result.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__" data-uid="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.TryGetRate(System.String,System.String,System.DateOnly,Bodu.Financial.ExchangeRates.RateLookupOptions,Bodu.Financial.ExchangeRates.RateLookupResult@)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.TryGetRate.html#Bodu_Financial_ExchangeRates_Caching_AggregatingRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__">TryGetRate(string, string, DateOnly, RateLookupOptions?, out RateLookupResult)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to resolve the exchange rate from <code class="paramref">fromIsoCode</code> to <code class="paramref">toIsoCode</code> on
+<code class="paramref">date</code> under <code class="paramref">options</code>, returning a flag indicating whether a rate was
+found.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.ToFixedProviderAsync.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

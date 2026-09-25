@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Configuring rate caching from appsettings | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Configuring rate caching from appsettings | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-rate-caching-from-appsettings">Configuring rate caching from appsettings</h1>
+
+<p>The caching layer binds four option types from one configuration subtree rooted at
+<code>Financial:RateCache</code>. This page lays out that tree: which registration binds which section into
+which type, every key with its default, a complete JSON example per backend, and the lifetimes
+and thread-safety guarantees of the singletons those registrations create. For what the cache
+<em>does</em> — expiry, coverage, stacking, aggregation strategies — see
+<a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a>; for the providers underneath,
+see <a href="provider-configuration.html">Configuring providers from appsettings</a>.</p>
+<h2 id="the-section-tree-at-a-glance">The section tree at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Bound into</th>
+<th>Bound by</th>
+<th>Options kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Financial:RateCache</code></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a></td>
+<td><code>AddCachedRateProvider</code> <strong>and</strong> <code>AddAggregatedRateProvider</code></td>
+<td>one unnamed instance shared by every cached provider and every aggregation child</td>
+</tr>
+<tr>
+<td><code>Financial:RateCache:Sqlite</code></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html">SqliteRateCacheOptions</a></td>
+<td><code>AddSqliteRateCache</code></td>
+<td>one <strong>named</strong> instance per provider name, all bound from the same section</td>
+</tr>
+<tr>
+<td><code>Financial:RateCache:Distributed</code></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions.html">DistributedRateCacheOptions</a></td>
+<td><code>AddDistributedRateCache</code> / <code>AddRedisRateCache</code></td>
+<td>one named instance per provider name, same section</td>
+</tr>
+<tr>
+<td><code>Financial:RateCacheWarmup</code></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions.html">RateCacheWarmupOptions</a></td>
+<td><code>AddRateCacheWarmup</code></td>
+<td>one unnamed instance</td>
+</tr>
+</tbody>
+</table>
+<p>Every registration takes the same trailing parameters — <code>IConfiguration? configuration</code>,
+<code>string sectionName</code> (the default above), and an <code>Action&lt;TOptions&gt;? configure</code> that runs after
+binding — and validates the bound options on start through the type's <code>TryValidate</code>. Pass the
+same <code>builder.Configuration</code> to each call and the whole tree is read from one place:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Financial.ExchangeRates.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+
+builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)                              // Financial:Rba
+    .AddCachedRateProvider&lt;RbaRateProvider&gt;(&quot;RBA&quot;, builder.Configuration);    // Financial:RateCache
+</code></pre>
+<p>The nested sections are deliberate: <code>Financial:RateCache</code> describes the <em>policy</em> (expiry,
+logging, stampede protection) that every backend shares, while <code>Financial:RateCache:Sqlite</code> and
+<code>Financial:RateCache:Distributed</code> describe the <em>storage</em> — so a configuration file that names a
+SQLite path does not have to repeat the policy, and switching backends changes one subsection.</p>
+<h2 id="pattern-1--financialratecache-and-cachingrateoptions">Pattern 1 — <code>Financial:RateCache</code> and <code>CachingRateOptions</code></h2>
+<p>Every key below binds, shown at its default. Durations are <code>TimeSpan</code> strings
+(<code>d.hh:mm:ss</code>), log levels are <code>Microsoft.Extensions.Logging.LogLevel</code> names:</p>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;RateCache&quot;: {
+      &quot;CacheDirectory&quot;: null,
+      &quot;DefaultExpiry&quot;: &quot;1.00:00:00&quot;,
+      &quot;ProviderExpiry&quot;: {},
+      &quot;RespectHistoryAvailability&quot;: true,
+      &quot;SkipInverseRangeProbeWhenDirectCovered&quot;: false,
+      &quot;ExpiryJitter&quot;: 0.0,
+      &quot;RefreshAheadFraction&quot;: 0.0,
+      &quot;CacheHitLogLevel&quot;: &quot;Information&quot;,
+      &quot;CacheMissLogLevel&quot;: &quot;Information&quot;,
+      &quot;CacheRangeHitLogLevel&quot;: &quot;Debug&quot;,
+      &quot;CacheRangeRefetchLogLevel&quot;: &quot;Debug&quot;,
+      &quot;HistoryClampLogLevel&quot;: &quot;Debug&quot;,
+      &quot;RateProvenanceLogLevel&quot;: &quot;Debug&quot;
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CacheDirectory</code></td>
+<td><code>null</code></td>
+<td>Root of the default single-file TOML cache that <code>AddCachedRateProvider</code> builds when no <code>cacheFactory</code> is supplied; <code>null</code> resolves to <code>bodu-exchange-rates</code> under the system temporary path. Ignored by the SQLite and distributed backends.</td>
+</tr>
+<tr>
+<td><code>DefaultExpiry</code></td>
+<td>24 h</td>
+<td>How long a cached row (and a recorded coverage window) is served before it is re-fetched. Must be positive.</td>
+</tr>
+<tr>
+<td><code>ProviderExpiry</code></td>
+<td><code>{}</code></td>
+<td>Per-provider overrides keyed by provider name (<code>&quot;RBA&quot;: &quot;7.00:00:00&quot;</code>); entries merge into the map. <code>GetExpiry(name)</code> resolves the effective value.</td>
+</tr>
+<tr>
+<td><code>RespectHistoryAvailability</code></td>
+<td><code>true</code></td>
+<td>Skip or clamp fetches for dates the inner provider has declared unavailable.</td>
+</tr>
+<tr>
+<td><code>SkipInverseRangeProbeWhenDirectCovered</code></td>
+<td><code>false</code></td>
+<td>Skip the second backend read that probes the inverse pair on a range miss when the direct pair already has coverage.</td>
+</tr>
+<tr>
+<td><code>ExpiryJitter</code></td>
+<td><code>0</code></td>
+<td>Fraction in <code>[0, 1)</code> shaved deterministically off each pair's expiry so warmed pairs do not all expire together.</td>
+</tr>
+<tr>
+<td><code>RefreshAheadFraction</code></td>
+<td><code>0</code></td>
+<td>Fraction in <code>[0, 1)</code> of the expiry after which a hit also schedules one background refresh (stale-while-revalidate).</td>
+</tr>
+<tr>
+<td><code>*LogLevel</code></td>
+<td>see block</td>
+<td>The level of each cache event; <code>None</code> suppresses it.</td>
+</tr>
+</tbody>
+</table>
+<p><code>DefaultLookupOptions</code> — the <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> the
+<em>timeless</em> surface applies — is not configuration-bindable (its members are read-only) and
+stays at <code>RateLookupOptions.Exact</code> whatever the section says. Set it, like anything the binder
+cannot express, in the <code>configure</code> callback:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)
+    .AddCachedRateProvider&lt;RbaRateProvider&gt;(
+        &quot;RBA&quot;,
+        builder.Configuration,
+        configure: cache =&gt;
+        {
+            cache.DefaultLookupOptions = RateLookupOptions.PreviousWithin(3);
+            cache.ProviderExpiry[&quot;RBA&quot;] = TimeSpan.FromDays(7);
+        });
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>AddCachedRateProvider</code> and <code>AddAggregatedRateProvider</code> both bind the same unnamed
+<code>CachingRateOptions</code>, so every cached provider and every aggregation child in a host shares
+one policy object. Use <code>ProviderExpiry</code> for per-provider expiry; there is no per-provider
+section.</p>
+</div>
+<h2 id="pattern-2--financialratecachesqlite-and-sqliteratecacheoptions">Pattern 2 — <code>Financial:RateCache:Sqlite</code> and <code>SqliteRateCacheOptions</code></h2>
+<p><code>AddSqliteRateCache(&quot;RBA&quot;, configuration)</code> binds the section into a <strong>named</strong> options instance
+(<code>&quot;RBA&quot;</code>), sets <code>Provider</code> to that name after binding, validates, and registers a
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html">SqliteRateCache</a> keyed by the name — exposed as the
+keyed <code>IRateCache</code> for <code>&quot;RBA&quot;</code> and, for the first cache registered, as the default <code>IRateCache</code>.
+The cached provider then picks it up through <code>cacheFactory</code>:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)
+    .AddSqliteRateCache(&quot;RBA&quot;, builder.Configuration)                        // Financial:RateCache:Sqlite
+    .AddCachedRateProvider&lt;RbaRateProvider&gt;(
+        &quot;RBA&quot;,
+        builder.Configuration,
+        cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name));
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;RateCache&quot;: {
+      &quot;DefaultExpiry&quot;: &quot;1.00:00:00&quot;,
+      &quot;Sqlite&quot;: {
+        &quot;DatabaseFilePath&quot;: &quot;/var/cache/myapp/fx.db&quot;,
+        &quot;ConnectionString&quot;: null,
+        &quot;UseWriteAheadLogging&quot;: true,
+        &quot;BusyTimeout&quot;: &quot;00:00:05&quot;,
+        &quot;ThrowOnStorageFailure&quot;: false,
+        &quot;ValidateStorageOnStart&quot;: false
+      }
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DatabaseFilePath</code></td>
+<td><code>null</code></td>
+<td>The database file; created with its schema on first use. <strong>One of</strong> <code>DatabaseFilePath</code> or <code>ConnectionString</code> is required.</td>
+</tr>
+<tr>
+<td><code>ConnectionString</code></td>
+<td><code>null</code></td>
+<td>Takes precedence over the path (shared in-memory databases, custom flags). Presence only is validated; a bad string surfaces at connect time as a best-effort degradation.</td>
+</tr>
+<tr>
+<td><code>UseWriteAheadLogging</code></td>
+<td><code>true</code></td>
+<td>WAL journal mode, so readers run alongside a writer; creates <code>.db-wal</code> / <code>.db-shm</code> sidecars. Disable on file systems that cannot honour WAL (NFS/SMB).</td>
+</tr>
+<tr>
+<td><code>BusyTimeout</code></td>
+<td>5 s</td>
+<td>How long a connection waits for a peer's write lock before giving up (and, being best-effort, dropping the write). Non-negative.</td>
+</tr>
+<tr>
+<td><code>ThrowOnStorageFailure</code></td>
+<td><code>false</code></td>
+<td>Surface a storage failure as an exception instead of an empty read / skipped write.</td>
+</tr>
+<tr>
+<td><code>ValidateStorageOnStart</code></td>
+<td><code>false</code></td>
+<td>Probe the database during <code>ValidateOnStart</code>, so an unwritable path fails the host rather than the first lookup.</td>
+</tr>
+<tr>
+<td><code>Provider</code></td>
+<td>set by the registration</td>
+<td>Do not put it in the section: whatever is bound is overwritten with the registration's provider name.</td>
+</tr>
+</tbody>
+</table>
+<p>Because every name binds the <em>same</em> section, several providers naturally share one database
+file — the intended layout: rows are keyed by provider, so <code>AddSqliteRateCache(&quot;RBA&quot;, …)</code> and
+<code>AddSqliteRateCache(&quot;ECB&quot;, …)</code> partition cleanly inside <code>fx.db</code>. Give one provider a different
+file through its <code>configure</code> callback, which runs after binding for that name only.</p>
+<h2 id="pattern-3--financialratecachedistributed-and-distributedratecacheoptions">Pattern 3 — <code>Financial:RateCache:Distributed</code> and <code>DistributedRateCacheOptions</code></h2>
+<p>The distributed backend stores each pair as one blob in whatever <code>IDistributedCache</code> the host
+has registered. <code>AddRedisRateCache</code> registers the Redis <code>IDistributedCache</code> first and then
+delegates to <code>AddDistributedRateCache</code>; note the Redis configurator is the <em>first</em> parameter and
+the provider name the second:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddEcbExchangeRates(builder.Configuration)
+    .AddRedisRateCache(
+        redis =&gt; redis.Configuration = builder.Configuration.GetConnectionString(&quot;RateCache&quot;),
+        &quot;ECB&quot;,
+        builder.Configuration)                                               // Financial:RateCache:Distributed
+    .AddCachedRateProvider&lt;EcbRateProvider&gt;(
+        &quot;ECB&quot;,
+        builder.Configuration,
+        cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name));
+</code></pre>
+<p>With any other <code>IDistributedCache</code> (SQL Server, the in-memory one for tests), register it
+yourself and call <code>AddDistributedRateCache</code>:</p>
+<pre><code class="lang-csharp">builder.Services.AddDistributedMemoryCache();                                // any IDistributedCache
+
+builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddEcbExchangeRates(builder.Configuration)
+    .AddDistributedRateCache(&quot;ECB&quot;, builder.Configuration, configure: o =&gt; o.KeyPrefix = &quot;fx:&quot;)
+    .AddCachedRateProvider&lt;EcbRateProvider&gt;(
+        &quot;ECB&quot;,
+        builder.Configuration,
+        cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name));
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;RateCache&quot;: {
+      &quot;DefaultExpiry&quot;: &quot;12:00:00&quot;,
+      &quot;Distributed&quot;: {
+        &quot;EntryExpirationMargin&quot;: &quot;01:00:00&quot;,
+        &quot;ThrowOnStorageFailure&quot;: false,
+        &quot;ValidateStorageOnStart&quot;: false
+      }
+    }
+  },
+  &quot;ConnectionStrings&quot;: {
+    &quot;RateCache&quot;: &quot;redis.internal:6379,abortConnect=false&quot;
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyPrefix</code></td>
+<td><code>null</code> (omit the key)</td>
+<td>Prepended verbatim to every key so unrelated tenants of one store cannot collide; unset, keys begin with the provider name. A non-null, all-white-space value fails validation — and a JSON <code>null</code> binds as an <strong>empty string</strong>, which is exactly that, so leave the key out of the section rather than writing <code>&quot;KeyPrefix&quot;: null</code>.</td>
+</tr>
+<tr>
+<td><code>EntryExpirationMargin</code></td>
+<td>1 h</td>
+<td>Every blob is stamped with a server-side lifetime of the caching duration plus this margin, so an idle pair self-evicts. <code>null</code> disables server-side expiry. Non-negative.</td>
+</tr>
+<tr>
+<td><code>ThrowOnStorageFailure</code> / <code>ValidateStorageOnStart</code></td>
+<td><code>false</code></td>
+<td>As for SQLite.</td>
+</tr>
+<tr>
+<td><code>Provider</code></td>
+<td>set by the registration</td>
+<td>As for SQLite.</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>AddDistributedRateCache</code> registers a <strong>single</strong> <code>DistributedRateCache</code> instance per host:
+the first call creates it (bound to that call's provider name), and later calls for other
+names only add keyed aliases to the same instance. Register it for one cached provider, or use
+it as the shared L1 tier of a <a href="exchange-rate-caching.html#stacking-providers-tiered-read-through">stack</a>;
+give each source its own SQLite or file cache when you need one cache per provider.</p>
+</div>
+<h2 id="pattern-4--warming-the-cache-at-startup">Pattern 4 — warming the cache at startup</h2>
+<p><code>AddRateCacheWarmup</code> binds <code>Financial:RateCacheWarmup</code> and registers a hosted service that runs
+once when the host starts. It warms every provider registered through <code>AddCachedRateProvider</code>
+automatically and any aggregation child you name in <code>Providers</code>; the run never blocks or fails
+the host, and a pair that fails is logged and skipped.</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)
+    .AddCachedRateProvider&lt;RbaRateProvider&gt;(&quot;RBA&quot;, builder.Configuration)
+    .AddRateCacheWarmup(builder.Configuration);                              // Financial:RateCacheWarmup
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;RateCacheWarmup&quot;: {
+      &quot;Pairs&quot;: [ &quot;AUD/USD&quot;, &quot;AUD/EUR&quot; ],
+      &quot;LookbackDays&quot;: 30,
+      &quot;StartDate&quot;: null,
+      &quot;EndDate&quot;: null,
+      &quot;Providers&quot;: []
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pairs</code></td>
+<td><code>[]</code></td>
+<td><strong>Required, non-empty.</strong> <code>FROM/TO</code> ISO pairs, exactly seven characters each.</td>
+</tr>
+<tr>
+<td><code>LookbackDays</code></td>
+<td>30</td>
+<td>The rolling window ends today and reaches back this many days. Non-negative.</td>
+</tr>
+<tr>
+<td><code>StartDate</code> / <code>EndDate</code></td>
+<td><code>null</code></td>
+<td>Fixed overrides for either end of the window (<code>yyyy-MM-dd</code>); <code>EndDate</code> must not precede <code>StartDate</code>.</td>
+</tr>
+<tr>
+<td><code>Providers</code></td>
+<td><code>[]</code></td>
+<td>Names of aggregation children (keyed <code>IDatedRateProvider</code> registrations) to warm in addition to the unkeyed cached providers.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pattern-5--aggregation">Pattern 5 — aggregation</h2>
+<p>Aggregation is configured in code, not from a section: <code>AddAggregatedRateProvider</code> builds the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html">RateAggregationOptions</a> from the builder calls, and
+the <code>configuration</code> it accepts is for the children's shared <code>Financial:RateCache</code> policy.</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)
+    .AddEcbExchangeRates(builder.Configuration)
+    .AddSqliteRateCache(&quot;RBA&quot;, builder.Configuration)
+    .AddSqliteRateCache(&quot;ECB&quot;, builder.Configuration)                        // same section, same file: keyed by provider
+    .AddAggregatedRateProvider(
+        agg =&gt; agg
+            .AddCachedChild&lt;RbaRateProvider&gt;(&quot;RBA&quot;, (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name))
+            .AddCachedChild&lt;EcbRateProvider&gt;(&quot;ECB&quot;, (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name))
+            .UseDefaultStrategy(PriorityFallbackStrategy.Instance)
+            .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), &quot;RBA&quot;, &quot;ECB&quot;)
+            .MapPair(new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD), new AverageStrategy(), &quot;ECB&quot;, &quot;RBA&quot;),
+        builder.Configuration);                                              // Financial:RateCache for the children
+</code></pre>
+<p>The DI builder sets only <code>DefaultStrategy</code> and <code>Routes</code>. The remaining members — the default
+provider order, <code>RespectHistoryAvailability</code>, the timeless surface's <code>DefaultLookupOptions</code>, and
+the three log levels — keep their defaults under DI. To tune them, construct the aggregator
+yourself and register the instance with <code>AddDatedExchangeRateProvider</code>:</p>
+<pre><code class="lang-csharp">var options = new RateAggregationOptions
+{
+    DefaultStrategy = PriorityFallbackStrategy.Instance,
+    DefaultProviderOrder = new[] { &quot;RBA&quot;, &quot;ECB&quot; },
+    RespectHistoryAvailability = true,
+    DefaultLookupOptions = RateLookupOptions.PreviousWithin(3),   // the timeless surface's policy
+    RouteSelectedLogLevel = LogLevel.Debug,                        // default Information
+    ResolvedLogLevel = LogLevel.Debug,                             // default Information
+    UnresolvedLogLevel = LogLevel.Warning,                         // default Debug
+};
+options.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { &quot;RBA&quot;, &quot;ECB&quot; });
+
+return new AggregatingRateProvider(
+    new[] { new NamedDatedRateProvider(&quot;RBA&quot;, rba), new NamedDatedRateProvider(&quot;ECB&quot;, ecb) },
+    options,
+    timeProvider: null,
+    logger: loggerFactory.CreateLogger&lt;AggregatingRateProvider&gt;());
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DefaultStrategy</code></td>
+<td><code>PriorityFallbackStrategy.Instance</code></td>
+<td>How unrouted pairs combine the children (first to resolve; or <code>AverageStrategy</code>, or your own).</td>
+</tr>
+<tr>
+<td><code>DefaultProviderOrder</code></td>
+<td><code>null</code> (registration order)</td>
+<td>The child order for unrouted pairs.</td>
+</tr>
+<tr>
+<td><code>Routes</code></td>
+<td><code>{}</code></td>
+<td>Per-pair child order and optional strategy.</td>
+</tr>
+<tr>
+<td><code>RespectHistoryAvailability</code></td>
+<td><code>true</code></td>
+<td>Drop children whose advertised history cannot cover the request before the strategy runs.</td>
+</tr>
+<tr>
+<td><code>DefaultLookupOptions</code></td>
+<td><code>Exact</code></td>
+<td>The policy the timeless <code>IRateProvider</code> surface applies.</td>
+</tr>
+<tr>
+<td><code>RouteSelectedLogLevel</code></td>
+<td><code>Information</code></td>
+<td>A route (or the default order) was chosen for a pair.</td>
+</tr>
+<tr>
+<td><code>ResolvedLogLevel</code></td>
+<td><code>Information</code></td>
+<td>A child answered.</td>
+</tr>
+<tr>
+<td><code>UnresolvedLogLevel</code></td>
+<td><code>Debug</code></td>
+<td>No child answered.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="file-layout-is-a-code-decision">File layout is a code decision</h2>
+<p>The default cache <code>AddCachedRateProvider</code> builds is a single-file TOML cache under
+<code>CacheDirectory</code>. The on-disk layout (<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.html">RateCacheFileLayout</a>:
+<code>SingleFile</code>, <code>Yearly</code>, <code>Monthly</code>, <code>Daily</code>, or <code>Create(...)</code> over a
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCachePartitionStrategy.html">RateCachePartitionStrategy</a>) and the format (TOML or
+JSON) are not configuration keys; choose them by supplying the cache through <code>cacheFactory</code>:</p>
+<pre><code class="lang-csharp">builder.Services
+    .AddFinancialService(builder.Configuration)
+    .AddRbaExchangeRates(builder.Configuration)
+    .AddCachedRateProvider&lt;RbaRateProvider&gt;(
+        &quot;RBA&quot;,
+        builder.Configuration,
+        cacheFactory: (sp, name) =&gt; new JsonFileRateCache(
+            new FileRateCacheOptions
+            {
+                Provider = name,
+                CacheDirectory = &quot;/var/cache/fx&quot;,
+                Layout = RateCacheFileLayout.Monthly,          // RBA/AUDUSD/2024-01.json, …
+            },
+            sp.GetService&lt;TimeProvider&gt;(),
+            sp.GetService&lt;ILoggerFactory&gt;()?.CreateLogger&lt;JsonFileRateCache&gt;()));
+</code></pre>
+<p>See <a href="exchange-rate-caching.html#file-layouts-and-date-partitioning">File layouts and date partitioning</a>
+for what each layout writes.</p>
+<h2 id="lifetimes-and-thread-safety">Lifetimes and thread safety</h2>
+<p>Everything the caching registrations create is a <strong>singleton</strong>, resolved once and shared for the
+host's lifetime:</p>
+<table>
+<thead>
+<tr>
+<th>Registration</th>
+<th>Service</th>
+<th>Lifetime and identity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddCachedRateProvider&lt;TProvider&gt;</code></td>
+<td><code>TProvider</code></td>
+<td>singleton (<code>TryAdd</code>, so a provider already registered by <code>Add&lt;Source&gt;ExchangeRates</code> is reused)</td>
+</tr>
+<tr>
+<td></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>, <code>IDatedRateProvider</code>, <code>IRateProvider</code></td>
+<td>one singleton exposed under all three; a second <code>AddCachedRateProvider</code> adds a second <code>CachingRateProvider</code> and the <em>last</em> registration answers the unkeyed contracts</td>
+</tr>
+<tr>
+<td><code>AddAggregatedRateProvider</code></td>
+<td>keyed <code>IDatedRateProvider</code> per child name</td>
+<td>singleton per child (<code>TryAddKeyedSingleton</code>)</td>
+</tr>
+<tr>
+<td></td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a>, <code>IDatedRateProvider</code>, <code>IRateProvider</code></td>
+<td>one singleton under all three</td>
+</tr>
+<tr>
+<td><code>AddSqliteRateCache(name)</code></td>
+<td>keyed <code>SqliteRateCache</code> / <code>IRateCache</code> per name; default <code>IRateCache</code></td>
+<td>one instance per provider name, each with its own keep-alive connection; the first registered is also the unkeyed default</td>
+</tr>
+<tr>
+<td><code>AddDistributedRateCache(name)</code> / <code>AddRedisRateCache</code></td>
+<td><code>DistributedRateCache</code>, <code>IRateCache</code>, keyed <code>IRateCache</code></td>
+<td>one instance per host (see the note in Pattern 3)</td>
+</tr>
+<tr>
+<td><code>AddRateCacheWarmup</code></td>
+<td><code>IHostedService</code></td>
+<td>one hosted service, runs once at start</td>
+</tr>
+</tbody>
+</table>
+<p>The container disposes each singleton on shutdown; a cached provider does not dispose the inner
+provider it wraps, because the container owns that too.</p>
+<p><code>CachingRateProvider</code> is safe for concurrent use. Lookups carry no per-request mutable state on
+the decorator; every backend serializes writes to a pair under a per-pair lock (SQLite adds a
+transaction per write, so the guarantee holds across processes sharing the file), so two threads
+missing the same pair never interleave a half-written row with its coverage. Request coalescing
+is deliberately left to the inner provider — every shipped web provider already single-flights
+its downloads — so concurrent misses collapse onto one fetch at the origin rather than at the
+cache. Refresh-ahead bookkeeping is shared: concurrent aged hits join one pending background
+refresh instead of each scheduling their own. The only caveat is the distributed backend, whose
+read-merge-write cycle is atomic per process but last-write-wins <em>across</em> processes, as the
+<a href="exchange-rate-caching.html#persistent-and-shared-backends">caching guide</a> explains.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Binds</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddCachedRateProvider&lt;TProvider&gt;(string providerName, IConfiguration?, string sectionName = &quot;Financial:RateCache&quot;, Action&lt;CachingRateOptions&gt;?, Func&lt;IServiceProvider, string, IRateCache&gt;? cacheFactory)</code></td>
+<td><code>CachingRateOptions</code></td>
+<td>Wraps an already-registered provider in a <code>CachingRateProvider</code> over the cache the factory returns (default: single-file TOML under <code>CacheDirectory</code>).</td>
+</tr>
+<tr>
+<td><code>AddAggregatedRateProvider(Action&lt;IAggregatedRateBuilder&gt;, IConfiguration?, string sectionName = &quot;Financial:RateCache&quot;, Action&lt;CachingRateOptions&gt;? configureCache)</code></td>
+<td><code>CachingRateOptions</code></td>
+<td>Registers keyed cached children and one <code>AggregatingRateProvider</code>.</td>
+</tr>
+<tr>
+<td><code>AddSqliteRateCache(string providerName, IConfiguration?, string sectionName = &quot;Financial:RateCache:Sqlite&quot;, Action&lt;SqliteRateCacheOptions&gt;?)</code></td>
+<td>named <code>SqliteRateCacheOptions</code></td>
+<td>A keyed <code>SqliteRateCache</code> for the provider.</td>
+</tr>
+<tr>
+<td><code>AddDistributedRateCache(string providerName, IConfiguration?, string sectionName = &quot;Financial:RateCache:Distributed&quot;, Action&lt;DistributedRateCacheOptions&gt;?)</code></td>
+<td>named <code>DistributedRateCacheOptions</code></td>
+<td>The host-wide <code>DistributedRateCache</code> over the registered <code>IDistributedCache</code>.</td>
+</tr>
+<tr>
+<td><code>AddRedisRateCache(Action&lt;RedisCacheOptions&gt;, string providerName, IConfiguration?, string sectionName, Action&lt;DistributedRateCacheOptions&gt;?)</code></td>
+<td>named <code>DistributedRateCacheOptions</code></td>
+<td><code>AddStackExchangeRedisCache</code> followed by <code>AddDistributedRateCache</code>.</td>
+</tr>
+<tr>
+<td><code>AddRateCacheWarmup(IConfiguration?, string sectionName = &quot;Financial:RateCacheWarmup&quot;, Action&lt;RateCacheWarmupOptions&gt;?)</code></td>
+<td><code>RateCacheWarmupOptions</code></td>
+<td>The startup warm-up hosted service.</td>
+</tr>
+</tbody>
+</table>
+<p>All six live in the <code>Bodu.Financial.ExchangeRates</code> namespace, on <code>IFinancialServiceBuilder</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a> — expiry, coverage, stacking, strategies, observability.</li>
+<li><a href="provider-configuration.html">Configuring providers from appsettings</a> — the <code>Financial:&lt;Source&gt;</code> sections underneath the cache.</li>
+<li><a href="dependency-injection.html">Financial dependency injection</a> — the builder these registrations compose on.</li>
+<li><a href="testing-providers.html">Testing your own provider</a> — <code>NullRateCache</code> and fixed providers for tests that must not cache.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

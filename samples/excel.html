@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships a runnable, self-contained sample project for
+<code>Bodu.Formats.Excel.Binary</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Formats.Excel"><code>samples/Formats.Excel/</code></a>.
+It is <strong>offline and deterministic</strong> — every scenario reads the committed
+<code>Data/sample-biff8.xls</code> fixture (464 KB, a genuine two-sheet exchange-rates workbook with
+~18,000 cells) — and is a member of <code>bodu.slnx</code>, built and executed by CI. The README
+documents every scenario individually: its intent, what the code does, the output to expect,
+and the APIs demonstrated.</p>
+<p>Run it from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading
+</code></pre>
+<h2 id="the-sample">The sample</h2>
+<h3 id="boduformatsexcelbinarysamplesexcelreading">Bodu.Formats.Excel.Binary.Samples.ExcelReading</h3>
+<p>The read-only BIFF5 and BIFF8 (<code>.xls</code>) workbook reader, layer by layer:</p>
+<ul>
+<li><strong>WorkbookAndSheets</strong> — the <a class="xref" href="../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> session: the
+sheet directory (<a class="xref" href="../api/Bodu.Formats.Excel.ExcelWorksheetInfo.html">ExcelWorksheetInfo</a> — name, type, visibility,
+declared used range in A1 notation), flattened document properties, and the workbook's
+declared <a class="xref" href="../api/Bodu.Formats.Excel.ExcelDateSystem.html">ExcelDateSystem</a>.</li>
+<li><strong>ForwardOnlyReader</strong> — the primary surface:
+<a class="xref" href="../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> streams cells forward-only with constant
+memory (17,937 cells counted and classified without buffering), plus <code>ReadRows</code> grouping
+for row-shaped import pipelines.</li>
+<li><strong>MaterializedWorksheet</strong> — the convenience surface:
+<a class="xref" href="../api/Bodu.Formats.Excel.ExcelWorksheet.html">ExcelWorksheet</a> with coordinate lookup (<code>TryGetCell</code>), LINQ
+aggregation over the cell collection, and sparse-row semantics.</li>
+<li><strong>CellKindsAndDates</strong> — the five <a class="xref" href="../api/Bodu.Formats.Excel.ExcelCellKind.html">ExcelCellKind</a>s and BIFF's
+classic importer trap: dates are <code>Number</code> cells classified by <em>format</em>.
+<code>ExcelCell.IsDateFormatted</code> plus <a class="xref" href="../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> and the
+workbook's date system decode 887 serial dates; error cells surface as
+<a class="xref" href="../api/Bodu.Formats.Excel.ExcelErrorCode.html">ExcelErrorCode</a> values rather than exceptions.</li>
+</ul>
+<p>Scope: Excel <strong>binary</strong> (<code>.xls</code> — BIFF8 from Excel 97-2003, BIFF5 from Excel 5.0/95) only, read-only; formula cells expose their cached
+results; encrypted workbooks throw. <em>Package: <code>Bodu.Formats.Excel.Binary</code>.</em></p>
+<h2 id="guarded-documentation">Guarded documentation</h2>
+<p>The guides under <a href="../guides/excel/index.html"><code>docs/guides/excel/</code></a> carry compile-guarded
+snippets: examples marked with a <code>&lt;!-- compile --&gt;</code> sentinel are compiled against the
+current public API by <code>DocumentationSnippetCompileTests</code> in the library's test project
+(Regression tier).</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../guides/excel/index.html">Excel guides</a> — reading workbooks, worksheets and rows, cell
+values and dates.</li>
+<li><a href="io-compound.html">IO.Compound samples</a> — the OLE2 container a <code>.xls</code> lives inside.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

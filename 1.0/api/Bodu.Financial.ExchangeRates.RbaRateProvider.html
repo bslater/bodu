@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class RbaRateProvider | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class RbaRateProvider | BODU ">
+    
+    <meta name="description" content="Serves Reserve Bank of Australia historical exchange rates as  values, implementing the Bodu.Financial provider contracts over data downloaded from the RBA&#39;s published .xls files.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider">
+
+
+
+  <h1 id="Bodu_Financial_ExchangeRates_RbaRateProvider" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider" class="text-break">Class RbaRateProvider</h1>
+  <div class="markdown level0 summary"><p>Serves Reserve Bank of Australia historical exchange rates as <a class="xref" href="Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a> values, implementing the
+Bodu.Financial provider contracts over data downloaded from the RBA's published <code>.xls</code> files.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a></div>
+    <div class="level2"><span class="xref">RbaRateProvider</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IPairRateLoader.html">IPairRateLoader</a></div>
+    <div><a class="xref" href="Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html">IHistoricalRateProvider</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, RateLookupOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_">WebRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.TryGetRate.html#Bodu_Financial_ExchangeRates_WebRateProvider_TryGetRate_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_Bodu_Financial_ExchangeRates_RateLookupResult__">WebRateProvider.TryGetRate(string, string, DateOnly, RateLookupOptions, out RateLookupResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRates.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRates_System_String_System_String_System_DateOnly_System_DateOnly_">WebRateProvider.GetRates(string, string, DateOnly, DateOnly)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, RateLookupOptions, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRateAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRateAsync_System_String_System_String_System_DateOnly_Bodu_Financial_ExchangeRates_RateLookupOptions_System_Threading_CancellationToken_">WebRateProvider.GetRateAsync(string, string, DateOnly, RateLookupOptions, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetRatesAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetRatesAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">WebRateProvider.LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedPairs.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedPairs">WebRateProvider.GetLoadedPairs()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedBook.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedBook">WebRateProvider.GetLoadedBook()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.GetLoadedSnapshot.html#Bodu_Financial_ExchangeRates_WebRateProvider_GetLoadedSnapshot">WebRateProvider.GetLoadedSnapshot()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.Dispose.html#Bodu_Financial_ExchangeRates_WebRateProvider_Dispose">WebRateProvider.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Financial.html">Financial</a>.<a class="xref" href="Bodu.Financial.ExchangeRates.html">ExchangeRates</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Financial.ExchangeRates.Rba.dll</h6>
+  <h5 id="Bodu_Financial_ExchangeRates_RbaRateProvider_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RbaRateProvider : WebRateProvider, IDatedRateProvider, IRateProvider, IPairRateLoader, IHistoricalRateProvider, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Financial_ExchangeRates_RbaRateProvider_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The provider derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.html">WebRateProvider</a>, which supplies the in-memory accumulator, the immutable
+snapshot, the full synchronous and asynchronous lookup matrix, and ownership of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> when
+this provider creates one. Loading is era-based: each era is a published <code>.xls</code> file covering a span of dates,
+and a range load fetches every era overlapping the requested window. Use <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.PreloadAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_PreloadAsync_System_Threading_CancellationToken_">PreloadAsync(CancellationToken)</a>,
+<a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadEraAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_LoadEraAsync_Bodu_Financial_ExchangeRates_RbaEraWorkbook_System_Threading_CancellationToken_">LoadEraAsync(RbaEraWorkbook, CancellationToken)</a>, or <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadRangeAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_LoadRangeAsync_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadRangeAsync(DateOnly, DateOnly, CancellationToken)</a> to warm the store.
+</p>
+<p>
+<strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> configured from <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_UserAgent">UserAgent</a> and
+<a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout">HttpTimeout</a>, disposing it with the provider. The constructor that takes an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a> uses the caller-supplied client as-is; this is the path the dependency-injection package
+uses.
+</p>
+<p>
+<strong>Logging.</strong> When an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.ilogger">ILogger</a> is supplied (directly or through the dependency-injection
+package) the provider records: the start of an era download (<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>), a completed download
+with its observation count (<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>), each ingested observation (
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>), and a failed download (<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-warning">Warning</a>, then re-thrown). Every
+level is configurable through the corresponding <code>*LogLevel</code> property on <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html">RbaRateProviderOptions</a>;
+omitting the logger selects <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.abstractions.nulllogger.instance">Instance</a>, so logging is opt-in and free when unused.
+</p>
+</div>
+  <h5 id="Bodu_Financial_ExchangeRates_RbaRateProvider_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using var rba = new RbaRateProvider(new RbaRateProviderOptions());
+await rba.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
+
+RateLookupResult aud = rba.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
+// aud.Rate.Provider == RbaRateProvider.ProviderName; the reverse direction (USD-&gt;AUD) is inverted.</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider__ctor_Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.#ctor(Bodu.Financial.ExchangeRates.RbaRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_RbaRateProvider__ctor_Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">RbaRateProvider(RbaRateProviderOptions, ILogger?, TimeProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a> class backed by an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>
+the provider creates and owns, configured from the supplied options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.#ctor(System.Net.Http.HttpClient,Bodu.Financial.ExchangeRates.RbaRateProviderOptions,Microsoft.Extensions.Logging.ILogger,System.TimeProvider)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.-ctor.html#Bodu_Financial_ExchangeRates_RbaRateProvider__ctor_System_Net_Http_HttpClient_Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Microsoft_Extensions_Logging_ILogger_System_TimeProvider_">RbaRateProvider(HttpClient, RbaRateProviderOptions, ILogger?, TimeProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.html">RbaRateProvider</a> class backed by the RBA <code>.xls</code> files,
+downloaded with the caller-supplied HTTP client. The caller owns the client's configuration and lifetime.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_BaseCurrency" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.BaseCurrency">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.BaseCurrency.html">BaseCurrency</a>
+        </td>
+        <td class="markdown level1 summary"><p>The base currency the RBA quotes against.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_ProviderName" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.ProviderName">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.ProviderName.html">ProviderName</a>
+        </td>
+        <td class="markdown level1 summary"><p>The provider identifier stamped on every rate this provider produces.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_AllowSynchronousNetworkAccess" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.AllowSynchronousNetworkAccess">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.AllowSynchronousNetworkAccess.html#Bodu_Financial_ExchangeRates_RbaRateProvider_AllowSynchronousNetworkAccess">AllowSynchronousNetworkAccess</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether a synchronous lookup may block to fetch a missing window on demand.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_DefaultLookback" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.DefaultLookback">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.DefaultLookback.html#Bodu_Financial_ExchangeRates_RbaRateProvider_DefaultLookback">DefaultLookback</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the look-back window used when a single-rate lookup must fetch on demand; the provider fetches the window
+ending on the requested date and spanning this duration.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_HistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.HistoryAvailability">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_RbaRateProvider_HistoryAvailability">HistoryAvailability</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the history depth this provider advertises: how far back it can serve rates.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_ProviderId" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.ProviderId">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.ProviderId.html#Bodu_Financial_ExchangeRates_RbaRateProvider_ProviderId">ProviderId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the provider identifier stamped on every rate this provider produces.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_EnsureLoadedAsync_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.EnsureLoadedAsync(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.EnsureLoadedAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_EnsureLoadedAsync_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Ensures the inclusive window for a pair has been fetched and accumulated, idempotently. Implementations perform
+their own coverage check, request coalescing, fetch, and accumulation (via
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.AddObservations.html#Bodu_Financial_ExchangeRates_WebRateProvider_AddObservations_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_ExchangeRate__System_Nullable_System_DateTimeOffset__">AddObservations(IEnumerable&lt;ExchangeRate&gt;, DateTimeOffset?)</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.RebuildSnapshot.html#Bodu_Financial_ExchangeRates_WebRateProvider_RebuildSnapshot">RebuildSnapshot()</a>
+under <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProvider.SyncRoot.html#Bodu_Financial_ExchangeRates_WebRateProvider_SyncRoot">SyncRoot</a>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.FormatRateNotFound(System.String,System.String,System.DateOnly)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.FormatRateNotFound.html#Bodu_Financial_ExchangeRates_RbaRateProvider_FormatRateNotFound_System_String_System_String_System_DateOnly_">FormatRateNotFound(string, string, DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Formats the message for the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> thrown when a single-rate lookup fails. Derived
+types may override to use a feed-specific resource string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_GetAvailablePairs" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.GetAvailablePairs">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.GetAvailablePairs.html#Bodu_Financial_ExchangeRates_RbaRateProvider_GetAvailablePairs">GetAvailablePairs()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the currency pairs discovered across the eras loaded so far.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_IsLoaded_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.IsLoaded(Bodu.Financial.ExchangeRates.CurrencyPair,System.DateOnly,System.DateOnly)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.IsLoaded.html#Bodu_Financial_ExchangeRates_RbaRateProvider_IsLoaded_Bodu_Financial_ExchangeRates_CurrencyPair_System_DateOnly_System_DateOnly_">IsLoaded(CurrencyPair, DateOnly, DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reports whether the inclusive window for a pair has already been fetched, so the synchronous lookup path can
+skip a redundant blocking fetch.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_LoadEraAsync_Bodu_Financial_ExchangeRates_RbaEraWorkbook_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadEraAsync(Bodu.Financial.ExchangeRates.RbaEraWorkbook,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadEraAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_LoadEraAsync_Bodu_Financial_ExchangeRates_RbaEraWorkbook_System_Threading_CancellationToken_">LoadEraAsync(RbaEraWorkbook, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Downloads and loads a single era, if it has not already been loaded.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_LoadRangeAsync_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadRangeAsync(System.DateOnly,System.DateOnly,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.LoadRangeAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_LoadRangeAsync_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadRangeAsync(DateOnly, DateOnly, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Downloads and loads every era whose coverage overlaps the inclusive date range.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_OnObservationIngested_Bodu_Financial_ExchangeRates_ExchangeRate_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.OnObservationIngested(Bodu.Financial.ExchangeRates.ExchangeRate)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.OnObservationIngested.html#Bodu_Financial_ExchangeRates_RbaRateProvider_OnObservationIngested_Bodu_Financial_ExchangeRates_ExchangeRate_">OnObservationIngested(ExchangeRate)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Called once per observation as it is ingested, for derived-type diagnostics. The default does nothing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_PreloadAsync_System_Threading_CancellationToken_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.PreloadAsync(System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.PreloadAsync.html#Bodu_Financial_ExchangeRates_RbaRateProvider_PreloadAsync_System_Threading_CancellationToken_">PreloadAsync(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Downloads and loads every era in the configured catalogue.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Financial_ExchangeRates_RbaRateProvider_ValidateRangeRequest_System_String_System_String_System_DateOnly_System_DateOnly_" data-uid="Bodu.Financial.ExchangeRates.RbaRateProvider.ValidateRangeRequest(System.String,System.String,System.DateOnly,System.DateOnly)">
+          <a class="xref" href="Bodu.Financial.ExchangeRates.RbaRateProvider.ValidateRangeRequest.html#Bodu_Financial_ExchangeRates_RbaRateProvider_ValidateRangeRequest_System_String_System_String_System_DateOnly_System_DateOnly_">ValidateRangeRequest(string, string, DateOnly, DateOnly)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Validates a range request against feed-specific preconditions before any fetch is attempted. The default does
+nothing; derived types may override to reject unsupported pairs (for example, a single-issuer feed that quotes
+only against one base currency).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Financial.Extensions.DatedRateProviderExtensions.ToFixedProviderAsync.html#Bodu_Financial_Extensions_DatedRateProviderExtensions_ToFixedProviderAsync_Bodu_Financial_ExchangeRates_IDatedRateProvider_System_Collections_Generic_IEnumerable_Bodu_Financial_ExchangeRates_CurrencyPair__System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">DatedRateProviderExtensions.ToFixedProviderAsync(IDatedRateProvider, IEnumerable&lt;CurrencyPair&gt;, DateOnly, DateOnly, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

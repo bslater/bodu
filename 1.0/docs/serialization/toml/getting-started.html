@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Text.Toml — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Text.Toml — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<h2 id="install">Install</h2>
+<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.</p>
+<pre><code class="lang-shell">dotnet add package Bodu.Text.Toml
+</code></pre>
+<p>It targets <code>net8.0</code>.</p>
+<h2 id="a-first-toml-round-trip">A first TOML round trip</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = &quot;&quot;;
+    public int Port { get; set; }
+    public bool Secure { get; set; }
+}
+
+var config = new ServerConfig { Host = &quot;localhost&quot;, Port = 8080, Secure = true };
+
+string text = TomlSerializer.Serialize(config);
+// Host = &quot;localhost&quot;
+// Port = 8080
+// Secure = true
+
+ServerConfig back = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);
+</code></pre>
+<h2 id="the-native-value-model-in-action">The native value model in action</h2>
+<p>TOML carries real scalar kinds, so the common BCL types land on the right wire form with no string conventions to invent. The four RFC 3339 date-time types and the float specials are the clearest illustration:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+public sealed class Telemetry
+{
+    public DateTimeOffset CapturedAt { get; set; }    // offset date-time
+    public DateOnly Day { get; set; }                 // local date
+    public TimeOnly At { get; set; }                  // local time
+    public double Ratio { get; set; }                 // float (incl. inf / nan)
+    public long Samples { get; set; }                 // integer (signed 64-bit)
+}
+
+var telemetry = new Telemetry
+{
+    CapturedAt = new DateTimeOffset(2026, 6, 28, 9, 30, 0, TimeSpan.FromHours(10)),
+    Day = new DateOnly(2026, 6, 28),
+    At = new TimeOnly(9, 30, 0),
+    Ratio = double.PositiveInfinity,
+    Samples = 4096,
+};
+
+string text = TomlSerializer.Serialize(telemetry);
+// CapturedAt = 2026-06-28T09:30:00+10:00
+// Day = 2026-06-28
+// At = 09:30:00
+// Ratio = inf
+// Samples = 4096
+</code></pre>
+<p><code>DateTimeOffset</code>, <code>DateTime</code> (<code>Unspecified</code>), <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the <code>decimal</code> and <code>byte[]</code> representation choices, is in the <a href="../../../guides/serialization/toml/using.html#pattern-2--know-the-type-mapping">type-mapping table</a> and the <a href="../../../guides/serialization/toml/builtin-converters.html">built-in converter catalog</a>.</p>
+<h2 id="rename-members">Rename members</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+using Bodu.Text.Toml;
+
+var options = new TomlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+
+// &quot;Host&quot; is written as &quot;host&quot;, &quot;Port&quot; as &quot;port&quot;.
+string text = TomlSerializer.Serialize(config, options);
+</code></pre>
+<p>Or pin a single member's name with <code>[PropertyName]</code>.</p>
+<h2 id="edit-a-document-without-a-model">Edit a document without a model</h2>
+<p>When you need to change a value but do not want a POCO, parse to the <strong>mutable DOM</strong>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Nodes;
+
+TomlNode node = TomlNode.Parse(utf8Toml)!;
+node[&quot;server&quot;]![&quot;port&quot;] = 9090;
+byte[] back = node.ToUtf8Bytes();
+</code></pre>
+<h2 id="read-a-document-without-a-model">Read a document without a model</h2>
+<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice — a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Document;
+
+string toml = &quot;&quot;&quot;
+[server]
+host = &quot;localhost&quot;
+port = 8080
+&quot;&quot;&quot;;
+
+using TomlDocument doc = TomlDocument.Parse(toml);
+
+TomlElement server = doc.RootElement.GetProperty(&quot;server&quot;);
+string host = server.GetProperty(&quot;host&quot;).GetString();   // &quot;localhost&quot;
+long   port = server.GetProperty(&quot;port&quot;).GetInt64();    // 8080
+</code></pre>
+<p><code>TomlDocument</code> is disposable — wrap it in <code>using</code> and copy out any values that must outlive it.</p>
+<h2 id="round-trip-through-a-stream">Round-trip through a Stream</h2>
+<p><code>TomlSerializer</code> reads and writes <code>Stream</code> directly, with async variants:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+
+await using (FileStream stream = File.Create(&quot;server.toml&quot;))
+{
+    await TomlSerializer.SerializeAsync(stream, config);
+}
+
+await using (FileStream stream = File.OpenRead(&quot;server.toml&quot;))
+{
+    ServerConfig loaded = await TomlSerializer.DeserializeAsync&lt;ServerConfig&gt;(stream);
+}
+</code></pre>
+<p>Synchronous <code>Stream</code> overloads are also provided.</p>
+<h2 id="when-something-goes-wrong">When something goes wrong</h2>
+<p>Failures split into two exception types, so you can tell <em>bad input</em> apart from <em>wrong type</em>:</p>
+<ul>
+<li>A <strong>malformed document</strong> — input the grammar rejects — raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a>. Because TOML files are edited by hand, the exception carries the <strong>line, column, and offset</strong> of the failure.</li>
+<li>A document that <strong>parses but cannot bind</strong> to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>.</li>
+</ul>
+<pre><code class="lang-csharp">try
+{
+    ServerConfig loaded = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);
+}
+catch (TomlFormatException ex)
+{
+    Console.Error.WriteLine($&quot;Malformed TOML at line {ex.LineNumber}, column {ex.ColumnNumber}: {ex.Message}&quot;);
+}
+catch (TomlSerializationException ex)
+{
+    Console.Error.WriteLine($&quot;Document does not match ServerConfig: {ex.Message}&quot;);
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.Text.Toml introduction</a></strong> — what is specific to TOML: the rich value model, spec versions, positioned diagnostics.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — the TOML vocabulary, including the full value-mapping table.</li>
+<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> — type mapping, spec versions, the DOMs, and streams.</li>
+<li><strong><a href="../../../guides/serialization/toml/converters.html">Writing converters</a></strong> — custom shapes with <code>TomlConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

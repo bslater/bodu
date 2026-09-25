@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Text.Bencode.Document | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Text.Bencode.Document | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Bencode.Document">
+
+  <h1 id="Bodu_Text_Bencode_Document" data-uid="Bodu.Text.Bencode.Document" class="text-break">Namespace Bodu.Text.Bencode.Document</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-bencode.svg" alt="Bodu.Text.Bencode.Document"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Text.Bencode.Document</strong> is the read-only document object model of <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, shaped after <code>System.Text.Json</code>'s <code>JsonDocument</code> / <code>JsonElement</code>. A parse produces a single disposable <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> that indexes the input bytes once; every <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> is a lightweight <code>struct</code> cursor into that index. Prefer it over the mutable <a class="xref" href="Bodu.Text.Bencode.Nodes.html">Bodu.Text.Bencode.Nodes</a> tier when you only need to inspect a payload, and note that an <code>object</code>-typed member deserialized by the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> reads back as a <code>BencodeElement</code>.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> — the disposable owner: <code>Parse</code> (from <code>byte[]</code> or <code>ReadOnlySpan&lt;byte&gt;</code>), <code>RootElement</code>, <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> — the value cursor: <code>ValueKind</code>, <code>GetString</code> / <code>GetBytes</code> / <code>GetRawBytes</code> / <code>GetInt64</code> / <code>GetUInt64</code> (+ <code>TryGet*</code>), <code>GetProperty</code> / <code>TryGetProperty</code>, an integer indexer, <code>GetArrayLength</code>, <code>EnumerateArray</code> / <code>EnumerateObject</code>, <code>Clone</code>, and <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">BencodeElement.ArrayEnumerator</a> / <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a> — the struct enumerators returned by <code>EnumerateArray</code> / <code>EnumerateObject</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html">BencodeProperty</a> — a <code>Name</code> / <code>Value</code> pair yielded by <code>EnumerateObject</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocumentOptions.html">BencodeDocumentOptions</a> — <code>MaxDepth</code>, <code>AllowUnsortedKeys</code>, <code>AllowDuplicateKeys</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
+
+using BencodeDocument document = BencodeDocument.Parse(&quot;d6:lengthi1024e4:name10:ubuntu.isoe&quot;u8);
+BencodeElement root = document.RootElement;
+
+long length = root.GetProperty(&quot;length&quot;).GetInt64();
+foreach (BencodeProperty property in root.EnumerateObject())
+    Console.WriteLine($&quot;{property.Name}: {property.Value.ValueKind}&quot;);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Lifetime.</strong> Elements are only valid while their document is undisposed; call <code>Clone</code> to detach one.</li>
+<li><strong>Integers beyond <code>long</code>.</strong> A value in the <code>ulong</code> range reads through <code>GetUInt64</code> / <code>TryGetUInt64</code>.</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 7 — Use a document model instead of a type).</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></h4>
+      <section><p>Provides a read-only, high-performance document object model over Bencode (BEP 3) bytes. The source is parsed once
+into a flat metadata index and exposed through lightweight <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> struct views; no node tree
+is materialized.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocumentOptions.html">BencodeDocumentOptions</a></h4>
+      <section><p>Defines the customizations applied when parsing a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></h4>
+      <section><p>Represents a single read-only value within a <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>. The element is a lightweight view — a
+pair of the owning document and a row index — so copying it is cheap and never materializes a node.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator.html">BencodeElement.ArrayEnumerator</a></h4>
+      <section><p>Enumerates the elements of an array <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> in order.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a></h4>
+      <section><p>Enumerates the key/value pairs of an object <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> in stored order.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html">BencodeProperty</a></h4>
+      <section><p>Represents a single key/value pair within an object <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a>. Instances are produced by
+<a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator.html">BencodeElement.ObjectEnumerator</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

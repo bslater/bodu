@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using INI | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using INI | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-ini">Using INI</h1>
+
+<p><code>Bodu.Text.Ini</code> reads and writes sectioned <code>[name]</code> / <code>key=value</code> configuration files. The value model is a two-level object-of-objects: global keys (before the first section header) hoist onto the root, and each section is a nested object of string values.</p>
+<h2 id="pattern-1--query-a-document">Pattern 1 — query a document</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Document;
+
+using IniDocument document = IniDocument.Parse(File.ReadAllBytes(&quot;app.ini&quot;));
+IniElement root = document.RootElement;
+
+string environment = root.GetProperty(&quot;environment&quot;).GetString();      // global key
+IniElement server = root.GetProperty(&quot;server&quot;);                        // [server] section
+string host = server.GetProperty(&quot;host&quot;).GetString();
+
+foreach (IniProperty property in root.EnumerateObject())
+{
+    // Globals surface first (String kind), then sections (Object kind).
+    Console.WriteLine($&quot;{property.Name}: {property.Value.ValueKind}&quot;);
+}
+</code></pre>
+<h2 id="pattern-2--typed-binding-via-the-serializer">Pattern 2 — typed binding via the serializer</h2>
+<p>Scalar members bind global keys; object-shaped members (section POCOs or <code>Dictionary&lt;string, string&gt;</code>) bind sections:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+sealed class AppConfig
+{
+    public string? Environment { get; set; }                  // global key
+    public ServerSection? Server { get; set; }                // [server]
+    public Dictionary&lt;string, string&gt;? Logging { get; set; }  // [logging]
+}
+
+sealed class ServerSection
+{
+    public string? Host { get; set; }
+    public int Port { get; set; }
+}
+
+AppConfig config = IniSerializer.Deserialize&lt;AppConfig&gt;(
+    iniText, new IniSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower });
+</code></pre>
+<p><code>Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;</code> works as an all-sections root. A member nested beyond INI's two levels throws <code>IniSerializationException</code>.</p>
+<h3 id="the-global-section-name">The global section name</h3>
+<p>Hoisting global keys onto the root is ergonomic but ambiguous when a global key and a section share a name (always rejected), and impossible for a nested-dictionary root. <code>IniSerializerOptions.GlobalSectionName</code> routes the global entries to and from a reserved root key instead:</p>
+<pre><code class="lang-csharp">var options = new IniSerializerOptions { GlobalSectionName = &quot;global&quot; };
+var all = IniSerializer.Deserialize&lt;Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;&gt;(iniText, options);
+string env = all[&quot;global&quot;][&quot;environment&quot;];
+</code></pre>
+<h3 id="reflection-free-binding">Reflection-free binding</h3>
+<p>Annotate a partial section type with <code>[IniSection]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and a static <code>IniFactory</code> property (<code>IIniSectionFactory&lt;ServerSection&gt;</code>) is emitted at compile time. The section overloads — <code>IniSerializer.SerializeSection(&quot;server&quot;, section, ServerSection.IniFactory)</code> / <code>DeserializeSection(iniText, &quot;server&quot;, ServerSection.IniFactory)</code> — bind one section through the factory instead of the reflection binder, making the path trimming- and AOT-safe. An empty section name addresses the document's global keys; duplicate-section merge still applies before binding.</p>
+<h2 id="pattern-3--comment-preserving-edits-with-the-mutable-dom">Pattern 3 — comment-preserving edits with the mutable DOM</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
+
+IniObject root = IniNode.Parse(File.ReadAllBytes(&quot;app.ini&quot;));
+
+root[&quot;server&quot;].AsObject()[&quot;port&quot;].AsValue().Value = &quot;9090&quot;;   // edit in place, trivia kept
+
+var metrics = new IniObject();
+var enabled = new IniValue(&quot;true&quot;);
+enabled.LeadingComments.Add(&quot; scrape target&quot;);                 // authored comment
+metrics[&quot;enabled&quot;] = enabled;
+root[&quot;metrics&quot;] = metrics;
+
+File.WriteAllBytes(&quot;app.ini&quot;, root.ToUtf8Bytes());
+</code></pre>
+<p>Every comment line from the source survives (<code>LeadingComments</code> on sections and values, <code>TrailingComments</code> per object). Layout is canonicalized: <code>key=value</code> without padding, and global entries always precede the first section header. Inline comments are not modeled — the dialect keeps everything after <code>=</code> as value content.</p>
+<h2 id="pattern-4--duplicate-policies">Pattern 4 — duplicate policies</h2>
+<p>Duplicates are resolved when the document is materialized, controlled by <code>IniDocumentOptions</code> (also on <code>IniSerializerOptions</code>):</p>
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Reader;
+
+var strict = new IniDocumentOptions
+{
+    DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed,
+    DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed,
+};
+using IniDocument document = IniDocument.Parse(bytes, IniReaderOptions.Default, strict);
+</code></pre>
+<p>The defaults merge repeated sections and keep the last duplicate key — the permissive Windows-profile reading. <code>IniSerializerDefaults.Strict</code> selects <code>Disallowed</code> for both — Python <code>configparser</code> strict mode.</p>
+<h2 id="the-two-readers">The two readers</h2>
+<p><code>Utf8IniReader</code> streams the file <strong>as authored</strong> (section headers, keys, values, comments, in source order). The normalized <code>IniDocumentReader</code> pre-parses the whole document — duplicate-section merge declares structure out of source order — and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.</p>
+<h2 id="dialect">Dialect</h2>
+<p><code>=</code> only (no <code>:</code>), values literal to end of line (quotes preserved, inline <code>;</code>/<code>#</code> kept as content), <code>;</code> and <code>#</code> full-line comments, BOM skipped, LF/CRLF/CR equivalent. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
+<h2 id="exceptions">Exceptions</h2>
+<p><code>IniFormatException</code> for malformed input and duplicate-policy violations (line/offset attached); <code>IniSerializationException</code> for binding failures (non-object root, depth beyond two levels, missing <code>[Required]</code> member, non-convertible value).</p>
+<h2 id="when-to-reach-for-bodutextconfiguration-instead">When to reach for <code>Bodu.Text.Configuration</code> instead</h2>
+<p>When you need EditorConfig-style behaviour — glob-targeted sections, layered resolution, typed views with diagnostics — use <code>Bodu.Text.Configuration</code>. It carries its own INI document model and does not depend on this package.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="streaming.html">Streams and token-level I/O</a></li>
+<li><a href="choosing-a-format.html">Choosing a text format</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

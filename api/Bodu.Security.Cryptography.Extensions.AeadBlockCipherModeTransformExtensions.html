@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class AeadBlockCipherModeTransformExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class AeadBlockCipherModeTransformExtensions | BODU ">
+    
+    <meta name="description" content="Extends  with one-shot encrypt/decrypt overloads that handle the associated-data step, size the output buffer correctly, and return the ciphertext + tag (or recovered plaintext) as a single freshly allocated array.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" class="text-break">Class AeadBlockCipherModeTransformExtensions</h1>
+  <div class="markdown level0 summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> with one-shot encrypt/decrypt overloads that handle the
+associated-data step, size the output buffer correctly, and return the ciphertext + tag (or recovered plaintext) as
+a single freshly allocated array.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">AeadBlockCipherModeTransformExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class AeadBlockCipherModeTransformExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+AEAD ("authenticated encryption with associated data") modes — GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon — encrypt
+confidential plaintext while simultaneously authenticating the ciphertext together with a separate stream of
+associated data that travels in the clear (packet headers, message metadata, …). The
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> contract gives callers maximum control: invoke
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.ProcessAssociatedData.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a>, size the output buffer to
+<code>plaintext.Length + (TagSize / 8)</code> (or <code>ciphertextWithTag.Length - (TagSize / 8)</code>), call
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>, and
+interpret the return value. This class collapses that fixed sequence into a single call that returns a correctly
+sized array, matching the shape of <code>AesGcm.Encrypt</code> / <code>AesGcm.Decrypt</code> in the BCL but parameterized over
+<em>any</em> AEAD transform implementation.
+</p>
+<p>
+The API surface is symmetric and intentionally small:
+</p>
+<ul><li><span class="term"><code>Encrypt(transform, plaintext)</code></span>
+One-shot encrypt with no associated data — equivalent to passing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.empty">Empty</a>.
+</li><li><span class="term"><code>Encrypt(transform, plaintext, associatedData)</code></span>
+One-shot encrypt with associated data; returns ciphertext concatenated with the
+<a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.TagSize.html#Bodu_Security_Cryptography_IAeadTransform_TagSize">TagSize</a> / 8 byte authentication tag.
+</li><li><span class="term"><code>Decrypt(transform, ciphertextWithTag)</code></span>One-shot decrypt with no associated data; throws on tag mismatch.</li><li><span class="term"><code>Decrypt(transform, ciphertextWithTag, associatedData)</code></span>
+One-shot decrypt and tag-verify; returns the recovered plaintext, or throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> on
+a failed tag check.
+</li></ul>
+<p>
+AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
+message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
+between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
+verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
+are always sized exactly: <code>plaintext.Length + (TagSize / 8)</code> on encrypt,
+<code>ciphertextWithTag.Length - (TagSize / 8)</code> on decrypt.
+</p>
+<example>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] key = RandomNumberGenerator.GetBytes(32);
+byte[] nonce = RandomNumberGenerator.GetBytes(12);
+byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42");
+
+// 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
+using IAeadBlockCipherModeTransform enc = new GcmModeTransform(key, nonce);
+byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
+
+// 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
+using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
+byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
+
+// 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
+using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
+byte[] sealedAscon = enc2.Encrypt(plaintext);</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies <code class="paramref">ciphertextWithTag</code> with an empty associated-data stream, decrypts it, and returns
+the recovered plaintext.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies <code class="paramref">ciphertextWithTag</code> against <code class="paramref">associatedData</code>, decrypts the
+ciphertext, and returns the recovered plaintext.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},Bodu.Security.Cryptography.AuthenticationTag,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__">DecryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, AuthenticationTag, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies the detached <code class="paramref">tag</code> over <code class="paramref">ciphertext</code> and
+<code class="paramref">associatedData</code>, decrypts the ciphertext, and returns the recovered plaintext.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code> with an empty associated-data stream and returns a new byte array
+containing the ciphertext concatenated with the authentication tag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code> and returns a new byte array containing the ciphertext concatenated with
+the authentication tag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">EncryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code> and returns the ciphertext and the authentication tag as separate values
+(detached-tag layout).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)</a></span></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

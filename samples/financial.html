@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships runnable, self-contained sample projects for the financial packages under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Financial"><code>samples/Financial/</code></a>. Every
+sample runs <strong>fully offline</strong> — exchange-rate samples build their providers from committed
+static data files instead of calling live feeds — and each carries a clearly fenced comment
+block showing how to switch to a real web provider. The samples are members of <code>bodu.slnx</code> and
+are built and executed by CI, so the code they show cannot drift from the current API.</p>
+<p>Run any sample from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Financial/&lt;SampleName&gt;
+</code></pre>
+<h2 id="the-samples">The samples</h2>
+<h3 id="bodufinancialsamplesmoneybasics">Bodu.Financial.Samples.MoneyBasics</h3>
+<p>The core value types, offline with in-code data only. Covers the three-tier rounding model
+(<a class="xref" href="../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> per step, <a class="xref" href="../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> deferred,
+<code>Fraction&lt;BigInteger&gt;</code> exact via <code>MultiplyExact</code>), the typed↔runtime bridges (<code>As&lt;T&gt;</code>,
+<code>TryAs&lt;T&gt;</code>, casts), sum-preserving allocation and cash rounding, the format-specifier
+vocabulary and <a class="xref" href="../api/Bodu.Financial.MoneyFormatterBuilder.html">MoneyFormatterBuilder</a>, the four
+<a class="xref" href="../api/Bodu.Financial.MoneyParseMode.html">MoneyParseMode</a> levels, <a class="xref" href="../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> ledgers with
+<code>ConvertToWithAudit</code>, and the three <a class="xref" href="../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a>
+shapes. <em>Packages: <code>Bodu.Financial</code>.</em></p>
+<h3 id="bodufinancialsamplesofflinerates">Bodu.Financial.Samples.OfflineRates</h3>
+<p>The flagship <strong>static-rate-file pattern</strong>: a committed CSV poured through
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html">RateTableBuilder</a> into an immutable
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a>, served through
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a> — the same contracts the live web
+providers implement. Works the four <a class="xref" href="../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a>
+date-resolution modes over weekend gaps and converts typed and runtime money through dated
+rates. <em>Packages: <code>Bodu.Financial</code>.</em></p>
+<h3 id="bodufinancialsamplescachedrates">Bodu.Financial.Samples.CachedRates</h3>
+<p>The caching layer against an offline source: the read-through
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>, coverage-based range serving
+(including negative caching of empty windows), tiered stacking (in-memory L1 over durable file
+L2, surviving a simulated restart), and the
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a> clamping model. A closing scenario
+runs the two durable backends: a SQLite-backed cache read back by a second provider after the
+first is disposed, and two providers over one <code>IDistributedCache</code> standing in for two
+processes — with the result's <code>RateProvenance</code> still reporting <code>Origin=Cache</code> so a stored
+answer is never mistaken for a fresh fetch. A small counting decorator makes hit-vs-fetch
+behaviour visible throughout. <em>Packages: <code>Bodu.Financial</code>,
+<code>Bodu.Financial.ExchangeRates.Caching</code>, <code>…Caching.Sqlite</code>, <code>…Caching.Distributed</code>.</em></p>
+<h3 id="bodufinancialsamplesaggregatedrates">Bodu.Financial.Samples.AggregatedRates</h3>
+<p>Multi-provider aggregation over two offline feeds with complementary coverage:
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html">AggregatingRateProvider</a> with priority fallback,
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.Caching.AverageStrategy.html">AverageStrategy</a> (and its synthetic provenance
+label), per-pair <a class="xref" href="../api/Bodu.Financial.ExchangeRates.Caching.CurrencyPairRoute.html">CurrencyPairRoute</a> overrides, and
+the fluent <code>AddAggregatedRateProvider</code> DI builder with keyed per-child resolution. <em>Packages:
+<code>Bodu.Financial</code>, <code>Bodu.Financial.ExchangeRates.Caching</code>, <code>Bodu.Financial.DependencyInjection</code>.</em></p>
+<h3 id="bodufinancialsamplescurrencyservices">Bodu.Financial.Samples.CurrencyServices</h3>
+<p>Currency services and host wiring: the ambient
+<a class="xref" href="../api/Bodu.Financial.Currencies.CurrencyResolution.html">CurrencyResolution</a> seam (<code>PushScoped</code> over a restricted-lookup
+decorator), named <a class="xref" href="../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a> registrations, and the
+<code>AddFinancialService</code> composition root with <code>UseCurrencyResolution</code>. <em>Packages:
+<code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>.</em></p>
+<h3 id="bodufinancialsamplesjsonserialization">Bodu.Financial.Samples.JsonSerialization</h3>
+<p><code>System.Text.Json</code> integration from the <code>Bodu.Financial.Serialization.Json</code> companion:
+<code>AddFinancialJsonConverters()</code> round-tripping <code>Money</code>, <code>Money&lt;TCurrency&gt;</code>, and <code>MoneyBag</code>;
+<code>ExchangeRate</code> and <code>CurrencyPair</code> converters; the <code>FinancialJsonPolicy</code> Strict/Lenient/Compact
+wire shapes; and the <code>AddFinancialJson()</code> DI registration exposing keyed <code>JsonSerializerOptions</code>
+(key <code>&quot;Financial&quot;</code>). <em>Packages: <code>Bodu.Financial</code>, <code>Bodu.Financial.Serialization.Json</code>.</em></p>
+<h3 id="bodufinancialsamplesunitpricing">Bodu.Financial.Samples.UnitPricing</h3>
+<p>Higher-than-currency precision for unit prices — a six-decimal-place share price in two-decimal
+USD — and preserving it through serialization: a <a class="xref" href="../api/Bodu.Financial.Money.html">Money</a> carrying an explicit
+scale (settled through a custom-scale <a class="xref" href="../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a>) whose Strict JSON shape
+records a <code>scale</code> property, unrounded <a class="xref" href="../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> written verbatim, and
+six-place prices round-tripping inside a POCO price list — see
+<a href="../guides/financial/monetary-precision.html">Monetary precision &amp; unit pricing</a>. <em>Packages:
+<code>Bodu.Financial</code>, <code>Bodu.Financial.Serialization.Json</code>.</em></p>
+<h3 id="bodufinancialsamplescustomprovider--test">Bodu.Financial.Samples.CustomProvider (+ .Test)</h3>
+<p>Consumer extensibility: a custom <code>CsvFileRateProvider</code> in the recommended shape (builder →
+book → delegated fixed provider), used directly, through the conversion extensions, and under
+the caching decorator. Its companion test project derives
+<code>DatedRateProviderContractTests&lt;CsvFileRateProvider&gt;</code> from the in-repo
+<code>Bodu.Financial.ExchangeRates.Testing</code> project — see <a href="../guides/financial/testing-providers.html">Testing your own provider</a>.
+<em>Packages: <code>Bodu.Financial</code>, <code>Bodu.Financial.ExchangeRates.Caching</code>; the test project also references
+the in-repo <code>Bodu.Financial.ExchangeRates.Testing</code> project, which is not published to NuGet.</em></p>
+<h3 id="bodufinancialsamplesliverates">Bodu.Financial.Samples.LiveRates</h3>
+<p>The one sample that goes <strong>online</strong> (and is therefore excluded from the CI samples run): it
+fetches real published rates from a live web provider for a computed historical date — the most
+recent Wednesday at least five days old, with a <code>PreviousWithin(5)</code> tolerance so a published
+fixing is near-certain — plus that date's trailing week as a single range read. The ECB feed is
+active by default; RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer, exchangerate.host, FRED, and IMF are
+comment-switchable blocks (the API-key sources need a key set), and every
+provider package is referenced so the switch is a comment flip. <em>Packages: one of the
+<code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code> provider packages.</em></p>
+<h2 id="offline-by-default-live-by-choice">Offline by default, live by choice</h2>
+<p>With the exception of <code>LiveRates</code> above, the samples never touch the network. Where a live feed
+could be used, a fenced comment block shows the exact switch:</p>
+<pre><code class="lang-csharp">// --- To use the live Reserve Bank of Australia feed instead -----------------
+// 1. dotnet add package Bodu.Financial.ExchangeRates.Rba
+// 2. Replace the offline source with:
+//
+//     using var rba = new RbaRateProvider(new RbaRateProviderOptions());
+//     await rba.LoadRangeAsync(new DateOnly(2024, 1, 1), new DateOnly(2024, 6, 30));
+// ----------------------------------------------------------------------------
+</code></pre>
+<p>Because every provider in the family serves the same
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> /
+<a class="xref" href="../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> contracts, the rest of each sample works
+unchanged after the switch.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

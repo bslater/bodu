@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Base64 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Base64 | BODU ">
+    
+    <meta name="description" content="Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants, with optional padding control and whitespace tolerance during parsing.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.Base64">
+
+
+
+  <h1 id="Bodu_Text_Encoding_Base64" data-uid="Bodu.Text.Encoding.Base64" class="text-break">Class Base64</h1>
+  <div class="markdown level0 summary"><p>Provides Base64 encoding and decoding of binary data across the RFC 4648 standard, URL-safe, and MIME variants, with
+optional padding control and whitespace tolerance during parsing.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Base64</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_Base64_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Base64</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_Base64_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The implementation delegates the inner radix conversion to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert">Convert</a>'s
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.tobase64string#system-convert-tobase64string(system-byte()-system-base64formattingoptions)">ToBase64String(byte[], Base64FormattingOptions)</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.trytobase64chars">TryToBase64Chars(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base64FormattingOptions)</a>, and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.tryfrombase64chars">TryFromBase64Chars(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)</a> to inherit their
+hardware-accelerated paths. The wrapper supplies the alphabet swapping for <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html#Bodu_Text_Encoding_Base64Variant_UrlSafe">UrlSafe</a>, the
+line-break convention for <a class="xref" href="Bodu.Text.Encoding.Base64Variant.html#Bodu_Text_Encoding_Base64Variant_Mime">Mime</a>, and the padding / leniency flag handling that the BCL
+does not expose directly.
+</p>
+<p>
+MIME line breaks are inserted every 76 characters (RFC 2045). The <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>,
+<a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_IncludePrefix">IncludePrefix</a>, and <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_InsertSpacing">InsertSpacing</a> flags
+have no effect on Base64.
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_Base64_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">byte[] data = "hello"u8.ToArray();
+
+// RFC 4648 Standard Base64 (default).
+string standard = Base64.Encode(data);                                       // "aGVsbG8="
+
+// URL-safe alphabet, no padding — the form used by JWT and OAuth tokens.
+string urlSafe  = Base64.Encode(data, Base64Variant.UrlSafe);                // "aGVsbG8"
+
+// MIME variant — wraps every 76 characters with CRLF.
+string mime     = Base64.Encode(longerPayload, Base64Variant.Mime);
+
+// Round-trip.
+byte[] roundtrip = Base64.Decode(standard);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Decode.html#Bodu_Text_Encoding_Base64_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(char[], int, int, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a portion of a character array into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Decode.html#Bodu_Text_Encoding_Base64_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(ReadOnlySpan&lt;char&gt;, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base64 character span into a byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Decode_System_String_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.Decode(System.String,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Decode.html#Bodu_Text_Encoding_Base64_Decode_System_String_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">Decode(string, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base64 string into a byte array using the supplied variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_System_Boolean_" data-uid="Bodu.Text.Encoding.Base64.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles,System.Boolean)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.DecodeFromUtf8.html#Bodu_Text_Encoding_Base64_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_System_Boolean_">DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, Base64Variant, BaseFormatStyles, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Base64 bytes into a byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.DecodeGuid.html#Bodu_Text_Encoding_Base64_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">DecodeGuid(ReadOnlySpan&lt;char&gt;, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes a Base64 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_Byte___Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.Byte[],Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_Byte___Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes the entire byte array into a Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], int, int, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of a byte array into a Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_Guid_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.Guid,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_Guid_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(Guid, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes the byte representation of <code class="paramref">value</code> as a Base64 string. With RFC 4648 padding the
+result is 24 characters; without padding it is 22 characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes into a Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as Base64 characters into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.Encode.html#Bodu_Text_Encoding_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a span of bytes directly into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.EncodeToUtf8.html#Bodu_Text_Encoding_Base64_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> into a UTF-8 Base64 byte array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.EncodeToUtf8.html#Bodu_Text_Encoding_Base64_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">source</code> as UTF-8 Base64 bytes into <code class="paramref">writer</code>, suitable for use in
+pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>-based scenarios.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64.FromBase64String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.FromBase64String.html#Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Byte__">FromBase64String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes UTF-8 Base64 bytes into a byte array using the Standard variant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base64.FromBase64String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.FromBase64String.html#Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__">FromBase64String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Strict-mode Standard Base64 decode from a UTF-8 byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base64.FromBase64String(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.FromBase64String.html#Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Char__">FromBase64String(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">chars</code> as a Standard Base64 character span into a byte array, mirroring the lenient
+whitespace behaviour of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.frombase64string">FromBase64String(string)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base64.FromBase64String(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.FromBase64String.html#Bodu_Text_Encoding_Base64_FromBase64String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__">FromBase64String(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Strict-mode Standard Base64 decode from a character span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return
+convention.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_FromBase64String_System_String_" data-uid="Bodu.Text.Encoding.Base64.FromBase64String(System.String)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.FromBase64String.html#Bodu_Text_Encoding_Base64_FromBase64String_System_String_">FromBase64String(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as a Standard Base64 string into a byte array, mirroring the lenient whitespace
+behaviour of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.frombase64string">FromBase64String(string)</a>. ASCII whitespace anywhere in the input is
+silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_GetDecodedLength_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.GetDecodedLength(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.GetDecodedLength.html#Bodu_Text_Encoding_Base64_GetDecodedLength_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">GetDecodedLength(ReadOnlySpan&lt;char&gt;, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the exact number of bytes that decoding <code class="paramref">source</code> would produce after applying
+<code class="paramref">styles</code> and stripping padding for the supplied <code class="paramref">variant</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64.GetEncodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.GetEncodedLength.html#Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_">GetEncodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of characters produced by encoding <code class="paramref">byteCount</code> bytes using the Standard
+variant with default formatting.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_Bodu_Text_Encoding_Base64Variant_" data-uid="Bodu.Text.Encoding.Base64.GetEncodedLength(System.Int32,Bodu.Text.Encoding.Base64Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.GetEncodedLength.html#Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_Bodu_Text_Encoding_Base64Variant_">GetEncodedLength(int, Base64Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of characters produced by encoding <code class="paramref">byteCount</code> bytes using
+<code class="paramref">variant</code> with default formatting.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.GetEncodedLength(System.Int32,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.GetEncodedLength.html#Bodu_Text_Encoding_Base64_GetEncodedLength_System_Int32_Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">GetEncodedLength(int, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the number of characters required to encode <code class="paramref">byteCount</code> bytes with the given variant
+and options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base64.GetMaxDecodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.GetMaxDecodedLength.html#Bodu_Text_Encoding_Base64_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the maximum number of bytes that can result from decoding <code class="paramref">charCount</code> characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_IsBase64Digit_System_Char_Bodu_Text_Encoding_Base64Variant_" data-uid="Bodu.Text.Encoding.Base64.IsBase64Digit(System.Char,Bodu.Text.Encoding.Base64Variant)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.IsBase64Digit.html#Bodu_Text_Encoding_Base64_IsBase64Digit_System_Char_Bodu_Text_Encoding_Base64Variant_">IsBase64Digit(char, Base64Variant)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">value</code> is a valid Base64 alphabet character for the supplied variant.
+Padding (<code>=</code>) is not considered a digit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.IsValid.html#Bodu_Text_Encoding_Base64_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">IsValid(ReadOnlySpan&lt;char&gt;, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid Base64 input under the supplied variant and styles.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_ToBase64String_System_Byte___" data-uid="Bodu.Text.Encoding.Base64.ToBase64String(System.Byte[])">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.ToBase64String.html#Bodu_Text_Encoding_Base64_ToBase64String_System_Byte___">ToBase64String(byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a Standard Base64 string with default formatting.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_ToBase64String_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base64.ToBase64String(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.ToBase64String.html#Bodu_Text_Encoding_Base64_ToBase64String_System_Byte___System_Int32_System_Int32_">ToBase64String(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a Standard Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_ToBase64String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base64.ToBase64String(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.ToBase64String.html#Bodu_Text_Encoding_Base64_ToBase64String_System_ReadOnlySpan_System_Byte__">ToBase64String(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Standard Base64 string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryDecode.html#Bodu_Text_Encoding_Base64_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode Base64 characters into bytes using the provided destination span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryDecodeGuid.html#Bodu_Text_Encoding_Base64_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode a Base64 representation of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryEncode.html#Bodu_Text_Encoding_Base64_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode a span of bytes into a destination character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_" data-uid="Bodu.Text.Encoding.Base64.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormattingOptions)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryEncodeToUtf8.html#Bodu_Text_Encoding_Base64_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormattingOptions_">TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base64Variant, BaseFormattingOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as UTF-8 Base64 bytes into <code class="paramref">destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base64.TryGetDecodedLength(System.ReadOnlySpan{System.Char},System.Int32@,Bodu.Text.Encoding.Base64Variant,Bodu.Text.Encoding.BaseFormatStyles)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryGetDecodedLength.html#Bodu_Text_Encoding_Base64_TryGetDecodedLength_System_ReadOnlySpan_System_Char__System_Int32__Bodu_Text_Encoding_Base64Variant_Bodu_Text_Encoding_BaseFormatStyles_">TryGetDecodedLength(ReadOnlySpan&lt;char&gt;, out int, Base64Variant, BaseFormatStyles)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute the exact decoded byte count for <code class="paramref">source</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryToBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base64.TryToBase64String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryToBase64String.html#Bodu_Text_Encoding_Base64_TryToBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__">TryToBase64String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Standard Base64 UTF-8 byte sequence into
+<code class="paramref">utf8Destination</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_Base64_TryToBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base64.TryToBase64String(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.Base64.TryToBase64String.html#Bodu_Text_Encoding_Base64_TryToBase64String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryToBase64String(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> as a Standard Base64
+character sequence.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

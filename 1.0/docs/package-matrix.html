@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu package matrix | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu package matrix | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodu-package-matrix">Bodu package matrix</h1>
+
+<style>
+  .bodu-matrix-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .8rem; margin: 1rem 0 1.5rem; }
+  .bodu-matrix-gallery figure { margin: 0; }
+  .bodu-matrix-gallery img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 220; border-radius: 6px; }
+  .bodu-matrix-gallery figcaption { margin-top: .3rem; font-size: .8rem; opacity: .85; overflow-wrap: anywhere; }
+</style>
+<p>The Bodu suite ships as a family of focused NuGet packages, each with a clear responsibility. This page is the authoritative list — what every package is for, where it lives in the dependency graph, and how mature its public surface is today.</p>
+<p>For the high-level shape of each library, follow the <strong>Intro</strong> link in the table; for runnable samples, the <strong>Get started</strong> link.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Package</th>
+<th>Status</th>
+<th>Depends on</th>
+<th>Intro</th>
+<th>Get started</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Foundation</strong></td>
+<td><a class="xref" href="../api/Bodu.html">Bodu</a> · <code>Bodu.Core</code></td>
+<td>Stable</td>
+<td>(BCL only)</td>
+<td><a href="core/index.html">Bodu.Core</a></td>
+<td><a href="core/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Collections</strong></td>
+<td><code>Bodu.Collections</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="collections/index.html">Bodu.Collections</a></td>
+<td><a href="collections/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Concurrent collections</strong></td>
+<td><code>Bodu.Collections.Concurrent</code></td>
+<td>Stable</td>
+<td><code>Bodu.Collections</code></td>
+<td><a href="collections-concurrent/index.html">Bodu.Collections.Concurrent</a></td>
+<td><a href="collections-concurrent/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Hashing</strong></td>
+<td><code>Bodu.IO.Hashing</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code>, <code>System.IO.Hashing</code></td>
+<td><a href="io-hashing/index.html">Bodu.IO.Hashing</a></td>
+<td><a href="io-hashing/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Cryptography</strong></td>
+<td><code>Bodu.Security.Cryptography</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code>, <code>System.Security.Cryptography</code></td>
+<td><a href="cryptography/index.html">Bodu.Security.Cryptography</a></td>
+<td><a href="cryptography/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Calendar runtime</strong></td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="calendar/index.html">Bodu.Globalization.Calendar</a></td>
+<td><a href="calendar/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Text encoding</strong></td>
+<td><code>Bodu.Text.Encoding</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="text-encoding/index.html">Bodu.Text.Encoding</a></td>
+<td><a href="text-encoding/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Text filtering</strong></td>
+<td><code>Bodu.Text.Filtering</code></td>
+<td>Preview</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="text-filtering/index.html">Bodu.Text.Filtering</a></td>
+<td><a href="text-filtering/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Text formats (umbrella)</strong></td>
+<td><code>Bodu.Text.Formats</code></td>
+<td>Preview</td>
+<td><code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, <code>Bodu.Text.Ini</code></td>
+<td><a href="formats/index.html">Bodu.Text.Formats</a></td>
+<td><a href="formats/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Delimited (CSV / TSV)</strong></td>
+<td><code>Bodu.Text.Delimited</code></td>
+<td>Preview</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="formats/index.html">Bodu.Text.Formats</a></td>
+<td><a href="formats/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>DotEnv</strong></td>
+<td><code>Bodu.Text.DotEnv</code></td>
+<td>Preview</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="formats/index.html">Bodu.Text.Formats</a></td>
+<td><a href="formats/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>INI</strong></td>
+<td><code>Bodu.Text.Ini</code></td>
+<td>Preview</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="formats/index.html">Bodu.Text.Formats</a></td>
+<td><a href="formats/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Text formats source generator</strong></td>
+<td><code>Bodu.Text.Formats.Generators</code></td>
+<td>Preview</td>
+<td><code>Microsoft.CodeAnalysis.CSharp</code> (build-time only; not yet packable; project reference only)</td>
+<td><a href="formats/generators.html">Bodu.Text.Formats.Generators</a></td>
+<td><a href="../guides/formats/source-generator.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>TOML serializer</strong></td>
+<td><code>Bodu.Text.Toml</code></td>
+<td>Stable</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="serialization/toml/index.html">Bodu.Text.Toml</a></td>
+<td><a href="serialization/toml/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Bencode serializer</strong></td>
+<td><code>Bodu.Text.Bencode</code></td>
+<td>Stable</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="serialization/bencode/index.html">Bodu.Text.Bencode</a></td>
+<td><a href="serialization/bencode/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>YAML serializer</strong></td>
+<td><code>Bodu.Text.Yaml</code></td>
+<td>Preview</td>
+<td><code>Bodu.Text.Serialization</code>, <code>Bodu.Core</code></td>
+<td><a href="serialization/yaml/index.html">Bodu.Text.Yaml</a></td>
+<td><a href="serialization/yaml/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Text configuration</strong></td>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="text-configuration/index.html">Bodu.Text.Configuration</a></td>
+<td><a href="text-configuration/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Configuration bridge</strong></td>
+<td><code>Bodu.Extensions.Configuration.Text</code></td>
+<td>Stable</td>
+<td><code>Bodu.Text.Configuration</code>, <code>Bodu.Text.Toml</code>, <code>Bodu.Text.Bencode</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Configuration</code></td>
+<td><a href="extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></td>
+<td><a href="extensions-configuration-text/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Numerics</strong></td>
+<td><code>Bodu.Numerics</code></td>
+<td>Stable</td>
+<td><code>Bodu.Core</code></td>
+<td><a href="numerics/index.html">Bodu.Numerics</a></td>
+<td><a href="numerics/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><strong>Financial</strong></td>
+<td><code>Bodu.Financial</code></td>
+<td>Stable</td>
+<td><code>Bodu.Numerics</code>, <code>Bodu.Core</code></td>
+<td><a href="financial/index.html">Bodu.Financial</a></td>
+<td><a href="financial/getting-started.html">Get started</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="companion-packages">Companion packages</h2>
+<p>Several capabilities ship as independent companion packages so they can release on their own cadence without forcing a main-library rebuild. The calendar runtime in particular is intentionally small — fluent rule authoring, plugin loading, and dependency-injection registration are all opt-in.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>Purpose</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Builder</code></td>
+<td>Stable</td>
+<td>Fluent, chainable C# API for authoring notable-date documents in code, with XML / JSON serialization and load/save.</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+<td>Stable</td>
+<td><code>IServiceCollection</code> extensions for registering <code>INotableDateService</code> over a loaded <code>NotableDateResource</code>.</td>
+<td><code>Bodu.Globalization.Calendar</code>, <code>Microsoft.Extensions.DependencyInjection.Abstractions</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Plugins</code></td>
+<td>Stable</td>
+<td>Trust-gated loading of external assemblies that contribute custom <code>INotableDateAlgorithm</code> implementations.</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Tool</code></td>
+<td>Preview</td>
+<td>The <code>bodu-calendar</code> command-line tool (installed with <code>dotnet tool install</code>): validates notable-date XML/JSON documents with the stable <code>BODU-CAL-*</code> diagnostics (<code>lint</code>), compiles them to sealed <code>.bcal</code> binary packs (<code>compile</code>), and inspects compiled packs (<code>info</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Build</code></td>
+<td>Preview</td>
+<td>MSBuild integration for notable-date rule packs: the <code>CompileNotableDatePack</code> task and <code>NotableDatePack</code> items compile XML/JSON documents to sealed <code>.bcal</code> packs during build, incrementally, via the bundled <code>bodu-calendar</code> tool. A development dependency — no runtime reference is added to the consuming project.</td>
+<td>(build-time only; bundles the <code>bodu-calendar</code> tool)</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching</code></td>
+<td>Stable</td>
+<td><code>CachingNotableDateService</code>, a decorator that wraps any <code>INotableDateService</code> and serves computed notable dates from a per-territory, per-civil-year cache (in-memory, or one TOML/JSON file per territory), refreshing on a configurable time-to-live or a resource-version change. Includes its own DI registration.</td>
+<td><code>Bodu.Globalization.Calendar</code>, <code>Bodu.Text.Toml</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Distributed</code></td>
+<td>Stable</td>
+<td>Distributed (<code>IDistributedCache</code> / Redis) storage backend for the notable-date cache: <code>DistributedNotableDateCache</code> over any <code>IDistributedCache</code>, with the <code>AddDistributedNotableDateCache</code> / <code>AddRedisNotableDateCache</code> DI registrations.</td>
+<td><code>Bodu.Globalization.Calendar.Caching</code>, <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Caching.StackExchangeRedis</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></td>
+<td>Stable</td>
+<td>SQLite storage backend for the notable-date cache: <code>SqliteNotableDateCache</code> persisting computed years in a SQLite database, with the <code>AddSqliteNotableDateCache</code> DI registration.</td>
+<td><code>Bodu.Globalization.Calendar.Caching</code>, <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Core</code>, <code>Microsoft.Data.Sqlite</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Recurrence</code></td>
+<td>Preview</td>
+<td>RFC 5545 (iCalendar) recurrence rules — <code>RecurrenceRule</code> / <code>RecurrenceRuleBuilder</code> / <code>RecurrenceSet</code> parsing, formatting, and occurrence enumeration — plus <code>CronExpression</code> cron-schedule parsing and <code>AnchoredInterval</code> instant-anchored intervals, every form answering both next- and previous-occurrence queries.</td>
+<td><code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Serialization</code></td>
+<td>Stable</td>
+<td>Shared, format-agnostic serialization primitives for the Bodu <code>System.Text.Json</code>-shaped text serializers (Bencode, TOML, YAML, Delimited, DotEnv, INI): the attribute family, ignore/creation/unmapped-member/naming enums, serialization callback interfaces, and naming policies. Consumed by all six per-format serializer packages.</td>
+<td><code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td>Stable</td>
+<td><code>IServiceCollection</code> extensions for registering Bodu.Financial currency-lookup and monetary services via <code>AddFinancialService</code>.</td>
+<td><code>Bodu.Financial</code>, <code>Microsoft.Extensions.DependencyInjection.Abstractions</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.Serialization.Json</code></td>
+<td>Stable</td>
+<td><code>System.Text.Json</code> converters, the <code>FinancialJsonPolicy</code> (<code>Strict</code> / <code>Lenient</code> / <code>Compact</code>), the <code>AddFinancialJsonConverters()</code> registration, and the <code>AddFinancialJson()</code> DI registration for the <code>Bodu.Financial</code> types (<code>Money</code>, <code>Money&lt;TCurrency&gt;</code>, <code>CalculatedMoney</code>, <code>MoneyBag</code>, <code>ExchangeRate</code>, <code>CurrencyPair</code>), keeping the core financial library serialization-agnostic.</td>
+<td><code>Bodu.Financial</code>, <code>System.Text.Json</code>, <code>Microsoft.Extensions.DependencyInjection.Abstractions</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics.Serialization.Json</code></td>
+<td>Preview</td>
+<td><code>System.Text.Json</code> converters, converter factories, and the <code>AddNumericsJsonConverters()</code> registration for the <code>Bodu.Numerics</code> types (<code>Fraction&lt;T&gt;</code>, <code>BigDecimal</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>), keeping the core numerics library serialization-agnostic.</td>
+<td><code>Bodu.Numerics</code>, <code>System.Text.Json</code></td>
+</tr>
+</tbody>
+</table>
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-calendar-builder.svg" alt="Bodu.Globalization.Calendar.Builder"><figcaption><code>Bodu.Globalization.Calendar.Builder</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-di.svg" alt="Bodu.Globalization.Calendar.DependencyInjection"><figcaption><code>Bodu.Globalization.Calendar.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins"><figcaption><code>Bodu.Globalization.Calendar.Plugins</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-tool.svg" alt="Bodu.Globalization.Calendar.Tool"><figcaption><code>Bodu.Globalization.Calendar.Tool</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-build.svg" alt="Bodu.Globalization.Calendar.Build"><figcaption><code>Bodu.Globalization.Calendar.Build</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching.svg" alt="Bodu.Globalization.Calendar.Caching"><figcaption><code>Bodu.Globalization.Calendar.Caching</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching-distributed.svg" alt="Bodu.Globalization.Calendar.Caching.Distributed"><figcaption><code>Bodu.Globalization.Calendar.Caching.Distributed</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-caching-sqlite.svg" alt="Bodu.Globalization.Calendar.Caching.Sqlite"><figcaption><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></figcaption></figure>
+<figure><img src="../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization"><figcaption><code>Bodu.Text.Serialization</code></figcaption></figure>
+<figure><img src="../images/hero-financial-di.svg" alt="Bodu.Financial.DependencyInjection"><figcaption><code>Bodu.Financial.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-financial-json.svg" alt="Bodu.Financial.Serialization.Json"><figcaption><code>Bodu.Financial.Serialization.Json</code></figcaption></figure>
+<figure><img src="../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json"><figcaption><code>Bodu.Numerics.Serialization.Json</code></figcaption></figure>
+</div>
+<h2 id="file-formats">File formats</h2>
+<p>Legacy binary container and document formats, layered so each level is usable on its own: a general-purpose compound-file container, a record-stream codec, and the narrow read-only readers built on them. <code>Bodu.Formats.Excel.Binary</code> reads <code>.xls</code> workbooks over <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>; the Outlook readers share one MAPI value model, with the <code>.msg</code> reader over <code>Bodu.IO.Compound</code> and the <code>.pst</code> mail-store reader over <code>Bodu.IO.Pst</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>Purpose</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.IO.Compound</code></td>
+<td>Stable</td>
+<td>Reader and writer for the OLE2 / Compound File Binary (CFB) container — the structured-storage envelope used by legacy Office files. Opens existing containers (exposing the embedded named streams) and authors new ones via <code>CompoundFile.Create</code> and the builder API, with no application-format knowledge.</td>
+<td><code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Biff</code></td>
+<td>Preview</td>
+<td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks — the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</td>
+<td><code>Bodu.Core</code>, <code>System.Text.Encoding.CodePages</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Excel.Binary</code></td>
+<td>Stable</td>
+<td>Narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader that surfaces raw worksheet cell values — strings, numbers, booleans, and errors — without formula evaluation, styling, or higher-level interpretation.</td>
+<td><code>Bodu.IO.Compound</code>, <code>Bodu.IO.Biff</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code></td>
+<td>Preview</td>
+<td>Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files — header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</td>
+<td><code>Bodu.Collections</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook</code></td>
+<td>Preview</td>
+<td>The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free — the <code>.msg</code> reader (<code>Bodu.Formats.Outlook.Msg</code>) and the <code>.pst</code> mail-store reader (<code>Bodu.Formats.Outlook.Pst</code>, over <code>Bodu.IO.Pst</code>) build on it rather than owning the model.</td>
+<td><code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Msg</code></td>
+<td>Preview</td>
+<td>Read-only reader for the Outlook message format (<code>.msg</code> / MS-OXMSG) over the <code>Bodu.IO.Compound</code> OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or message authoring.</td>
+<td><code>Bodu.IO.Compound</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Pst</code></td>
+<td>Preview</td>
+<td>Read-only reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <code>Bodu.IO.Pst</code> node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, store-wide named-property resolution, and the text, HTML, and compressed-RTF bodies — with no MAPI session emulation or store authoring.</td>
+<td><code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
+</tr>
+</tbody>
+</table>
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-io-biff.svg" alt="Bodu.IO.Biff"><figcaption><code>Bodu.IO.Biff</code></figcaption></figure>
+<figure><img src="../images/hero-io-pst.svg" alt="Bodu.IO.Pst"><figcaption><code>Bodu.IO.Pst</code></figcaption></figure>
+<figure><img src="../images/hero-outlook.svg" alt="Bodu.Formats.Outlook"><figcaption><code>Bodu.Formats.Outlook</code></figcaption></figure>
+<figure><img src="../images/hero-outlook-msg.svg" alt="Bodu.Formats.Outlook.Msg"><figcaption><code>Bodu.Formats.Outlook.Msg</code></figcaption></figure>
+<figure><img src="../images/hero-outlook-pst.svg" alt="Bodu.Formats.Outlook.Pst"><figcaption><code>Bodu.Formats.Outlook.Pst</code></figcaption></figure>
+</div>
+<h2 id="exchange-rate-providers-and-caching">Exchange-rate providers and caching</h2>
+<p>Several exchange-rate providers ship as independent packages over a shared <code>IDatedRateProvider</code> / <code>IRateProvider</code> contract, so consumers pull in only the data sources they need; each provider package ships its own <code>Add&lt;Source&gt;ExchangeRates</code> dependency-injection registration, delegating the shared <code>HttpClient</code> and resilience plumbing to <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>. The contract exposes a symmetric single-date/range lookup matrix (synchronous and asynchronous): single-date getters return a <code>RateLookupResult</code> (the resolved rate plus the applied date-resolution and offset), and range getters return a <code>RateRangeResult</code> (the rates, the requested window, and the observed span; it is itself an <code>IReadOnlyList&lt;ExchangeRate&gt;</code>). The HTTP-backed providers share the <code>WebRateProvider</code> base from the <code>Bodu.Financial.ExchangeRates</code> infrastructure package and are <code>IDisposable</code> — each either builds and owns its <code>HttpClient</code> from options (via <code>RateProviderHttpClientFactory</code>) or borrows a caller-supplied one. The Reserve Bank of Australia provider reads the RBA's published <code>.xls</code> files through the binary-format packages above — a dependency on the container and codec layers, not on anything RBA-specific. A standalone caching layer can decorate any provider with a shared on-disk TOML cache.</p>
+<p>The core money, currency, and FX value types live in <code>Bodu.Financial</code> (see <strong>At a glance</strong>); everything below is an opt-in companion.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>Purpose</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>Preview</td>
+<td>Web exchange-rate provider infrastructure: the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases every per-source provider package builds on, plus the shared fetch machinery — <code>WebRateProviderOptions</code>, single-flight request coalescing (<code>SingleFlightCoordinator&lt;TKey&gt;</code>), on-disk raw-response caching (<code>FileSystemByteCache&lt;TKey&gt;</code>), <code>HttpClient</code> construction (<code>RateProviderHttpClientFactory</code>), and the pair-load contracts (<code>IPairRateLoader</code>, <code>IPairRateSource&lt;TSeries&gt;</code>). Keeps the HTTP machinery out of the core <code>Bodu.Financial</code> package.</td>
+<td><code>Bodu.Financial</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Logging.Abstractions</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></td>
+<td>Stable</td>
+<td>Shared dependency-injection machinery for the web-based exchange-rate providers. Exposes <code>AddWebRateProvider</code> on <code>IFinancialServiceBuilder</code> (declared in the <code>Bodu.Financial.ExchangeRates</code> namespace), handling <code>HttpClient</code> configuration with Polly resilience, options binding, and singleton registration so each provider package's own DI registration delegates its plumbing here.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Http.Resilience</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
+<td>Stable</td>
+<td>Downloads and parses the RBA's published daily exchange-rate <code>.xls</code> files, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddRbaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>RbaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Formats.Excel.Binary</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
+<td>Stable</td>
+<td>Queries the Bank of England's Interactive Statistical Database (IADB) CSV endpoint for daily spot rates, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddBoeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>BoeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Text.Delimited</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
+<td>Stable</td>
+<td>Downloads and parses the ECB's published <code>eurofxref</code> euro foreign-exchange reference-rate XML feeds, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddEcbExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>EcbRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
+<td>Stable</td>
+<td>Fetches and parses the Yahoo Finance v8 chart JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddYahooExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>YahooRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
+<td>Stable</td>
+<td>Fetches and parses the OFX (ofx.com) public spot-rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddOfxExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OfxRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
+<td>Experimental</td>
+<td>Fetches and parses the XE.com charting-rates JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs; the authorization token the endpoint requires is recovered by scraping an unversioned public XE page, so a site change can silently reduce the provider to empty results — pair it with a stable primary feed. Includes its own <code>AddXeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>XeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
+<td>Preview</td>
+<td>Fetches and parses the OANDA Historical Currency Converter rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. The anonymous endpoint serves a rolling recent window (roughly the last 180 days), advertised through the provider's <code>HistoryAvailability</code>. Includes its own <code>AddOandaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OandaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Fixer</code></td>
+<td>Preview</td>
+<td>Fetches and parses the Fixer (fixer.io) time-series and single-date JSON endpoints per currency pair, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. Requires a Fixer <code>access_key</code> on <code>FixerRateProviderOptions</code>. Includes its own <code>AddFixerExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
+<td>Preview</td>
+<td>Fetches and parses the exchangerate.host time-series and single-date JSON endpoints per currency pair (quotes keyed by concatenated source+quote code), serving the results through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. Requires an <code>access_key</code> on <code>ExchangeRateHostRateProviderOptions</code>. Includes its own <code>AddExchangeRateHostExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Fred</code></td>
+<td>Preview</td>
+<td>Fetches and parses the St. Louis Fed FRED <code>series/observations</code> JSON endpoint, mapping each currency pair to a FRED <code>series_id</code> through <code>FredRateProviderOptions.SeriesMap</code> (built-in map for the major USD pairs). Requires an <code>api_key</code>. Includes its own <code>AddFredExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Imf</code></td>
+<td>Preview</td>
+<td>Downloads and parses the IMF's monthly Representative Exchange Rates tab-separated report, serving daily USD-anchored rates through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. A single-base bulk provider over <code>WebRateProvider</code> (base USD, cross pairs rejected) that normalizes the report's quotation direction on ingest; keyless, with a per-month on-disk cache. Includes its own <code>AddImfExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Text.Delimited</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
+<td>Stable</td>
+<td><code>CachingRateProvider</code>, a one-cache-per-provider decorator that wraps any <code>IDatedRateProvider</code> and serves fresh rates from a pluggable cache cascade — <code>InMemoryRateCache</code> and the on-disk <code>TomlFileRateCache</code> (one TOML file per provider and currency pair) — delegating to the inner provider only on a miss; plus <code>AggregatingRateProvider</code>, which groups named child providers behind one entry point and combines them with a pluggable strategy (prioritised fallback, averaging, or per-FX-pair routing). Includes its own DI registration (<code>AddCachedRateProvider</code>, <code>AddAggregatedRateProvider</code>, in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Text.Toml</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Core</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></td>
+<td>Stable</td>
+<td><code>DistributedRateCache</code>, an <code>IRateCache</code> over a <code>Microsoft.Extensions.Caching.Distributed.IDistributedCache</code> (Redis-capable), persisting a provider's dated rates and fetch-coverage windows as a per-pair JSON blob; behaviourally identical to the in-memory, TOML, and SQLite caches (the repository's cache contract tests run unchanged against every backend). Includes its own <code>AddDistributedRateCache</code> / <code>AddRedisRateCache</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Core</code>, <code>Microsoft.Extensions.Caching.Abstractions</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></td>
+<td>Stable</td>
+<td><code>SqliteRateCache</code>, an <code>IRateCache</code> over a SQLite database (via <code>Microsoft.Data.Sqlite</code>), persisting a provider's dated rates and fetch-coverage windows in <code>rates</code> and <code>coverage</code> tables; behaviourally identical to the in-memory and TOML caches (the repository's cache contract tests run unchanged against every backend). Includes its own <code>AddSqliteRateCache</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>SqliteRateCacheOptions</code>.</td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Core</code>, <code>Microsoft.Data.Sqlite</code></td>
+</tr>
+</tbody>
+</table>
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-fx.svg" alt="Bodu.Financial.ExchangeRates"><figcaption><code>Bodu.Financial.ExchangeRates</code></figcaption></figure>
+<figure><img src="../images/hero-fx-di.svg" alt="Bodu.Financial.ExchangeRates.DependencyInjection"><figcaption><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></figcaption></figure>
+<figure><img src="../images/hero-fx-rba.svg" alt="Bodu.Financial.ExchangeRates.Rba"><figcaption><code>Bodu.Financial.ExchangeRates.Rba</code></figcaption></figure>
+<figure><img src="../images/hero-fx-boe.svg" alt="Bodu.Financial.ExchangeRates.Boe"><figcaption><code>Bodu.Financial.ExchangeRates.Boe</code></figcaption></figure>
+<figure><img src="../images/hero-fx-ecb.svg" alt="Bodu.Financial.ExchangeRates.Ecb"><figcaption><code>Bodu.Financial.ExchangeRates.Ecb</code></figcaption></figure>
+<figure><img src="../images/hero-fx-yahoo.svg" alt="Bodu.Financial.ExchangeRates.Yahoo"><figcaption><code>Bodu.Financial.ExchangeRates.Yahoo</code></figcaption></figure>
+<figure><img src="../images/hero-fx-ofx.svg" alt="Bodu.Financial.ExchangeRates.Ofx"><figcaption><code>Bodu.Financial.ExchangeRates.Ofx</code></figcaption></figure>
+<figure><img src="../images/hero-fx-xe.svg" alt="Bodu.Financial.ExchangeRates.Xe"><figcaption><code>Bodu.Financial.ExchangeRates.Xe</code></figcaption></figure>
+<figure><img src="../images/hero-fx-oanda.svg" alt="Bodu.Financial.ExchangeRates.Oanda"><figcaption><code>Bodu.Financial.ExchangeRates.Oanda</code></figcaption></figure>
+<figure><img src="../images/hero-fx-fixer.svg" alt="Bodu.Financial.ExchangeRates.Fixer"><figcaption><code>Bodu.Financial.ExchangeRates.Fixer</code></figcaption></figure>
+<figure><img src="../images/hero-fx-exchangeratehost.svg" alt="Bodu.Financial.ExchangeRates.ExchangeRateHost"><figcaption><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></figcaption></figure>
+<figure><img src="../images/hero-fx-fred.svg" alt="Bodu.Financial.ExchangeRates.Fred"><figcaption><code>Bodu.Financial.ExchangeRates.Fred</code></figcaption></figure>
+<figure><img src="../images/hero-fx-imf.svg" alt="Bodu.Financial.ExchangeRates.Imf"><figcaption><code>Bodu.Financial.ExchangeRates.Imf</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching.svg" alt="Bodu.Financial.ExchangeRates.Caching"><figcaption><code>Bodu.Financial.ExchangeRates.Caching</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching-distributed.svg" alt="Bodu.Financial.ExchangeRates.Caching.Distributed"><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></figcaption></figure>
+<figure><img src="../images/hero-fx-caching-sqlite.svg" alt="Bodu.Financial.ExchangeRates.Caching.Sqlite"><figcaption><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></figcaption></figure>
+</div>
+<h2 id="calendar-data-packs">Calendar data packs</h2>
+<p>Region-specific public-holiday rules ship as independent NuGet packages — one per region — so consumers pull in only the territories they need. Each is built on the notable-date schema and exposes a <code>&lt;Region&gt;CalendarData</code> factory over per-country embedded resource packs.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>Purpose</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Americas</code></td>
+<td>Stable</td>
+<td>Curated public-holiday rules for the Americas territory bundle (e.g. <code>US</code>, <code>CA</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.AsiaPacific</code></td>
+<td>Stable</td>
+<td>Asia-Pacific bundle (e.g. <code>AU</code> with subdivisions, <code>CN</code>, <code>IN</code>, <code>JP</code>, <code>KR</code>, <code>MY</code>, <code>NZ</code>, <code>SG</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Europe</code></td>
+<td>Stable</td>
+<td>Europe bundle (e.g. <code>DE</code>, <code>ES</code>, <code>FR</code>, <code>GB</code>, <code>IT</code>, <code>NL</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Africa</code></td>
+<td>Stable</td>
+<td>Africa bundle (e.g. <code>ZA</code>, <code>NG</code>, <code>KE</code>, <code>GH</code>, <code>ET</code>, <code>EG</code>, <code>MA</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.MiddleEast</code></td>
+<td>Stable</td>
+<td>Middle East bundle (e.g. <code>AE</code>, <code>SA</code>, <code>IL</code>, <code>TR</code>, <code>QA</code>, <code>JO</code>).</td>
+<td><code>Bodu.Globalization.Calendar</code></td>
+</tr>
+</tbody>
+</table>
+<div class="bodu-matrix-gallery">
+<figure><img src="../images/hero-calendar-americas.svg" alt="Bodu.Globalization.Calendar.Americas"><figcaption><code>Bodu.Globalization.Calendar.Americas</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-asiapacific.svg" alt="Bodu.Globalization.Calendar.AsiaPacific"><figcaption><code>Bodu.Globalization.Calendar.AsiaPacific</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-europe.svg" alt="Bodu.Globalization.Calendar.Europe"><figcaption><code>Bodu.Globalization.Calendar.Europe</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-africa.svg" alt="Bodu.Globalization.Calendar.Africa"><figcaption><code>Bodu.Globalization.Calendar.Africa</code></figcaption></figure>
+<figure><img src="../images/hero-calendar-middleeast.svg" alt="Bodu.Globalization.Calendar.MiddleEast"><figcaption><code>Bodu.Globalization.Calendar.MiddleEast</code></figcaption></figure>
+</div>
+<p>See the <a href="calendar/index.html">Calendar introduction</a> for how the companion packages compose with the runtime, and the <a href="../guides/calendar/data-packs.html">data-packs guide</a> for per-bundle install commands and territory coverage.</p>
+<h2 id="status-meanings">Status meanings</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>What it commits to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stable</strong></td>
+<td>The public API surface is committed. Breaking changes are reserved for a major-version bump; additive changes ship in minor versions; bug fixes in patch versions.</td>
+</tr>
+<tr>
+<td><strong>Preview</strong></td>
+<td>Offered for early evaluation. The public API surface is still taking shape and may change between releases without a major-version bump.</td>
+</tr>
+<tr>
+<td><strong>Experimental</strong></td>
+<td>Behaviour depends on an external resource that offers no versioned contract (for example a scraped web page), so it can stop working without any change on the Bodu side. Treat it as best-effort and pair it with a stable alternative.</td>
+</tr>
+</tbody>
+</table>
+<p>Status describes the <strong>API contract</strong>, not availability: it says what a version bump may do to code you have already written. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not — see below.</p>
+<h2 id="not-published-to-nugetorg">Not published to nuget.org</h2>
+<p>These four projects build and pack with the rest of the solution, and are documented here like any other package, but they are withheld from nuget.org on purpose. <code>bld/release-manifest.txt</code> records the reasoning; in short:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Why it is held back</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Xe</code></td>
+<td>Authenticates with a token scraped from an unversioned XE.com page, so it can stop working through no fault of the code and no release can fix it.</td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
+<td>Same class of fragility: OANDA's endpoint is undocumented and gated by bot mitigation.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Tool</code></td>
+<td>A <code>PackAsTool</code> CLI rather than a library — a different consumer contract from every other package here, warranting its own decision.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Build</code></td>
+<td>An MSBuild integration for the tool above, and held back with it.</td>
+</tr>
+</tbody>
+</table>
+<p>To use one, build it from a clone. The CLI installs from a local feed:</p>
+<pre><code class="lang-bash">dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
+</code></pre>
+<p>For the three library/MSBuild packages, reference the project directly with <code>&lt;ProjectReference&gt;</code> instead of a <code>PackageReference</code>.</p>
+<h2 id="install-commands">Install commands</h2>
+<p>The standard <code>dotnet add package</code> invocation for each <strong>published</strong> package:</p>
+<pre><code class="lang-bash"># Primary libraries
+dotnet add package Bodu.Core
+dotnet add package Bodu.Collections
+dotnet add package Bodu.Collections.Concurrent
+dotnet add package Bodu.IO.Hashing
+dotnet add package Bodu.Security.Cryptography
+dotnet add package Bodu.Globalization.Calendar
+dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Filtering
+dotnet add package Bodu.Text.Formats
+dotnet add package Bodu.Text.Delimited
+dotnet add package Bodu.Text.DotEnv
+dotnet add package Bodu.Text.Ini
+dotnet add package Bodu.Text.Toml
+dotnet add package Bodu.Text.Bencode
+dotnet add package Bodu.Text.Yaml
+dotnet add package Bodu.Text.Configuration
+dotnet add package Bodu.Extensions.Configuration.Text
+dotnet add package Bodu.Numerics
+dotnet add package Bodu.Financial
+
+# Companions
+dotnet add package Bodu.Globalization.Calendar.Builder
+dotnet add package Bodu.Globalization.Calendar.DependencyInjection
+dotnet add package Bodu.Globalization.Calendar.Plugins
+dotnet add package Bodu.Globalization.Calendar.Caching
+dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
+dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
+dotnet add package Bodu.Globalization.Recurrence
+
+dotnet add package Bodu.Text.Serialization
+dotnet add package Bodu.Financial.DependencyInjection
+dotnet add package Bodu.Financial.Serialization.Json
+dotnet add package Bodu.Numerics.Serialization.Json
+
+# File formats and exchange-rate data
+dotnet add package Bodu.IO.Compound
+dotnet add package Bodu.IO.Biff
+dotnet add package Bodu.Formats.Excel.Binary
+dotnet add package Bodu.IO.Pst
+dotnet add package Bodu.Formats.Outlook
+dotnet add package Bodu.Formats.Outlook.Msg
+dotnet add package Bodu.Formats.Outlook.Pst
+dotnet add package Bodu.Financial.ExchangeRates
+dotnet add package Bodu.Financial.ExchangeRates.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Rba
+dotnet add package Bodu.Financial.ExchangeRates.Boe
+dotnet add package Bodu.Financial.ExchangeRates.Ecb
+dotnet add package Bodu.Financial.ExchangeRates.Yahoo
+dotnet add package Bodu.Financial.ExchangeRates.Ofx
+dotnet add package Bodu.Financial.ExchangeRates.Fixer
+dotnet add package Bodu.Financial.ExchangeRates.ExchangeRateHost
+dotnet add package Bodu.Financial.ExchangeRates.Fred
+dotnet add package Bodu.Financial.ExchangeRates.Imf
+dotnet add package Bodu.Financial.ExchangeRates.Caching
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Distributed
+dotnet add package Bodu.Financial.ExchangeRates.Caching.Sqlite
+
+# Calendar regional data packs (install only what you need)
+dotnet add package Bodu.Globalization.Calendar.Americas
+dotnet add package Bodu.Globalization.Calendar.AsiaPacific
+dotnet add package Bodu.Globalization.Calendar.Europe
+dotnet add package Bodu.Globalization.Calendar.Africa
+dotnet add package Bodu.Globalization.Calendar.MiddleEast
+</code></pre>
+<p><code>Bodu.Financial.ExchangeRates.Testing</code> — the contract-test bases the provider and cache test projects derive — is a source-only project in the repository (<code>IsPackable=false</code>) and is not published to NuGet.</p>
+<h2 id="design-principles">Design principles</h2>
+<ul>
+<li><strong>Minimal external runtime dependencies.</strong> Core libraries depend only on the BCL. Extension packages (<code>Bodu.Extensions.Configuration.Text</code>, <code>Bodu.Globalization.Calendar.DependencyInjection</code>) intentionally bridge to the Microsoft.Extensions ecosystem.</li>
+<li><strong>Nullable reference types</strong> are enabled throughout. Public APIs declare their null-intent explicitly.</li>
+<li><strong>Analyzer-clean</strong>: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.</li>
+<li><strong>Deterministic builds</strong> for reproducible package outputs.</li>
+<li><strong>Documentation-first</strong>: every public type and member carries XML documentation in US English, which drives the API reference.</li>
+<li><strong>MIT licensed.</strong></li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="introduction.html">Introduction</a></strong> — high-level overview of the suite.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install and run minimal samples across the suite.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

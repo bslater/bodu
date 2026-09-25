@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>ASCON authenticated encryption — AsconAead128 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="ASCON authenticated encryption — AsconAead128 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="ascon-authenticated-encryption--asconaead128">ASCON authenticated encryption — AsconAead128</h1>
+
+<p><strong>Authenticated encryption with associated data (AEAD)</strong> combines confidentiality with
+integrity: the recipient can verify that neither the ciphertext nor the associated metadata has
+been altered since the sender encrypted it.</p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> implements <code>ASCON-AEAD128</code> as standardized in
+NIST SP 800-232. It uses a 128-bit key, a 128-bit nonce, and appends a 128-bit authentication
+tag to every encrypted message.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AsconAead128.KeySize</code></td>
+<td>128</td>
+<td>Key length in <strong>bits</strong>. Divide by 8 for the 16-byte buffer size.</td>
+</tr>
+<tr>
+<td><code>AsconAead128.NonceSize</code></td>
+<td>128</td>
+<td>Nonce length in <strong>bits</strong> (16 bytes). Must be unique per message.</td>
+</tr>
+<tr>
+<td><code>TagSize</code> (instance property)</td>
+<td>128</td>
+<td>Authentication tag length in <strong>bits</strong> (16 bytes), from <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>.</td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The public size surface is expressed in <strong>bits</strong> — <code>KeySize</code> and <code>NonceSize</code> are <code>public const int</code> (both <code>128</code>), and <code>TagSize</code> is an instance property inherited from <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>. Size your byte buffers as <code>KeySize / 8</code>, <code>NonceSize / 8</code>, and <code>TagSize / 8</code>. The examples below use those expressions; the literal value in every case is <code>16</code>.</p>
+</div>
+<h2 id="a-standalone-aead--no-block-cipher-required">A standalone AEAD — no block cipher required</h2>
+<p><code>AsconAead128</code> is a <em>complete</em> AEAD primitive in its own right. Unlike the <a href="aead-modes.html">AES-based AEAD modes</a> — where you pair an <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> with a separate mode transform (<a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, …) — <code>AsconAead128</code> needs no companion cipher. Confidentiality, integrity, and authenticity all come from the single Ascon-p permutation over the 320-bit sponge.</p>
+<p>It still implements the shared <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> contract, so the call shape (<code>ProcessAssociatedData</code> then <code>Encrypt</code>/<code>Decrypt</code>) and the single-use lifecycle are identical to the AES modes, and the <a href="aead-modes.html#prerequisites--the-extension-methods">extension helpers</a> on <code>Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions</code> work on it too:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var enc = new AsconAead128(key, nonce);
+byte[] cipherWithTag = enc.Encrypt(plaintext, associatedData: header);  // sizes the buffer for you
+</code></pre>
+<h2 id="how-it-works">How it works</h2>
+<p>ASCON-AEAD128 is a sponge-based AEAD built on the same 320-bit state and Ascon-p permutation
+used by the hash and XOF variants. Every encryption proceeds through four fixed phases:</p>
+<ol>
+<li><strong>Initialization</strong> — the state is loaded as <code>[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]</code> and Ascon-p12 is
+applied, followed by XORing the key into state words S₃ and S₄.</li>
+<li><strong>Associated-data absorption</strong> — each 16-byte block of AAD is absorbed with Ascon-p8 between
+blocks. A domain-separation constant (XOR of 1 into S₄) is always applied after the AD phase,
+even when AD is empty.</li>
+<li><strong>Encryption / decryption</strong> — plaintext or ciphertext is processed in 16-byte blocks with
+Ascon-p8 between blocks. The final partial block is Ascon-padded and absorbed without a
+trailing permutation.</li>
+<li><strong>Finalization</strong> — the key is injected into the state, Ascon-p12 is applied, and the
+128-bit tag is extracted by XORing the key into state words S₃ and S₄.</li>
+</ol>
+<h2 id="the-single-use-instance-contract">The single-use instance contract</h2>
+<p>Every <code>AsconAead128</code> instance is <strong>single-use</strong> — one key/nonce pair, one message. The mandatory
+call sequence is:</p>
+<ol>
+<li><code>new AsconAead128(key, nonce)</code> — construct.</li>
+<li><code>ProcessAssociatedData(aad)</code> — always call this, even with an empty span.</li>
+<li><code>Encrypt(plaintext, output)</code> <strong>or</strong> <code>Decrypt(ciphertextWithTag, output)</code> — one call only.</li>
+<li><code>Dispose()</code> — let the <code>using</code> statement handle this.</li>
+</ol>
+<p>Skipping <code>ProcessAssociatedData</code> throws <code>InvalidOperationException</code>. Calling it a second time on
+the same instance also throws. Construct a new instance for every message.</p>
+<h2 id="pattern-1--encrypt-with-no-associated-data">Pattern 1 — encrypt with no associated data</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
+byte[] plaintext = Encoding.UTF8.GetBytes(&quot;secret payload&quot;);
+
+using (var enc = new AsconAead128(key, nonce))
+{
+    // Output buffer: ciphertext is the same length as plaintext, tag follows immediately.
+    byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
+    enc.ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;.Empty);
+    enc.Encrypt(plaintext, cipherWithTag);
+}
+</code></pre>
+<p><code>Encrypt</code> returns the total number of bytes written (<code>plaintext.Length + TagSize / 8</code>).</p>
+<h2 id="pattern-2--decrypt-and-verify">Pattern 2 — decrypt and verify</h2>
+<p><code>Decrypt</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> if the authentication
+tag does not match. The output buffer is zeroed before the exception is thrown, so no
+unauthenticated bytes can escape the method.</p>
+<pre><code class="lang-csharp">try
+{
+    using var dec = new AsconAead128(key, nonce);
+    byte[] recovered = new byte[cipherWithTag.Length - dec.TagSize / 8];
+    dec.ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;.Empty);
+    dec.Decrypt(cipherWithTag, recovered);
+    // recovered == original plaintext
+}
+catch (CryptographicException)
+{
+    // Tag did not verify — the ciphertext, tag, or AAD has been tampered with.
+    // The output buffer is zeroed. Do not use it.
+}
+</code></pre>
+<div class="WARNING">
+<h5>Warning</h5>
+<p><strong>Never act on output from <code>Decrypt</code> before it returns.</strong> Only read <code>recovered</code> after
+<code>Decrypt</code> has returned without throwing. The method zeroes the output buffer before throwing
+on a tag mismatch — unauthenticated bytes never escape, but the buffer contents are undefined
+until the method returns normally.</p>
+</div>
+<h2 id="pattern-3--with-associated-data">Pattern 3 — with associated data</h2>
+<p>Associated data is authenticated but <strong>not</strong> encrypted. Use it for any metadata that must travel
+alongside the ciphertext in the clear but must not be tampered with — packet headers, record
+types, user IDs, protocol framing.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] key       = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce     = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
+byte[] aad       = Encoding.UTF8.GetBytes(&quot;user-id:42|record-type:invoice&quot;);
+byte[] plaintext = GetInvoiceBytes();
+
+byte[] cipherWithTag;
+using (var enc = new AsconAead128(key, nonce))
+{
+    cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
+    enc.ProcessAssociatedData(aad);
+    enc.Encrypt(plaintext, cipherWithTag);
+}
+
+// Decryption must supply the same AAD. Supplying different AAD causes
+// Decrypt to throw CryptographicException — even if the ciphertext is intact.
+byte[] recovered = new byte[plaintext.Length];
+using (var dec = new AsconAead128(key, nonce))
+{
+    dec.ProcessAssociatedData(aad);
+    dec.Decrypt(cipherWithTag, recovered);
+}
+</code></pre>
+<p>The AAD is public — it does not need to be secret. Its integrity is protected by the tag.</p>
+<h2 id="pattern-4--multi-block-plaintext">Pattern 4 — multi-block plaintext</h2>
+<p>The rate is 16 bytes (128 bits). Plaintexts longer than 16 bytes are automatically split into
+full blocks with Ascon-p8 applied between them; the API is unchanged regardless of plaintext
+length.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key   = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
+
+// 537 bytes — 33 full 16-byte blocks plus a 9-byte final partial block.
+byte[] plaintext = new byte[537];
+RandomNumberGenerator.Fill(plaintext);
+
+using (var enc = new AsconAead128(key, nonce))
+{
+    byte[] cipherWithTag = new byte[plaintext.Length + enc.TagSize / 8];
+    enc.ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;.Empty);
+    int written = enc.Encrypt(plaintext, cipherWithTag);
+    // written == plaintext.Length + enc.TagSize / 8
+}
+</code></pre>
+<h2 id="pattern-5--encrypting-an-empty-plaintext">Pattern 5 — encrypting an empty plaintext</h2>
+<p>An empty plaintext produces only the 16-byte authentication tag:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using (var enc = new AsconAead128(key, nonce))
+{
+    byte[] tag = new byte[enc.TagSize / 8];   // 16 bytes — output is the tag alone
+    enc.ProcessAssociatedData(aad);
+    enc.Encrypt(ReadOnlySpan&lt;byte&gt;.Empty, tag);
+}
+</code></pre>
+<p>This pattern is useful for authenticating metadata alone, with no payload.</p>
+<h2 id="pattern-6--key-and-nonce-generation">Pattern 6 — key and nonce generation</h2>
+<p>Keys must be generated from a cryptographically secure random source and kept secret:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// Generated once (per session, per record, or per application — depends on your key management).
+byte[] key = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
+
+// Generated fresh for every message. Never reuse a (key, nonce) pair.
+byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
+</code></pre>
+<p>A 128-bit random nonce has negligible collision probability for fewer than approximately 2⁶⁴
+messages under the same key. For higher message volumes, use a counter instead:</p>
+<pre><code class="lang-csharp">using System.Buffers.Binary;
+
+// 128-bit counter encoded into the nonce. Increment for every message; never wrap.
+byte[] nonce = new byte[AsconAead128.NonceSize / 8];
+BinaryPrimitives.WriteUInt64LittleEndian(nonce, messageCounter++);
+</code></pre>
+<p>Either approach is valid. The critical invariant is that <code>(key, nonce)</code> must never repeat across
+two distinct messages under the same key.</p>
+<h2 id="pattern-7--span-based-constructors">Pattern 7 — span-based constructors</h2>
+<p>The primary constructor accepts <code>ReadOnlySpan&lt;byte&gt;</code> for zero-allocation key/nonce loading.
+The array-based overload (<code>byte[]</code>, <code>byte[]</code>) is provided for convenience when you already have
+managed arrays:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Span constructor — no defensive copy of a managed array.
+ReadOnlySpan&lt;byte&gt; keySpan   = stackalloc byte[AsconAead128.KeySize / 8];
+ReadOnlySpan&lt;byte&gt; nonceSpan = stackalloc byte[AsconAead128.NonceSize / 8];
+using var enc = new AsconAead128(keySpan, nonceSpan);
+
+// Array constructor — null-check included; a span is taken from the array internally.
+byte[] keyArr   = new byte[AsconAead128.KeySize / 8];
+byte[] nonceArr = new byte[AsconAead128.NonceSize / 8];
+using var enc2  = new AsconAead128(keyArr, nonceArr);
+</code></pre>
+<p>Both constructors reject keys or nonces that are not exactly 16 bytes, throwing
+<code>ArgumentException</code>.</p>
+<h2 id="security-requirements">Security requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Key secrecy</strong></td>
+<td>The key must never be disclosed. Exposure breaks both confidentiality and authenticity.</td>
+</tr>
+<tr>
+<td><strong>Nonce uniqueness</strong></td>
+<td>Never encrypt two distinct messages under the same <code>(key, nonce)</code> pair. Nonce reuse leaks the XOR of the two plaintexts and enables tag forgery.</td>
+</tr>
+<tr>
+<td><strong>Constant-time tag check</strong></td>
+<td><code>Decrypt</code> uses <code>CryptographicOperations.FixedTimeEquals</code> internally. Do not extract and compare tags manually with <code>SequenceEqual</code>.</td>
+</tr>
+<tr>
+<td><strong>Single-use instances</strong></td>
+<td>Construct a new <code>AsconAead128</code> for each message. Calling <code>Encrypt</code> or <code>Decrypt</code> twice on the same instance is not supported — <code>ProcessAssociatedData</code> throws on a second call.</td>
+</tr>
+<tr>
+<td><strong>Reject on tag mismatch</strong></td>
+<td>When <code>Decrypt</code> throws <code>CryptographicException</code>, discard the entire message. Do not retry with a different key or partial output.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ascon-aead128-vs-aes-gcm">ASCON-AEAD128 vs AES-GCM</h2>
+<table>
+<thead>
+<tr>
+<th>Consideration</th>
+<th><code>AsconAead128</code></th>
+<th>AES-GCM (BCL <code>AesGcm</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NIST standard</td>
+<td>SP 800-232 (2025)</td>
+<td>SP 800-38D</td>
+</tr>
+<tr>
+<td>Key / nonce size</td>
+<td>128 bit / 128 bit</td>
+<td>128–256 bit / 96 bit</td>
+</tr>
+<tr>
+<td>Tag size</td>
+<td>128 bits (fixed)</td>
+<td>96–128 bits (configurable)</td>
+</tr>
+<tr>
+<td>Hardware acceleration</td>
+<td>Software only on most platforms</td>
+<td>AES-NI + PCLMULQDQ on x86-64; hardware on ARM</td>
+</tr>
+<tr>
+<td>Nonce reuse consequence</td>
+<td>Catastrophic (XOR leak + forgery)</td>
+<td>Catastrophic (GHASH key recovered)</td>
+</tr>
+<tr>
+<td>State size</td>
+<td>320 bits (40 bytes)</td>
+<td>AES key schedule + GHASH state</td>
+</tr>
+<tr>
+<td>Throughput (software)</td>
+<td>Competitive on constrained hardware</td>
+<td>Fast with hardware; slow in software</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>AsconAead128</code> when you need a NIST-approved AEAD that runs well in software on any
+platform, or when targeting hardware without AES-GCM acceleration. Use the BCL's <code>AesGcm</code> or
+the library's <code>GcmModeTransform</code> when throughput on AES-NI hardware is the priority.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="ascon.html">ASCON overview</a> — the full family and which algorithm to pick.</li>
+<li><a href="ascon-hashing.html">ASCON hashing</a> — fixed-length 256-bit digest patterns.</li>
+<li><a href="ascon-xof.html">ASCON XOF</a> — variable-length output with <code>AsconXof128</code> and <code>AsconCxof128</code>.</li>
+<li><a href="aead-modes.html">AEAD modes guide</a> — AES-based AEAD (GCM, CCM, OCB3, SIV, GCM-SIV).</li>
+<li>API reference: <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

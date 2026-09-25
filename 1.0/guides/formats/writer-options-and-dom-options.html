@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Writer options and DOM options | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Writer options and DOM options | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="writer-options-and-dom-options">Writer options and DOM options</h1>
+
+<p>The <code>&lt;Format&gt;SerializerOptions</code> classes are not the only option types in the text libraries. Each format also has small <strong>option structs</strong> for the layers beneath the serializer: a <code>&lt;Format&gt;WriterOptions</code> passed to the <code>Utf8&lt;Format&gt;Writer</code> constructor, and — for the formats whose DOMs take one — a <code>&lt;Format&gt;NodeOptions</code> for the mutable DOM and a <code>&lt;Format&gt;DocumentOptions</code> (or reader options) for the read-only DOM's <code>Parse</code>. They are value types, the zero value is the default, and none of them freezes: a struct is copied into the writer or parser at construction and cannot be observed changing afterwards.</p>
+<p>This guide lists every member of every such struct with its default, and shows the effect of each knob on real bytes. The serializer-level lifecycle — freezing, caching, presets — is covered in <a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a>; the <em>reader</em> dialect knobs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) are tabulated on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page and only cross-referenced here.</p>
+<h2 id="the-option-structs-at-a-glance">The option structs at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Struct</th>
+<th>Passed to</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a></td>
+<td><code>Utf8DelimitedWriter(output, options)</code></td>
+<td><code>Delimiter</code>, <code>Quote</code>, <code>NoHeader</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.DotEnv.Writer.DotEnvWriterOptions.html">DotEnvWriterOptions</a></td>
+<td><code>Utf8DotEnvWriter(output, options)</code></td>
+<td><code>WriteExportPrefix</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.Writer.IniWriterOptions.html">IniWriterOptions</a></td>
+<td><code>Utf8IniWriter(output, options)</code></td>
+<td><code>CommentPrefix</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Writer.BencodeWriterOptions.html">BencodeWriterOptions</a></td>
+<td><code>Utf8BencodeWriter(output, options)</code></td>
+<td><code>MaxDepth</code>, <code>AllowMultipleRootValues</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Writer.TomlWriterOptions.html">TomlWriterOptions</a></td>
+<td><code>Utf8TomlWriter(output, options)</code></td>
+<td><code>MaxDepth</code> (<code>SpecVersion</code> is obsolete)</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.Writer.YamlWriterOptions.html">YamlWriterOptions</a></td>
+<td><code>Utf8YamlWriter(output, options)</code></td>
+<td><code>IndentSize</code>, <code>MaxDepth</code>, <code>NewLine</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Nodes.BencodeNodeOptions.html">BencodeNodeOptions</a></td>
+<td><code>BencodeNode.Parse(data, options[, documentOptions])</code>, <code>new BencodeObject(options)</code></td>
+<td><code>PropertyNameCaseInsensitive</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Bencode.Document.BencodeDocumentOptions.html">BencodeDocumentOptions</a></td>
+<td><code>BencodeDocument.Parse(data, options)</code></td>
+<td><code>MaxDepth</code>, <code>AllowUnsortedKeys</code>, <code>AllowDuplicateKeys</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Nodes.TomlNodeOptions.html">TomlNodeOptions</a></td>
+<td><code>TomlNode.Parse(utf8, options)</code>, <code>new TomlObject(options)</code></td>
+<td><code>PropertyNameCaseInsensitive</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Toml.Document.TomlDocumentOptions.html">TomlDocumentOptions</a></td>
+<td><code>TomlDocument.Parse(text, options)</code></td>
+<td><code>SpecVersion</code>, <code>MaxDepth</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Yaml.Document.YamlDocumentOptions.html">YamlDocumentOptions</a></td>
+<td><code>YamlDocument.Parse(text, options)</code>, <code>ParseAllDocuments(text, options)</code></td>
+<td><code>SpecVersion</code>, <code>DuplicateKeyBehavior</code>, <code>MergeKeyBehavior</code>, <code>MaxDepth</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a></td>
+<td><code>IniNode.Parse(utf8, readerOptions, documentOptions)</code>, <code>IniDocument.Parse(…)</code>, <code>new IniDocumentReader(…)</code></td>
+<td><code>DuplicateSectionBehavior</code>, <code>DuplicateKeyBehavior</code></td>
+</tr>
+</tbody>
+</table>
+<p>Delimited and DotEnv have no DOM option struct of their own: <code>DelimitedNode.Parse</code> / <code>DelimitedDocument.Parse</code> take a <a class="xref" href="../../api/Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a>, and <code>DotEnvNode.Parse</code> / <code>DotEnvDocument.Parse</code> take a <a class="xref" href="../../api/Bodu.Text.DotEnv.Reader.DotEnvReaderOptions.html">DotEnvReaderOptions</a>. YAML's <code>YamlNode.Parse(string)</code> takes no options; the reader's <a class="xref" href="../../api/Bodu.Text.Yaml.Reader.YamlReaderOptions.html">YamlReaderOptions</a> mirrors <code>YamlDocumentOptions</code> member for member.</p>
+<p>The line-format structs are <code>readonly struct</code>s with <code>init</code> accessors and a static <code>Default</code>; the Bencode, TOML, and YAML structs are ordinary mutable structs whose <code>default</code> is the default configuration.</p>
+<h2 id="pattern-1--delimited-writer-dialect-and-header">Pattern 1 — Delimited writer: dialect and header</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Delimiter</code></td>
+<td><code>char</code></td>
+<td><code>'\0'</code> → <code>,</code></td>
+<td>The field separator.</td>
+</tr>
+<tr>
+<td><code>Quote</code></td>
+<td><code>char</code></td>
+<td><code>'\0'</code> → <code>&quot;</code></td>
+<td>The quoting character; a field containing the delimiter, the quote, or a line break is wrapped in it, with embedded quotes doubled.</td>
+</tr>
+<tr>
+<td><code>NoHeader</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Suppress the header row that the first object record would otherwise emit.</td>
+</tr>
+</tbody>
+</table>
+<p>Records written as objects (<code>WriteStartObject</code> / <code>WritePropertyName</code> / <code>WriteString</code>) emit a header from the first record's property names unless <code>NoHeader</code> is set. A tab-separated, header-less file with single-quote quoting:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Text.Delimited.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8DelimitedWriter(buffer, new DelimitedWriterOptions { Delimiter = '\t', Quote = '\'', NoHeader = true });
+writer.WriteStartArray();
+writer.WriteStartObject();
+writer.WritePropertyName(&quot;symbol&quot;); writer.WriteString(&quot;MSFT&quot;);
+writer.WritePropertyName(&quot;note&quot;);   writer.WriteString(&quot;tab\there&quot;);
+writer.WriteEndObject();
+writer.WriteEndArray();
+writer.Flush();
+// MSFT\t'tab\there'\r\n
+</code></pre>
+<p>The value containing a tab is quoted with <code>'</code> because the tab is now the delimiter. The same records with the default options produce a header and RFC 4180 double-quote doubling:</p>
+<pre><code class="lang-text">symbol,note
+MSFT,&quot;say &quot;&quot;hi&quot;&quot;, now&quot;
+</code></pre>
+<p>Records end with <code>\r\n</code> in both dialects. <code>DelimitedSerializerOptions</code> exposes the same three members and forwards them to this struct (and to the reader options) on your behalf.</p>
+<h2 id="pattern-2--dotenv-writer-the-export-prefix">Pattern 2 — DotEnv writer: the <code>export</code> prefix</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WriteExportPrefix</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Prefix every key written through <code>WritePropertyName(string)</code> with <code>export </code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The option sets the default for the one-argument <code>WritePropertyName</code>; the two-argument overload <code>WritePropertyName(name, export)</code> decides per key and ignores the option:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.DotEnv.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8DotEnvWriter(buffer, new DotEnvWriterOptions { WriteExportPrefix = true });
+writer.WriteStartObject();
+writer.WriteComment(&quot;generated&quot;);
+writer.WritePropertyName(&quot;API_URL&quot;);               writer.WriteString(&quot;https://example.test&quot;);
+writer.WritePropertyName(&quot;SECRET&quot;, export: false); writer.WriteString(&quot;s3cret #1&quot;);
+writer.WriteEndObject();
+writer.Flush();
+// #generated
+// export API_URL=https://example.test
+// SECRET=&quot;s3cret #1&quot;
+</code></pre>
+<p>The value containing <code> #</code> is double-quoted automatically, because unquoted it would read back as <code>s3cret</code> followed by a comment. <code>DotEnvSerializerOptions.WriteExportPrefix</code> is the serializer-level form of the same flag; the mutable <code>DotEnvObject</code> DOM preserves each entry's own export flag instead.</p>
+<h2 id="pattern-3--ini-writer-the-comment-prefix">Pattern 3 — INI writer: the comment prefix</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CommentPrefix</code></td>
+<td><code>char</code></td>
+<td><code>'\0'</code> → <code>;</code></td>
+<td>The character <code>WriteComment</code> (and the DOM's comment trivia) is emitted with.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8IniWriter(buffer, new IniWriterOptions { CommentPrefix = '#' });
+writer.WriteComment(&quot;generated&quot;);
+writer.WritePropertyName(&quot;mode&quot;); writer.WriteString(&quot;fast&quot;);
+writer.WriteSectionHeader(&quot;server&quot;);
+writer.WritePropertyName(&quot;port&quot;); writer.WriteString(&quot;8080&quot;);
+writer.Flush();
+// #generated
+// mode=fast
+// [server]
+// port=8080
+</code></pre>
+<p>Both <code>;</code> and <code>#</code> are comment starters on the read side by default, so either prefix round-trips; choose <code>#</code> only when a downstream reader with <code>IniReaderOptions.DisallowHashComments</code> will <em>not</em> be consuming the file.</p>
+<h2 id="pattern-4--bencode-writer-depth-and-multiple-roots">Pattern 4 — Bencode writer: depth and multiple roots</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxDepth</code></td>
+<td><code>int</code></td>
+<td><code>0</code> → 64</td>
+<td>The deepest container nesting the writer opens before throwing <code>BencodeSerializationException</code>.</td>
+</tr>
+<tr>
+<td><code>AllowMultipleRootValues</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Permit a second complete value after the first root has closed.</td>
+</tr>
+</tbody>
+</table>
+<p>A Bencode document is single-valued; the writer enforces that unless told otherwise:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8BencodeWriter(buffer);
+writer.WriteInteger(1);
+writer.WriteInteger(2);
+// → throws InvalidOperationException: A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set.
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { AllowMultipleRootValues = true });
+writer.WriteInteger(1);
+writer.WriteString(&quot;two&quot;);
+// i1e3:two
+</code></pre>
+<p>Multiple roots are how a stream of bencoded messages (a DHT or peer-wire log, for example) is written to one buffer. The depth guard is the same family of error the serializer raises:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = 1 });
+writer.WriteStartList();
+writer.WriteStartList();
+// → throws BencodeSerializationException: The maximum write depth of 1 has been exceeded.
+</code></pre>
+<h2 id="pattern-5--toml-writer-depth">Pattern 5 — TOML writer: depth</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxDepth</code></td>
+<td><code>int</code></td>
+<td><code>0</code> → 64</td>
+<td>Deepest table/array nesting; larger values are clamped to the library's absolute limit. Exceeding it throws <code>TomlSerializationException</code>.</td>
+</tr>
+<tr>
+<td><code>SpecVersion</code></td>
+<td><code>TomlSpecVersion</code></td>
+<td>—</td>
+<td><strong>Obsolete.</strong> The writer emits output valid under both TOML v1.0.0 and v1.1.0, so the member has no effect and will be removed.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Toml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions { MaxDepth = 1 });
+writer.WriteStartTable();
+writer.WritePropertyName(&quot;server&quot;);
+writer.WriteStartTable();
+writer.WritePropertyName(&quot;tls&quot;);
+writer.WriteStartTable();
+// → throws TomlSerializationException: The maximum write depth of 1 has been exceeded.
+</code></pre>
+<p>With <code>MaxDepth = 2</code> the same two-level document renders — note that the TOML writer delivers its bytes when the <em>root table closes</em>, because it must decide between inline and header-defined tables with the whole document in hand:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions { MaxDepth = 2 });
+writer.WriteStartTable();
+writer.WritePropertyName(&quot;server&quot;);
+writer.WriteStartTable();
+writer.WritePropertyName(&quot;port&quot;); writer.WriteInteger(8080);
+writer.WriteEndTable();
+writer.WriteEndTable();
+// [server]
+// port = 8080
+</code></pre>
+<h2 id="pattern-6--yaml-writer-indentation-line-endings-depth">Pattern 6 — YAML writer: indentation, line endings, depth</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IndentSize</code></td>
+<td><code>int</code></td>
+<td><code>0</code> → 2</td>
+<td>Spaces per nesting level, 1–16.</td>
+</tr>
+<tr>
+<td><code>NewLine</code></td>
+<td><code>string?</code></td>
+<td><code>null</code> → <code>&quot;\n&quot;</code></td>
+<td>The line terminator; only <code>&quot;\n&quot;</code> and <code>&quot;\r\n&quot;</code> are accepted.</td>
+</tr>
+<tr>
+<td><code>MaxDepth</code></td>
+<td><code>int</code></td>
+<td><code>0</code> → 64</td>
+<td>Deepest mapping/sequence nesting; larger values are clamped to the absolute limit.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Yaml.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 4, NewLine = &quot;\r\n&quot; });
+writer.WriteStartMapping();
+writer.WritePropertyName(&quot;server&quot;);
+writer.WriteStartMapping();
+writer.WritePropertyName(&quot;port&quot;); writer.WriteInteger(8080);
+writer.WritePropertyName(&quot;hosts&quot;);
+writer.WriteStartSequence();
+writer.WriteString(&quot;a&quot;); writer.WriteString(&quot;b&quot;);
+writer.WriteEndSequence();
+writer.WriteEndMapping();
+writer.WriteEndMapping();
+// server:\r\n
+//     port: 8080\r\n
+//     hosts:\r\n
+//         - a\r\n
+//         - b\r\n
+</code></pre>
+<p>The default options render the same document at two spaces with <code>\n</code>. Unlike the other writer structs, <code>YamlWriterOptions</code> is <strong>validated at construction</strong> rather than at the point of use:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">new Utf8YamlWriter(buffer, new YamlWriterOptions { NewLine = &quot;\r&quot; });
+// → throws ArgumentException: The writer newline must be null, a line feed, or a carriage-return line feed. (Parameter 'NewLine')
+
+new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 32 });
+// → throws ArgumentOutOfRangeException: The writer indentation size must be between 1 and 16. (Parameter 'IndentSize')
+</code></pre>
+<p>Opening a container past <code>MaxDepth</code> throws <code>InvalidOperationException</code> (<em>The maximum write depth of 1 has been exceeded.</em>) from the writer; the same limit reached through <code>YamlSerializer</code> — which uses <code>YamlSerializerOptions.MaxDepth</code> and the default writer options — surfaces as <code>YamlSerializationException</code>. <code>YamlSerializer</code> does not expose the writer options, so serializer output is always two-space, <code>\n</code>-terminated YAML; drive <code>Utf8YamlWriter</code> directly (or call a node's <code>WriteTo(writer)</code>) when you need another layout.</p>
+<h2 id="pattern-7--bencode-doms-key-case-and-key-discipline">Pattern 7 — Bencode DOMs: key case and key discipline</h2>
+<table>
+<thead>
+<tr>
+<th>Struct</th>
+<th>Member</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BencodeNodeOptions</code></td>
+<td><code>PropertyNameCaseInsensitive</code></td>
+<td><code>false</code></td>
+<td>Key lookups on the <code>BencodeObject</code> (and its indexer) ignore case.</td>
+</tr>
+<tr>
+<td><code>BencodeDocumentOptions</code></td>
+<td><code>MaxDepth</code></td>
+<td><code>0</code> → 64</td>
+<td>Deepest nesting the parser accepts; exceeding it throws <code>BencodeFormatException</code>.</td>
+</tr>
+<tr>
+<td><code>BencodeDocumentOptions</code></td>
+<td><code>AllowUnsortedKeys</code></td>
+<td><code>false</code></td>
+<td>Accept dictionaries whose keys are not in raw byte order.</td>
+</tr>
+<tr>
+<td><code>BencodeDocumentOptions</code></td>
+<td><code>AllowDuplicateKeys</code></td>
+<td><code>false</code></td>
+<td>Accept a repeated key; the <strong>first</strong> occurrence is kept.</td>
+</tr>
+</tbody>
+</table>
+<p>The node options govern <em>lookup</em>; the document options govern <em>parsing</em>, and <code>BencodeNode.Parse</code> has an overload that takes both so a mutable tree can be built from lenient input:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
+using Bodu.Text.Bencode.Nodes;
+
+BencodeNode node = BencodeNode.Parse(&quot;d4:NAME3:apie&quot;u8, new BencodeNodeOptions { PropertyNameCaseInsensitive = true })!;
+string name = node[&quot;name&quot;]!.GetValue&lt;string&gt;();      // api
+BencodeNode? missing = BencodeNode.Parse(&quot;d4:NAME3:apie&quot;u8)![&quot;name&quot;];
+// → throws KeyNotFoundException — the default lookup is case-sensitive
+
+BencodeDocument.Parse(&quot;d1:bi1e1:ai2ee&quot;u8);
+// → throws BencodeFormatException: Bencoded dictionary keys must be sorted by raw byte order.
+using BencodeDocument unsorted = BencodeDocument.Parse(&quot;d1:bi1e1:ai2ee&quot;u8, new BencodeDocumentOptions { AllowUnsortedKeys = true });
+long a = unsorted.RootElement.GetProperty(&quot;a&quot;).GetInt64();   // 2
+
+BencodeDocument.Parse(&quot;d1:ai1e1:ai2ee&quot;u8);
+// → throws BencodeFormatException: Bencoded dictionary keys must be unique.
+using BencodeDocument dup = BencodeDocument.Parse(&quot;d1:ai1e1:ai2ee&quot;u8, new BencodeDocumentOptions { AllowDuplicateKeys = true });
+long firstA = dup.RootElement.GetProperty(&quot;a&quot;).GetInt64();   // 1 — first wins
+
+BencodeDocument.Parse(&quot;lli1eee&quot;u8, new BencodeDocumentOptions { MaxDepth = 1 });
+// → throws BencodeFormatException: Bencoded value nesting exceeds the maximum permitted depth of 1.
+
+long viaNode = BencodeNode.Parse(&quot;d1:bi1e1:ai2ee&quot;u8, default, new BencodeDocumentOptions { AllowUnsortedKeys = true })![&quot;a&quot;]!.GetValue&lt;long&gt;();   // 2
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Text.Bencode.Reader.BencodeReaderOptions.html">BencodeReaderOptions</a> carries the same three parsing members for the token reader, and <code>BencodeSerializerOptions</code> exposes <code>AllowUnsortedKeys</code> / <code>AllowDuplicateKeys</code> / <code>PropertyNameCaseInsensitive</code> (the last defaulting to <code>true</code> at the serializer level) for typed reads.</p>
+<h2 id="pattern-8--toml-doms-key-case-spec-version-depth">Pattern 8 — TOML DOMs: key case, spec version, depth</h2>
+<table>
+<thead>
+<tr>
+<th>Struct</th>
+<th>Member</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TomlNodeOptions</code></td>
+<td><code>PropertyNameCaseInsensitive</code></td>
+<td><code>false</code></td>
+<td>Key lookups on the <code>TomlObject</code> ignore case.</td>
+</tr>
+<tr>
+<td><code>TomlDocumentOptions</code></td>
+<td><code>SpecVersion</code></td>
+<td><code>V1_0</code></td>
+<td>Parse under TOML v1.0.0 or v1.1.0 (v1.1.0 adds multi-line inline tables, trailing commas, and second-precision omission).</td>
+</tr>
+<tr>
+<td><code>TomlDocumentOptions</code></td>
+<td><code>MaxDepth</code></td>
+<td><code>0</code> → 64</td>
+<td>Deepest nesting the parser accepts; exceeding it throws <code>TomlFormatException</code>.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Toml;
+using Bodu.Text.Toml.Document;
+using Bodu.Text.Toml.Nodes;
+
+TomlNode tnode = TomlNode.Parse(&quot;Port = 8080&quot;u8, new TomlNodeOptions { PropertyNameCaseInsensitive = true })!;
+long port = tnode[&quot;port&quot;]!.GetValue&lt;long&gt;();       // 8080
+bool found = TomlNode.Parse(&quot;Port = 8080&quot;u8)!.AsObject().TryGetPropertyValue(&quot;port&quot;, out _);   // false — case-sensitive by default
+
+TomlDocument.Parse(&quot;a.b.c = 1&quot;, new TomlDocumentOptions { MaxDepth = 1 });
+// → throws TomlFormatException: TOML value nesting exceeds the maximum permitted depth of 1.
+
+TomlDocument.Parse(&quot;x = {\n a = 1\n}&quot;, new TomlDocumentOptions { SpecVersion = TomlSpecVersion.V1_0 });
+// → throws TomlFormatException: Expected a key.
+using TomlDocument d = TomlDocument.Parse(&quot;x = {\n a = 1\n}&quot;, new TomlDocumentOptions { SpecVersion = TomlSpecVersion.V1_1 });
+long inner = d.RootElement.GetProperty(&quot;x&quot;).GetProperty(&quot;a&quot;).GetInt64();   // 1
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Text.Toml.Reader.TomlReaderOptions.html">TomlReaderOptions</a> carries the same <code>SpecVersion</code> / <code>MaxDepth</code> pair for the token reader; <code>TomlSerializerOptions</code> exposes both plus <code>PropertyNameCaseInsensitive</code>.</p>
+<h2 id="pattern-9--yaml-dom-duplicate-keys-merge-keys-spec-version-depth">Pattern 9 — YAML DOM: duplicate keys, merge keys, spec version, depth</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Default</th>
+<th>Values</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DuplicateKeyBehavior</code></td>
+<td><code>Throw</code></td>
+<td><code>Throw</code> · <code>UseFirst</code> · <code>UseLast</code></td>
+<td>What a repeated mapping key means.</td>
+</tr>
+<tr>
+<td><code>MergeKeyBehavior</code></td>
+<td><code>Expand</code></td>
+<td><code>Expand</code> · <code>Disabled</code> · <code>PreserveAsNormalKey</code></td>
+<td>Whether <code>&lt;&lt;: *alias</code> merges the referenced mapping (existing keys win) or is retained as an ordinary key named <code>&lt;&lt;</code>. <code>Disabled</code> and <code>PreserveAsNormalKey</code> produce the same tree; the second spells out the intent.</td>
+</tr>
+<tr>
+<td><code>SpecVersion</code></td>
+<td><code>V1_2</code></td>
+<td><code>V1_2</code> · <code>V1_1</code></td>
+<td>The core schema: under 1.2 only <code>true</code> / <code>false</code> are booleans; 1.1 restores <code>yes</code> / <code>no</code> / <code>on</code> / <code>off</code>.</td>
+</tr>
+<tr>
+<td><code>MaxDepth</code></td>
+<td><code>0</code> → 64</td>
+<td></td>
+<td>Deepest node nesting the parser accepts; exceeding it throws <code>YamlFormatException</code>.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Document;
+
+YamlDocument.Parse(&quot;a: 1\na: 2&quot;);
+// → throws YamlFormatException: The mapping key is already defined.
+using YamlDocument last = YamlDocument.Parse(&quot;a: 1\na: 2&quot;, new YamlDocumentOptions { DuplicateKeyBehavior = YamlDuplicateKeyBehavior.UseLast });
+long value = last.RootElement.GetProperty(&quot;a&quot;).GetInt64();    // 2
+
+const string merge = &quot;base: &amp;b\n  x: 1\nchild:\n  &lt;&lt;: *b\n  y: 2\n&quot;;
+using YamlDocument expanded = YamlDocument.Parse(merge);
+bool merged = expanded.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;x&quot;, out _);     // true — merged in
+using YamlDocument kept = YamlDocument.Parse(merge, new YamlDocumentOptions { MergeKeyBehavior = YamlMergeKeyBehavior.PreserveAsNormalKey });
+bool hasMergeKey = kept.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;&lt;&lt;&quot;, out _);   // true — an ordinary key
+bool hasX = kept.RootElement.GetProperty(&quot;child&quot;).TryGetProperty(&quot;x&quot;, out _);            // false
+
+using YamlDocument core = YamlDocument.Parse(&quot;legacy: yes&quot;);
+YamlValueKind coreKind = core.RootElement.GetProperty(&quot;legacy&quot;).ValueKind;   // String
+using YamlDocument v11 = YamlDocument.Parse(&quot;legacy: yes&quot;, new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
+YamlValueKind v11Kind = v11.RootElement.GetProperty(&quot;legacy&quot;).ValueKind;     // Boolean
+
+YamlDocument.Parse(&quot;a:\n  b: 1&quot;, new YamlDocumentOptions { MaxDepth = 1 });
+// → throws YamlFormatException: YAML node nesting exceeds the maximum permitted depth of 1.
+</code></pre>
+<p><code>YamlReaderOptions</code> has the same four members for <code>Utf8YamlReader</code>, and <code>YamlSerializerOptions</code> exposes all four for typed reads. <code>YamlNode.Parse(string)</code> takes no options and parses with the defaults.</p>
+<h2 id="pattern-10--ini-dom-duplicate-policies-and-reader-dialect">Pattern 10 — INI DOM: duplicate policies and reader dialect</h2>
+<table>
+<thead>
+<tr>
+<th>Struct</th>
+<th>Member</th>
+<th>Default</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IniDocumentOptions</code></td>
+<td><code>DuplicateSectionBehavior</code></td>
+<td><code>Merge</code></td>
+<td><code>Merge</code> (later <code>[section]</code> blocks append to the first) · <code>Disallowed</code></td>
+</tr>
+<tr>
+<td><code>IniDocumentOptions</code></td>
+<td><code>DuplicateKeyBehavior</code></td>
+<td><code>LastWins</code></td>
+<td><code>LastWins</code> · <code>FirstWins</code> · <code>Disallowed</code></td>
+</tr>
+<tr>
+<td><code>IniReaderOptions</code></td>
+<td><code>DisallowHashComments</code></td>
+<td><code>false</code></td>
+<td>Only <code>;</code> starts a comment; a <code>#</code> line becomes a malformed entry.</td>
+</tr>
+<tr>
+<td><code>IniReaderOptions</code></td>
+<td><code>SkipComments</code></td>
+<td><code>false</code></td>
+<td>Drop comment lines from the token stream (and so from the DOM's comment trivia).</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>Parse</code> overloads on both INI DOMs take the reader options and the document options together:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
+using Bodu.Text.Ini.Reader;
+
+const string ini = &quot;# hash comment\nname=a\nname=b\n[s]\nk=1\n[s]\nk=2\nj=3\n&quot;;
+
+IniObject root = IniNode.Parse(ini);
+string name = root[&quot;name&quot;].AsValue().Value;              // b  — LastWins
+string k = root[&quot;s&quot;].AsObject()[&quot;k&quot;].AsValue().Value;     // 2
+string j = root[&quot;s&quot;].AsObject()[&quot;j&quot;].AsValue().Value;     // 3  — the second [s] block merged in
+
+IniObject first = IniNode.Parse(Encoding.UTF8.GetBytes(ini), IniReaderOptions.Default,
+    new IniDocumentOptions { DuplicateKeyBehavior = IniDuplicateKeyBehavior.FirstWins });
+string firstName = first[&quot;name&quot;].AsValue().Value;              // a
+string firstK = first[&quot;s&quot;].AsObject()[&quot;k&quot;].AsValue().Value;     // 1
+
+IniNode.Parse(Encoding.UTF8.GetBytes(ini), IniReaderOptions.Default,
+    new IniDocumentOptions { DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed });
+// → throws IniFormatException: The INI section '' defines the key 'name' more than once.
+
+IniNode.Parse(Encoding.UTF8.GetBytes(ini), IniReaderOptions.Default,
+    new IniDocumentOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed });
+// → throws IniFormatException: The INI document defines the section 's' more than once.
+
+IniNode.Parse(Encoding.UTF8.GetBytes(ini), new IniReaderOptions { DisallowHashComments = true }, IniDocumentOptions.Default);
+// → throws IniFormatException: Malformed INI entry on line 1; expected 'key=value'.
+</code></pre>
+<p><code>IniSerializerOptions</code> exposes the two duplicate policies directly (its <code>Strict</code> preset sets both to <code>Disallowed</code>) and forwards them to <code>IniDocumentOptions</code>.</p>
+<h2 id="serializer-option--struct-member">Serializer option ↔ struct member</h2>
+<p>Where a serializer option and a struct member control the same thing, the serializer forwards its value to the struct; set it once at the serializer level for typed use, or on the struct when driving the writer or DOM directly.</p>
+<table>
+<thead>
+<tr>
+<th>Serializer option</th>
+<th>Forwarded to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DelimitedSerializerOptions.Delimiter</code> / <code>Quote</code> / <code>NoHeader</code></td>
+<td><code>DelimitedWriterOptions</code> and <code>DelimitedReaderOptions</code></td>
+</tr>
+<tr>
+<td><code>DotEnvSerializerOptions.WriteExportPrefix</code></td>
+<td><code>DotEnvWriterOptions.WriteExportPrefix</code></td>
+</tr>
+<tr>
+<td><code>IniSerializerOptions.DuplicateSectionBehavior</code> / <code>DuplicateKeyBehavior</code></td>
+<td><code>IniDocumentOptions</code></td>
+</tr>
+<tr>
+<td><code>BencodeSerializerOptions.AllowUnsortedKeys</code> / <code>AllowDuplicateKeys</code> / <code>MaxDepth</code></td>
+<td><code>BencodeReaderOptions</code> (reads); <code>MaxDepth</code> also governs the write</td>
+</tr>
+<tr>
+<td><code>BencodeSerializerOptions.PropertyNameCaseInsensitive</code></td>
+<td>member matching — the same rule <code>BencodeNodeOptions</code> applies to DOM lookups</td>
+</tr>
+<tr>
+<td><code>TomlSerializerOptions.SpecVersion</code> / <code>MaxDepth</code></td>
+<td><code>TomlReaderOptions</code> (reads); <code>MaxDepth</code> also governs the write</td>
+</tr>
+<tr>
+<td><code>YamlSerializerOptions.SpecVersion</code> / <code>DuplicateKeyBehavior</code> / <code>MergeKeyBehavior</code> / <code>MaxDepth</code></td>
+<td><code>YamlReaderOptions</code> (reads); <code>MaxDepth</code> also governs the write</td>
+</tr>
+</tbody>
+</table>
+<p><code>IniWriterOptions.CommentPrefix</code> and the three <code>YamlWriterOptions</code> members have no serializer-level counterpart.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="../../docs/formats/parser-policies.html">Parser policies</a> — the reader-option structs (<code>DelimitedReaderOptions</code>, <code>DotEnvReaderOptions</code>, <code>IniReaderOptions</code>) in full.</li>
+<li><a href="error-handling.html">Errors across the line formats</a> — the exceptions the strict defaults above raise, and how to catch them.</li>
+<li><a href="streaming.html">Streams and token-level I/O</a> — driving the <code>Utf8*Writer</code> types directly, which is where the writer structs apply.</li>
+<li><a href="../serialization/options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> — the <code>&lt;Format&gt;SerializerOptions</code> lifecycle.</li>
+<li>The per-format guides — <a href="delimited.html">Delimited</a>, <a href="dotenv.html">DotEnv</a>, <a href="ini.html">INI</a> — and the serializer DOM walk-throughs in <a href="../serialization/toml/using.html">Using TOML</a>, <a href="../serialization/bencode/using.html">Using Bencode</a>, and <a href="../serialization/yaml/using.html">Using YAML</a>.</li>
+<li><a href="../../samples/formats.html">Runnable samples</a>, the <a href="index.html">line-format guides hub</a>, and the <a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

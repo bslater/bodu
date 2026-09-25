@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Choosing a text format | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Choosing a text format | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="choosing-a-text-format">Choosing a text format</h1>
+
+<p>The three line formats cover different jobs. This guide helps you pick, and explains what round-trips faithfully and how each parser recovers from dirty input.</p>
+<h2 id="decision-matrix">Decision matrix</h2>
+<table>
+<thead>
+<tr>
+<th>You have / need</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tabular data exchanged with spreadsheets, databases, other systems</td>
+<td><strong>Delimited</strong> (<code>Bodu.Text.Delimited</code>)</td>
+</tr>
+<tr>
+<td>Per-environment process settings, secrets injected at deploy time</td>
+<td><strong>DotEnv</strong> (<code>Bodu.Text.DotEnv</code>)</td>
+</tr>
+<tr>
+<td>Human-owned configuration with sections and comments</td>
+<td><strong>INI</strong> (<code>Bodu.Text.Ini</code>)</td>
+</tr>
+<tr>
+<td>Layered configuration with glob targets and typed views (EditorConfig-style)</td>
+<td><code>Bodu.Text.Configuration</code></td>
+</tr>
+<tr>
+<td>Nested structures, arrays, non-string scalars</td>
+<td>TOML / YAML / Bencode (the structured-text quartet)</td>
+</tr>
+</tbody>
+</table>
+<p>The line formats are <strong>flat</strong>: Delimited is an array of records, DotEnv a single object, INI a two-level object-of-objects. If your data nests deeper, use a structured format instead of encoding structure into key names.</p>
+<h2 id="round-trip-fidelity">Round-trip fidelity</h2>
+<ul>
+<li><strong>Delimited</strong> round-trips values exactly; layout is canonicalized (quotes are emitted only where required, rows end in the writer's line ending). Use the mutable <code>DelimitedNode</code> DOM to parse → edit → rewrite.</li>
+<li><strong>DotEnv</strong> round-trips keys, values, and each entry's <code>export</code> flag through the mutable DOM; quoting is canonicalized on write.</li>
+<li><strong>INI</strong> is the fidelity flagship: the mutable <code>IniNode</code> DOM preserves every leading comment line and the end-of-scope comment block, so parse → edit → write keeps a human's annotations. Whitespace around <code>=</code> is canonicalized (<code>key=value</code>), and global entries are always emitted before the first section header. Inline comments are not modeled — the dialect treats them as value content.</li>
+</ul>
+<p>The read-only <code>*Document</code> DOMs are for querying, not round-tripping: they drop comment trivia.</p>
+<h2 id="mutation">Mutation</h2>
+<p>Author or edit through the mutable node DOMs — insertion-ordered maps (<code>DotEnvObject</code>, <code>IniObject</code>) or record lists (<code>DelimitedArray</code>), written back with <code>ToUtf8Bytes()</code> / <code>ToString()</code> or <code>WriteTo(ref Utf8*Writer)</code> for custom writer options (e.g. a tab delimiter). For typed data, skip the DOM entirely and round-trip POCOs through the <code>*Serializer</code>.</p>
+<h2 id="parser-error-recovery">Parser error recovery</h2>
+<p>All three readers throw their <code>*FormatException</code> with a line/offset by default. Leniency is opt-in per dialect:</p>
+<ul>
+<li><strong>Delimited</strong> — <code>FieldCountBehavior.Ragged</code> accepts records whose field count differs from the header; <code>MalformedRecordBehavior.SkipRecord</code> truncates a structurally broken record instead of throwing; <code>DuplicateHeaderBehavior</code> picks a winner for repeated column names.</li>
+<li><strong>DotEnv</strong> — the reader is line-incremental, so one malformed line fails fast with its position; quoting errors (an unterminated quote) always throw.</li>
+<li><strong>INI</strong> — malformed lines (no <code>=</code>, unterminated <code>[section</code>) always throw; duplicate sections and keys are resolved by the document-model policies (<code>Merge</code> / <code>Disallowed</code>, <code>LastWins</code> / <code>FirstWins</code> / <code>Disallowed</code>).</li>
+</ul>
+<p>See <a href="../../docs/formats/parser-policies.html">Parser policies</a> for the full table.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="delimited.html">Using delimited</a> · <a href="dotenv.html">Using DotEnv</a> · <a href="ini.html">Using INI</a></li>
+<li><a href="streaming.html">Streams and token-level I/O</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

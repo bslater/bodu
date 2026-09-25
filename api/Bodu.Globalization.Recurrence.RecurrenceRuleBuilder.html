@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class RecurrenceRuleBuilder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class RecurrenceRuleBuilder | BODU ">
+    
+    <meta name="description" content="Builds a  fluently, as an alternative to parsing its textual form.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder">
+
+
+
+  <h1 id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder" class="text-break">Class RecurrenceRuleBuilder</h1>
+  <div class="markdown level0 summary"><p>Builds a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> fluently, as an alternative to parsing its textual form.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">RecurrenceRuleBuilder</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Recurrence.html">Recurrence</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Recurrence.dll</h6>
+  <h5 id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RecurrenceRuleBuilder</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The builder is mutable and single-threaded; each <code>By…</code> or <code>With…</code> method returns the same instance so
+calls chain. Call <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_Build">Build()</a> to produce the immutable rule. A builder can be reused after
+<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_Build">Build()</a> and each <code>By…</code> setter replaces any previously supplied values for that rule part.
+</p>
+<p>
+<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithCount.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithCount_System_Int32_">WithCount(int)</a> and <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithUntil.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithUntil_System_DateTime_">WithUntil(DateTime)</a> are mutually exclusive; supplying one clears
+the other, matching the RFC 5545 rule that <code>COUNT</code> and <code>UNTIL</code> cannot both appear.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder__ctor_Bodu_Globalization_Recurrence_RecurrenceFrequency_" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.#ctor(Bodu.Globalization.Recurrence.RecurrenceFrequency)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.-ctor.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder__ctor_Bodu_Globalization_Recurrence_RecurrenceFrequency_">RecurrenceRuleBuilder(RecurrenceFrequency)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> class for the specified frequency.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_Build" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_Build">Build()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Builds the immutable <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> from the configured components.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_Bodu_Globalization_Recurrence_WeekDayNum___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(Bodu.Globalization.Recurrence.WeekDayNum[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_Bodu_Globalization_Recurrence_WeekDayNum___">ByDay(params WeekDayNum[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYDAY</code> rule part from weekday entries.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_System_DayOfWeek___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(System.DayOfWeek[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_System_DayOfWeek___">ByDay(params DayOfWeek[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYDAY</code> rule part from plain weekdays, each with no positional ordinal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByHour_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByHour_System_Int32___">ByHour(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYHOUR</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMinute_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMinute_System_Int32___">ByMinute(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYMINUTE</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonth_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonth_System_Int32___">ByMonth(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYMONTH</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonthDay_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonthDay_System_Int32___">ByMonthDay(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYMONTHDAY</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySecond_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySecond_System_Int32___">BySecond(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYSECOND</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySetPos_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySetPos(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySetPos.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySetPos_System_Int32___">BySetPos(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYSETPOS</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByWeekNo_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByWeekNo(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByWeekNo.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByWeekNo_System_Int32___">ByWeekNo(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYWEEKNO</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByYearDay_System_Int32___" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByYearDay(System.Int32[])">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByYearDay.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByYearDay_System_Int32___">ByYearDay(params int[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the <code>BYYEARDAY</code> rule part.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithCount_System_Int32_" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithCount(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithCount.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithCount_System_Int32_">WithCount(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the occurrence count and clears any previously set <code>UNTIL</code> bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithInterval_System_Int32_" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithInterval(System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithInterval.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithInterval_System_Int32_">WithInterval(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the interval — the positive multiple of the frequency between occurrences.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithUntil_System_DateTime_" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithUntil(System.DateTime)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithUntil.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithUntil_System_DateTime_">WithUntil(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the inclusive upper-bound instant and clears any previously set <code>COUNT</code> bound.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithWeekStart_System_DayOfWeek_" data-uid="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithWeekStart(System.DayOfWeek)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.WithWeekStart.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_WithWeekStart_System_DayOfWeek_">WithWeekStart(DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets the day the week starts on, governing weekly-interval and week-number arithmetic.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

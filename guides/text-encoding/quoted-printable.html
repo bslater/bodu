@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Quoted-Printable (MIME bodies) | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Quoted-Printable (MIME bodies) | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-quoted-printable-mime-bodies">Using Quoted-Printable (MIME bodies)</h1>
+
+<p><code>QuotedPrintable</code> implements the MIME Quoted-Printable body content-transfer encoding of
+<strong>RFC 2045 §6.7</strong> — the sibling of MIME Base64 for <em>mostly-readable</em>, 7-bit-safe text. Printable ASCII passes through
+literally; every other octet becomes an <code>=HH</code> escape with uppercase hexadecimal digits. Lines are kept within a
+configurable limit by inserting <strong>soft line breaks</strong> (a trailing <code>=</code> followed by the newline) that the decoder removes.</p>
+<pre><code>input bytes  : 63 61 66 C3 A9                 (UTF-8 &quot;café&quot;, 5 bytes)
+escaped text : caf=C3=A9                       (printable run + two =HH escapes)
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>QuotedPrintable</code> encodes and decodes <strong>only</strong> the Quoted-Printable body transform. It does <strong>not</strong> implement the
+RFC 2047 encoded-word <code>Q</code> header encoding (different syntax, underscore-for-space), and it does not parse MIME
+messages, headers, multiparts, charsets, or content-transfer-encoding declarations.</p>
+</div>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = &quot;café = møney&quot;u8.ToArray();
+
+// Binary mode (default) — arbitrary octets, 76-column soft wrapping, CRLF.
+string encoded = QuotedPrintable.Encode(data);
+
+// Round-trip.
+byte[] back = QuotedPrintable.Decode(encoded);
+</code></pre>
+<h2 id="binary-vs-text-mode">Binary vs text mode</h2>
+<p><code>QuotedPrintable</code> does not fit the flat-byte <code>Base{N}</code> shape — its output length depends on the content — so it is a
+<strong>static type, not an <a href="binary-encodings-interface.html"><code>IBinaryEncoding</code></a></strong>. The only structural choice is how line
+breaks in the <em>source</em> are treated:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>CR / LF in source</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Binary</code> (default)</td>
+<td>Escaped as <code>=0D</code> / <code>=0A</code>; no byte sequence is a hard break</td>
+<td>Arbitrary octet round-trips</td>
+</tr>
+<tr>
+<td><code>Text</code></td>
+<td>A canonical <code>CRLF</code> pair becomes a hard break (<code>options.NewLine</code>); a lone CR or LF is escaped</td>
+<td>RFC 2045 canonical text bodies</td>
+</tr>
+</tbody>
+</table>
+<p>The mode travels on <a class="xref" href="../../api/Bodu.Text.Encoding.QuotedPrintableEncodingOptions.html">QuotedPrintableEncodingOptions</a>, a <code>readonly record struct</code> with three
+members: <code>Mode</code> (a <a class="xref" href="../../api/Bodu.Text.Encoding.QuotedPrintableEncodingMode.html">QuotedPrintableEncodingMode</a>, default <code>Binary</code>), <code>MaxLineLength</code> (default
+76), and <code>NewLine</code> (the hard-break sequence; <code>null</code> selects <code>CRLF</code>). Its constructor takes the three in that order, so
+<code>new(QuotedPrintableEncodingMode.Text)</code> is enough to switch mode, and the static <code>Default</code> (binary) and <code>Text</code> presets
+cover the two common cases without spelling the arguments out.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">byte[] crlf = &quot;line1\r\nline2&quot;u8.ToArray();
+
+QuotedPrintable.Encode(crlf);                                              // &quot;line1=0D=0Aline2&quot;  (binary)
+QuotedPrintable.Encode(crlf, new(QuotedPrintableEncodingMode.Text));       // &quot;line1\r\nline2&quot;     (text)
+</code></pre>
+<h2 id="encoding-rules">Encoding rules</h2>
+<table>
+<thead>
+<tr>
+<th>Octet</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Printable ASCII <code>0x21</code>–<code>0x3C</code>, <code>0x3E</code>–<code>0x7E</code> (except <code>=</code>)</td>
+<td>Literal</td>
+</tr>
+<tr>
+<td><code>=</code> (<code>0x3D</code>)</td>
+<td>Always <code>=3D</code></td>
+</tr>
+<tr>
+<td>Space / tab in the middle of a line</td>
+<td>Literal</td>
+</tr>
+<tr>
+<td>Space / tab at the end of a line</td>
+<td><code>=20</code> / <code>=09</code> (a decoder may delete trailing whitespace)</td>
+</tr>
+<tr>
+<td>Any other octet</td>
+<td><code>=HH</code> with <strong>uppercase</strong> hex</td>
+</tr>
+</tbody>
+</table>
+<p>The encoder never emits a literal space or tab as the last character on a line, so canonical output round-trips through
+the strict decoder without loss.</p>
+<h2 id="line-length-and-soft-breaks">Line length and soft breaks</h2>
+<p>Encoded lines never exceed <code>MaxLineLength</code> characters (default <strong>76</strong>), and the trailing soft-break <code>=</code> is counted
+within that limit. A <code>MaxLineLength</code> of <code>0</code> selects the RFC default; values below <code>4</code> are rejected.</p>
+<pre><code class="lang-csharp">string wrapped = QuotedPrintable.Encode(new byte[200]); // long input → 76-column lines, each soft-wrapped with '='
+</code></pre>
+<h2 id="decoding-options">Decoding options</h2>
+<p>Decoding is <strong>strict by default</strong>. The relaxations are opt-in:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(none)</em></td>
+<td>Uppercase <code>=HH</code> only; bare LF rejected; trailing literal whitespace rejected</td>
+</tr>
+<tr>
+<td><code>AllowLowercaseHex</code></td>
+<td>Accept <code>=3d</code> as well as <code>=3D</code></td>
+</tr>
+<tr>
+<td><code>AllowBareLineFeed</code></td>
+<td>Accept a bare <code>LF</code> as a hard break and <code>=\n</code> as a soft break</td>
+</tr>
+<tr>
+<td><code>IgnoreTrailingWhitespace</code></td>
+<td>Delete transport-inserted trailing space / tab instead of rejecting it</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">QuotedPrintable.Decode(&quot;=3d&quot;);                                             // FormatException (strict)
+QuotedPrintable.Decode(&quot;=3d&quot;, QuotedPrintableDecodingOptions.AllowLowercaseHex); // { 0x3D }
+</code></pre>
+<p>The strict decoder rejects a bare <code>=</code> at end of input, <code>=</code> plus one character, <code>=</code> plus non-hex, a lone CR, non-ASCII
+characters, and stray control characters.</p>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">QuotedPrintable.IsValid(&quot;abc=\r\ndef&quot;);                  // true (soft break)
+QuotedPrintable.IsValid(&quot;=GG&quot;);                          // false
+QuotedPrintable.IsValid(new string('A', 77));            // false — exceeds the 76-char line limit
+
+QuotedPrintable.GetEncodedLength(data);                  // exact encoded length (scans the data)
+QuotedPrintable.GetMaxEncodedLength(data.Length);        // worst-case upper bound
+QuotedPrintable.TryGetDecodedLength(text, out int n);    // exact decoded length, false if malformed
+</code></pre>
+<p><code>IsValid</code> checks <strong>canonical</strong> RFC 2045 conformance — including the 76-character encoded-line limit (the soft-break
+<code>=</code> counted, the CRLF not). <code>Decode</code> is more lenient: it recovers overlong lines that <code>IsValid</code> rejects, so
+<code>IsValid(x) == true</code> implies <code>Decode(x)</code> succeeds but not the reverse. <code>TryGetDecodedLength</code> mirrors <code>Decode</code> (it
+ignores the line limit), so it can always size a decode buffer.</p>
+<h2 id="span-path">Span path</h2>
+<pre><code class="lang-csharp">char[] buffer = new char[QuotedPrintable.GetMaxEncodedLength(data.Length)];
+bool ok = QuotedPrintable.TryEncode(data, buffer, out int written);
+</code></pre>
+<p><code>TryEncode</code> / <code>TryDecode</code> never throw for malformed input, invalid options, or an undersized destination — they return
+<code>false</code> and write <code>0</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base64.html">Base64 guide</a></strong> — the other MIME content-transfer encoding, including the 76-column MIME variant.</li>
+<li><strong><a href="percent-encoding.html">Percent-encoding guide</a></strong> — the URI / form escape encoding, also <code>=HH</code>-style but for URLs.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

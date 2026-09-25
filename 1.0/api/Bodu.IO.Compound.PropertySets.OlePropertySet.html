@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class OlePropertySet | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class OlePropertySet | BODU ">
+    
+    <meta name="description" content="Represents a parsed OLE property set — the managed counterpart of the COM IPropertyStorage interface — exposing its sections and the typed values they contain.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet">
+
+
+
+  <h1 id="Bodu_IO_Compound_PropertySets_OlePropertySet" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet" class="text-break">Class OlePropertySet</h1>
+  <div class="markdown level0 summary"><p>Represents a parsed OLE property set — the managed counterpart of the COM <code>IPropertyStorage</code> interface —
+exposing its sections and the typed values they contain.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">OlePropertySet</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a>.<a class="xref" href="Bodu.IO.Compound.PropertySets.html">PropertySets</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertySet_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OlePropertySet</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_PropertySets_OlePropertySet_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>An OLE property set is the serialized form stored in streams such as <code>\x05SummaryInformation</code>. It begins with a
+header that declares the class identifier and one or two sections, each identified by a format identifier (FMTID)
+and holding properties keyed by property identifier (PID).</p>
+<example>
+The following example opens a property-set stream, parses it, and reads a property by its identifier.
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+using CompoundFile file = CompoundFile.OpenRead("book.xls");
+using CompoundStream stream = file.RootStorage.OpenStream(SummaryInformation.StreamName);
+OlePropertySet set = OlePropertySet.Parse(stream.AsMemory());
+
+// PID 4 is the author in the summary-information set.
+if (set.TryGetValue(propertyId: 4, out OlePropertyValue? author))
+    Console.WriteLine(author.AsString());</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet__ctor_System_Guid_System_Guid_System_Int32_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.#ctor(System.Guid,System.Guid,System.Int32)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.-ctor.html#Bodu_IO_Compound_PropertySets_OlePropertySet__ctor_System_Guid_System_Guid_System_Int32_">OlePropertySet(Guid, Guid, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> class for authoring, with no sections.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_ClassId" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.ClassId">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.ClassId.html#Bodu_IO_Compound_PropertySets_OlePropertySet_ClassId">ClassId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the class identifier declared in the property-set header.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_CodePage" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.CodePage">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.CodePage.html#Bodu_IO_Compound_PropertySets_OlePropertySet_CodePage">CodePage</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the code page of the first section.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_FormatId" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.FormatId">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.FormatId.html#Bodu_IO_Compound_PropertySets_OlePropertySet_FormatId">FormatId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the format identifier (FMTID) of the first section.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_Item_System_Int32_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.Item(System.Int32)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.Item.html#Bodu_IO_Compound_PropertySets_OlePropertySet_Item_System_Int32_">this[int]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the value of a property from the first section.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_Sections" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.Sections">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.Sections.html#Bodu_IO_Compound_PropertySets_OlePropertySet_Sections">Sections</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the sections of the property set, in declared order.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_AddSection_Bodu_IO_Compound_PropertySets_OlePropertySection_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.AddSection(Bodu.IO.Compound.PropertySets.OlePropertySection)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.AddSection.html#Bodu_IO_Compound_PropertySets_OlePropertySet_AddSection_Bodu_IO_Compound_PropertySets_OlePropertySection_">AddSection(OlePropertySection)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Appends a section to the property set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_Parse_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.Parse(System.ReadOnlyMemory{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.Parse.html#Bodu_IO_Compound_PropertySets_OlePropertySet_Parse_System_ReadOnlyMemory_System_Byte__">Parse(ReadOnlyMemory&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an OLE property set from its serialized bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_Read_System_IO_Stream_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.Read(System.IO.Stream)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.Read.html#Bodu_IO_Compound_PropertySets_OlePropertySet_Read_System_IO_Stream_">Read(Stream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads and parses an OLE property set from a stream, consuming it to the end.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_ToArray" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.ToArray">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.ToArray.html#Bodu_IO_Compound_PropertySets_OlePropertySet_ToArray">ToArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes the property set to its OLE byte form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_TryGetValue_System_Int32_Bodu_IO_Compound_PropertySets_OlePropertyValue__" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.TryGetValue(System.Int32,Bodu.IO.Compound.PropertySets.OlePropertyValue@)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.TryGetValue.html#Bodu_IO_Compound_PropertySets_OlePropertySet_TryGetValue_System_Int32_Bodu_IO_Compound_PropertySets_OlePropertyValue__">TryGetValue(int, out OlePropertyValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to get the value of a property from the first section.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_WriteTo_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.WriteTo(System.Buffers.IBufferWriter{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.WriteTo.html#Bodu_IO_Compound_PropertySets_OlePropertySet_WriteTo_System_Buffers_IBufferWriter_System_Byte__">WriteTo(IBufferWriter&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes the property set to its OLE byte form, written to the supplied buffer writer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_PropertySets_OlePropertySet_WriteTo_System_IO_Stream_" data-uid="Bodu.IO.Compound.PropertySets.OlePropertySet.WriteTo(System.IO.Stream)">
+          <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.WriteTo.html#Bodu_IO_Compound_PropertySets_OlePropertySet_WriteTo_System_IO_Stream_">WriteTo(Stream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes the property set to its OLE byte form, written to the supplied stream.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.IO.Hashing.CheckDigits | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.IO.Hashing.CheckDigits | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.CheckDigits">
+
+  <h1 id="Bodu_IO_Hashing_CheckDigits" data-uid="Bodu.IO.Hashing.CheckDigits" class="text-break">Namespace Bodu.IO.Hashing.CheckDigits</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-io.svg" alt="Bodu.IO.Hashing"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.IO.Hashing.CheckDigits</strong> ships the catalogue of single-character and multi-character check-digit algorithms — Luhn, Damm, Verhoeff, plus the standard catalogues used by financial, retail, securities, and publishing identifiers (IBAN, LEI, EAN, GTIN, UPC, ISBN, ISIN, SEDOL, CUSIP, ABA routing, …). Every algorithm derives from the root <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a> through one of its three abstract bases — <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a> (decimal payload, single check digit), <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a> (alphanumeric payload, single check character), or <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a> (fixed-length multi-character check).</p>
+<h2 id="key-types">Key types</h2>
+<p><strong>Generic algorithms</strong> — applicable to any identifier shape:</p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Damm.html">Damm</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Gumm.html">Gumm</a></li>
+</ul>
+<p><strong>Financial / banking identifiers:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber.html">AbaRoutingNumber</a> — ABA routing number (US).</li>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a> — IBAN MOD-97.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a> — Legal Entity Identifier (ISO 17442).</li>
+</ul>
+<p><strong>Retail / GS1:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Ean8.html">Ean8</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Ean13.html">Ean13</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Gtin14.html">Gtin14</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.UpcA.html">UpcA</a></li>
+</ul>
+<p><strong>Securities:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isin.html">Isin</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a></li>
+</ul>
+<p><strong>Publishing:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isbn13.html">Isbn13</a></li>
+</ul>
+<p><strong>Encoded identifiers:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Code39Mod43.html">Code39Mod43</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Crockford32.html">Crockford32</a></li>
+</ul>
+<p><strong>ISO 7064:</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2.html">Iso7064Mod11_2</a>, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10.html">Iso7064Mod97_10</a></li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
+
+// One-shot static helpers: compute the check digit for a body, or validate a full value.
+char digit = Luhn.Compute(&quot;7992739871&quot;);                 // '3'
+bool ok    = Luhn.IsValid(&quot;79927398713&quot;);                // true
+
+// Multi-character schemes return a string check value.
+string ibanCheck = Iban.Compute(&quot;DE00370400440532013000&quot;); // &quot;89&quot;
+bool   ibanOk    = Iban.IsValid(&quot;DE89370400440532013000&quot;);  // true
+
+// Streaming: feed the body in chunks and read the check non-destructively.
+var luhn = new Luhn();
+luhn.Append(&quot;79927&quot;);
+luhn.Append(&quot;39871&quot;);
+char streamed = luhn.GetCurrentCheckDigit();            // '3'
+luhn.Reset();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Static one-shots, stateful instances.</strong> Every algorithm exposes static <code>Compute</code> / <code>IsValid</code> helpers for the common one-shot case; an instance (<code>new Luhn()</code>) carries running state for the streaming <code>Append</code> / <code>GetCurrentCheckDigit</code> (or <code>GetCurrentCheckDigits</code> / <code>GetCurrentCheckValue</code>) / <code>Reset</code> idiom, so share instances across threads only with external synchronization.</li>
+<li><strong>Shaped vs. generic.</strong> Identifier-shaped algorithms (<code>Iban</code>, <code>Cusip</code>, <code>Sedol</code>) validate length, character set, and any embedded structure as well as the check digit; the generic algorithms (<code>Luhn</code>, <code>Damm</code>, <code>Verhoeff</code>) validate only the digit. Pick the shaped algorithm when you have a specific identifier type.</li>
+<li><strong>See also:</strong> the <a href="../guides/io-hashing/check-digits.html">Check-digits guide</a>, the parent <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> landing page.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.AbaRoutingNumber.html">AbaRoutingNumber</a></h4>
+      <section><p>Computes the check digit of a 9-digit American Bankers Association (ABA) routing transit number using the weighted
+modulus-10 scheme specified by the US Federal Reserve. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a></h4>
+      <section><p>Represents the abstract base class from which single-character check-digit algorithms that operate on a wider input
+alphabet, or whose check character may be the sentinel <code>'X'</code>, derive.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a></h4>
+      <section><p>Represents the abstract base class from which all decimal check-digit algorithms in this library derive.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a></h4>
+      <section><p>Represents the common root of the check-digit algorithm family, unifying the streaming surface shared by
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a> (decimal bodies, single check digit),
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a> (alphanumeric bodies, single check character), and
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a> (multi-character check codes).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Code39Mod43.html">Code39Mod43</a></h4>
+      <section><p>Computes the check character of a Code 39 (also known as Code 3 of 9) symbol string using the <code>modulo 43</code>
+scheme. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Crockford32.html">Crockford32</a></h4>
+      <section><p>Computes the check symbol of a Crockford Base32 encoded value using the <code>modulo 37</code> scheme defined by Douglas
+Crockford. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a></h4>
+      <section><p>Computes the check digit of a 9-character Committee on Uniform Securities Identification Procedures (CUSIP)
+identifier using the Luhn-style weighted modulus-10 scheme specified by the American Bankers Association. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Damm.html">Damm</a></h4>
+      <section><p>Computes the check digit of a decimal string using the <code>Damm</code> algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Ean13.html">Ean13</a></h4>
+      <section><p>Computes the check digit of a 13-digit European Article Number / Global Trade Item Number-13 barcode using the
+EAN-13 weighted modulus-10 algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Ean8.html">Ean8</a></h4>
+      <section><p>Computes the check digit of an 8-digit European Article Number / Global Trade Item Number-8 barcode using the EAN-8
+weighted modulus-10 algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Gtin14.html">Gtin14</a></h4>
+      <section><p>Computes the check digit of a 14-digit Global Trade Item Number (GTIN-14) barcode using the GTIN-14 weighted
+modulus-10 algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Gumm.html">Gumm</a></h4>
+      <section><p>Computes the check digit of a decimal string using the <code>Gumm</code> algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a></h4>
+      <section><p>Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616 algorithm
+atop ISO 7064 MOD 97-10. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a></h4>
+      <section><p>Computes the check character of a 10-character International Standard Book Number using the ISBN-10 weighted
+modulus-11 algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isbn13.html">Isbn13</a></h4>
+      <section><p>Computes the check digit of a 13-digit International Standard Book Number using the ISBN-13 weighted modulus-10
+algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Isin.html">Isin</a></h4>
+      <section><p>Computes the check digit of a 12-character International Securities Identification Number (ISIN) using the
+Luhn-based scheme defined by ISO 6166. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iso7064Mod11_2.html">Iso7064Mod11_2</a></h4>
+      <section><p>Computes the single-character check of a decimal string using the ISO 7064 <code>MOD 11-2</code> pure algorithm. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10.html">Iso7064Mod97_10</a></h4>
+      <section><p>Computes the 2-character check code of an alphanumeric string using the ISO 7064 <code>MOD 97-10</code> pure algorithm.
+This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a></h4>
+      <section><p>Computes the two-digit check sequence of a Legal Entity Identifier (LEI) as specified by ISO 17442. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a></h4>
+      <section><p>Computes the check digit of a decimal string using the <code>Luhn</code> (<code>mod 10</code>) algorithm. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a></h4>
+      <section><p>Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check
+code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a></h4>
+      <section><p>Computes the check digit of a 7-character Stock Exchange Daily Official List (SEDOL) identifier using the weighted
+modulus-10 scheme defined by the London Stock Exchange. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.UpcA.html">UpcA</a></h4>
+      <section><p>Computes the check digit of a 12-digit Universal Product Code (UPC-A) barcode using the UPC-A weighted modulus-10
+algorithm. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a></h4>
+      <section><p>Computes the check digit of a decimal string using the <code>Verhoeff</code> algorithm. This class cannot be inherited.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitInputAlphabet.html">CheckDigitInputAlphabet</a></h4>
+      <section><p>Identifies the alphabet from which a check-digit or check-character algorithm accepts its body input.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitOutputAlphabet.html">CheckDigitOutputAlphabet</a></h4>
+      <section><p>Identifies the alphabet from which a single-character check-digit algorithm may emit its check character.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

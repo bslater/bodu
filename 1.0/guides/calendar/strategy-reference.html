@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Notable-date rule strategies | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Notable-date rule strategies | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="notable-date-rule-strategies">Notable-date rule strategies</h1>
+
+<p>Every <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a> answers three independent questions: <strong>when</strong> does the occurrence start, <strong>how long</strong> does it last, and <strong>how</strong> is it observed. This page is the catalogue for the first two — the occurrence source (a single-date <strong>strategy</strong> or a <strong>recurrence</strong>) and the <strong>duration</strong> (a fixed day count or a calculated end date). Observed-date shifting is a separate concern handled by <a href="adjustment-rules.html">Observance adjustment rules</a>.</p>
+<p>A rule carries <strong>exactly one</strong> occurrence source:</p>
+<ul>
+<li>a <code>&lt;Strategy&gt;</code> — one of the single-occurrence strategies below, yielding at most one date per year; or</li>
+<li>a <code>&lt;Recurrence&gt;</code> — one of the recurrence strategies, yielding zero, one, or many dates within a window.</li>
+</ul>
+<p>It may additionally carry a <code>&lt;Duration&gt;</code> giving the occurrence a span. For the surrounding document model — concepts, applicability, imports, overrides — read <a href="rule-authoring.html">Authoring notable date rules</a>; for every attribute of the surrounding elements, <a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a>.</p>
+<hr>
+<h2 id="choosing-a-strategy">Choosing a strategy</h2>
+<p>Match how the date is <em>defined</em> to the strategy that expresses it directly. Prefer the simplest kind; reach for a reference-based or business-day strategy only when the date genuinely depends on another rule or on working days.</p>
+<table>
+<thead>
+<tr>
+<th>If the date is defined as…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A fixed month + day</td>
+<td><a href="#fixed--a-fixed-month-and-day"><code>&lt;Fixed&gt;</code></a></td>
+</tr>
+<tr>
+<td>A position from the start or end of a month</td>
+<td><a href="#ordinaldayofmonth--a-signed-day-of-month"><code>&lt;OrdinalDayOfMonth&gt;</code></a></td>
+</tr>
+<tr>
+<td>A position from the start or end of a year</td>
+<td><a href="#dayofyear--a-signed-day-of-year"><code>&lt;DayOfYear&gt;</code></a></td>
+</tr>
+<tr>
+<td>A weekday within an ISO-8601 week</td>
+<td><a href="#isoweekdate--a-weekday-in-an-iso-week"><code>&lt;IsoWeekDate&gt;</code></a></td>
+</tr>
+<tr>
+<td>The <em>n</em>th or last weekday of a month</td>
+<td><a href="#weekday-in-month"><code>&lt;DayOfWeekInMonth&gt;</code></a></td>
+</tr>
+<tr>
+<td>A weekday near a fixed date</td>
+<td><a href="#weekday-in-month"><code>&lt;WeekdayNearDate&gt;</code></a></td>
+</tr>
+<tr>
+<td>A weekday relative to a weekday-in-month anchor</td>
+<td><a href="#weekday-in-month"><code>&lt;RelativeWeekdayInMonth&gt;</code></a></td>
+</tr>
+<tr>
+<td>A fixed day offset from another rule</td>
+<td><a href="#offsetfromrule--a-signed-offset-from-another-rule"><code>&lt;OffsetFromRule&gt;</code></a></td>
+</tr>
+<tr>
+<td>A weekday near another rule's date</td>
+<td><a href="#weekdaynearrule--a-weekday-near-another-rule"><code>&lt;WeekdayNearRule&gt;</code></a></td>
+</tr>
+<tr>
+<td>The <em>n</em>th weekday before/after another rule</td>
+<td><a href="#nthweekdayfromrule--the-nth-weekday-from-another-rule"><code>&lt;NthWeekdayFromRule&gt;</code></a></td>
+</tr>
+<tr>
+<td>A count of <strong>working</strong> days from another rule</td>
+<td><a href="#workingdayoffsetfromrule--a-working-day-offset-from-another-rule"><code>&lt;WorkingDayOffsetFromRule&gt;</code></a></td>
+</tr>
+<tr>
+<td>The <em>n</em>th working day of a month</td>
+<td><a href="#workingdayinmonth--the-nth-working-day-of-a-month"><code>&lt;WorkingDayInMonth&gt;</code></a></td>
+</tr>
+<tr>
+<td>An astronomical / ecclesiastical date</td>
+<td><a href="#algorithm--a-named-calculator"><code>&lt;Algorithm&gt;</code></a></td>
+</tr>
+<tr>
+<td>A repeating cadence (every <em>n</em> days / weeks / months)</td>
+<td>a <a href="#recurrence-sources">recurrence source</a></td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Yearly periodicity (&quot;every second year&quot;) is <strong>not</strong> a strategy — it is <code>everyYears</code> / <code>anchorYear</code> on <code>&lt;Applicability&gt;</code>. See <a href="rule-authoring.html#year-periodicity">Year periodicity</a>. Observed-date movement is <strong>not</strong> a strategy either — model it with an <a href="adjustment-rules.html">adjustment policy</a>.</p>
+</div>
+<hr>
+<h2 id="single-occurrence-strategies">Single-occurrence strategies</h2>
+<p>Each maps to a public <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a>; the contract is <code>DateOnly? Calculate(int year, StrategyResolutionContext context)</code>, returning <code>null</code> when the rule produces no occurrence for the year. Out-of-range and overflowing dates return <code>null</code> rather than throwing.</p>
+<h3 id="fixed-and-positional">Fixed and positional</h3>
+<p>The first six kinds pin a date by calendar position, with no dependency on any other rule.</p>
+<h4 id="fixed--a-fixed-month-and-day"><code>&lt;Fixed&gt;</code> — a fixed month and day</h4>
+<p>The same calendar position every year (see <a href="rule-reference.html#fixed--a-fixed-month-and-day">reference</a> for <code>skipLeapMonth</code> / <code>sweepCalendarYears</code> and non-Gregorian calendars).</p>
+<pre><code class="lang-xml">&lt;Strategy&gt;&lt;Fixed month=&quot;December&quot; day=&quot;25&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<h4 id="ordinaldayofmonth--a-signed-day-of-month"><code>&lt;OrdinalDayOfMonth&gt;</code> — a signed day-of-month</h4>
+<p>A day by its ordinal position from the <strong>start</strong> (positive) or <strong>end</strong> (negative) of a Gregorian month — the natural way to express &quot;the last day of February&quot; without a leap-year special case.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>month</code></td>
+<td>Yes</td>
+<td>string</td>
+<td>Month number <code>1</code>–<code>12</code> or an English month name.</td>
+</tr>
+<tr>
+<td><code>ordinal</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>Non-zero, <code>-31</code>…<code>31</code>. <code>1</code> = first day, <code>-1</code> = last day, <code>-2</code> = second-last.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- Last day of February (28 or 29). --&gt;
+&lt;Strategy&gt;&lt;OrdinalDayOfMonth month=&quot;February&quot; ordinal=&quot;-1&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>A positive ordinal beyond the month's length (e.g. <code>31</code> in April) yields no occurrence; the result always stays within the named month. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.OrdinalDayOfMonthStrategy.html">OrdinalDayOfMonthStrategy</a>.</p>
+<h4 id="dayofyear--a-signed-day-of-year"><code>&lt;DayOfYear&gt;</code> — a signed day-of-year</h4>
+<p>A date by its ordinal position from <strong>1 January</strong> (positive) or <strong>31 December</strong> (negative).</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ordinal</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>Non-zero, <code>-366</code>…<code>366</code>. <code>1</code> = 1 January, <code>-1</code> = 31 December.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- Programmers' Day — the 256th day of the year. --&gt;
+&lt;Strategy&gt;&lt;DayOfYear ordinal=&quot;256&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p><code>366</code> exists only in a leap year; a positive ordinal beyond the year's length yields no occurrence. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.DayOfYearStrategy.html">DayOfYearStrategy</a>.</p>
+<h4 id="isoweekdate--a-weekday-in-an-iso-week"><code>&lt;IsoWeekDate&gt;</code> — a weekday in an ISO week</h4>
+<p>A weekday within an ISO-8601 week of an ISO <strong>week-year</strong>. The <code>year</code> passed to the rule is interpreted as the ISO week-year, so the resolved date can fall in the previous or following Gregorian year.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>week</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>ISO week <code>1</code>–<code>53</code>.</td>
+</tr>
+<tr>
+<td><code>dayOfWeek</code></td>
+<td>Yes</td>
+<td>day of week</td>
+<td>The weekday within the ISO week.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- Monday of ISO week 1. --&gt;
+&lt;Strategy&gt;&lt;IsoWeekDate week=&quot;1&quot; dayOfWeek=&quot;Monday&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>Week 53 is valid only for ISO years that contain 53 weeks; otherwise the rule produces no occurrence. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IsoWeekDateStrategy.html">IsoWeekDateStrategy</a>.</p>
+<h3 id="weekday-in-month">Weekday-in-month</h3>
+<p>Three kinds resolve a weekday by its position in a month (see the <a href="rule-reference.html#strategy-elements">reference</a> for full attribute tables).</p>
+<ul>
+<li><code>&lt;DayOfWeekInMonth&gt;</code> — the <em>n</em>th or last weekday of a month (fourth Thursday in November).</li>
+<li><code>&lt;WeekdayNearDate&gt;</code> — a weekday on / before / after / nearest a fixed reference date (Monday on or before 24 May).</li>
+<li><code>&lt;RelativeWeekdayInMonth&gt;</code> — a weekday positioned relative to a weekday-in-month anchor (the Tuesday after the first Monday in November).</li>
+</ul>
+<pre><code class="lang-xml">&lt;Strategy&gt;&lt;DayOfWeekInMonth month=&quot;11&quot; dayOfWeek=&quot;Thursday&quot; weekOrdinal=&quot;Fourth&quot; /&gt;&lt;/Strategy&gt;
+&lt;Strategy&gt;&lt;WeekdayNearDate month=&quot;5&quot; day=&quot;24&quot; dayOfWeek=&quot;Monday&quot; direction=&quot;OnOrBefore&quot; /&gt;&lt;/Strategy&gt;
+&lt;Strategy&gt;&lt;RelativeWeekdayInMonth month=&quot;11&quot; dayOfWeek=&quot;Monday&quot; weekOrdinal=&quot;First&quot;
+                                  relativeDayOfWeek=&quot;Tuesday&quot; direction=&quot;After&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<h3 id="reference-based">Reference-based</h3>
+<p>These derive a date from <strong>another rule's</strong> occurrence, resolved cycle-safely within the resource. Each takes <code>notableDateRef</code> (the referenced concept id) and an optional <code>ruleRef</code>; all but <code>&lt;OffsetFromRule&gt;</code> also accept <code>referenceYearOffset</code>, a signed year offset applied to the reference (so a December rule can anchor to a reference in the following year). A reference that is missing, ambiguous, circular, or itself a <strong>recurrence</strong> is reported as a load-time diagnostic.</p>
+<h4 id="offsetfromrule--a-signed-offset-from-another-rule"><code>&lt;OffsetFromRule&gt;</code> — a signed offset from another rule</h4>
+<p>A fixed <strong>calendar-day</strong> offset (see <a href="rule-reference.html#offsetfromrule--a-signed-offset-from-another-rule">reference</a>). This is how Good Friday hangs off Easter Sunday.</p>
+<pre><code class="lang-xml">&lt;Strategy&gt;&lt;OffsetFromRule notableDateRef=&quot;easter-sunday&quot; ruleRef=&quot;default&quot; offsetDays=&quot;-2&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<h4 id="weekdaynearrule--a-weekday-near-another-rule"><code>&lt;WeekdayNearRule&gt;</code> — a weekday near another rule</h4>
+<p>The dynamic-reference twin of <code>&lt;WeekdayNearDate&gt;</code>: seek a weekday on / before / after / nearest another rule's date rather than a fixed month and day.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notableDateRef</code></td>
+<td>Yes</td>
+<td>identifier</td>
+<td>The referenced concept id.</td>
+</tr>
+<tr>
+<td><code>ruleRef</code></td>
+<td>No</td>
+<td>identifier</td>
+<td>A specific rule within that concept.</td>
+</tr>
+<tr>
+<td><code>dayOfWeek</code></td>
+<td>Yes</td>
+<td>day of week</td>
+<td>The target weekday.</td>
+</tr>
+<tr>
+<td><code>direction</code></td>
+<td>Yes</td>
+<td>proximity</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a>: <code>Before</code>, <code>OnOrBefore</code>, <code>Nearest</code>, <code>OnOrAfter</code>, <code>After</code>.</td>
+</tr>
+<tr>
+<td><code>referenceYearOffset</code></td>
+<td>No</td>
+<td>int</td>
+<td>Signed year offset applied to the reference (default <code>0</code>).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The first Monday after Easter Sunday. --&gt;
+&lt;Strategy&gt;&lt;WeekdayNearRule notableDateRef=&quot;easter-sunday&quot; dayOfWeek=&quot;Monday&quot; direction=&quot;After&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.html">WeekdayNearRuleStrategy</a>.</p>
+<h4 id="nthweekdayfromrule--the-nth-weekday-from-another-rule"><code>&lt;NthWeekdayFromRule&gt;</code> — the <em>n</em>th weekday from another rule</h4>
+<p>The <em>n</em>th matching weekday strictly <strong>after</strong> (positive ordinal) or <strong>before</strong> (negative ordinal) another rule's date. The reference date itself is never counted.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notableDateRef</code></td>
+<td>Yes</td>
+<td>identifier</td>
+<td>The referenced concept id.</td>
+</tr>
+<tr>
+<td><code>ruleRef</code></td>
+<td>No</td>
+<td>identifier</td>
+<td>A specific rule within that concept.</td>
+</tr>
+<tr>
+<td><code>dayOfWeek</code></td>
+<td>Yes</td>
+<td>day of week</td>
+<td>The target weekday.</td>
+</tr>
+<tr>
+<td><code>ordinal</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>Non-zero. Positive counts strictly after, negative strictly before.</td>
+</tr>
+<tr>
+<td><code>referenceYearOffset</code></td>
+<td>No</td>
+<td>int</td>
+<td>Signed year offset applied to the reference (default <code>0</code>).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The second Monday after a referenced festival. --&gt;
+&lt;Strategy&gt;&lt;NthWeekdayFromRule notableDateRef=&quot;festival&quot; dayOfWeek=&quot;Monday&quot; ordinal=&quot;2&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NthWeekdayFromRuleStrategy.html">NthWeekdayFromRuleStrategy</a>.</p>
+<h4 id="workingdayoffsetfromrule--a-working-day-offset-from-another-rule"><code>&lt;WorkingDayOffsetFromRule&gt;</code> — a working-day offset from another rule</h4>
+<p>A count of <strong>working days</strong> before or after another rule's date. Unlike <code>&lt;OffsetFromRule&gt;</code> (which counts calendar days), this skips rest days and applicable non-working occurrences — so &quot;one working day before Boxing Day&quot; is correct even when the preceding calendar day is Christmas Day.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notableDateRef</code></td>
+<td>Yes</td>
+<td>identifier</td>
+<td>The referenced concept id.</td>
+</tr>
+<tr>
+<td><code>ruleRef</code></td>
+<td>No</td>
+<td>identifier</td>
+<td>A specific rule within that concept.</td>
+</tr>
+<tr>
+<td><code>offsetWorkingDays</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>Signed working-day count. The reference is the origin and is not counted; <code>0</code> returns it unchanged.</td>
+</tr>
+<tr>
+<td><code>referenceYearOffset</code></td>
+<td>No</td>
+<td>int</td>
+<td>Signed year offset applied to the reference (default <code>0</code>).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The last working day before Boxing Day. --&gt;
+&lt;Strategy&gt;&lt;WorkingDayOffsetFromRule notableDateRef=&quot;boxing-day&quot; offsetWorkingDays=&quot;-1&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>The working-day set is computed deterministically and independently of the order concepts are declared — see <a href="#business-day-strategies">Business-day strategies</a>. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WorkingDayOffsetFromRuleStrategy.html">WorkingDayOffsetFromRuleStrategy</a>.</p>
+<h3 id="business-day-strategies">Business-day strategies</h3>
+<p><code>&lt;WorkingDayOffsetFromRule&gt;</code> (above) and <code>&lt;WorkingDayInMonth&gt;</code> resolve against <strong>working days</strong> — days that are neither a rest day (outside the resource's working week, set on <code>&lt;ResolutionPolicy&gt;</code>) nor claimed by an applicable non-working notable-date occurrence. That working-day view is computed deterministically and is <strong>independent of resource-declaration order</strong>, so a business-day rule resolves the same regardless of where the holidays it depends on appear in the document. It is also cycle-safe: a business-day rule consulted while the working-day set is being built falls back to rest-days-only rather than recursing.</p>
+<h4 id="workingdayinmonth--the-nth-working-day-of-a-month"><code>&lt;WorkingDayInMonth&gt;</code> — the <em>n</em>th working day of a month</h4>
+<p>The <em>n</em>th working day from the <strong>start</strong> (positive) or <strong>end</strong> (negative) of a month.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>month</code></td>
+<td>Yes</td>
+<td>string</td>
+<td>Month number <code>1</code>–<code>12</code> or an English month name.</td>
+</tr>
+<tr>
+<td><code>ordinal</code></td>
+<td>Yes</td>
+<td>int</td>
+<td>Non-zero. <code>1</code> = first working day, <code>-1</code> = last working day.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The first working day of January (skips New Year's Day and the weekend). --&gt;
+&lt;Strategy&gt;&lt;WorkingDayInMonth month=&quot;January&quot; ordinal=&quot;1&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<p>When the requested ordinal does not exist within the month the rule produces no occurrence rather than spilling into an adjacent month. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy.html">WorkingDayInMonthStrategy</a>. See also <a href="working-days.html">Working-day arithmetic</a>.</p>
+<h3 id="algorithm">Algorithm</h3>
+<h4 id="algorithm--a-named-calculator"><code>&lt;Algorithm&gt;</code> — a named calculator</h4>
+<p>Delegates to a built-in astronomical / ecclesiastical calculator (Easter, the equinoxes, Vesak, …) or a registered custom one (see <a href="rule-reference.html#algorithm--dispatch-to-a-named-calculator">reference</a> and <a href="algorithms.html">Date calculation algorithms</a>).</p>
+<pre><code class="lang-xml">&lt;Strategy&gt;&lt;Algorithm key=&quot;western-easter&quot; /&gt;&lt;/Strategy&gt;
+</code></pre>
+<hr>
+<h2 id="recurrence-sources">Recurrence sources</h2>
+<p>A <code>&lt;Recurrence&gt;</code> replaces <code>&lt;Strategy&gt;</code> when a rule repeats on a sub-yearly cadence — every Monday, every 14 days, the 15th of every month, the last Friday of every month. It maps to a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a> and generates <strong>many</strong> base occurrences within the requested window. Every generated occurrence is a normal candidate: it independently receives the rule's category, non-working flag, duration/span, adjustment policy, and collision handling.</p>
+<p>Results are deterministic, chronological, de-duplicated, and <strong>query-window invariant</strong> — whether a given date is an occurrence never depends on the size or start of the query range, because occurrences are computed from the anchor, not from the range. Recurrence never consults <code>CultureInfo.CurrentCulture</code>.</p>
+<p><strong>Anchors.</strong> An anchor is required only when the interval creates a phase that cannot otherwise be determined:</p>
+<ul>
+<li>every day / week / month (interval <code>1</code>) needs <strong>no</strong> anchor — every unit participates;</li>
+<li>every <em>n</em> days, every <em>n</em> weeks, or every <em>n</em> months (interval <code>&gt; 1</code>) <strong>requires</strong> an <code>anchorDate</code>.</li>
+</ul>
+<h3 id="dailyinterval--every-n-days"><code>&lt;DailyInterval&gt;</code> — every <em>n</em> days</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anchorDate</code></td>
+<td>Yes</td>
+<td>date</td>
+<td><code>yyyy-MM-dd</code>; occurrence zero and the phase of the series.</td>
+</tr>
+<tr>
+<td><code>intervalDays</code></td>
+<td>No</td>
+<td>int ≥ 1</td>
+<td>Days between occurrences (default <code>1</code>).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- Every 14 days from 1 January 2026 (fortnightly). --&gt;
+&lt;Recurrence&gt;&lt;DailyInterval anchorDate=&quot;2026-01-01&quot; intervalDays=&quot;14&quot; /&gt;&lt;/Recurrence&gt;
+</code></pre>
+<p>Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.DailyIntervalRecurrenceStrategy.html">DailyIntervalRecurrenceStrategy</a>.</p>
+<h3 id="weekly--selected-weekdays-every-n-weeks"><code>&lt;Weekly&gt;</code> — selected weekdays every <em>n</em> weeks</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute / child</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;Day dayOfWeek=&quot;…&quot; /&gt;</code></td>
+<td>Yes (1+)</td>
+<td>day of week</td>
+<td>One per selected weekday; duplicates are rejected.</td>
+</tr>
+<tr>
+<td><code>intervalWeeks</code></td>
+<td>No</td>
+<td>int ≥ 1</td>
+<td>Weeks between occurrences of each weekday (default <code>1</code>).</td>
+</tr>
+<tr>
+<td><code>anchorDate</code></td>
+<td>No*</td>
+<td>date</td>
+<td>Required when <code>intervalWeeks &gt; 1</code>; phases each weekday series.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- Every Monday and Friday. --&gt;
+&lt;Recurrence&gt;
+  &lt;Weekly intervalWeeks=&quot;1&quot;&gt;
+    &lt;Day dayOfWeek=&quot;Monday&quot; /&gt;
+    &lt;Day dayOfWeek=&quot;Friday&quot; /&gt;
+  &lt;/Weekly&gt;
+&lt;/Recurrence&gt;
+
+&lt;!-- Every second Tuesday, phased from 6 January 2026. --&gt;
+&lt;Recurrence&gt;
+  &lt;Weekly intervalWeeks=&quot;2&quot; anchorDate=&quot;2026-01-06&quot;&gt;
+    &lt;Day dayOfWeek=&quot;Tuesday&quot; /&gt;
+  &lt;/Weekly&gt;
+&lt;/Recurrence&gt;
+</code></pre>
+<p>Occurrences are emitted in chronological order regardless of the order the <code>&lt;Day&gt;</code> elements are declared. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.WeeklyRecurrenceStrategy.html">WeeklyRecurrenceStrategy</a>.</p>
+<h3 id="monthlyday--a-day-of-month-every-n-months"><code>&lt;MonthlyDay&gt;</code> — a day-of-month every <em>n</em> months</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dayOfMonth</code></td>
+<td>Yes</td>
+<td>int 1–31</td>
+<td>The calendar day.</td>
+</tr>
+<tr>
+<td><code>intervalMonths</code></td>
+<td>No</td>
+<td>int ≥ 1</td>
+<td>Months between occurrences (default <code>1</code>; <code>3</code> = quarterly, <code>6</code> = semi-annual).</td>
+</tr>
+<tr>
+<td><code>anchorDate</code></td>
+<td>No*</td>
+<td>date</td>
+<td>Required when <code>intervalMonths &gt; 1</code>; its year/month is month zero.</td>
+</tr>
+<tr>
+<td><code>invalidDayBehavior</code></td>
+<td>No</td>
+<td>enum</td>
+<td><code>Skip</code> (default) or <code>UseLastDayOfMonth</code> when a month lacks the day.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The 31st of every month, clamped to the last day of shorter months. --&gt;
+&lt;Recurrence&gt;&lt;MonthlyDay dayOfMonth=&quot;31&quot; invalidDayBehavior=&quot;UseLastDayOfMonth&quot; /&gt;&lt;/Recurrence&gt;
+</code></pre>
+<p>Month iteration uses a stable month anchor, so day-31 still evaluates March as the 31st even after February clamps — there is no month-to-month drift. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.MonthlyDayRecurrenceStrategy.html">MonthlyDayRecurrenceStrategy</a> / <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.InvalidDayOfMonthBehavior.html">InvalidDayOfMonthBehavior</a>.</p>
+<h3 id="monthlyweekday--an-ordinal-weekday-every-n-months"><code>&lt;MonthlyWeekday&gt;</code> — an ordinal weekday every <em>n</em> months</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dayOfWeek</code></td>
+<td>Yes</td>
+<td>day of week</td>
+<td>The target weekday.</td>
+</tr>
+<tr>
+<td><code>weekOrdinal</code></td>
+<td>Yes</td>
+<td>ordinal</td>
+<td><code>First</code>…<code>Fifth</code>, <code>Last</code>.</td>
+</tr>
+<tr>
+<td><code>intervalMonths</code></td>
+<td>No</td>
+<td>int ≥ 1</td>
+<td>Months between occurrences (default <code>1</code>).</td>
+</tr>
+<tr>
+<td><code>anchorDate</code></td>
+<td>No*</td>
+<td>date</td>
+<td>Required when <code>intervalMonths &gt; 1</code>; its year/month is month zero.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-xml">&lt;!-- The last Friday of every month. --&gt;
+&lt;Recurrence&gt;&lt;MonthlyWeekday dayOfWeek=&quot;Friday&quot; weekOrdinal=&quot;Last&quot; /&gt;&lt;/Recurrence&gt;
+</code></pre>
+<p><code>Last</code> is the final matching weekday; a <code>Fifth</code> that a month lacks simply skips that month. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.MonthlyWeekdayRecurrenceStrategy.html">MonthlyWeekdayRecurrenceStrategy</a>.</p>
+<hr>
+<h2 id="durations-fixed-or-calculated">Durations: fixed or calculated</h2>
+<p>A duration gives an occurrence a <strong>span</strong>. It is independent of the occurrence source — a recurrence occurrence gets its own span exactly like a single-date one — and the resolved <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDate.html">NotableDate</a> always exposes a concrete <code>Date</code>, <code>DurationDays</code>, and inclusive <code>EndDate</code>.</p>
+<p><strong>Fixed</strong> — the <code>durationDays</code> attribute on the rule (or <code>defaultDurationDays</code> on the concept) sets a fixed day count, inclusive of the start; <code>EndDate = Date + DurationDays − 1</code>.</p>
+<pre><code class="lang-xml">&lt;Rule id=&quot;default&quot; durationDays=&quot;7&quot;&gt;
+  &lt;Strategy&gt;&lt;Fixed month=&quot;October&quot; day=&quot;4&quot; /&gt;&lt;/Strategy&gt;
+&lt;/Rule&gt;
+</code></pre>
+<p><strong>Calculated</strong> — a <code>&lt;Duration&gt;&lt;UntilDate&gt;</code> computes the span's end from a <strong>second strategy</strong>, producing a length that varies year to year and can cross the year boundary. A rule may declare a fixed <code>durationDays</code> <strong>or</strong> a calculated <code>&lt;Duration&gt;</code>, never both.</p>
+<table>
+<thead>
+<tr>
+<th><code>&lt;UntilDate&gt;</code> attribute</th>
+<th>Required</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>startBoundary</code></td>
+<td>No</td>
+<td>enum</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.DateBoundary.html">DateBoundary</a>: <code>Inclusive</code> (default) or <code>Exclusive</code> — is the start anchor part of the span?</td>
+</tr>
+<tr>
+<td><code>endBoundary</code></td>
+<td>No</td>
+<td>enum</td>
+<td><code>Inclusive</code> (default) or <code>Exclusive</code> — is the end anchor part of the span?</td>
+</tr>
+<tr>
+<td><code>selection</code></td>
+<td>No</td>
+<td>enum</td>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.EndDateSelection.html">EndDateSelection</a>: <code>FirstOnOrAfterStart</code> (default) or <code>FirstAfterStart</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The end strategy is evaluated for the start anchor's civil year and, when that yields nothing on/after the start, the following civil year. This models a <strong>year-end shutdown</strong> that begins the Friday before Boxing Day and ends the Monday after New Year's Day — 16 days some years, 9 in others:</p>
+<pre><code class="lang-xml">&lt;Rule id=&quot;default&quot;&gt;
+  &lt;Strategy&gt;&lt;WeekdayNearDate month=&quot;12&quot; day=&quot;26&quot; dayOfWeek=&quot;Friday&quot; direction=&quot;Before&quot; /&gt;&lt;/Strategy&gt;
+  &lt;Duration&gt;
+    &lt;UntilDate startBoundary=&quot;Exclusive&quot; endBoundary=&quot;Exclusive&quot; selection=&quot;FirstOnOrAfterStart&quot;&gt;
+      &lt;Strategy&gt;&lt;WeekdayNearDate month=&quot;1&quot; day=&quot;1&quot; dayOfWeek=&quot;Monday&quot; direction=&quot;After&quot; /&gt;&lt;/Strategy&gt;
+    &lt;/UntilDate&gt;
+  &lt;/Duration&gt;
+&lt;/Rule&gt;
+</code></pre>
+<p>With both boundaries exclusive, the last day worked (that Friday) and the return-to-work Monday are outside the span; the occurrence's <code>Date</code> is the day after the Friday and its <code>EndDate</code> the day before the Monday. A span that resolves to fewer than one day, or whose end cannot be found in the two-year window, is simply not emitted. Maps to <a class="xref" href="../../api/Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.html">CalculatedEndDateDurationDefinition</a>.</p>
+<hr>
+<h2 id="common-scenarios">Common scenarios</h2>
+<table>
+<thead>
+<tr>
+<th>I want to express…</th>
+<th>Author it as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New Year's Day</td>
+<td><code>&lt;Fixed month=&quot;1&quot; day=&quot;1&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>US Thanksgiving (4th Thursday of November)</td>
+<td><code>&lt;DayOfWeekInMonth month=&quot;11&quot; dayOfWeek=&quot;Thursday&quot; weekOrdinal=&quot;Fourth&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Good Friday (2 days before Easter)</td>
+<td><code>&lt;OffsetFromRule notableDateRef=&quot;easter-sunday&quot; offsetDays=&quot;-2&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>First Monday after Easter</td>
+<td><code>&lt;WeekdayNearRule notableDateRef=&quot;easter-sunday&quot; dayOfWeek=&quot;Monday&quot; direction=&quot;After&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Second Monday after a festival</td>
+<td><code>&lt;NthWeekdayFromRule notableDateRef=&quot;festival&quot; dayOfWeek=&quot;Monday&quot; ordinal=&quot;2&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Last day of February</td>
+<td><code>&lt;OrdinalDayOfMonth month=&quot;2&quot; ordinal=&quot;-1&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Last working day before Boxing Day</td>
+<td><code>&lt;WorkingDayOffsetFromRule notableDateRef=&quot;boxing-day&quot; offsetWorkingDays=&quot;-1&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>First working day of the month</td>
+<td><code>&lt;WorkingDayInMonth month=&quot;1&quot; ordinal=&quot;1&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Monday of ISO week 1</td>
+<td><code>&lt;IsoWeekDate week=&quot;1&quot; dayOfWeek=&quot;Monday&quot; /&gt;</code></td>
+</tr>
+<tr>
+<td>Fortnightly event</td>
+<td><code>&lt;Recurrence&gt;&lt;DailyInterval anchorDate=&quot;2026-01-01&quot; intervalDays=&quot;14&quot; /&gt;&lt;/Recurrence&gt;</code></td>
+</tr>
+<tr>
+<td>Every Monday and Friday</td>
+<td><code>&lt;Recurrence&gt;&lt;Weekly&gt;&lt;Day dayOfWeek=&quot;Monday&quot; /&gt;&lt;Day dayOfWeek=&quot;Friday&quot; /&gt;&lt;/Weekly&gt;&lt;/Recurrence&gt;</code></td>
+</tr>
+<tr>
+<td>The 15th of every month</td>
+<td><code>&lt;Recurrence&gt;&lt;MonthlyDay dayOfMonth=&quot;15&quot; /&gt;&lt;/Recurrence&gt;</code></td>
+</tr>
+<tr>
+<td>Last Friday of every month</td>
+<td><code>&lt;Recurrence&gt;&lt;MonthlyWeekday dayOfWeek=&quot;Friday&quot; weekOrdinal=&quot;Last&quot; /&gt;&lt;/Recurrence&gt;</code></td>
+</tr>
+<tr>
+<td>Quarterly on the 20th</td>
+<td><code>&lt;Recurrence&gt;&lt;MonthlyDay dayOfMonth=&quot;20&quot; intervalMonths=&quot;3&quot; anchorDate=&quot;2026-01-01&quot; /&gt;&lt;/Recurrence&gt;</code></td>
+</tr>
+<tr>
+<td>A multi-day festival</td>
+<td><code>durationDays=&quot;7&quot;</code> on the rule</td>
+</tr>
+<tr>
+<td>A variable-length year-end shutdown</td>
+<td>a <code>&lt;Duration&gt;&lt;UntilDate&gt;</code> calculated span (above)</td>
+</tr>
+<tr>
+<td>Every second year</td>
+<td><code>everyYears=&quot;2&quot;</code> on <code>&lt;Applicability&gt;</code> (not a strategy)</td>
+</tr>
+<tr>
+<td>Move a holiday off the weekend</td>
+<td>an <a href="adjustment-rules.html">adjustment policy</a> (not a strategy)</td>
+</tr>
+</tbody>
+</table>
+<p>All of the above are equally expressible in JSON (lowercased property names) and through the fluent builder — see <a href="notable-date-builder.html">Authoring with the notable-date builder</a>.</p>
+<hr>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> — the per-element field reference for every strategy, recurrence, and duration attribute.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — the surrounding document model: concepts, applicability, imports, overrides.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> — the built-in <code>&lt;Algorithm&gt;</code> keys and custom algorithms.</li>
+<li><a href="working-days.html">Working-day arithmetic</a> — the working-day model the business-day strategies resolve against.</li>
+<li><a href="holiday-patterns.html">Holiday patterns and examples</a> — end-to-end worked patterns.</li>
+<li><a href="adjustment-rules.html">Observance adjustment rules</a> — observed-date shifting, the third concern.</li>
+<li><a href="../../samples/calendar.html">Runnable samples</a> — the <code>CustomCalendar</code> sample's <code>FrequencyBasedSchedules</code> and <code>AuthoringCompanyHolidays</code> scenarios author the recurrence and calculated-duration rules shown here.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

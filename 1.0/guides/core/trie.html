@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Tries and text search | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Tries and text search | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="tries-and-text-search">Tries and text search</h1>
+
+<p>A <em>trie</em> (prefix tree) stores string keys as paths of characters: shared prefixes share a path, and each key ends at a terminal node. Because lookups walk the supplied string one character at a time, membership and prefix queries cost time proportional to the <strong>length of the key</strong>, not the number of keys stored — the natural shape for autocomplete, command routing, and any lookup where a prefix narrows the candidates.</p>
+<p><code>Bodu.Collections.Generic.Trees</code> ships the trie family:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Stores</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a></td>
+<td>a set of string keys</td>
+<td>You only need membership and prefix tests.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a></td>
+<td>string keys mapped to values</td>
+<td>You need a value alongside each key (an autocomplete payload, a route handler).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></td>
+<td>the same, over compressed edges</td>
+<td>Keys share long unbranching runs (URLs, file paths, identifiers) — same API, far fewer nodes. See <a href="#radix-trie-path-compressed-lookups">Radix trie</a>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a></td>
+<td>a fixed pattern set</td>
+<td>You search <em>text</em> for every occurrence of many patterns at once. See <a href="#aho-corasick-multi-pattern-text-search">Aho-Corasick</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The four trie collections accept an <code>IEqualityComparer&lt;char&gt;</code> at construction (pass <code>null</code> for the ordinal default, or a case-insensitive comparer to fold case), treat the empty string as a valid key, and are <strong>not</strong> thread-safe for concurrent mutation. Their enumerators are fail-fast: mutating the trie after an enumerator is created throws <code>InvalidOperationException</code> on the next move. The Aho-Corasick automatons are different animals — immutable after a one-shot <code>Build</code>, ordinal-only, and organized around scanning text rather than storing keys.</p>
+<h2 id="pattern-1--a-set-of-words-membership-and-prefixes">Pattern 1 — A set of words: membership and prefixes</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var words = new Trie();
+words.Add(&quot;car&quot;);
+words.Add(&quot;card&quot;);
+words.Add(&quot;care&quot;);
+words.Add(&quot;dog&quot;);
+
+// Membership is exact.
+bool hasCard = words.Contains(&quot;card&quot;);   // true
+bool hasCa   = words.Contains(&quot;ca&quot;);     // false — &quot;ca&quot; is a prefix, not a stored key
+
+// StartsWith asks whether *any* key begins with the prefix.
+bool anyCar = words.StartsWith(&quot;car&quot;);   // true
+bool anyXyz = words.StartsWith(&quot;xyz&quot;);   // false
+
+int count = words.Count;                 // 4
+</code></pre>
+<p><code>Add</code> returns <code>false</code> when the key already exists, so it doubles as a &quot;first insert&quot; test:</p>
+<pre><code class="lang-csharp">bool added = words.Add(&quot;car&quot;);   // false — already present
+</code></pre>
+<p>Build directly from a sequence (an exception is thrown on a duplicate key):</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var fromSeq = new Trie(new[] { &quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot; });
+</code></pre>
+<p>Pass an <code>IEqualityComparer&lt;char&gt;</code> to fold case while matching, so <code>&quot;Hello&quot;</code> and <code>&quot;hello&quot;</code> resolve to one key:</p>
+<pre><code class="lang-csharp">sealed class CaseInsensitiveChar : IEqualityComparer&lt;char&gt;
+{
+    public bool Equals(char x, char y) =&gt;
+        char.ToUpperInvariant(x) == char.ToUpperInvariant(y);
+
+    public int GetHashCode(char c) =&gt;
+        char.ToUpperInvariant(c).GetHashCode();
+}
+
+var folded = new Trie(new CaseInsensitiveChar());
+folded.Add(&quot;Hello&quot;);
+bool match = folded.Contains(&quot;HELLO&quot;);   // true
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The constructor takes an <code>IEqualityComparer&lt;char&gt;</code>, not a <code>StringComparer</code> — comparison is per character. Leave it <code>null</code> for ordinal matching.</p>
+</div>
+<h2 id="pattern-2--a-string-keyed-map-with-prefix-queries-autocomplete">Pattern 2 — A string-keyed map with prefix queries (autocomplete)</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> associates a value with each key. <code>KeysWithPrefix</code> lists the matching keys; <code>ItemsWithPrefix</code> lists the matching key/value pairs — the building block of an autocomplete dropdown.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var commands = new Trie&lt;string&gt;();
+commands.Add(&quot;commit&quot;, &quot;Record changes to the repository&quot;);
+commands.Add(&quot;checkout&quot;, &quot;Switch branches or restore files&quot;);
+commands.Add(&quot;clone&quot;, &quot;Clone a repository into a new directory&quot;);
+commands.Add(&quot;push&quot;, &quot;Update remote refs&quot;);
+
+// Suggest everything the user could mean after typing &quot;c&quot;.
+foreach (KeyValuePair&lt;string, string&gt; item in commands.ItemsWithPrefix(&quot;c&quot;))
+{
+    Console.WriteLine($&quot;{item.Key}\t{item.Value}&quot;);
+    // commit / checkout / clone (order unspecified)
+}
+
+// Just the matching keys.
+foreach (string key in commands.KeysWithPrefix(&quot;ch&quot;))
+{
+    // &quot;checkout&quot;
+}
+</code></pre>
+<p>Exact lookups use <code>TryGetValue</code> or the indexer:</p>
+<pre><code class="lang-csharp">if (commands.TryGetValue(&quot;commit&quot;, out string? help))
+{
+    // help == &quot;Record changes to the repository&quot;
+}
+
+string text = commands[&quot;clone&quot;];   // throws KeyNotFoundException if absent
+</code></pre>
+<p><code>Add</code> throws if the key already exists; <code>TryAdd</code> reports the collision instead; <code>Set</code> (and the indexer setter) inserts or overwrites:</p>
+<pre><code class="lang-csharp">bool inserted = commands.TryAdd(&quot;commit&quot;, &quot;...&quot;);   // false — already present
+commands.Set(&quot;commit&quot;, &quot;Record changes (updated)&quot;); // overwrites in place
+commands[&quot;push&quot;] = &quot;Update remote refs and objects&quot;; // overwrites via the indexer
+</code></pre>
+<h2 id="pattern-3--removal">Pattern 3 — Removal</h2>
+<p>Both tries remove by key and report whether the key was present:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var words = new Trie(new[] { &quot;car&quot;, &quot;card&quot;, &quot;care&quot; });
+
+bool removed = words.Remove(&quot;card&quot;);   // true
+bool again   = words.Remove(&quot;card&quot;);   // false — already gone
+
+words.Clear();                         // empties the trie; Count == 0
+</code></pre>
+<p>Removing a key leaves sibling keys that share its prefix intact — deleting <code>&quot;card&quot;</code> above keeps <code>&quot;car&quot;</code> and <code>&quot;care&quot;</code>.</p>
+<h2 id="pattern-4--enumeration">Pattern 4 — Enumeration</h2>
+<p>Enumerating a trie yields its keys (for <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a>) or its key/value pairs (for <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a>), in unspecified order. Enumeration is lazy — elements are produced on demand as the trie is walked, with no up-front snapshot — so breaking out of a <code>foreach</code> early does no more work than the elements consumed.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var map = new Trie&lt;int&gt;();
+map.Add(&quot;apple&quot;, 1);
+map.Add(&quot;apply&quot;, 2);
+map.Add(&quot;banana&quot;, 3);
+
+foreach (KeyValuePair&lt;string, int&gt; entry in map)
+{
+    // (&quot;apple&quot;, 1), (&quot;apply&quot;, 2), (&quot;banana&quot;, 3) — order unspecified
+}
+</code></pre>
+<p>The enumerator is fail-fast — mutating the trie inside the loop throws:</p>
+<pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, int&gt; entry in map)
+{
+    map.Add(&quot;cherry&quot;, 4);   // throws InvalidOperationException on the next iteration
+}
+</code></pre>
+<p>To remove while iterating, materialize the keys first:</p>
+<pre><code class="lang-csharp">foreach (string key in map.KeysWithPrefix(&quot;app&quot;).ToList())
+    map.Remove(key);
+</code></pre>
+<h2 id="radix-trie-path-compressed-lookups">Radix trie (path-compressed lookups)</h2>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> and <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> are PATRICIA-style path-compressed tries: instead of one node per character, each edge carries a <strong>string label</strong>, so an unbranching run of characters costs a single node. Inserting a key that diverges partway along an edge splits the edge; removing a key re-fuses any single-child pass-through node left behind. Node count is proportional to the number of keys, not their total length.</p>
+<p>The public surface mirrors <code>Trie</code> / <code>Trie&lt;TValue&gt;</code> <strong>member-for-member</strong> — constructors (including the <code>IEqualityComparer&lt;char&gt;</code> overload), <code>Add</code> / <code>TryAdd</code> / <code>Set</code> / the indexer, <code>Contains</code> / <code>ContainsKey</code> / <code>TryGetValue</code>, <code>StartsWith</code>, <code>Remove</code>, <code>KeysWithPrefix</code> / <code>ItemsWithPrefix</code>, <code>Clear</code>, <code>Count</code>, <code>Comparer</code>, and the fail-fast enumerator — so swapping types is a one-word change:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var routes = new RadixTrie&lt;string&gt;();
+routes.Add(&quot;/api/orders&quot;, &quot;OrdersHandler&quot;);
+routes.Add(&quot;/api/orders/archive&quot;, &quot;ArchiveHandler&quot;);
+routes.Add(&quot;/api/customers&quot;, &quot;CustomersHandler&quot;);
+
+// Identical answers to a Trie&lt;string&gt; holding the same keys:
+bool known = routes.ContainsKey(&quot;/api/orders&quot;);            // true
+bool hasApi = routes.StartsWith(&quot;/api/&quot;);                  // true
+
+foreach (KeyValuePair&lt;string, string&gt; route in routes.ItemsWithPrefix(&quot;/api/orders&quot;))
+{
+    // /api/orders, /api/orders/archive (order unspecified)
+}
+</code></pre>
+<p><strong>When to prefer it over <code>Trie</code>:</strong> long keys with sparse branching — URLs, file-system paths, namespaced identifiers, MAC/OUI prefixes. A plain <code>Trie</code> allocates a node per character of every distinct suffix; the radix trie collapses each unbranching run into one node, cutting memory and pointer-chasing. For short, densely branching keys (words in a spell-checker) the two perform similarly — pick either; behaviour is identical.</p>
+<h2 id="aho-corasick-multi-pattern-text-search">Aho-Corasick (multi-pattern text search)</h2>
+<p>The tries above answer questions about <strong>stored keys</strong>. <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> answers the inverse question: given a fixed set of patterns, find <strong>every occurrence of every pattern inside a text</strong> — including overlapping and nested occurrences — in a single pass, O(text + matches) regardless of how many patterns are loaded. It is the classic engine for keyword filtering, content scanning, and dictionary-based tokenization.</p>
+<p>The automaton is built once from the complete pattern set and is <strong>immutable</strong> afterwards (its internal failure links are global invariants of the whole set — adding a pattern later would invalidate them wholesale; rebuild instead). Matching is ordinal; normalize case up front if you need folded matching.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var automaton = AhoCorasickAutomaton.Build([&quot;he&quot;, &quot;she&quot;, &quot;his&quot;, &quot;hers&quot;]);
+
+foreach (AhoCorasickMatch match in automaton.EnumerateMatches(&quot;ushers&quot;))
+{
+    Console.WriteLine($&quot;{match.Pattern} @ {match.Start}..{match.End}&quot;);
+    // he @ 2..4
+    // she @ 1..4
+    // hers @ 2..6
+}
+
+int total = automaton.CountMatches(&quot;ushers&quot;);   // 3 — span-friendly, eager
+bool any  = automaton.HasMatch(&quot;ushers&quot;);       // true — exits at the first hit
+</code></pre>
+<p>Matches are reported in a <strong>pinned deterministic order</strong>: ascending end index, then ascending pattern length. <code>EnumerateMatches(string)</code> is lazy; because a lazy sequence cannot capture a <code>ReadOnlySpan&lt;char&gt;</code>, the span-friendly <code>CountMatches</code> and <code>HasMatch</code> are eager conveniences that run the same scan without materializing matches.</p>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a> attaches a value to each pattern and surfaces it on every match — the natural shape for &quot;which rule fired, and what should I do about it&quot;:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var rules = AhoCorasickAutomaton&lt;int&gt;.Build(
+[
+    new KeyValuePair&lt;string, int&gt;(&quot;error&quot;, 2),
+    new KeyValuePair&lt;string, int&gt;(&quot;warn&quot;, 1),
+]);
+
+int severity = 0;
+foreach (AhoCorasickMatch&lt;int&gt; match in rules.EnumerateMatches(&quot;warn: retry failed with error&quot;))
+{
+    severity = Math.Max(severity, match.Value);   // ends at 2 — &quot;error&quot; fired
+}
+</code></pre>
+<p>Contracts to know: <code>Build</code> rejects a null or empty pattern collection and null or empty individual patterns (an empty pattern would match everywhere and carries no information). The unkeyed automaton <strong>deduplicates</strong> repeated patterns; the keyed automaton <strong>throws</strong> on a duplicate pattern key — mirroring the <code>Trie</code> versus <code>Trie&lt;TValue&gt;</code> add contracts.</p>
+<p><strong>When to prefer it over a trie or <code>string.Contains</code>:</strong> you have <em>many</em> patterns and <em>long or streaming-ish</em> texts. Scanning with per-pattern <code>IndexOf</code> costs O(text × patterns); the automaton pays O(text) once for the whole set. For a handful of patterns over short strings, <code>string.Contains</code> is simpler and fine.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.html">Bodu.Collections.Generic.Trees</a> — the full API surface for the trie, radix-trie, automaton, and tree types.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — when a trie beats a <code>Dictionary</code> or sorted set.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> — a bounded-capacity map, when prefix matching is not the concern.</li>
+<li><a href="../topics/core-foundations.html">Core foundations</a> — the wider Core Foundations toolbox.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections documentation</a> — concepts and getting started for <code>Bodu.Collections</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

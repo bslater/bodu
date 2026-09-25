@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class XChaCha20Poly1305 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class XChaCha20Poly1305 | BODU ">
+    
+    <meta name="description" content="Provides authenticated encryption with associated data (AEAD) using the extended-nonce XChaCha20-Poly1305 construction. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_XChaCha20Poly1305" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305" class="text-break">Class XChaCha20Poly1305</h1>
+  <div class="markdown level0 summary"><p>Provides authenticated encryption with associated data (AEAD) using the extended-nonce <code>XChaCha20-Poly1305</code>
+construction. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot
+be inherited.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a></div>
+    <div class="level2"><span class="xref">XChaCha20Poly1305</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></div>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.TagSize.html#Bodu_Security_Cryptography_Poly1305AeadTransform_TagSize">Poly1305AeadTransform.TagSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Encrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Decrypt.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Poly1305AeadTransform.Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.Dispose.html#Bodu_Security_Cryptography_Poly1305AeadTransform_Dispose">Poly1305AeadTransform.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_XChaCha20Poly1305_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class XChaCha20Poly1305 : Poly1305AeadTransform, IStreamAeadTransform, IAeadTransform, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_XChaCha20Poly1305_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+XChaCha20-Poly1305 composes the extended-nonce <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a> stream cipher with the one-time
+<a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> MAC under the RFC 8439 AEAD framing, as specified by <code>draft-irtf-cfrg-xchacha</code> and
+implemented by libsodium's <code>crypto_aead_xchacha20poly1305_ietf</code>. A 256-bit subkey is derived from the key and
+the first 128 bits of the nonce via HChaCha20; the remaining 64 bits of the nonce, prefixed with four zero bytes,
+form the 96-bit ChaCha20 nonce. The counter-0 keystream block yields the one-time Poly1305 key, the message is
+encrypted from counter 1 onward, and the tag authenticates
+<code>AAD ‖ pad16(AAD) ‖ ciphertext ‖ pad16(ciphertext) ‖ le64(|AAD|) ‖ le64(|ciphertext|)</code>.
+</p>
+<p>
+The 192-bit nonce is large enough to be chosen at random per message without meaningful collision risk, which makes
+XChaCha20-Poly1305 the safer choice for protocols that cannot guarantee a unique 96-bit nonce — the gap left by the
+BCL's 96-bit-nonce <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.chacha20poly1305">ChaCha20Poly1305</a>.
+</p>
+<p>
+Each instance is single-use. A new instance must be created for every message. Reusing a nonce under the same key
+destroys confidentiality and authenticity. Associated data is passed directly to
+<a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_ReadOnlySpan_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> and defaults to empty; the emitted
+wire format is <code>ciphertext ‖ tag</code>.
+</p>
+<p>
+<strong>Key separation.</strong> Do not reuse a key across this construction, the raw <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a>
+stream cipher, or a different AEAD construction unless an external protocol-level key-separation scheme (for example
+HKDF with distinct info labels) derives an independent key for each use.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_XChaCha20Poly1305_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var enc = new XChaCha20Poly1305(key, nonce);
+byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header); // ciphertext || tag
+using var dec = new XChaCha20Poly1305(key, nonce);
+byte[] recovered = dec.Decrypt(sealed_, associatedData: header);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_XChaCha20Poly1305__ctor_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305.#ctor(System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.-ctor.html#Bodu_Security_Cryptography_XChaCha20Poly1305__ctor_System_Byte___System_Byte___">XChaCha20Poly1305(byte[], byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> class with the specified key and nonce.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_XChaCha20Poly1305__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305.#ctor(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.-ctor.html#Bodu_Security_Cryptography_XChaCha20Poly1305__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">XChaCha20Poly1305(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> class with the specified key and nonce spans.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_XChaCha20Poly1305_KeySize" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305.KeySize">
+          <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.KeySize.html">KeySize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Length of the XChaCha20-Poly1305 key is 256 bits (32 bytes).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_XChaCha20Poly1305_NonceSize" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305.NonceSize">
+          <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.NonceSize.html">NonceSize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Length of the XChaCha20-Poly1305 nonce is 192 bits (24 bytes).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_XChaCha20Poly1305_CreateEngine" data-uid="Bodu.Security.Cryptography.XChaCha20Poly1305.CreateEngine">
+          <a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.CreateEngine.html#Bodu_Security_Cryptography_XChaCha20Poly1305_CreateEngine">CreateEngine()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates the keystream engine for a single message, positioned at block counter 0.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
+     eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</a></span></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

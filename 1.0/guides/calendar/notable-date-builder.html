@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Authoring with the notable-date builder | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Authoring with the notable-date builder | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="authoring-with-the-notable-date-builder">Authoring with the notable-date builder</h1>
+
+<p><code>Bodu.Globalization.Calendar.Builder</code> is a fluent, chainable API for authoring notable-date documents in C#. It is the programmatic peer of the XML / JSON authoring path in <a href="rule-authoring.html">Authoring notable date rules</a>: both produce the same notable-date document, feed the same resolution pipeline, and validate through the same loader — but the builder keeps everything in code, so documents can be composed, cloned, serialized, and round-tripped without writing XML by hand.</p>
+<p>For the vocabulary it assumes (document vs. resource, definition vs. rule, strategy, adjustment policy, nominal vs. observed) read <a href="../../docs/calendar/concepts.html">Core concepts</a> first. For the full type list see the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.html"><code>Bodu.Globalization.Calendar.Builder</code> reference</a>.</p>
+<h2 id="the-builder-hierarchy">The builder hierarchy</h2>
+<p>Each level is reached through a nested <code>Add*(…, configure)</code> callback that hands you the child builder and returns the parent for chaining:</p>
+<table>
+<thead>
+<tr>
+<th>Builder</th>
+<th>Configures</th>
+<th>Obtained from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a></td>
+<td>The whole <code>&lt;NotableDateResource&gt;</code> document</td>
+<td><code>NotableDateDocumentBuilder.Create(resourceId)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.html">ResolutionPolicyBuilder</a></td>
+<td>The <code>&lt;ResolutionPolicy&gt;</code></td>
+<td><code>WithResolutionPolicy(configure)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a></td>
+<td>A reusable <code>&lt;AdjustmentPolicy&gt;</code></td>
+<td><code>AddAdjustmentPolicy(id, configure)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDefinitionBuilder.html">NotableDateDefinitionBuilder</a></td>
+<td>One <code>&lt;NotableDate&gt;</code> concept</td>
+<td><code>AddNotableDate(id, displayName, category, configure)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a></td>
+<td>One <code>&lt;Rule&gt;</code></td>
+<td><code>AddRule(id, configure)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.ImportBuilder.html">ImportBuilder</a> / <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.ImportUseBuilder.html">ImportUseBuilder</a></td>
+<td><code>&lt;Imports&gt;</code> from the common catalogues</td>
+<td><code>AddImport(resource, configure)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.OverrideBuilder.html">OverrideBuilder</a></td>
+<td>ID-targeted <code>&lt;Overrides&gt;</code></td>
+<td><code>AddOverride(configure)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="building-a-document">Building a document</h2>
+<p><code>Create</code> starts an empty document; <code>AddNotableDate</code> adds a concept, and each concept holds one or more rules:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create(&quot;contoso.holidays&quot;)
+    .WithMetadata(name: &quot;Contoso holidays&quot;, description: &quot;Company observances.&quot;)
+    .AddNotableDate(&quot;new-years-day&quot;, &quot;New Year's Day&quot;, NotableDateCategory.PublicHoliday, d =&gt; d
+        .AsNonWorkingByDefault()
+        .AddRule(&quot;default&quot;, r =&gt; r.ForTerritory(&quot;US&quot;).Fixed(1, 1)));
+</code></pre>
+<h2 id="rules-and-strategies">Rules and strategies</h2>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder.html">NotableDateRuleBuilder</a> sets the rule's scalars (<code>WithPriority</code>, <code>WithCategory</code>, <code>AsNonWorking</code>, <code>WithDurationDays</code>, <code>WithComment</code>, <code>AddTag</code>), its applicability (<code>ForCalendar</code>, <code>ForTerritory</code> / <code>ForTerritories</code>, <code>FromYear</code>, <code>ToYear</code>, <code>EveryYears</code>, <code>AnchorYear</code>, <code>OnlyYears</code>, <code>ExceptYears</code>), its adjustment references (<code>WithAdjustment</code>), and <strong>exactly one</strong> occurrence source — a single-date strategy or a frequency-based recurrence source. The most common:</p>
+<pre><code class="lang-csharp">r.Fixed(1, 1);                                                       // 1 January (month name or number)
+r.DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOrdinal.Fourth);     // 4th Thursday in November
+r.WeekdayNearDate(5, 24, DayOfWeek.Monday, WeekdayProximity.OnOrBefore);
+r.RelativeWeekdayInMonth(11, DayOfWeek.Monday, WeekOrdinal.First, DayOfWeek.Tuesday, WeekdayProximity.After);
+r.OffsetFromRule(&quot;easter-sunday&quot;, -2, ruleRef: &quot;default&quot;);          // Good Friday = Easter − 2
+r.Algorithm(&quot;western-easter&quot;);                                       // a named algorithm key
+</code></pre>
+<p>The remaining single-date strategies (<code>OrdinalDayOfMonth</code>, <code>DayOfYear</code>, <code>IsoWeekDate</code>, <code>WeekdayNearRule</code>, <code>NthWeekdayFromRule</code>, <code>WorkingDayOffsetFromRule</code>, <code>WorkingDayInMonth</code>) and the recurrence sources (<code>DailyInterval</code>, <code>Weekly</code>, <code>MonthlyDay</code>, <code>MonthlyWeekday</code>) follow the same shape. Selecting a second strategy on the same rule throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> — each rule commits to one. See the <a href="strategy-reference.html">strategy reference</a> for the full catalogue and <a href="algorithms.html">Date calculation algorithms</a> for the strategy semantics and the <code>&lt;Algorithm&gt;</code> keys.</p>
+<h2 id="adjustment-policies">Adjustment policies</h2>
+<p>A weekend-substitution or &quot;move to the next working day&quot; shift is authored once as a reusable policy and referenced from any rule by id (there are no inline per-rule adjustments):</p>
+<pre><code class="lang-csharp">builder
+    .AddAdjustmentPolicy(&quot;weekend-to-monday&quot;, a =&gt; a
+        .WithDescription(&quot;Observe weekend holidays on the next working day.&quot;)
+        .When(AdjustmentTrigger.IfWeekend)
+        .Then(AdjustmentAction.MoveToNextWorkingDay)
+        .Emit(Bodu.Globalization.Calendar.RangeResolution.EmissionMode.ObservedOnly))
+    .AddNotableDate(&quot;anzac-day&quot;, &quot;Anzac Day&quot;, NotableDateCategory.PublicHoliday, d =&gt; d
+        .AsNonWorkingByDefault()
+        .AddRule(&quot;default&quot;, r =&gt; r.ForTerritory(&quot;AU&quot;).Fixed(4, 25).WithAdjustment(&quot;weekend-to-monday&quot;)));
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder.html">AdjustmentPolicyBuilder</a> also exposes the trigger modifiers (<code>OnTriggerWeekdays</code>, <code>WithTriggerMonth</code>, …), action modifiers (<code>WithActionDays</code>, <code>WithMaxSearchDays</code>, <code>SkipWeekends</code>, <code>WithReplacementRule</code>, …), emission (<code>WithReason</code>, <code>EmitNonWorking</code>), handler parameters (<code>WithParameter</code>), and a <code>WithScope(configure)</code> callback over <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.AdjustmentScopeBuilder.html">AdjustmentScopeBuilder</a>. See <a href="adjustment-rules.html">Observance adjustment rules</a> for the full trigger / action / emission catalogues.</p>
+<h2 id="importing-the-common-catalogues">Importing the common catalogues</h2>
+<p><code>AddImport</code> pulls concepts from the bundled common catalogues; <code>Use</code> cherry-picks and re-scopes them. <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.ImportUseBuilder.html">ImportUseBuilder</a> exposes <code>As(alias)</code> (re-id the imported concept), <code>ForTerritory</code>, <code>WithCategory</code>, <code>AsNonWorking</code>, and <code>WithAdjustment</code>:</p>
+<pre><code class="lang-csharp">builder.AddImport(&quot;global-core&quot;, i =&gt; i
+    .Use(&quot;new-years-day&quot;, u =&gt; u
+        .As(&quot;us-new-years-day&quot;)           // re-id to avoid clashing with a local concept
+        .ForTerritory(&quot;US&quot;)
+        .WithAdjustment(&quot;weekend-to-monday&quot;)));
+</code></pre>
+<p>An <code>AddImport</code> with no <code>Use</code> calls imports every concept the catalogue defines. Because the JSON subset cannot model imports, a document that calls <code>AddImport</code> serializes only as XML — see the note under <a href="#materializing-serializing-and-saving">Materializing</a>.</p>
+<h2 id="overrides">Overrides</h2>
+<p><code>AddOverride</code> authors ID-targeted edits applied at load time. <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.OverrideBuilder.html">OverrideBuilder</a> offers three operations — <code>AddRule</code> (add a rule to an existing concept), <code>PatchRule</code> (replace an existing rule), and <code>RemoveRule</code> (suppress one):</p>
+<pre><code class="lang-csharp">builder.AddOverride(o =&gt; o
+    .RemoveRule(&quot;boxing-day&quot;, &quot;default&quot;)
+    .PatchRule(&quot;anzac-day&quot;, &quot;default&quot;, r =&gt; r.ForTerritory(&quot;AU&quot;).Fixed(4, 25).WithAdjustment(&quot;weekend-to-monday&quot;))
+    .AddRule(&quot;company-founding-day&quot;, &quot;hq&quot;, r =&gt; r.ForTerritory(&quot;US&quot;).Fixed(6, 15)));
+</code></pre>
+<h2 id="resolution-policy">Resolution policy</h2>
+<pre><code class="lang-csharp">builder.WithResolutionPolicy(p =&gt; p
+    .WithDuplicatePolicy(Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.KeepFirst)
+    .WithWorkingWeek(WeekPattern.MondayToFriday));
+</code></pre>
+<h2 id="materializing-serializing-and-saving">Materializing, serializing, and saving</h2>
+<p>A finished builder produces the document in several forms:</p>
+<pre><code class="lang-csharp">// 1. A built, validated resource — ready for a NotableDateService.
+NotableDateResource resource = builder.Build();                  // Build(resolver) when the document imports
+NotableDateService  service  = new NotableDateService(resource);
+
+// 2. An INotableDateResourceProvider (for the reloadable service / DI).
+INotableDateResourceProvider provider = builder.ToProvider();
+
+// 3. Serialized text — full-fidelity XML, or the JSON subset.
+string xml  = builder.ToXml();      // also ToXDocument()
+string json = builder.ToJson();     // also ToJsonObject()
+
+// 4. Straight to a file (format inferred from the extension).
+builder.Save(&quot;holidays.xml&quot;);
+builder.Save(&quot;holidays.json&quot;);
+
+// …or pin the format explicitly when the extension does not imply it:
+builder.Save(&quot;holidays.txt&quot;, NotableDateDocumentFormat.Xml);
+</code></pre>
+<p><code>Build()</code> serializes to XML and loads through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>, so the built resource is exactly what the runtime would load — and the same validation applies (<code>Build()</code> throws <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> on an invalid document).</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>XML is the full-fidelity format. <code>ToJson()</code> / <code>Save(*.json)</code> emit the narrower JSON subset and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> when the document uses a feature the JSON schema cannot model — imports, a non-Gregorian calendar, an XML-only trigger/action value, handler parameters, or scope year-bounds. Serialize those documents as XML.</p>
+</div>
+<h2 id="round-tripping-and-cloning">Round-tripping and cloning</h2>
+<p><code>FromXml</code> / <code>FromJson</code> parse a document back into a builder for editing, and <code>Load(path)</code> reads a file by extension — so you can load, mutate, and re-save:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateDocumentBuilder edited = NotableDateDocumentBuilder.Load(&quot;holidays.xml&quot;);
+edited.AddNotableDate(&quot;juneteenth&quot;, &quot;Juneteenth&quot;, NotableDateCategory.PublicHoliday, d =&gt; d
+    .AddRule(&quot;default&quot;, r =&gt; r.ForTerritory(&quot;US&quot;).Fixed(6, 19)));
+edited.Save(&quot;holidays.xml&quot;);
+
+NotableDateDocumentBuilder copy = edited.Clone();   // deep, independent copy
+</code></pre>
+<p>Round-tripping carries precise guarantees — builder-canonical XML is byte-stable, JSON is identity within its subset, and both formats resolve the same occurrences. <a href="round-trip-guarantees.html">Builder round-trip guarantees</a> states the full contract, including the XML → JSON lossiness boundary.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="round-trip-guarantees.html">Builder round-trip guarantees</a> — exactly what <code>FromXml</code> / <code>ToXml</code>, <code>FromJson</code> / <code>ToJson</code>, and <code>Save</code> / <code>Load</code> guarantee.</li>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — the XML / JSON document model the builder produces.</li>
+<li><a href="rule-reference.html">NotableDateRule and adjustment-policy reference</a> — the per-element field reference.</li>
+<li><a href="algorithms.html">Date calculation algorithms</a> — the strategy kinds and the <code>&lt;Algorithm&gt;</code> keys.</li>
+<li><a href="notable-dates.html">Using NotableDateService</a> — resolving the documents you build.</li>
+<li><a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.html"><code>Bodu.Globalization.Calendar.Builder</code> API reference</a> — the full type list.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

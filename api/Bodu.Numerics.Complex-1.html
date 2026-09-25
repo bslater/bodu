@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct Complex&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct Complex&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Represents an immutable complex number — a value with a real and an imaginary component — backed by an arbitrary  component type.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Complex`1">
+
+
+
+  <h1 id="Bodu_Numerics_Complex_1" data-uid="Bodu.Numerics.Complex`1" class="text-break">Struct Complex&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents an immutable complex number — a value with a real and an imaginary component — backed by an arbitrary
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1">IFloatingPointIeee754&lt;TSelf&gt;</a> component type.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditionoperators-3">IAdditionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iadditiveidentity-2">IAdditiveIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idecrementoperators-1">IDecrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.idivisionoperators-3">IDivisionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iequalityoperators-3">IEqualityOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iincrementoperators-1">IIncrementOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplicativeidentity-2">IMultiplicativeIdentity</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.imultiplyoperators-3">IMultiplyOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isubtractionoperators-3">ISubtractionOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunarynegationoperators-2">IUnaryNegationOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iunaryplusoperators-2">IUnaryPlusOperators</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;, <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable</a>&lt;<a class="xref" href="Bodu.Numerics.Complex-1.html">Complex</a>&lt;T&gt;&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Numerics.html">Numerics</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Numerics.dll</h6>
+  <h5 id="Bodu_Numerics_Complex_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Complex&lt;T&gt; : ISignedNumber&lt;Complex&lt;T&gt;&gt;, INumberBase&lt;Complex&lt;T&gt;&gt;, ISpanFormattable, IFormattable, IAdditionOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IAdditiveIdentity&lt;Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IDecrementOperators&lt;Complex&lt;T&gt;&gt;, IDivisionOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IEqualityOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;, bool&gt;, IIncrementOperators&lt;Complex&lt;T&gt;&gt;, IMultiplicativeIdentity&lt;Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IMultiplyOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, ISubtractionOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IUnaryNegationOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IUnaryPlusOperators&lt;Complex&lt;T&gt;, Complex&lt;T&gt;&gt;, IEquatable&lt;Complex&lt;T&gt;&gt;, ISpanParsable&lt;Complex&lt;T&gt;&gt;, IParsable&lt;Complex&lt;T&gt;&gt;, IUtf8SpanFormattable, IUtf8SpanParsable&lt;Complex&lt;T&gt;&gt; where T : IFloatingPointIeee754&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The floating-point type used to store the real and imaginary components.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Numerics_Complex_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+A <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> generalizes the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a> value type, which is fixed to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> components, to any IEEE 754 floating-point type. Choose <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a> or
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.half">Half</a> for compact storage, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> for the widest hardware-accelerated range, or another
+conforming type as required.
+</p>
+<p>
+The arithmetic mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a> exactly, including its handling of the non-finite
+values <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1.nan">NaN</a> and the infinities: multiplication uses the direct
+four-multiply form without infinity recovery, division uses Smith's algorithm, and <a class="xref" href="Bodu.Numerics.Complex-1.Reciprocal.html#Bodu_Numerics_Complex_1_Reciprocal_Bodu_Numerics_Complex__0__">Reciprocal(Complex&lt;T&gt;)</a> of zero
+returns <a class="xref" href="Bodu.Numerics.Complex-1.Zero.html#Bodu_Numerics_Complex_1_Zero">Zero</a> rather than an infinity.
+</p>
+<p>
+Because a type parameter cannot carry an implicit conversion from each built-in real type the way
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex">Complex</a> does, only the implicit conversion from <code class="typeparamref">T</code> (embedding
+a real value on the real axis) is provided; use <a class="xref" href="Bodu.Numerics.Complex-1.Create.html#Bodu_Numerics_Complex_1_Create__0__0_">Create(T, T)</a>, the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumberbase-1">INumberBase&lt;TSelf&gt;</a> conversion helpers, or <a class="xref" href="Bodu.Numerics.Complex-1.FromPolarCoordinates.html#Bodu_Numerics_Complex_1_FromPolarCoordinates__0__0_">FromPolarCoordinates(T, T)</a> for
+other sources.
+</p>
+</div>
+  <h5 id="Bodu_Numerics_Complex_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Construct from components and from polar coordinates.
+Complex&lt;double&gt; a = new Complex&lt;double&gt;(3.0, 4.0);      // 3 + 4i
+Complex&lt;double&gt; b = Complex&lt;double&gt;.FromPolarCoordinates(5.0, 0.0);
+
+// Arithmetic through the operators.
+Complex&lt;double&gt; sum = a + b;                            // 8 + 4i
+double magnitude = a.Magnitude;                         // 5
+
+// Parse and format round-trip through the "&lt;real; imaginary&gt;" form.
+Complex&lt;double&gt; parsed = Complex&lt;double&gt;.Parse("&lt;1; 2&gt;", null);
+string text = parsed.ToString();                        // "&lt;1; 2&gt;"</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1__ctor__0__0_" data-uid="Bodu.Numerics.Complex`1.#ctor(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.-ctor.html#Bodu_Numerics_Complex_1__ctor__0__0_">Complex(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> struct with the specified real and imaginary
+components.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Imaginary" data-uid="Bodu.Numerics.Complex`1.Imaginary">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Imaginary.html#Bodu_Numerics_Complex_1_Imaginary">Imaginary</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the imaginary component of the complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_ImaginaryOne" data-uid="Bodu.Numerics.Complex`1.ImaginaryOne">
+          <a class="xref" href="Bodu.Numerics.Complex-1.ImaginaryOne.html#Bodu_Numerics_Complex_1_ImaginaryOne">ImaginaryOne</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> representing the imaginary unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Infinity" data-uid="Bodu.Numerics.Complex`1.Infinity">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Infinity.html#Bodu_Numerics_Complex_1_Infinity">Infinity</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> whose real and imaginary components are both
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1.positiveinfinity">PositiveInfinity</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Magnitude" data-uid="Bodu.Numerics.Complex`1.Magnitude">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Magnitude.html#Bodu_Numerics_Complex_1_Magnitude">Magnitude</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the magnitude (absolute value) of the complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_NaN" data-uid="Bodu.Numerics.Complex`1.NaN">
+          <a class="xref" href="Bodu.Numerics.Complex-1.NaN.html#Bodu_Numerics_Complex_1_NaN">NaN</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> whose real and imaginary components are both
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1.nan">NaN</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_One" data-uid="Bodu.Numerics.Complex`1.One">
+          <a class="xref" href="Bodu.Numerics.Complex-1.One.html#Bodu_Numerics_Complex_1_One">One</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> representing the real unit one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Phase" data-uid="Bodu.Numerics.Complex`1.Phase">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Phase.html#Bodu_Numerics_Complex_1_Phase">Phase</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the phase (argument) of the complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Real" data-uid="Bodu.Numerics.Complex`1.Real">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Real.html#Bodu_Numerics_Complex_1_Real">Real</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the real component of the complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Zero" data-uid="Bodu.Numerics.Complex`1.Zero">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Zero.html#Bodu_Numerics_Complex_1_Zero">Zero</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> representing the value zero.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Abs_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Abs(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Abs.html#Bodu_Numerics_Complex_1_Abs_Bodu_Numerics_Complex__0__">Abs(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the magnitude (absolute value) of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Acos_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Acos(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Acos.html#Bodu_Numerics_Complex_1_Acos_Bodu_Numerics_Complex__0__">Acos(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the inverse cosine (arccosine) of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Add_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Add(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Add.html#Bodu_Numerics_Complex_1_Add_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">Add(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two complex values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Asin_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Asin(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Asin.html#Bodu_Numerics_Complex_1_Asin_Bodu_Numerics_Complex__0__">Asin(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the inverse sine (arcsine) of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Atan_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Atan(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Atan.html#Bodu_Numerics_Complex_1_Atan_Bodu_Numerics_Complex__0__">Atan(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the inverse tangent (arctangent) of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Conjugate_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Conjugate(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Conjugate.html#Bodu_Numerics_Complex_1_Conjugate_Bodu_Numerics_Complex__0__">Conjugate(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the complex conjugate of a value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Cos_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Cos(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Cos.html#Bodu_Numerics_Complex_1_Cos_Bodu_Numerics_Complex__0__">Cos(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the cosine of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Cosh_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Cosh(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Cosh.html#Bodu_Numerics_Complex_1_Cosh_Bodu_Numerics_Complex__0__">Cosh(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the hyperbolic cosine of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Create__0__0_" data-uid="Bodu.Numerics.Complex`1.Create(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Create.html#Bodu_Numerics_Complex_1_Create__0__0_">Create(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> from the specified real and imaginary components.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Deconstruct__0___0__" data-uid="Bodu.Numerics.Complex`1.Deconstruct(`0@,`0@)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Deconstruct.html#Bodu_Numerics_Complex_1_Deconstruct__0___0__">Deconstruct(out T, out T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Deconstructs the complex value into its real and imaginary components.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Divide_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Divide(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Divide.html#Bodu_Numerics_Complex_1_Divide_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">Divide(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one complex value by another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Equals_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Equals(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Equals.html#Bodu_Numerics_Complex_1_Equals_Bodu_Numerics_Complex__0__">Equals(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> is equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Equals_System_Object_" data-uid="Bodu.Numerics.Complex`1.Equals(System.Object)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Equals.html#Bodu_Numerics_Complex_1_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified object is a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> equal to this value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Exp_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Exp(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Exp.html#Bodu_Numerics_Complex_1_Exp_Bodu_Numerics_Complex__0__">Exp(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <code>e</code> raised to the power of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_FromPolarCoordinates__0__0_" data-uid="Bodu.Numerics.Complex`1.FromPolarCoordinates(`0,`0)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.FromPolarCoordinates.html#Bodu_Numerics_Complex_1_FromPolarCoordinates__0__0_">FromPolarCoordinates(T, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> from a magnitude and phase expressed in polar coordinates.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_GetHashCode" data-uid="Bodu.Numerics.Complex`1.GetHashCode">
+          <a class="xref" href="Bodu.Numerics.Complex-1.GetHashCode.html#Bodu_Numerics_Complex_1_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code for this complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_IsFinite_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.IsFinite(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.IsFinite.html#Bodu_Numerics_Complex_1_IsFinite_Bodu_Numerics_Complex__0__">IsFinite(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified complex number is finite — both its real and imaginary components are finite.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_IsInfinity_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.IsInfinity(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.IsInfinity.html#Bodu_Numerics_Complex_1_IsInfinity_Bodu_Numerics_Complex__0__">IsInfinity(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified complex number is infinite — either component is an infinity, regardless of the
+other component's value (including NaN), matching <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex.isinfinity">IsInfinity(Complex)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_IsNaN_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.IsNaN(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.IsNaN.html#Bodu_Numerics_Complex_1_IsNaN_Bodu_Numerics_Complex__0__">IsNaN(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified complex number is NaN — at least one component is NaN and neither component is
+an infinity, matching <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.complex.isnan">IsNaN(Complex)</a> (an infinite component dominates NaN).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Log_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Log(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Log.html#Bodu_Numerics_Complex_1_Log_Bodu_Numerics_Complex__0__">Log(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the natural (base <code>e</code>) logarithm of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Log_Bodu_Numerics_Complex__0___0_" data-uid="Bodu.Numerics.Complex`1.Log(Bodu.Numerics.Complex{`0},`0)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Log.html#Bodu_Numerics_Complex_1_Log_Bodu_Numerics_Complex__0___0_">Log(Complex&lt;T&gt;, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the logarithm of a complex value in the specified base.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Log10_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Log10(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Log10.html#Bodu_Numerics_Complex_1_Log10_Bodu_Numerics_Complex__0__">Log10(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the base-10 logarithm of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Multiply_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Multiply(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Multiply.html#Bodu_Numerics_Complex_1_Multiply_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">Multiply(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two complex values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Negate_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Negate(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Negate.html#Bodu_Numerics_Complex_1_Negate_Bodu_Numerics_Complex__0__">Negate(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the additive inverse of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Parse.html#Bodu_Numerics_Complex_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_">Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a UTF-8 byte span into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Parse.html#Bodu_Numerics_Complex_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a character span into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Parse_System_String_" data-uid="Bodu.Numerics.Complex`1.Parse(System.String)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Parse.html#Bodu_Numerics_Complex_1_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a string into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.Parse(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Parse.html#Bodu_Numerics_Complex_1_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses a string into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Pow_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Pow(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Pow.html#Bodu_Numerics_Complex_1_Pow_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">Pow(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a complex value raised to a complex power.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Pow_Bodu_Numerics_Complex__0___0_" data-uid="Bodu.Numerics.Complex`1.Pow(Bodu.Numerics.Complex{`0},`0)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Pow.html#Bodu_Numerics_Complex_1_Pow_Bodu_Numerics_Complex__0___0_">Pow(Complex&lt;T&gt;, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a complex value raised to a real power.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Reciprocal_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Reciprocal(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Reciprocal.html#Bodu_Numerics_Complex_1_Reciprocal_Bodu_Numerics_Complex__0__">Reciprocal(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the multiplicative inverse of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Sin_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Sin(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Sin.html#Bodu_Numerics_Complex_1_Sin_Bodu_Numerics_Complex__0__">Sin(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the sine of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Sinh_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Sinh(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Sinh.html#Bodu_Numerics_Complex_1_Sinh_Bodu_Numerics_Complex__0__">Sinh(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the hyperbolic sine of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Sqrt_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Sqrt(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Sqrt.html#Bodu_Numerics_Complex_1_Sqrt_Bodu_Numerics_Complex__0__">Sqrt(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the principal square root of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Subtract_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Subtract(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Subtract.html#Bodu_Numerics_Complex_1_Subtract_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">Subtract(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one complex value from another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Tan_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Tan(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Tan.html#Bodu_Numerics_Complex_1_Tan_Bodu_Numerics_Complex__0__">Tan(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the tangent of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_Tanh_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.Tanh(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.Tanh.html#Bodu_Numerics_Complex_1_Tanh_Bodu_Numerics_Complex__0__">Tanh(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the hyperbolic tangent of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_ToString" data-uid="Bodu.Numerics.Complex`1.ToString">
+          <a class="xref" href="Bodu.Numerics.Complex-1.ToString.html#Bodu_Numerics_Complex_1_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the default string representation of this complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_ToString_System_String_" data-uid="Bodu.Numerics.Complex`1.ToString(System.String)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.ToString.html#Bodu_Numerics_Complex_1_ToString_System_String_">ToString(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this complex value, applying the specified format to each component.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.ToString(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.ToString.html#Bodu_Numerics_Complex_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of this complex value, applying the specified format and culture to each
+component.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryFormat.html#Bodu_Numerics_Complex_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this complex value into the provided UTF-8 byte span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Complex`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryFormat.html#Bodu_Numerics_Complex_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to format this complex value into the provided character span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Complex__0___" data-uid="Bodu.Numerics.Complex`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Complex{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryParse.html#Bodu_Numerics_Complex_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Complex__0___">TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a UTF-8 byte span into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Complex__0___" data-uid="Bodu.Numerics.Complex`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Complex{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryParse.html#Bodu_Numerics_Complex_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Complex__0___">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a character span into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryParse_System_String_Bodu_Numerics_Complex__0___" data-uid="Bodu.Numerics.Complex`1.TryParse(System.String,Bodu.Numerics.Complex{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryParse.html#Bodu_Numerics_Complex_1_TryParse_System_String_Bodu_Numerics_Complex__0___">TryParse(string?, out Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Complex__0___" data-uid="Bodu.Numerics.Complex`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Complex{`0}@)">
+          <a class="xref" href="Bodu.Numerics.Complex-1.TryParse.html#Bodu_Numerics_Complex_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Complex__0___">TryParse(string?, IFormatProvider?, out Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse a string into a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> using the specified culture.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Addition_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Addition(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Addition.html#Bodu_Numerics_Complex_1_op_Addition_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator +(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds two complex values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Decrement_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Decrement(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Decrement.html#Bodu_Numerics_Complex_1_op_Decrement_Bodu_Numerics_Complex__0__">operator --(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the complex value decreased by the real unit one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Division_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Division(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Division.html#Bodu_Numerics_Complex_1_op_Division_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator /(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Divides one complex value by another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Equality_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Equality(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Equality.html#Bodu_Numerics_Complex_1_op_Equality_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator ==(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two complex values are equal, comparing components with floating-point equality.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Implicit__0__Bodu_Numerics_Complex__0_" data-uid="Bodu.Numerics.Complex`1.op_Implicit(`0)~Bodu.Numerics.Complex{`0}">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Implicit.html#Bodu_Numerics_Complex_1_op_Implicit__0__Bodu_Numerics_Complex__0_">implicit operator Complex&lt;T&gt;(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a real value to a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> by placing it on the real axis.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Increment_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Increment(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Increment.html#Bodu_Numerics_Complex_1_op_Increment_Bodu_Numerics_Complex__0__">operator ++(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the complex value increased by the real unit one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Inequality_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Inequality(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Inequality.html#Bodu_Numerics_Complex_1_op_Inequality_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator !=(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two complex values are unequal, comparing components with floating-point equality.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Multiply_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Multiply(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Multiply.html#Bodu_Numerics_Complex_1_op_Multiply_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator *(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Multiplies two complex values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_Subtraction_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_Subtraction(Bodu.Numerics.Complex{`0},Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_Subtraction.html#Bodu_Numerics_Complex_1_op_Subtraction_Bodu_Numerics_Complex__0__Bodu_Numerics_Complex__0__">operator -(Complex&lt;T&gt;, Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Subtracts one complex value from another.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_UnaryNegation_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_UnaryNegation(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_UnaryNegation.html#Bodu_Numerics_Complex_1_op_UnaryNegation_Bodu_Numerics_Complex__0__">operator -(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the additive inverse of a complex value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Numerics_Complex_1_op_UnaryPlus_Bodu_Numerics_Complex__0__" data-uid="Bodu.Numerics.Complex`1.op_UnaryPlus(Bodu.Numerics.Complex{`0})">
+          <a class="xref" href="Bodu.Numerics.Complex-1.op_UnaryPlus.html#Bodu_Numerics_Complex_1_op_UnaryPlus_Bodu_Numerics_Complex__0__">operator +(Complex&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the complex value unchanged.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.NumericExtensions.GetBytes.html#Bodu_Extensions_NumericExtensions_GetBytes__1___0_System_Boolean_">NumericExtensions.GetBytes&lt;T&gt;(T, bool)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

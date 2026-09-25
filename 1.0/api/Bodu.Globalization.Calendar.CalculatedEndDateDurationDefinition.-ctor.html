@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Constructor CalculatedEndDateDurationDefinition | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Constructor CalculatedEndDateDurationDefinition | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.#ctor*">
+
+
+
+<h1 id="Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition__ctor_" data-uid="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.#ctor*">Constructor CalculatedEndDateDurationDefinition</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition__ctor_" data-uid="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.#ctor*"></a>
+<h4 id="Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition__ctor_Bodu_Globalization_Calendar_Algorithms_IDateCalculationStrategy_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection_" data-uid="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.#ctor(Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy,Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.DateBoundary,Bodu.Globalization.Calendar.EndDateSelection)">CalculatedEndDateDurationDefinition(IDateCalculationStrategy, DateBoundary, DateBoundary, EndDateSelection)</h4>
+<div class="markdown level1 summary"><p>Represents an occurrence duration whose end date is calculated by a second date strategy, producing a span that can
+vary in length from year to year and can cross a civil-year boundary.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public CalculatedEndDateDurationDefinition(IDateCalculationStrategy EndStrategy, DateBoundary StartBoundary = DateBoundary.Inclusive, DateBoundary EndBoundary = DateBoundary.Inclusive, EndDateSelection EndSelection = EndDateSelection.FirstOnOrAfterStart)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a></td>
+      <td><span class="parametername">EndStrategy</span></td>
+      <td><p>The strategy that calculates the end anchor of the span.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.DateBoundary.html">DateBoundary</a></td>
+      <td><span class="parametername">StartBoundary</span></td>
+      <td><p>Whether the start anchor is included in the span.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.DateBoundary.html">DateBoundary</a></td>
+      <td><span class="parametername">EndBoundary</span></td>
+      <td><p>Whether the end anchor is included in the span.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="Bodu.Globalization.Calendar.EndDateSelection.html">EndDateSelection</a></td>
+      <td><span class="parametername">EndSelection</span></td>
+      <td><p>How the end anchor is selected relative to the start anchor.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition__ctor_Bodu_Globalization_Calendar_Algorithms_IDateCalculationStrategy_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+The end strategy is evaluated relative to each resolved start occurrence: for the start anchor's civil year, and,
+when that yields no acceptable candidate, the immediately following civil year. This models patterns such as a
+company year-end shutdown that begins the Friday before Boxing Day and ends the Monday after New Year's Day, where
+the span length differs each year.
+</p>
+<p>
+The effective start and end are derived by applying <a class="xref" href="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.StartBoundary.html#Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition_StartBoundary">StartBoundary</a> and <a class="xref" href="Bodu.Globalization.Calendar.CalculatedEndDateDurationDefinition.EndBoundary.html#Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition_EndBoundary">EndBoundary</a> to
+the resolved anchors. When the resulting span is shorter than one day, or no acceptable end anchor exists in the
+permitted two-year window, the occurrence is not emitted.
+</p>
+</div>
+<h5 id="Bodu_Globalization_Calendar_CalculatedEndDateDurationDefinition__ctor_Bodu_Globalization_Calendar_Algorithms_IDateCalculationStrategy_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_DateBoundary_Bodu_Globalization_Calendar_EndDateSelection__seealso">See Also</h5>
+<div class="seealso">
+    <div><a class="xref" href="Bodu.Globalization.Calendar.NotableDateDurationDefinition.html">NotableDateDurationDefinition</a></div>
+</div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

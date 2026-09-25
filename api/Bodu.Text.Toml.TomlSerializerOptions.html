@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class TomlSerializerOptions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class TomlSerializerOptions | BODU ">
+    
+    <meta name="description" content="Configures how values are serialized to and deserialized from TOML: the converters to use, the property naming policy, the default ignore condition, and the maximum nesting depth.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Toml.TomlSerializerOptions">
+
+
+
+  <h1 id="Bodu_Text_Toml_TomlSerializerOptions" data-uid="Bodu.Text.Toml.TomlSerializerOptions" class="text-break">Class TomlSerializerOptions</h1>
+  <div class="markdown level0 summary"><p>Configures how values are serialized to and deserialized from TOML: the converters to use, the property naming
+policy, the default ignore condition, and the maximum nesting depth.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">TomlSerializerOptions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Toml.html">Toml</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Toml.dll</h6>
+  <h5 id="Bodu_Text_Toml_TomlSerializerOptions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class TomlSerializerOptions</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Toml_TomlSerializerOptions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+An options instance becomes read-only the first time it is used to serialize or deserialize a value; subsequent
+attempts to change a setting throw. Resolved converters and type metadata are cached on the instance, so reusing one
+configured options object across many operations is the efficient pattern.
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Toml_TomlSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> governs when a member is omitted on write. Because TOML has no null token, a
+member whose value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is omitted regardless of that setting.
+</p>
+</div>
+  <h5 id="Bodu_Text_Toml_TomlSerializerOptions_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Configure once and reuse across calls; resolved converters are cached on the instance.
+var options = new TomlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault,
+};
+options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: false));
+
+string text = TomlSerializer.Serialize(config, options);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions__ctor" data-uid="Bodu.Text.Toml.TomlSerializerOptions.#ctor">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.-ctor.html#Bodu_Text_Toml_TomlSerializerOptions__ctor">TomlSerializerOptions()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a> class with default (general-purpose)
+settings.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions__ctor_Bodu_Text_Toml_TomlSerializerDefaults_" data-uid="Bodu.Text.Toml.TomlSerializerOptions.#ctor(Bodu.Text.Toml.TomlSerializerDefaults)">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.-ctor.html#Bodu_Text_Toml_TomlSerializerOptions__ctor_Bodu_Text_Toml_TomlSerializerDefaults_">TomlSerializerOptions(TomlSerializerDefaults)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html">TomlSerializerOptions</a> class with a base set of defaults
+appropriate for the specified usage scenario.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_DefaultMaxDepth" data-uid="Bodu.Text.Toml.TomlSerializerOptions.DefaultMaxDepth">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.DefaultMaxDepth.html">DefaultMaxDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>The default maximum container nesting depth applied when <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.MaxDepth.html#Bodu_Text_Toml_TomlSerializerOptions_MaxDepth">MaxDepth</a> is left at zero. It is also the library's hard ceiling (<span class="xref">Bodu.Text.Toml.TomlLimits.AbsoluteMaxDepth</span>): a configured depth is never effective beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack budget.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_ByteArrayHandling" data-uid="Bodu.Text.Toml.TomlSerializerOptions.ByteArrayHandling">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.ByteArrayHandling.html#Bodu_Text_Toml_TomlSerializerOptions_ByteArrayHandling">ByteArrayHandling</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the representation used when writing a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_Converters" data-uid="Bodu.Text.Toml.TomlSerializerOptions.Converters">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.Converters.html#Bodu_Text_Toml_TomlSerializerOptions_Converters">Converters</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the list of user-registered converters, consulted in order before the built-in converters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_DecimalHandling" data-uid="Bodu.Text.Toml.TomlSerializerOptions.DecimalHandling">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.DecimalHandling.html#Bodu_Text_Toml_TomlSerializerOptions_DecimalHandling">DecimalHandling</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the representation used when writing a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.decimal">decimal</a> value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_DefaultIgnoreCondition" data-uid="Bodu.Text.Toml.TomlSerializerOptions.DefaultIgnoreCondition">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Toml_TomlSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the default condition that determines when a member is omitted on write, applied to every member
+that does not carry its own <a class="xref" href="Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_IncludeFields" data-uid="Bodu.Text.Toml.TomlSerializerOptions.IncludeFields">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.IncludeFields.html#Bodu_Text_Toml_TomlSerializerOptions_IncludeFields">IncludeFields</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether public fields are surfaced as serializable members alongside properties.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Toml.TomlSerializerOptions.IsReadOnly">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.IsReadOnly.html#Bodu_Text_Toml_TomlSerializerOptions_IsReadOnly">IsReadOnly</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the options have become read-only.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_MaxDepth" data-uid="Bodu.Text.Toml.TomlSerializerOptions.MaxDepth">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.MaxDepth.html#Bodu_Text_Toml_TomlSerializerOptions_MaxDepth">MaxDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the maximum container nesting depth permitted while serializing or deserializing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_PreferredObjectCreationHandling" data-uid="Bodu.Text.Toml.TomlSerializerOptions.PreferredObjectCreationHandling">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.PreferredObjectCreationHandling.html#Bodu_Text_Toml_TomlSerializerOptions_PreferredObjectCreationHandling">PreferredObjectCreationHandling</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide preference for whether a member's value is replaced with a freshly created
+instance or populated when reading, applied to every type and member that does not carry its own
+<a class="xref" href="Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Toml.TomlSerializerOptions.PropertyNameCaseInsensitive">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.PropertyNameCaseInsensitive.html#Bodu_Text_Toml_TomlSerializerOptions_PropertyNameCaseInsensitive">PropertyNameCaseInsensitive</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets a value indicating whether property-name matching ignores case when reading.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Toml.TomlSerializerOptions.PropertyNamingPolicy">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.PropertyNamingPolicy.html#Bodu_Text_Toml_TomlSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the policy that translates member names to their serialized dictionary-key form.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_SpecVersion" data-uid="Bodu.Text.Toml.TomlSerializerOptions.SpecVersion">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.SpecVersion.html#Bodu_Text_Toml_TomlSerializerOptions_SpecVersion">SpecVersion</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the TOML specification version whose grammar is accepted when deserializing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_UnmappedMemberHandling" data-uid="Bodu.Text.Toml.TomlSerializerOptions.UnmappedMemberHandling">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.UnmappedMemberHandling.html#Bodu_Text_Toml_TomlSerializerOptions_UnmappedMemberHandling">UnmappedMemberHandling</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the serializer-wide handling for a dictionary key that maps to no member of the target type when
+reading, applied to every type that does not carry its own <a class="xref" href="Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_GetConverter_System_Type_" data-uid="Bodu.Text.Toml.TomlSerializerOptions.GetConverter(System.Type)">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.GetConverter.html#Bodu_Text_Toml_TomlSerializerOptions_GetConverter_System_Type_">GetConverter(Type)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the converter that handles the specified type, applying the type-level converter attribute, the
+registered converters, and finally the built-in converters, in that order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Toml_TomlSerializerOptions_MakeReadOnly" data-uid="Bodu.Text.Toml.TomlSerializerOptions.MakeReadOnly">
+          <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.MakeReadOnly.html#Bodu_Text_Toml_TomlSerializerOptions_MakeReadOnly">MakeReadOnly()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Freezes the options so their settings can no longer change, capturing the converter list. Called automatically
+before the first serialization or deserialization.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

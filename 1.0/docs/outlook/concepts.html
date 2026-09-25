@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Formats.Outlook — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Formats.Outlook — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduformatsoutlook--core-concepts">Bodu.Formats.Outlook — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a>, and refer back whenever a term feels imprecise.</p>
+<p><code>Bodu.Formats.Outlook</code> is part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic — the value model shared by the <code>.msg</code> reader (over <a href="../io-compound/index.html"><code>Bodu.IO.Compound</code></a>) and the <code>.pst</code> reader (over <a href="../io-pst/index.html"><code>Bodu.IO.Pst</code></a>). For the high-level shape of the family, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="session-and-view">Session and view</h2>
+<p>Both readers expose a <strong>session</strong> — <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> for a <code>.msg</code> file, <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> for a <code>.pst</code> file — that owns the container and, unless <code>leaveOpen: true</code> was passed, the source stream. Everything obtained from a session is a <strong>view</strong> bound to its lifetime: a <code>.pst</code> folder, message, recipient, or attachment, and a <code>.msg</code> recipient, attachment, or nested message. Disposing the session invalidates them all; members called afterwards throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+<p>Reads are lazy. A <code>.msg</code> session decodes the root property stream eagerly at open (so <code>Properties</code> needs no further I/O) and materializes recipients, attachments, and the named-property mapping on first access; a <code>.pst</code> session parses only the container header at open, streams folder and message tables row block by row block, and decodes each object's properties once on first access. The <code>.pst</code> session is documented single-threaded — its members, and those of every view, must not be called concurrently. Treat a <code>.msg</code> session the same way.</p>
+<h2 id="property">Property</h2>
+<p>A MAPI <strong>property</strong> is a 32-bit tag paired with a value. <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a> is the decoded pair; <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a> is the bag of them on every object — message, folder, store, recipient, attachment. The collection keeps properties in first-occurrence order, replaces a later property that carries an exact-duplicate tag, and answers lookups by full tag (<code>TryGetValue(tag, out property)</code>, <code>Contains(tag)</code>), by identifier alone (<code>TryGetValue(id, out property)</code> returns the first property carrying that identifier; <code>GetAll(id)</code> returns every one), and through typed accessors that probe the plausible wire types and return <code>null</code> when nothing matches: <code>GetString</code> (Unicode, then code-page), <code>GetInt32</code> (Int32, then a widened Int16), <code>GetInt64</code>, <code>GetBoolean</code>, <code>GetDouble</code> (Double, then a widened Float), <code>GetDateTime</code>, <code>GetGuid</code>, <code>GetBinary</code>, and <code>GetStringArray</code>. A typed accessor never throws for a missing property.</p>
+<h2 id="property-tag-anatomy">Property tag anatomy</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a> is the 32-bit tag laid out per MS-OXCDATA §2.11.4:</p>
+<table>
+<thead>
+<tr>
+<th>Bits</th>
+<th>Meaning</th>
+<th>Exposed as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>31–16</td>
+<td>The 16-bit <strong>property identifier</strong></td>
+<td><code>Id</code></td>
+</tr>
+<tr>
+<td>12 (<code>0x1000</code> of the low word)</td>
+<td>The <strong>multi-valued flag</strong></td>
+<td><code>IsMultiValued</code></td>
+</tr>
+<tr>
+<td>15–0 minus the flag</td>
+<td>The base <strong>wire type</strong></td>
+<td><code>Type</code> (a <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyType.html">MapiPropertyType</a>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>Value</code> preserves the raw combination; <code>Type</code> always reports the base code with the flag stripped. <code>IsNamed</code> is <code>true</code> for identifiers at or above <code>0x8000</code> — the named-property range (below). Construct a tag from an identifier and type (<code>new MapiPropertyTag(MapiPropertyIds.Subject, MapiPropertyType.Unicode)</code>), from a raw value (<code>new MapiPropertyTag(0x0037001F)</code>), or as a multi-valued tag with <code>MapiPropertyTag.ForMultiValue(id, elementType)</code>. <code>ToString</code> renders the canonical eight-digit hexadecimal form.</p>
+<p>The wire-type codes:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th><code>MapiPropertyType</code></th>
+<th>Decodes to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0002</code></td>
+<td><code>Int16</code></td>
+<td><code>short</code></td>
+</tr>
+<tr>
+<td><code>0x0003</code></td>
+<td><code>Int32</code></td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>0x0004</code></td>
+<td><code>Float</code></td>
+<td><code>float</code></td>
+</tr>
+<tr>
+<td><code>0x0005</code></td>
+<td><code>Double</code></td>
+<td><code>double</code></td>
+</tr>
+<tr>
+<td><code>0x0006</code></td>
+<td><code>Currency</code></td>
+<td>fixed-point integer</td>
+</tr>
+<tr>
+<td><code>0x0007</code></td>
+<td><code>AppTime</code></td>
+<td>application time</td>
+</tr>
+<tr>
+<td><code>0x000A</code></td>
+<td><code>ErrorCode</code></td>
+<td>error code</td>
+</tr>
+<tr>
+<td><code>0x000B</code></td>
+<td><code>Boolean</code></td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td><code>0x000D</code></td>
+<td><code>Object</code></td>
+<td>an embedded object (attachment storages)</td>
+</tr>
+<tr>
+<td><code>0x0014</code></td>
+<td><code>Int64</code></td>
+<td><code>long</code></td>
+</tr>
+<tr>
+<td><code>0x001E</code></td>
+<td><code>String8</code></td>
+<td><code>string</code>, decoded through the object's code page</td>
+</tr>
+<tr>
+<td><code>0x001F</code></td>
+<td><code>Unicode</code></td>
+<td><code>string</code> (UTF-16)</td>
+</tr>
+<tr>
+<td><code>0x0040</code></td>
+<td><code>SystemTime</code></td>
+<td><code>DateTimeOffset</code> (FILETIME)</td>
+</tr>
+<tr>
+<td><code>0x0048</code></td>
+<td><code>Guid</code></td>
+<td><code>Guid</code></td>
+</tr>
+<tr>
+<td><code>0x0102</code></td>
+<td><code>Binary</code></td>
+<td><code>byte[]</code></td>
+</tr>
+<tr>
+<td><code>0x0000</code> / <code>0x0001</code></td>
+<td><code>Unspecified</code> / <code>Null</code></td>
+<td>no value</td>
+</tr>
+</tbody>
+</table>
+<p>A multi-valued property decodes to an array of the element type (<code>string[]</code>, <code>int[]</code>, <code>byte[][]</code>, …).</p>
+<h2 id="well-known-identifiers">Well-known identifiers</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyIds.html">MapiPropertyIds</a> is a deliberately small catalogue of <code>PidTag*</code> identifiers — the ones the convenience surfaces and common consumer scenarios need (<code>Subject</code>, <code>SenderName</code>, <code>ClientSubmitTime</code>, <code>Body</code>, <code>Html</code>, <code>RtfCompressed</code>, <code>AttachMethod</code>, <code>AttachLongFilename</code>, <code>MessageCodepage</code>, <code>ContainerClass</code>, …). Every property remains reachable by raw identifier whether or not it is listed there.</p>
+<h2 id="named-property">Named property</h2>
+<p>Identifiers at or above <code>0x8000</code> are <strong>named properties</strong>: the file assigns them, so <code>0x8004</code> means one thing in this message and something else in the next. The durable identity is a <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a> — a <strong>property-set GUID</strong> scoping either a numeric <code>Id</code> or a string <code>Name</code> (exactly one is set, per MS-OXCDATA §2.6.1). Well-known property sets include <code>PS_MAPI</code>, <code>PS_PUBLIC_STRINGS</code> (<code>00020329-0000-0000-C000-000000000046</code>, the home of <code>Keywords</code>), and the application-defined GUIDs of Outlook's own item classes.</p>
+<p>Each file carries a mapping from identifier to identity, and each session resolves it in both directions with the same two members:</p>
+<ul>
+<li><code>TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)</code> — the file-specific identifier a name maps to; combine it with the expected <code>MapiPropertyType</code> to address a property collection.</li>
+<li><code>TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)</code> — the identity behind a named tag.</li>
+</ul>
+<p>Where the mapping lives differs by format. A <code>.msg</code> file keeps it in the root's <code>__nameid_version1.0</code> storage, parsed lazily and shared by every nested attached message (per MS-OXMSG). A <code>.pst</code> file keeps one <strong>name-to-id map node</strong> per store (MS-PST §2.4.7), so <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> resolves store-wide and one resolution applies to every message and attachment of the session. In both, entry <em>i</em> of the entry stream defines identifier <code>0x8000 + i</code>; a malformed entry throws the format's exception under strict validation and is skipped otherwise.</p>
+<h2 id="recipient">Recipient</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> is a container-free view over one recipient's property collection: <code>RecipientType</code> (an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipientType.html">OutlookRecipientType</a> — <code>Originator</code>, <code>To</code>, <code>Cc</code>, or <code>Bcc</code>; <code>null</code> when the property is absent), <code>DisplayName</code>, <code>EmailAddress</code>, and <code>AddressType</code>. A <code>.msg</code> message lists recipients in storage-index order (its <code>__recip_version1.0_#</code> child storages); a <code>.pst</code> message lists them in recipient-table order, each row decoding directly into the recipient's collection. Both readers hand out the same type, so recipient-handling code is shared.</p>
+<h2 id="attachment-and-attachment-method">Attachment and attachment method</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookAttachment.html">OutlookAttachment</a> (<code>.msg</code>) and <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailAttachment.html">OutlookMailAttachment</a> (<code>.pst</code>) expose the same surface: <code>Method</code>, <code>FileName</code> (the long form, falling back to the short), <code>ContentId</code>, <code>MimeTag</code>, <code>Size</code>, and the two content accessors. <code>Method</code> is an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookAttachmentMethod.html">OutlookAttachmentMethod</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Meaning</th>
+<th>Content access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ByValue</code></td>
+<td>The bytes are stored in the file (<code>PidTagAttachDataBinary</code>).</td>
+<td><code>OpenContentStream()</code></td>
+</tr>
+<tr>
+<td><code>EmbeddedMessage</code></td>
+<td>The attachment is another message.</td>
+<td><code>OpenMessage()</code></td>
+</tr>
+<tr>
+<td><code>ByReference</code> / <code>ByReferenceResolve</code> / <code>ByReferenceOnly</code></td>
+<td>The file holds a path to the content, not the content.</td>
+<td>Neither — no payload in the file</td>
+</tr>
+<tr>
+<td><code>Ole</code></td>
+<td>An OLE object.</td>
+<td>Neither</td>
+</tr>
+<tr>
+<td><code>None</code></td>
+<td>No content declared.</td>
+<td>Neither</td>
+</tr>
+</tbody>
+</table>
+<p>Real-world writers frequently omit <code>PidTagAttachMethod</code>: an attachment with no declared method that carries a by-value payload reports <code>ByValue</code>, otherwise <code>None</code>. Calling the wrong accessor for the method throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>. <code>Size</code> reports the recorded <code>PidTagAttachSize</code>, falling back to the payload length taken from the container's index — a deferred payload is never read to measure it.</p>
+<p>A nested message opened through <code>OpenMessage()</code> reports <code>EmbeddedDepth</code> one greater than its parent (a file-level message is depth zero). In the <code>.msg</code> reader it shares the root session's container and named-property mapping, and disposing it is a no-op; in the <code>.pst</code> reader it is a view like any other, inheriting the attachment's code page.</p>
+<h2 id="subject-normalization">Subject normalization</h2>
+<p>Outlook stores a subject that carries a prefix (<code>RE:</code>, <code>FW:</code>, …) as U+0001, then a character whose code is the prefix length plus one, then the full subject text (MS-PST §2.4.5.1.2; the same encoding appears in <code>.msg</code> files). The <code>Subject</code> convenience on both message types strips the marker pair and returns the full text, prefix included; <code>Properties.GetString(MapiPropertyIds.Subject)</code> always surfaces the value as stored.</p>
+<h2 id="code-page">Code page</h2>
+<p>A <code>String8</code> property is bytes in some character set; the readers resolve which one from the object's own properties — <code>PidTagMessageCodepage</code> first, then <code>PidTagInternetCodepage</code>, then Windows-1252, the historical default for objects that declare nothing. Child objects inherit: in a <code>.msg</code> file, recipients and attachments inherit the message's encoding; in a <code>.pst</code> file, a folder inherits from its parent (the root from the store), a message from its folder, an attachment from its message, and an embedded message from its attachment — each level overriding only when it declares a code page of its own. The <code>BodyHtml</code> convenience decodes <code>PidTagHtml</code> with the internet code page first, falling back to the message code page, or returns the value verbatim when the writer stored it as a string. The Windows code pages that dominate real-world mail (Windows-1252, Shift-JIS, …) are available on every platform because the readers register <code>CodePagesEncodingProvider</code>; the <code>System.Text.Encoding.CodePages</code> package dependency exists for this.</p>
+<h2 id="bodies-and-compressed-rtf">Bodies and compressed RTF</h2>
+<p>Three conveniences cover the body forms a message stores, on both message types:</p>
+<ul>
+<li><code>BodyText</code> — the plain-text <code>PidTagBody</code>.</li>
+<li><code>BodyHtml</code> — the <code>PidTagHtml</code> payload, decoded as above; decoded once and cached.</li>
+<li><code>BodyRtf</code> — the <code>PidTagRtfCompressed</code> payload decompressed per MS-OXRTFCP, decompressed once and cached.</li>
+</ul>
+<p>Compressed RTF (LZFu) is an LZ77 variant over a 4096-byte dictionary preseeded with a standard RTF prologue, behind a 16-byte header that declares the compressed and uncompressed sizes, a magic (LZFu compressed, MELA raw), and a CRC. The declared uncompressed size sits <em>outside</em> the checksum, so it is bounded rather than trusted: a payload whose declared or produced size exceeds <code>MaxDecompressedRtfBytes</code> is rejected before allocation. Set <code>DecompressRtf</code> to <code>false</code> on either options type to skip decompression entirely — <code>BodyRtf</code> then returns <code>null</code> and the raw payload stays reachable through <code>Properties.GetBinary(MapiPropertyIds.RtfCompressed)</code>.</p>
+<h2 id="validation-level">Validation level</h2>
+<p>Each reader reuses its container's level rather than defining its own:</p>
+<table>
+<thead>
+<tr>
+<th>Reader</th>
+<th>Option</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.msg</code></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessageReaderOptions.ValidationLevel.html#Bodu_Formats_Outlook_OutlookMessageReaderOptions_ValidationLevel">ValidationLevel</a></td>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a> — <code>Strict</code> / <code>Compatible</code> (default) / <code>Minimal</code></td>
+</tr>
+<tr>
+<td><code>.pst</code></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValidationLevel">ValidationLevel</a></td>
+<td><a class="xref" href="../../api/Bodu.IO.Pst.PstValidationLevel.html">PstValidationLevel</a> — <code>Compatible</code> (default) / <code>Strict</code> / <code>Minimal</code></td>
+</tr>
+</tbody>
+</table>
+<p>Under the tolerant levels a malformed property is omitted and decoding continues, a table row that references no valid node is skipped, and an undefined attachment method is inferred — the tolerance real-world files need. Under <code>Strict</code>, structural problems throw the format's exception: a missing <code>.msg</code> value stream or recipient/attachment count mismatch raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>; a <code>.pst</code> hierarchy, contents, recipient, or attachment row that does not reference a valid node — or a malformed name-to-id map — raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>. The level also flows down to the container, which enforces its own checksums and signatures under <code>Strict</code>.</p>
+<h2 id="resource-limits">Resource limits</h2>
+<p>Both option types carry hardening limits that a crafted file cannot talk its way past. They are <code>init</code>-only, validated at construction (zero or negative values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>), and — except where noted — enforced at every validation level.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th><code>.msg</code> default</th>
+<th><code>.pst</code> default</th>
+<th>When it trips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxEmbeddedMessageDepth</code></td>
+<td>16</td>
+<td>16</td>
+<td><code>OpenMessage()</code> on an attachment that would sit deeper than the limit throws <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> / <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>. A few kilobytes can nest attachments thousands deep; the limit keeps a recursive walk on its stack.</td>
+</tr>
+<tr>
+<td><code>MaxDecompressedRtfBytes</code></td>
+<td>64 MiB</td>
+<td>64 MiB</td>
+<td><code>BodyRtf</code> on a payload whose declared or produced size exceeds the ceiling throws the same format exception, before any allocation.</td>
+</tr>
+<tr>
+<td><code>MaxInlineAttachmentBytes</code></td>
+<td>1 MiB</td>
+<td>1 MiB</td>
+<td><strong>Not an error.</strong> A by-value payload above the threshold is not decoded into <code>Properties</code>: the property is present with a <code>null</code> value (<code>Contains</code> and <code>Method</code> are unaffected, <code>GetBinary</code> returns <code>null</code>), and <code>OpenContentStream()</code> serves it from the container. Combined with a streaming read the payload is never held in memory in full. This threshold does not vary with the validation level.</td>
+</tr>
+<tr>
+<td><code>MaxNodeDataLength</code></td>
+<td>—</td>
+<td>256 MiB</td>
+<td>A <code>.pst</code> node payload that any single property value, attachment, or table would materialize at once above the ceiling is refused by the container with <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> and <a class="xref" href="../../api/Bodu.IO.Pst.PstFileError.html#Bodu_IO_Pst_PstFileError_LimitExceeded">LimitExceeded</a>. Streaming reads (<code>OpenContentStream</code> on a deferred payload) are unbounded by design.</td>
+</tr>
+<tr>
+<td><code>BlockCacheSize</code></td>
+<td>—</td>
+<td>256 entries</td>
+<td>Not a limit — the decoded-block LRU budget of the container; <code>0</code> disables the cache.</td>
+</tr>
+<tr>
+<td><code>ReadStrategy</code></td>
+<td><code>Buffered</code></td>
+<td>—</td>
+<td>Not a limit — <code>CompoundReadStrategy.Streaming</code> reads the <code>.msg</code> container sector by sector on demand instead of buffering it whole.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>.pst</code> options forward <code>ValidationLevel</code>, <code>BlockCacheSize</code>, and <code>MaxNodeDataLength</code> to the underlying <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html">PstFileOptions</a>; its remaining limit, <code>MaxDataTreeLeaves</code>, is not surfaced and keeps the container default of 65,536 leaf blocks per node.</p>
+<h2 id="exceptions">Exceptions</h2>
+<p>The readers raise a small family rooted at <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookFormatException.html">OutlookFormatException</a>, so a single handler catches both formats:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a> — the <code>.msg</code> file is not a compound file, the container is malformed, or the message violates MS-OXMSG (including the depth and RTF limits above). Container corruption is wrapped: a failed open carries the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> as <code>InnerException</code>, and a container fault while streaming an attachment surfaces as this exception too.</li>
+<li><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> — a messaging-level violation of MS-PST: a folder or message object that breaks the format's conventions, a table row that references no valid node under strict validation, a malformed name-to-id map, or a tripped limit. Container corruption is <strong>not</strong> wrapped — it propagates as the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family, and opening a <code>.pst</code> throws <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> (not structurally a PST) or <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a> (the OST variant) directly.</li>
+</ul>
+<p>Beyond the family: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for a content accessor that does not match the attachment method, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> after the session is disposed, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when a <code>.pst</code> stream is not readable and seekable.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for both readers.</li>
+<li><strong><a href="index.html">Introduction</a></strong> — the high-level shape, the package table, and headline types.</li>
+<li><strong><a href="../../guides/outlook/properties-and-named-properties.html">Properties and named properties</a></strong> — the raw property surface in practice.</li>
+<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a> · <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a> · <a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

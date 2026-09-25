@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Sequences | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Sequences | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Sequences">
+
+  <h1 id="Bodu_Sequences" data-uid="Bodu.Sequences" class="text-break">Namespace Bodu.Sequences</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Sequences</strong> is the home of <code>SequenceGenerator</code> — lazily evaluated <code>IEnumerable&lt;T&gt;</code> <em>producers</em> that mirror the conventions of <code>System.Linq.Enumerable</code> and complement it with sequence shapes the BCL does not provide directly. Reach for it when you need a counted or descending range, a bounded or unbounded repeat, a state-machine-style generator, or one of several well-known mathematical series, all without materializing an intermediate collection.</p>
+<p>Unlike the <code>Bodu.Collections.*</code> namespaces — which hold container data structures and the extension methods that operate on existing sequences — this namespace holds only the static factories that <em>create</em> sequences from scratch.</p>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a> — the single static factory class.
+<ul>
+<li><strong>General-purpose primitives</strong> — <code>Range</code> (inclusive start/stop with inferred or explicit step over <code>int</code>, plus a count-bounded <code>long</code> overload), <code>NextWhile</code> (a state-machine generator driven by a seed, a predicate, and a successor function — value, indexed, and custom-state overloads), and <code>Factory</code> (adapts a delegate-returned <code>IEnumerator&lt;T&gt;</code> into a re-enumerable <code>IEnumerable&lt;T&gt;</code>).</li>
+<li><strong>Named mathematical series</strong> — <code>Fibonacci</code>, <code>Farey</code>, <code>Leibniz</code>, <code>LookAndSay</code>, <code>ThueMorse</code>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Sequences;
+
+// A counted descending range.
+foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
+    Console.WriteLine(n); // 10, 8, 6, 4, 2
+
+// Fibonacci numbers within a value window (not a fixed count).
+long[] fibs = SequenceGenerator.Fibonacci(min: 0, max: 100).ToArray();
+
+// A stateful generator — powers of two while they stay positive.
+IEnumerable&lt;int&gt; powers = SequenceGenerator.NextWhile(
+    initialValue: 1,
+    conditionHandler: v =&gt; v &gt; 0,
+    resultSelector: v =&gt; v * 2);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Deferred and allocation-light.</strong> Every member returns a deferred sequence; nothing is produced until the consumer iterates, and allocation is limited to the iterator state.</li>
+<li><strong>Single-pass side effects.</strong> Re-enumerating a returned sequence re-invokes the supplied delegates. Materialise with <code>ToArray()</code> / <code>ToList()</code> for a stable snapshot.</li>
+<li><strong>Unbounded shapes exist.</strong> <code>Range(start, stop, step: 0)</code> and a never-failing <code>NextWhile</code> predicate produce infinite sequences — bound them with <code>Take</code> / <code>TakeWhile</code>. For a fixed-length single-value feed, use the BCL <code>Enumerable.Repeat</code>.</li>
+<li><strong>Argument validation.</strong> Public factories validate their arguments via <a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a>.</li>
+<li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, the <a class="xref" href="Bodu.Collections.Generic.html">Bodu.Collections.Generic</a> container types, and the <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> sequence-shaping extension methods.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a></h4>
+      <section><p>Provides static factory methods that produce lazily evaluated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sequences without
+materializing the underlying collection — both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,
+<code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
+Thue–Morse).</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

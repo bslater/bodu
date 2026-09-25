@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CompoundStorage | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CompoundStorage | BODU ">
+    
+    <meta name="description" content="Represents a storage within a compound file — a named container of child storages and streams — and provides navigation over its immediate children.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.CompoundStorage">
+
+
+
+  <h1 id="Bodu_IO_Compound_CompoundStorage" data-uid="Bodu.IO.Compound.CompoundStorage" class="text-break">Class CompoundStorage</h1>
+  <div class="markdown level0 summary"><p>Represents a storage within a compound file — a named container of child storages and streams — and provides
+navigation over its immediate children.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CompoundStorage</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_CompoundStorage_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundStorage</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_CompoundStorage_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/io-compound-structure.svg" alt="A CompoundStorage is a named container of child storages and streams within a compound file, the managed counterpart of the COM IStorage interface. Navigation starts at RootStorage and descends through nested CompoundStorage containers to CompoundStream leaves. Lookups are scoped to a storage's direct children and matched case-insensitively, as the compound-file format defines.">
+</p>
+<p>
+This type is the managed counterpart of the COM <code>IStorage</code> interface. The root storage and every nested storage
+are represented by the same type; the root is distinguished by an <a class="xref" href="Bodu.IO.Compound.CompoundEntryType.html#Bodu_IO_Compound_CompoundEntryType_RootStorage">RootStorage</a> value
+on its <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Stat.html#Bodu_IO_Compound_CompoundStorage_Stat">Stat</a>. All lookups are scoped to a storage's direct children and compared case-insensitively
+using the compound-file name relationship, so streams that share a name under different storages remain distinct.
+</p>
+<p>
+When the owning file is opened for writing (see
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>), the
+mutation members (<a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreateStorage.html#Bodu_IO_Compound_CompoundStorage_CreateStorage_System_String_">CreateStorage(string)</a>, <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreateStream.html#Bodu_IO_Compound_CompoundStorage_CreateStream_System_String_">CreateStream(string)</a>,
+<a class="xref" href="Bodu.IO.Compound.CompoundStorage.Delete.html#Bodu_IO_Compound_CompoundStorage_Delete_System_String_">Delete(string)</a>, and <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Rename.html#Bodu_IO_Compound_CompoundStorage_Rename_System_String_System_String_">Rename(string, string)</a>) stage edits in memory; the destination is
+written only when <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called. On a read-only storage those members throw
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
+</p>
+<example>
+The following example navigates a nested storage, enumerates its children, and reads a named stream from it.
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.OpenRead("message.msg");
+foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
+    Console.WriteLine($"{info.EntryType}: {info.Name} ({info.Length} bytes)");
+
+if (file.RootStorage.TryOpenStorage("__attach_version1.0_#00000000", out CompoundStorage? attachment))
+{
+    foreach (CompoundEntryInfo stream in attachment.EnumerateStreams())
+        Console.WriteLine($"attachment stream: {stream.Name}");
+
+    if (attachment.TryOpenStream("__substg1.0_3707001F", out CompoundStream? data))
+        using (data)
+            data.CopyTo(Console.OpenStandardOutput());
+}</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_CanWrite" data-uid="Bodu.IO.Compound.CompoundStorage.CanWrite">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CanWrite.html#Bodu_IO_Compound_CompoundStorage_CanWrite">CanWrite</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether this storage stages edits for a writable compound file.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_ClassId" data-uid="Bodu.IO.Compound.CompoundStorage.ClassId">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.ClassId.html#Bodu_IO_Compound_CompoundStorage_ClassId">ClassId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the class identifier (CLSID) recorded on this storage's directory entry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_CreationTime" data-uid="Bodu.IO.Compound.CompoundStorage.CreationTime">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreationTime.html#Bodu_IO_Compound_CompoundStorage_CreationTime">CreationTime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the creation timestamp recorded on this storage's directory entry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_ModifiedTime" data-uid="Bodu.IO.Compound.CompoundStorage.ModifiedTime">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.ModifiedTime.html#Bodu_IO_Compound_CompoundStorage_ModifiedTime">ModifiedTime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the last-modification timestamp recorded on this storage's directory entry.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_Name" data-uid="Bodu.IO.Compound.CompoundStorage.Name">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Name.html#Bodu_IO_Compound_CompoundStorage_Name">Name</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the name of the storage as stored in the directory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_Parent" data-uid="Bodu.IO.Compound.CompoundStorage.Parent">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Parent.html#Bodu_IO_Compound_CompoundStorage_Parent">Parent</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the parent storage that contains this storage.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_Stat" data-uid="Bodu.IO.Compound.CompoundStorage.Stat">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Stat.html#Bodu_IO_Compound_CompoundStorage_Stat">Stat</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the metadata snapshot for this storage.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_StateBits" data-uid="Bodu.IO.Compound.CompoundStorage.StateBits">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.StateBits.html#Bodu_IO_Compound_CompoundStorage_StateBits">StateBits</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the user-defined state bits recorded on this storage's directory entry.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_CreateStorage_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.CreateStorage(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreateStorage.html#Bodu_IO_Compound_CompoundStorage_CreateStorage_System_String_">CreateStorage(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new child storage with the specified name and stages it for the next commit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_CreateStream_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.CreateStream(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreateStream.html#Bodu_IO_Compound_CompoundStorage_CreateStream_System_String_">CreateStream(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new, empty child stream with the specified name and returns a writable cursor over it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_CreateStream_System_String_System_ReadOnlyMemory_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStorage.CreateStream(System.String,System.ReadOnlyMemory{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.CreateStream.html#Bodu_IO_Compound_CompoundStorage_CreateStream_System_String_System_ReadOnlyMemory_System_Byte__">CreateStream(string, ReadOnlyMemory&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new child stream with the specified name and content and stages it for the next commit.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_Delete_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.Delete(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Delete.html#Bodu_IO_Compound_CompoundStorage_Delete_System_String_">Delete(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the child storage or stream with the specified name from the staging tree.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_EnumerateEntries" data-uid="Bodu.IO.Compound.CompoundStorage.EnumerateEntries">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.EnumerateEntries.html#Bodu_IO_Compound_CompoundStorage_EnumerateEntries">EnumerateEntries()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the metadata of every direct child of this storage, in directory order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_EnumerateStorages" data-uid="Bodu.IO.Compound.CompoundStorage.EnumerateStorages">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.EnumerateStorages.html#Bodu_IO_Compound_CompoundStorage_EnumerateStorages">EnumerateStorages()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the direct child storages of this storage, in directory order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_EnumerateStreams" data-uid="Bodu.IO.Compound.CompoundStorage.EnumerateStreams">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.EnumerateStreams.html#Bodu_IO_Compound_CompoundStorage_EnumerateStreams">EnumerateStreams()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the metadata of the direct child streams of this storage, in directory order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_OpenStorage_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.OpenStorage(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.OpenStorage.html#Bodu_IO_Compound_CompoundStorage_OpenStorage_System_String_">OpenStorage(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens the child storage with the specified name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.OpenStream(System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.OpenStream.html#Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_">OpenStream(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens a read-only cursor over the child stream with the specified name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_System_IO_FileMode_System_IO_FileAccess_" data-uid="Bodu.IO.Compound.CompoundStorage.OpenStream(System.String,System.IO.FileMode,System.IO.FileAccess)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.OpenStream.html#Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_System_IO_FileMode_System_IO_FileAccess_">OpenStream(string, FileMode, FileAccess)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Opens the child stream with the specified name using BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a> semantics, mirroring <code>System.IO.Packaging.PackagePart.GetStream</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_Rename_System_String_System_String_" data-uid="Bodu.IO.Compound.CompoundStorage.Rename(System.String,System.String)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.Rename.html#Bodu_IO_Compound_CompoundStorage_Rename_System_String_System_String_">Rename(string, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Renames the child storage or stream with the specified name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_TryOpenPropertySet_System_String_Bodu_IO_Compound_PropertySets_OlePropertySet__" data-uid="Bodu.IO.Compound.CompoundStorage.TryOpenPropertySet(System.String,Bodu.IO.Compound.PropertySets.OlePropertySet@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.TryOpenPropertySet.html#Bodu_IO_Compound_CompoundStorage_TryOpenPropertySet_System_String_Bodu_IO_Compound_PropertySets_OlePropertySet__">TryOpenPropertySet(string, out OlePropertySet)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to open and parse the named child stream as an OLE property set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_TryOpenStorage_System_String_Bodu_IO_Compound_CompoundStorage__" data-uid="Bodu.IO.Compound.CompoundStorage.TryOpenStorage(System.String,Bodu.IO.Compound.CompoundStorage@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.TryOpenStorage.html#Bodu_IO_Compound_CompoundStorage_TryOpenStorage_System_String_Bodu_IO_Compound_CompoundStorage__">TryOpenStorage(string, out CompoundStorage)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to open the child storage with the specified name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_TryOpenStream_System_String_Bodu_IO_Compound_CompoundStream__" data-uid="Bodu.IO.Compound.CompoundStorage.TryOpenStream(System.String,Bodu.IO.Compound.CompoundStream@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.TryOpenStream.html#Bodu_IO_Compound_CompoundStorage_TryOpenStream_System_String_Bodu_IO_Compound_CompoundStream__">TryOpenStream(string, out CompoundStream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to open a read-only cursor over the child stream with the specified name.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_TryOpenStream_System_String_System_IO_FileMode_System_IO_FileAccess_Bodu_IO_Compound_CompoundStream__" data-uid="Bodu.IO.Compound.CompoundStorage.TryOpenStream(System.String,System.IO.FileMode,System.IO.FileAccess,Bodu.IO.Compound.CompoundStream@)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.TryOpenStream.html#Bodu_IO_Compound_CompoundStorage_TryOpenStream_System_String_System_IO_FileMode_System_IO_FileAccess_Bodu_IO_Compound_CompoundStream__">TryOpenStream(string, FileMode, FileAccess, out CompoundStream)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to open the child stream with the specified name using BCL-style <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.filemode">FileMode</a> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileaccess">FileAccess</a> semantics.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStorage_WritePropertySet_System_String_Bodu_IO_Compound_PropertySets_OlePropertySet_" data-uid="Bodu.IO.Compound.CompoundStorage.WritePropertySet(System.String,Bodu.IO.Compound.PropertySets.OlePropertySet)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStorage.WritePropertySet.html#Bodu_IO_Compound_CompoundStorage_WritePropertySet_System_String_Bodu_IO_Compound_PropertySets_OlePropertySet_">WritePropertySet(string, OlePropertySet)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Serializes a property set into the named child stream, creating or replacing it in the staging tree.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

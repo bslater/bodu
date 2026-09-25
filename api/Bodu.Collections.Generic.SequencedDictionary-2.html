@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class SequencedDictionary&lt;TKey, TValue&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class SequencedDictionary&lt;TKey, TValue&gt; | BODU ">
+    
+    <meta name="description" content="Represents a dictionary that preserves the order in which entries are added and provides O(1) access to and removal of the first and last entries, optionally re-ordering entries on access.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.SequencedDictionary`2">
+
+
+
+  <h1 id="Bodu_Collections_Generic_SequencedDictionary_2" data-uid="Bodu.Collections.Generic.SequencedDictionary`2" class="text-break">Class SequencedDictionary&lt;TKey, TValue&gt;</h1>
+  <div class="markdown level0 summary"><p>Represents a dictionary that preserves the order in which entries are added and provides O(1) access to and removal
+of the first and last entries, optionally re-ordering entries on access.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">SequencedDictionary&lt;TKey, TValue&gt;</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary</a>&lt;TKey, TValue&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;TKey, TValue&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keyvaluepair-2">KeyValuePair</a>&lt;TKey, TValue&gt;&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Collections.dll</h6>
+  <h5 id="Bodu_Collections_Generic_SequencedDictionary_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class SequencedDictionary&lt;TKey, TValue&gt; : IDictionary&lt;TKey, TValue&gt;, ICollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IReadOnlyDictionary&lt;TKey, TValue&gt;, IReadOnlyCollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IDictionary, ICollection, IEnumerable where TKey : notnull</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TKey</span></td>
+        <td><p>Specifies the type of keys in the dictionary.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TValue</span></td>
+        <td><p>Specifies the type of values in the dictionary.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Collections_Generic_SequencedDictionary_2_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> is the .NET analogue of Java's <code>LinkedHashMap</code>: a hash-based
+dictionary that additionally maintains a doubly linked list across its entries so that enumeration follows a stable,
+predictable order. It realizes the same <i>sequenced</i> (encounter-order) contract that Java's <code>SequencedMap</code>
+defines: a well-defined first and last entry with constant-time access to each.
+</p>
+<p>
+This differs from the BCL's <code>OrderedDictionary&lt;TKey, TValue&gt;</code> (.NET 9+), which is <i>positional</i> — it
+is index-addressable and supports inserting, overwriting, and removing at an arbitrary index, with O(1) random
+access by position but O(n) removal of a non-tail entry. <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> instead
+exposes <b>no</b> positional surface; it preserves a traversal order and adds O(1) access to and removal of either
+end, with O(1) removal of any entry by key. (On Bodu's <code>net8.0</code> target the BCL
+<code>OrderedDictionary&lt;TKey, TValue&gt;</code> is not available at all.)
+</p>
+<p>
+The dictionary supports two ordering modes, selected at construction:
+<ul><li>
+<b>Insertion order</b> (the default): entries are enumerated in the order they were first added. Reads never change
+the order, and re-assigning an existing key's value leaves its position unchanged.
+</li><li>
+<b>Access order</b>: a successful lookup (via <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryGetValue.html#Bodu_Collections_Generic_SequencedDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> or the indexer getter) and an indexed value
+update move the affected entry to the end of the iteration order. This makes the most recently used entry the
+<a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Last.html#Bodu_Collections_Generic_SequencedDictionary_2_Last">Last</a> entry and the least recently used entry the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.First.html#Bodu_Collections_Generic_SequencedDictionary_2_First">First</a> entry, which is the foundation
+of a least-recently-used cache built on top of <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryRemoveFirst.html#Bodu_Collections_Generic_SequencedDictionary_2_TryRemoveFirst_System_Collections_Generic_KeyValuePair__0__1___">TryRemoveFirst(out KeyValuePair&lt;TKey, TValue&gt;)</a>.
+</li></ul>
+
+<p>
+This type does not bound its size or evict entries; for a fixed-capacity, policy-driven cache use
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> instead. The <code>capacity</code> constructor argument is only an
+initial-size hint for the internal hash table.
+</p>
+<p>
+Keys must be non-null (the type parameter is constrained by <a href="https://learn.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters#notnull-constraint">notnull</a>). Values may be
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="typeparamref">TValue</code> is a reference type. Custom key equality is supported
+via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a>.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> is not thread-safe. In access-order mode reads mutate the iteration
+order, so concurrent reads and writes require external synchronization.
+</p>
+<example>
+<pre><code class="lang-csharp">// Insertion-order dictionary: enumeration follows the order keys were added.
+var ordered = new SequencedDictionary&lt;string, int&gt;();
+ordered.Add("A", 1);
+ordered.Add("B", 2);
+ordered.Add("C", 3);
+
+foreach (var kvp in ordered)
+    Console.WriteLine($"{kvp.Key} = {kvp.Value}"); // A, B, C
+
+// Access-order dictionary: a lookup moves the entry to the end.
+var lru = new SequencedDictionary&lt;string, int&gt;(accessOrder: true);
+lru.Add("A", 1);
+lru.Add("B", 2);
+_ = lru["A"];           // "A" is now most-recently-used.
+var oldest = lru.First; // { "B", 2 } — the least-recently-used entry.</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor">SequencedDictionary()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses
+insertion ordering, and uses the default key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Boolean_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Boolean)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Boolean_">SequencedDictionary(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses the
+specified ordering mode, and uses the default key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___">SequencedDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class with elements copied
+from the specified sequence, using insertion ordering and the default key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___System_Boolean_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Boolean,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___System_Boolean_System_Collections_Generic_IEqualityComparer__0__">SequencedDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, bool, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class with elements copied
+from the specified sequence, using the specified ordering mode and key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___System_Collections_Generic_IEqualityComparer__0__">SequencedDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class with elements copied
+from the specified sequence, using insertion ordering and the specified key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Collections_Generic_IEqualityComparer__0__">SequencedDictionary(IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses
+insertion ordering, and uses the specified key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_">SequencedDictionary(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses
+insertion ordering, and has the specified initial capacity.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Boolean_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Int32,System.Boolean)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Boolean_">SequencedDictionary(int, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses the
+specified ordering mode, and has the specified initial capacity.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Boolean_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Int32,System.Boolean,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Boolean_System_Collections_Generic_IEqualityComparer__0__">SequencedDictionary(int, bool, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty and has
+the specified initial capacity, ordering mode, and key comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.-ctor.html#Bodu_Collections_Generic_SequencedDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__">SequencedDictionary(int, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> class that is empty, uses
+insertion ordering, and has the specified initial capacity and key comparer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_AccessOrder" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.AccessOrder">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.AccessOrder.html#Bodu_Collections_Generic_SequencedDictionary_2_AccessOrder">AccessOrder</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether a successful lookup or indexed value update moves the affected entry to the end
+of the iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Comparer" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Comparer">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Comparer.html#Bodu_Collections_Generic_SequencedDictionary_2_Comparer">Comparer</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> used to determine key equality.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Count" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Count">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Count.html#Bodu_Collections_Generic_SequencedDictionary_2_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of elements contained in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_First" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.First">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.First.html#Bodu_Collections_Generic_SequencedDictionary_2_First">First</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the first key/value pair in iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_IsReadOnly" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.IsReadOnly">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.IsReadOnly.html#Bodu_Collections_Generic_SequencedDictionary_2_IsReadOnly">IsReadOnly</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> is read-only.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Item__0_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Item(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Item.html#Bodu_Collections_Generic_SequencedDictionary_2_Item__0_">this[TKey]</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets or sets the element with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Keys" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Keys">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Keys.html#Bodu_Collections_Generic_SequencedDictionary_2_Keys">Keys</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the keys of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Last" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Last">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Last.html#Bodu_Collections_Generic_SequencedDictionary_2_Last">Last</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the last key/value pair in iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Values" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Values">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Values.html#Bodu_Collections_Generic_SequencedDictionary_2_Values">Values</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> containing the values in the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Add_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Add(System.Collections.Generic.KeyValuePair{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Add.html#Bodu_Collections_Generic_SequencedDictionary_2_Add_System_Collections_Generic_KeyValuePair__0__1__">Add(KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds the specified key/value pair to the dictionary, appending it to the end of the iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Add__0__1_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Add(`0,`1)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Add.html#Bodu_Collections_Generic_SequencedDictionary_2_Add__0__1_">Add(TKey, TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds the specified key and value to the dictionary, appending the new entry to the end of the iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Clear" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Clear">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Clear.html#Bodu_Collections_Generic_SequencedDictionary_2_Clear">Clear()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes all entries from the dictionary.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Contains.html#Bodu_Collections_Generic_SequencedDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__">Contains(KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> contains a specific value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_ContainsKey__0_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.ContainsKey(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.ContainsKey.html#Bodu_Collections_Generic_SequencedDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> contains an element with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.CopyTo.html#Bodu_Collections_Generic_SequencedDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_">CopyTo(KeyValuePair&lt;TKey, TValue&gt;[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the elements of the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a> to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a>, starting at a particular <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_GetEnumerator" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.GetEnumerator">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.GetEnumerator.html#Bodu_Collections_Generic_SequencedDictionary_2_GetEnumerator">GetEnumerator()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an enumerator that iterates through the dictionary in iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Remove.html#Bodu_Collections_Generic_SequencedDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__">Remove(KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the first occurrence of a specific object from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection&lt;T&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_Remove__0_" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.Remove(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.Remove.html#Bodu_Collections_Generic_SequencedDictionary_2_Remove__0_">Remove(TKey)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the element with the specified key from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_TryGetFirst_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.TryGetFirst(System.Collections.Generic.KeyValuePair{`0,`1}@)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryGetFirst.html#Bodu_Collections_Generic_SequencedDictionary_2_TryGetFirst_System_Collections_Generic_KeyValuePair__0__1___">TryGetFirst(out KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the first key/value pair in iteration order without removing it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_TryGetLast_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.TryGetLast(System.Collections.Generic.KeyValuePair{`0,`1}@)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryGetLast.html#Bodu_Collections_Generic_SequencedDictionary_2_TryGetLast_System_Collections_Generic_KeyValuePair__0__1___">TryGetLast(out KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the last key/value pair in iteration order without removing it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_TryGetValue__0__1__" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.TryGetValue(`0,`1@)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryGetValue.html#Bodu_Collections_Generic_SequencedDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to retrieve the value associated with the specified key.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_TryRemoveFirst_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.TryRemoveFirst(System.Collections.Generic.KeyValuePair{`0,`1}@)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryRemoveFirst.html#Bodu_Collections_Generic_SequencedDictionary_2_TryRemoveFirst_System_Collections_Generic_KeyValuePair__0__1___">TryRemoveFirst(out KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to remove and return the first key/value pair in iteration order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_SequencedDictionary_2_TryRemoveLast_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.SequencedDictionary`2.TryRemoveLast(System.Collections.Generic.KeyValuePair{`0,`1}@)">
+          <a class="xref" href="Bodu.Collections.Generic.SequencedDictionary-2.TryRemoveLast.html#Bodu_Collections_Generic_SequencedDictionary_2_TryRemoveLast_System_Collections_Generic_KeyValuePair__0__1___">TryRemoveLast(out KeyValuePair&lt;TKey, TValue&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to remove and return the last key/value pair in iteration order.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.AddOrUpdate.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0_System_Func___0___1__">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, Func&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IDictionaryExtensions.GetOrAdd.html#Bodu_Collections_Generic_Extensions_IDictionaryExtensions_GetOrAdd__2_System_Collections_Generic_IDictionary___0___1____0___1_">IDictionaryExtensions.GetOrAdd&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class DateTimeExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class DateTimeExtensions | BODU ">
+    
+    <meta name="description" content="Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over  for code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and high-throughput tick math.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.DateTimeExtensions">
+
+
+
+  <h1 id="Bodu_Extensions_DateTimeExtensions" data-uid="Bodu.Extensions.DateTimeExtensions" class="text-break">Class DateTimeExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>
+for code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and
+high-throughput tick math.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">DateTimeExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_DateTimeExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DateTimeExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_DateTimeExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar work
+— locating the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or converting
+between time zones and epochs — to the caller. This class concentrates that work in a single, allocation-aware
+extension surface so that scheduling, reporting, and calendar-driven code does not need to drop down to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendar">Calendar</a> or hand-rolled tick math.
+</p>
+<p>
+The API surface groups into: period anchors (<code>FirstDateOfMonth</code>, <code>FirstDateOfQuarter</code>,
+<code>LastDateOfYear</code> and the matching <code>LastDateOf…</code> set), day-boundary helpers (<code>StartOfDay</code>,
+<code>EndOfDay</code>, <code>Midday</code>, <code>Midnight</code>, <code>Truncate</code>), weekday navigation (<code>NextDateOfWeek</code>,
+<code>PreviousDateOfWeek</code>, <code>NearestDateOfWeek</code>, <code>NextWeekday</code>, <code>NthDateOfWeekInMonth</code>), period
+predicates and numbering (<code>IsLeapYear</code>, <code>IsWeekend</code>, <code>IsInRange</code>, <code>WeekOfMonth</code>,
+<code>WeekOfYear</code>, <code>IsoWeekOfYear</code>, <code>IsoYear</code>, <code>Quarter</code>), and conversions (<code>ToDateOnly</code>,
+<code>ToDateTimeOffset</code>, <code>ToIsoString</code>, <code>ToTimeSpan</code>, the <code>UnixTime</code>/epoch family).
+</p>
+<p>
+Many helpers operate directly on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.ticks">Ticks</a> to avoid intermediate <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>
+allocations and favor method-impl <code>AggressiveInlining</code> for hot-path calendar code. Operations that read culture
+data (<code>DayName</code>, <code>MonthName</code>, ISO week calculations against a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a>) accept the culture explicitly or fall back to
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>; pure date arithmetic is culture-neutral and
+deterministic. The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> of the input is preserved unless an explicit conversion is
+requested. <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> is thrown whenever a result would leave the supported
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> range.
+</p>
+<p>
+When compiled with a tool-chain that supports C# 14 extension members, the parameterless predicate and
+scalar-accessor helpers are exposed as extension properties (for example <code>dateTime.IsFirstDateOfMonth</code>);
+otherwise they compile as classic extension methods (for example <code>dateTime.IsFirstDateOfMonth()</code>).
+</p>
+<example>
+<pre><code class="lang-csharp">var dt = new DateTime(2025, 4, 30, 14, 35, 0, DateTimeKind.Utc);
+
+// Snap to the start and end of the same day, preserving Kind.
+DateTime startOfDay = dt.StartOfDay(); // 2025-04-30T00:00:00Z
+DateTime endOfDay = dt.EndOfDay(); // 2025-04-30T23:59:59.9999999Z
+
+// ISO 8601 week-of-year and matching ISO year.
+int isoWeek = dt.IsoWeekOfYear; // 18
+int isoYear = dt.IsoYear; // 2025
+
+// Walk to the first Monday strictly after this date.
+DateTime nextMonday = dt.NextDateOfWeek(DayOfWeek.Monday); // 2025-05-05T14:35:00Z</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Add_System_DateTime_System_Int32_System_Int32_System_Double_" data-uid="Bodu.Extensions.DateTimeExtensions.Add(System.DateTime,System.Int32,System.Int32,System.Double)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Add.html#Bodu_Extensions_DateTimeExtensions_Add_System_DateTime_System_Int32_System_Int32_System_Double_">Add(DateTime, int, int, double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> obtained by adding the specified number of years, months, and fractional
+days to the supplied <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_AddFiscalYears_System_DateTime_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.AddFiscalYears(System.DateTime,System.Int32,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.AddFiscalYears.html#Bodu_Extensions_DateTimeExtensions_AddFiscalYears_System_DateTime_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_">AddFiscalYears(DateTime, int, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> obtained by advancing or retreating <code class="paramref">dateTime</code> by the
+signed number of fiscal years specified in <code class="paramref">count</code>, preserving the time-of-day and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Age_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Age(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Age.html#Bodu_Extensions_DateTimeExtensions_Age_System_DateTime_">Age(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the age in full calendar years between the specified <code class="paramref">dateTime</code> and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.today">Today</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Age_System_DateTime_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Age(System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Age.html#Bodu_Extensions_DateTimeExtensions_Age_System_DateTime_System_DateTime_">Age(DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the age in full calendar years between the specified <code class="paramref">dateTime</code> and a supplied
+reference date.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DayName_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.DayName(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DayName.html#Bodu_Extensions_DateTimeExtensions_DayName_System_DateTime_">DayName(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the day of the week for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the formatting
+rules of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DayName_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.DayName(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DayName.html#Bodu_Extensions_DateTimeExtensions_DayName_System_DateTime_System_Globalization_CultureInfo_">DayName(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the day of the week for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the formatting
+rules of the supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInMonth.html#Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_">DaysInMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the proleptic
+Gregorian calendar.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_Calendar_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime,System.Globalization.Calendar)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInMonth.html#Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_Calendar_">DaysInMonth(DateTime, Calendar?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the supplied or
+current culture's calendar.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInMonth(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInMonth.html#Bodu_Extensions_DateTimeExtensions_DaysInMonth_System_DateTime_System_Globalization_CultureInfo_">DaysInMonth(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of days in the calendar month of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the calendar
+associated with the supplied culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DaysInYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInYear.html#Bodu_Extensions_DateTimeExtensions_DaysInYear_System_DateTime_">DaysInYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of days in the calendar year of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the calendar of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_DaysInYear_System_DateTime_System_Globalization_Calendar_" data-uid="Bodu.Extensions.DateTimeExtensions.DaysInYear(System.DateTime,System.Globalization.Calendar)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.DaysInYear.html#Bodu_Extensions_DateTimeExtensions_DaysInYear_System_DateTime_System_Globalization_Calendar_">DaysInYear(DateTime, Calendar?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of days in the calendar year of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the supplied or
+current calendar.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ElapsedTimeSince_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ElapsedTimeSince(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ElapsedTimeSince.html#Bodu_Extensions_DateTimeExtensions_ElapsedTimeSince_System_DateTime_">ElapsedTimeSince(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> representing the time that has elapsed between the specified
+<code class="paramref">dateTime</code> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.utcnow">UtcNow</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_EndOfDay_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.EndOfDay(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.EndOfDay.html#Bodu_Extensions_DateTimeExtensions_EndOfDay_System_DateTime_">EndOfDay(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the end of the calendar day (23:59:59.9999999) that contains
+the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfFiscalYear_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfFiscalYear(System.Int32,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfFiscalYear.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfFiscalYear_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_">FirstDateOfFiscalYear(int, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the first calendar day of the supplied fiscal year under the supplied
+<a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfMonth_System_DateTime_">FirstDateOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the same calendar month and year as the
+specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_">FirstDateOfQuarter(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the calendar quarter that contains the
+specified <code class="paramref">dateTime</code>, using the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter(System.DateTime,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_">FirstDateOfQuarter(DateTime, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the quarter that contains the specified
+<code class="paramref">dateTime</code>, using the specified calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">FirstDateOfQuarter(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the quarter that contains the specified
+<code class="paramref">dateTime</code>, using a custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_">FirstDateOfWeek(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the week that contains the specified
+<code class="paramref">dateTime</code>, using the first day of the week defined by
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_Bodu_WorkingDaysOfWeek_">FirstDateOfWeek(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the week that contains the specified
+<code class="paramref">dateTime</code>, using a start-of-week inferred from the specified <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeek_System_DateTime_System_Globalization_CultureInfo_">FirstDateOfWeek(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the week that contains the specified
+<code class="paramref">dateTime</code>, using the first day of the week defined by the supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInMonth_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInMonth(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInMonth_System_DateTime_System_DayOfWeek_">FirstDateOfWeekInMonth(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the same calendar month and year as the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_">FirstDateOfWeekInQuarter(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the calendar quarter that contains the specified <code class="paramref">dateTime</code>,
+using the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter(System.DateTime,System.DayOfWeek,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_">FirstDateOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the quarter that contains the specified <code class="paramref">dateTime</code>, using the
+supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter(System.DateTime,System.DayOfWeek,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_IQuarterDefinitionProvider_">FirstDateOfWeekInQuarter(DateTime, DayOfWeek, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the quarter that contains the specified <code class="paramref">dateTime</code>, using a
+custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInYear_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInYear(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfWeekInYear.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfWeekInYear_System_DateTime_System_DayOfWeek_">FirstDateOfWeekInYear(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the same calendar year as the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FirstDateOfYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.FirstDateOfYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FirstDateOfYear.html#Bodu_Extensions_DateTimeExtensions_FirstDateOfYear_System_DateTime_">FirstDateOfYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the same calendar year as the specified
+<code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.FiscalYear(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FiscalYear.html#Bodu_Extensions_DateTimeExtensions_FiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">FiscalYear(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the fiscal year that contains the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> under the supplied
+<a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FromDayOfYear_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.FromDayOfYear(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FromDayOfYear.html#Bodu_Extensions_DateTimeExtensions_FromDayOfYear_System_Int32_System_Int32_">FromDayOfYear(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing midnight on the <code class="paramref">dayOfYear</code>-th day of the
+specified <code class="paramref">year</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FromUnixTimeMilliseconds_System_Int64_" data-uid="Bodu.Extensions.DateTimeExtensions.FromUnixTimeMilliseconds(System.Int64)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FromUnixTimeMilliseconds.html#Bodu_Extensions_DateTimeExtensions_FromUnixTimeMilliseconds_System_Int64_">FromUnixTimeMilliseconds(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the point in time corresponding to the specified Unix
+timestamp, expressed in milliseconds since 1970-01-01T00:00:00Z.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_FromUnixTimeSeconds_System_Int64_" data-uid="Bodu.Extensions.DateTimeExtensions.FromUnixTimeSeconds(System.Int64)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.FromUnixTimeSeconds.html#Bodu_Extensions_DateTimeExtensions_FromUnixTimeSeconds_System_Int64_">FromUnixTimeSeconds(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the point in time corresponding to the specified Unix
+timestamp, expressed in seconds since 1970-01-01T00:00:00Z.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetDayNumber_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.GetDayNumber(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetDayNumber.html#Bodu_Extensions_DateTimeExtensions_GetDayNumber_System_DateTime_">GetDayNumber(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the day number corresponding to the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, representing the number of days
+since 0001-01-01.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetDayNumber_System_Int32_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetDayNumber(System.Int32,System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetDayNumber.html#Bodu_Extensions_DateTimeExtensions_GetDayNumber_System_Int32_System_Int32_System_Int32_">GetDayNumber(int, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the day number for the specified year, month, and day, representing the number of days elapsed since
+0001-01-01.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfIsoWeek_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfIsoWeek(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfIsoWeek.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfIsoWeek_System_Int32_System_Int32_">GetFirstDateOfIsoWeek(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day (Monday) of the specified ISO 8601 week and
+year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfMonth_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfMonth(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfMonth_System_Int32_System_Int32_">GetFirstDateOfMonth(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the specified calendar month and year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfQuarter_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfQuarter(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfQuarter_System_Int32_System_Int32_">GetFirstDateOfQuarter(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the specified calendar
+<code class="paramref">quarter</code> in the given <code class="paramref">year</code>, using the standard calendar quarter
+definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfQuarter_System_Int32_System_Int32_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfQuarter(System.Int32,System.Int32,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfQuarter_System_Int32_System_Int32_Bodu_Extensions_CalendarQuarterDefinition_">GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the specified <code class="paramref">quarter</code>
+and <code class="paramref">year</code>, using the supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInMonth(System.Int32,System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_">GetFirstDateOfWeekInMonth(int, int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the given calendar month and year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInQuarter(System.Int32,System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_">GetFirstDateOfWeekInQuarter(int, int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the specified calendar <code class="paramref">quarter</code> and <code class="paramref">year</code>,
+using the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInQuarter(System.Int32,System.Int32,System.DayOfWeek,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetFirstDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_GetFirstDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_">GetFirstDateOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the specified <code class="paramref">quarter</code> and <code class="paramref">year</code>, using
+the supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetIsoWeeksInYear_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetIsoWeeksInYear(System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetIsoWeeksInYear.html#Bodu_Extensions_DateTimeExtensions_GetIsoWeeksInYear_System_Int32_">GetIsoWeeksInYear(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of ISO 8601 weeks in the specified <code class="paramref">year</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfIsoWeek_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfIsoWeek(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfIsoWeek.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfIsoWeek_System_Int32_System_Int32_">GetLastDateOfIsoWeek(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day (Sunday) of the specified ISO 8601 week and
+year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfMonth_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfMonth(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfMonth_System_Int32_System_Int32_">GetLastDateOfMonth(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the specified calendar month and year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfQuarter_System_Int32_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfQuarter(System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfQuarter_System_Int32_System_Int32_">GetLastDateOfQuarter(int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the specified calendar
+<code class="paramref">quarter</code> in the given <code class="paramref">year</code>, using the standard calendar quarter
+definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfQuarter_System_Int32_System_Int32_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfQuarter(System.Int32,System.Int32,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfQuarter_System_Int32_System_Int32_Bodu_Extensions_CalendarQuarterDefinition_">GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the specified <code class="paramref">quarter</code> and
+<code class="paramref">year</code>, using the supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInMonth(System.Int32,System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_">GetLastDateOfWeekInMonth(int, int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the given calendar month and year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInQuarter(System.Int32,System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_">GetLastDateOfWeekInQuarter(int, int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the specified calendar <code class="paramref">quarter</code> and <code class="paramref">year</code>, using the standard
+calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInQuarter(System.Int32,System.Int32,System.DayOfWeek,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetLastDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_GetLastDateOfWeekInQuarter_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_">GetLastDateOfWeekInQuarter(int, int, DayOfWeek, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the specified <code class="paramref">quarter</code> and <code class="paramref">year</code>, using the supplied calendar
+quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetMonthName_System_Int32_" data-uid="Bodu.Extensions.DateTimeExtensions.GetMonthName(System.Int32)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetMonthName.html#Bodu_Extensions_DateTimeExtensions_GetMonthName_System_Int32_">GetMonthName(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the specified calendar month, using the formatting rules of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetMonthName_System_Int32_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.GetMonthName(System.Int32,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetMonthName.html#Bodu_Extensions_DateTimeExtensions_GetMonthName_System_Int32_System_Globalization_CultureInfo_">GetMonthName(int, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the specified calendar month, using the formatting rules of the supplied or current
+culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetNearestDateOfWeek_System_Int32_System_Int32_System_Int32_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.GetNearestDateOfWeek(System.Int32,System.Int32,System.Int32,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetNearestDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_GetNearestDateOfWeek_System_Int32_System_Int32_System_Int32_System_DayOfWeek_">GetNearestDateOfWeek(int, int, int, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the nearest date (before or after) to the specified calendar
+<code class="paramref">year</code>, <code class="paramref">month</code>, and <code class="paramref">day</code> that falls on the given
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetNthDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_" data-uid="Bodu.Extensions.DateTimeExtensions.GetNthDateOfWeekInMonth(System.Int32,System.Int32,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetNthDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_GetNthDateOfWeekInMonth_System_Int32_System_Int32_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_">GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOrdinal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the specified ordinal occurrence of a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the given calendar <code class="paramref">month</code> and <code class="paramref">year</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_GetStartDateOfWeek_System_Int32_System_Int32_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.GetStartDateOfWeek(System.Int32,System.Int32,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.GetStartDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_GetStartDateOfWeek_System_Int32_System_Int32_System_Globalization_CultureInfo_">GetStartDateOfWeek(int, int, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the first day of the specified culture-defined week number in
+the given calendar year.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsFirstDateOfFiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfFiscalYear(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfFiscalYear.html#Bodu_Extensions_DateTimeExtensions_IsFirstDateOfFiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">IsFirstDateOfFiscalYear(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">dateTime</code>'s date component is the first day of its
+fiscal year under the supplied <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsFirstDateOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_IsFirstDateOfMonth_System_DateTime_">IsFirstDateOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the first day of its calendar month.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_">IsFirstDateOfQuarter(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the first day of its calendar quarter, using
+the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter(System.DateTime,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_">IsFirstDateOfQuarter(DateTime, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the first day of its calendar quarter, using
+the supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsFirstDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsFirstDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">IsFirstDateOfQuarter(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the first day of its calendar quarter, using a
+custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsInRange_System_DateTime_System_DateTime_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsInRange(System.DateTime,System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsInRange.html#Bodu_Extensions_DateTimeExtensions_IsInRange_System_DateTime_System_DateTime_System_DateTime_">IsInRange(DateTime, DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls within the inclusive range defined by
+<code class="paramref">start</code> and <code class="paramref">end</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsInRange_System_Nullable_System_DateTime__System_DateTime_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsInRange(System.Nullable{System.DateTime},System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsInRange.html#Bodu_Extensions_DateTimeExtensions_IsInRange_System_Nullable_System_DateTime__System_DateTime_System_DateTime_">IsInRange(DateTime?, DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified nullable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls within the inclusive range defined by
+<code class="paramref">start</code> and <code class="paramref">end</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsInWorkingWeek_System_DateTime_Bodu_WeekPattern_" data-uid="Bodu.Extensions.DateTimeExtensions.IsInWorkingWeek(System.DateTime,Bodu.WeekPattern)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsInWorkingWeek.html#Bodu_Extensions_DateTimeExtensions_IsInWorkingWeek_System_DateTime_Bodu_WeekPattern_">IsInWorkingWeek(DateTime, WeekPattern)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a day that is selected in the supplied
+<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> working week.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsInWorkingWeek_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.IsInWorkingWeek(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsInWorkingWeek.html#Bodu_Extensions_DateTimeExtensions_IsInWorkingWeek_System_DateTime_Bodu_WorkingDaysOfWeek_">IsInWorkingWeek(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a day that is selected in the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> working week.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLastDateOfFiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLastDateOfFiscalYear(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLastDateOfFiscalYear.html#Bodu_Extensions_DateTimeExtensions_IsLastDateOfFiscalYear_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">IsLastDateOfFiscalYear(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">dateTime</code>'s date component is the last day of its fiscal
+year under the supplied <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLastDateOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLastDateOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLastDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_IsLastDateOfMonth_System_DateTime_">IsLastDateOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the last day of its calendar month.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_">IsLastDateOfQuarter(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the last day of its calendar quarter, using
+the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter(System.DateTime,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_">IsLastDateOfQuarter(DateTime, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the last day of its calendar quarter, using
+the supplied calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_IsLastDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">IsLastDateOfQuarter(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on the last day of its calendar quarter, using a
+custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsLeapYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsLeapYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsLeapYear.html#Bodu_Extensions_DateTimeExtensions_IsLeapYear_System_DateTime_">IsLeapYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the year of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> is a leap year, according to the proleptic
+Gregorian calendar.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsRestDay_System_DateTime_Bodu_WeekPattern_" data-uid="Bodu.Extensions.DateTimeExtensions.IsRestDay(System.DateTime,Bodu.WeekPattern)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsRestDay.html#Bodu_Extensions_DateTimeExtensions_IsRestDay_System_DateTime_Bodu_WeekPattern_">IsRestDay(DateTime, WeekPattern)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a day that is not selected in the supplied
+<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> working week.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsRestDay_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.IsRestDay(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsRestDay.html#Bodu_Extensions_DateTimeExtensions_IsRestDay_System_DateTime_Bodu_WorkingDaysOfWeek_">IsRestDay(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a day that is not selected in the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> working week.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekday(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekday.html#Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DateTime_">IsWeekday(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a weekday, using the default
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_MondayToFriday">MondayToFriday</a> rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekday(System.DateTime,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekday.html#Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">IsWeekday(DateTime, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a weekday, using the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> and an optional custom <code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DayOfWeek_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekday(System.DayOfWeek,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekday.html#Bodu_Extensions_DateTimeExtensions_IsWeekday_System_DayOfWeek_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">IsWeekday(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is considered a weekday, using the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> and an optional custom <code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekend(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekend.html#Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DateTime_">IsWeekend(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a weekend, using the default
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_MondayToFriday">MondayToFriday</a> rule.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekend(System.DateTime,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekend.html#Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">IsWeekend(DateTime, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> falls on a weekend, using the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> and an optional custom <code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DayOfWeek_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.IsWeekend(System.DayOfWeek,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsWeekend.html#Bodu_Extensions_DateTimeExtensions_IsWeekend_System_DayOfWeek_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is considered a weekend day, using the supplied
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> and an optional custom <code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsoWeekOfYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsoWeekOfYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsoWeekOfYear.html#Bodu_Extensions_DateTimeExtensions_IsoWeekOfYear_System_DateTime_">IsoWeekOfYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the ISO 8601 week number for the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_IsoYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.IsoYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.IsoYear.html#Bodu_Extensions_DateTimeExtensions_IsoYear_System_DateTime_">IsoYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the ISO 8601 year associated with the specified <code class="paramref">date</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfFiscalYear_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfFiscalYear(System.Int32,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfFiscalYear.html#Bodu_Extensions_DateTimeExtensions_LastDateOfFiscalYear_System_Int32_Bodu_Extensions_IQuarterDefinitionProvider_">LastDateOfFiscalYear(int, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the last calendar day of the supplied fiscal year under the supplied
+<a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfMonth.html#Bodu_Extensions_DateTimeExtensions_LastDateOfMonth_System_DateTime_">LastDateOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the same calendar month and year as the
+specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_">LastDateOfQuarter(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the calendar quarter that contains the
+specified <code class="paramref">dateTime</code>, using the standard calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter(System.DateTime,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_">LastDateOfQuarter(DateTime, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the quarter that contains the specified
+<code class="paramref">dateTime</code>, using the specified calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfQuarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">LastDateOfQuarter(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the quarter that contains the specified
+<code class="paramref">dateTime</code>, using a custom <a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_">LastDateOfWeek(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the week that contains the specified
+<code class="paramref">dateTime</code>, using the last day of the week defined by
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_Bodu_WorkingDaysOfWeek_">LastDateOfWeek(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the week that contains the specified
+<code class="paramref">dateTime</code>, using a start-of-week inferred from the specified <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeek_System_DateTime_System_Globalization_CultureInfo_">LastDateOfWeek(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the week that contains the specified
+<code class="paramref">dateTime</code>, using the last day of the week defined by the supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInMonth_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInMonth(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInMonth_System_DateTime_System_DayOfWeek_">LastDateOfWeekInMonth(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the same calendar month and year as the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_">LastDateOfWeekInQuarter(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the calendar quarter that contains the specified <code class="paramref">dateTime</code>, using the standard
+calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter(System.DateTime,System.DayOfWeek,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_CalendarQuarterDefinition_">LastDateOfWeekInQuarter(DateTime, DayOfWeek, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the quarter that contains the specified <code class="paramref">dateTime</code>, using the supplied calendar quarter
+definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter(System.DateTime,System.DayOfWeek,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInQuarter.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInQuarter_System_DateTime_System_DayOfWeek_Bodu_Extensions_IQuarterDefinitionProvider_">LastDateOfWeekInQuarter(DateTime, DayOfWeek, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the quarter that contains the specified <code class="paramref">dateTime</code>, using a custom
+<a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInYear_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInYear(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfWeekInYear.html#Bodu_Extensions_DateTimeExtensions_LastDateOfWeekInYear_System_DateTime_System_DayOfWeek_">LastDateOfWeekInYear(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last occurrence of the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>
+within the same calendar year as the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_LastDateOfYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.LastDateOfYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.LastDateOfYear.html#Bodu_Extensions_DateTimeExtensions_LastDateOfYear_System_DateTime_">LastDateOfYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the last day of the same calendar year as the specified
+<code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Max_System_DateTime_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Max(System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Max.html#Bodu_Extensions_DateTimeExtensions_Max_System_DateTime_System_DateTime_">Max(DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the later of two specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Max_System_Nullable_System_DateTime__System_Nullable_System_DateTime__" data-uid="Bodu.Extensions.DateTimeExtensions.Max(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Max.html#Bodu_Extensions_DateTimeExtensions_Max_System_Nullable_System_DateTime__System_Nullable_System_DateTime__">Max(DateTime?, DateTime?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the later of two specified nullable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Midday_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Midday(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Midday.html#Bodu_Extensions_DateTimeExtensions_Midday_System_DateTime_">Midday(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing midday (12:00:00) on the same calendar day as the specified
+<code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Midnight_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Midnight(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Midnight.html#Bodu_Extensions_DateTimeExtensions_Midnight_System_DateTime_">Midnight(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing midnight (00:00:00) on the same calendar day as the specified
+<code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Min_System_DateTime_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Min(System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Min.html#Bodu_Extensions_DateTimeExtensions_Min_System_DateTime_System_DateTime_">Min(DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the earlier of two specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Min_System_Nullable_System_DateTime__System_Nullable_System_DateTime__" data-uid="Bodu.Extensions.DateTimeExtensions.Min(System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Min.html#Bodu_Extensions_DateTimeExtensions_Min_System_Nullable_System_DateTime__System_Nullable_System_DateTime__">Min(DateTime?, DateTime?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the earlier of two specified nullable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_MonthName_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.MonthName(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.MonthName.html#Bodu_Extensions_DateTimeExtensions_MonthName_System_DateTime_">MonthName(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the month for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the formatting rules of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_MonthName_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.MonthName(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.MonthName.html#Bodu_Extensions_DateTimeExtensions_MonthName_System_DateTime_System_Globalization_CultureInfo_">MonthName(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the full name of the month for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the formatting rules of the
+supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NearestDateOfWeek_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.NearestDateOfWeek(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NearestDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_NearestDateOfWeek_System_DateTime_System_DayOfWeek_">NearestDateOfWeek(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the nearest date (before or after) to the specified
+<code class="paramref">dateTime</code> that falls on the given <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextDateOfWeek_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.NextDateOfWeek(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_NextDateOfWeek_System_DateTime_System_DayOfWeek_">NextDateOfWeek(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next calendar occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> after the given <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextOccurrence_System_DateTime_System_TimeSpan_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.NextOccurrence(System.DateTime,System.TimeSpan,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextOccurrence.html#Bodu_Extensions_DateTimeExtensions_NextOccurrence_System_DateTime_System_TimeSpan_System_DateTime_">NextOccurrence(DateTime, TimeSpan, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next occurrence of a recurring event that starts at
+<code class="paramref">dateTime</code> and repeats every <code class="paramref">interval</code>, occurring strictly after the
+specified <code class="paramref">after</code> timestamp.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextOrSameDateOfWeek_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.NextOrSameDateOfWeek(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextOrSameDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_NextOrSameDateOfWeek_System_DateTime_System_DayOfWeek_">NextOrSameDateOfWeek(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next calendar occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> at or after the given <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WeekPattern_" data-uid="Bodu.Extensions.DateTimeExtensions.NextWeekday(System.DateTime,Bodu.WeekPattern)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextWeekday.html#Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WeekPattern_">NextWeekday(DateTime, WeekPattern)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next day after <code class="paramref">dateTime</code> whose
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected in the supplied <code class="paramref">workingWeek</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.NextWeekday(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextWeekday.html#Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_">NextWeekday(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next calendar weekday after the specified
+<code class="paramref">dateTime</code>, based on the supplied <code class="paramref">workingWeek</code> pattern.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.NextWeekday(System.DateTime,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NextWeekday.html#Bodu_Extensions_DateTimeExtensions_NextWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">NextWeekday(DateTime, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the next calendar weekday after the specified
+<code class="paramref">dateTime</code>, using the supplied <code class="paramref">workingWeek</code> pattern and an optional custom
+<code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_NthDateOfWeekInMonth_System_DateTime_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_" data-uid="Bodu.Extensions.DateTimeExtensions.NthDateOfWeekInMonth(System.DateTime,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.NthDateOfWeekInMonth.html#Bodu_Extensions_DateTimeExtensions_NthDateOfWeekInMonth_System_DateTime_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_">NthDateOfWeekInMonth(DateTime, DayOfWeek, WeekOrdinal)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the specified ordinal occurrence of a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> within the same calendar month and year as the specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousDateOfWeek_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousDateOfWeek(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_PreviousDateOfWeek_System_DateTime_System_DayOfWeek_">PreviousDateOfWeek(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous calendar occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> before the given <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousOccurrence_System_DateTime_System_TimeSpan_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousOccurrence(System.DateTime,System.TimeSpan,System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousOccurrence.html#Bodu_Extensions_DateTimeExtensions_PreviousOccurrence_System_DateTime_System_TimeSpan_System_DateTime_">PreviousOccurrence(DateTime, TimeSpan, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous occurrence of a recurring event that starts at
+<code class="paramref">dateTime</code> and repeats every <code class="paramref">interval</code>, occurring strictly before the
+specified <code class="paramref">before</code> timestamp.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousOrSameDateOfWeek_System_DateTime_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousOrSameDateOfWeek(System.DateTime,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousOrSameDateOfWeek.html#Bodu_Extensions_DateTimeExtensions_PreviousOrSameDateOfWeek_System_DateTime_System_DayOfWeek_">PreviousOrSameDateOfWeek(DateTime, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous calendar occurrence of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> at or before the given <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WeekPattern_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousWeekday(System.DateTime,Bodu.WeekPattern)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousWeekday.html#Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WeekPattern_">PreviousWeekday(DateTime, WeekPattern)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous day before <code class="paramref">dateTime</code> whose
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> is selected in the supplied <code class="paramref">workingWeek</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousWeekday(System.DateTime,Bodu.WorkingDaysOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousWeekday.html#Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_">PreviousWeekday(DateTime, WorkingDaysOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous calendar weekday before the specified
+<code class="paramref">dateTime</code>, based on the supplied <code class="paramref">workingWeek</code> pattern.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.PreviousWeekday(System.DateTime,Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.PreviousWeekday.html#Bodu_Extensions_DateTimeExtensions_PreviousWeekday_System_DateTime_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">PreviousWeekday(DateTime, WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the previous calendar weekday before the specified
+<code class="paramref">dateTime</code>, using the supplied <code class="paramref">workingWeek</code> pattern and an optional custom
+<code class="paramref">provider</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.Quarter(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Quarter.html#Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_">Quarter(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the quarter number (1 – 4) of the year for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the standard
+calendar quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_" data-uid="Bodu.Extensions.DateTimeExtensions.Quarter(System.DateTime,Bodu.Extensions.CalendarQuarterDefinition)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Quarter.html#Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_Bodu_Extensions_CalendarQuarterDefinition_">Quarter(DateTime, CalendarQuarterDefinition)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the quarter number (1 – 4) for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the supplied calendar
+quarter definition.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_" data-uid="Bodu.Extensions.DateTimeExtensions.Quarter(System.DateTime,Bodu.Extensions.IQuarterDefinitionProvider)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Quarter.html#Bodu_Extensions_DateTimeExtensions_Quarter_System_DateTime_Bodu_Extensions_IQuarterDefinitionProvider_">Quarter(DateTime, IQuarterDefinitionProvider)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the quarter number (1 – 4) for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using a custom
+<a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_StartOfDay_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.StartOfDay(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.StartOfDay.html#Bodu_Extensions_DateTimeExtensions_StartOfDay_System_DateTime_">StartOfDay(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> representing the start of the calendar day (00:00:00) that contains the
+specified <code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToDateOnly_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToDateOnly(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToDateOnly.html#Bodu_Extensions_DateTimeExtensions_ToDateOnly_System_DateTime_">ToDateOnly(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> representing the calendar date of the specified
+<code class="paramref">dateTime</code>, excluding any time-of-day or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> information.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToDateTimeOffset_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToDateTimeOffset(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToDateTimeOffset.html#Bodu_Extensions_DateTimeExtensions_ToDateTimeOffset_System_DateTime_">ToDateTimeOffset(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> representing the same moment as the specified
+<code class="paramref">dateTime</code>, with the offset inferred from its <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToDateTimeOffset_System_DateTime_System_TimeSpan_" data-uid="Bodu.Extensions.DateTimeExtensions.ToDateTimeOffset(System.DateTime,System.TimeSpan)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToDateTimeOffset.html#Bodu_Extensions_DateTimeExtensions_ToDateTimeOffset_System_DateTime_System_TimeSpan_">ToDateTimeOffset(DateTime, TimeSpan)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> representing the same clock time as the specified
+<code class="paramref">dateTime</code>, with the supplied <code class="paramref">offset</code> applied.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToIsoString(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToIsoString.html#Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_">ToIsoString(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of the specified <code class="paramref">dateTime</code> in ISO 8601 format, using its
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> to determine the appropriate format suffix.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_Boolean_" data-uid="Bodu.Extensions.DateTimeExtensions.ToIsoString(System.DateTime,System.Boolean)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToIsoString.html#Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_Boolean_">ToIsoString(DateTime, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of the specified <code class="paramref">dateTime</code> in ISO 8601 format, optionally
+omitting fractional seconds.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_DateTimeKind_" data-uid="Bodu.Extensions.DateTimeExtensions.ToIsoString(System.DateTime,System.DateTimeKind)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToIsoString.html#Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_DateTimeKind_">ToIsoString(DateTime, DateTimeKind)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of the specified <code class="paramref">dateTime</code> in ISO 8601 format, using an
+explicit <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimekind">DateTimeKind</a> override.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_String_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.ToIsoString(System.DateTime,System.String,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToIsoString.html#Bodu_Extensions_DateTimeExtensions_ToIsoString_System_DateTime_System_String_System_Globalization_CultureInfo_">ToIsoString(DateTime, string, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of the specified <code class="paramref">dateTime</code> using a custom format and an
+optional culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToTimeSpan_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToTimeSpan(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToTimeSpan.html#Bodu_Extensions_DateTimeExtensions_ToTimeSpan_System_DateTime_">ToTimeSpan(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a> representing the time-of-day portion of the specified
+<code class="paramref">dateTime</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToUnixTimeMilliseconds_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToUnixTimeMilliseconds.html#Bodu_Extensions_DateTimeExtensions_ToUnixTimeMilliseconds_System_DateTime_">ToUnixTimeMilliseconds(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of milliseconds that have elapsed between the Unix epoch (1970-01-01T00:00:00Z) and the
+specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_ToUnixTimeSeconds_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.ToUnixTimeSeconds(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.ToUnixTimeSeconds.html#Bodu_Extensions_DateTimeExtensions_ToUnixTimeSeconds_System_DateTime_">ToUnixTimeSeconds(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the number of seconds that have elapsed between the Unix epoch (1970-01-01T00:00:00Z) and the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_Truncate_System_DateTime_Bodu_Extensions_DateTimeResolution_" data-uid="Bodu.Extensions.DateTimeExtensions.Truncate(System.DateTime,Bodu.Extensions.DateTimeResolution)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.Truncate.html#Bodu_Extensions_DateTimeExtensions_Truncate_System_DateTime_Bodu_Extensions_DateTimeResolution_">Truncate(DateTime, DateTimeResolution)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> obtained by truncating the specified <code class="paramref">dateTime</code> to the
+supplied <code class="paramref">resolution</code>, with all smaller time components reset to zero.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfMonth.html#Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_">WeekOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the month for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendarweekrule">CalendarWeekRule</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> settings of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_System_Globalization_CalendarWeekRule_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfMonth(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfMonth.html#Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_System_Globalization_CalendarWeekRule_System_DayOfWeek_">WeekOfMonth(DateTime, CalendarWeekRule, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the month for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the supplied
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendarweekrule">CalendarWeekRule</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> as the week-starting day.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfMonth(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfMonth.html#Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_System_Globalization_CultureInfo_">WeekOfMonth(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the month for the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the calendar
+settings of the supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfYear(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfYear.html#Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_">WeekOfYear(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the year that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendarweekrule">CalendarWeekRule</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> settings of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_System_Globalization_CalendarWeekRule_System_DayOfWeek_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfYear(System.DateTime,System.Globalization.CalendarWeekRule,System.DayOfWeek)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfYear.html#Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_System_Globalization_CalendarWeekRule_System_DayOfWeek_">WeekOfYear(DateTime, CalendarWeekRule, DayOfWeek)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the year that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the
+supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.calendarweekrule">CalendarWeekRule</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dayofweek">DayOfWeek</a> as the week-starting day.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_System_Globalization_CultureInfo_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOfYear(System.DateTime,System.Globalization.CultureInfo)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOfYear.html#Bodu_Extensions_DateTimeExtensions_WeekOfYear_System_DateTime_System_Globalization_CultureInfo_">WeekOfYear(DateTime, CultureInfo?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the 1-based week number of the year that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, using the
+calendar rules of the supplied or current culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_DateTimeExtensions_WeekOrdinalOfMonth_System_DateTime_" data-uid="Bodu.Extensions.DateTimeExtensions.WeekOrdinalOfMonth(System.DateTime)">
+          <a class="xref" href="Bodu.Extensions.DateTimeExtensions.WeekOrdinalOfMonth.html#Bodu_Extensions_DateTimeExtensions_WeekOrdinalOfMonth_System_DateTime_">WeekOrdinalOfMonth(DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the <a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> represented by the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>, indicating the
+ordinal occurrence of its <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.dayofweek">DayOfWeek</a> within the month.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

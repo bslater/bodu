@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interval tree | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interval tree | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="interval-tree">Interval tree</h1>
+
+<p><code>IntervalTree&lt;T&gt;</code> stores closed intervals <code>[low, high]</code> that may freely overlap and answers the two questions that define the structure: <strong>stabbing</strong> (&quot;which intervals contain point <em>x</em>?&quot; — <code>QueryPoint</code>) and <strong>overlap-window</strong> (&quot;which intervals intersect <code>[a, b]</code>?&quot; — <code>QueryOverlaps</code>), each in O(log n + k) for k reported intervals. <code>IntervalTree&lt;TKey,TValue&gt;</code> is the value-carrying counterpart, where each stored interval carries a payload — a meeting name, a reservation id, an IP-range owner.</p>
+<p>It fits problems where overlap <em>is</em> the data: meeting-room and resource scheduling (find every booking that clashes with a proposed slot), genomic and time-series annotation (all features covering a coordinate), version/date applicability ranges (all rules in force on a given day), and network ranges (all CIDR-derived ranges containing an address).</p>
+<h2 id="overlap-storing-vs-range-map--which-range-type-do-i-want">Overlap-storing vs range-map — which range type do I want?</h2>
+<p>The Bodu family has three interval-shaped surfaces, and they answer different questions:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Overlaps</th>
+<th>Answers</th>
+<th>Reach for it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IntervalTree&lt;T&gt;</code> / <code>IntervalTree&lt;TKey,TValue&gt;</code></td>
+<td><strong>Stored as-is</strong></td>
+<td>&quot;Which of my possibly-overlapping intervals hit this point/window?&quot;</td>
+<td>The overlaps themselves are the data (bookings, annotations, applicability windows).</td>
+</tr>
+<tr>
+<td><a href="range-dictionary.html"><code>RangeSet&lt;T&gt;</code> / <code>RangeDictionary&lt;TKey,TValue&gt;</code></a></td>
+<td>Merged / rejected</td>
+<td>&quot;Which single range does this key fall in, and what value does it map to?&quot;</td>
+<td>Ranges partition the key space — tax bands, IP block → owner, grade boundaries.</td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics</code>' <code>IntervalSet&lt;T&gt;</code></td>
+<td>Normalized to disjoint</td>
+<td>Interval <em>algebra</em> — union/intersect/complement over a set treated as one region</td>
+<td>You care about the covered region, not the individual intervals.</td>
+</tr>
+</tbody>
+</table>
+<p><code>IntervalTree</code> is the only member that <em>stores</em> overlapping intervals; the other two deliberately refuse to. If an insert failing (or merging) on overlap sounds right, you want the range map; if it sounds like data loss, you want the interval tree.</p>
+<p>Contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Closed endpoints.</strong> <code>[low, high]</code> contains both endpoints; <code>low == high</code> is a valid single-point interval, and a window touching an interval at one shared endpoint counts as an overlap. <code>Add</code>, <code>Remove</code>, <code>Contains</code>, and the window queries all reject <code>low &gt; high</code> (under the active comparer) with <code>ArgumentException</code>.</li>
+<li><strong>Duplicates are permitted.</strong> <code>IntervalTree&lt;T&gt;</code> counts occurrences per distinct (low, high) node (<code>Remove</code> drops one occurrence per call); <code>IntervalTree&lt;TKey,TValue&gt;</code> keeps a per-interval value list in insertion order — the same slot may carry many values, <code>Remove(low, high)</code> drops the first stored entry, and <code>Remove(low, high, value)</code> drops the first entry matching under <code>EqualityComparer&lt;TValue&gt;.Default</code>. <code>Count</code> includes every stored entry.</li>
+<li><strong>Exact-match vs overlap.</strong> <code>Contains</code>/<code>Remove</code> match the exact (low, high) pair only; <code>IntersectsPoint(x)</code> / <code>Intersects(a, b)</code> are the O(log n) early-exit &quot;does anything overlap?&quot; forms.</li>
+<li><strong>Queries are lazy, ascending by (low, high), and fail-fast</strong> — mutating the tree mid-iteration throws <code>InvalidOperationException</code> on the next advance, and a fresh iteration re-resolves against the current state, matching the family convention. Full enumeration follows the same order, duplicates repeated.</li>
+<li>Endpoints are ordered by an <code>IComparer&lt;T&gt;</code> fixed at construction (default <code>Comparer&lt;T&gt;.Default</code>); <code>null</code> endpoints are rejected.</li>
+<li>Not thread-safe.</li>
+</ul>
+<p>The backing structure — a max-endpoint augmented red-black tree reusing the navigable-collections node machinery — is recorded in the design note at <code>Bodu.Collections/docs/interval-tree-design.md</code>.</p>
+<h2 id="pattern-1--conflict-detection-and-stabbing">Pattern 1 — conflict detection and stabbing</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var bookings = new IntervalTree&lt;int, string&gt;();
+bookings.Add(9, 11, &quot;stand-up&quot;);
+bookings.Add(10, 12, &quot;design review&quot;);   // overlaps stand-up — stored, not merged
+bookings.Add(14, 15, &quot;1:1&quot;);
+
+// Everything happening at 10:00.
+foreach ((int low, int high, string name) in bookings.QueryPoint(10))
+    Console.WriteLine($&quot;[{low}, {high}] {name}&quot;);   // stand-up, design review
+
+// Cheap yes/no before enumerating: does a proposed 11-13 slot clash at all?
+if (bookings.Intersects(11, 13))                    // true — design review reaches 12,
+    Console.WriteLine(&quot;conflict&quot;);                  // and 11 touches stand-up's end (closed)
+</code></pre>
+<h2 id="pattern-2--window-queries-over-annotations">Pattern 2 — window queries over annotations</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var features = new IntervalTree&lt;long&gt;();
+features.Add(1_000, 5_000);
+features.Add(4_500, 4_800);    // nested inside the first — both retained
+features.Add(9_000, 12_000);
+
+// All features intersecting the viewport [4_600, 9_000], ascending by (low, high).
+foreach ((long low, long high) in features.QueryOverlaps(4_600, 9_000))
+    Console.WriteLine($&quot;[{low}, {high}]&quot;);   // [1000, 5000], [4500, 4800], [9000, 12000]
+</code></pre>
+<h2 id="pattern-3--duplicate-slots-and-targeted-removal">Pattern 3 — duplicate slots and targeted removal</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var shifts = new IntervalTree&lt;int, string&gt;();
+shifts.Add(22, 30, &quot;alice&quot;);
+shifts.Add(22, 30, &quot;bob&quot;);       // same slot, different value
+shifts.Add(22, 30, &quot;alice&quot;);     // same slot, same value — a third distinct entry
+
+shifts.Remove(22, 30, &quot;bob&quot;);    // removes exactly bob's entry
+shifts.Remove(22, 30);           // removes the first remaining entry (the older &quot;alice&quot;)
+
+Console.WriteLine(shifts.Count); // 1
+</code></pre>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the family-wide decision guide, including the overlap-storing vs range-map row.</li>
+<li><a href="range-dictionary.html">Range-keyed lookups</a> — the non-overlapping <code>RangeSet&lt;T&gt;</code> / <code>RangeDictionary&lt;TKey,TValue&gt;</code> maps.</li>
+<li><a href="navigable-set.html">Navigable set</a> — the order-statistic red-black machinery this tree's backing derives from.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

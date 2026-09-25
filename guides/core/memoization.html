@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Memoization | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Memoization | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="memoization">Memoization</h1>
+
+<p><em>Memoization</em> caches the result of a pure function so each distinct argument is computed once and subsequent calls return the stored value. <a class="xref" href="../../api/Bodu.Functional.Memoizer.html">Memoizer</a> applies that pattern to a <code>Func&lt;…&gt;</code> delegate: it returns a new delegate of the same shape, backed by a thread-safe cache.</p>
+<p>It fits functions that are <strong>pure</strong> (the result depends only on the arguments) and <strong>expensive</strong> relative to a dictionary lookup. The cache is <strong>unbounded</strong> — every distinct argument is retained for the lifetime of the returned delegate — so use it over a small or bounded argument domain. When you need eviction, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary</code></a> instead.</p>
+<p>A few contract points worth keeping in mind:</p>
+<ul>
+<li>Only <strong>successful</strong> results are cached; if the function throws, nothing is stored and the next call retries.</li>
+<li>A <code>null</code> result is a valid cached value.</li>
+<li>Argument types are constrained to <code>notnull</code> because they are used as cache keys.</li>
+</ul>
+<h2 id="pattern-1--wrap-a-pure-function">Pattern 1 — Wrap a pure function</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+static int ExpensiveSquare(int n) { /* slow */ return n * n; }
+
+var square = Memoizer.Memoize&lt;int, int&gt;(n =&gt; ExpensiveSquare(n));
+
+int a = square(8);   // runs ExpensiveSquare
+int b = square(8);   // cache hit — ExpensiveSquare is not called again
+</code></pre>
+<p>The returned <code>square</code> is a <code>Func&lt;int, int&gt;</code>; pass it around like any other delegate. The cache lives as long as that delegate reference does.</p>
+<h2 id="pattern-2--control-argument-matching-with-a-comparer">Pattern 2 — Control argument matching with a comparer</h2>
+<p>The single-argument overload accepts an <code>IEqualityComparer&lt;TArg&gt;</code> so you can decide when two arguments are &quot;the same&quot; key. A case-insensitive comparer folds <code>&quot;Hello&quot;</code> and <code>&quot;HELLO&quot;</code> onto one cache entry:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+var lengthOf = Memoizer.Memoize&lt;string, int&gt;(
+    s =&gt; s.Length,
+    StringComparer.OrdinalIgnoreCase);
+
+int x = lengthOf(&quot;Hello&quot;);   // computed
+int y = lengthOf(&quot;HELLO&quot;);   // cache hit
+</code></pre>
+<p>Pass <code>null</code> for the comparer (or use the single-argument overload) to match on the default equality comparer for the argument type.</p>
+<h2 id="pattern-3--multi-argument-functions">Pattern 3 — Multi-argument functions</h2>
+<p>The two-argument overload keys the cache on the <code>(T1, T2)</code> pair, so the result is reused only when both arguments match:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Functional;
+
+static int SlowAdd(int x, int y) { /* slow */ return x + y; }
+
+var add = Memoizer.Memoize&lt;int, int, int&gt;((x, y) =&gt; SlowAdd(x, y));
+
+int s1 = add(3, 4);   // computed
+int s2 = add(3, 4);   // cache hit
+int s3 = add(4, 3);   // computed — different key
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The cache is thread-safe. For sequential use the function runs exactly once per distinct argument; under concurrent first access for the <em>same</em> argument the function may run more than once, but only one result is published. Memoizing a recursive function requires the function to call the <strong>memoized</strong> delegate for its recursive step.</p>
+</div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Functional.html">Bodu.Functional</a> — the full API surface for <code>Memoizer</code>.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> — a bounded-capacity cache when memoization's unbounded retention is the wrong trade-off.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — picking the right backing store for cached data.</li>
+<li><a href="../topics/core-foundations.html">Core foundations</a> — the wider <code>Bodu.Core</code> toolbox.</li>
+<li><a href="../../docs/core/index.html">Core documentation</a> — concepts and getting started for <code>Bodu.Core</code>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

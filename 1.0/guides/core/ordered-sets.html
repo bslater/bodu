@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Indexed and ordered sets | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Indexed and ordered sets | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="indexed-and-ordered-sets">Indexed and ordered sets</h1>
+
+<p><code>Bodu.Collections.Generic</code> ships two insertion-ordered, uniqueness-enforcing sets built on the same open-addressing hash engine. They differ only in the surface they expose:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> implements <code>IList&lt;T&gt;</code> — a list that silently refuses duplicates, with O(1) <code>Contains</code>, <code>IndexOf</code>, and indexed read <strong>and write</strong>.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a> implements <code>ISet&lt;T&gt;</code> — the full set-algebra surface (<code>UnionWith</code>, <code>IntersectWith</code>, …) while preserving insertion order and exposing position only as a read-only index.</li>
+</ul>
+<p>Both keep elements in the order they were first added, both reject <code>null</code> only when the element type and comparer reject it, and both compare with an <code>IEqualityComparer&lt;T&gt;</code> you can supply at construction.</p>
+<h2 id="when-to-reach-for-which">When to reach for which</h2>
+<table>
+<thead>
+<tr>
+<th>You need…</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A <code>List&lt;T&gt;</code> that also guarantees uniqueness and O(1) <code>Contains</code></td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Positional insert / remove / move while staying unique</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Set algebra (union / intersect / except) over an ordered set</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Subset / superset / overlap relationship tests</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>An unordered unique set</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet&lt;T&gt;</a> (BCL)</td>
+</tr>
+<tr>
+<td>A thread-safe unique set</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="indexedsett--a-unique-indexable-list">IndexedSet&lt;T&gt; — a unique, indexable list</h2>
+<h3 id="pattern-1--add-reject-duplicates-look-up-by-index">Pattern 1 — add, reject duplicates, look up by index</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var tags = new IndexedSet&lt;string&gt;();
+
+bool addedFirst  = tags.Add(&quot;alpha&quot;);   // true
+bool addedSecond = tags.Add(&quot;beta&quot;);    // true
+bool addedDup    = tags.Add(&quot;alpha&quot;);   // false — already present, order unchanged
+
+int index = tags.IndexOf(&quot;beta&quot;);       // 1, O(1)
+string at = tags[0];                    // &quot;alpha&quot;, O(1)
+bool has  = tags.Contains(&quot;alpha&quot;);     // true, O(1)
+</code></pre>
+<p><code>Add</code> returns <code>false</code> rather than throwing when the element is already present. To add several at once, <code>AddRange</code> returns the number of elements actually inserted (duplicates skipped):</p>
+<pre><code class="lang-csharp">int inserted = tags.AddRange(new[] { &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot; }); // 2 — &quot;beta&quot; skipped
+</code></pre>
+<h3 id="pattern-2--positional-editing">Pattern 2 — positional editing</h3>
+<p>Because <code>IndexedSet&lt;T&gt;</code> is an <code>IList&lt;T&gt;</code>, it supports positional mutation. Inserting a value that already exists throws (use <code>TryInsert</code> for the non-throwing form), and the indexer setter replaces the element at a position:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var order = new IndexedSet&lt;string&gt; { &quot;first&quot;, &quot;third&quot; };
+
+order.Insert(1, &quot;second&quot;);          // first, second, third
+bool ok = order.TryInsert(0, &quot;second&quot;); // false — &quot;second&quot; already present
+order.Move(2, 0);                   // third, first, second
+order[0] = &quot;head&quot;;                  // replaces &quot;third&quot; at position 0
+order.RemoveAt(2);                  // removes &quot;second&quot;
+</code></pre>
+<h3 id="pattern-3--capacity-management">Pattern 3 — capacity management</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">var set = new IndexedSet&lt;int&gt;(capacity: 1024);
+set.EnsureCapacity(4096);   // pre-grow before a known burst
+// … fill …
+set.TrimExcess();           // release unused slots
+</code></pre>
+<h2 id="orderedsett--an-ordered-set-with-full-set-algebra">OrderedSet&lt;T&gt; — an ordered set with full set algebra</h2>
+<h3 id="pattern-4--set-operations-preserve-insertion-order">Pattern 4 — set operations preserve insertion order</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var a = new OrderedSet&lt;int&gt; { 1, 2, 3, 4 };
+var b = new OrderedSet&lt;int&gt; { 3, 4, 5, 6 };
+
+a.UnionWith(b);             // 1, 2, 3, 4, 5, 6 (new members appended in b's order)
+a.IntersectWith(b);         // keeps only members also in b
+a.ExceptWith(b);            // removes members found in b
+a.SymmetricExceptWith(b);   // keeps members in exactly one set
+</code></pre>
+<h3 id="pattern-5--relationship-tests">Pattern 5 — relationship tests</h3>
+<!-- compile -->
+<pre><code class="lang-csharp">var roles  = new OrderedSet&lt;string&gt; { &quot;reader&quot;, &quot;writer&quot; };
+var grant  = new OrderedSet&lt;string&gt; { &quot;reader&quot;, &quot;writer&quot;, &quot;admin&quot; };
+
+bool subset   = roles.IsSubsetOf(grant);        // true
+bool proper   = roles.IsProperSubsetOf(grant);  // true
+bool superset = grant.IsSupersetOf(roles);      // true
+bool overlaps = roles.Overlaps(grant);          // true
+bool equal    = roles.SetEquals(grant);         // false
+</code></pre>
+<h3 id="pattern-6--read-only-positional-view">Pattern 6 — read-only positional view</h3>
+<p><code>OrderedSet&lt;T&gt;</code> records insertion order and exposes it through a <strong>read-only</strong> indexer and <code>IndexOf</code>; unlike <code>IndexedSet&lt;T&gt;</code>, there is no indexer setter or positional <code>Insert</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var ordered = new OrderedSet&lt;string&gt; { &quot;x&quot;, &quot;y&quot;, &quot;z&quot; };
+int pos = ordered.IndexOf(&quot;y&quot;);   // 1
+string first = ordered[0];        // &quot;x&quot; — read only
+</code></pre>
+<h2 id="custom-equality">Custom equality</h2>
+<p>Both types accept an <code>IEqualityComparer&lt;T&gt;</code> so uniqueness can be case-insensitive or structural:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var ci = new IndexedSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+ci.Add(&quot;Alpha&quot;);
+bool dup = ci.Add(&quot;ALPHA&quot;);   // false — same key under the comparer
+</code></pre>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th style="text-align: center;"><code>IndexedSet&lt;T&gt;</code></th>
+<th style="text-align: center;"><code>OrderedSet&lt;T&gt;</code></th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Add(T)</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Adds; returns <code>false</code> if already present.</td>
+</tr>
+<tr>
+<td><code>AddRange(IEnumerable&lt;T&gt;)</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Adds many; returns the count actually inserted.</td>
+</tr>
+<tr>
+<td><code>Contains(T)</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>O(1) membership test.</td>
+</tr>
+<tr>
+<td><code>IndexOf(T)</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>O(1) position lookup.</td>
+</tr>
+<tr>
+<td><code>this[int]</code></td>
+<td style="text-align: center;">get / set</td>
+<td style="text-align: center;">get</td>
+<td>Indexed access (set on <code>IndexedSet&lt;T&gt;</code> only).</td>
+</tr>
+<tr>
+<td><code>Insert</code> / <code>TryInsert</code> / <code>Move</code> / <code>RemoveAt</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td>Positional editing.</td>
+</tr>
+<tr>
+<td><code>Remove(T)</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Removes by value.</td>
+</tr>
+<tr>
+<td><code>UnionWith</code> / <code>IntersectWith</code> / <code>ExceptWith</code> / <code>SymmetricExceptWith</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td>In-place set algebra.</td>
+</tr>
+<tr>
+<td><code>IsSubsetOf</code> / <code>IsSupersetOf</code> / <code>IsProperSubsetOf</code> / <code>IsProperSupersetOf</code> / <code>Overlaps</code> / <code>SetEquals</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td>Relationship tests.</td>
+</tr>
+<tr>
+<td><code>Capacity</code> / <code>EnsureCapacity</code> / <code>TrimExcess</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Capacity management.</td>
+</tr>
+<tr>
+<td><code>Comparer</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>The active <code>IEqualityComparer&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>CopyTo</code> / <code>ToArray</code> / <code>Clear</code> / <code>Count</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Standard collection surface.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
+<li><a href="multiset.html">Multiset</a> — when duplicates should be <em>retained</em> as multiplicity rather than rejected.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> — <code>ConcurrentHashSet&lt;T&gt;</code> for thread-safe set membership.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Calendar validation diagnostics | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Calendar validation diagnostics | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="calendar-validation-diagnostics">Calendar validation diagnostics</h1>
+
+<p>Every notable-date document — hand-authored XML/JSON, a bundled catalogue, or a document produced by the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder.html">NotableDateDocumentBuilder</a> — passes through one validation pipeline in <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>. Each problem the pipeline finds is a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> carrying a severity, a stable <code>BODU-CAL-*</code> code, and a message naming the offending concept, rule, or policy. This page is the code reference and shows the two ways to consume diagnostics: throwing loads and collect-mode linting.</p>
+<h2 id="throw-or-collect">Throw or collect</h2>
+<p><strong>Throwing (the default).</strong> <code>NotableDateResourceLoader.Load(...)</code> / <code>LoadJson(...)</code> and <code>NotableDateDocumentBuilder.Build()</code> validate the whole document, then throw a single <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a> when any error-severity diagnostic was produced. The exception's <code>Diagnostics</code> property carries the complete list — errors, warnings, and informational messages — not just the first failure.</p>
+<p><strong>Collecting (the lint surface).</strong> The <code>Try</code> overloads return the same complete diagnostic list without throwing, so build tooling and editors can lint arbitrary input:</p>
+<ul>
+<li><code>NotableDateResourceLoader.TryLoad(xml, resolver, out resource, out diagnostics)</code> (plus an overload taking a custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>) and <code>TryLoadJson(...)</code> — malformed input becomes a <code>BODU-CAL-SYNTAX</code> error diagnostic instead of a <code>FormatException</code>.</li>
+<li><code>NotableDateDocumentBuilder.Validate()</code> — lints the authored document and returns the diagnostics; a clean result guarantees <code>Build()</code> succeeds for the same document, because both run the same pipeline.</li>
+<li><code>NotableDateDocumentBuilder.TryBuild(out resource, out diagnostics)</code> — the non-throwing counterpart of <code>Build()</code>.</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create(&quot;corp.holidays&quot;)
+    .AddNotableDate(&quot;new-years-day&quot;, &quot;New Year's Day&quot;, NotableDateCategory.PublicHoliday, d =&gt; d
+        .AddRule(&quot;default&quot;, r =&gt; r.Fixed(1, 1)));
+
+foreach (NotableDateValidationDiagnostic diagnostic in builder.Validate())
+    Console.WriteLine(diagnostic);   // [Error] BODU-CAL-...: message
+
+if (builder.TryBuild(out NotableDateResource? resource, out var diagnostics))
+{
+    INotableDateService service = new NotableDateService(resource!);
+}
+</code></pre>
+<p>Argument errors (<code>null</code> inputs) still throw from the <code>Try</code> overloads — the <code>Try</code> contract covers document data, not API usage.</p>
+<h2 id="severities">Severities</h2>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Error</code></td>
+<td>The document cannot be loaded. Throwing overloads raise <code>NotableDateValidationException</code>; <code>Try</code> overloads return <code>false</code>.</td>
+</tr>
+<tr>
+<td><code>Warning</code></td>
+<td>The document loads, but something merits attention (currently produced only by non-fatal XSD findings under <code>BODU-CAL-SCHEMA</code>).</td>
+</tr>
+<tr>
+<td><code>Information</code></td>
+<td>Advisory only.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="diagnostic-codes">Diagnostic codes</h2>
+<p>Codes are stable identifiers: they are safe to match on, suppress by, or document against. Messages carry the dynamic context (concept, rule, and policy identifiers).</p>
+<h3 id="input-and-schema">Input and schema</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-SYNTAX</code></td>
+<td>Error</td>
+<td>The input is not well-formed XML/JSON, or the JSON content is empty. Produced by the <code>Try</code> overloads; the throwing overloads raise <code>FormatException</code> for the same input.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-SCHEMA</code></td>
+<td>Error or Warning</td>
+<td>The XML document violates the embedded notable-date XSD; the severity mirrors the schema validator's.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="document-structure">Document structure</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-DUP-ND</code></td>
+<td>Error</td>
+<td>Two notable-date concepts share an identifier.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DUP-RULE</code></td>
+<td>Error</td>
+<td>Two rules within one concept share an identifier.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DUP-POLICY</code></td>
+<td>Error</td>
+<td>Two adjustment policies share an identifier.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-MONTH</code></td>
+<td>Error</td>
+<td>A strategy's month is outside the valid range for its calendar.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DAY</code></td>
+<td>Error</td>
+<td>A strategy's day is outside the valid range for its month/calendar.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-YEARS</code></td>
+<td>Error</td>
+<td>A rule's or adjustment scope's <code>fromYear</code> is after its <code>toYear</code>.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-RECURRENCE</code></td>
+<td>Error</td>
+<td>A recurrence declaration is invalid.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-references">Cross-references</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-ALGORITHM</code></td>
+<td>Error</td>
+<td>An <code>&lt;Algorithm&gt;</code> strategy references a key that is neither built in nor declared by the supplied custom registry.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-ADJREF</code></td>
+<td>Error</td>
+<td>A rule references an adjustment policy that does not exist.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-OFFSET-MISSING</code></td>
+<td>Error</td>
+<td>An <code>&lt;OffsetFromRule&gt;</code> reference does not resolve to any rule.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-OFFSET-AMBIGUOUS</code></td>
+<td>Error</td>
+<td>An <code>&lt;OffsetFromRule&gt;</code> reference resolves to more than one rule.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-REF-RECURRING</code></td>
+<td>Error</td>
+<td>A cross-rule reference targets a recurring rule, which cannot anchor a single-occurrence offset.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-REPLACE-MISSING</code></td>
+<td>Error</td>
+<td>An adjustment policy's <code>ReplaceWithRule</code> reference is missing or does not resolve.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-REPLACE-AMBIGUOUS</code></td>
+<td>Error</td>
+<td>An adjustment policy's <code>ReplaceWithRule</code> reference resolves to more than one rule.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-HANDLER-MISSING</code></td>
+<td>Error</td>
+<td>A policy declares <code>AdjustmentAction.Custom</code> without an action handler key.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-TRIGGER-HANDLER-MISSING</code></td>
+<td>Error</td>
+<td>A policy declares <code>AdjustmentTrigger.Custom</code> without a trigger handler key.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="durations">Durations</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-DURATION-CONFLICT</code></td>
+<td>Error</td>
+<td>A rule declares conflicting duration sources.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DURATION-NOEND</code></td>
+<td>Error</td>
+<td>A duration end declaration is incomplete.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DURATION-ALGORITHM</code></td>
+<td>Error</td>
+<td>A duration end strategy references an unknown algorithm key.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DURATION-OFFSET-MISSING</code></td>
+<td>Error</td>
+<td>A duration end <code>OffsetFromRule</code> reference does not resolve.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-DURATION-OFFSET-AMBIGUOUS</code></td>
+<td>Error</td>
+<td>A duration end <code>OffsetFromRule</code> reference resolves to more than one rule.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="imports-and-overrides">Imports and overrides</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-IMPORT-MISSING</code></td>
+<td>Error</td>
+<td>An import targets a resource the resolver could not supply.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-IMPORT-CYCLE</code></td>
+<td>Error</td>
+<td>An import chain forms a cycle; the offending import is skipped.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-IMPORT-CONCEPT</code></td>
+<td>Error</td>
+<td>An import cherry-picks a concept the imported resource does not declare.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-OVERRIDE-ND</code></td>
+<td>Error</td>
+<td>An override targets a notable-date concept that does not exist.</td>
+</tr>
+<tr>
+<td><code>BODU-CAL-OVERRIDE-RULE</code></td>
+<td>Error</td>
+<td>An override targets a rule that does not exist.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="builder">Builder</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Severity</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODU-CAL-BUILDER-INCOMPLETE</code></td>
+<td>Error</td>
+<td>The authored document is too incomplete to serialize for validation — a missing resource identifier, a concept with no rules, or a rule with no strategy. Produced only by <code>NotableDateDocumentBuilder.Validate()</code> / <code>TryBuild(...)</code>; the serializing members throw <code>InvalidOperationException</code> for the same states.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="rule-authoring.html">Authoring notable date rules</a> — the document model these diagnostics validate.</li>
+<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> — the fluent authoring surface behind <code>Validate()</code> / <code>TryBuild(...)</code>.</li>
+<li><a href="round-trip-guarantees.html">Builder round-trip guarantees</a> — the serialization contract shared by <code>Build()</code> and the lint.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

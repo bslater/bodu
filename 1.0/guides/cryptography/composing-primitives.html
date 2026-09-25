@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Composing primitives — direct use vs. SymmetricAlgorithm | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Composing primitives — direct use vs. SymmetricAlgorithm | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="composing-primitives--direct-use-vs-symmetricalgorithm">Composing primitives — direct use vs. <code>SymmetricAlgorithm</code></h1>
+
+<p><code>Bodu.Security.Cryptography</code> exposes its block ciphers at <strong>two levels</strong>:</p>
+<ol>
+<li>The <strong>raw block primitive</strong> — <code>SkipjackBlockCipher</code>, <code>BlowfishBlockCipher</code>, <code>CamelliaBlockCipher</code>, <code>TwofishBlockCipher</code>, <code>Serpent128Cipher</code>, <code>Serpent256Cipher</code>, <code>Serpent512Cipher</code>, <code>Serpent1024Cipher</code>, <code>Threefish256Cipher</code>, <code>Threefish512Cipher</code>, <code>Threefish1024Cipher</code>, <code>AesBlockCipher</code>. Each implements <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>: encrypt and decrypt one fixed-size block. Compose with <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> and <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a> when you need the full mode + padding pipeline visible at the call site.</li>
+<li>The <strong><code>SymmetricAlgorithm</code></strong> wrappers — <a class="xref" href="../../api/Bodu.Security.Cryptography.Skipjack.html">Skipjack</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Blowfish.html">Blowfish</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Camellia.html">Camellia</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Twofish.html">Twofish</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a>. These derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> (with the tweakable variants extending <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>) and integrate with <code>CryptoStream</code>, <code>ICryptoTransform</code>, and the <code>Encrypt</code> / <code>Decrypt</code> extension methods. AES is the exception — it is exposed only at the primitive level via <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>; use the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a> when you want the <code>SymmetricAlgorithm</code> shape for AES.</li>
+</ol>
+<h3 id="the-iblockcipher-contract">The <code>IBlockCipher</code> contract</h3>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is deliberately minimal — it is the <em>raw block primitive</em> and nothing more:</p>
+<ul>
+<li><code>int BlockSize { get; }</code> — the block size <strong>in bits</strong> (so a byte buffer is <code>BlockSize / 8</code> long; 64 for Skipjack/Blowfish, 128 for the AES family, 256/512/1024 for Threefish).</li>
+<li><code>void Encrypt(ReadOnlySpan&lt;byte&gt; input, Span&lt;byte&gt; output)</code> and <code>void Decrypt(ReadOnlySpan&lt;byte&gt; input, Span&lt;byte&gt; output)</code> — transform exactly one block; the spans must each be <code>BlockSize / 8</code> bytes.</li>
+</ul>
+<p>There is no chaining, no IV, no padding, and no nonce on this surface — those all live in the mode transform (<a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>) and the padding strategy (<a class="xref" href="../../api/Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a>) that wrap it. The factories assemble the three layers: a cipher, a mode keyed on <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, and a padding strategy keyed on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> or <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>. A mode transform's <code>Transform(input, output, encrypt)</code> returns the number of bytes written.</p>
+<p>Both levels produce <strong>byte-for-byte identical ciphertext</strong> for the same Key, IV, (Tweak), Mode, and Padding. Pick the level that matches your use case:</p>
+<table>
+<thead>
+<tr>
+<th>Use the primitive when…</th>
+<th>Use the SymmetricAlgorithm when…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You want each step (encrypt block, accumulate MAC, manage IV, pad) explicit at the call site.</td>
+<td>You want a one-liner for <code>byte[] cipher = alg.Encrypt(plaintext)</code>.</td>
+</tr>
+<tr>
+<td>You're composing custom AEAD, custom padding, or a streaming protocol.</td>
+<td>You're integrating with <code>CryptoStream</code>, <code>RSACryptoServiceProvider</code>-style ceremony, or .NET ecosystem code.</td>
+</tr>
+<tr>
+<td>You need to share an <code>IBlockCipher</code> between an AEAD transform and a classic mode transform.</td>
+<td>You're following the common .NET pattern most readers already know.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-note-on-aead-modes">A note on AEAD modes</h2>
+<p>The AEAD mode transforms (<code>GcmModeTransform</code>, <code>CcmModeTransform</code>, <code>OcbModeTransform</code>, <code>EaxModeTransform</code>, <code>SivModeTransform</code>, <code>GcmSivModeTransform</code>) are designed for <strong>128-bit-block ciphers</strong> — their counter formats, GHASH/POLYVAL field, and offset schedules all assume 16-byte blocks. Skipjack and Blowfish have 8-byte blocks; the Threefish family starts at 32 bytes. Of the raw primitives here only <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> — and, equally, the other 128-bit ciphers <code>CamelliaBlockCipher</code> / <code>TwofishBlockCipher</code> / <code>Serpent128Cipher</code> — has the right block width to drive them, which is why the <a href="aead-modes.html">AEAD modes guide</a> is AES-based. The classic modes shown here (CBC / CTR / CFB / OFB / CTS / ECB) work with any block size and so cover the rest of the cipher family.</p>
+<p>This is the one place the two-level split earns its keep: pairing AES with an AEAD transform requires an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, and <code>AesBlockCipher</code> is exactly that bridge. The <code>SymmetricAlgorithm</code> wrappers never expose the underlying <code>IBlockCipher</code>, so AEAD composition is a primitive-level operation only.</p>
+<h2 id="pattern-1--direct-primitive-composition">Pattern 1 — direct primitive composition</h2>
+<p>Encrypt a message under Skipjack with CBC + PKCS7, manually composing the cipher, mode transform, and padding strategy:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key = new byte[10];   RandomNumberGenerator.Fill(key);
+byte[] iv  = new byte[8];    RandomNumberGenerator.Fill(iv);
+
+byte[] plaintext = System.Text.Encoding.UTF8.GetBytes(&quot;legacy payload&quot;);
+
+// 1. Build the primitive.
+using IBlockCipher cipher = new SkipjackBlockCipher(key);
+
+// 2. Wrap with a mode transform.
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
+
+// 3. Choose a padding strategy.
+IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
+
+// 4. Pad, transform, and emit.
+byte[] padded = padding.Pad(plaintext, cipher.BlockSize);
+byte[] ciphertext = new byte[padded.Length];
+mode.Transform(padded, ciphertext, encrypt: true);
+</code></pre>
+<p>Decrypt is the same flow reversed:</p>
+<pre><code class="lang-csharp">using IBlockCipher cipher = new SkipjackBlockCipher(key);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
+IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
+
+byte[] decrypted = new byte[ciphertext.Length];
+mode.Transform(ciphertext, decrypted, encrypt: false);
+byte[] recovered = padding.Unpad(decrypted, cipher.BlockSize);
+</code></pre>
+<p>The same shape works for <strong>every</strong> primitive — swap <code>SkipjackBlockCipher</code> for <code>BlowfishBlockCipher</code>, or for one of the Threefish variants (which take a key <em>and</em> a 16-byte tweak):</p>
+<pre><code class="lang-csharp">byte[] key   = new byte[32];  RandomNumberGenerator.Fill(key);
+byte[] iv    = new byte[32];  RandomNumberGenerator.Fill(iv);
+byte[] tweak = new byte[16];  RandomNumberGenerator.Fill(tweak);
+
+using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
+
+// CTR is a stream mode — no padding.
+byte[] ciphertext = new byte[plaintext.Length];
+mode.Transform(plaintext, ciphertext, encrypt: true);
+</code></pre>
+<h2 id="pattern-2--symmetricalgorithm-wrapper">Pattern 2 — <code>SymmetricAlgorithm</code> wrapper</h2>
+<p>The same Skipjack-CBC-PKCS7 encryption written through the high-level wrapper:</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using var alg = new Skipjack
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.PKCS7,
+    Key       = key,    // same 10 bytes
+    IV        = iv,     // same 8 bytes
+};
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>Internally, <code>Skipjack.CreateEncryptor</code> builds the same <code>SkipjackBlockCipher</code> + <code>CbcModeTransform</code> + <code>Pkcs7Padding</code> you composed by hand in Pattern 1. <strong>The ciphertext is byte-for-byte identical.</strong> That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behavior.</p>
+<p>The Threefish wrappers carry the same equivalence, with <code>Tweak</code> flowing into the constructor of <code>Threefish*Cipher</code>:</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CTR,
+    Padding   = PaddingMode.None,
+    Key       = key,    // 32 bytes
+    IV        = iv,     // 32 bytes
+    Tweak     = tweak,  // 16 bytes
+};
+
+byte[] ciphertext = alg.Encrypt(plaintext);
+</code></pre>
+<h2 id="verifying-the-equivalence">Verifying the equivalence</h2>
+<p>Inside a single test you can prove the two patterns produce the same ciphertext byte-for-byte:</p>
+<pre><code class="lang-csharp">byte[] key       = RandomNumberGenerator.GetBytes(10);
+byte[] iv        = RandomNumberGenerator.GetBytes(8);
+byte[] plaintext = RandomNumberGenerator.GetBytes(64);
+
+// Direct path.
+byte[] direct;
+using (IBlockCipher cipher = new SkipjackBlockCipher(key))
+{
+    var mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
+    var pad  = PaddingFactory.Create(PaddingMode.PKCS7);
+
+    byte[] padded = pad.Pad(plaintext, cipher.BlockSize);
+    direct = new byte[padded.Length];
+    mode.Transform(padded, direct, encrypt: true);
+}
+
+// SymmetricAlgorithm path.
+byte[] viaAlg;
+using (var alg = new Skipjack
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.PKCS7,
+    Key       = key,
+    IV        = iv,
+})
+{
+    viaAlg = alg.Encrypt(plaintext);
+}
+
+Debug.Assert(direct.SequenceEqual(viaAlg));
+</code></pre>
+<h2 id="when-to-favor-each-pattern">When to favor each pattern</h2>
+<p><strong>Reach for the direct primitive when:</strong></p>
+<ul>
+<li>You're building a <em>custom</em> construction — your own AEAD, a MAC over framing fields, an authenticated channel — and you need explicit access to the block primitive at every step.</li>
+<li>You're composing across modes — for example, encrypting a header with CBC and a body with CTR under the same key — and want a single <code>IBlockCipher</code> instance shared by both transforms.</li>
+<li>You need to pass a Bodu cipher into a third-party API that expects an <code>IBlockCipher</code>.</li>
+</ul>
+<p><strong>Reach for the <code>SymmetricAlgorithm</code> wrapper when:</strong></p>
+<ul>
+<li>You're emitting a single message and want the one-liner.</li>
+<li>You're plugging into <code>System.Security.Cryptography.CryptoStream</code>, ASP.NET DataProtection, or any other API that accepts a <code>SymmetricAlgorithm</code>.</li>
+<li>You're following the convention readers already know — <code>Encrypt</code> / <code>Decrypt</code> extension methods, <code>CreateEncryptor</code> / <code>CreateDecryptor</code> for stream-style use.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="encryption-basics.html">Encryption basics</a> — the Key / IV / Tweak / Padding lifecycle for the <code>SymmetricAlgorithm</code> wrappers.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> — what each of the five classic modes does, and worked examples through the wrapper API.</li>
+<li><a href="aead-modes.html">AEAD modes</a> — for authenticated encryption (AES-only, via <code>AesBlockCipher</code>).</li>
+<li><a href="padding.html">Padding</a> — PKCS7 / Zeros / None and when each is safe.</li>
+<li>API reference: [<a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>] · [<a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a>] · [<a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>] · [<a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>].</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

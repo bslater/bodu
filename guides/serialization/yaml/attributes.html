@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Mapping attributes | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Mapping attributes | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="mapping-attributes">Mapping attributes</h1>
+
+<p><strong>Bodu.Text.Yaml</strong> shapes how a type maps to the wire with the same shared attribute family as its <a href="../toml/index.html">TOML</a> and <a href="../bencode/index.html">Bencode</a> siblings: every attribute lives in the <code>Bodu.Text.Serialization</code> namespace and derives <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>. The patterns below show the most common members; the wider family — <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[Constructor]</code>, <code>[ObjectCreationHandling]</code>, <code>[NamingPolicy]</code>, and <code>[StringEnumMemberName]</code> — works exactly as it does in the siblings.</p>
+<h2 id="pattern-1--rename-a-member">Pattern 1 — Rename a member</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins the serialized key for one member, beating any naming policy:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+public sealed class Profile
+{
+    [PropertyName(&quot;display-name&quot;)]
+    public string DisplayName { get; set; } = &quot;Ada&quot;;
+}
+</code></pre>
+<pre><code class="lang-yaml">display-name: Ada
+</code></pre>
+<p>The explicit name always wins over the options-level naming policy.</p>
+<h2 id="pattern-2--apply-a-naming-policy">Pattern 2 — Apply a naming policy</h2>
+<p>The options-level <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.PropertyNamingPolicy.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a> renames every member that does not carry an explicit <code>[PropertyName]</code>. The shared <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> set applies — <code>CamelCase</code>, <code>SnakeCaseLower</code>/<code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code>/<code>KebabCaseUpper</code> — a type can pin its own policy with <code>[NamingPolicy(KnownNamingPolicy…)]</code>, and the <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> scenario presets configure it for you (<code>Web</code> selects camel-case naming with case-insensitive matching):</p>
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions
+{
+    PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
+};
+
+public sealed class RetryPolicy
+{
+    public int MaxRetryCount { get; set; } = 5;
+}
+
+string yaml = YamlSerializer.Serialize(new RetryPolicy(), options);
+</code></pre>
+<pre><code class="lang-yaml">max_retry_count: 5
+</code></pre>
+<p>On the read path, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.PropertyNameCaseInsensitive.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive">PropertyNameCaseInsensitive</a> lets mapping keys match members regardless of case.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>If two members resolve to the same wire key under the active policy and attributes — for example a <code>[PropertyName(&quot;name&quot;)]</code> that collides with another member's policy-derived <code>name</code> — serialization throws <code>InvalidOperationException</code> rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.</p>
+</div>
+<h2 id="pattern-3--exclude-a-member">Pattern 3 — Exclude a member</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> drops a member unconditionally, or under a per-member condition:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Serialization;
+
+public sealed class Account
+{
+    public string Name { get; set; } = &quot;svc&quot;;
+
+    [Ignore]
+    public string? Secret { get; set; }
+
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
+    public string? Comment { get; set; }
+}
+</code></pre>
+<pre><code class="lang-yaml">Name: svc
+</code></pre>
+<p>To omit members whose value happens to be <code>null</code> (or the type default) across the whole document, set the serializer-wide <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.DefaultIgnoreCondition.html#Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> instead (Pattern 4); a member-level <code>[Ignore(Condition = …)]</code> overrides it.</p>
+<h2 id="pattern-4--options-flags">Pattern 4 — Options flags</h2>
+<p>The remaining shaping is on <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DefaultIgnoreCondition</code></td>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> — <code>Never</code> (default) writes every member; <code>WhenWritingNull</code> omits null members; <code>WhenWritingDefault</code> also omits type-default values.</td>
+</tr>
+<tr>
+<td><code>WriteEnumsAsStrings</code></td>
+<td><code>true</code> (default) writes enums as member-name strings; <code>false</code> writes the underlying integer.</td>
+</tr>
+<tr>
+<td><code>PropertyNameCaseInsensitive</code></td>
+<td>Matches mapping keys to members case-insensitively on read.</td>
+</tr>
+<tr>
+<td><code>IncludeFields</code></td>
+<td>Includes public fields alongside properties.</td>
+</tr>
+<tr>
+<td><code>UnmappedMemberHandling</code></td>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> — <code>Skip</code> (default) ignores keys that map to no member; <code>Disallow</code> raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new YamlSerializerOptions
+{
+    DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull,
+    WriteEnumsAsStrings = false,         // enums as integers
+    IncludeFields = true,                // public fields participate
+    PropertyNameCaseInsensitive = true,  // case-insensitive key matching
+    UnmappedMemberHandling = UnmappedMemberHandling.Disallow,
+};
+</code></pre>
+<p>With <code>IncludeFields</code> set, a public field maps exactly like a property — it honours the naming policy and <code>[PropertyName]</code> / <code>[Ignore]</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">public sealed class Counter
+{
+    public int Total { get; set; }
+    public int Retries;   // included when IncludeFields is true
+}
+</code></pre>
+<p>A property is <strong>written</strong> whenever it has a public getter, but it is only <strong>read back</strong> when it also has a public setter — a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when <code>IncludeFields</code> is set.</p>
+<h2 id="the-wider-attribute-family">The wider attribute family</h2>
+<p>The remaining shared attributes work in YAML exactly as in the siblings:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[Converter(typeof(…))]</code></td>
+<td>Binds a converter or converter factory to a member, property, or type — for example <code>[Converter(typeof(YamlStringEnumConverter&lt;Status&gt;))]</code>.</td>
+</tr>
+<tr>
+<td><code>[PropertyOrder(n)]</code></td>
+<td>Orders members on write (lower first; unattributed members keep reflection order at order <code>0</code>).</td>
+</tr>
+<tr>
+<td><code>[Required]</code></td>
+<td>A missing key on read raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> (the C# <code>required</code> keyword is honored too).</td>
+</tr>
+<tr>
+<td><code>[Include]</code></td>
+<td>Surfaces a member with a non-public setter, or a field without <code>IncludeFields</code>.</td>
+</tr>
+<tr>
+<td><code>[ExtensionData]</code></td>
+<td>Captures unmapped keys into a <code>Dictionary&lt;string, object?&gt;</code> member and writes them back out.</td>
+</tr>
+<tr>
+<td><code>[Constructor]</code></td>
+<td>Selects the deserialization constructor for parameterized/immutable types.</td>
+</tr>
+<tr>
+<td><code>[ObjectCreationHandling(…)]</code></td>
+<td>Per-member replace-vs-populate on read, overriding <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling.html#Bodu_Text_Yaml_YamlSerializerOptions_PreferredObjectCreationHandling">PreferredObjectCreationHandling</a>.</td>
+</tr>
+<tr>
+<td><code>[NamingPolicy(…)]</code></td>
+<td>Pins a naming policy for one type.</td>
+</tr>
+<tr>
+<td><code>[StringEnumMemberName(&quot;…&quot;)]</code></td>
+<td>Renames one enum member on the wire (honored by the default enum handling and the <a href="converters.html">enum converters</a>).</td>
+</tr>
+</tbody>
+</table>
+<p>For a custom wire form the attributes cannot express — a value type rendered as a single scalar, or a type the defaults reject — write a <a href="converters.html">custom converter</a> and register it on <code>options.Converters</code>.</p>
+<h2 id="precedence-at-a-glance">Precedence at a glance</h2>
+<p>When several settings could govern the same member, the closest one wins:</p>
+<ol>
+<li>a member-level <code>[PropertyName]</code> (name), <code>[Ignore]</code> (exclusion), or <code>[Converter]</code> (wire form);</li>
+<li>a type-level <code>[NamingPolicy]</code> or <code>[Converter]</code>;</li>
+<li>the serializer options (<code>PropertyNamingPolicy</code>, <code>DefaultIgnoreCondition</code>, <code>IncludeFields</code>, <code>UnmappedMemberHandling</code>, …).</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="converters.html">Writing converters</a> — the route for everything beyond renaming and ignoring.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> — which types map without any attribute at all.</li>
+<li><a href="using.html">Using YAML</a> — the end-to-end walk-through.</li>
+<li><a href="../../../docs/serialization/yaml/concepts.html">Bodu.Text.Yaml core concepts</a> — where attributes fit in the converter-resolution picture.</li>
+<li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
+<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

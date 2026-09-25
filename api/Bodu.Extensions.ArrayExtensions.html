@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ArrayExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ArrayExtensions | BODU ">
+    
+    <meta name="description" content="Provides allocation-aware operations over  instances — clearing, copying, slicing, and reversing — that either match the missing primitives on  or supply more ergonomic counterparts to the BCL helpers.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.ArrayExtensions">
+
+
+
+  <h1 id="Bodu_Extensions_ArrayExtensions" data-uid="Bodu.Extensions.ArrayExtensions" class="text-break">Class ArrayExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides allocation-aware operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> instances — clearing, copying, slicing, and reversing
+— that either match the missing primitives on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> or supply more ergonomic counterparts to the BCL
+helpers.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ArrayExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_ArrayExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ArrayExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_ArrayExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> type ships with a useful but uneven surface: <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.reverse#system-array-reverse(system-array)">Reverse(Array)</a>
+mutates in place while LINQ's <code>Reverse</code> allocates a new sequence;
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.clear#system-array-clear(system-array-system-int32-system-int32)">Clear(Array, int, int)</a> requires explicit bounds; and there is no <code>Slice</code> for plain
+arrays at all. This class fills those gaps with overload sets that work both on the strongly typed <code>T[]</code> form
+and the non-generic <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> base, so callers can choose the version that matches the data they already
+hold.
+</p>
+<p>
+The API surface is grouped around four operations: bulk-reset (<code>Clear</code>), shallow duplication (<code>Copy</code>),
+windowed views returned as freshly allocated arrays (<code>Slice</code>), and whole-array or windowed element reversal (
+<code>Reverse</code>). Each operation accepts a default whole-array form together with an indexed-range and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a>-based overload, giving the same shape of API regardless of how the caller prefers to express
+the window.
+</p>
+<p>
+All methods validate their inputs through <a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> and reject <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> arrays with
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>. <code>Reverse</code>, <code>Slice</code>, and <code>Copy</code> always allocate: each returns a
+new array and leaves the source untouched — <code>Reverse</code> copies the full source and reverses the nominated window
+on the copy, unlike the in-place <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array.reverse#system-array-reverse(system-array)">Reverse(Array)</a>. Only <code>Clear</code> mutates the source
+array. Operations are not thread-safe — callers are responsible for synchronizing access to a shared array.
+</p>
+<example>
+<pre><code class="lang-csharp">int[] source = { 1, 2, 3, 4, 5, 6 };
+
+// Reverse only the middle window — returns a new array; source is unchanged.
+int[] reversed = source.Reverse(1, 4); // =&gt; { 1, 5, 4, 3, 2, 6 }
+
+// Take a freshly allocated slice using a Range expression.
+int[] tail = source.Slice(2..); // =&gt; { 3, 4, 5, 6 }
+
+// Clear the prefix in place without touching the tail.
+source.Clear(0, 3); // =&gt; source is now { 0, 0, 0, 4, 5, 6 }</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear_System_Array_" data-uid="Bodu.Extensions.ArrayExtensions.Clear(System.Array)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear_System_Array_">Clear(Array)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets all elements in an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> to the default value of each element type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear_System_Array_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Clear(System.Array,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear_System_Array_System_Int32_">Clear(Array, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets all elements in an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> to the default value of each element type, starting from the
+specified index to the end of the array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear_System_Array_System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Clear(System.Array,System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear_System_Array_System_Int32_System_Int32_">Clear(Array, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets a specified number of elements in an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> to the default value of each element type,
+starting from a given index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear__1___0___" data-uid="Bodu.Extensions.ArrayExtensions.Clear``1(``0[])">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear__1___0___">Clear&lt;T&gt;(T[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets all elements in a one-dimensional array to the default value of the element type.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear__1___0___System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Clear``1(``0[],System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear__1___0___System_Int32_">Clear&lt;T&gt;(T[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets all elements in a one-dimensional array to the default value of the element type, starting from the
+specified index to the end of the array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Clear__1___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Clear``1(``0[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Clear.html#Bodu_Extensions_ArrayExtensions_Clear__1___0___System_Int32_System_Int32_">Clear&lt;T&gt;(T[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Sets a specified number of elements in a one-dimensional array to the default value of the element type,
+starting from a given index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Copy__1___0___" data-uid="Bodu.Extensions.ArrayExtensions.Copy``1(``0[])">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Copy.html#Bodu_Extensions_ArrayExtensions_Copy__1___0___">Copy&lt;T&gt;(T[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a shallow copy of the specified array of value types. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> if the source
+array is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_PadLeft__1___0___System_Int32___0_" data-uid="Bodu.Extensions.ArrayExtensions.PadLeft``1(``0[],System.Int32,``0)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.PadLeft.html#Bodu_Extensions_ArrayExtensions_PadLeft__1___0___System_Int32___0_">PadLeft&lt;T&gt;(T[], int, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new array of length <code class="paramref">totalLength</code> whose trailing elements are the contents of
+<code class="paramref">array</code> and whose leading positions are filled with <code class="paramref">padValue</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_PadRight__1___0___System_Int32___0_" data-uid="Bodu.Extensions.ArrayExtensions.PadRight``1(``0[],System.Int32,``0)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.PadRight.html#Bodu_Extensions_ArrayExtensions_PadRight__1___0___System_Int32___0_">PadRight&lt;T&gt;(T[], int, T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a new array of length <code class="paramref">totalLength</code> whose leading elements are the contents of
+<code class="paramref">array</code> and whose trailing positions are filled with <code class="paramref">padValue</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Slice__1___0___System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Slice``1(``0[],System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Slice.html#Bodu_Extensions_ArrayExtensions_Slice__1___0___System_Int32_">Slice&lt;T&gt;(T[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Takes a slice of the specified array starting from a given index and extending to the end of the array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_Slice__1___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.Slice``1(``0[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.Slice.html#Bodu_Extensions_ArrayExtensions_Slice__1___0___System_Int32_System_Int32_">Slice&lt;T&gt;(T[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Takes a slice of the specified array starting from a given index and extending for a specified number of
+elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToMatrix__1___0_____System_Boolean_" data-uid="Bodu.Extensions.ArrayExtensions.ToMatrix``1(``0[][],System.Boolean)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToMatrix.html#Bodu_Extensions_ArrayExtensions_ToMatrix__1___0_____System_Boolean_">ToMatrix&lt;T&gt;(T[][], bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the elements of a jagged array into a newly allocated two-dimensional array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_">ToReversed(Array)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new single-dimensional array containing all elements of <code class="paramref">source</code> in reverse order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array,System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Int32_System_Int32_">ToReversed(Array, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new single-dimensional array that is a copy of <code class="paramref">source</code> with elements in the
+specified range reversed, leaving all other elements in their original positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Range_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed(System.Array,System.Range)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed_System_Array_System_Range_">ToReversed(Array, Range)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new single-dimensional array that is a copy of <code class="paramref">source</code> with elements in the
+specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[])">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___">ToReversed&lt;T&gt;(T[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new array containing all elements of <code class="paramref">source</code> in reverse order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Int32_System_Int32_">ToReversed&lt;T&gt;(T[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified range reversed,
+leaving all other elements in their original positions.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range_" data-uid="Bodu.Extensions.ArrayExtensions.ToReversed``1(``0[],System.Range)">
+          <a class="xref" href="Bodu.Extensions.ArrayExtensions.ToReversed.html#Bodu_Extensions_ArrayExtensions_ToReversed__1___0___System_Range_">ToReversed&lt;T&gt;(T[], Range)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a new array that is a copy of <code class="paramref">source</code> with elements in the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> reversed, leaving all other elements in their original positions.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

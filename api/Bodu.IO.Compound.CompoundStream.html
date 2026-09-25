@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CompoundStream | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CompoundStream | BODU ">
+    
+    <meta name="description" content="Provides seekable access to the bytes of a single stream within a compound file.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.CompoundStream">
+
+
+
+  <h1 id="Bodu_IO_Compound_CompoundStream" data-uid="Bodu.IO.Compound.CompoundStream" class="text-break">Class CompoundStream</h1>
+  <div class="markdown level0 summary"><p>Provides seekable access to the bytes of a single stream within a compound file.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.marshalbyrefobject">MarshalByRefObject</a></div>
+    <div class="level2"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></div>
+    <div class="level3"><span class="xref">CompoundStream</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.null">Stream.Null</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.beginread">Stream.BeginRead(byte[], int, int, AsyncCallback, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.beginwrite">Stream.BeginWrite(byte[], int, int, AsyncCallback, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.close">Stream.Close()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copyto#system-io-stream-copyto(system-io-stream)">Stream.CopyTo(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copyto#system-io-stream-copyto(system-io-stream-system-int32)">Stream.CopyTo(Stream, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copytoasync#system-io-stream-copytoasync(system-io-stream)">Stream.CopyToAsync(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copytoasync#system-io-stream-copytoasync(system-io-stream-system-int32)">Stream.CopyToAsync(Stream, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copytoasync#system-io-stream-copytoasync(system-io-stream-system-int32-system-threading-cancellationtoken)">Stream.CopyToAsync(Stream, int, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copytoasync#system-io-stream-copytoasync(system-io-stream-system-threading-cancellationtoken)">Stream.CopyToAsync(Stream, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.dispose#system-io-stream-dispose">Stream.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.disposeasync">Stream.DisposeAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.endread">Stream.EndRead(IAsyncResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.endwrite">Stream.EndWrite(IAsyncResult)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.flushasync#system-io-stream-flushasync">Stream.FlushAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readasync#system-io-stream-readasync(system-byte()-system-int32-system-int32)">Stream.ReadAsync(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readatleast">Stream.ReadAtLeast(Span&lt;byte&gt;, int, bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readatleastasync">Stream.ReadAtLeastAsync(Memory&lt;byte&gt;, int, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readbyte">Stream.ReadByte()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readexactly#system-io-stream-readexactly(system-byte()-system-int32-system-int32)">Stream.ReadExactly(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readexactly#system-io-stream-readexactly(system-span((system-byte)))">Stream.ReadExactly(Span&lt;byte&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readexactlyasync#system-io-stream-readexactlyasync(system-byte()-system-int32-system-int32-system-threading-cancellationtoken)">Stream.ReadExactlyAsync(byte[], int, int, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readexactlyasync#system-io-stream-readexactlyasync(system-memory((system-byte))-system-threading-cancellationtoken)">Stream.ReadExactlyAsync(Memory&lt;byte&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.synchronized">Stream.Synchronized(Stream)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.writeasync#system-io-stream-writeasync(system-byte()-system-int32-system-int32)">Stream.WriteAsync(byte[], int, int)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.writebyte">Stream.WriteByte(byte)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.cantimeout">Stream.CanTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.readtimeout">Stream.ReadTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.writetimeout">Stream.WriteTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.marshalbyrefobject.getlifetimeservice">MarshalByRefObject.GetLifetimeService()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.marshalbyrefobject.initializelifetimeservice">MarshalByRefObject.InitializeLifetimeService()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Compound.html">Compound</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Compound.dll</h6>
+  <h5 id="Bodu_IO_Compound_CompoundStream_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CompoundStream : Stream, IAsyncDisposable, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Compound_CompoundStream_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/io-compound-stream-access.svg" alt="CompoundStorage.OpenStream returns a CompoundStream, a read-only seekable Stream cursor whose CanWrite is false. When the owning CompoundFile was opened buffered (the default), the stream's whole payload is materialized into an in-memory byte array at open time and Read, Seek, and AsMemory work over that array. When the file was opened with buffered false, the cursor walks the stream's sector chain in the source on demand: each Read locates the sector for the current Position, copies only the bytes within that sector, and advances, so the full payload is never held in memory. AsMemory materializes the whole chain on request.">
+</p>
+<p>
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is a standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor obtained from
+<a class="xref" href="Bodu.IO.Compound.CompoundStorage.OpenStream.html#Bodu_IO_Compound_CompoundStorage_OpenStream_System_String_">OpenStream(string)</a>, so it composes with the BCL surfaces that consume a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.streamreader">StreamReader</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.binaryreader">BinaryReader</a>,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream.copyto#system-io-stream-copyto(system-io-stream)">CopyTo(Stream)</a>, and the deserializers built on top of them.
+</p>
+<p>
+A stream opened from a buffered compound file is backed by an in-memory payload assembled at open time. A stream
+opened from a streaming compound file (see <a class="xref" href="Bodu.IO.Compound.CompoundFile.Open.html#Bodu_IO_Compound_CompoundFile_Open_System_IO_Stream_System_Boolean_System_Boolean_">Open(Stream, bool, bool)</a> with
+<code>buffered: false</code>) reads its sectors on demand from the underlying source, so it never materializes the whole
+payload. In the streaming case the owning <a class="xref" href="Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and its source must remain open for the
+lifetime of the cursor.
+</p>
+<p>
+A stream opened from a writable compound file (see
+<a class="xref" href="Bodu.IO.Compound.CompoundFile.Create.html#Bodu_IO_Compound_CompoundFile_Create_System_IO_Stream_System_Boolean_Bodu_IO_Compound_Builders_CompoundBuildOptions_">Create(Stream, bool, CompoundBuildOptions)</a>) is
+backed by a growable in-memory buffer: <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and
+<a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a> mutate the buffer. The edits are staged in
+memory and are persisted to the underlying destination only when <a class="xref" href="Bodu.IO.Compound.CompoundFile.Commit.html#Bodu_IO_Compound_CompoundFile_Commit">Commit()</a> is called;
+closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
+holds at most <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> bytes — payloads beyond that are authored through the deferred stream
+sources on <a class="xref" href="Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> (<code>AddStream(name, openRead, length)</code>
+or <code>AddStreamFromFile</code>), which never buffer the whole payload.
+</p>
+<p>
+A read-only cursor (<a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a>
+from <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a> and <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a>. Because reads against a streaming
+source advance a shared position, a single cursor is not safe for concurrent use; open one cursor per reader.
+</p>
+</div>
+  <h5 id="Bodu_IO_Compound_CompoundStream_examples"><strong>Examples</strong></h5>
+  <p>The following example opens a compound file, navigates to a named stream, and reads its leading bytes through the
+cursor.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"));
+using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
+byte[] signature = new byte[8];
+stream.ReadExactly(signature);
+
+// Seek back to the start and hand the cursor to any Stream consumer.
+stream.Seek(0, SeekOrigin.Begin);
+using var reader = new BinaryReader(stream);
+ushort recordType = reader.ReadUInt16();</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_CanRead" data-uid="Bodu.IO.Compound.CompoundStream.CanRead">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanRead.html#Bodu_IO_Compound_CompoundStream_CanRead">CanRead</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports reading.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_CanSeek" data-uid="Bodu.IO.Compound.CompoundStream.CanSeek">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanSeek.html#Bodu_IO_Compound_CompoundStream_CanSeek">CanSeek</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports seeking.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_CanWrite" data-uid="Bodu.IO.Compound.CompoundStream.CanWrite">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.CanWrite.html#Bodu_IO_Compound_CompoundStream_CanWrite">CanWrite</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets a value indicating whether the current stream supports writing.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Length" data-uid="Bodu.IO.Compound.CompoundStream.Length">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Length.html#Bodu_IO_Compound_CompoundStream_Length">Length</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets the length in bytes of the stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Name" data-uid="Bodu.IO.Compound.CompoundStream.Name">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Name.html#Bodu_IO_Compound_CompoundStream_Name">Name</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the directory name of the stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Parent" data-uid="Bodu.IO.Compound.CompoundStream.Parent">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Parent.html#Bodu_IO_Compound_CompoundStream_Parent">Parent</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the storage that owns this stream cursor.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Position" data-uid="Bodu.IO.Compound.CompoundStream.Position">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Position.html#Bodu_IO_Compound_CompoundStream_Position">Position</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, gets or sets the position within the current stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Stat" data-uid="Bodu.IO.Compound.CompoundStream.Stat">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Stat.html#Bodu_IO_Compound_CompoundStream_Stat">Stat</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the metadata snapshot for this stream entry.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_AsMemory" data-uid="Bodu.IO.Compound.CompoundStream.AsMemory">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.AsMemory.html#Bodu_IO_Compound_CompoundStream_AsMemory">AsMemory()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a read-only view over the entire stream payload, materializing it for an on-demand stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Dispose_System_Boolean_" data-uid="Bodu.IO.Compound.CompoundStream.Dispose(System.Boolean)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Dispose.html#Bodu_IO_Compound_CompoundStream_Dispose_System_Boolean_">Dispose(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases the unmanaged resources used by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> and optionally releases the managed resources.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Flush" data-uid="Bodu.IO.Compound.CompoundStream.Flush">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Flush.html#Bodu_IO_Compound_CompoundStream_Flush">Flush()</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_FlushAsync_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.FlushAsync(System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.FlushAsync.html#Bodu_IO_Compound_CompoundStream_FlushAsync_System_Threading_CancellationToken_">FlushAsync(CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously clears all buffers for this stream, causes any buffered data to be written to the underlying device, and monitors cancellation requests.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Read_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Read.html#Bodu_IO_Compound_CompoundStream_Read_System_Byte___System_Int32_System_Int32_">Read(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Read(System.Span{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Read.html#Bodu_IO_Compound_CompoundStream_Read_System_Span_System_Byte__">Read(Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_ReadAllBytes" data-uid="Bodu.IO.Compound.CompoundStream.ReadAllBytes">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAllBytes.html#Bodu_IO_Compound_CompoundStream_ReadAllBytes">ReadAllBytes()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the entire stream payload into a new byte array, independent of the current position.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAsync.html#Bodu_IO_Compound_CompoundStream_ReadAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_">ReadAsync(byte[], int, int, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.ReadAsync.html#Bodu_IO_Compound_CompoundStream_ReadAsync_System_Memory_System_Byte__System_Threading_CancellationToken_">ReadAsync(Memory&lt;byte&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously reads a sequence of bytes from the current stream, advances the position within the stream by the number of bytes read, and monitors cancellation requests.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Seek_System_Int64_System_IO_SeekOrigin_" data-uid="Bodu.IO.Compound.CompoundStream.Seek(System.Int64,System.IO.SeekOrigin)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Seek.html#Bodu_IO_Compound_CompoundStream_Seek_System_Int64_System_IO_SeekOrigin_">Seek(long, SeekOrigin)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, sets the position within the current stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_" data-uid="Bodu.IO.Compound.CompoundStream.SetLength(System.Int64)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.SetLength.html#Bodu_IO_Compound_CompoundStream_SetLength_System_Int64_">SetLength(long)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, sets the length of the current stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_Byte___System_Int32_System_Int32_">Write(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Compound.CompoundStream.Write(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.Write.html#Bodu_IO_Compound_CompoundStream_Write_System_ReadOnlySpan_System_Byte__">Write(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.WriteAsync.html#Bodu_IO_Compound_CompoundStream_WriteAsync_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_">WriteAsync(byte[], int, int, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Compound_CompoundStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Compound.CompoundStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Compound.CompoundStream.WriteAsync.html#Bodu_IO_Compound_CompoundStream_WriteAsync_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">WriteAsync(ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.ReadAllBytes.html#Bodu_Extensions_StreamExtensions_ReadAllBytes_System_IO_Stream_">StreamExtensions.ReadAllBytes(Stream)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.ReadAllBytesAsync.html#Bodu_Extensions_StreamExtensions_ReadAllBytesAsync_System_IO_Stream_System_Threading_CancellationToken_">StreamExtensions.ReadAllBytesAsync(Stream, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.WriteAllBytes.html#Bodu_Extensions_StreamExtensions_WriteAllBytes_System_IO_Stream_System_ReadOnlySpan_System_Byte__">StreamExtensions.WriteAllBytes(Stream, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.StreamExtensions.WriteAllBytesAsync.html#Bodu_Extensions_StreamExtensions_WriteAllBytesAsync_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">StreamExtensions.WriteAllBytesAsync(Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

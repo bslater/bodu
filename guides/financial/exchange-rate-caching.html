@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Caching and aggregating exchange rates | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Caching and aggregating exchange rates | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="caching-and-aggregating-exchange-rates">Caching and aggregating exchange rates</h1>
+
+<p><code>Bodu.Financial.ExchangeRates.Caching</code> adds two pieces <strong>in front of</strong> the
+exchange-rate providers. The concrete providers (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer,
+exchangerate.host, FRED, IMF) stay pure
+fetchers that know nothing of caching; each piece implements the same
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a>
+contract (and the timeless <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a>),
+so they drop in transparently:</p>
+<p><img src="../../images/exchange-rate-caching-architecture.svg" alt="The caller talks to an AggregatingRateProvider, which routes each FX pair to a CachingRateProvider; each caching provider reads through its own cache (SQLite, in-memory, …) and calls its concrete source only on a miss."></p>
+<p>The two pieces are orthogonal: use the cache alone to add read-through caching to
+a single source, the aggregator alone to group already-cached (or uncached)
+providers, or compose them as above.</p>
+<h2 id="concepts-in-one-minute">Concepts in one minute</h2>
+<ul>
+<li><strong>Caching provider</strong> — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html"><code>CachingRateProvider</code></a>
+wraps <strong>one</strong> inner source over <strong>one</strong> single-provider cache. It serves fresh
+cached rates and delegates to the source only on a miss, then caches what the
+source returns.</li>
+<li><strong>Cache</strong> — a cache is <strong>bound to one provider</strong>.
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a>
+owns expiry: callers pass a duration, and the cache returns only fresh rows and
+prunes stale ones on write. Shipped stores are
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html"><code>TomlFileRateCache</code></a>
+and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code></a>
+(on disk, with a configurable <a href="#file-layouts-and-date-partitioning">layout and date partitioning</a>),
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html"><code>InMemoryRateCache</code></a>,
+and the no-op <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.NullRateCache.html"><code>NullRateCache</code></a>.</li>
+<li><strong>Options</strong> — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html"><code>CachingRateOptions</code></a>
+carries the cache <strong>location</strong> (<code>CacheDirectory</code>), the <strong>default expiry</strong>
+(<code>DefaultExpiry</code>), <strong>per-provider overrides</strong> (<code>ProviderExpiry</code>), the per-event
+log levels, and <code>DefaultLookupOptions</code> for the timeless surface.</li>
+<li><strong>Aggregator</strong> — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>
+groups named children behind one entry point, combining them with a pluggable
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a>
+and optional <strong>per-FX-pair routing</strong>.</li>
+<li><strong>Entry</strong> — <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachedRate.html"><code>CachedRate</code></a>
+is one cached row: the observation <code>Date</code>, the <code>Rate</code>, and the <code>CachedAtUtc</code>
+instant that drives expiry.</li>
+</ul>
+<h2 id="quickstart">Quickstart</h2>
+<p>A durable SQLite cache in front of the RBA source, end to end. Both snippets are
+self-contained — nothing is assumed to exist beforehand.</p>
+<p><strong>Dependency injection</strong> (recommended — the container owns the <code>HttpClient</code>, logger,
+and disposal):</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;          // AddRbaExchangeRates, RbaRateProvider
+using Bodu.Financial.ExchangeRates.Caching;  // IRateCache
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+
+services.AddFinancialService()
+        .AddRbaExchangeRates()                                   // the concrete RBA source
+        .AddSqliteRateCache(&quot;RBA&quot;,                                 // a durable cache bound to it
+            configure: o =&gt; o.DatabaseFilePath = &quot;/var/cache/fx.db&quot;)
+        .AddCachedRateProvider&lt;RbaRateProvider&gt;(   // read-through over that cache
+            &quot;RBA&quot;,
+            cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name));
+
+using var host = services.BuildServiceProvider();
+var rates = host.GetRequiredService&lt;IDatedRateProvider&gt;();
+
+RateLookupResult aud = rates.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+// aud.Rate is served from SQLite when fresh, otherwise fetched from the RBA source and cached.
+</code></pre>
+<p><strong>Manual</strong> (new up every piece yourself — useful outside a DI container):</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;          // RbaRateProvider, RbaRateProviderOptions
+using Bodu.Financial.ExchangeRates.Caching;  // SqliteRateCache, CachingRateProvider
+
+// The concrete source. This overload builds and owns an HttpClient, so dispose the provider.
+using var source = new RbaRateProvider(new RbaRateProviderOptions());
+
+// A durable cache for it, wrapped in a read-through provider.
+using var cache = new SqliteRateCache(&quot;RBA&quot;, &quot;/var/cache/fx.db&quot;);
+var rates = new CachingRateProvider(source, cache, new CachingRateOptions());
+
+RateLookupResult aud = rates.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+</code></pre>
+<p>From here: add <a href="#sqlite-concurrency-durability-and-the-shared-file">more providers behind one file</a>,
+<a href="#stacking-providers-tiered-read-through">stack a faster tier</a>,
+<a href="#grouping-providers-with-the-aggregator">group several sources</a>, or wire the
+<a href="#observability-seeing-hits-misses-and-degradation">degradation logging</a>.</p>
+<h2 id="caching-one-provider">Caching one provider</h2>
+<p><code>CachingRateProvider</code> caches exactly one source. It is <strong>storage-agnostic</strong>:
+it never chooses or constructs a cache, so you supply the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a>
+— and therefore the storage structure (TOML or JSON files, the on-disk layout and
+partitioning, in-memory, SQLite, or distributed) — at the composition root. The
+provider classes never learn they are being cached.</p>
+<pre><code class="lang-mermaid">sequenceDiagram
+    participant Caller
+    participant Provider as CachingRateProvider
+    participant Cache as IRateCache
+    participant Source as Source provider
+    Caller-&gt;&gt;Provider: GetRate(AUD, USD, date)
+    Provider-&gt;&gt;Cache: fresh cached rate?
+    alt cache hit
+        Cache--&gt;&gt;Provider: fresh rate
+    else cache miss
+        Provider-&gt;&gt;Source: fetch
+        Source--&gt;&gt;Provider: rate
+        Provider-&gt;&gt;Cache: store (merge + prune)
+    end
+    Provider--&gt;&gt;Caller: RateLookupResult
+</code></pre>
+<pre><code class="lang-csharp">var options = new CachingRateOptions
+{
+    DefaultExpiry = TimeSpan.FromHours(12),
+};
+options.ProviderExpiry[&quot;RBA&quot;] = TimeSpan.FromDays(7);   // RBA publishes daily; cache longer
+
+// Pick the cache explicitly. Cache files land under /var/cache/fx/RBA/.
+var rbaCache = new TomlFileRateCache(
+    new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; });
+IDatedRateProvider cachedRba = new CachingRateProvider(rba, rbaCache, options);
+
+// Or any other IRateCache — for example the in-memory store.
+IDatedRateProvider cachedEcb =
+    new CachingRateProvider(ecb, new InMemoryRateCache(&quot;ECB&quot;), options);
+</code></pre>
+<p>The decorator is <code>IDisposable</code>. By default it does <strong>not</strong> dispose the inner
+provider — under dependency injection the container owns it, and a hand-composed
+inner is owned by whoever created it. Pass <code>ownsInner: true</code> to make disposing the
+decorator also dispose a disposable inner (for example a provider that built its
+own <code>HttpClient</code>):</p>
+<pre><code class="lang-csharp">using var cached = new CachingRateProvider(
+    new RbaRateProvider(rbaOptions),
+    new TomlFileRateCache(new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; }),
+    options,
+    ownsInner: true);
+</code></pre>
+<p>The decorator also implements the timeless surface, which resolves the current UTC
+date under <code>CachingRateOptions.DefaultLookupOptions</code>:</p>
+<pre><code class="lang-csharp">decimal todayRate = ((IRateProvider)cachedRba).GetRate(&quot;AUD&quot;, &quot;USD&quot;);
+</code></pre>
+<h3 id="per-provider-expiry-and-the-global-default">Per-provider expiry and the global default</h3>
+<p><code>GetExpiry(name)</code> returns a provider's specific override when present and
+<code>DefaultExpiry</code> otherwise:</p>
+<pre><code class="lang-csharp">options.GetExpiry(&quot;RBA&quot;);     // 7 days   (override)
+options.GetExpiry(&quot;ECB&quot;);     // 12 hours (the default)
+</code></pre>
+<h3 id="single-date-lookups">Single-date lookups</h3>
+<p><code>GetRate</code> / <code>TryGetRate</code> flow through the cache. On a hit the cached rows are
+reconstructed into a <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html"><code>FixedDatedRateProvider</code></a>,
+so date-resolution policy, inverse pairs, and same-currency identity all behave
+exactly as the underlying stack would:</p>
+<pre><code class="lang-csharp">// Miss → fetched from the source, then cached.
+RateLookupResult r1 = cachedRba.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+
+// Repeat within the expiry window → served from cache, no source call.
+RateLookupResult r2 = cachedRba.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+
+// Resolution policies are honoured against the cached rows.
+cachedRba.TryGetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 5),
+    RateLookupOptions.PreviousWithin(7), out RateLookupResult r3);
+</code></pre>
+<h3 id="range-lookups">Range lookups</h3>
+<p><code>GetRatesAsync</code> returns every rate whose date falls in the inclusive window. Whether
+the cache can serve a range is decided by <strong>coverage</strong> — the date ranges the source
+was actually fetched for — not by the span of the stored rows. A range is served from
+the cache only when the recorded coverage <strong>contains</strong> the whole requested window;
+otherwise the range is refetched and the rows plus the covered window are written back
+together (atomically) through <code>StoreFetchedRange</code>.</p>
+<p>When the direct pair's coverage does not contain the window but the <strong>inverse</strong> pair's
+does — and inversion is permitted by the provider's <code>DefaultLookupOptions</code> (the default) —
+the range is served from the inverse pair by reciprocating each rate. So a <code>USD/AUD</code> range
+already fetched also satisfies an <code>AUD/USD</code> range request without a refetch, mirroring the
+single-date surface.</p>
+<pre><code class="lang-csharp">IReadOnlyList&lt;ExchangeRate&gt; january =
+    await cachedRba.GetRatesAsync(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Coverage is recorded for the whole fetched window even on days that returned no
+observation (a weekend, a holiday, a true gap), so a later lookup of the same window
+is served from the cache rather than refetched. A sparse set of rows is therefore
+never mistaken for proof that every interior day was fetched — the distinction a
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.DateRangeCoverage.html"><code>DateRangeCoverage</code></a> makes explicit.</p>
+</div>
+<h3 id="respecting-advertised-history">Respecting advertised history</h3>
+<p>Every shipped provider <a href="exchange-rate-providers.html">advertises how far back it can serve rates</a>
+through <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
+and the caching decorator consumes that declaration by default
+(<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_RespectHistoryAvailability"><code>RespectHistoryAvailability</code></a>):
+when the inner provider implements
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IHistoricalRateProvider.html"><code>IHistoricalRateProvider</code></a>,
+misses for dates the source has declared unavailable are not forwarded.</p>
+<ul>
+<li><strong>Single-date lookups</strong> outside the advertised history surface as an ordinary
+miss (<code>TryGetRate</code> returns <code>false</code>; the throwing surfaces raise the usual
+<code>KeyNotFoundException</code>) without the inner provider being called. Forward-resolving
+rules are honoured: a request just before the advertised floor whose
+<code>NextOnOrAfter</code>/<code>Nearest</code> tolerance reaches back inside it is still delegated.</li>
+<li><strong>Range fetches</strong> that start before the advertised earliest date are issued
+from that date instead, and a window lying entirely before it is not fetched at
+all. In both cases coverage is recorded over the <strong>whole requested window</strong>, so
+the unavailable prefix becomes the covered-with-no-rows negative cache described
+above and is not re-asked until normal expiry.</li>
+</ul>
+<p>The clamp only ever removes calls the source has declared doomed — a non-aware
+inner provider is treated as unbounded and never skipped, and a date inside the
+advertised window can still miss for ordinary reasons (weekends, holidays,
+unpublished series). Skips and clamps are logged at
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.HistoryClampLogLevel.html#Bodu_Financial_ExchangeRates_Caching_CachingRateOptions_HistoryClampLogLevel"><code>HistoryClampLogLevel</code></a>.
+The decorator forwards the inner's declaration as its own <code>HistoryAvailability</code>,
+so stacked caches and the aggregator see through it.</p>
+<p>The <a href="#grouping-providers-with-the-aggregator">aggregator</a> applies the same idea
+at routing time (via its own
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.RespectHistoryAvailability.html#Bodu_Financial_ExchangeRates_Caching_RateAggregationOptions_RespectHistoryAvailability"><code>RespectHistoryAvailability</code></a>):
+candidates that declared they cannot serve any part of the requested date or
+window are dropped before the strategy runs, so a priority fallback does not
+waste a call on a source that cannot answer — a shallow rolling-window source is
+skipped for deep historical dates while an unbounded central-bank source answers
+them. Its composed <code>HistoryAvailability</code> is the most generous declaration across
+the children.</p>
+<h2 id="the-cache-cascade">The cache cascade</h2>
+<p>The cache is deliberately layered so you can plug in at whichever level fits:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Type</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contract</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a></td>
+<td>Single-provider store: a bound <code>Provider</code>; rate rows via <code>GetRates</code>/<code>Store</code>, fetch coverage via <code>GetCoverage</code>/<code>RecordCoverage</code>, and the atomic <code>StoreFetchedRange</code> that writes both together.</td>
+</tr>
+<tr>
+<td>Core</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html"><code>RateCacheBase&lt;TOptions&gt;</code></a></td>
+<td>Per-pair locking + row/coverage freshness filtering, merge, and prune. <strong>No physical layout.</strong></td>
+</tr>
+<tr>
+<td>File seam</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IFileRateCache.html"><code>IFileRateCache</code></a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html"><code>FileRateCacheBase&lt;TOptions&gt;</code></a></td>
+<td>Layout-driven directory + file-name resolution, date partitioning, best-effort IO.</td>
+</tr>
+<tr>
+<td>Leaf</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html"><code>TomlFileRateCache</code></a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code></a></td>
+<td>The TOML or JSON serialization format only.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-on-disk-format">The on-disk format</h3>
+<p>A cache bound to provider <code>RBA</code> stores <code>AUD/USD</code> as <code>&lt;directory&gt;/RBA/AUDUSD.toml</code>
+— a per-provider subdirectory with one file per pair (this default layout, and how
+to change it, is covered under <a href="#file-layouts-and-date-partitioning">File layouts and date partitioning</a>).
+Each file opens with a <strong>self-describing header</strong> — the bound <code>Provider</code> and the
+pair's <code>From</code>/<code>To</code> currency codes — so a file carries its own identity rather than
+relying on its name and folder. Each dated rate is then a TOML table; the <code>decimal</code>
+rate is written as a <strong>quoted string</strong> so its full precision and scale round-trip
+exactly, and the dates use TOML's native RFC 3339 forms:</p>
+<pre><code class="lang-toml">Provider = &quot;RBA&quot;
+From = &quot;AUD&quot;
+To = &quot;USD&quot;
+
+[[Entries]]
+Date = 2023-01-03
+Rate = &quot;0.5000&quot;
+CachedAtUtc = 2023-01-04T09:15:00+00:00
+
+[[Entries]]
+Date = 2023-01-06
+Rate = &quot;0.5100&quot;
+CachedAtUtc = 2023-01-04T09:15:00+00:00
+</code></pre>
+<p>The serializer is <a class="xref" href="../../api/Bodu.Text.Toml.TomlSerializer.html"><code>Bodu.Text.Toml</code></a> with
+<code>TomlDecimalHandling.String</code>. A file written before the header existed simply has
+no <code>Provider</code>/<code>From</code>/<code>To</code> keys and still reads. The file is <strong>best-effort</strong>: any
+I/O or TOML error on read yields an empty result, and a failed write is swallowed,
+so a cache problem never breaks rate retrieval. You can use a cache directly — note
+there is no provider argument; the cache is bound to its provider at construction:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var cache = new TomlFileRateCache(
+    new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; });
+
+var now = DateTimeOffset.UtcNow;
+cache.Store(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD),
+    new[] { new CachedRate(new DateOnly(2023, 1, 3), 0.5000m, now) },
+    TimeSpan.FromHours(24), now);
+
+IReadOnlyList&lt;CachedRate&gt; fresh =
+    cache.GetRates(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), TimeSpan.FromHours(24), now);
+</code></pre>
+<h3 id="the-json-format">The JSON format</h3>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code></a>
+is the same cache with a JSON body instead of TOML — same <code>.json</code> files, same
+self-describing header, same layouts and partitioning, same best-effort IO. It is
+a drop-in swap when you want a format other tools read natively; decimals are
+written as JSON numbers, which <code>System.Text.Json</code> round-trips losslessly to
+<code>decimal</code>:</p>
+<pre><code class="lang-json">{
+  &quot;Provider&quot;: &quot;RBA&quot;,
+  &quot;From&quot;: &quot;AUD&quot;,
+  &quot;To&quot;: &quot;USD&quot;,
+  &quot;Entries&quot;: [
+    { &quot;Date&quot;: &quot;2023-01-03&quot;, &quot;Rate&quot;: 0.5000, &quot;CachedAtUtc&quot;: &quot;2023-01-04T09:15:00+00:00&quot; }
+  ],
+  &quot;Coverage&quot;: []
+}
+</code></pre>
+<!-- compile -->
+<pre><code class="lang-csharp">var cache = new JsonFileRateCache(
+    new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; });
+</code></pre>
+<h3 id="file-layouts-and-date-partitioning">File layouts and date partitioning</h3>
+<p>The <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.FileRateCacheOptions.Layout.html#Bodu_Financial_ExchangeRates_Caching_FileRateCacheOptions_Layout"><code>Layout</code></a>
+option decides <strong>where</strong> a pair's rows are stored: the folder hierarchy, the file
+name, and whether the rows are <strong>split across files by date</strong>. It defaults to
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.html"><code>RateCacheFileLayout.SingleFile</code></a>
+— the <code>&lt;directory&gt;/&lt;provider&gt;/&lt;from&gt;&lt;to&gt;.toml</code> layout shown above. The built-in
+partitioned layouts isolate each pair in its own folder and write one file per
+calendar period, keyed by the period:</p>
+<table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>Files for <code>AUD/USD</code> under provider <code>RBA</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SingleFile</code> (default)</td>
+<td><code>RBA/AUDUSD.toml</code></td>
+</tr>
+<tr>
+<td><code>Yearly</code></td>
+<td><code>RBA/AUDUSD/2023.toml</code>, <code>RBA/AUDUSD/2024.toml</code>, …</td>
+</tr>
+<tr>
+<td><code>Monthly</code></td>
+<td><code>RBA/AUDUSD/2023-01.toml</code>, <code>RBA/AUDUSD/2023-02.toml</code>, …</td>
+</tr>
+<tr>
+<td><code>Daily</code></td>
+<td><code>RBA/AUDUSD/2023-01-03.toml</code>, …</td>
+</tr>
+</tbody>
+</table>
+<p>Each rate is routed to the file for its observation date, and a recorded coverage
+window that crosses a period boundary is split at the boundary so each file carries
+only its own period; a read concatenates every file in the pair's folder and the
+shared cache rules re-merge the halves, so the split is lossless.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// One file per month for each pair.
+var monthly = new TomlFileRateCache(new FileRateCacheOptions
+{
+    Provider = &quot;RBA&quot;,
+    CacheDirectory = &quot;/var/cache/fx&quot;,
+    Layout = RateCacheFileLayout.Monthly,
+});
+</code></pre>
+<p>For a layout the built-ins do not cover, build one with
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.Create.html"><code>RateCacheFileLayout.Create</code></a>:
+supply a partition strategy (one of <code>Single</code>/<code>Yearly</code>/<code>Monthly</code>/<code>Daily</code>, or
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCachePartitionStrategy.Custom.html"><code>RateCachePartitionStrategy.Custom</code></a>
+for an arbitrary period such as fiscal quarters) and optional delegates that decide
+the directory and the file name:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var custom = new TomlFileRateCache(new FileRateCacheOptions
+{
+    Provider = &quot;RBA&quot;,
+    CacheDirectory = &quot;/var/cache/fx&quot;,
+    Layout = RateCacheFileLayout.Create(
+        RateCachePartitionStrategy.Yearly,
+        directory: ctx =&gt; System.IO.Path.Combine(ctx.Root, &quot;fx&quot;, ctx.Provider, $&quot;{ctx.Pair.From}{ctx.Pair.To}&quot;),
+        fileName: ctx =&gt; $&quot;{ctx.PartitionKey}{ctx.FileExtension}&quot;),
+});
+</code></pre>
+<p>A partitioned layout has no single backing file, so <code>ResolveFilePath</code> throws for it;
+use <code>ResolveDirectory(pair)</code> for the pair's folder or <code>ResolvePartitionPath(pair, date)</code>
+for the file a given date lands in. <code>CachingRateProvider</code> takes whatever
+<code>IRateCache</code> you hand it, so a custom layout, the JSON format, or a SQLite or
+distributed cache is simply the cache you construct and pass to its
+<code>(inner, cache, options)</code> constructor. Under dependency injection, pass a
+<code>cacheFactory</code> to <code>AddCachedRateProvider</code> (or <code>AddCachedChild</code>) to choose the
+storage; when omitted, a default single-file TOML cache under the options'
+<code>CacheDirectory</code> is used.</p>
+<h3 id="custom-cache-stores">Custom cache stores</h3>
+<p>A cache backend is any <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a>
+implementation. To back the cache with a store of your own, implement that interface
+directly — the shipped
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>
+and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html"><code>DistributedRateCache</code></a>
+are exactly that and serve as worked references. Delegate the freshness, validity,
+merge, and coverage rules to the shared, public
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html"><code>RateCacheRules</code></a>
+so your backend stays behaviourally identical to the in-box caches — serving only
+fresh rows on read, merging and pruning on write, and reporting coverage only for
+windows it actually holds — and make <code>StoreFetchedRange</code> write the merged
+rows and the covered window as one atomic unit so a reader never observes coverage
+without its rows.</p>
+<p>The in-box <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html"><code>RateCacheBase&lt;TOptions&gt;</code></a>
+and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html"><code>FileRateCacheBase&lt;TOptions&gt;</code></a>
+are internal scaffolding for the in-memory, TOML, and JSON caches — they own the per-pair
+locking and the read-modify-write sequencing over a <code>CachePairState</code> — and their
+storage seam is not a public subclassing point. Implement <code>IRateCache</code>
+directly, as the SQLite and distributed backends do.</p>
+<h3 id="persistent-and-shared-backends">Persistent and shared backends</h3>
+<p>Two further <code>IRateCache</code> backends ship as separate packages and drop in the
+same way — construct one and hand it to a <code>CachingRateProvider</code>, or register
+it through the DI extension method that ships inside the backend's own package (in the
+<code>Bodu.Financial.ExchangeRates</code> namespace):</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>
+(<code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code>) persists rates and coverage in a
+SQLite database — durable across restarts, with per-pair transactional writes.
+Register it with <code>AddSqliteRateCache(&quot;RBA&quot;, …)</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html"><code>DistributedRateCache</code></a>
+(<code>Bodu.Financial.ExchangeRates.Caching.Distributed</code>) stores each pair as a JSON blob
+in any <code>IDistributedCache</code> (Redis, SQL Server, in-memory), so several processes share
+one warm cache. Register it with <code>AddDistributedRateCache(&quot;RBA&quot;)</code> or
+<code>AddRedisRateCache(redis =&gt; …, &quot;RBA&quot;)</code> — the Redis configurator is the first
+argument, the provider name the second.</li>
+</ul>
+<p>Every backend shares the same freshness, merge, and coverage semantics, because each
+delegates to the same <code>RateCacheRules</code>.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>The distributed cache is a <strong>best-effort shared performance hint, not an
+authoritative multi-writer store.</strong> <code>IDistributedCache</code> offers no atomic
+read-modify-write, so same-process races are guarded by a per-pair in-process lock
+while <strong>cross-process</strong> writes to one pair are last-write-wins (a <code>StoreFetchedRange</code>
+blob is still all-or-nothing per write, so a reader never sees coverage without its
+rows). When correctness under concurrent writers matters, prefer the SQLite backend
+(one transaction per write) or a real database.</p>
+</div>
+<p>The choice is one of reach and durability:</p>
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Best for</th>
+<th>Not for</th>
+<th>Correctness note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.NullRateCache.html"><code>NullRateCache</code></a></td>
+<td>tests / disabling the cache</td>
+<td>any reuse</td>
+<td>stores nothing; every lookup is a miss</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html"><code>InMemoryRateCache</code></a></td>
+<td>a single, long-lived process</td>
+<td>restarts; multiple processes</td>
+<td>process-local; lost on restart</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html"><code>TomlFileRateCache</code></a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code></a></td>
+<td>simple durable local cache; inspectable files</td>
+<td>high multi-process write concurrency</td>
+<td>atomic temp-and-move per file; best-effort</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a></td>
+<td>durable single-host cache</td>
+<td>a cache shared across hosts</td>
+<td>strongest shipped local option; one transaction per write</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html"><code>DistributedRateCache</code></a></td>
+<td>a warm cache shared across processes/hosts</td>
+<td>an authoritative multi-writer store</td>
+<td>last-write-wins per pair across processes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cache-backends-in-depth">Cache backends in depth</h2>
+<p>The earlier table picks a backend by reach and durability; this section goes
+one level down into the <em>semantics</em> each one commits to, so a choice survives
+the move from a single process to a fleet. Every backend implements the same
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a>
+contract and delegates its freshness, validity, merge, and coverage rules to
+the shared
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html"><code>RateCacheRules</code></a>,
+so they differ only in <em>where the bytes live</em> and <em>how a concurrent write is
+ordered</em> — never in what counts as a hit.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Null</code></th>
+<th><code>InMemory</code></th>
+<th><code>TomlFile</code> / <code>JsonFile</code></th>
+<th><code>Sqlite</code></th>
+<th><code>Distributed</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Package</td>
+<td>core</td>
+<td>core</td>
+<td>core</td>
+<td><code>.Caching.Sqlite</code></td>
+<td><code>.Caching.Distributed</code></td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>none</td>
+<td>one process</td>
+<td>one host</td>
+<td>one host</td>
+<td>many hosts</td>
+</tr>
+<tr>
+<td>Survives restart</td>
+<td>n/a</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes (in the backing store)</td>
+</tr>
+<tr>
+<td>Shared across processes</td>
+<td>n/a</td>
+<td>no</td>
+<td>through the file system</td>
+<td>through the file</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>StoreFetchedRange</code> atomicity</td>
+<td>n/a</td>
+<td>per-pair lock</td>
+<td>temp-and-move per file</td>
+<td>one transaction</td>
+<td>one blob write</td>
+</tr>
+<tr>
+<td>Cross-process write race</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>last-write-wins per file</td>
+<td>serialized rows, OS-level</td>
+<td>last-write-wins per pair</td>
+</tr>
+<tr>
+<td>Construct</td>
+<td><code>Create(provider)</code></td>
+<td><code>new(provider)</code></td>
+<td><code>new(options)</code></td>
+<td><code>AddSqliteRateCache</code></td>
+<td><code>AddDistributedRateCache</code> / <code>AddRedisRateCache</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Expiry, invalidation, and refresh are uniform.</strong> None of the backends has a
+private eviction clock. A row is fresh while <code>asOf - CachedAtUtc &lt; duration</code>
+(the resolved per-provider expiry), and freshness is evaluated on every read;
+stale rows are pruned on the next write. There is no explicit invalidate call —
+a value &quot;refreshes&quot; by being re-fetched on a miss and merged in, latest
+<code>CachedAtUtc</code> winning per date. This is why the same rules object is shared: an
+expired row in SQLite and an expired row in Redis disappear at the same instant
+relative to their own <code>CachedAtUtc</code>, with no backend-specific TTL drift. A
+distributed backend may <em>additionally</em> set an absolute expiration on its blob as
+a storage hint, but correctness never depends on it — the freshness filter still
+runs on read.</p>
+<p><strong>Atomicity is the axis that actually matters across processes.</strong>
+<code>StoreFetchedRange</code> must persist the merged rows and the covered window together
+or neither, so a reader never sees coverage without its rows and reports a false
+range hit. Each backend honours that differently:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html"><code>InMemoryRateCache</code></a>
+and the file caches (<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html"><code>TomlFileRateCache</code></a>
+and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code></a>)
+serialize per-pair writes under an in-process lock; the file caches additionally
+write each file through a temp-and-move so a half-written file is never observed.
+Two <em>processes</em> writing the same file (for example <code>AUDUSD.toml</code>) are
+last-write-wins; under a partitioned layout each per-period file is written that
+same atomic way.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>
+wraps each <code>StoreFetchedRange</code> in a single transaction over its <code>rates</code> and
+<code>coverage</code> tables, so the all-or-nothing guarantee holds even when several
+processes on the host share the database file.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html"><code>DistributedRateCache</code></a>
+stores the whole per-pair state as one JSON blob, so a <code>StoreFetchedRange</code> is
+all-or-nothing <em>across processes</em> — but because <code>IDistributedCache</code> has no
+atomic read-modify-write, the read-merge-write cycle of <code>Store</code> /
+<code>RecordCoverage</code> is only same-process safe; cross-process writes to a pair are
+last-write-wins.</li>
+</ul>
+<p><strong>When to use which.</strong> Reach for <code>NullRateCache</code> to disable caching in a
+test without changing the composition. Use <code>InMemoryRateCache</code> for a
+single long-lived service that can afford a cold start after a restart. Pick
+<code>TomlFileRateCache</code> for a durable, inspectable local cache where write
+concurrency is low — the per-pair files are human-readable. Prefer
+<code>SqliteRateCache</code> when several processes on one host must share a warm,
+correct-under-concurrency cache. Choose <code>DistributedRateCache</code> only when
+the cache must span hosts and you accept its best-effort, last-write-wins
+nature as a performance hint rather than an authoritative store; when correctness
+under concurrent writers matters across a fleet, front a real database with your
+own <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>IRateCache</code></a>.</p>
+<h2 id="sqlite-concurrency-durability-and-the-shared-file">SQLite: concurrency, durability, and the shared file</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>
+is the strongest shipped <em>local</em> backend: durable across restarts, and safe when
+several caches — even several processes on one host — share a single database file.</p>
+<p><strong>One file, many providers.</strong> Construct one cache per provider, all pointed at the same
+<code>DatabaseFilePath</code>. Every row is keyed by <code>(provider, from_code, to_code, obs_date)</code>, so
+each provider's series stays partitioned with no collisions — and one cache already
+covers <em>all</em> of its provider's currency pairs, so there is never a cache per pair:</p>
+<pre><code class="lang-csharp">using var rba = new SqliteRateCache(&quot;RBA&quot;, &quot;/var/cache/fx.db&quot;);
+using var ofx = new SqliteRateCache(&quot;OFX&quot;, &quot;/var/cache/fx.db&quot;);
+</code></pre>
+<p><strong>Why it is safe under concurrency.</strong></p>
+<ul>
+<li>Each <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>StoreFetchedRange</code></a>
+writes the merged rows and the covered window in <strong>one transaction</strong>, so a reader
+never sees coverage without its rows.</li>
+<li><strong>Write-ahead logging</strong> (<code>UseWriteAheadLogging</code>, on by default) lets readers run
+concurrently with a writer, lifting throughput when caches or processes share the
+file. It creates <code>.db-wal</code> and <code>.db-shm</code> sidecar files next to the database — normal,
+and managed by SQLite.</li>
+<li><strong><code>BusyTimeout</code></strong> (default 5 s) is how long a connection waits for a peer's write lock
+before failing. The best-effort cache would otherwise swallow a contended write as a
+silently dropped one, so a non-zero timeout is what makes multi-writer sharing
+reliable.</li>
+<li>Each instance holds its own keep-alive connection and per-pair in-process locks;
+SQLite's own file locking serialises writes across processes.</li>
+</ul>
+<p><strong>When to tune or disable.</strong> Raise <code>BusyTimeout</code> under heavy multi-process write
+contention; lower it (or <code>TimeSpan.Zero</code>) where a fast failure beats waiting. Disable
+<code>UseWriteAheadLogging</code> on storage that cannot honour WAL — notably some <strong>network file
+systems</strong> (NFS/SMB) — where the cache falls back to the default rollback journal.</p>
+<h2 id="stacking-providers-tiered-read-through">Stacking providers (tiered read-through)</h2>
+<p>A <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html"><code>CachingRateProvider</code></a>
+<em>is</em> an <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html"><code>IDatedRateProvider</code></a>,
+and its constructor takes one as its <code>inner</code> source — so caching providers
+<strong>stack</strong>. Wrap a source in a durable cache, then wrap <em>that</em> in a faster cache, to
+build a tiered read-through where each layer is consulted in turn and only a miss
+falls through to the next:</p>
+<pre><code class="lang-mermaid">flowchart TD
+    L([Lookup]) --&gt; L1[&quot;L1 · CachingRateProvider&lt;br/&gt;InMemoryRateCache — short expiry&quot;]
+    L1 -- miss --&gt; L2[&quot;L2 · CachingRateProvider&lt;br/&gt;SqliteRateCache — long expiry&quot;]
+    L2 -- miss --&gt; O[&quot;Origin · RbaRateProvider&lt;br/&gt;network source of record&quot;]
+    O -. &quot;writes back&quot; .-&gt; L2
+    L2 -. &quot;writes back&quot; .-&gt; L1
+</code></pre>
+<p>On the way back, the fetched rate is written into L2 and then L1, so both tiers
+warm up; a process restart loses L1 but L2 still serves without hitting the origin.</p>
+<pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates.Caching;
+
+// L2 short-circuits the network; L1 short-circuits even the SQLite read.
+var l2Options = new CachingRateOptions { DefaultExpiry = TimeSpan.FromDays(7) };
+var l1Options = new CachingRateOptions { DefaultExpiry = TimeSpan.FromMinutes(5) };
+
+IDatedRateProvider durable = new CachingRateProvider(
+    rbaSource, new SqliteRateCache(&quot;RBA&quot;, &quot;/var/cache/fx.db&quot;), l2Options);
+
+IDatedRateProvider tiered = new CachingRateProvider(
+    durable, new InMemoryRateCache(&quot;RBA&quot;), l1Options);
+</code></pre>
+<p>Two rules make a stack behave:</p>
+<ul>
+<li><strong>Bind every cache in the stack to the <em>same</em> provider name.</strong> A served rate is
+tagged with the serving cache's <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateCache.html"><code>Provider</code></a>,
+so mismatched names would mislabel the source.</li>
+<li><strong>Give the outer (faster) tier a <em>shorter</em> expiry than the inner (durable) tier.</strong>
+L1 is a hot buffer; L2 is the longer-lived store of record. Each layer's
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html"><code>CachingRateOptions.DefaultExpiry</code></a>
+(or per-provider override) is evaluated independently.</li>
+</ul>
+<p>The L1 tier can be process-local
+(<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html"><code>InMemoryRateCache</code></a>)
+or cross-process
+(<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCache.html"><code>DistributedRateCache</code></a>,
+e.g. Redis), and an aggregator child (below) can itself be a stack — the patterns
+compose freely. Each <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html"><code>RateLookupResult.Provenance</code></a>
+reports which backend served the request, so you can see which tier answered.</p>
+<h2 id="grouping-providers-with-the-aggregator">Grouping providers with the aggregator</h2>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a>
+groups several named children behind one entry point and resolves each request
+through a strategy. Build the children (typically each wrapped in its own cache),
+then group them:</p>
+<pre><code class="lang-csharp">var rba = new CachingRateProvider(
+    rbaSource, new TomlFileRateCache(new FileRateCacheOptions { Provider = &quot;RBA&quot;, CacheDirectory = &quot;/var/cache/fx&quot; }), options);
+var ecb = new CachingRateProvider(
+    ecbSource, new TomlFileRateCache(new FileRateCacheOptions { Provider = &quot;ECB&quot;, CacheDirectory = &quot;/var/cache/fx&quot; }), options);
+
+IDatedRateProvider provider = new AggregatingRateProvider(
+    new[]
+    {
+        new NamedDatedRateProvider(&quot;RBA&quot;, rba),
+        new NamedDatedRateProvider(&quot;ECB&quot;, ecb),
+    });
+</code></pre>
+<p>A child is just an <code>IDatedRateProvider</code>, so each can be a concrete source
+wrapped in any cache — including a <code>SqliteRateCache</code>, or a full stack from
+the previous section. Here the aggregator fronts two SQLite-cached sources sharing
+one database file, with <code>AUD/USD</code> preferring RBA and falling back to ECB:</p>
+<pre><code class="lang-csharp">var options = new CachingRateOptions { DefaultExpiry = TimeSpan.FromHours(24) };
+
+IDatedRateProvider rba = new CachingRateProvider(
+    rbaSource, new SqliteRateCache(&quot;RBA&quot;, &quot;/var/cache/fx.db&quot;), options);
+IDatedRateProvider ecb = new CachingRateProvider(
+    ecbSource, new SqliteRateCache(&quot;ECB&quot;, &quot;/var/cache/fx.db&quot;), options);
+
+var aggregation = new RateAggregationOptions();
+aggregation.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { &quot;RBA&quot;, &quot;ECB&quot; });
+
+IDatedRateProvider provider = new AggregatingRateProvider(
+    new[]
+    {
+        new NamedDatedRateProvider(&quot;RBA&quot;, rba),
+        new NamedDatedRateProvider(&quot;ECB&quot;, ecb),
+    },
+    aggregation);
+</code></pre>
+<h3 id="strategies">Strategies</h3>
+<p>The combination is a pluggable
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy.html"><code>IRateAggregationStrategy</code></a>:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.PriorityFallbackStrategy.html"><code>PriorityFallbackStrategy</code></a>
+(the default) returns the first child that resolves — the successor to the
+former <code>CompositeDatedExchangeRateProvider</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AverageStrategy.html"><code>AverageStrategy</code></a>
+returns the arithmetic mean of every child that resolves, tagged with a
+synthetic provider label (<code>Average</code> by default). The mean is an analytical,
+composite value — it can equal a rate no source actually published — so it suits
+smoothing or cross-source comparison rather than an authoritative observation; for
+tax, accounting, or audit use prefer a single source (priority or per-pair routing).</li>
+<li>Implement the interface for anything else (weighted, median, first-non-stale).</li>
+</ul>
+<pre><code class="lang-csharp">var options = new RateAggregationOptions { DefaultStrategy = new AverageStrategy() };
+</code></pre>
+<h3 id="per-fx-pair-routing">Per-FX-pair routing</h3>
+<p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions.html"><code>RateAggregationOptions.Routes</code></a>
+maps a pair to an ordered child list and an optional pair-specific strategy, so
+each pair can prefer a different source — <code>AUD/USD</code> via <code>[RBA, ECB]</code> while
+<code>USD/GBP</code> prefers <code>[ECB, RBA]</code>:</p>
+<pre><code class="lang-csharp">var aggregation = new RateAggregationOptions();
+aggregation.Routes[new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { &quot;RBA&quot;, &quot;ECB&quot; });
+aggregation.Routes[new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP)] = new CurrencyPairRoute(new[] { &quot;ECB&quot;, &quot;RBA&quot; });
+aggregation.Routes[new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD)] = new CurrencyPairRoute(new[] { &quot;ECB&quot;, &quot;RBA&quot; }, new AverageStrategy());
+
+var provider = new AggregatingRateProvider(children, aggregation);
+</code></pre>
+<pre><code class="lang-mermaid">flowchart TD
+    Q[&quot;GetRate(pair)&quot;] --&gt; AGG{&quot;AggregatingRateProvider&lt;br/&gt;route by FX pair&quot;}
+    AGG -- &quot;AUD/USD&quot; --&gt; P1[&quot;RBA, fallback ECB&quot;]
+    AGG -- &quot;USD/GBP&quot; --&gt; P2[&quot;ECB, fallback RBA&quot;]
+    AGG -- &quot;EUR/USD&quot; --&gt; P3[&quot;ECB + RBA, AverageStrategy&quot;]
+    AGG -- &quot;unrouted&quot; --&gt; PD[&quot;DefaultProviderOrder + DefaultStrategy&quot;]
+</code></pre>
+<p>A pair without a route uses <code>DefaultProviderOrder</code> (or the supplied child order)
+and <code>DefaultStrategy</code>. When inversion is allowed, an inverse-pair route is also
+consulted.</p>
+<h3 id="reaching-a-specific-source">Reaching a specific source</h3>
+<p>The lookup methods always apply the configured strategy and routing. When you need
+one source's answer specifically, resolve it by name — without bypassing the
+contract:</p>
+<pre><code class="lang-csharp">if (((AggregatingRateProvider)provider).TryGetProvider(&quot;RBA&quot;, out IDatedRateProvider rbaOnly))
+{
+    RateLookupResult rbaRate = rbaOnly.GetRate(&quot;AUD&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
+}
+</code></pre>
+<p>Under dependency injection the same access is available through a keyed service
+(below).</p>
+<h2 id="when-to-use-which-single-cache-stacking-or-aggregation">When to use which: single cache, stacking, or aggregation</h2>
+<p>These three compositions answer different questions and combine freely — pick by
+what you are trying to improve:</p>
+<table>
+<thead>
+<tr>
+<th>Composition</th>
+<th>Shape</th>
+<th>Use it to</th>
+<th>Reach for when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single cache</strong></td>
+<td>one source → one cache</td>
+<td>avoid re-fetching one source</td>
+<td>a single provider and one store is enough</td>
+</tr>
+<tr>
+<td><strong>Stacking</strong> (tiered read-through)</td>
+<td>one source → cache over cache</td>
+<td>cut latency <em>and</em> survive restarts on one source</td>
+<td>a hot in-memory (or shared) tier in front of a durable SQLite tier, both over the same source</td>
+</tr>
+<tr>
+<td><strong>Aggregation</strong></td>
+<td>many sources → one entry point</td>
+<td>get resilience and coverage across <em>different</em> sources</td>
+<td>fallback when a source is down, an averaged rate, or per-pair routing to the best source</td>
+</tr>
+</tbody>
+</table>
+<p>The distinction that matters: <strong>stacking layers caches over a <em>single</em> source</strong>
+(the layers differ in speed and durability, not in where the rate comes from),
+while <strong>aggregation combines <em>distinct</em> sources</strong> (the children differ in <em>who</em>
+published the rate). They are orthogonal and nest: an aggregator child can be a
+stacked, SQLite-then-memory cached source, so a fleet can route <code>AUD/USD</code> to a
+fast-but-durable RBA stack and fall back to an ECB stack.</p>
+<p>A quick decision path:</p>
+<ul>
+<li>One source, one process, restarts acceptable → <strong>single cache</strong> with
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.InMemoryRateCache.html"><code>InMemoryRateCache</code></a>.</li>
+<li>One source, restarts must stay warm → <strong>single cache</strong> with
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>,
+or <strong>stack</strong> memory over SQLite to also cut the per-lookup read cost.</li>
+<li>Several sources, want fallback / averaging / per-pair preference →
+<strong>aggregation</strong>, each child cached (and optionally stacked) as above.</li>
+</ul>
+<p>For <em>where the bytes live</em> within any one cache layer, see the backend decision
+table under <a href="#persistent-and-shared-backends">Persistent and shared backends</a>.</p>
+<h2 id="dependency-injection">Dependency injection</h2>
+<p>The <code>Bodu.Financial.ExchangeRates.Caching</code> package ships its own DI registration
+(there is no separate <code>*.DependencyInjection</code> package); its extension methods register
+either shape on the <code>IFinancialServiceBuilder</code> and live in the
+<code>Bodu.Financial.ExchangeRates</code> namespace, so one <code>using</code> brings them into
+scope. Both resolve as the dated <strong>and</strong> timeless surfaces.</p>
+<p>A single cached provider:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddFinancialService()
+        .AddRbaExchangeRates()
+        .AddCachedRateProvider&lt;RbaRateProvider&gt;(&quot;RBA&quot;,
+            configure: o =&gt; o.DefaultExpiry = TimeSpan.FromHours(12));
+</code></pre>
+<p>A group of cached providers with per-pair routing. Each child is <strong>also</strong>
+registered as a keyed <code>IDatedRateProvider</code>, so a specific source is
+resolvable by name:</p>
+<pre><code class="lang-csharp">services.AddFinancialService()
+        .AddRbaExchangeRates()
+        .AddEcbExchangeRates()
+        .AddAggregatedRateProvider(agg =&gt; agg
+            .AddCachedChild&lt;RbaRateProvider&gt;(&quot;RBA&quot;)
+            .AddCachedChild&lt;EcbRateProvider&gt;(&quot;ECB&quot;)
+            .MapPair(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), &quot;RBA&quot;, &quot;ECB&quot;)
+            .MapPair(new CurrencyPair(CurrencyCode.USD, CurrencyCode.GBP), &quot;ECB&quot;, &quot;RBA&quot;));
+
+// Later: the aggregate, or a specific source.
+var aggregate = provider.GetRequiredService&lt;IDatedRateProvider&gt;();
+var rbaOnly = provider.GetRequiredKeyedService&lt;IDatedRateProvider&gt;(&quot;RBA&quot;);
+</code></pre>
+<p><code>UseDefaultStrategy(...)</code> overrides the default <code>PriorityFallbackStrategy</code>, and
+<code>MapPair(pair, strategy, order)</code> overrides the strategy for a single pair. Bind
+<code>CachingRateOptions</code> from configuration by passing an <code>IConfiguration</code>
+(default section <code>Financial:RateCache</code>).</p>
+<h2 id="how-staleness-works">How staleness works</h2>
+<ul>
+<li>A cached row is fresh while <code>asOf - CachedAtUtc &lt; duration</code>, where <code>duration</code> is
+the provider's resolved expiry. Single-date serving filters per row.</li>
+<li>A write merges new rows with existing ones (latest <code>CachedAtUtc</code> wins per date)
+and prunes rows that are no longer fresh, so the store self-cleans over time.</li>
+<li>Range serving is decided by recorded <strong>coverage</strong>, not by the rows: a range is
+served only when the still-fresh coverage windows contain the whole request, and a
+range fetch writes its rows and covered window together through <code>StoreFetchedRange</code>.
+Coverage windows expire on the same <code>duration</code> and are pruned on write.</li>
+</ul>
+<h2 id="stampede-protection-jitter-and-refresh-ahead">Stampede protection: jitter and refresh-ahead</h2>
+<p>A cache that expires is a cache that occasionally makes one caller pay the full origin
+fetch. Two opt-in options on
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html"><code>CachingRateOptions</code></a>
+smooth that cliff; both default to <code>0</code> (off), so existing behaviour is unchanged until
+you opt in:</p>
+<ul>
+<li><strong><code>ExpiryJitter</code></strong> deterministically shaves up to that fraction off each pair's
+effective expiry, keyed by a stable hash of the provider and pair — never randomness —
+so pairs warmed together do not all expire (and refetch) at the same instant. Jitter
+only ever <em>shortens</em> an expiry; no rate is served longer than the configured duration.</li>
+<li><strong><code>RefreshAheadFraction</code></strong> turns an aged hit into a stale-while-revalidate serve: when
+a hit's served data is older than this fraction of the pair's effective expiry, the
+caller is still served instantly from the cache and <strong>one</strong> background refresh of the
+pair (or range window) is scheduled. Concurrent aged hits join the pending refresh
+rather than duplicating it, and because the fraction is below <code>1</code>, a continuously hot
+pair is renewed before it can ever miss. A failing refresh is logged (<code>EventId 4517</code>)
+and swallowed — the next aged hit simply retries.</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">var options = new CachingRateOptions
+{
+    DefaultExpiry = TimeSpan.FromHours(12),
+    ExpiryJitter = 0.1,           // spread expiries by up to 10% per pair
+    RefreshAheadFraction = 0.75,  // refresh in the background after 75% of the expiry
+};
+options.Validate();
+</code></pre>
+<p>Two more knobs matter at scale:</p>
+<ul>
+<li><strong><code>SkipInverseRangeProbeWhenDirectCovered</code></strong> (default <code>false</code>): a range miss normally
+probes the inverse pair as a second whole-state backend read. Workloads that only ever
+fetch one orientation can enable this to skip the guaranteed-empty probe whenever the
+direct pair holds any fresh coverage.</li>
+<li><strong><code>EntryExpirationMargin</code></strong> on
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions.html"><code>DistributedRateCacheOptions</code></a>
+(default one hour): every blob the distributed cache writes is stamped with a
+server-side lifetime of the caching duration plus this margin, so a pair that stops
+being queried self-evicts from Redis instead of accumulating forever. The lifetime is
+relative to the store's own clock, so clock skew cannot evict entries prematurely; set
+it to <code>null</code> to disable server-side expiry entirely.</li>
+</ul>
+<pre><code class="lang-csharp">var distributedOptions = new DistributedRateCacheOptions
+{
+    Provider = &quot;RBA&quot;,
+    EntryExpirationMargin = TimeSpan.FromHours(2),
+};
+</code></pre>
+<h2 id="warming-the-cache-at-startup">Warming the cache at startup</h2>
+<p>A cold cache pays its origin fetches on the first user requests. The decorator's
+<code>WarmAsync</code> pre-pays them: each pair's window goes through the normal range
+read-through path — an already covered pair costs only a cache read, a miss populates
+rows and coverage — with up to four pairs fetched concurrently. A failing pair is
+logged (<code>EventId 4518</code>) and skipped; only the caller's cancellation aborts the run.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var provider = new CachingRateProvider(
+    new FixedDatedRateProvider(Array.Empty&lt;ExchangeRate&gt;()),
+    new InMemoryRateCache(&quot;RBA&quot;),
+    new CachingRateOptions());
+
+int warmed = await provider.WarmAsync(
+    new[] { (&quot;AUD&quot;, &quot;USD&quot;), (&quot;AUD&quot;, &quot;EUR&quot;) },
+    new DateOnly(2026, 5, 1),
+    new DateOnly(2026, 5, 31));
+</code></pre>
+<p>Under dependency injection, register the warm-up as a hosted service instead and let it
+run when the application starts. It warms every provider registered through
+<code>AddCachedRateProvider</code> automatically; aggregation children are keyed services and are
+warmed only when named in <code>Providers</code>. The window defaults to a rolling
+<code>LookbackDays</code> look-back from the current date (so a daily restart always warms recent
+history), with optional fixed <code>StartDate</code>/<code>EndDate</code> overrides; the run never blocks or
+crashes the host:</p>
+<pre><code class="lang-csharp">services.AddFinancialService()
+        .AddRbaExchangeRates(configuration)
+        .AddCachedRateProvider&lt;RbaRateProvider&gt;(&quot;RBA&quot;, configuration)
+        .AddRateCacheWarmup(configure: warmup =&gt;
+        {
+            warmup.Pairs.Add(&quot;AUD/USD&quot;);
+            warmup.Pairs.Add(&quot;AUD/EUR&quot;);
+            warmup.LookbackDays = 90;
+        });
+</code></pre>
+<p>Or bind the same options from configuration (section <code>Financial:RateCacheWarmup</code>):</p>
+<pre><code class="lang-json">{
+  &quot;Financial&quot;: {
+    &quot;RateCacheWarmup&quot;: {
+      &quot;Pairs&quot;: [ &quot;AUD/USD&quot;, &quot;AUD/EUR&quot; ],
+      &quot;LookbackDays&quot;: 90
+    }
+  }
+}
+</code></pre>
+<h2 id="observability-seeing-hits-misses-and-degradation">Observability: seeing hits, misses, and degradation</h2>
+<p>Two log channels tell you what the cache is doing.</p>
+<p><strong>Caching-decorator events.</strong> <code>CachingRateProvider</code> logs each hit, miss,
+refetch, and a served-rate provenance record, at levels you set on
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html"><code>CachingRateOptions</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Default level</th>
+<th>Option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-date hit</td>
+<td><code>Trace</code></td>
+<td><code>CacheHitLogLevel</code></td>
+</tr>
+<tr>
+<td>Single-date miss (resolved and cached)</td>
+<td><code>Trace</code></td>
+<td><code>CacheMissLogLevel</code></td>
+</tr>
+<tr>
+<td>Range hit</td>
+<td><code>Debug</code></td>
+<td><code>CacheRangeHitLogLevel</code></td>
+</tr>
+<tr>
+<td>Range refetch</td>
+<td><code>Debug</code></td>
+<td><code>CacheRangeRefetchLogLevel</code></td>
+</tr>
+<tr>
+<td>Served-rate provenance</td>
+<td><code>Debug</code></td>
+<td><code>RateProvenanceLogLevel</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>SQLite degradation.</strong> The SQLite cache is best-effort: a storage failure degrades to
+an empty read or a skipped write rather than throwing. So the degradation is not silent,
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.SqliteRateCache.html"><code>SqliteRateCache</code></a>
+logs each swallowed failure at <strong><code>Warning</code></strong> under <strong><code>EventId 4520</code></strong> — naming the
+provider and the failing operation and attaching the exception. The first failure is
+logged immediately; further failures are <strong>rate-limited to at most one warning per
+minute</strong>, each carrying the count suppressed since the previous warning, so a sustained
+outage is visible without flooding the log.</p>
+<p>Under dependency injection the logger is wired automatically. Constructing by hand, pass
+one to the constructor:</p>
+<pre><code class="lang-csharp">var cache = new SqliteRateCache(
+    new SqliteRateCacheOptions { Provider = &quot;RBA&quot;, DatabaseFilePath = &quot;/var/cache/fx.db&quot; },
+    timeProvider: null,
+    logger: loggerFactory.CreateLogger&lt;SqliteRateCache&gt;());
+</code></pre>
+<p>Surface it with an ordinary logging filter — the category is the cache's full type name:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;LogLevel&quot;: {
+      &quot;Bodu.Financial.ExchangeRates.Caching.SqliteRateCache&quot;: &quot;Warning&quot;
+    }
+  }
+}
+</code></pre>
+<p>If you would rather a storage failure surface as an exception than degrade, set
+<code>ThrowOnStorageFailure</code> (or <code>ValidateStorageOnStart</code> to fail fast at startup) on the
+options instead.</p>
+<h3 id="metrics">Metrics</h3>
+<p>Alongside the logs, the caching layer publishes <code>System.Diagnostics.Metrics</code> counters
+through the process-wide meter <strong><code>Bodu.Financial.ExchangeRates.Caching</code></strong> (the SQLite
+and distributed add-ons publish their storage-failure counters through their own meters,
+<code>…Caching.Sqlite</code> and <code>…Caching.Distributed</code>). With no listener attached a counter add
+is a no-op branch, so the instrumentation costs nothing on the hot path:</p>
+<table>
+<thead>
+<tr>
+<th>Instrument</th>
+<th>Tags</th>
+<th>Counts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bodu.financial.rate_cache.hits</code></td>
+<td><code>provider</code>, <code>lookup</code> (<code>single</code>/<code>range</code>)</td>
+<td>Lookups served from the cache</td>
+</tr>
+<tr>
+<td><code>bodu.financial.rate_cache.misses</code></td>
+<td><code>provider</code>, <code>lookup</code></td>
+<td>Lookups refetched from the source</td>
+</tr>
+<tr>
+<td><code>bodu.financial.rate_cache.refresh_ahead</code></td>
+<td><code>provider</code>, <code>outcome</code> (<code>success</code>/<code>failed</code>)</td>
+<td>Background refresh-ahead attempts</td>
+</tr>
+<tr>
+<td><code>bodu.financial.rate_cache.storage_failures</code></td>
+<td><code>provider</code>, <code>operation</code></td>
+<td>Swallowed best-effort storage failures</td>
+</tr>
+</tbody>
+</table>
+<p>Storage-failure counts increment on <strong>every</strong> swallow — deliberately outside the
+rate-limited warning gate that throttles log volume — so sustained degradation is
+quantifiable even while its logging is suppressed. Subscribe with any OpenTelemetry
+metrics exporter, or with an in-process <code>MeterListener</code>:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var listener = new System.Diagnostics.Metrics.MeterListener
+{
+    InstrumentPublished = (instrument, l) =&gt;
+    {
+        if (instrument.Meter.Name == &quot;Bodu.Financial.ExchangeRates.Caching&quot;)
+            l.EnableMeasurementEvents(instrument);
+    },
+};
+listener.SetMeasurementEventCallback&lt;long&gt;((instrument, value, tags, state) =&gt;
+    Console.WriteLine($&quot;{instrument.Name} +{value}&quot;));
+listener.Start();
+</code></pre>
+<h3 id="log-event-reference">Log event reference</h3>
+<p>Every caching-layer log message carries a stable <code>EventId</code>, so filters and alerts can
+target a specific event:</p>
+<table>
+<thead>
+<tr>
+<th>EventId</th>
+<th>Event</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4501 / 4502</td>
+<td>Single-date hit / miss-and-stored</td>
+<td>option-set</td>
+</tr>
+<tr>
+<td>4503 / 4504</td>
+<td>Range hit / range refetched</td>
+<td>option-set</td>
+</tr>
+<tr>
+<td>4505</td>
+<td>Served-rate provenance</td>
+<td>option-set</td>
+</tr>
+<tr>
+<td>4506–4508</td>
+<td>Advertised-history skip / empty-window skip / clamped fetch</td>
+<td>option-set</td>
+</tr>
+<tr>
+<td>4510–4512</td>
+<td>Aggregation routing and outcomes</td>
+<td>option-set</td>
+</tr>
+<tr>
+<td>4513–4515</td>
+<td>File-cache degradation and corrupt-file warnings</td>
+<td><code>Warning</code></td>
+</tr>
+<tr>
+<td>4516 / 4517</td>
+<td>Refresh-ahead scheduled / refresh-ahead failed</td>
+<td>option-set / <code>Warning</code></td>
+</tr>
+<tr>
+<td>4518</td>
+<td>Warm-up pair failed and skipped</td>
+<td><code>Warning</code></td>
+</tr>
+<tr>
+<td>4520</td>
+<td>SQLite storage failure swallowed</td>
+<td><code>Warning</code></td>
+</tr>
+<tr>
+<td>4521–4524</td>
+<td>Startup warm-up started / completed / failed / provider not found</td>
+<td><code>Information</code> / <code>Warning</code></td>
+</tr>
+<tr>
+<td>4530</td>
+<td>Distributed storage failure swallowed</td>
+<td><code>Warning</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>The cache is cold after every restart.</strong> Only in-memory caches lose state on restart.
+Use a durable backend (<code>SqliteRateCache</code> or a file cache) to survive restarts,
+and <strong>dispose the cache</strong> so its keep-alive connection is released cleanly. A tiered
+stack keeps a hot in-memory L1 <em>and</em> a durable L2 — see <a href="#stacking-providers-tiered-read-through">Stacking
+providers</a>.</p>
+<p><strong>&quot;database is locked&quot;.</strong> Several writers are contending for one file. Keep
+<code>UseWriteAheadLogging</code> on (it lets readers run during a writer) and raise <code>BusyTimeout</code>
+so a writer waits for the lock instead of failing; confirm every cache over the file
+uses WAL and that the storage supports it — see <a href="#sqlite-concurrency-durability-and-the-shared-file">SQLite
+concurrency</a>.</p>
+<p><strong>I can't tell whether the cache is degrading.</strong> Wire a logger and watch for <strong><code>EventId 4520</code></strong> at <code>Warning</code> — see <a href="#observability-seeing-hits-misses-and-degradation">Observability</a>.
+The message names the failing operation and carries the exception, and the suppressed
+count tells you the failure is sustained rather than a one-off. To make failures loud
+instead, set <code>ThrowOnStorageFailure</code>.</p>
+<p><strong>Stray <code>.db-wal</code> / <code>.db-shm</code> files.</strong> These are SQLite's write-ahead-log sidecars,
+created next to the database when WAL is on. They are normal; leave them for SQLite to
+manage, and copy them alongside the <code>.db</code> file if you move the database.</p>
+<p><strong>Which backend, and when to stack vs. aggregate?</strong> See the <a href="#persistent-and-shared-backends">backend decision
+table</a> and <a href="#when-to-use-which-single-cache-stacking-or-aggregation">single cache vs. stacking vs.
+aggregation</a>.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="exchange-rates.html">Working with exchange rates</a> — the provider contracts the
+cache and aggregator wrap.</li>
+<li><a href="exchange-types.html">Exchange-rate types catalogue</a> — every FX type mapped to a
+scenario.</li>
+<li><a href="dependency-injection.html">Dependency injection</a> — the wider financial
+registration surface.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html"><code>CachingRateProvider</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html"><code>TomlFileRateCache</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.JsonFileRateCache.html"><code>JsonFileRateCache</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.RateCacheFileLayout.html"><code>RateCacheFileLayout</code> API reference</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

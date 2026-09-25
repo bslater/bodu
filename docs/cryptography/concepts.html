@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Security.Cryptography — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Security.Cryptography — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodusecuritycryptography--core-concepts">Bodu.Security.Cryptography — Core concepts</h1>
+
+<p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/cryptography/index.html">guides</a>, and refer back whenever a term feels imprecise.</p>
+<p>Part of the <strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> topic.</p>
+<p>For the high-level shape of the library, the algorithm taxonomy, and the I/O model, start with the <a href="index.html">introduction</a>.</p>
+<h2 id="adversary-model">Adversary model</h2>
+<p>Every algorithm in this library meets a formal <strong>adversary model</strong>: it must be computationally infeasible for an attacker — even one who knows the algorithm, observes many inputs and outputs, and chooses inputs adaptively — to forge a tag, invert a digest, or find a colliding pair. This is the load-bearing contract that separates <code>Bodu.Security.Cryptography</code> from <a href="../io-hashing/index.html">Bodu.IO.Hashing</a>. The latter ships fingerprints and checksums (CRC, Fletcher, Adler, FNV, CityHash) that carry <em>no</em> adversary model and must never be used where an attacker can choose the input.</p>
+<h2 id="confidentiality-integrity-authenticity">Confidentiality, integrity, authenticity</h2>
+<p>Three independent security properties; each primitive provides a different subset:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>What it guarantees</th>
+<th>Provided by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Confidentiality</strong></td>
+<td>An attacker cannot recover plaintext from ciphertext without the key.</td>
+<td>Block cipher in a confidentiality mode, stream cipher, AEAD.</td>
+</tr>
+<tr>
+<td><strong>Integrity</strong></td>
+<td>Any modification of the protected message is detected.</td>
+<td>Cryptographic hash (over a known input), MAC, AEAD.</td>
+</tr>
+<tr>
+<td><strong>Authenticity</strong></td>
+<td>The message came from a holder of the key.</td>
+<td>MAC, AEAD.</td>
+</tr>
+</tbody>
+</table>
+<p>A raw cipher protects confidentiality only — a flipped ciphertext byte still decrypts, just to corrupted plaintext. Combine encrypt-then-MAC, or use an AEAD construction, to get all three in one pass.</p>
+<h2 id="cryptographic-hash-vs-keyed-hash-vs-cipher">Cryptographic hash vs. keyed hash vs. cipher</h2>
+<p>Three structural roles, easy to confuse:</p>
+<ul>
+<li><strong>Cryptographic hash</strong> — keyless, one-way. Compresses arbitrary input to a fixed (or extendable) digest with pre-image, second-pre-image, and collision resistance. Use for content addressing, integrity over a known input, and signature inputs. Provides integrity <strong>only when the digest itself is transmitted via an authenticated channel</strong>.</li>
+<li><strong>Keyed hash / MAC</strong> — secret key plus message yields an authentication tag no one can forge without the key. Provides integrity <em>and</em> authenticity, not confidentiality.</li>
+<li><strong>Cipher</strong> — reversible transformation under a key. Provides confidentiality. By itself a cipher does <strong>not</strong> provide integrity or authenticity; pair it with a MAC or use AEAD.</li>
+</ul>
+<blockquote>
+<p>Both keyed hashes and ciphers take a key, but they serve opposite purposes — a cipher transforms plaintext to ciphertext and back without summarising; a MAC summarises a message into a fixed-size tag without encrypting.</p>
+</blockquote>
+<h2 id="block-cipher">Block cipher</h2>
+<p>A <strong>block cipher</strong> is a keyed permutation over a fixed-size block — Camellia, Twofish, and Serpent operate on 128-bit blocks; Threefish on 256, 512, or 1024 bits; Blowfish and Skipjack on 64 bits. The cipher itself is a pure primitive: it encrypts exactly one block to exactly one block. To encrypt a message longer than one block, or shorter, or of an unaligned length, the cipher must be combined with a <strong>mode of operation</strong> (which sequences the calls) and usually a <strong>padding scheme</strong> (which aligns the final block).</p>
+<p>Bodu exposes the raw primitive via <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>; the <code>SymmetricAlgorithm</code>-derived facades (<a class="xref" href="../../api/Bodu.Security.Cryptography.Camellia.html">Camellia</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Twofish.html">Twofish</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, …) compose a block cipher with a mode and padding.</p>
+<h2 id="stream-cipher">Stream cipher</h2>
+<p>A <strong>stream cipher</strong> generates a deterministic <strong>keystream</strong> from a key and a nonce, then XORs the keystream over the data. The output has the same length as the input — no padding, no block alignment. ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, and Hc128 are stream ciphers in this library.</p>
+<p>Two consequences follow from the XOR construction: stream ciphers are <strong>self-inverse</strong> (encrypt and decrypt are the same operation), and they provide <strong>raw confidentiality only</strong> — there is no integrity check, and reusing a <code>(key, nonce)</code> pair leaks the XOR of two plaintexts. Always pair a stream cipher with a MAC (e.g. <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>), or prefer an AEAD construction when integrity matters.</p>
+<p>The base class for these algorithms is <a class="xref" href="../../api/Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a>. It is deliberately <em>not</em> a <code>SymmetricAlgorithm</code> — there is no block mode, padding, or <code>IV</code> — but a standalone <code>IDisposable</code> base exposing <code>Key</code>, <code>Nonce</code> (with <code>NonceSize</code>), <code>GenerateKey()</code> / <code>GenerateNonce()</code>, and <code>CreateTransform()</code>; <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> are aliases of the same self-inverse transform.</p>
+<h2 id="mode-of-operation">Mode of operation</h2>
+<p>A <strong>mode of operation</strong> turns a one-block-at-a-time block cipher into something that can encrypt arbitrary-length messages. The mode sequences the cipher calls, threads state between them, and decides how plaintext blocks combine with the cipher output.</p>
+<p><img src="../../images/diagrams/classic-modes.svg" alt="Cipher modes — ECB, CBC, CFB, OFB, CTR"></p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Distinguishing property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ECB</strong></td>
+<td>Each block encrypted independently. Identical plaintext blocks produce identical ciphertext — leaks structure; rarely the right choice.</td>
+</tr>
+<tr>
+<td><strong>CBC</strong></td>
+<td>Each plaintext block XORed with the previous ciphertext block before encryption. Requires an unpredictable IV; serial encrypt, parallel decrypt.</td>
+</tr>
+<tr>
+<td><strong>CFB</strong></td>
+<td>Cipher output XORed into the plaintext, then fed back. Self-synchronising; serial.</td>
+</tr>
+<tr>
+<td><strong>OFB</strong></td>
+<td>Cipher iterates on itself to produce a keystream; XORed over plaintext. Parallel after keystream generated; bit-flip propagates one-to-one.</td>
+</tr>
+<tr>
+<td><strong>CTR</strong></td>
+<td>Cipher applied to an incrementing counter to produce a keystream. Fully parallel; nonce-uniqueness critical.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> has ten members: the BCL-compatible <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, and <code>CTS</code>, plus <code>CTR</code>, <code>XTS</code>, <code>OCB</code>, <code>EAX</code>, and <code>SIV</code>. The standard <code>SymmetricAlgorithm</code> facades expose mode selection via the <code>BlockMode</code> property, which routes through <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> and therefore accepts only the five classic modes (<code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, <code>CTR</code>); <code>CTS</code> and <code>XTS</code> are built directly as <a class="xref" href="../../api/Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>, and <code>OCB</code> / <code>EAX</code> / <code>SIV</code> name the AEAD transforms. See the <a href="../../guides/cryptography/cipher-modes.html">cipher modes guide</a> for a per-mode walk-through with diagrams.</p>
+<h2 id="padding">Padding</h2>
+<p>Block-cipher modes that consume whole blocks (<code>ECB</code>, <code>CBC</code>) need a <strong>padding scheme</strong> to align a partial final block to the block boundary. Each scheme defines a byte pattern the decryptor can reliably strip on the way out.</p>
+<p><img src="../../images/diagrams/padding-schemes.svg" alt="Padding schemes — PKCS7, ANSI X.923, ISO 10126, Zeros, ISO 7816-4"></p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>Type</th>
+<th>Final-block bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a></td>
+<td><code>PKCS7</code></td>
+<td><code>n</code> bytes, each equal to <code>n</code> (the pad length).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a></td>
+<td><code>ANSIX923</code></td>
+<td><code>n-1</code> zero bytes followed by <code>n</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a></td>
+<td><code>ISO10126</code></td>
+<td><code>n-1</code> random bytes followed by <code>n</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.ZeroPadding.html">ZeroPadding</a></td>
+<td><code>Zeros</code></td>
+<td>All zero bytes — length not encoded; only safe for fixed-length records.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a></td>
+<td><code>ISO7816_4</code></td>
+<td>A single <code>0x80</code> followed by zero bytes.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.NoPadding.html">NoPadding</a></td>
+<td><code>None</code></td>
+<td>Input must already be a block-aligned multiple.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> mirrors <code>System.Security.Cryptography.PaddingMode</code> and adds <code>ISO7816_4</code>. Selection is via the <code>BlockPadding</code> property on the <code>SymmetricAlgorithm</code> facade or via <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>. See the <a href="../../guides/cryptography/padding.html">padding guide</a>.</p>
+<h2 id="initialization-vector-iv-and-nonce">Initialization vector (IV) and nonce</h2>
+<p>Both are public, single-use inputs to a cipher; the distinction is what <em>uniqueness</em> and <em>unpredictability</em> they demand.</p>
+<ul>
+<li>An <strong>initialization vector (IV)</strong> is the per-message starting state of a feedback mode (CBC, CFB, OFB). It must be <strong>unpredictable</strong> — choose it uniformly at random per message — because predictable IVs in CBC enable chosen-plaintext attacks.</li>
+<li>A <strong>nonce</strong> (&quot;number used once&quot;) is the per-message public input to a counter mode (CTR), an AEAD construction (GCM, CCM, OCB, EAX), or a stream cipher (ChaCha20, Salsa20). It must be <strong>unique</strong> within the lifetime of the key. It does <em>not</em> need to be unpredictable; a counter is acceptable.</li>
+</ul>
+<p>On the block-cipher facades both appear on the <code>IV</code> property, and the contract of the mode dictates which requirement applies; the stream ciphers carry theirs on the <code>Nonce</code> property of <a class="xref" href="../../api/Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> instead. The extended-nonce stream ciphers (<a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a>) widen the nonce to 192 bits so a random nonce per message is safe; the originals (96-bit ChaCha20, 64-bit Salsa20) need either a counter or a much tighter key-rotation policy.</p>
+<h2 id="aead-authenticated-encryption-with-associated-data">AEAD (Authenticated Encryption with Associated Data)</h2>
+<p><strong>AEAD</strong> is a single primitive that provides confidentiality, integrity, and authenticity in one pass — encrypt-then-authenticate, with the authentication tag produced as part of the same operation that produces the ciphertext.</p>
+<p><img src="../../images/diagrams/aead-mode.svg" alt="AEAD encryption — key, nonce, plaintext, AAD, ciphertext, tag"></p>
+<p>The inputs are a key, a nonce, the plaintext, and optional <strong>associated data (AAD)</strong> — headers or framing that must be authenticated but not encrypted. The output is the ciphertext (same length as the plaintext) and an authentication <strong>tag</strong>.</p>
+<p>The decrypt operation takes the same key, nonce, ciphertext, AAD, and tag, and returns either the plaintext or a tag-mismatch failure — there is no &quot;decrypt and check tag separately&quot; path that can be mis-sequenced.</p>
+<p>Bodu exposes AEAD two ways:</p>
+<ul>
+<li><strong><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a></strong> — a complete AEAD primitive (NIST SP 800-232) that does not use a separate block cipher.</li>
+<li><strong>AEAD mode transforms</strong> over an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> — pair AES (via <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>) with <a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>. The contract these implement is <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>.</li>
+</ul>
+<p>See the <a href="../../guides/cryptography/aead-modes.html">AEAD modes guide</a> for the per-mode contract and per-message lifecycle.</p>
+<h2 id="tag">Tag</h2>
+<p>An <strong>authentication tag</strong> is the fixed-length output a MAC or AEAD construction emits alongside (or instead of) the ciphertext. The decrypt / verify operation recomputes the tag and compares in constant time; any modification of the ciphertext, AAD, key, or nonce produces a mismatch and a verification failure.</p>
+<p>Tag length is a security parameter: GCM tags are typically 128 bits; truncating to 64 or 96 bits weakens the forgery bound proportionally. Bodu's AEAD transforms expose tag length on a per-transform basis — prefer the maximum the algorithm offers unless interoperating with a fixed wire format.</p>
+<h2 id="tweakable-cipher">Tweakable cipher</h2>
+<p>A <strong>tweakable block cipher</strong> takes an extra public input — the <strong>tweak</strong> — alongside the key, and produces a different permutation for each tweak value. The tweak is <em>not</em> a secret; its purpose is <strong>domain separation without re-keying</strong>.</p>
+<p>The canonical example is XTS-mode disk encryption, where each disk sector encrypts under the same key but a different tweak (the sector number), so identical plaintext written to two different sectors produces different ciphertext, and a sector cannot be moved without detection.</p>
+<p>Bodu's tweakable surface is <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a>, which extends <code>SymmetricAlgorithm</code> with <code>Tweak</code> and <code>GenerateTweak()</code>. The Threefish family (<a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish256.html">Threefish256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a>) is the headline tweakable cipher.</p>
+<h2 id="cryptographic-hash-output-shapes">Cryptographic-hash output shapes</h2>
+<p>Cryptographic digests in this library come in three structural shapes:</p>
+<ul>
+<li><strong>Plain digest</strong> — fixed-length output. <a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein256.html">Skein256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein1024.html">Skein1024</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru256.html">Snefru256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a>.</li>
+<li><strong>Extendable-output function (XOF)</strong> — caller chooses the output length at finalize time. <a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html">Shake</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a>. (<a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html">Blake3</a> is tree-structured internally but exposes only its fixed 256-bit digest here.)</li>
+<li><strong>Tree</strong> — input split into leaves, leaves hashed in parallel, levels reduced to a root. <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html">Blake3</a> uses an internal tree; <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> exposes an explicit RFC 6962 tree over any inner <code>HashAlgorithm</code>, with inclusion and consistency proofs.</li>
+</ul>
+<h2 id="mac-vs-one-time-authenticator">MAC vs. one-time authenticator</h2>
+<p>Both are keyed hashes that emit an authentication tag — the difference is <strong>how many messages a single key can safely authenticate</strong>.</p>
+<ul>
+<li>A <strong>MAC</strong> (message authentication code) is a pseudorandom function: one key can authenticate many messages. <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> and <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> are MACs in this sense — bind the key once, call <code>ComputeHash</code> over each message.</li>
+<li>A <strong>one-time authenticator</strong> must use a fresh key for every message. <a class="xref" href="../../api/Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> is a one-time authenticator: it is provably secure when the key is used exactly once, and trivially broken if the same key authenticates two different messages.</li>
+</ul>
+<p>The distinction matters because Poly1305 is normally paired with ChaCha20 (or an equivalent stream cipher) precisely so the cipher can derive a per-message one-time Poly1305 key from <code>(K, nonce)</code>. Never reach for Poly1305 with a long-lived key — use SipHash or an AEAD construction.</p>
+<h2 id="sponge-construction">Sponge construction</h2>
+<p>A <strong>sponge</strong> is an alternative to the Merkle–Damgård design used by classical digests. It maintains a fixed-size internal state and alternates two phases: <strong>absorb</strong> (XOR input blocks into the rate portion of the state, permute) and <strong>squeeze</strong> (read output blocks from the rate, permute). The same construction can be tuned to produce a fixed digest, an XOF, or an AEAD by adjusting the rate, capacity, and absorb / squeeze schedule.</p>
+<p>The ASCON family (NIST SP 800-232) is sponge-based, which is why <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> all share a single permutation and a single set of correctness arguments.</p>
+<h2 id="merkle-tree">Merkle tree</h2>
+<p>A <strong>Merkle tree</strong> turns an ordered list of entries into a single root hash, and — because it is built bottom-up — lets anyone prove that one entry sits under that root using a logarithmic number of hashes rather than the whole input. That <strong>inclusion proof</strong> is the only reason to pay for a tree instead of a flat digest.</p>
+<p><img src="../../images/diagrams/merkle-tree.svg" alt="Merkle tree — leaf hashing, level reduction, fan-out, root"></p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> implements <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1">RFC 6962 §2.1</a> precisely over any inner <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> the caller supplies as a <code>Func&lt;HashAlgorithm&gt;</code> (SHA-256, a Bodu digest, anything else). Precision matters because several plausible-looking constructions give different roots for the same input, and a divergent root verifies nowhere:</p>
+<ul>
+<li>a tree of <em>n</em> entries splits at <code>k</code>, the largest power of two <strong>strictly</strong> below <em>n</em> — three entries split 2 + 1, never 1 + 2;</li>
+<li>a subtree holding one entry contributes its <strong>leaf hash unchanged</strong>, never re-hashed as a one-child node;</li>
+<li>leaves are <code>H(0x00 ‖ entry)</code> and internal nodes <code>H(0x01 ‖ left ‖ right)</code> — the <strong>domain separation</strong> that stops a leaf preimage colliding with a node preimage (the second-preimage attack), and the reason RFC 6962 needs no padding step and is immune by shape to the duplicate-last-leaf forgery of CVE-2012-2459;</li>
+<li>the empty tree's root is <code>H()</code>, the hash of zero bytes, not an exception.</li>
+</ul>
+<p>The same tree is reached from three input shapes — a list of entries, a stream or buffer cut into fixed-size <strong>blocks</strong>, or a write-time <strong>accumulator</strong> (<a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a>) fed from the same <code>Append</code> calls that feed a flat digest — and the root is the same however the bytes arrive. Leaf hashing can be spread across cores with the <code>maxDegreeOfParallelism</code> constructor option without changing the tree. <strong>Fan-out</strong> is the number of children per internal node; 2 is RFC 6962's tree, and a wider fan-out is an explicit non-RFC mode on which the proof members throw.</p>
+<p>Two proof shapes answer different questions. An <strong>inclusion (audit) proof</strong> answers <em>&quot;is this entry in this tree?&quot;</em>; a <strong>consistency proof</strong> answers <em>&quot;is this earlier tree a prefix of this later one?&quot;</em> — the property an append-only log must have. Every verifier is <strong>total</strong>: malformed input returns <code>false</code> rather than throwing, because a verifier sits directly behind bytes an adversary chose.</p>
+<p>One sharp edge is worth knowing before you use it. <code>VerifyInclusion</code>'s <code>treeSize</code> is <strong>trusted input</strong> — a four-entry tree's path for entry 0 walks to the same head a three-entry tree's first path does, so a verifier told either size accepts, and a party being examined can understate its size to exempt its last entries from challenge. That is RFC 6962 as specified. <code>BindRoot</code> closes it by folding the length into the published root as <code>H(0x02 ‖ uint64_be(length) ‖ root)</code>, and <code>VerifyInclusionBound</code> / <code>VerifyBlockInclusion</code> derive the size from that instead of accepting one.</p>
+<p>See the <a href="../../guides/cryptography/merkle-trees.html">Merkle trees and proofs guide</a> for entry and block modes, the accumulator, the logarithmic streaming fold, parallel leaf hashing, and the diagnostics recorder.</p>
+<h2 id="public-key-asymmetric-cryptography">Public-key (asymmetric) cryptography</h2>
+<p>Everything above uses a <strong>single secret key</strong> shared by both parties. <strong>Public-key</strong> (asymmetric) primitives instead use a <strong>key pair</strong>: a <em>public key</em> that can be published freely and a <em>private key</em> that never leaves its owner. This splits cleanly into three roles:</p>
+<ul>
+<li><strong>Signature</strong> — the holder of the private key signs a message; anyone with the public key verifies it. Provides integrity and authenticity <em>without</em> a shared secret. <a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> is the classical scheme (RFC 8032); <a class="xref" href="../../api/Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a> is its post-quantum counterpart (FIPS 204).</li>
+<li><strong>Key agreement</strong> — two parties exchange public keys and each derives the <em>same</em> shared secret, which is never transmitted. <a class="xref" href="../../api/Bodu.Security.Cryptography.X25519.html">X25519</a> is the elliptic-curve Diffie-Hellman function (RFC 7748).</li>
+<li><strong>Key encapsulation (KEM)</strong> — the sender generates a fresh secret and encapsulates it to the recipient's public key, transmitting a ciphertext the recipient decapsulates back to the same secret. <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a> is the post-quantum module-lattice KEM (FIPS 203).</li>
+</ul>
+<p>The post-quantum schemes (ML-DSA, ML-KEM) defend against the <strong>&quot;harvest now, decrypt later&quot;</strong> threat: an adversary who records today's traffic could decrypt it once a large-scale quantum computer exists. Data with a long confidentiality horizon should be protected with a post-quantum (or hybrid) scheme now, even though no such computer exists yet.</p>
+<p>Every one of these primitives produces and consumes the <strong>raw key encodings</strong> defined by its standard — the fixed-length byte arrays of RFC 7748 / RFC 8032 and FIPS 203 / FIPS 204. Key formats differ by family: <code>Ed25519</code> / <code>X25519</code> carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (<code>ImportPkcs8PrivateKey</code> / <code>ImportSubjectPublicKeyInfo</code> and the <code>TryExport…</code> pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.</p>
+<h2 id="hybrid-public-key-encryption-hpke">Hybrid public-key encryption (HPKE)</h2>
+<p>A KEM establishes a <em>secret</em>, not an encrypted <em>message</em>. <strong>HPKE</strong> (Hybrid Public Key Encryption, RFC 9180) composes the three building blocks — a KEM, a KDF, and an AEAD — into a single &quot;seal this payload so only the holder of a given public key can read it&quot; operation. The sender needs only the recipient's public key; the output is an <strong>encapsulated key</strong> plus an AEAD ciphertext and tag. <a class="xref" href="../../api/Bodu.Security.Cryptography.Hpke.html">Hpke</a> implements the base mode; <a class="xref" href="../../api/Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a> selects the KEM / KDF / AEAD combination. It is the encryption layer beneath TLS Encrypted Client Hello, MLS, and Oblivious HTTP.</p>
+<h2 id="key-derivation-and-password-hashing">Key derivation and password hashing</h2>
+<p>A <strong>key-derivation function (KDF)</strong> turns one secret into usable key material. The right KDF depends entirely on the <em>entropy</em> of the input:</p>
+<ul>
+<li><strong>High-entropy input</strong> — a Diffie-Hellman shared secret, a KEM output, a master key. Use an <strong>extract-and-expand KDF</strong>: <a class="xref" href="../../api/Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> (RFC 5869) stretches it into one or more context-bound keys, each labelled with application-specific <code>info</code>. HKDF is fast <em>by design</em> and must never be fed a password.</li>
+<li><strong>Low-entropy input</strong> — a human-chosen password. Use a <strong>memory-hard password hash</strong>: <a class="xref" href="../../api/Bodu.Security.Cryptography.Argon2id.html">Argon2id</a> (RFC 9106, the current recommendation) or <a class="xref" href="../../api/Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> (RFC 7914). These are deliberately <em>slow and memory-hungry</em> so that offline guessing on custom hardware (GPUs, FPGAs, ASICs) is expensive. Always combine with a per-password salt.</li>
+</ul>
+<p>Reaching for the wrong one is a security bug: an HKDF over a raw password offers almost no protection against guessing, and a memory-hard hash over a high-entropy secret only wastes resources.</p>
+<h2 id="bcl-surface">BCL surface</h2>
+<p>Every primitive plugs into the standard BCL contracts so existing crypto code adopts these types without changes:</p>
+<ul>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> — base class for the block ciphers and tweakable ciphers (through Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a>, which adds <code>BlockMode</code> / <code>BlockPadding</code>). Lifecycle: configure <code>Key</code>, <code>IV</code>, mode and padding; call <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> or the Bodu <code>Encrypt</code> / <code>Decrypt</code> extension methods. The stream ciphers are <strong>not</strong> <code>SymmetricAlgorithm</code>s — they derive from <a class="xref" href="../../api/Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a>, a standalone <code>IDisposable</code> base with <code>Key</code>, <code>Nonce</code>, <code>GenerateNonce()</code>, and <code>CreateTransform()</code>.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> — base class for the cryptographic digests and <code>Shake</code>. Lifecycle: one-shot <code>ComputeHash</code>, or <code>TransformBlock</code> … <code>TransformFinalBlock</code> then read <code>Hash</code> (the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> add <code>AppendData</code> / <code>VerifyHash</code>). The ASCON XOFs (<code>Absorb</code> / <code>Squeeze</code> / <code>GetHash</code>) and the Merkle tree hashes (factory-constructed, one-shot <code>ComputeHash</code>) use their own surfaces.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> — Bodu's base for the MACs (SipHash, Poly1305, and Skein's MAC mode): a <code>HashAlgorithm</code> with a required <code>Key</code> property. The library does not route through the BCL <code>KeyedHashAlgorithm</code>.</li>
+<li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> — base class for the public-key schemes (Ed25519, X25519, ML-KEM, ML-DSA). Lifecycle: <code>Create()</code>, <code>GenerateKey()</code>, export the public half, then sign / verify, agree, or encapsulate. Key formats differ by family: <code>Ed25519</code> / <code>X25519</code> carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (<code>ImportPkcs8PrivateKey</code> / <code>ImportSubjectPublicKeyInfo</code> and the <code>TryExport…</code> pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.</li>
+</ul>
+<p>Bodu extends the BCL surface in two places:</p>
+<ul>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> — a one-block-at-a-time primitive contract, implemented by every block cipher in the library <em>and</em> by <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> (the bridge that lets AES feed the AEAD mode transforms).</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> — extends <code>SymmetricAlgorithm</code> with <code>Tweak</code> and <code>GenerateTweak()</code> for the Threefish family.</li>
+</ul>
+<h2 id="key-size-and-block-size">Key size and block size</h2>
+<ul>
+<li><strong>Key size</strong> is reported via <code>SymmetricAlgorithm.LegalKeySizes</code> and selected via <code>KeySize</code> (bits). The Bodu facades expose only the legal sizes their algorithm supports — e.g. Camellia accepts 128 / 192 / 256, ChaCha20 accepts 256, Threefish-512 accepts only 512.</li>
+<li><strong>Block size</strong> is reported via <code>BlockSize</code> (bits). Block-cipher facades expose the algorithm's native size; stream ciphers report a nominal value but do not gate input length.</li>
+</ul>
+<p>Generate keys, IVs, nonces, and tweaks via the BCL-style <code>GenerateKey()</code> / <code>GenerateIV()</code> methods on the facade (and <code>GenerateTweak()</code> on tweakable algorithms), or via <code>System.Security.Cryptography.RandomNumberGenerator.GetBytes</code>.</p>
+<h2 id="disposable-and-single-use">Disposable and single-use</h2>
+<p>Every algorithm facade implements <code>IDisposable</code> and zeroes its sensitive state — keys, IVs, nonces, tweaks, sponge state — on disposal. Always <code>using</code> an algorithm instance.</p>
+<p>The <code>ICryptoTransform</code> objects returned from <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> (and the AEAD mode transforms) are <strong>single-use per message</strong>. They carry internal state that finalises in <code>TransformFinalBlock</code> (or in the encrypt / decrypt call on an AEAD transform); calling them again after finalisation is undefined. The samples in <a href="getting-started.html">getting started</a> construct a fresh transform on the encrypt side and another on the decrypt side — this is the contract, not over-cautious code.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Introduction</a></strong> — namespaces, algorithm taxonomy, the I/O model, scenarios.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal sample for each subfamily.</li>
+<li><strong><a href="../../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> — deep-dive walk-throughs for cipher modes, padding, AEAD, hashing, Merkle trees.</li>
+<li><strong>For non-cryptographic checksums and fingerprints</strong> (CRC, Fletcher, Adler, FNV, CityHash), see <a href="../io-hashing/index.html">Bodu.IO.Hashing</a>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography topic</a></strong> — this package and its sibling Bodu.IO.Hashing; the <a href="../topics/hashing-and-cryptography-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Streams and async | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Streams and async | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="streams-and-async">Streams and async</h1>
+
+<p>Everything in <code>Bodu.Security.Cryptography</code> that touches a <code>Stream</code> lives in <code>Bodu.Security.Cryptography.Extensions</code>, layered over the BCL abstractions the types already implement: <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a> and <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a> for ciphers, <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> for the transforms underneath them, and <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> for hashes — plus the <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> block and root members and <a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a>. This page lists every stream and <code>Task</code> member, the buffer sizes they default to, how they react to cancellation, and what they do with memory.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>Bodu.Security.Cryptography</code> is not independently audited and offers best-effort, not guaranteed, side-channel resistance.</p>
+</div>
+<h2 id="pattern-1--encrypt-a-stream-with-a-block-cipher">Pattern 1 — encrypt a stream with a block cipher</h2>
+<p><code>Encrypt(Stream, Stream)</code> / <code>Decrypt(Stream, Stream)</code> on any <code>SymmetricAlgorithm</code> create a transform with <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code>, pump the source through it in <code>bufferSize</code>-byte reads, and return the number of bytes <strong>read</strong>. Neither stream is disposed. The default buffer is <code>SymmetricAlgorithmExtensions.DefaultBufferSize</code> = 81920 bytes (80 KiB); the overload with <code>bufferSize</code> overrides it and rejects values ≤ 0 with <code>ArgumentOutOfRangeException</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] payload = new byte[300_000];
+for (int i = 0; i &lt; payload.Length; i++) payload[i] = (byte)(i * 31);
+
+using var alg = new Camellia { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 };
+alg.Key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+alg.IV  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+
+using var source = new MemoryStream(payload);
+using var encrypted = new MemoryStream();
+int consumed = alg.Encrypt(source, encrypted, bufferSize: 64 * 1024);     // 300000 bytes read; 300016 written (PKCS7)
+
+encrypted.Position = 0;
+using var decrypted = new MemoryStream();
+int ciphertextConsumed = alg.Decrypt(encrypted, decrypted);               // default 80 KiB buffer
+</code></pre>
+<p>Because the transform is created from the algorithm's current <code>Key</code> / <code>IV</code> / <code>BlockMode</code> / <code>Padding</code>, set those first. The same overloads exist on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a> for the stream ciphers (<code>ChaCha20</code>, <code>XChaCha20</code>, <code>Salsa20</code>, <code>XSalsa20</code>, <code>Rabbit</code>, <code>Hc128</code>).</p>
+<h2 id="pattern-2--the-same-awaitable">Pattern 2 — the same, awaitable</h2>
+<p><code>EncryptAsync</code> / <code>DecryptAsync</code> have the same signatures plus a <code>CancellationToken</code>, and delegate to <code>ICryptoTransformExtensions.TransformAsync</code>. Cancellation is honoured between reads and <strong>before the final block is flushed</strong>: a token that fires after the last read but before finalization throws and leaves the target stream partial. An already-cancelled token surfaces as <code>TaskCanceledException</code> (an <code>OperationCanceledException</code>).</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] payload = new byte[300_000];
+using var alg = new Camellia();
+alg.Key = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f&quot;);
+alg.IV  = Convert.FromHexString(&quot;101112131415161718191a1b1c1d1e1f&quot;);
+
+using var source = new MemoryStream(payload);
+using var encrypted = new MemoryStream();
+await alg.EncryptAsync(source, encrypted, bufferSize: 32 * 1024, cancellationToken: CancellationToken.None);
+
+encrypted.Position = 0;
+using var decrypted = new MemoryStream();
+await alg.DecryptAsync(encrypted, decrypted);          // default buffer, no token
+
+using var cts = new CancellationTokenSource();
+cts.Cancel();
+try { await alg.EncryptAsync(new MemoryStream(payload), new MemoryStream(), cts.Token); }
+catch (OperationCanceledException) { /* nothing was finalized */ }
+</code></pre>
+<p>The stream-cipher extension class has <strong>no</strong> <code>*Async</code> members. For an awaitable stream-cipher copy, drop one level to the transform (Pattern 3).</p>
+<h2 id="pattern-3--icryptotransformtransformasync">Pattern 3 — <code>ICryptoTransform.TransformAsync</code></h2>
+<p><code>TransformAsync(sourceStream, targetStream, bufferSize, cancellationToken)</code> is the engine behind the cipher overloads and works on any <code>ICryptoTransform</code> — a Bodu <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>, a stream-cipher transform, or a BCL one. It rents its read buffer from <code>ArrayPool&lt;byte&gt;.Shared</code> and returns it cleared on every exit path, wraps the target in a <code>CryptoStream</code> with <code>leaveOpen: true</code>, and disposes neither stream.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] payload = new byte[300_000];
+using var alg = new ChaCha20();
+alg.Key   = Convert.FromHexString(&quot;000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f&quot;);
+alg.Nonce = Convert.FromHexString(&quot;000000000000004a00000000&quot;);
+
+using var source = new MemoryStream(payload);
+using var encrypted = new MemoryStream();
+int consumed = alg.Encrypt(source, encrypted, bufferSize: 16 * 1024);    // synchronous stream-cipher overload
+
+// The parameterless CreateDecryptor() would throw: SymmetricStreamAlgorithm allows one transform per nonce.
+// Pass the key and nonce explicitly for the second transform.
+encrypted.Position = 0;
+using var decrypted = new MemoryStream();
+using ICryptoTransform decryptor = alg.CreateDecryptor(alg.Key, alg.Nonce);
+await decryptor.TransformAsync(encrypted, decrypted, bufferSize: 16 * 1024);
+</code></pre>
+<p>A second call to the parameterless <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> under the same nonce throws <code>CryptographicException</code> — the library refuses to hand out two keystreams for one <code>(key, nonce)</code>. The <code>(key, nonce)</code> overloads are the documented way to build the matching decryptor.</p>
+<h2 id="pattern-4--hashing-a-stream-synchronously-and-asynchronously">Pattern 4 — hashing a stream, synchronously and asynchronously</h2>
+<p>Every Bodu hash is a <code>HashAlgorithm</code>, so the BCL's <code>ComputeHash(Stream)</code> and <code>ComputeHashAsync(Stream, CancellationToken)</code> already work. The extension class adds:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Buffer</th>
+<th>Finalizes?</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AppendData(ReadOnlySpan&lt;byte&gt;)</code></td>
+<td>pooled copy of the span, cleared on return</td>
+<td>No</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AppendDataAsync(Stream, bufferSize = 4096, CancellationToken)</code></td>
+<td>pooled, cleared on every exit</td>
+<td>No</td>
+<td><code>Task</code></td>
+</tr>
+<tr>
+<td><code>VerifyHash(…)</code> / <code>VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory&lt;byte&gt;, CancellationToken)</code></td>
+<td>via <code>ComputeHash</code> / <code>ComputeHashAsync</code></td>
+<td>Yes</td>
+<td><code>bool</code> — constant-time compare</td>
+</tr>
+<tr>
+<td><code>TryVerifyHash(…)</code> / <code>TryVerifyHashAsync(…)</code></td>
+<td>as above</td>
+<td>Yes</td>
+<td><code>bool</code>; <code>false</code> for <code>null</code> arguments, malformed hex, or any exception</td>
+</tr>
+</tbody>
+</table>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+byte[] payload = new byte[300_000];
+for (int i = 0; i &lt; payload.Length; i++) payload[i] = (byte)(i * 31);
+
+using var blake = new Blake2b(256);
+byte[] expected = blake.ComputeHash(payload);                           // 7C453235…255798F6
+
+// BCL member, inherited: reads to end, then finalizes.
+using var s1 = new MemoryStream(payload);
+byte[] viaBcl = await blake.ComputeHashAsync(s1);
+
+// Bodu: feed TransformBlock from a stream, finalize when you decide to.
+using var s2 = new MemoryStream(payload);
+using var incremental = new Blake2b(256);
+await incremental.AppendDataAsync(s2, bufferSize: 8192);
+incremental.TransformFinalBlock([], 0, 0);
+byte[] viaAppend = incremental.Hash!;
+
+// Verify helpers.
+using var s3 = new MemoryStream(payload);
+bool ok = await blake.VerifyHashAsync(s3, expected);                    // true
+using var s4 = new MemoryStream(payload);
+bool okHex = await blake.TryVerifyHashAsync(s4, Convert.ToHexString(expected));   // true; hex is case-insensitive
+bool empty = await blake.TryVerifyHashAsync(Stream.Null, expected);     // false, no exception
+</code></pre>
+<p><code>VerifyHashAsync</code> checks the token before any I/O and throws <code>OperationCanceledException</code> directly; <code>TryVerifyHashAsync</code> swallows that into <code>false</code>. Both compare with <code>CryptographicOperations.FixedTimeEquals</code>.</p>
+<h2 id="pattern-5--merkle-roots-over-a-stream-in-parallel">Pattern 5 — Merkle roots over a stream, in parallel</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> covers both the synchronous and the awaitable path. <code>ComputeRootOfBlocks(Stream, int blockSize, MerkleTreeDiagnostics? = null, CancellationToken = default)</code> folds a stream block by block; <code>ComputeRootOfBlocksAsync(…)</code> is the same computation over <code>ReadAsync</code>. Parallelism is a property of the instance rather than a separate type: <code>maxDegreeOfParallelism</code> is <code>1</code> (the calling thread) by default, <code>-1</code> for unbounded, or an explicit worker count. The tree shape never changes with the setting, so a parallel instance and a sequential one produce the same root and the same proofs.</p>
+<p><code>blockSize</code> is a per-call argument — the same tree can fold different inputs at different block sizes — and <code>fanOut</code> defaults to <code>2</code>, RFC 6962's binary tree.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] payload = new byte[300_000];
+for (int i = 0; i &lt; payload.Length; i++) payload[i] = (byte)(i * 31);
+
+var sequential = new MerkleTree(() =&gt; new Blake2b(256));
+byte[] expected = sequential.ComputeRootOfBlocks(payload, blockSize: 4096);
+
+var parallel = new MerkleTree(() =&gt; new Blake2b(256), maxDegreeOfParallelism: -1);
+using var source = new MemoryStream(payload);
+byte[] root = await parallel.ComputeRootOfBlocksAsync(source, blockSize: 4096);
+// root == expected: 15BB6566…297F7C4F
+</code></pre>
+<p>The factory delegate must return a <strong>fresh</strong> <code>HashAlgorithm</code> per call — workers never share an instance, and a factory handing back one shared instance cannot serve a parallel tree at all. An empty input is not an error: it yields the empty tree's root, <code>H()</code> over zero bytes, which for <code>Blake2b(256)</code> is <code>0E5751C0…F12FE3A8</code>.</p>
+<p>Use <code>ComputeBlocked</code> / <code>ComputeBlockedAsync</code> instead when you want the leaf hashes and block arithmetic alongside the root; they return a <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> carrying <code>Root</code>, <code>InputLength</code>, <code>BlockSize</code>, <code>BlockCount</code>, and the retained <code>LeafHashes</code>.</p>
+<h2 id="pattern-6--factory-driven-one-shots">Pattern 6 — factory-driven one-shots</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a> hashes through an <a class="xref" href="../../api/Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>, creating and disposing the algorithm per call: <code>HashData(factory, ReadOnlySpan&lt;byte&gt;)</code>, <code>HashData(factory, Stream)</code>, <code>HashDataAsync(factory, Stream, CancellationToken)</code> (an 8 KiB pooled buffer), and <code>TryHashData(factory, input, destination, out bytesWritten)</code>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] payload = new byte[300_000];
+using var source = new MemoryStream(payload);
+byte[] digest = await HashAlgorithmHelper.HashDataAsync(HashAlgorithmFactory.From(() =&gt; new Blake2b(256)), source);
+</code></pre>
+<h2 id="buffers-cancellation-and-memory--the-rules">Buffers, cancellation, and memory — the rules</h2>
+<ul>
+<li><strong>Buffer sizes.</strong> Cipher stream overloads default to 80 KiB; <code>AppendDataAsync</code> to 4 KiB; <code>HashAlgorithmHelper</code> to 8 KiB; <code>MerkleTree</code> reads one <code>blockSize</code> block at a time, batching them per worker when run in parallel. Every <code>bufferSize</code> parameter must be &gt; 0.</li>
+<li><strong>Pooled buffers are cleared.</strong> <code>TransformAsync</code>, <code>AppendData</code>, <code>AppendDataAsync</code>, the <code>MerkleTree</code> block and leaf loops, and the helper all rent from <code>ArrayPool&lt;byte&gt;.Shared</code> and return with <code>clearArray: true</code>, on success, cancellation, and exception paths alike, so plaintext never lingers in a pool.</li>
+<li><strong>Streams are never disposed</strong> by these members; the caller owns both ends.</li>
+<li><strong>Cancellation is cooperative.</strong> It is checked per read and, for <code>TransformAsync</code>, before the final block; a partially written target is the caller's to discard. Already-cancelled tokens fail fast before any I/O.</li>
+<li><strong>Instances are not thread-safe — with one exception.</strong> Hashes and transforms are single-caller objects. <code>MerkleTree</code> is immutable and safe to share across threads, provided its factory returns a fresh <code>HashAlgorithm</code> on each call; a parallel instance spreads leaf hashing across workers <em>inside</em> one call and folds them in order on the calling thread.</li>
+</ul>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Stream / async members</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a></td>
+<td><code>Encrypt(Stream, Stream[, int])</code>, <code>Decrypt(…)</code>, <code>EncryptAsync(Stream, Stream[, int], CancellationToken)</code>, <code>DecryptAsync(…)</code>; <code>DefaultBufferSize = 81920</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a></td>
+<td><code>Encrypt(Stream, Stream[, int])</code>, <code>Decrypt(…)</code> — synchronous only</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a></td>
+<td><code>Transform(Stream, Stream, int)</code>, <code>TransformAsync(Stream, Stream, int, CancellationToken)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a></td>
+<td><code>AppendData</code>, <code>AppendDataAsync</code>, <code>VerifyHash</code>, <code>VerifyHashAsync</code>, <code>TryVerifyHash</code>, <code>TryVerifyHashAsync</code></td>
+</tr>
+<tr>
+<td><code>System.Security.Cryptography.HashAlgorithm</code> (inherited)</td>
+<td><code>ComputeHash(Stream)</code>, <code>ComputeHashAsync(Stream, CancellationToken)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a></td>
+<td><code>ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</code>, <code>ComputeRootOfBlocksAsync(…)</code>, <code>ComputeBlocked(…)</code>, <code>ComputeBlockedAsync(…)</code></td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a></td>
+<td><code>HashData(factory, Stream)</code>, <code>HashDataAsync(factory, Stream, CancellationToken)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> — <code>CryptoStream</code> and the <code>HashAlgorithm</code> lifecycle.</li>
+<li><a href="merkle-trees.html">Using Merkle trees</a> — fan-out, Tiger-Tree hashes, and diagnostics.</li>
+<li><a href="../io-hashing/streaming-and-async.html">Streaming, async, and resumable hashing</a> — the same story for the non-cryptographic checksums, including <code>HashingStream</code>.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

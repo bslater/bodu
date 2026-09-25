@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Mapping attributes | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Mapping attributes | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="mapping-attributes">Mapping attributes</h1>
+
+<p>The TOML serializer honours the attribute family from the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> package for shaping how a type maps to the wire: every attribute derives <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>. The sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) honour the very same attributes — there is no per-format prefix — see the <a href="../index.html">serializer guides hub</a>. Each pattern below shows the TOML form and its output.</p>
+<h2 id="pattern-1--rename-a-member">Pattern 1 — Rename a member</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins the serialized key for one member, beating any naming policy:</p>
+<pre><code class="lang-csharp">public sealed class Profile
+{
+    [PropertyName(&quot;display-name&quot;)]
+    public string DisplayName { get; set; } = &quot;Ada&quot;;
+}
+</code></pre>
+<pre><code class="lang-toml">display-name = &quot;Ada&quot;
+</code></pre>
+<h2 id="pattern-2--apply-a-naming-policy-per-type">Pattern 2 — Apply a naming policy per type</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a> overrides the options-level <code>PropertyNamingPolicy</code> for one type:</p>
+<pre><code class="lang-csharp">[NamingPolicy(KnownNamingPolicy.SnakeCaseLower)]
+public sealed class RetryPolicy
+{
+    public int MaxRetryCount { get; set; } = 5;
+}
+</code></pre>
+<pre><code class="lang-toml">max_retry_count = 5
+</code></pre>
+<p>A member carrying <code>[PropertyName]</code> is unaffected — the explicit name always wins. <code>KnownNamingPolicy.Unspecified</code> defers back to the options.</p>
+<h2 id="pattern-3--exclude-members">Pattern 3 — Exclude members</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> drops a member unconditionally, or under a condition:</p>
+<pre><code class="lang-csharp">public sealed class Account
+{
+    public string Name { get; set; } = &quot;svc&quot;;
+
+    [Ignore]
+    public string? Secret { get; set; }
+
+    [Ignore(Condition = IgnoreCondition.WhenWritingNull)]
+    public string? Comment { get; set; }
+}
+</code></pre>
+<pre><code class="lang-toml">Name = &quot;svc&quot;
+</code></pre>
+<p><code>Secret</code> is never written; <code>Comment</code> appears only when non-null. <code>WhenWritingDefault</code> extends the rule to default value-type values.</p>
+<h2 id="pattern-4--force-a-member-in">Pattern 4 — Force a member in</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a> binds non-public property accessors and surfaces public fields without turning on <code>IncludeFields</code> for the whole options:</p>
+<pre><code class="lang-csharp">public sealed class Counter
+{
+    [Include]
+    public int Total { get; private set; }
+
+    [Include]
+    public int Retries;
+}
+</code></pre>
+<p>Both members now round-trip — the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules.</p>
+<h2 id="pattern-5--control-write-order">Pattern 5 — Control write order</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyOrderAttribute.html">PropertyOrderAttribute</a> reorders the emitted key/value lines; members without the attribute default to order zero and keep declaration order:</p>
+<pre><code class="lang-csharp">public sealed class Manifest
+{
+    [PropertyOrder(2)]
+    public string Name { get; set; } = &quot;demo&quot;;
+
+    [PropertyOrder(1)]
+    public int Version { get; set; } = 3;
+}
+</code></pre>
+<pre><code class="lang-toml">Version = 3
+Name = &quot;demo&quot;
+</code></pre>
+<h2 id="pattern-6--require-a-key">Pattern 6 — Require a key</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> makes deserialization fail when the key is absent, with the same effect as declaring the member with the C# <code>required</code> keyword:</p>
+<pre><code class="lang-csharp">public sealed class ServerConfig
+{
+    [Required]
+    public string Host { get; set; } = string.Empty;
+}
+
+// Input without a &quot;Host&quot; key throws TomlSerializationException.
+</code></pre>
+<h2 id="pattern-7--pick-the-deserialization-constructor">Pattern 7 — Pick the deserialization constructor</h2>
+<p>When a type declares more than one constructor, <a class="xref" href="../../../api/Bodu.Text.Serialization.ConstructorAttribute.html">ConstructorAttribute</a> resolves the ambiguity:</p>
+<pre><code class="lang-csharp">public sealed class Endpoint
+{
+    [Constructor]
+    public Endpoint(string host, int port) =&gt; (Host, Port) = (host, port);
+
+    public Endpoint(Uri uri) : this(uri.Host, uri.Port) { }
+
+    public string Host { get; }
+    public int Port { get; }
+}
+</code></pre>
+<p>Without the attribute the serializer prefers a public parameterless constructor, then a single declared constructor, then the constructor with the most parameters.</p>
+<h2 id="pattern-8--capture-unknown-keys">Pattern 8 — Capture unknown keys</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> designates one member that collects every key that maps to no other member, and writes the collected entries back out on serialization:</p>
+<pre><code class="lang-csharp">public sealed class ServerConfig
+{
+    public int Port { get; set; }
+
+    [ExtensionData]
+    public Dictionary&lt;string, TomlNode&gt;? Extra { get; set; }
+}
+</code></pre>
+<p>The member must be a <code>TomlObject</code> or an <code>(I)Dictionary&lt;string, TomlNode&gt;</code>, and a type may declare at most one.</p>
+<h2 id="pattern-9--reject-unknown-keys">Pattern 9 — Reject unknown keys</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandlingAttribute.html">UnmappedMemberHandlingAttribute</a> chooses, per type, between skipping a key that maps to no member (the default) and failing:</p>
+<pre><code class="lang-csharp">[UnmappedMemberHandling(UnmappedMemberHandling.Disallow)]
+public sealed class StrictConfig
+{
+    public int Port { get; set; }
+}
+
+// Input containing an unrecognised key throws TomlSerializationException.
+</code></pre>
+<p>A type with an extension-data member (Pattern 8) still captures unmapped keys into that member regardless of this setting.</p>
+<h2 id="pattern-10--populate-instead-of-replace">Pattern 10 — Populate instead of replace</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ObjectCreationHandlingAttribute.html">ObjectCreationHandlingAttribute</a> controls whether deserialization replaces a member's value with a fresh instance or populates the instance already held — useful for get-only collection properties:</p>
+<pre><code class="lang-csharp">public sealed class Pipeline
+{
+    [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+    public List&lt;string&gt; Steps { get; } = new() { &quot;restore&quot; };
+}
+</code></pre>
+<p>Deserialized entries are appended to the existing list instead of replacing it. The attribute applies to a member or a whole type; member beats type, and both beat the options-level <code>PreferredObjectCreationHandling</code>.</p>
+<h2 id="pattern-11--choose-a-converter">Pattern 11 — Choose a converter</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> selects the converter for a member, or for every use of a type:</p>
+<pre><code class="lang-csharp">public sealed class Package
+{
+    [Converter(typeof(VersionConverter))]
+    public Version Version { get; set; } = new(1, 2, 3);
+}
+</code></pre>
+<pre><code class="lang-toml">Version = &quot;1.2.3&quot;
+</code></pre>
+<p>The referenced type must derive from the format's converter base and expose a public parameterless constructor. Writing converters — including the factory pattern and resolution order — is covered in <a href="converters.html">Writing converters</a>.</p>
+<h2 id="pattern-12--name-enum-members">Pattern 12 — Name enum members</h2>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> renames an individual enumeration member when the enum is serialized by name:</p>
+<pre><code class="lang-csharp">[Converter(typeof(TomlStringEnumConverter&lt;Status&gt;))]
+public enum Status
+{
+    Active,
+
+    [StringEnumMemberName(&quot;on-hold&quot;)]
+    OnHold,
+}
+</code></pre>
+<pre><code class="lang-toml">Status = &quot;on-hold&quot;
+</code></pre>
+<p>The attribute applies only to by-name serialization (the default enum handling, or an explicit string-enum converter); it is a no-op when the enum is written as an integer.</p>
+<h2 id="precedence-at-a-glance">Precedence at a glance</h2>
+<p>When several settings could govern the same member, the closest one wins:</p>
+<ol>
+<li>a member-level attribute (<code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[ObjectCreationHandling]</code>, …);</li>
+<li>a type-level attribute (<code>[NamingPolicy]</code>, <code>[Converter]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>);</li>
+<li>the serializer options (<code>PropertyNamingPolicy</code>, <code>Converters</code>, <code>UnmappedMemberHandling</code>, <code>PreferredObjectCreationHandling</code>, <code>IncludeFields</code>).</li>
+</ol>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="using.html">Using TOML</a></strong>, <strong><a href="converters.html">Writing converters</a></strong>, <strong><a href="callbacks.html">Serialization callbacks</a></strong>, <strong><a href="builtin-converters.html">Built-in converter catalog</a></strong> — the other TOML guides.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the serializers.</li>
+<li><strong><a href="index.html">TOML guides</a></strong> — the full guide index for Bodu.Text.Toml.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Views and resolution | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Views and resolution | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="views-and-resolution">Views and resolution</h1>
+
+<p>A parsed <code>ConfigurationDocument</code> is the codec's faithful representation — sections, entries, comments, line numbers. The <em>view</em> layer takes that document and projects it into the shape application code wants to consume: dotted-or-colon-delimited paths flattened across sections, EditorConfig glob sections resolved against a target path, typed value getters, and missing-key fallbacks.</p>
+<p>This guide covers <code>ConfigurationView</code>, <code>ConfigurationResolveOptions</code>, <code>ConfigurationKey</code>, <code>ConfigurationKeyOptions</code>, and <code>ConfigurationPattern</code>. For the parse side — <code>ConfigurationDocument.Parse</code>, profiles, parse options — see <a href="parsing-and-profiles.html">Parsing and profiles</a>. For the diagnostic catalogue — every <code>ConfigurationDiagnosticCode</code> value — see <a href="diagnostics.html">Diagnostics</a>.</p>
+<h2 id="pattern-1--resolve-a-document-to-a-view">Pattern 1 — resolve a document to a view</h2>
+<p>A section header is a <strong>glob pattern matched against a target path</strong>, not a namespace. To pull a section's keys into the view you must supply the path you are resolving for; the section's glob is then matched against it:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+string source = &quot;&quot;&quot;
+appName = Bodu.Sample
+
+[*.log]
+level = Information
+verbose = true
+&quot;&quot;&quot;;
+
+ConfigurationDocument document = ConfigurationDocument.Parse(source);
+
+ConfigurationView view = document.Resolve(&quot;app/server.log&quot;);
+
+string? name = view[&quot;appName&quot;];          // &quot;Bodu.Sample&quot; — from the preamble
+string? lvl  = view[&quot;level&quot;];            // &quot;Information&quot; — from [*.log], which matches &quot;app/server.log&quot;
+string? same = view[&quot;LEVEL&quot;];            // &quot;Information&quot; — lookups are case-insensitive by default
+</code></pre>
+<p><code>Resolve(targetPath?)</code> is an extension method on <code>IniDocumentBase</code> (so it works on both <code>ConfigurationDocument</code> and <code>IniDocument</code>) from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a colon-delimited path via <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> (dotted-to-colon by default), and produces a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> queryable with either notation.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>With <strong>no</strong> target path — <code>document.Resolve()</code> or <code>Resolve(null)</code> — every named section is skipped and the view contains only the preamble. This is the single most common surprise: an INI file whose sections are intended as namespaces will resolve to an empty-but-for-preamble view unless you treat the section names as globs and pass a matching target path, or read the sections directly off the document (<code>document.Sections[i][&quot;key&quot;]</code>) instead of resolving.</p>
+</div>
+<h2 id="pattern-2--anchored-editorconfig-globs">Pattern 2 — anchored EditorConfig globs</h2>
+<p>The <code>targetPath</code> argument changes everything. When supplied, sections are treated as EditorConfig glob patterns and only the sections whose patterns match the target path contribute to the view:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+string editorConfig = &quot;&quot;&quot;
+root = true
+
+[*]
+indent_style = space
+
+[*.cs]
+indent_size = 4
+
+[*.{md,json}]
+indent_size = 2
+&quot;&quot;&quot;;
+
+ConfigurationDocument doc = ConfigurationDocument.Parse(editorConfig);
+
+ConfigurationView csharp = doc.Resolve(&quot;src/Foo.cs&quot;);
+csharp[&quot;indent_size&quot;];   // &quot;4&quot;   — from [*.cs]
+csharp[&quot;indent_style&quot;];  // &quot;space&quot; — from [*]
+
+ConfigurationView json = doc.Resolve(&quot;appsettings.json&quot;);
+json[&quot;indent_size&quot;];     // &quot;2&quot;   — from [*.{md,json}]
+</code></pre>
+<p>When two matching sections set the same key, the <em>later</em> section wins — same merge order as the EditorConfig specification. Here both <code>[*]</code> and <code>[*.cs]</code> match <code>src/Foo.cs</code>, so <code>indent_style</code> comes from <code>[*]</code> and <code>indent_size</code> from the later, more specific <code>[*.cs]</code>.</p>
+<p>When <code>targetPath</code> is <code>null</code>, <strong>no</strong> section contributes — only the preamble does (see the admonition in Pattern 1). For typical INI configuration where sections are namespaces rather than globs, read the sections directly off the parsed <code>ConfigurationDocument</code> (it inherits the read-only <code>IniDocumentBase</code> surface: <code>document.Sections</code>, <code>section.Entries</code>, <code>section[&quot;key&quot;]</code>) instead of resolving against a target path.</p>
+<h2 id="pattern-3--typed-value-getters">Pattern 3 — typed value getters</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationView view = document.Resolve(&quot;src/Foo.cs&quot;);
+
+string   name    = view.GetString(&quot;appName&quot;);
+int      port    = view.GetInt32(&quot;server:port&quot;);
+long     maxSize = view.GetInt64(&quot;limits:max:bytes&quot;);
+bool     verbose = view.GetBoolean(&quot;logging:verbose&quot;);
+TimeSpan ttl     = view.GetValue&lt;TimeSpan&gt;(&quot;cache:ttl&quot;);
+Guid     tenant  = view.GetValue&lt;Guid&gt;(&quot;tenant:id&quot;);
+LogLevel level   = view.GetEnum&lt;LogLevel&gt;(&quot;logging:level&quot;);
+</code></pre>
+<p><code>GetValue&lt;T&gt;(key)</code> parses any <code>ISpanParsable&lt;T&gt;</code> under <code>CultureInfo.InvariantCulture</code>. The specialised getters — <code>GetInt32</code>, <code>GetInt64</code>, <code>GetBoolean</code>, <code>GetEnum&lt;T&gt;</code> — are sugar with predictable error behaviour:</p>
+<ul>
+<li>All of them throw <code>KeyNotFoundException</code> when the key is missing and <code>FormatException</code> when the value is present but unparseable.</li>
+<li><code>GetInt32</code> / <code>GetInt64</code> parse with <code>NumberStyles.Integer</code> (a leading sign and surrounding whitespace, no thousands separators or decimal point).</li>
+<li><code>GetBoolean</code> accepts only <code>true</code> / <code>false</code> case-insensitively — <code>&quot;yes&quot;</code>, <code>&quot;on&quot;</code>, and <code>&quot;1&quot;</code> are <strong>not</strong> booleans (EditorConfig semantics).</li>
+<li><code>GetEnum&lt;T&gt;</code> parses case-insensitively by name and rejects undefined integers and unlisted combined-flag values via <code>Enum.IsDefined</code>.</li>
+</ul>
+<p>The <code>Try…</code> variants and fallback overloads soften the missing-key case — but they differ on malformed values:</p>
+<pre><code class="lang-csharp">int port = view.GetInt32(&quot;server:port&quot;, fallback: 8080);
+
+if (view.TryGetString(&quot;logging:level&quot;, out string? level))
+    Configure(level!);
+</code></pre>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>A <code>fallback</code> overload (<code>GetInt32(key, 8080)</code>, <code>GetValue&lt;T&gt;(key, fallback)</code>, <code>GetEnum(key, fallback)</code>) only substitutes the fallback when the <strong>key is absent</strong>. A key that is present but holds a malformed value still throws <code>FormatException</code> — fallbacks never silently swallow bad data. Only the <code>TryGetXxx</code> family is fully non-throwing on a parse failure: it returns <code>false</code> for both a missing key <em>and</em> an unparseable value. Use <code>TryGetXxx</code> when the source text is untrusted and you want per-key error handling.</p>
+</div>
+<h2 id="pattern-4--enumerate-the-resolved-view">Pattern 4 — enumerate the resolved view</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationView view = document.Resolve(&quot;src/Foo.cs&quot;);
+
+Console.WriteLine($&quot;{view.Count} key(s) resolved&quot;);
+
+foreach (KeyValuePair&lt;string, string?&gt; kv in view)
+    Console.WriteLine($&quot;  {kv.Key} = {kv.Value}&quot;);
+
+foreach (ConfigurationResolvedEntry entry in view.Entries)
+    Console.WriteLine($&quot;  {entry.Key} = {entry.Value}  (from {entry.SectionPattern ?? &quot;&lt;preamble&gt;&quot;})&quot;);
+</code></pre>
+<p><code>Values</code> returns the resolved dictionary; <code>Keys</code>, <code>Count</code>, and <code>GetEnumerator()</code> mirror the standard read-only collection contract, and enumeration yields keys in canonical colon-delimited form. <code>Entries</code> exposes the richer <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a> view — same keys, same values, but with provenance: <code>Key</code>, <code>Value</code>, <code>SectionPattern</code> (the winning section's glob, or <code>null</code> for the preamble), and <code>SourceLocation</code>. Fetch a single key's provenance with <code>view.GetEntry(&quot;format:indent:size&quot;)</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>ConfigurationView</code> also implements <code>IReadOnlyDictionary&lt;string, string?&gt;</code>, but its indexer deviates from the dictionary contract: <code>view[&quot;absent:key&quot;]</code> returns <code>null</code> rather than throwing <code>KeyNotFoundException</code>, matching <code>Microsoft.Extensions.Configuration</code>'s null-on-absent convention. Use <code>view.ContainsKey(key)</code> to distinguish an absent key from one whose value is <code>null</code>.</p>
+</div>
+<h2 id="pattern-5--resolve-options">Pattern 5 — resolve options</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationView view = document.Resolve(
+    targetPath: &quot;src/Foo.cs&quot;,
+    options: ConfigurationResolveOptions.EditorConfigCompatible);
+</code></pre>
+<p>The default options (<code>ConfigurationResolveOptions.Bodu</code>) treat the global section's properties as participating preamble and the literal value <code>&quot;unset&quot;</code> as a normal string. The <code>EditorConfigCompatible</code> preset switches both — preamble properties are dropped from the resolved view, and <code>&quot;unset&quot;</code> removes the effective value the way EditorConfig requires.</p>
+<p>Every field of <code>ConfigurationResolveOptions</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Profile</code></td>
+<td><code>Bodu</code></td>
+<td>Selects the cohort of resolve defaults.</td>
+</tr>
+<tr>
+<td><code>PathRoot</code></td>
+<td><code>null</code></td>
+<td>Optional anchor that anchored globs are rebased against; <code>null</code> defers to the document's load path.</td>
+</tr>
+<tr>
+<td><code>MissingPathRootMode</code></td>
+<td><code>UseEmptyRoot</code></td>
+<td>Behaviour for a <strong>path-less</strong> resolve when no root is available — <code>UseEmptyRoot</code> returns a preamble-only view; <code>Throw</code> raises <code>InvalidOperationException</code>. No effect once a target path is supplied.</td>
+</tr>
+<tr>
+<td><code>ApplyPreambleProperties</code></td>
+<td><code>true</code> (Bodu/Strict/Relaxed) / <code>false</code> (EditorConfig)</td>
+<td>Whether the global section contributes to the view.</td>
+</tr>
+<tr>
+<td><code>PathComparison</code></td>
+<td><code>Ordinal</code></td>
+<td><code>StringComparison</code> used to match the target path against globs (case-insensitive variants compile the regex with <code>IgnoreCase</code>).</td>
+</tr>
+<tr>
+<td><code>UnsetValueMode</code></td>
+<td><code>TreatAsLiteral</code> (Bodu/Relaxed) / <code>RemoveEffectiveValue</code> (EditorConfig/Strict)</td>
+<td>How a value equal to <code>&quot;unset&quot;</code> (case-insensitive) is treated.</td>
+</tr>
+<tr>
+<td><code>KeyOptions</code></td>
+<td><code>Default</code></td>
+<td>Segment-separator and mapping config (see below). Should match <code>ConfigurationParseOptions.KeyOptions</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Static presets are thinner here than on the parse side: only <code>ConfigurationResolveOptions.Bodu</code> and <code>ConfigurationResolveOptions.EditorConfigCompatible</code> exist as named properties. For <code>Strict</code> or <code>Relaxed</code> resolve defaults, call <code>ConfigurationResolveOptions.For(ConfigurationProfile.Strict)</code>.</p>
+<h3 id="how-pathroot-rebases-the-target">How <code>PathRoot</code> rebases the target</h3>
+<p>Before matching, the resolver normalises the target path to forward slashes and makes it relative to <code>PathRoot</code>: a <code>PathRoot</code> prefix (plus its trailing <code>/</code>) is stripped, an exact match collapses to the filename, and anything else is matched as-authored. This lets an anchored glob like <code>[src/**/*.cs]</code> match an absolute file path:</p>
+<pre><code class="lang-csharp">var options = new ConfigurationResolveOptions { PathRoot = &quot;/repo/my-app&quot; };
+
+// &quot;/repo/my-app/src/svc/Foo.cs&quot; → relative &quot;src/svc/Foo.cs&quot; → matches [src/**/*.cs]
+ConfigurationView view = document.Resolve(&quot;/repo/my-app/src/svc/Foo.cs&quot;, options);
+</code></pre>
+<p>When a document is loaded with <code>ConfigurationDocument.Load(path)</code>, its originating directory is recorded and used as the implicit <code>PathRoot</code>, so anchored globs resolve against the right base without setting <code>PathRoot</code> explicitly. Documents parsed from a string or stream carry no path context — set <code>PathRoot</code> yourself when your globs are anchored.</p>
+<h2 id="configurationkey-and-configurationkeyoptions"><code>ConfigurationKey</code> and <code>ConfigurationKeyOptions</code></h2>
+<p><code>ConfigurationKey</code> is the parsed form of a key — both the raw authored shape (<code>&quot;logging.console.level&quot;</code>) and the canonical colon-delimited path (<code>&quot;logging:console:level&quot;</code>). It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationKey key = ConfigurationKey.Parse(&quot;logging.console.level&quot;);
+
+key.RawKey;       // &quot;logging.console.level&quot;
+key.Path;         // &quot;logging:console:level&quot;
+key.Segments;     // [&quot;logging&quot;, &quot;console&quot;, &quot;level&quot;]
+key.CaseSensitive;// false
+</code></pre>
+<p>The behaviour is governed by <code>ConfigurationKeyOptions</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SegmentSeparators</code></td>
+<td><code>{ '.', ':' }</code></td>
+<td>Characters recognised as path separators.</td>
+</tr>
+<tr>
+<td><code>Mapping</code></td>
+<td><code>DotToColon</code></td>
+<td>Raw-to-canonical mapping — <code>DotToColon</code>, <code>Colon</code> (assume already colon-delimited), or <code>Identity</code> (no transformation).</td>
+</tr>
+<tr>
+<td><code>CaseSensitive</code></td>
+<td><code>false</code></td>
+<td>Case-sensitive comparison (the default <code>false</code> matches <code>Microsoft.Extensions.Configuration</code>).</td>
+</tr>
+<tr>
+<td><code>AllowEmptySegments</code></td>
+<td><code>false</code></td>
+<td>Permit empty segments like <code>a..b</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The static <code>ConfigurationKeyOptions.Default</code> is the cached default.</p>
+<h2 id="configurationpattern--editorconfig-globs"><code>ConfigurationPattern</code> — EditorConfig globs</h2>
+<p>When the view is resolved with a <code>targetPath</code>, section names are compiled to <code>ConfigurationPattern</code> and matched against the path:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationPattern p = ConfigurationPattern.Compile(&quot;**/*.{md,json}&quot;);
+
+p.IsMatch(&quot;docs/getting-started.md&quot;);      // True
+p.IsMatch(&quot;src/appsettings.json&quot;);         // True
+p.IsMatch(&quot;src/Foo.cs&quot;);                   // False
+</code></pre>
+<p>The glob grammar:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td>Any character except <code>/</code>.</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>Any sequence including <code>/</code>.</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>A single character except <code>/</code>.</td>
+</tr>
+<tr>
+<td><code>{a,b,c}</code></td>
+<td>Alternation (nesting allowed).</td>
+</tr>
+<tr>
+<td><code>{n1..n2}</code></td>
+<td>Inclusive integer range.</td>
+</tr>
+<tr>
+<td><code>[seq]</code> / <code>[!seq]</code></td>
+<td>Character set or its complement.</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>Escape the next character.</td>
+</tr>
+</tbody>
+</table>
+<p>Patterns without <code>/</code> match at any depth. Patterns with <code>/</code> anchor to the start of the path. The grammar is the EditorConfig 0.17.2 specification verbatim, plus a bounded process-wide pattern cache so the same pattern compiled twice does not recompile.</p>
+<p><code>Compile(pattern, StringComparison)</code> accepts an explicit comparison; the default <code>Ordinal</code> matches the EditorConfig requirement that paths be case-sensitive on case-sensitive file systems.</p>
+<h2 id="when-not-to-use-configurationview">When <em>not</em> to use <code>ConfigurationView</code></h2>
+<ul>
+<li><strong>You only need to read or write the INI bytes.</strong> Reach for <a href="../formats/ini.html"><code>Bodu.Text.Ini</code></a> directly — <code>ConfigurationView</code> is the projection layer; you do not need it for codec-only use.</li>
+<li><strong>You need <code>IConfiguration</code> integration.</strong> Reach for <a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a>, which bridges <code>ConfigurationView</code> into <code>IConfigurationBuilder</code> so the rest of the standard configuration pipeline works unchanged.</li>
+<li><strong>You need diagnostics at parse time.</strong> That work lives in <a href="parsing-and-profiles.html#pattern-4--collect-diagnostics-instead-of-throwing"><code>ConfigurationDocument.ParseWithDiagnostics</code></a> — <code>Resolve</code> runs against a successfully parsed document.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="parsing-and-profiles.html">Parsing and profiles</a> — the parse half of the surface.</li>
+<li><a href="diagnostics.html">Diagnostics</a> — the diagnostic-code catalogue.</li>
+<li><a class="xref" href="../../api/Bodu.Text.Configuration.html"><code>Bodu.Text.Configuration</code> API reference</a>.</li>
+<li><a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a> — <code>IConfiguration</code> bridge.</li>
+<li><strong><a href="../topics/configuration.html">Configuration guides</a></strong> — every guide in this topic, across Bodu.Text.Configuration and Bodu.Extensions.Configuration.Text.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

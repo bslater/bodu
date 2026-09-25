@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Base64 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Base64 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-base64">Using Base64</h1>
+
+<p><code>Base64</code> packs six bits per output character (radix 64), giving the lowest payload expansion of the radix
+encodings the library ships: <strong>33 %</strong>. It is the canonical encoding for MIME, JWT, certificates, and most general
+&quot;put binary in a string&quot; scenarios.</p>
+<p>The library defers the inner conversion to <code>Convert.TryToBase64Chars</code> / <code>Convert.TryFromBase64Chars</code> so it
+inherits the BCL's SIMD-accelerated paths, then adds variant alphabet swapping, padding control, and lenient
+parsing on top.</p>
+<pre><code>input bytes  : 66 6F 6F 62 61 72         (ASCII &quot;foobar&quot;)
+              :                          ┌── 6 bytes = 48 bits ───┐
+              :                          │  8 chars × 6 = 48 bits │
+              :                          └──── 3-byte groups ─────┘
+encoded text : Zm9vYmFy                  (Standard / URL-safe — same here, no +/- in this example)
+              Zm9vYmFy                    (URL-safe)
+              Zm9vYmFy\r\n...             (MIME — 76-char line wrap)
+</code></pre>
+<h2 id="quick-reference">Quick reference</h2>
+<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+
+byte[] data = System.Text.Encoding.ASCII.GetBytes(&quot;foobar&quot;);
+
+// Standard RFC 4648 §4
+string s = Base64.Encode(data);                                // &quot;Zm9vYmFy&quot;
+
+// URL-safe RFC 4648 §5 — '+' → '-', '/' → '_', no padding by default
+string u = Base64.Encode(data, Base64Variant.UrlSafe);         // &quot;Zm9vYmFy&quot;
+
+// MIME RFC 2045 — 76-char wrap with \r\n
+byte[] big = new byte[300];
+string m = Base64.Encode(big, Base64Variant.Mime);
+// Contains &quot;\r\n&quot; every 76 chars
+
+// Decode
+byte[] back = Base64.Decode(&quot;Zm9vYmFy&quot;);
+</code></pre>
+<h2 id="variant-comparison">Variant comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Alphabet</th>
+<th>Padding default</th>
+<th>Line wrapping</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code> (RFC 4648 §4)</td>
+<td><code>A-Z a-z 0-9 + /</code></td>
+<td>Yes (<code>=</code>)</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>UrlSafe</code> (RFC 4648 §5)</td>
+<td><code>A-Z a-z 0-9 - _</code></td>
+<td><strong>No</strong> (JWT / OAuth convention)</td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>Mime</code> (RFC 2045)</td>
+<td>Standard alphabet</td>
+<td>Yes (<code>=</code>)</td>
+<td><strong>Yes — 76 chars</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-pick-each">When to pick each</h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code></td>
+<td>Generic binary-in-text, TLS certificates, classic SMTP / MIME content</td>
+</tr>
+<tr>
+<td><code>UrlSafe</code></td>
+<td>JWT, OAuth tokens, query parameters, filenames</td>
+</tr>
+<tr>
+<td><code>Mime</code></td>
+<td>RFC 2045 attachments, PEM-style files (which extend MIME), <code>Convert.ToBase64String(..., InsertLineBreaks)</code> compatibility</td>
+</tr>
+</tbody>
+</table>
+<h2 id="url-safe-specifics">URL-safe specifics</h2>
+<p>URL-safe Base64 swaps two characters: <code>+</code> → <code>-</code>, <code>/</code> → <code>_</code>. The decoder is <strong>strict</strong> by default — <code>+</code> and <code>/</code>
+are rejected in URL-safe mode, and <code>-</code> / <code>_</code> are rejected in Standard mode. To accept either alphabet, use the
+<code>Get(name)</code> lookup with the appropriate variant or pre-normalise the input.</p>
+<p>URL-safe also omits padding by default. To re-add padding pass <code>BaseFormattingOptions.None</code> and the encoder will
+emit canonical <code>=</code> padding:</p>
+<pre><code class="lang-csharp">Base64.Encode(data, Base64Variant.UrlSafe);                                  // no padding (default)
+Base64.Encode(data, Base64Variant.UrlSafe, BaseFormattingOptions.None);     // no padding (same)
+Base64.Encode(data, Base64Variant.UrlSafe, BaseFormattingOptions.OmitPadding); // explicit no-padding (same)
+</code></pre>
+<p>JWT tokens never use padding — decoders accept either form via <code>BaseFormatStyles.AllowMissingPadding</code>:</p>
+<pre><code class="lang-csharp">byte[] headerBytes = Base64.Decode(
+    &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&quot;,
+    Base64Variant.UrlSafe,
+    BaseFormatStyles.AllowMissingPadding);
+</code></pre>
+<h3 id="the-dedicated-base64url-helper">The dedicated <code>Base64Url</code> helper</h3>
+<p>When URL-safe is <em>all</em> you need, <a class="xref" href="../../api/Bodu.Text.Encoding.Base64Url.html">Base64Url</a> is a focused static class — RFC 4648 §5, unpadded — that skips the variant argument entirely. It offers <code>string</code>, span (<code>char</code> and UTF-8 <code>byte</code>) surfaces with <code>Encode</code> / <code>Decode</code> / <code>EncodeToUtf8</code>, the non-throwing <code>TryEncode</code> / <code>TryEncodeToUtf8</code> / <code>TryDecode</code>, the <code>IsValid</code> predicate, and the <code>GetEncodedLength</code> / <code>GetMaxDecodedLength</code> sizing pair:</p>
+<pre><code class="lang-csharp">string token = Base64Url.Encode(payload);                       // unpadded URL-safe
+byte[] back  = Base64Url.Decode(token);                         // string, ReadOnlySpan&lt;char&gt;, or UTF-8 ReadOnlySpan&lt;byte&gt;
+byte[] utf8  = Base64Url.EncodeToUtf8(payload);                 // straight to UTF-8 bytes
+int   length = Base64Url.GetEncodedLength(payload.Length);
+
+Span&lt;char&gt; buffer = stackalloc char[length];
+if (Base64Url.TryEncode(payload, buffer, out int written)) { … } // zero-allocation
+bool valid = Base64Url.IsValid(token);
+</code></pre>
+<p>Reach for <code>Base64.Encode(..., Base64Variant.UrlSafe, ...)</code> when you need the full formatting-options surface (padding control, lenient styles); reach for <code>Base64Url</code> when you just want canonical unpadded URL-safe Base64.</p>
+<h2 id="mime-line-wrapping">MIME line wrapping</h2>
+<p>MIME mandates <code>\r\n</code> every 76 characters. The encoder honours this automatically when the variant is <code>Mime</code>:</p>
+<pre><code class="lang-csharp">byte[] payload = new byte[300];
+RandomNumberGenerator.Fill(payload);
+string mime = Base64.Encode(payload, Base64Variant.Mime);
+// &quot;AAAA…\r\nBBBB…\r\n…&quot; — wraps at column 76
+
+byte[] back = Base64.Decode(mime, Base64Variant.Mime);
+// Implicitly strips whitespace — no extra style flag needed
+</code></pre>
+<p><code>Base64Variant.Mime</code> implicitly enables whitespace stripping on decode because MIME content always contains
+line breaks. Standard / URL-safe require the explicit <code>BaseFormatStyles.IgnoreWhitespace</code> flag when input
+contains whitespace.</p>
+<h2 id="lenient-parsing">Lenient parsing</h2>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BaseFormatStyles.IgnoreWhitespace</code></td>
+<td>Strip ASCII space / tab / CR / LF anywhere</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowMissingPadding</code></td>
+<td>Accept inputs without trailing <code>=</code></td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>No-op for Base64 (no standard prefix)</td>
+</tr>
+<tr>
+<td><code>BaseFormatStyles.RequireCanonicalEncoding</code></td>
+<td><strong>Tightens</strong> the decoder — rejects a two- or three-character tail whose unused bits are non-zero</td>
+</tr>
+</tbody>
+</table>
+<h3 id="canonical-form-and-the-3-byte-quantum">Canonical form and the 3-byte quantum</h3>
+<p>Base64's quantum is <strong>3 bytes → 4 characters</strong> (24 bits). A two-byte tail leaves 2 unused bits in its last symbol
+and a one-byte tail leaves 4 — RFC 4648 §3.5 lets the decoder accept any value for those bits, so non-canonical
+encodings exist. <code>RequireCanonicalEncoding</code> rejects them, giving each byte sequence a single accepted spelling:</p>
+<pre><code class="lang-csharp">Base64.Decode(&quot;QQ==&quot;, Base64Variant.Standard);                                       // ok — { 0x41 }
+Base64.Decode(&quot;QR==&quot;, Base64Variant.Standard);                                       // ok by default — same byte, non-canonical
+Base64.Decode(&quot;QR==&quot;, Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding); // FormatException
+</code></pre>
+<p>Reach for it on inputs that are compared, deduplicated, or fed to a signature, where two spellings of the same
+bytes would be a bug.</p>
+<h2 id="span-and-utf-8-paths">Span and UTF-8 paths</h2>
+<pre><code class="lang-csharp">// Predict size and encode in place
+Span&lt;char&gt; buffer = stackalloc char[Base64.GetEncodedLength(data.Length)];
+int written = Base64.Encode(data, buffer);
+
+// UTF-8 byte path for network pipelines
+byte[] utf8 = Base64.EncodeToUtf8(data);
+var status = Base64.DecodeFromUtf8(
+    utf8Source, byteDestination,
+    out int bytesConsumed, out int bytesWritten,
+    Base64Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+</code></pre>
+<h2 id="validation-and-sizing">Validation and sizing</h2>
+<pre><code class="lang-csharp">Base64.IsValid(&quot;Zm9vYmFy&quot;);                              // true
+Base64.IsValid(&quot;Zm-v&quot;);                                  // false (URL-safe char in Standard)
+Base64.IsValid(&quot;Zm-v&quot;, Base64Variant.UrlSafe);          // true
+Base64.IsBase64Digit('+');                               // true (Standard alphabet)
+Base64.IsBase64Digit('+', Base64Variant.UrlSafe);       // false
+
+Base64.GetEncodedLength(6, Base64Variant.Standard);     // 8 (padded)
+Base64.GetEncodedLength(6, Base64Variant.UrlSafe);      // 8 (no padding needed for 6 bytes)
+Base64.GetMaxDecodedLength(8);                           // 6
+</code></pre>
+<h2 id="encoding-a-guid">Encoding a GUID</h2>
+<p><code>Base64</code> encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> into a 24-character padded (or 22-character unpadded URL-safe) token — the
+densest of the core families for a 16-byte value:</p>
+<pre><code class="lang-csharp">Guid id = Guid.NewGuid();
+
+string token = Base64.Encode(id, Base64Variant.UrlSafe);     // 22 chars, URL-safe, unpadded
+Guid back    = Base64.DecodeGuid(token, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+bool ok      = Base64.TryDecodeGuid(token, out Guid parsed, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+</code></pre>
+<p>The 16 bytes use the GUID's native mixed-endian layout (matching <code>Guid.TryWriteBytes</code>), so the round trip is exact
+for the variant and styles you encode and decode with.</p>
+<h2 id="common-patterns">Common patterns</h2>
+<h3 id="jwt-segment-decode">JWT segment decode</h3>
+<pre><code class="lang-csharp">static byte[] DecodeJwtSegment(string segment) =&gt;
+    Base64.Decode(segment, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+</code></pre>
+<h3 id="mime-attachment-encode">MIME attachment encode</h3>
+<pre><code class="lang-csharp">static string EncodeAttachment(ReadOnlySpan&lt;byte&gt; content) =&gt;
+    Base64.Encode(content, Base64Variant.Mime);
+</code></pre>
+<h3 id="strict-round-trip-with-span-allocation">Strict round-trip with span allocation</h3>
+<pre><code class="lang-csharp">static bool TryRoundTrip(ReadOnlySpan&lt;byte&gt; data)
+{
+    Span&lt;char&gt; charBuffer = stackalloc char[Base64.GetEncodedLength(data.Length)];
+    Span&lt;byte&gt; byteBuffer = stackalloc byte[data.Length];
+
+    return Base64.TryEncode(data, charBuffer, out int charsWritten)
+        &amp;&amp; Base64.TryDecode(charBuffer[..charsWritten], byteBuffer, out int bytesWritten)
+        &amp;&amp; data.SequenceEqual(byteBuffer[..bytesWritten]);
+}
+</code></pre>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="base32.html">Base32 guide</a></strong> — when human readability beats density.</li>
+<li><strong><a href="base85.html">Base85 guide</a></strong> — when 25 % expansion matters more than alphabet familiarity.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — runtime-selected encoding choice.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

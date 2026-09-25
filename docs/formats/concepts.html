@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Line formats — Core concepts | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Line formats — Core concepts | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="line-formats--core-concepts">Line formats — Core concepts</h1>
+
+<p>The vocabulary shared by <code>Bodu.Text.Delimited</code>, <code>Bodu.Text.DotEnv</code>, and <code>Bodu.Text.Ini</code>. It is the same vocabulary as the structured-text quartet (Bencode / TOML / YAML); this page notes where the line formats specialize it.</p>
+<h2 id="token-reader-and-writer">Token reader and writer</h2>
+<p>The <code>Utf8*Reader</code> types are forward-only <code>ref struct</code> cursors over <code>ReadOnlySpan&lt;byte&gt;</code>: call <code>Read()</code> to advance, inspect <code>TokenType</code>, and decode text with <code>GetString()</code>. They live on the stack, allocate only for decoded strings, and report source positions (<code>LineNumber</code>, <code>BytesConsumed</code>) for diagnostics. The <code>Utf8*Writer</code> types emit UTF-8 to an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code> (buffered via an internal scratch writer until <code>Flush</code>).</p>
+<p>Delimited and DotEnv are pure source-order token streams. INI has <strong>two</strong> readers: the source-order <code>Utf8IniReader</code> (section headers, keys, values, comments, exactly as authored) and the normalized <code>IniDocumentReader</code>, which pre-parses the document so that duplicate-section <strong>merge</strong> — structure declared out of source order — can surface as a single <code>StartObject … EndObject</code> per section.</p>
+<h2 id="value-model">Value model</h2>
+<ul>
+<li><strong>Delimited</strong> is an <em>array of records</em>. With a header row, each record is an object keyed by column name; in headerless (positional) mode, each record is an array of strings.</li>
+<li><strong>DotEnv</strong> is a single flat object of string-valued keys.</li>
+<li><strong>INI</strong> is a two-level object-of-objects: global keys hoist onto the root, and each <code>[section]</code> is a nested object of string values. Nothing nests deeper.</li>
+</ul>
+<h2 id="serializer">Serializer</h2>
+<p>Each <code>*Serializer</code> is a static facade shaped after <code>JsonSerializer</code>: <code>Serialize</code> / <code>Deserialize</code> over strings, UTF-8 spans, buffer writers, and streams, with buffered <code>SerializeAsync</code> / <code>DeserializeAsync</code> overloads (only the stream copy is asynchronous). Binding honours the shared <code>Bodu.Text.Serialization</code> layer — the attribute family (<code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Required]</code>, <code>[PropertyOrder]</code>), <code>NamingPolicy</code> (camelCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case), and the <code>IOnSerializing</code> / <code>IOnSerialized</code> / <code>IOnDeserializing</code> / <code>IOnDeserialized</code> callbacks.</p>
+<p>Because the wire is string-only, scalar conversion is serializer-local: values parse and format with <code>InvariantCulture</code> over the common scalar set (strings, numbers, booleans, enums, <code>Guid</code>, <code>DateTime</code> / <code>DateTimeOffset</code> / <code>TimeSpan</code>, <code>Uri</code>, and their nullables).</p>
+<p><code>DelimitedSerializer</code> additionally exposes a record-streaming surface: <code>DeserializeAsyncEnumerableAsync&lt;TRecord&gt;(Stream)</code> yields typed records as an <code>IAsyncEnumerable&lt;TRecord&gt;</code>, and <code>SerializeAsync(Stream, IAsyncEnumerable&lt;TRecord&gt;)</code> accepts one. Both directions are truly incremental — records parse and yield as stream segments arrive, and writes flush in bounded batches — so memory use is bounded by the longest record, not the document.</p>
+<h2 id="reflection-free-binding">Reflection-free binding</h2>
+<p>The serializer binders use reflection by default. For trimming and ahead-of-time compilation, <code>DelimitedSerializer</code> and <code>IniSerializer</code> also accept compile-time factories — <code>IDelimitedRecordFactory&lt;TRecord&gt;</code> and <code>IIniSectionFactory&lt;TSection&gt;</code> — through dedicated overloads that carry no reflection annotations. Annotate a partial POCO with <code>[DelimitedRecord]</code> or <code>[IniSection]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and the factory is emitted at build time as a static <code>DelimitedFactory</code> / <code>IniFactory</code> property; the interfaces can also be implemented by hand.</p>
+<h2 id="the-two-doms">The two DOMs</h2>
+<ul>
+<li>The <strong>mutable <code>*Node</code> DOM</strong> is for authoring and editing: parse, mutate values, add entries, and write back via <code>WriteTo(ref Utf8*Writer)</code> / <code>ToUtf8Bytes()</code> / <code>ToString()</code>.</li>
+<li>The <strong>read-only <code>*Document</code> DOM</strong> is <code>JsonDocument</code>-shaped: cheap to query (<code>GetProperty</code> / <code>TryGetProperty</code> / enumerators over <code>readonly struct</code> elements), owns its backing store, and must be disposed — elements become invalid after disposal.</li>
+</ul>
+<h2 id="trivia-and-round-trip-preservation">Trivia and round-trip preservation</h2>
+<p>The read-only DOMs drop comments. The mutable DOMs preserve what each format needs for faithful rewrites: DotEnv keeps the per-entry <code>export</code> flag, and INI nodes carry <code>LeadingComments</code> (comment lines before a section or entry) plus a <code>TrailingComments</code> block per object. INI deliberately does <strong>not</strong> model inline comments — the dialect treats everything after <code>=</code> as value content, so an emitted inline comment would be re-read as part of the value.</p>
+<h2 id="dialect-policies">Dialect policies</h2>
+<p>Real-world files break the specs, so strictness is configurable per format — field counts, malformed records, and duplicate headers for Delimited; duplicate sections and keys for INI. See <a href="parser-policies.html">Parser policies</a>.</p>
+<h2 id="format-exceptions">Format exceptions</h2>
+<p>Malformed input throws the format's <code>*FormatException</code> carrying the source position (line / offset). Binding failures — an unmappable root, a missing <code>[Required]</code> member, a value that cannot convert — throw the format's <code>*SerializationException</code>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="parser-policies.html">Parser policies</a> — the per-format strictness knobs.</li>
+<li>The <a href="../../guides/formats/index.html">format guides</a> — task-oriented recipes.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

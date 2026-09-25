@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Reading compound files | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Reading compound files | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="reading-compound-files">Reading compound files</h1>
+
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> opens an OLE2 / Compound File Binary container and exposes its storage hierarchy and stream payloads. This guide covers the end-to-end recipe: probe the input, open the file, walk the directory, and read a named stream's bytes.</p>
+<p>The mental model is a file system in a single file — storages are directories, streams are files. Navigation starts at <code>RootStorage</code> and is scoped to each storage's direct children; there is no path syntax, so you descend one storage at a time. Names are matched with the <strong>case-insensitive</strong> compound-file relationship, so a request for <code>workbook</code> resolves the <code>Workbook</code> stream. Each entry's name is stored as UTF-16 in a 64-byte field, capping it at 31 characters, and control prefixes are kept verbatim — the <code>\x05</code> on summary-information streams, the <code>__substg1.0_</code> on <code>.msg</code> streams — so a lookup must pass the exact name.</p>
+<h2 id="pattern-1--open-a-file-and-read-a-known-stream">Pattern 1 — open a file and read a known stream</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead(&quot;book.xls&quot;));
+
+CompoundStream workbook = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+byte[] bytes = workbook.ReadAllBytes();
+</code></pre>
+<p><code>Open</code> reads the stream from its current position to the end. The returned <code>CompoundFile</code> is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> — the <code>using</code> declaration disposes it, which also closes the source stream unless <code>leaveOpen: true</code> was passed. <code>OpenStream</code> resolves a direct child of <code>RootStorage</code> by name and throws <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a> when no such stream exists.</p>
+<h2 id="pattern-2--probe-before-opening">Pattern 2 — probe before opening</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+using FileStream source = File.OpenRead(path);
+
+if (!CompoundFile.IsCompoundFile(source))
+{
+    log.Warn(&quot;Not a compound file&quot;);
+    return;
+}
+
+using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
+</code></pre>
+<p><code>CompoundFile.IsCompoundFile</code> inspects only the eight-byte OLE2 signature (<code>D0 CF 11 E0 A1 B1 1A E1</code>) and restores the stream position before returning, so it is cheap to call ahead of a full open. There is also a <code>ReadOnlySpan&lt;byte&gt;</code> overload for bytes you already hold.</p>
+<h2 id="pattern-3--walk-the-hierarchy">Pattern 3 — walk the hierarchy</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+static void Print(CompoundStorage storage, int depth = 0)
+{
+    foreach (CompoundEntryInfo info in storage.EnumerateEntries())
+        Console.WriteLine($&quot;{new string(' ', depth * 2)}{info.EntryType}: {info.Name} ({info.Length} bytes)&quot;);
+
+    foreach (CompoundStorage child in storage.EnumerateStorages())
+    {
+        Console.WriteLine($&quot;{new string(' ', depth * 2)}[{child.Name}]&quot;);
+        Print(child, depth + 1);
+    }
+}
+
+using CompoundFile file = CompoundFile.Open(File.OpenRead(&quot;message.msg&quot;));
+Print(file.RootStorage);
+</code></pre>
+<p>Each <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> exposes three enumerators over its direct children, all in directory order: <code>EnumerateEntries</code> yields a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a> metadata snapshot for every child (storage <em>and</em> stream), while <code>EnumerateStorages</code> and <code>EnumerateStreams</code> yield the navigable child storages and stream entries respectively. <code>CompoundEntryInfo</code> carries the <code>Name</code>, <code>EntryType</code>, <code>Length</code>, <code>ClassId</code>, and the creation / modification timestamps.</p>
+<h2 id="pattern-4--non-throwing-lookup">Pattern 4 — non-throwing lookup</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+if (file.RootStorage.TryOpenStorage(&quot;ObjectPool&quot;, out CompoundStorage? pool) &amp;&amp;
+    pool.TryOpenStream(&quot;Contents&quot;, out CompoundStream? contents))
+{
+    byte[] data = contents.ReadAllBytes();
+    Process(data);
+}
+</code></pre>
+<p>Prefer the <code>TryOpenStorage</code> / <code>TryOpenStream</code> pair when a missing entry is a normal outcome — they return <code>false</code> instead of raising <code>CompoundStreamNotFoundException</code>. The throwing <code>OpenStorage</code> / <code>OpenStream</code> forms are better when the entry is required and its absence is a programming or data error; the exception's <code>StreamName</code> property names the entry that was not found.</p>
+<h2 id="reading-the-bytes">Reading the bytes</h2>
+<p>The <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> returned by <code>OpenStream</code> gives you two ways to read its payload:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Returns</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReadAllBytes</code></td>
+<td><code>byte[]</code></td>
+<td>The payload is small and consumed in one pass.</td>
+</tr>
+<tr>
+<td>the stream itself</td>
+<td>a seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></td>
+<td>The payload is large or read incrementally — <code>CompoundStream</code> is a seekable <code>Stream</code> cursor you can hand to <code>BinaryReader</code>, <code>StreamReader</code>, or <code>CopyTo</code>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using CompoundStream stream = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+using var reader = new BinaryReader(stream);
+
+ushort recordType = reader.ReadUInt16();
+ushort recordSize = reader.ReadUInt16();
+</code></pre>
+<p>See <a href="streaming-and-buffering.html">Buffered vs streaming access</a> for how the cursor behaves under buffered and streaming files, and how to bound memory for large payloads.</p>
+<h2 id="pattern-5--choose-a-validation-level">Pattern 5 — choose a validation level</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+
+// Strict rejects malformed directory entries and unsorted siblings that the
+// default (Compatible) silently tolerates.
+var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+using CompoundFile file = CompoundFile.Open(File.OpenRead(&quot;book.xls&quot;), options);
+</code></pre>
+<p><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileOptions.html">CompoundFileOptions</a> carries both the read strategy and the <a class="xref" href="../../api/Bodu.IO.Compound.CompoundValidationLevel.html">CompoundValidationLevel</a>. Every level still enforces the memory-safety invariants (signature, sector sizes, allocation-table bounds, a root storage); the level only governs how the reader treats recoverable inconsistencies. <code>Strict</code> is the choice for validating a trusted corpus, <code>Minimal</code> for best-effort recovery from corruption — it stops a broken chain and yields what it has rather than throwing.</p>
+<h2 id="error-handling">Error handling</h2>
+<p>A failed open or a malformed stream raises a <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a> subclass. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> additionally carries a message-independent <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileError.html">CompoundFileError</a> on its <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.Category.html#Bodu_IO_Compound_CompoundFileFormatException_Category">Category</a> property, so you can branch on the structural cause without parsing the message:</p>
+<pre><code class="lang-csharp">try
+{
+    using CompoundFile file = CompoundFile.OpenRead(path);
+    CompoundStream workbook = file.RootStorage.OpenStream(&quot;Workbook&quot;);
+}
+catch (CompoundFileFormatException ex) when (ex.Category == CompoundFileError.InvalidSignature)
+{
+    // Not an OLE2 file at all — e.g. a .xlsx (ZIP) was handed in.
+}
+catch (CompoundFileFormatException ex)
+{
+    log.Warn($&quot;Corrupt compound file: {ex.Category}&quot;);   // e.g. FatCycle, StreamChainTooShort
+}
+catch (CompoundStreamNotFoundException ex)
+{
+    log.Warn($&quot;Missing stream: {ex.StreamName}&quot;);
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th><code>Category</code> (when applicable)</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></td>
+<td>—</td>
+<td>The stream passed to <code>Open</code> is <code>null</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+<td>—</td>
+<td><code>buffered: false</code> was requested over a non-seekable stream, or <code>IsCompoundFile</code> was given a non-seekable stream.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></td>
+<td>—</td>
+<td>An unsupported <code>FileMode</code> / <code>FileAccess</code> combination was requested.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a></td>
+<td><code>InvalidSignature</code>, <code>InvalidHeader</code>, <code>TruncatedFile</code>, <code>SectorOutOfRange</code>, <code>FatCycle</code>, <code>InvalidMiniFat</code>, <code>StreamChainTooShort</code>, <code>DirectoryCycle</code>, <code>InvalidRootStorage</code>, …</td>
+<td>The content is not a well-formed compound file, or a stream's sector chain is malformed.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Compound.CompoundStreamNotFoundException.html">CompoundStreamNotFoundException</a></td>
+<td>—</td>
+<td><code>OpenStream</code> / <code>OpenStorage</code> named an entry that does not exist; <code>StreamName</code> names it.</td>
+</tr>
+</tbody>
+</table>
+<div class="TIP">
+<h5>Tip</h5>
+<p>Catch the base <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileException.html">CompoundFileException</a> when you want to handle every compound-file failure uniformly, then inspect the concrete type or <code>Category</code> only where the distinction matters.</p>
+</div>
+<p>This guide covers the read path. To <em>edit</em> a stream, open the file for write access and use the read-write cursor from <code>OpenStream(name, FileMode, FileAccess)</code> or <code>CreateStream</code> — see <a href="authoring-compound-files.html">Authoring compound files</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — the <code>buffered</code> flag and the <code>CompoundStream</code> cursor in depth.</li>
+<li><a href="authoring-compound-files.html">Authoring compound files</a> — create, edit, and commit writable containers.</li>
+<li><a href="property-sets.html">Reading property sets</a> — pull authored metadata from the summary-information streams.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

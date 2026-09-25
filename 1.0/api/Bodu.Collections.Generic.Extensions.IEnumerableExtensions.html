@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class IEnumerableExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class IEnumerableExtensions | BODU ">
+    
+    <meta name="description" content="Provides deferred-execution combinators over  — batching, caching, multi-aggregate fan-out, recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface for production pipeline code.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions">
+
+
+
+  <h1 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions" class="text-break">Class IEnumerableExtensions</h1>
+  <div class="markdown level0 summary"><p>Provides deferred-execution combinators over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> — batching, caching, multi-aggregate
+fan-out, recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface
+for production pipeline code.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">IEnumerableExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a>.<a class="xref" href="Bodu.Collections.Generic.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class IEnumerableExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+LINQ-to-Objects covers the common cases — <code>Where</code>, <code>Select</code>, <code>GroupBy</code>, <code>Aggregate</code> — but most
+non-trivial pipelines end up reaching for the same hand-rolled helpers: chunking a stream into fixed-size windows,
+materializing once and replaying many times, walking a tree of children without recursion, or computing several
+aggregates in a single pass to avoid re-enumerating an expensive source. This class collects those helpers behind
+verb-led names and shapes them so that they compose naturally with the rest of LINQ.
+</p>
+<p>
+The API surface clusters into: chunking and pooling (<code>Batch</code>, <code>BatchPooled</code>), replay support (<code>Cache</code>
+), set-membership predicates (<code>ContainsAll</code>, <code>ContainsAny</code>), tree traversal (<code>RecursiveSelect</code>),
+shuffling (<code>Randomize</code>), and multi-aggregate fan-out (<code>Aggregate</code> overloads that compute up to several
+seeds in a single enumeration). Each method is offered with the overload set required to keep the call site clean —
+a default form, a form that accepts a projection or comparer, and where useful a form that hands the caller a pooled
+buffer to drive throughput-sensitive work.
+</p>
+<p>
+Where the contract is naturally lazy the implementation defers all work until enumeration begins; where it is
+naturally eager (the <code>Aggregate</code>, <code>ContainsAll</code>, and <code>ContainsAny</code> families) the source is enumerated
+exactly once. Argument validation runs eagerly via <a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a>, so callers see
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> at the call site rather than mid-iteration. Methods that accept an
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> default to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a> when one is not supplied.
+</p>
+<example>
+<pre><code class="lang-csharp">IEnumerable&lt;int&gt; source = Enumerable.Range(1, 9);
+
+// Chunk into windows of three, projecting each element.
+foreach (var window in source.Batch(3, static x =&gt; x * 10))
+    Console.WriteLine(string.Join(", ", window));
+// =&gt; 10, 20, 30
+// =&gt; 40, 50, 60
+// =&gt; 70, 80, 90
+
+// Compute count and sum in a single pass.
+var (count, sum) = source.Aggregate(
+    seed1: 0,
+    seed2: 0L,
+    func1: (c, _) =&gt; c + 1,
+    func2: (s, x) =&gt; s + x); // =&gt; count == 9, sum == 45
+
+// Predicate-style set check using a custom comparer.
+bool anyMatch = new[] { "FOO", "bar" }
+    .ContainsAny(new[] { "foo", "baz" }, StringComparer.OrdinalIgnoreCase); // =&gt; true</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,System.Int32,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies an accumulator function over a sequence using the specified seed as the initial accumulator value,
+incorporating the element's index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,System.Int32,``1},System.Func{``1,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies an accumulator function over a sequence using the specified seed as the initial accumulator value,
+incorporating the element's index, and projects the final accumulator value through the supplied result
+selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,``2,System.Func{``1,``0,System.Int32,``1},System.Func{``2,``0,System.Int32,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies two accumulator functions over a sequence in a single pass, incorporating the element's index, and
+returns the final accumulator values as a tuple.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,``2,System.Func{``1,``0,``1},System.Func{``2,``0,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies two accumulator functions over a sequence in a single pass and returns the final accumulator values as a
+tuple.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``4(System.Collections.Generic.IEnumerable{``0},``1,``2,System.Func{``1,``0,System.Int32,``1},System.Func{``2,``0,System.Int32,``2},System.Func{``1,``2,``3})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies two accumulator functions over a sequence in a single pass, incorporating the element's index, and
+projects the final accumulator values through the supplied result selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``4(System.Collections.Generic.IEnumerable{``0},``1,``2,System.Func{``1,``0,``1},System.Func{``2,``0,``2},System.Func{``1,``2,``3})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies two accumulator functions over a sequence in a single pass and projects the final accumulator values
+through the supplied result selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``4(System.Collections.Generic.IEnumerable{``0},``1,``2,``3,System.Func{``1,``0,System.Int32,``1},System.Func{``2,``0,System.Int32,``2},System.Func{``3,``0,System.Int32,``3})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies three accumulator functions over a sequence in a single pass, incorporating the element's index, and
+returns the final accumulator values as a tuple.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``4(System.Collections.Generic.IEnumerable{``0},``1,``2,``3,System.Func{``1,``0,``1},System.Func{``2,``0,``2},System.Func{``3,``0,``3})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies three accumulator functions over a sequence in a single pass and returns the final accumulator values as
+a tuple.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``5(System.Collections.Generic.IEnumerable{``0},``1,``2,``3,System.Func{``1,``0,System.Int32,``1},System.Func{``2,``0,System.Int32,``2},System.Func{``3,``0,System.Int32,``3},System.Func{``1,``2,``3,``4})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies three accumulator functions over a sequence in a single pass, incorporating the element's index, and
+projects the final accumulator values through the supplied result selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate``5(System.Collections.Generic.IEnumerable{``0},``1,``2,``3,System.Func{``1,``0,``1},System.Func{``2,``0,``2},System.Func{``3,``0,``3},System.Func{``1,``2,``3,``4})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies three accumulator functions over a sequence in a single pass and projects the final accumulator values
+through the supplied result selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Batches a sequence using a pooled array to reduce allocations.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled``2(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Func{``0,System.Int32,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Batches and transforms a sequence using a pooled array to reduce allocations.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch``2(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Func{``0,System.Int32,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Projects each element of a sequence into a new form using its index, and batches the transformed elements into
+subsequences of the specified size.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch``2(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Func{``0,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Projects each element of a sequence and batches the transformed elements into subsequences of the specified
+size.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Produces a sequence that lazily caches the elements of the source as it is iterated for the first time.
+Subsequent iteration requests return the cached elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits the Cartesian product of two sequences as <code>(First, Second)</code> tuples, pairing every element of the
+first sequence with every element of the second.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a projection to every pairing in the Cartesian product of two sequences.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Groups <em>adjacent</em> elements of the source sequence that share the same key, starting a new group whenever
+the key changes, using the default equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Groups <em>adjacent</em> elements of the source sequence that share the same key, starting a new group whenever
+the key changes, using the specified equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits every combination of the specified size drawn from the source sequence (the <em>k</em>-subsets), each
+preserving source order within the row.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the source sequence contains all of the specified items.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the source sequence contains any of the specified items.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Invokes <code class="paramref">action</code> once for each element of <code class="paramref">source</code>, in sequence order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Pairs each element of <code class="paramref">source</code> with its zero-based position in the sequence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0}[])">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Interleaves the source sequence with one or more additional sequences, taking one element from each sequence in
+turn and skipping sequences as they are exhausted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or contains no elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits each adjacent pair of elements from the source sequence as a <code>(Previous, Current)</code> tuple.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a projection to each adjacent pair of elements from the source sequence.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits every full permutation of the source sequence, one row per distinct ordering of all elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits every permutation of the specified size drawn from the source sequence (the <em>k</em>-permutations).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize``1(System.Collections.Generic.IEnumerable{``0},Bodu.Collections.Generic.Extensions.RandomizationMode,Bodu.IRandomGenerator,System.Nullable{System.Int32})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Randomizes the source sequence using a specified strategy and random number generator.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Recursively flattens a hierarchical sequence using the provided child selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Int32,System.Int32,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Recursively flattens and transforms a hierarchical sequence using child selector and a selector that receives
+index and depth.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Int32,System.Int32,``1},System.Func{``0,Bodu.Collections.Extensions.RecursiveSelectControl})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Recursively flattens and transforms a hierarchical sequence with depth/index tracking and a delegate that
+returns a <a class="xref" href="Bodu.Collections.Extensions.RecursiveSelectControl.html">RecursiveSelectControl</a> value to control yielding, recursion, and termination at each
+node.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,System.Int32,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Recursively flattens and transforms a hierarchical sequence with index using the provided child selector.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Recursively flattens and transforms a hierarchical sequence using the provided child selector and projection.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compresses each maximal run of consecutive equal elements in the source sequence into a <code>(Value, Count)</code>
+tuple, using the default equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compresses each maximal run of consecutive equal elements in the source sequence into a <code>(Value, Count)</code>
+tuple, using the specified equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits the running accumulator state after folding each element of the source sequence, starting from a seed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan``3(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits a projection of the running accumulator state after folding each element of the source sequence, starting
+from a seed.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,System.Boolean})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Splits the source sequence into consecutive chunks, starting a new chunk whenever a boundary predicate over an
+adjacent pair of elements returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_WhereNotNull__1_System_Collections_Generic_IEnumerable_System_Nullable___0___" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.WhereNotNull``1(System.Collections.Generic.IEnumerable{System.Nullable{``0}})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.WhereNotNull.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_WhereNotNull__1_System_Collections_Generic_IEnumerable_System_Nullable___0___">WhereNotNull&lt;TSource&gt;(IEnumerable&lt;TSource?&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Filters a sequence of nullable value types, yielding the underlying value of each element that has one.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_WhereNotNull__1_System_Collections_Generic_IEnumerable___0__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.WhereNotNull``1(System.Collections.Generic.IEnumerable{``0})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.WhereNotNull.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_WhereNotNull__1_System_Collections_Generic_IEnumerable___0__">WhereNotNull&lt;TSource&gt;(IEnumerable&lt;TSource?&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Filters a sequence of nullable references, yielding only the elements that are not <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Emits every complete, overlapping fixed-size window over the source sequence, advancing one element at a time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed``2(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Func{System.Collections.Generic.IReadOnlyList{``0},``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Applies a projection to every complete, overlapping fixed-size window over the source sequence, advancing one
+element at a time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Zips two sequences into <code>(First, Second)</code> tuples, continuing until both are exhausted and padding the
+shorter sequence with <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},``0,``1)">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Zips two sequences into <code>(First, Second)</code> tuples, continuing until both are exhausted and padding the
+shorter sequence with the supplied default values.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__" data-uid="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},``0,``1,System.Func{``0,``1,``2})">
+          <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Zips two sequences with a projection, continuing until both are exhausted and padding the shorter sequence with
+the supplied default values.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct ResultError | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct ResultError | BODU ">
+    
+    <meta name="description" content="Represents the error carried by a failed  or : a human-readable message, an optional machine-readable code, and an optional originating exception.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Functional.ResultError">
+
+
+
+  <h1 id="Bodu_Functional_ResultError" data-uid="Bodu.Functional.ResultError" class="text-break">Struct ResultError</h1>
+  <div class="markdown level0 summary"><p>Represents the error carried by a failed <a class="xref" href="Bodu.Functional.Result.html">Result</a> or <a class="xref" href="Bodu.Functional.Result-1.html">Result&lt;T&gt;</a>: a human-readable
+message, an optional machine-readable code, and an optional originating exception.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Functional.ResultError.html">ResultError</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Functional.html">Functional</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Functional_ResultError_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct ResultError : IEquatable&lt;ResultError&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Functional_ResultError_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Create errors with <a class="xref" href="Bodu.Functional.ResultError.FromMessage.html#Bodu_Functional_ResultError_FromMessage_System_String_System_String_">FromMessage(string, string?)</a> or <a class="xref" href="Bodu.Functional.ResultError.FromException.html#Bodu_Functional_ResultError_FromException_System_Exception_System_String_">FromException(Exception, string?)</a>,
+or lift a plain message through the implicit conversion from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>. <code>default(ResultError)</code> is
+valid and total: <a class="xref" href="Bodu.Functional.ResultError.Message.html#Bodu_Functional_ResultError_Message">Message</a> returns <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string.empty">Empty</a> while <a class="xref" href="Bodu.Functional.ResultError.Code.html#Bodu_Functional_ResultError_Code">Code</a> and
+<a class="xref" href="Bodu.Functional.ResultError.Exception.html#Bodu_Functional_ResultError_Exception">Exception</a> are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.
+</p>
+<p>
+Equality compares <a class="xref" href="Bodu.Functional.ResultError.Code.html#Bodu_Functional_ResultError_Code">Code</a> and <a class="xref" href="Bodu.Functional.ResultError.Message.html#Bodu_Functional_ResultError_Message">Message</a> ordinally and <a class="xref" href="Bodu.Functional.ResultError.Exception.html#Bodu_Functional_ResultError_Exception">Exception</a> by
+reference; the hash code is computed from <a class="xref" href="Bodu.Functional.ResultError.Code.html#Bodu_Functional_ResultError_Code">Code</a> and <a class="xref" href="Bodu.Functional.ResultError.Message.html#Bodu_Functional_ResultError_Message">Message</a> only, so two errors that
+differ solely by exception instance hash identically but compare unequal.
+</p>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Functional_ResultError_Code" data-uid="Bodu.Functional.ResultError.Code">
+          <a class="xref" href="Bodu.Functional.ResultError.Code.html#Bodu_Functional_ResultError_Code">Code</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the optional machine-readable error code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_Exception" data-uid="Bodu.Functional.ResultError.Exception">
+          <a class="xref" href="Bodu.Functional.ResultError.Exception.html#Bodu_Functional_ResultError_Exception">Exception</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the exception the error was created from, when any.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_Message" data-uid="Bodu.Functional.ResultError.Message">
+          <a class="xref" href="Bodu.Functional.ResultError.Message.html#Bodu_Functional_ResultError_Message">Message</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the human-readable error message.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Functional_ResultError_Equals_Bodu_Functional_ResultError_" data-uid="Bodu.Functional.ResultError.Equals(Bodu.Functional.ResultError)">
+          <a class="xref" href="Bodu.Functional.ResultError.Equals.html#Bodu_Functional_ResultError_Equals_Bodu_Functional_ResultError_">Equals(ResultError)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified error is equal to the current instance.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_Equals_System_Object_" data-uid="Bodu.Functional.ResultError.Equals(System.Object)">
+          <a class="xref" href="Bodu.Functional.ResultError.Equals.html#Bodu_Functional_ResultError_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the specified object is equal to the current error.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_FromException_System_Exception_System_String_" data-uid="Bodu.Functional.ResultError.FromException(System.Exception,System.String)">
+          <a class="xref" href="Bodu.Functional.ResultError.FromException.html#Bodu_Functional_ResultError_FromException_System_Exception_System_String_">FromException(Exception, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an error from the specified exception and optional code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_FromMessage_System_String_System_String_" data-uid="Bodu.Functional.ResultError.FromMessage(System.String,System.String)">
+          <a class="xref" href="Bodu.Functional.ResultError.FromMessage.html#Bodu_Functional_ResultError_FromMessage_System_String_System_String_">FromMessage(string, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates an error from the specified message and optional code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_GetHashCode" data-uid="Bodu.Functional.ResultError.GetHashCode">
+          <a class="xref" href="Bodu.Functional.ResultError.GetHashCode.html#Bodu_Functional_ResultError_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code for the current instance consistent with <a class="xref" href="Bodu.Functional.ResultError.Equals.html#Bodu_Functional_ResultError_Equals_Bodu_Functional_ResultError_">Equals(ResultError)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_ToString" data-uid="Bodu.Functional.ResultError.ToString">
+          <a class="xref" href="Bodu.Functional.ResultError.ToString.html#Bodu_Functional_ResultError_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a string representation of the error.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="operators">Operators
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Functional_ResultError_op_Equality_Bodu_Functional_ResultError_Bodu_Functional_ResultError_" data-uid="Bodu.Functional.ResultError.op_Equality(Bodu.Functional.ResultError,Bodu.Functional.ResultError)">
+          <a class="xref" href="Bodu.Functional.ResultError.op_Equality.html#Bodu_Functional_ResultError_op_Equality_Bodu_Functional_ResultError_Bodu_Functional_ResultError_">operator ==(ResultError, ResultError)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two errors are equal.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_op_Implicit_System_String__Bodu_Functional_ResultError" data-uid="Bodu.Functional.ResultError.op_Implicit(System.String)~Bodu.Functional.ResultError">
+          <a class="xref" href="Bodu.Functional.ResultError.op_Implicit.html#Bodu_Functional_ResultError_op_Implicit_System_String__Bodu_Functional_ResultError">implicit operator ResultError(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a message string to an error with no code and no exception.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Functional_ResultError_op_Inequality_Bodu_Functional_ResultError_Bodu_Functional_ResultError_" data-uid="Bodu.Functional.ResultError.op_Inequality(Bodu.Functional.ResultError,Bodu.Functional.ResultError)">
+          <a class="xref" href="Bodu.Functional.ResultError.op_Inequality.html#Bodu_Functional_ResultError_op_Inequality_Bodu_Functional_ResultError_Bodu_Functional_ResultError_">operator !=(ResultError, ResultError)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two errors are not equal.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;T&gt;(T, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;T&gt;(T, T?, T?, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

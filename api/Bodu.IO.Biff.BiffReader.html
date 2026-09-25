@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct BiffReader | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct BiffReader | BODU ">
+    
+    <meta name="description" content="Provides a forward-only, allocation-free reader over a BIFF5 or BIFF8 record stream. The reader is a ref struct over the supplied bytes: each call to  advances to the next physical record and exposes its identifier, length, and payload slice, and typed accessors decode the records the codec names.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Biff.BiffReader">
+
+
+
+  <h1 id="Bodu_IO_Biff_BiffReader" data-uid="Bodu.IO.Biff.BiffReader" class="text-break">Struct BiffReader</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only, allocation-free reader over a BIFF5 or BIFF8 record stream. The reader is a
+<code>ref struct</code> over the supplied bytes: each call to <a class="xref" href="Bodu.IO.Biff.BiffReader.Read.html#Bodu_IO_Biff_BiffReader_Read">Read()</a> advances to the next
+physical record and exposes its identifier, length, and payload slice, and typed accessors decode the records the
+codec names.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Biff.html">Biff</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Biff.dll</h6>
+  <h5 id="Bodu_IO_Biff_BiffReader_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct BiffReader</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Biff_BiffReader_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The reader walks physical records only. A <code>CONTINUE</code> record is reported as a record like any other; the one
+structure whose logical value routinely spans continuation records, the BIFF8 shared string table, is decoded by
+<a class="xref" href="Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a>, and <a class="xref" href="Bodu.IO.Biff.BiffReader.TryReadContinuation.html#Bodu_IO_Biff_BiffReader_TryReadContinuation_System_ReadOnlySpan_System_Byte___">TryReadContinuation(out ReadOnlySpan&lt;byte&gt;)</a> lets a caller consume a following
+<code>CONTINUE</code> record for any other structure.
+</p>
+<p>
+The BIFF version is established from the first <code>BOF</code> record (or supplied through
+<a class="xref" href="Bodu.IO.Biff.BiffReaderOptions.Version.html#Bodu_IO_Biff_BiffReaderOptions_Version">Version</a>) and the code page for byte strings from the <code>CODEPAGE</code> record (or
+<a class="xref" href="Bodu.IO.Biff.BiffReaderOptions.CodePage.html#Bodu_IO_Biff_BiffReaderOptions_CodePage">CodePage</a>); the reader keeps no other state, and in particular no workbook, sheet,
+or cell model. A record whose identifier the codec does not name is never an error — it remains readable through
+<a class="xref" href="Bodu.IO.Biff.BiffReader.RecordId.html#Bodu_IO_Biff_BiffReader_RecordId">RecordId</a> and <a class="xref" href="Bodu.IO.Biff.BiffReader.ValueSpan.html#Bodu_IO_Biff_BiffReader_ValueSpan">ValueSpan</a>.
+</p>
+<p>
+To read incrementally, capture <a class="xref" href="Bodu.IO.Biff.BiffReader.CurrentState.html#Bodu_IO_Biff_BiffReader_CurrentState">CurrentState</a> and <a class="xref" href="Bodu.IO.Biff.BiffReader.BytesConsumed.html#Bodu_IO_Biff_BiffReader_BytesConsumed">BytesConsumed</a> after a pass, then
+construct the next reader over the remaining bytes with that state. With <code>isFinalBlock</code> set to
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, an incomplete trailing record makes <a class="xref" href="Bodu.IO.Biff.BiffReader.Read.html#Bodu_IO_Biff_BiffReader_Read">Read()</a> return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>
+without consuming it so the caller can supply more data; with <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the same condition is a
+format error.
+</p>
+<example>
+<pre><code class="lang-csharp">var reader = new BiffReader(workbookStreamBytes);
+while (reader.Read())
+{
+    switch (reader.RecordType)
+    {
+        case BiffRecordType.Bof:
+            Console.WriteLine($"{reader.Version} {reader.GetBof().SubstreamType}");
+            break;
+        case BiffRecordType.Number:
+            BiffNumberRecord number = reader.GetNumber();
+            Console.WriteLine($"R{number.Row}C{number.Column} = {number.Value}");
+            break;
+        default:
+            // Unknown records stay accessible: reader.RecordId, reader.ValueSpan.
+            break;
+    }
+}</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.-ctor.html#Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__">BiffReader(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over the supplied bytes, which hold the
+complete stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_IO_Biff_BiffReaderOptions_" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte},Bodu.IO.Biff.BiffReaderOptions)">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.-ctor.html#Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__Bodu_IO_Biff_BiffReaderOptions_">BiffReader(ReadOnlySpan&lt;byte&gt;, BiffReaderOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over the supplied bytes using the supplied
+options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_IO_Biff_BiffReaderState_" data-uid="Bodu.IO.Biff.BiffReader.#ctor(System.ReadOnlySpan{System.Byte},System.Boolean,Bodu.IO.Biff.BiffReaderState)">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.-ctor.html#Bodu_IO_Biff_BiffReader__ctor_System_ReadOnlySpan_System_Byte__System_Boolean_Bodu_IO_Biff_BiffReaderState_">BiffReader(ReadOnlySpan&lt;byte&gt;, bool, BiffReaderState)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> struct over a block of a stream, continuing from a
+previously captured state.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_BytesConsumed" data-uid="Bodu.IO.Biff.BiffReader.BytesConsumed">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.BytesConsumed.html#Bodu_IO_Biff_BiffReader_BytesConsumed">BytesConsumed</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bytes consumed so far: the offset of the next record header.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_CodePage" data-uid="Bodu.IO.Biff.BiffReader.CodePage">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.CodePage.html#Bodu_IO_Biff_BiffReader_CodePage">CodePage</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the code page in effect for byte strings.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_CurrentState" data-uid="Bodu.IO.Biff.BiffReader.CurrentState">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.CurrentState.html#Bodu_IO_Biff_BiffReader_CurrentState">CurrentState</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the state needed to continue the stream in a new reader.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_HasRecord" data-uid="Bodu.IO.Biff.BiffReader.HasRecord">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.HasRecord.html#Bodu_IO_Biff_BiffReader_HasRecord">HasRecord</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether a record is current.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_Header" data-uid="Bodu.IO.Biff.BiffReader.Header">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.Header.html#Bodu_IO_Biff_BiffReader_Header">Header</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the header of the current record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_IsContinuation" data-uid="Bodu.IO.Biff.BiffReader.IsContinuation">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.IsContinuation.html#Bodu_IO_Biff_BiffReader_IsContinuation">IsContinuation</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the current record is a <code>CONTINUE</code> record carrying the overflow of the
+record before it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_IsFinalBlock" data-uid="Bodu.IO.Biff.BiffReader.IsFinalBlock">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.IsFinalBlock.html#Bodu_IO_Biff_BiffReader_IsFinalBlock">IsFinalBlock</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the supplied bytes hold the end of the stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_RecordId" data-uid="Bodu.IO.Biff.BiffReader.RecordId">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.RecordId.html#Bodu_IO_Biff_BiffReader_RecordId">RecordId</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the 16-bit identifier of the current record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_RecordLength" data-uid="Bodu.IO.Biff.BiffReader.RecordLength">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.RecordLength.html#Bodu_IO_Biff_BiffReader_RecordLength">RecordLength</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the length of the current record's payload, in bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_RecordStartIndex" data-uid="Bodu.IO.Biff.BiffReader.RecordStartIndex">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.RecordStartIndex.html#Bodu_IO_Biff_BiffReader_RecordStartIndex">RecordStartIndex</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the byte offset of the current record's header within the supplied bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_RecordType" data-uid="Bodu.IO.Biff.BiffReader.RecordType">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.RecordType.html#Bodu_IO_Biff_BiffReader_RecordType">RecordType</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the identifier of the current record as a <a class="xref" href="Bodu.IO.Biff.BiffRecordType.html">BiffRecordType</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_ValueSpan" data-uid="Bodu.IO.Biff.BiffReader.ValueSpan">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.ValueSpan.html#Bodu_IO_Biff_BiffReader_ValueSpan">ValueSpan</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the payload of the current record as a slice of the supplied bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_Version" data-uid="Bodu.IO.Biff.BiffReader.Version">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.Version.html#Bodu_IO_Biff_BiffReader_Version">Version</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the BIFF version of the stream.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetBlank" data-uid="Bodu.IO.Biff.BiffReader.GetBlank">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetBlank.html#Bodu_IO_Biff_BiffReader_GetBlank">GetBlank()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>BLANK</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetBof" data-uid="Bodu.IO.Biff.BiffReader.GetBof">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetBof.html#Bodu_IO_Biff_BiffReader_GetBof">GetBof()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>BOF</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetBoolErr" data-uid="Bodu.IO.Biff.BiffReader.GetBoolErr">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetBoolErr.html#Bodu_IO_Biff_BiffReader_GetBoolErr">GetBoolErr()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>BOOLERR</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetBoundSheet" data-uid="Bodu.IO.Biff.BiffReader.GetBoundSheet">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetBoundSheet.html#Bodu_IO_Biff_BiffReader_GetBoundSheet">GetBoundSheet()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>BOUNDSHEET</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetCodePage" data-uid="Bodu.IO.Biff.BiffReader.GetCodePage">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetCodePage.html#Bodu_IO_Biff_BiffReader_GetCodePage">GetCodePage()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>CODEPAGE</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetDateMode" data-uid="Bodu.IO.Biff.BiffReader.GetDateMode">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetDateMode.html#Bodu_IO_Biff_BiffReader_GetDateMode">GetDateMode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>DATEMODE</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetDimensions" data-uid="Bodu.IO.Biff.BiffReader.GetDimensions">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetDimensions.html#Bodu_IO_Biff_BiffReader_GetDimensions">GetDimensions()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>DIMENSIONS</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetFilePass" data-uid="Bodu.IO.Biff.BiffReader.GetFilePass">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetFilePass.html#Bodu_IO_Biff_BiffReader_GetFilePass">GetFilePass()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>FILEPASS</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetFont" data-uid="Bodu.IO.Biff.BiffReader.GetFont">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetFont.html#Bodu_IO_Biff_BiffReader_GetFont">GetFont()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>FONT</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetFormat" data-uid="Bodu.IO.Biff.BiffReader.GetFormat">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetFormat.html#Bodu_IO_Biff_BiffReader_GetFormat">GetFormat()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>FORMAT</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetFormula" data-uid="Bodu.IO.Biff.BiffReader.GetFormula">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetFormula.html#Bodu_IO_Biff_BiffReader_GetFormula">GetFormula()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>FORMULA</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetLabel" data-uid="Bodu.IO.Biff.BiffReader.GetLabel">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetLabel.html#Bodu_IO_Biff_BiffReader_GetLabel">GetLabel()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>LABEL</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetLabelSst" data-uid="Bodu.IO.Biff.BiffReader.GetLabelSst">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetLabelSst.html#Bodu_IO_Biff_BiffReader_GetLabelSst">GetLabelSst()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>LABELSST</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetMulBlank" data-uid="Bodu.IO.Biff.BiffReader.GetMulBlank">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetMulBlank.html#Bodu_IO_Biff_BiffReader_GetMulBlank">GetMulBlank()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>MULBLANK</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetMulRk" data-uid="Bodu.IO.Biff.BiffReader.GetMulRk">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetMulRk.html#Bodu_IO_Biff_BiffReader_GetMulRk">GetMulRk()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>MULRK</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetNumber" data-uid="Bodu.IO.Biff.BiffReader.GetNumber">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetNumber.html#Bodu_IO_Biff_BiffReader_GetNumber">GetNumber()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>NUMBER</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetRString" data-uid="Bodu.IO.Biff.BiffReader.GetRString">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetRString.html#Bodu_IO_Biff_BiffReader_GetRString">GetRString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>RSTRING</code> record, the BIFF5 rich-text label cell.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetRk" data-uid="Bodu.IO.Biff.BiffReader.GetRk">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetRk.html#Bodu_IO_Biff_BiffReader_GetRk">GetRk()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>RK</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetRow" data-uid="Bodu.IO.Biff.BiffReader.GetRow">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetRow.html#Bodu_IO_Biff_BiffReader_GetRow">GetRow()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>ROW</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetSstHeader" data-uid="Bodu.IO.Biff.BiffReader.GetSstHeader">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetSstHeader.html#Bodu_IO_Biff_BiffReader_GetSstHeader">GetSstHeader()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the counts at the head of the current <code>SST</code> record. The strings themselves are read through
+<a class="xref" href="Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetString" data-uid="Bodu.IO.Biff.BiffReader.GetString">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetString.html#Bodu_IO_Biff_BiffReader_GetString">GetString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>STRING</code> record, the cached text result of the preceding formula.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_GetXf" data-uid="Bodu.IO.Biff.BiffReader.GetXf">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.GetXf.html#Bodu_IO_Biff_BiffReader_GetXf">GetXf()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes the current <code>XF</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_Read" data-uid="Bodu.IO.Biff.BiffReader.Read">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.Read.html#Bodu_IO_Biff_BiffReader_Read">Read()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Advances to the next physical record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffReader_TryReadContinuation_System_ReadOnlySpan_System_Byte___" data-uid="Bodu.IO.Biff.BiffReader.TryReadContinuation(System.ReadOnlySpan{System.Byte}@)">
+          <a class="xref" href="Bodu.IO.Biff.BiffReader.TryReadContinuation.html#Bodu_IO_Biff_BiffReader_TryReadContinuation_System_ReadOnlySpan_System_Byte___">TryReadContinuation(out ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Consumes the record that follows the current one when, and only when, it is a <code>CONTINUE</code> record, making it
+current and exposing its payload.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

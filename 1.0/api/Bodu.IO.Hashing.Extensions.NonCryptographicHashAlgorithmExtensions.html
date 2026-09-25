@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class NonCryptographicHashAlgorithmExtensions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class NonCryptographicHashAlgorithmExtensions | BODU ">
+    
+    <meta name="description" content="Extends  with one-shot hashing, streaming and async input, and constant-time hash verification — the high-level surface that  itself omits.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions">
+
+
+
+  <h1 id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions" class="text-break">Class NonCryptographicHashAlgorithmExtensions</h1>
+  <div class="markdown level0 summary"><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> with one-shot hashing, streaming and async input, and
+constant-time hash verification — the high-level surface that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> itself
+omits.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">NonCryptographicHashAlgorithmExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class NonCryptographicHashAlgorithmExtensions</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> intentionally exposes only the low-level
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-readonlyspan((system-byte)))">Append(ReadOnlySpan&lt;byte&gt;)</a> /
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.getcurrenthash#system-io-hashing-noncryptographichashalgorithm-getcurrenthash">GetCurrentHash()</a> primitives. Real-world callers want to ask
+higher-level questions: "compute the hash of this byte array", "stream-hash this file", "does this download match
+the expected digest?". This class adds those operations as a coherent set, mirroring the shape of
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> so the same call patterns work whether the underlying
+algorithm is cryptographic (SHA-256) or non-cryptographic (CRC, xxHash, Fletcher).
+</p>
+<p>
+The API surface clusters into four groups:
+</p>
+<ul><li><span class="term">Append</span>
+<code>AppendData</code> / <code>AppendDataAsync</code> — feed a buffer or stream into the algorithm's running state, with a
+tunable read-buffer size for stream input.
+</li><li><span class="term">One-shot compute</span>
+<code>ComputeHash</code> / <code>ComputeHashAsync</code> — append, finalize, and reset in a single call, returning the digest as
+a freshly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> array. Inputs include byte arrays, byte-array slices,
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory&lt;T&gt;</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a>.
+</li><li><span class="term">Throwing verification</span>
+<code>VerifyHash</code> / <code>VerifyHashAsync</code> — compute the digest of an input and compare it against an expected value
+supplied as either bytes or a hexadecimal string. Returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on match, throws on argument
+problems.
+</li><li><span class="term">Try-pattern verification</span>
+<code>TryVerifyHash</code> / <code>TryVerifyHashAsync</code> — non-throwing counterparts. Suitable when the expected hash is
+user-supplied and a malformed input should not surface as an exception.
+</li></ul>
+<p>
+All hash comparisons go through
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+, so verification is constant-time and safe to use against attacker-supplied digests even though the underlying
+algorithm itself provides no preimage resistance. The algorithm instance is stateful and reset after each
+<code>ComputeHash</code> or <code>VerifyHash</code> call, but it is not thread-safe — share instances only behind explicit
+synchronization. Stream overloads do not dispose the supplied stream.
+</p>
+<example>
+<pre><code class="lang-csharp">using System.IO.Hashing;
+using Bodu.IO.Hashing.Extensions;
+
+// 1. One-shot hash of a byte buffer using xxHash64.
+var xx = new XxHash64();
+byte[] digest = xx.ComputeHash(File.ReadAllBytes("payload.bin"));
+
+// 2. Stream-hash a large file without loading it into memory.
+using FileStream fs = File.OpenRead("payload.bin");
+byte[] streamDigest = xx.ComputeHash(fs);
+
+// 3. Verify a downloaded artefact against an expected hex digest, without throwing on a malformed string.
+var crc = new Crc32();
+if (crc.TryVerifyHash(File.ReadAllBytes("artefact.zip"), expectedHex: "deadbeef"))
+    Console.WriteLine("artefact verified");</code></pre>
+</example>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Int32)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_">AppendData(NonCryptographicHashAlgorithm, Stream, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads all bytes from <code class="paramref">source</code> and feeds them into the hash accumulator via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-readonlyspan((system-byte)))">Append(ReadOnlySpan&lt;byte&gt;)</a>, without finalizing the computation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendData.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendData_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__">AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Feeds a span of bytes into the ongoing hash computation of the specified
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> without finalizing it.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendDataAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendDataAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.AppendDataAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_AppendDataAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">AppendDataAsync(NonCryptographicHashAlgorithm, Stream, int, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously reads all bytes from <code class="paramref">source</code> and feeds them into the hash accumulator via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm.append#system-io-hashing-noncryptographichashalgorithm-append(system-readonlyspan((system-byte)))">Append(ReadOnlySpan&lt;byte&gt;)</a>, without finalizing the computation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___">ComputeHash(NonCryptographicHashAlgorithm, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the hash value for the specified byte array and resets the algorithm to its initial state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Int32_System_Int32_">ComputeHash(NonCryptographicHashAlgorithm, byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the hash value for the specified region of a byte array and resets the algorithm to its initial state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Int32)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_">ComputeHash(NonCryptographicHashAlgorithm, Stream, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the hash value for the remaining bytes of the specified stream and resets the algorithm to its initial
+state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__">ComputeHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Computes the hash value for the specified span of bytes and resets the algorithm to its initial state.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.ComputeHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_ComputeHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Int32_System_Threading_CancellationToken_">ComputeHashAsync(NonCryptographicHashAlgorithm, Stream, int, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously computes the hash value for the specified stream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___">TryVerifyHash(NonCryptographicHashAlgorithm, byte[], byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Boolean__" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.Byte[],System.Boolean@)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Boolean__">TryVerifyHash(NonCryptographicHashAlgorithm, byte[], byte[], out bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and
+whether the hash matched.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.String)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_">TryVerifyHash(NonCryptographicHashAlgorithm, byte[], string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a byte array against an expected hexadecimal hash string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___">TryVerifyHash(NonCryptographicHashAlgorithm, Stream, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.String)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_">TryVerifyHash(NonCryptographicHashAlgorithm, Stream, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">TryVerifyHash(NonCryptographicHashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a memory buffer against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">TryVerifyHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of a span of bytes against the expected hash span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___">TryVerifyHash(NonCryptographicHashAlgorithm, string, Encoding, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to compute and verify the hash of an encoded string against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.Byte[],System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, byte[], byte[], CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a byte array against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.String,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, byte[], string, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a byte array against the expected hexadecimal hash
+string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hash value held in a
+memory buffer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of a stream against the expected hexadecimal hash string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.String,System.Text.Encoding,System.Byte[],System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.TryVerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_TryVerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___System_Threading_CancellationToken_">TryVerifyHashAsync(NonCryptographicHashAlgorithm, string, Encoding, byte[], CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to asynchronously compute and verify the hash of an encoded string against the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_Byte___">VerifyHash(NonCryptographicHashAlgorithm, byte[], byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.Byte[],System.String)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_Byte___System_String_">VerifyHash(NonCryptographicHashAlgorithm, byte[], string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input data matches the expected hash value expressed as a hexadecimal
+string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___">VerifyHash(NonCryptographicHashAlgorithm, Stream, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.String)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_">VerifyHash(NonCryptographicHashAlgorithm, Stream, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the stream matches the expected hash value expressed as a hexadecimal string.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlyMemory{System.Byte},System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlyMemory_System_Byte__System_Byte___">VerifyHash(NonCryptographicHashAlgorithm, ReadOnlyMemory&lt;byte&gt;, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input memory block matches the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">VerifyHash(NonCryptographicHashAlgorithm, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the input span matches the expected hash span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash(System.IO.Hashing.NonCryptographicHashAlgorithm,System.String,System.Text.Encoding,System.Byte[])">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHash.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHash_System_IO_Hashing_NonCryptographicHashAlgorithm_System_String_System_Text_Encoding_System_Byte___">VerifyHash(NonCryptographicHashAlgorithm, string, Encoding, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies that the computed hash of the encoded string matches the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.Byte[],System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_Byte___System_Threading_CancellationToken_">VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_ReadOnlyMemory_System_Byte__System_Threading_CancellationToken_">VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, ReadOnlyMemory&lt;byte&gt;, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory
+buffer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_" data-uid="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync(System.IO.Hashing.NonCryptographicHashAlgorithm,System.IO.Stream,System.String,System.Threading.CancellationToken)">
+          <a class="xref" href="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.VerifyHashAsync.html#Bodu_IO_Hashing_Extensions_NonCryptographicHashAlgorithmExtensions_VerifyHashAsync_System_IO_Hashing_NonCryptographicHashAlgorithm_System_IO_Stream_System_String_System_Threading_CancellationToken_">VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Asynchronously verifies that the computed hash of a stream matches the expected hexadecimal hash string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

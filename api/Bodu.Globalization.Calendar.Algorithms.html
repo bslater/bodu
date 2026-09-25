@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Globalization.Calendar.Algorithms | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Globalization.Calendar.Algorithms | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Algorithms">
+
+  <h1 id="Bodu_Globalization_Calendar_Algorithms" data-uid="Bodu.Globalization.Calendar.Algorithms" class="text-break">Namespace Bodu.Globalization.Calendar.Algorithms</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-calendar.svg" alt="Bodu.Globalization.Calendar.Algorithms"></p>
+<h1 id="boduglobalizationcalendaralgorithms">Bodu.Globalization.Calendar.Algorithms</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Globalization.Calendar.Algorithms</strong> is the date-calculation layer of <a href="../apidoc/Bodu.Globalization.Calendar.md"><code>Bodu.Globalization.Calendar</code></a>. It defines the strategy a rule uses to find its <em>nominal</em> date for a year, and the contract and registry for plugging in custom calculators.</p>
+<p>Every <a class="xref" href="Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a> carries exactly one occurrence source: an <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> (13 single-date strategies) or an <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a> (four frequency-based recurrence sources). The loader maps each <code>&lt;Strategy&gt;</code> (or <code>&lt;Recurrence&gt;</code>) element in a rule document to one of these built-in strategies; you rarely construct them by hand, but they are the public vocabulary the engine resolves against. The most common are listed below — the <a href="../guides/calendar/strategy-reference.html">strategy reference</a> covers the full catalogue.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/calendar/algorithms.html">Date calculation algorithms</a></strong> — the strategy kinds, the built-in algorithm keys, and how to register a custom algorithm.</li>
+<li><strong><a href="../guides/calendar/strategy-reference.html">Notable-date rule strategies</a></strong> — the full catalogue of single-date strategies and recurrence sources.</li>
+<li><strong><a href="../guides/calendar/non-gregorian-calendars.html">Working with non-Gregorian calendars</a></strong> — fixed dates expressed in Hijri / Hebrew / Persian / Chinese lunisolar calendars.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>The strategy contract and built-in strategies</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> — <code>DateOnly? Calculate(int year, StrategyResolutionContext context)</code>. Implemented by every single-date strategy: the six below plus <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OrdinalDayOfMonthStrategy.html">OrdinalDayOfMonthStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DayOfYearStrategy.html">DayOfYearStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IsoWeekDateStrategy.html">IsoWeekDateStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.html">WeekdayNearRuleStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NthWeekdayFromRuleStrategy.html">NthWeekdayFromRuleStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WorkingDayOffsetFromRuleStrategy.html">WorkingDayOffsetFromRuleStrategy</a>, and <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy.html">WorkingDayInMonthStrategy</a>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a> — the frequency-based recurrence sources a <code>&lt;Recurrence&gt;</code> element maps to: <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DailyIntervalRecurrenceStrategy.html">DailyIntervalRecurrenceStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeeklyRecurrenceStrategy.html">WeeklyRecurrenceStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.MonthlyDayRecurrenceStrategy.html">MonthlyDayRecurrenceStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.MonthlyWeekdayRecurrenceStrategy.html">MonthlyWeekdayRecurrenceStrategy</a>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a> — a fixed month / day, optionally expressed in a non-Gregorian <a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a> (a short Hijri month can recur twice in a Gregorian year, so it also exposes <code>CalculateAll</code>).</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy.html">DayOfWeekInMonthStrategy</a> — the <em>n</em>th or last weekday in a month (e.g. fourth Thursday in November), driven by <a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html">RelativeWeekdayInMonthStrategy</a> — a weekday relative to a weekday-in-month anchor (e.g. the Tuesday after the first Monday).</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy.html">WeekdayNearDateStrategy</a> — a weekday on / before / after / nearest a fixed date (e.g. the Monday nearest 24 May), driven by <a class="xref" href="Bodu.Globalization.Calendar.WeekdayProximity.html">WeekdayProximity</a>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a> — a fixed day offset from another rule's occurrence (e.g. Good Friday = Easter Sunday − 2).</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> — dispatch to a named algorithm by key.</li>
+</ul>
+<p><strong>Algorithm keys</strong></p>
+<p><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> resolves a string key to a bundled astronomical / gazetted calculator. Built-in keys include <code>western-easter</code> and <code>orthodox-easter</code> (exposed as the <code>WesternEasterKey</code> / <code>OrthodoxEasterKey</code> constants), <code>vernal-equinox</code>, <code>autumnal-equinox</code>, <code>jp-vernal-equinox</code>, <code>jp-autumnal-equinox</code>, <code>qingming</code>, <code>vesak</code>, <code>asalha-puja</code>, <code>losar</code>, <code>matariki</code>, and the Hindu-festival keys (<code>diwali</code>, <code>holi</code>, <code>maha-shivaratri</code>, <code>ganesh-chaturthi</code>, …). <code>AlgorithmDateStrategy.IsKnownKey(key)</code> reports whether a key is built in. The calculators that back these keys are an internal implementation detail reached only through the key.</p>
+<p><strong>Custom algorithms</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> — <code>DateOnly? Calculate(int year)</code>. Implement this to add a calculator (returning <code>null</code> for years you do not support).</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a> — the lookup and its chainable, mutable implementation (<code>Register(key, algorithm)</code>). Keys not recognised by <code>AlgorithmDateStrategy</code> fall through to this registry, so a custom key registered here can be referenced from a rule as <code>&lt;Algorithm key=&quot;my-key&quot; /&gt;</code>. Pass the registry to <code>NotableDateResourceLoader.Load(xml, resolver, registry)</code> (to whitelist the key during validation) and to the service through <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a><code>.Algorithms</code> — <code>new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry })</code>.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a> — the per-resolution context passed to strategies; resolves referenced rules (<code>ResolveReference</code>) cycle-safely and carries the custom algorithm registry.</li>
+</ul>
+<h2 id="minimal-sample">Minimal sample</h2>
+<pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+// A custom calculator …
+public sealed class PiDayAlgorithm : INotableDateAlgorithm
+{
+    public DateOnly? Calculate(int year) =&gt; new DateOnly(year, 3, 14);
+}
+
+// … registered under a key the rule document references via &lt;Algorithm key=&quot;pi-day&quot; /&gt;.
+var registry = new NotableDateAlgorithmRegistry().Register(&quot;pi-day&quot;, new PiDayAlgorithm());
+
+NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ =&gt; null, registry);
+NotableDateService service   = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
+</code></pre>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a></h4>
+      <section><p>Calculates a notable date using a named, algorithm-backed computation such as Easter, an equinox, a lunar-phase
+festival, or a gazetted date table.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DailyIntervalRecurrenceStrategy.html">DailyIntervalRecurrenceStrategy</a></h4>
+      <section><p>Generates an occurrence every fixed number of calendar days from an anchor date, such as every 14 days from 1
+January 2026.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy.html">DayOfWeekInMonthStrategy</a></h4>
+      <section><p>Calculates a notable date that falls on the nth (or last) occurrence of a weekday within a month, such as the fourth
+Thursday of November or the last Monday of May.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DayOfYearStrategy.html">DayOfYearStrategy</a></h4>
+      <section><p>Calculates a date by its ordinal position within a Gregorian year, such as the 100th day or the final day of the
+year.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a></h4>
+      <section><p>Calculates a notable date that falls on a fixed month and day every year, optionally expressed in a non-Gregorian
+calendar system such as the Islamic, Hebrew, Persian, or Chinese lunisolar calendar.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IsoWeekDateStrategy.html">IsoWeekDateStrategy</a></h4>
+      <section><p>Calculates a weekday within an ISO-8601 week of an ISO week-year, such as the Monday of ISO week 1 or the Friday of
+ISO week 20.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.MonthlyDayRecurrenceStrategy.html">MonthlyDayRecurrenceStrategy</a></h4>
+      <section><p>Generates an occurrence on a specified calendar day every fixed number of months, such as the 15th of every month or
+the 20th of every third month.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.MonthlyWeekdayRecurrenceStrategy.html">MonthlyWeekdayRecurrenceStrategy</a></h4>
+      <section><p>Generates an ordinal weekday every fixed number of months, such as the first Monday of every month or the last
+Friday of every third month.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a></h4>
+      <section><p>A mutable registry of custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations keyed by algorithm key.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NthWeekdayFromRuleStrategy.html">NthWeekdayFromRuleStrategy</a></h4>
+      <section><p>Calculates the Nth occurrence of a weekday strictly before or strictly after another rule's occurrence, such as the
+second Monday after a festival.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a></h4>
+      <section><p>Calculates a notable date as a fixed day offset from another rule's occurrence, such as Good Friday two days before
+Easter Sunday.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OrdinalDayOfMonthStrategy.html">OrdinalDayOfMonthStrategy</a></h4>
+      <section><p>Calculates a day by its ordinal position from the beginning or end of a Gregorian month, such as the last day of
+February or the second-last day of a month.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html">RelativeWeekdayInMonthStrategy</a></h4>
+      <section><p>Calculates a notable date that falls on a weekday relative to an anchor weekday occurrence within a month, such as
+the Tuesday after the first Monday of November (United States general election day).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a></h4>
+      <section><p>Provides a strategy with access to the surrounding resource so that referential strategies (such as
+<a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a>) can resolve the occurrence of another rule for the same year.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy.html">WeekdayNearDateStrategy</a></h4>
+      <section><p>Calculates a notable date that falls on a weekday on, before, after, or nearest to a fixed month and day, such as
+the Monday on or after 24 May.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeekdayNearRuleStrategy.html">WeekdayNearRuleStrategy</a></h4>
+      <section><p>Calculates a weekday on, before, after, or nearest to the date produced by another rule, such as the first Monday
+after Easter Sunday.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeeklyRecurrenceStrategy.html">WeeklyRecurrenceStrategy</a></h4>
+      <section><p>Generates occurrences on one or more selected weekdays every fixed number of weeks, such as every Monday and Friday
+or every second Tuesday.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WorkingDayInMonthStrategy.html">WorkingDayInMonthStrategy</a></h4>
+      <section><p>Calculates the Nth working day from the beginning or end of a Gregorian month, such as the first working day of
+January or the last working day of a reporting month.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WorkingDayOffsetFromRuleStrategy.html">WorkingDayOffsetFromRuleStrategy</a></h4>
+      <section><p>Calculates a date a specified number of working days before or after another rule's occurrence, such as the last
+working day before a public-holiday shutdown.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a></h4>
+      <section><p>Defines the calculation contract for a single rule strategy: given a Gregorian year, produce the occurrence of the
+notable date in that year, if any.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy.html">IDateRecurrenceStrategy</a></h4>
+      <section><p>Calculates every occurrence of a recurring notable-date pattern that falls within a bounded date range, such as
+every second Tuesday or the last Friday of every month.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a></h4>
+      <section><p>Computes the date of a notable date for a Gregorian year from a closed-form or tabular algorithm. Implementations
+are registered under a key and dispatched by the <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> when a rule references that
+key, allowing the algorithm catalogue to be extended beyond the built-in computations.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a></h4>
+      <section><p>Provides lookup of custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations by key, supplementing the engine's
+built-in algorithm catalogue.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.InvalidDayOfMonthBehavior.html">InvalidDayOfMonthBehavior</a></h4>
+      <section><p>Specifies how a monthly day-of-month recurrence handles a month that does not contain the requested day, such as the
+31st in February.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

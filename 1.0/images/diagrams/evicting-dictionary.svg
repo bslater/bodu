@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="ed-t ed-d">
+  <title id="ed-t">EvictingDictionary&lt;TKey, TValue&gt; — fixed-capacity cache with three eviction policies</title>
+  <desc id="ed-d">An EvictingDictionary stores key-value entries up to a fixed Capacity. Each entry carries metadata: insertion timestamp, last-access timestamp, and access count. When a write would exceed Capacity, the configured policy selects a victim. FirstInFirstOut evicts the earliest inserted entry, LeastRecentlyUsed evicts the entry accessed furthest in the past, and LeastFrequentlyUsed evicts the entry with the smallest access count. Reads via the indexer or TryGetValue update the metadata; Touch promotes a key without reading its value.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl  { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .lbl-l{ fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub-l{ fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut-l{ fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; }
+      .entry      { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.4; }
+      .entry-key  { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .entry-meta { fill: #94A3B8; font: 400 9px/1  "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .lane-fifo  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.2; }
+      .lane-lru   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.2; }
+      .lane-lfu   { fill: #431407; stroke: #FBBF24; stroke-width: 1.2; }
+      .victim     { fill: #4B1414; stroke: #F87171; stroke-width: 1.6; }
+      .w          { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .wr         { stroke: #F87171; stroke-width: 1.6; fill: none; }
+      .wt         { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="ed-a"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="ed-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#F87171"/>
+    </marker>
+    <marker id="ed-at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="360"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="340" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">EvictingDictionary&lt;TKey, TValue&gt; — fixed-capacity cache with three eviction policies</text>
+
+    <!-- ─────────────────── Storage strip (top) ─────────────────── -->
+    <text class="mut-l" x="20" y="56">Storage — Capacity = 4 (Count == Capacity, next write triggers eviction)</text>
+
+    <!-- 4 entries side by side. Each cell 158x60, centred at x = 92 + i*168, y = 96 -->
+    <g transform="translate(0 96)">
+      <!-- A: oldest insert, recency=2, freq=4 -->
+      <g transform="translate(92 0)">
+        <rect class="entry" x="-79" y="-30" width="158" height="60" rx="6"/>
+        <text class="entry-key" x="0" y="-8">"A" → α</text>
+        <text class="entry-meta" x="0" y="10">inserted: t = 1</text>
+        <text class="entry-meta" x="0" y="22">last access: t = 6   freq: 4</text>
+      </g>
+      <!-- B: recency=4 (least recent), freq=1 (least frequent) -->
+      <g transform="translate(260 0)">
+        <rect class="entry" x="-79" y="-30" width="158" height="60" rx="6"/>
+        <text class="entry-key" x="0" y="-8">"B" → β</text>
+        <text class="entry-meta" x="0" y="10">inserted: t = 2</text>
+        <text class="entry-meta" x="0" y="22">last access: t = 4   freq: 1</text>
+      </g>
+      <!-- C: recency=3, freq=3 -->
+      <g transform="translate(428 0)">
+        <rect class="entry" x="-79" y="-30" width="158" height="60" rx="6"/>
+        <text class="entry-key" x="0" y="-8">"C" → γ</text>
+        <text class="entry-meta" x="0" y="10">inserted: t = 3</text>
+        <text class="entry-meta" x="0" y="22">last access: t = 5   freq: 3</text>
+      </g>
+      <!-- D: most recent insert, recency=1 (most recent), freq=2 -->
+      <g transform="translate(596 0)">
+        <rect class="entry" x="-79" y="-30" width="158" height="60" rx="6"/>
+        <text class="entry-key" x="0" y="-8">"D" → δ</text>
+        <text class="entry-meta" x="0" y="10">inserted: t = 5</text>
+        <text class="entry-meta" x="0" y="22">last access: t = 7   freq: 2</text>
+      </g>
+    </g>
+
+    <!-- New write arrow on the right -->
+    <g transform="translate(740 96)">
+      <rect class="entry" x="-22" y="-22" width="44" height="44" rx="5" fill="#0F172A" stroke="#2DD4BF" stroke-dasharray="3 3"/>
+      <text class="entry-key" x="0" y="6" fill="#2DD4BF">"E"</text>
+      <text class="entry-meta" x="0" y="-30">incoming</text>
+    </g>
+    <line class="wt" x1="708" y1="96" x2="685" y2="96" marker-end="url(#ed-at)"/>
+
+    <!-- ─────────────────── Three-policy lanes ─────────────────── -->
+    <text class="lbl-l" x="20" y="178">Eviction order tracked per policy — head of lane is the next victim:</text>
+
+    <!-- FIFO lane -->
+    <g transform="translate(20 196)">
+      <rect class="lane-fifo" width="760" height="38" rx="5"/>
+      <text class="lbl-l" x="14" y="23" fill="#93C5FD">FIFO</text>
+      <text class="mut-l" x="14" y="34" fill="#93C5FD">earliest insertion first</text>
+      <!-- order: A (oldest insert) → B → C → D -->
+      <g transform="translate(220 19)">
+        <rect class="victim" x="-22" y="-13" width="44" height="26" rx="3"/>
+        <text class="entry-key" x="0" y="4">A</text>
+      </g>
+      <text class="mut" x="262" y="23">→</text>
+      <rect x="284" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#60A5FA"/>
+      <text class="entry-key" x="306" y="23">B</text>
+      <text class="mut" x="346" y="23">→</text>
+      <rect x="368" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#60A5FA"/>
+      <text class="entry-key" x="390" y="23">C</text>
+      <text class="mut" x="430" y="23">→</text>
+      <rect x="452" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#60A5FA"/>
+      <text class="entry-key" x="474" y="23">D</text>
+      <text class="mut-l" x="520" y="23" fill="#94A3B8">victim = "A"  (inserted at t = 1)</text>
+    </g>
+
+    <!-- LRU lane -->
+    <g transform="translate(20 240)">
+      <rect class="lane-lru" width="760" height="38" rx="5"/>
+      <text class="lbl-l" x="14" y="23" fill="#C4B5FD">LRU</text>
+      <text class="mut-l" x="14" y="34" fill="#C4B5FD">least-recent access first</text>
+      <!-- order: B (last access t=4) → C → A → D -->
+      <g transform="translate(220 19)">
+        <rect class="victim" x="-22" y="-13" width="44" height="26" rx="3"/>
+        <text class="entry-key" x="0" y="4">B</text>
+      </g>
+      <text class="mut" x="262" y="23">→</text>
+      <rect x="284" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#A78BFA"/>
+      <text class="entry-key" x="306" y="23">C</text>
+      <text class="mut" x="346" y="23">→</text>
+      <rect x="368" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#A78BFA"/>
+      <text class="entry-key" x="390" y="23">A</text>
+      <text class="mut" x="430" y="23">→</text>
+      <rect x="452" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#A78BFA"/>
+      <text class="entry-key" x="474" y="23">D</text>
+      <text class="mut-l" x="520" y="23" fill="#94A3B8">victim = "B"  (last access at t = 4)</text>
+    </g>
+
+    <!-- LFU lane -->
+    <g transform="translate(20 284)">
+      <rect class="lane-lfu" width="760" height="38" rx="5"/>
+      <text class="lbl-l" x="14" y="23" fill="#FBBF24">LFU</text>
+      <text class="mut-l" x="14" y="34" fill="#FBBF24">least-frequent first</text>
+      <!-- order: B (freq=1) → D (2) → C (3) → A (4) -->
+      <g transform="translate(220 19)">
+        <rect class="victim" x="-22" y="-13" width="44" height="26" rx="3"/>
+        <text class="entry-key" x="0" y="4">B</text>
+      </g>
+      <text class="mut" x="262" y="23">→</text>
+      <rect x="284" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#FBBF24"/>
+      <text class="entry-key" x="306" y="23">D</text>
+      <text class="mut" x="346" y="23">→</text>
+      <rect x="368" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#FBBF24"/>
+      <text class="entry-key" x="390" y="23">C</text>
+      <text class="mut" x="430" y="23">→</text>
+      <rect x="452" y="6" width="44" height="26" rx="3" fill="#0F172A" stroke="#FBBF24"/>
+      <text class="entry-key" x="474" y="23">A</text>
+      <text class="mut-l" x="520" y="23" fill="#94A3B8">victim = "B"  (access count = 1)</text>
+    </g>
+
+    <!-- Footer notes -->
+    <text class="mut-l" x="20" y="338">Reads via this[key] / TryGetValue update last-access and increment freq.  Touch(key) promotes recency without reading the value.</text>
+  </g>
+</svg>

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="ad-title ad-desc">
+  <title id="ad-title">Adler-32 — twin running sums A and B</title>
+  <desc id="ad-desc">The Adler-32 checksum maintains two running sums. A starts at 1 and accumulates each input byte modulo 65521. B starts at 0 and accumulates the running value of A, also modulo 65521. Because B depends on the running A, the checksum is position-dependent and catches transpositions. The final 32-bit output is B shifted left by 16 bits combined with A.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0F172A; }
+      .panel { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .header { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .title { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .formula { fill: #94A3B8; font: italic 12px/1 "Cambria",Georgia,serif; }
+      .label { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; }
+      .sub { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .sub-muted { fill: #94A3B8; font: 400 10.5px/1 "Segoe UI",Arial,sans-serif; }
+      .band-a { fill: #14B8A6; stroke: #2DD4BF; stroke-width: 1; }
+      .band-b { fill: #A78BFA; stroke: #C4B5FD; stroke-width: 1; }
+      .byte { fill: #F59E0B; }
+      .tag { fill: #FBBF24; stroke: #F59E0B; stroke-width: 1; }
+      .wire { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+      .wire-a { stroke: #2DD4BF; stroke-width: 1.8; fill: none; }
+      .wire-b { stroke: #C4B5FD; stroke-width: 1.8; fill: none; }
+      .wire-byte { stroke: #FBBF24; stroke-width: 1.6; fill: none; }
+      .plus { fill: #0F172A; stroke: #F8FAFC; stroke-width: 1.6; }
+      .plus-sym { fill: #F8FAFC; font: 700 14px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .band-text { fill: #0F172A; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+    </style>
+    <marker id="ad-arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="ad-arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="ad-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#C4B5FD"/>
+    </marker>
+    <marker id="ad-arr-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#FBBF24"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="300"/>
+
+  <g transform="translate(10 10)">
+    <rect class="panel" width="800" height="280" rx="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
+    <text class="title" x="16" y="20">Adler-32 — twin sums A, B (mod 65521)</text>
+    <text class="formula" x="784" y="38" text-anchor="end">A ← (A + byte) mod 65521;   B ← (B + A) mod 65521;   output = (B « 16) | A</text>
+
+    <!-- incoming byte -->
+    <g transform="translate(60 150)">
+      <rect class="byte" x="-36" y="-14" width="72" height="28" rx="4"/>
+      <text class="label" x="0" y="5" text-anchor="middle" fill="#0F172A">byte b</text>
+    </g>
+    <text class="sub-muted" x="24" y="188">byte-by-byte update</text>
+
+    <!-- A band -->
+    <g transform="translate(260 80)">
+      <rect class="band-a" x="0" y="0" width="200" height="44" rx="6"/>
+      <text class="band-text" x="100" y="27">A = (A + b) mod 65521</text>
+    </g>
+    <line class="wire-byte" x1="96" y1="145" x2="240" y2="100" marker-end="url(#ad-arr-w)"/>
+
+    <!-- B band -->
+    <g transform="translate(260 170)">
+      <rect class="band-b" x="0" y="0" width="200" height="44" rx="6"/>
+      <text class="band-text" x="100" y="27">B = (B + A) mod 65521</text>
+    </g>
+
+    <!-- A feeds B -->
+    <path class="wire-a" d="M 360 128 L 360 166" marker-end="url(#ad-arr-a)"/>
+    <text class="sub" x="368" y="150">carry A</text>
+
+    <!-- self loops on A and B -->
+    <path class="wire-a" d="M 260 102 C 230 102, 230 126, 260 126" stroke-dasharray="4 3" marker-end="url(#ad-arr-a)"/>
+    <text class="sub-muted" x="220" y="118" text-anchor="end">A start = 1</text>
+    <path class="wire-b" d="M 260 192 C 230 192, 230 216, 260 216" stroke-dasharray="4 3" marker-end="url(#ad-arr-b)"/>
+    <text class="sub-muted" x="220" y="208" text-anchor="end">B start = 0</text>
+
+    <!-- output combine -->
+    <g transform="translate(530 146)">
+      <circle class="plus" cx="0" cy="0" r="14"/>
+      <text class="plus-sym" x="0" y="5">«</text>
+    </g>
+    <line class="wire-a" x1="460" y1="102" x2="520" y2="140" marker-end="url(#ad-arr-a)"/>
+    <line class="wire-b" x1="460" y1="192" x2="520" y2="152" marker-end="url(#ad-arr-b)"/>
+
+    <!-- final output -->
+    <g transform="translate(680 146)">
+      <rect class="tag" x="-62" y="-16" width="124" height="32" rx="5"/>
+      <text class="label" x="0" y="6" text-anchor="middle" fill="#0F172A">(B « 16) | A</text>
+    </g>
+    <line class="wire" x1="544" y1="146" x2="616" y2="146" marker-end="url(#ad-arr-d)"/>
+
+    <!-- variant legend -->
+    <g transform="translate(636 60)">
+      <text class="sub" x="0" y="0">Variants:</text>
+      <text class="sub-muted" x="0" y="18">Adler-32 — mod 65521 (zlib)</text>
+      <text class="sub-muted" x="0" y="34">Adler-32C — mod 65536 (SIMD)</text>
+      <text class="sub-muted" x="0" y="50">Adler-64 — mod 4294967291</text>
+    </g>
+
+    <!-- footer note -->
+    <text class="sub" x="20" y="256">A initialised to 1 (zlib's canonical state); B coupling on the running A makes Adler position-dependent like Fletcher.</text>
+  </g>
+</svg>

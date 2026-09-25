@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Runnable samples | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Runnable samples | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="runnable-samples">Runnable samples</h1>
+
+<p>The repository ships a runnable, self-contained sample project for <code>Bodu.Text.Bencode</code> under
+<a href="https://github.com/bslater/bodu/tree/master/samples/Text.Bencode"><code>samples/Text.Bencode/</code></a>.
+It is <strong>offline and deterministic</strong> — every scenario reads one committed 278-byte
+<code>Data/sample.torrent</code> fixture — and is a member of <code>bodu.slnx</code>, built and executed by CI. The
+README documents every scenario individually: its intent, what the code does, the output to
+expect, and the APIs demonstrated.</p>
+<p>Run it from the repository root:</p>
+<pre><code class="lang-bash">dotnet run --project samples/Text.Bencode/Bodu.Text.Bencode.Samples.TorrentFile
+</code></pre>
+<h2 id="the-sample">The sample</h2>
+<h3 id="bodutextbencodesamplestorrentfile">Bodu.Text.Bencode.Samples.TorrentFile</h3>
+<p>A real BitTorrent metainfo file (BEP 3) — the format Bencode was invented for — read,
+verified, and re-authored through all of the library's layers:</p>
+<ul>
+<li><strong>ParseTorrent</strong> — the read-only <a class="xref" href="../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM:
+one parse, cheap <a class="xref" href="../api/Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> cursors, <code>GetString</code> vs
+<code>GetBytes</code> for text vs binary byte strings (the <code>pieces</code> SHA-1 run), and <code>TryGetProperty</code>
+probing for optional keys.</li>
+<li><strong>CanonicalRoundTrip</strong> — Bencode's defining property: keys ascend in raw-byte order, so a
+value has exactly one encoding. Parse → re-emit reproduces the file byte for byte; the
+<a class="xref" href="../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> sorts each dictionary as it closes and
+rejects duplicates; the strict <a class="xref" href="../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> rejects
+unsorted input unless <a class="xref" href="../api/Bodu.Text.Bencode.Reader.BencodeReaderOptions.AllowUnsortedKeys.html#Bodu_Text_Bencode_Reader_BencodeReaderOptions_AllowUnsortedKeys">AllowUnsortedKeys</a>
+opts into lenient ingestion.</li>
+<li><strong>InfoHashRawSlice</strong> — the info-hash is the SHA-1 of the <code>info</code> dictionary's <em>exact encoded
+bytes</em>: <code>BencodeElement.GetRawBytes()</code> hands back precisely that slice, and
+<code>Utf8BencodeWriter.WriteRawValue</code> splices it untouched into a re-authored torrent, proving
+the hash survives. The digest renders through <code>Bodu.Text.Encoding</code>'s <code>Base16</code> — a
+cross-package demonstration.</li>
+<li><strong>PocoTorrent</strong> — the typed layer: <a class="xref" href="../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> maps the
+metainfo onto POCOs whose <code>[PropertyName]</code> attributes carry the keys with spaces
+(<code>creation date</code>, <code>piece length</code>), with <code>byte[]</code> binding for binary values — and even the
+POCO round trip is byte-exact.</li>
+</ul>
+<p><em>Packages: <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Encoding</code> (info-hash rendering).</em></p>
+<h2 id="guarded-documentation">Guarded documentation</h2>
+<p>The Bencode guides under
+<a href="../guides/serialization/bencode/index.html"><code>docs/guides/serialization/bencode/</code></a> carry
+compile-guarded snippets: examples marked with a <code>&lt;!-- compile --&gt;</code> sentinel are compiled
+against the current public API by <code>DocumentationSnippetCompileTests</code> in the library's test
+project (Regression tier).</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../guides/serialization/bencode/index.html">Bencode guides</a> — the full serializer, DOM, and
+reader/writer documentation.</li>
+<li><a href="toml.html">TOML samples</a> — the same System.Text.Json-aligned stack for TOML.</li>
+<li><a href="text-encoding.html">Text.Encoding samples</a> — the <code>Base16</code> surface used by the info-hash
+scenario.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

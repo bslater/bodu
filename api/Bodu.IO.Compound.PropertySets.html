@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.IO.Compound.PropertySets | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.IO.Compound.PropertySets | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Compound.PropertySets">
+
+  <h1 id="Bodu_IO_Compound_PropertySets" data-uid="Bodu.IO.Compound.PropertySets" class="text-break">Namespace Bodu.IO.Compound.PropertySets</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-io-compound.svg" alt="Bodu.IO.Compound"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.IO.Compound.PropertySets</strong> reads and writes OLE property sets — the code-paged, sectioned metadata streams (MS-OLEPS) a compound file stores under well-known names such as <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code>. It offers two levels: the raw model (<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a>, its <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySection.html">OlePropertySection</a> list, and the <code>PROPVARIANT</code>-shaped <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>) for any property set, and typed views (<a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a>, <a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a>) with matching builders for the two standard document-metadata sets.</p>
+<p>A property set is a header declaring a class identifier followed by one or two <strong>sections</strong>, each identified by a format identifier (FMTID) and holding properties keyed by an integer property identifier (PID). The first section carries the well-known properties; an optional second, user-defined section carries <strong>custom</strong> properties whose human-readable names live in the section's dictionary. Reading and writing are symmetric — the writer emits every value shape the reader parses, including vector (<code>VT_VECTOR</code>) values — so a set read from a real document can be modified and written back.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/io-compound/property-sets.html">Reading property sets</a></strong> — the typed views, the raw set, and writing sets back.</li>
+<li><strong><a href="../guides/io-compound/authoring-compound-files.html">Authoring compound files</a></strong> — embedding an authored set in a new container (pattern 5).</li>
+<li><strong><a href="../docs/io-compound/index.html">Bodu.IO.Compound introduction</a></strong> and <strong><a href="../docs/io-compound/concepts.html">core concepts</a></strong> — where the property-set streams sit in the container.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Raw model</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> — the whole set. Read with <code>Parse(ReadOnlyMemory&lt;byte&gt;)</code> or <code>Read(Stream)</code> (both throw <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> on a malformed set); author with <code>new OlePropertySet(formatId, classId, codePage)</code> and <code>AddSection</code>. <code>FormatId</code>, <code>ClassId</code>, <code>CodePage</code>, <code>Sections</code>; <code>TryGetValue(propertyId, out value)</code> and the indexer <code>[propertyId]</code> read the <strong>first</strong> section; <code>ToArray()</code>, <code>WriteTo(Stream)</code>, <code>WriteTo(IBufferWriter&lt;byte&gt;)</code> serialize.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySection.html">OlePropertySection</a> — one section. <code>new OlePropertySection(formatId, codePage)</code>; <code>FormatId</code>, <code>CodePage</code>, <code>Properties</code> (PID → value), <code>PropertyNames</code> (PID → name, the dictionary of a user-defined section); <code>TryGetValue</code> / indexer, <code>Set(propertyId, value)</code>, <code>SetName(propertyId, name)</code>, <code>Remove(propertyId)</code>, and <code>GetNamedProperties()</code> (name → value, joining the dictionary with the values).</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a> — one typed value, an immutable record: <code>Type</code> (<a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a>), <code>IsVector</code> (the value is an <code>object[]</code> of elements), and the boxed CLR <code>Value</code>. Factories <code>Create(int)</code>, <code>Create(short)</code>, <code>Create(long)</code>, <code>Create(double)</code>, <code>Create(bool)</code>, <code>Create(string, type)</code> (<code>AnsiString</code> by default; pass <code>UnicodeString</code> for UTF-16), <code>Create(DateTimeOffset)</code> (a FILETIME), and <code>CreateBlob(byte[])</code>. Accessors that return <code>null</code> on a type mismatch: <code>AsString()</code>, <code>AsInt32()</code>, <code>AsInt64()</code>, <code>AsBoolean()</code>, <code>AsDateTimeOffset()</code>, <code>AsTimeSpan()</code> (a FILETIME read as a duration, as the total-edit-time property uses it), <code>AsBytes()</code>, and the generic <code>GetValueOrDefault&lt;T&gt;()</code>.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a> — the <code>VT_*</code> codes: <code>Empty</code>, <code>Null</code>, <code>Int16</code>, <code>Int32</code>, <code>Float32</code>, <code>Float64</code>, <code>Currency</code>, <code>Date</code>, <code>BinaryString</code>, <code>Boolean</code>, <code>Variant</code>, <code>Int8</code>, <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>Int64</code>, <code>UInt64</code>, <code>AnsiString</code>, <code>UnicodeString</code>, <code>FileTime</code>, <code>Blob</code>, <code>ClipboardData</code>.</li>
+</ul>
+<p><strong>Typed views</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a> — the <code>\x05SummaryInformation</code> set (<code>StreamName</code>). <code>Read(Stream)</code> or <code>new SummaryInformation(propertySet)</code>; <code>PropertySet</code> exposes the raw set; the nullable fields <code>Title</code>, <code>Subject</code>, <code>Author</code>, <code>Keywords</code>, <code>Comments</code>, <code>Template</code>, <code>LastAuthor</code>, <code>RevisionNumber</code>, <code>TotalEditTime</code>, <code>LastPrinted</code>, <code>CreateTime</code>, <code>LastSaveTime</code>, <code>PageCount</code>, <code>WordCount</code>, <code>CharacterCount</code>, <code>ApplicationName</code>, <code>Security</code>. On a <code>CompoundFile</code>, <code>TryGetSummaryInformation</code> / <code>SetSummaryInformation</code> read and stage it at the root.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> — the <code>\x05DocumentSummaryInformation</code> set (<code>StreamName</code>). <code>Read(Stream)</code> or the constructor; <code>Category</code>, <code>PresentationTarget</code>, <code>Bytes</code>, <code>LineCount</code>, <code>ParagraphCount</code>, <code>SlideCount</code>, <code>NoteCount</code>, <code>HiddenCount</code>, <code>MultimediaClipCount</code>, <code>ScaleCrop</code>, <code>Manager</code>, <code>Company</code>, <code>LinksUpToDate</code>; and <code>CustomProperties</code> — the user-defined second section keyed by name, empty when absent. <code>TryGetDocumentSummaryInformation</code> / <code>SetDocumentSummaryInformation</code> are the <code>CompoundFile</code> counterparts.</li>
+</ul>
+<p><strong>Builders</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a> — settable <code>CodePage</code> (1252 by default), <code>Title</code>, <code>Subject</code>, <code>Author</code>, <code>Keywords</code>, <code>Comments</code>, <code>LastAuthor</code>, <code>RevisionNumber</code>, <code>ApplicationName</code>, <code>CreateTime</code>, <code>LastSaveTime</code>, <code>PageCount</code>, <code>WordCount</code>, <code>CharacterCount</code>; only assigned properties are written. <code>ToPropertySet()</code>, <code>ToArray()</code>, <code>WriteTo(Stream)</code>.</li>
+<li><a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a> — <code>CodePage</code>, <code>Category</code>, <code>Manager</code>, <code>Company</code>, <code>LineCount</code>, <code>ParagraphCount</code>, <code>SlideCount</code>, plus <code>AddCustomProperty(name, value)</code> for the user-defined section. <code>ToPropertySet()</code>, <code>ToArray()</code>, <code>WriteTo(Stream)</code>.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+// Read: the typed view, then drop to the raw set for a property it does not surface.
+using CompoundFile file = CompoundFile.OpenRead(&quot;report.doc&quot;);
+
+if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? info))
+{
+    Console.WriteLine($&quot;{info.Company} / {info.Category}&quot;);
+    foreach (KeyValuePair&lt;string, OlePropertyValue&gt; custom in info.CustomProperties)
+        Console.WriteLine($&quot;{custom.Key} = {custom.Value.Value} ({custom.Value.Type})&quot;);
+
+    OlePropertySet raw = info.PropertySet;
+    Console.WriteLine($&quot;{raw.Sections.Count} section(s), code page {raw.CodePage}&quot;);
+}
+</code></pre>
+<pre><code class="lang-csharp">using Bodu.IO.Compound;
+using Bodu.IO.Compound.PropertySets;
+
+// Write: the standard set through a builder, and a custom set through the raw model.
+var summary = new SummaryInformationBuilder
+{
+    Title = &quot;Quarterly report&quot;,
+    Author = &quot;Ada&quot;,
+    CreateTime = DateTimeOffset.UtcNow,
+};
+
+var formatId = new Guid(&quot;6c1f0b1e-2f43-4a89-9d2e-0f5b8a7c3d10&quot;);   // your application's FMTID
+var custom = new OlePropertySet(formatId, classId: Guid.Empty, codePage: 1252);
+var section = new OlePropertySection(formatId, codePage: 1252);
+section.Set(2, OlePropertyValue.Create(&quot;Northwind&quot;, OlePropertyType.UnicodeString));
+section.Set(3, OlePropertyValue.Create(42));
+section.Set(4, OlePropertyValue.CreateBlob(new byte[] { 1, 2, 3 }));
+section.SetName(2, &quot;Tenant&quot;);
+custom.AddSection(section);
+
+using (CompoundFile file = CompoundFile.Create(&quot;report.cfb&quot;))
+{
+    file.SetSummaryInformation(new SummaryInformation(summary.ToPropertySet()));
+    file.RootStorage.WritePropertySet(&quot;AppProperties&quot;, custom);
+    file.Commit();
+}
+
+// Round-trip the custom set from any storage.
+using CompoundFile reread = CompoundFile.OpenRead(&quot;report.cfb&quot;);
+if (reread.RootStorage.TryOpenPropertySet(&quot;AppProperties&quot;, out OlePropertySet? back))
+    Console.WriteLine(back.Sections[0].GetNamedProperties()[&quot;Tenant&quot;].AsString());   // &quot;Northwind&quot;
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Typed versus custom.</strong> The two typed views cover the standard PIDs of the two Office metadata sets and expose <code>PropertySet</code> for everything else; <code>DocumentSummaryInformation.CustomProperties</code> is the convenient view of the user-defined second section. For a non-standard set — any FMTID, any stream name — use the raw model with <code>CompoundStorage.TryOpenPropertySet</code> / <code>WritePropertySet</code>.</li>
+<li><strong>First-section lookups.</strong> <code>OlePropertySet.TryGetValue</code> and its indexer consult only the first section; address a second section through <code>Sections[1]</code>.</li>
+<li><strong>Strings and code pages.</strong> <code>Create(string)</code> produces an <code>AnsiString</code> encoded with the section's <code>CodePage</code> (1252 by default on the builders); pass <code>OlePropertyType.UnicodeString</code> to store UTF-16 instead.</li>
+<li><strong>FILETIME is dual-natured.</strong> A <code>FileTime</code> value is stored as its raw 100-nanosecond tick count, so it reads as a point in time (<code>AsDateTimeOffset</code>) or an elapsed duration (<code>AsTimeSpan</code>); <code>Create(DateTimeOffset)</code> writes the former.</li>
+<li><strong>Vectors round-trip by value.</strong> <code>IsVector</code> values surface as <code>object[]</code>. A variant vector's elements re-emit with a type word inferred from each element's CLR value, so the guarantee for variant elements is value identity rather than byte identity.</li>
+<li><strong>Errors.</strong> A malformed set throws <a class="xref" href="Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> from <code>Parse</code> / <code>Read</code> and from <code>TryOpenPropertySet</code> when a stream by that name exists but does not parse; <code>null</code> arguments throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a>.</li>
+<li><strong>See also:</strong> the <a href="../guides/io-compound/property-sets.html">property-sets guide</a>, the <a href="../guides/io-compound/authoring-compound-files.html">authoring guide</a>, and the container namespace <a class="xref" href="Bodu.IO.Compound.html">Bodu.IO.Compound</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a></h4>
+      <section><p>Provides a strongly-typed view over the document-summary-information property set (<code>\x05DocumentSummaryInformation</code>)
+of a compound file, including any user-defined custom properties.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.DocumentSummaryInformationBuilder.html">DocumentSummaryInformationBuilder</a></h4>
+      <section><p>Authors a document-summary-information property set, producing an <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> that can be embedded
+as the <code>\x05DocumentSummaryInformation</code> stream of a compound file, including an optional user-defined section
+of custom named properties.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySection.html">OlePropertySection</a></h4>
+      <section><p>Represents a single section of an OLE property set — a format-identified group of properties keyed by property
+identifier (PID).</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a></h4>
+      <section><p>Represents a parsed OLE property set — the managed counterpart of the COM <code>IPropertyStorage</code> interface —
+exposing its sections and the typed values they contain.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a></h4>
+      <section><p>Represents a single typed value read from an OLE property set, the managed counterpart of a COM <code>PROPVARIANT</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformation.html">SummaryInformation</a></h4>
+      <section><p>Provides a strongly-typed view over the standard summary-information property set (<code>\x05SummaryInformation</code>) of
+a compound file.</p>
+</section>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.SummaryInformationBuilder.html">SummaryInformationBuilder</a></h4>
+      <section><p>Authors a standard summary-information property set, producing an <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> that can be embedded
+as the <code>\x05SummaryInformation</code> stream of a compound file.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyType.html">OlePropertyType</a></h4>
+      <section><p>Identifies the scalar value type carried by an <a class="xref" href="Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a>, corresponding to the COM
+<code>VARENUM</code> (<code>VT_*</code>) constants used in OLE property sets.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

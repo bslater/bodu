@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Struct BiffWriter | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Struct BiffWriter | BODU ">
+    
+    <meta name="description" content="Provides a forward-only writer that emits BIFF5 or BIFF8 records to an . Raw records are written from an identifier and payload; the records the codec names are written from typed values in the layout the selected version requires.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Biff.BiffWriter">
+
+
+
+  <h1 id="Bodu_IO_Biff_BiffWriter" data-uid="Bodu.IO.Biff.BiffWriter" class="text-break">Struct BiffWriter</h1>
+  <div class="markdown level0 summary"><p>Provides a forward-only writer that emits BIFF5 or BIFF8 records to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a>. Raw records
+are written from an identifier and payload; the records the codec names are written from typed values in the layout
+the selected version requires.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.equals">ValueType.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.valuetype.tostring">ValueType.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Biff.html">Biff</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Biff.dll</h6>
+  <h5 id="Bodu_IO_Biff_BiffWriter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ref struct BiffWriter</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Biff_BiffWriter_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The writer is created with an explicit <a class="xref" href="Bodu.IO.Biff.BiffVersion.html">BiffVersion</a> and never mixes versions: a record that exists
+only in BIFF8 (the shared string table, <code>LABELSST</code>) is rejected under BIFF5, and text is encoded as Unicode
+under BIFF8 and in the configured code page under BIFF5. Every record is checked against the version's maximum
+payload length; <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteContinuedRecord.html#Bodu_IO_Biff_BiffWriter_WriteContinuedRecord_System_UInt16_System_ReadOnlySpan_System_Byte__">WriteContinuedRecord(ushort, scoped ReadOnlySpan&lt;byte&gt;)</a> and
+<a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteSst.html#Bodu_IO_Biff_BiffWriter_WriteSst_System_ReadOnlySpan_System_String__">WriteSst(scoped ReadOnlySpan&lt;string&gt;)</a> split oversized structures into <code>CONTINUE</code> records according to
+the format's rules.
+</p>
+<p>
+The writer serializes records, not workbooks: it does not order records, compute the sheet offsets a
+<code>BOUNDSHEET</code> record carries, or maintain a cell model. <a class="xref" href="Bodu.IO.Biff.BiffWriter.BytesCommitted.html#Bodu_IO_Biff_BiffWriter_BytesCommitted">BytesCommitted</a> reports the stream
+position so a caller assembling a workbook can compute those offsets. The only sequence rule enforced is that an
+<code>EOF</code> closes a substream a <code>BOF</code> opened.
+</p>
+<p>
+The writer is a <code>ref struct</code> whose mutable counters live in a shared heap object, so a copy taken
+by value continues the same stream.
+</p>
+<example>
+<pre><code class="lang-csharp">var output = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new BiffWriter(output, BiffVersion.Biff8);
+
+writer.WriteBof(BiffSubstreamType.Worksheet);
+writer.WriteNumber(row: 0, column: 0, xfIndex: 15, value: 42.5);
+writer.WriteLabel(row: 0, column: 1, xfIndex: 15, "inline text");
+writer.WriteEof();
+
+// output.WrittenSpan now holds a minimal worksheet substream.</code></pre>
+</example>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Biff_BiffVersion_" data-uid="Bodu.IO.Biff.BiffWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.IO.Biff.BiffVersion)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.-ctor.html#Bodu_IO_Biff_BiffWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Biff_BiffVersion_">BiffWriter(IBufferWriter&lt;byte&gt;, BiffVersion)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> struct emitting the specified version.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Biff_BiffWriterOptions_" data-uid="Bodu.IO.Biff.BiffWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.IO.Biff.BiffWriterOptions)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.-ctor.html#Bodu_IO_Biff_BiffWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_IO_Biff_BiffWriterOptions_">BiffWriter(IBufferWriter&lt;byte&gt;, BiffWriterOptions)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Biff.BiffWriter.html">BiffWriter</a> struct using the supplied options.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_BytesCommitted" data-uid="Bodu.IO.Biff.BiffWriter.BytesCommitted">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.BytesCommitted.html#Bodu_IO_Biff_BiffWriter_BytesCommitted">BytesCommitted</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of bytes written so far: the stream offset at which the next record's header will begin.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_CodePage" data-uid="Bodu.IO.Biff.BiffWriter.CodePage">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.CodePage.html#Bodu_IO_Biff_BiffWriter_CodePage">CodePage</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the code page used to encode text under BIFF5.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_MaxPayloadLength" data-uid="Bodu.IO.Biff.BiffWriter.MaxPayloadLength">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.MaxPayloadLength.html#Bodu_IO_Biff_BiffWriter_MaxPayloadLength">MaxPayloadLength</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the largest payload a single record may carry under the version being emitted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_OpenSubstreamDepth" data-uid="Bodu.IO.Biff.BiffWriter.OpenSubstreamDepth">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.OpenSubstreamDepth.html#Bodu_IO_Biff_BiffWriter_OpenSubstreamDepth">OpenSubstreamDepth</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of substreams opened by a <code>BOF</code> and not yet closed by an <code>EOF</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_Version" data-uid="Bodu.IO.Biff.BiffWriter.Version">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.Version.html#Bodu_IO_Biff_BiffWriter_Version">Version</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the BIFF version being emitted.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteBlank_System_Int32_System_Int32_System_UInt16_" data-uid="Bodu.IO.Biff.BiffWriter.WriteBlank(System.Int32,System.Int32,System.UInt16)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteBlank.html#Bodu_IO_Biff_BiffWriter_WriteBlank_System_Int32_System_Int32_System_UInt16_">WriteBlank(int, int, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BLANK</code> record: a formatted cell carrying no value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteBof_Bodu_IO_Biff_BiffSubstreamType_System_UInt16_System_UInt16_" data-uid="Bodu.IO.Biff.BiffWriter.WriteBof(Bodu.IO.Biff.BiffSubstreamType,System.UInt16,System.UInt16)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteBof.html#Bodu_IO_Biff_BiffWriter_WriteBof_Bodu_IO_Biff_BiffSubstreamType_System_UInt16_System_UInt16_">WriteBof(BiffSubstreamType, ushort, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BOF</code> record opening a substream of the specified kind, in the layout of the version being
+emitted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteBoolErr_System_Int32_System_Int32_System_UInt16_System_Byte_System_Boolean_" data-uid="Bodu.IO.Biff.BiffWriter.WriteBoolErr(System.Int32,System.Int32,System.UInt16,System.Byte,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteBoolErr.html#Bodu_IO_Biff_BiffWriter_WriteBoolErr_System_Int32_System_Int32_System_UInt16_System_Byte_System_Boolean_">WriteBoolErr(int, int, ushort, byte, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BOOLERR</code> record from its raw value byte and kind flag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteBoolean_System_Int32_System_Int32_System_UInt16_System_Boolean_" data-uid="Bodu.IO.Biff.BiffWriter.WriteBoolean(System.Int32,System.Int32,System.UInt16,System.Boolean)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteBoolean.html#Bodu_IO_Biff_BiffWriter_WriteBoolean_System_Int32_System_Int32_System_UInt16_System_Boolean_">WriteBoolean(int, int, ushort, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BOOLERR</code> record holding a boolean.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteBoundSheet_System_UInt32_Bodu_IO_Biff_BiffSheetState_Bodu_IO_Biff_BiffSheetType_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Biff.BiffWriter.WriteBoundSheet(System.UInt32,Bodu.IO.Biff.BiffSheetState,Bodu.IO.Biff.BiffSheetType,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteBoundSheet.html#Bodu_IO_Biff_BiffWriter_WriteBoundSheet_System_UInt32_Bodu_IO_Biff_BiffSheetState_Bodu_IO_Biff_BiffSheetType_System_ReadOnlySpan_System_Char__">WriteBoundSheet(uint, BiffSheetState, BiffSheetType, scoped ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BOUNDSHEET</code> record: one entry of the sheet directory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteCodePage_System_UInt16_" data-uid="Bodu.IO.Biff.BiffWriter.WriteCodePage(System.UInt16)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteCodePage.html#Bodu_IO_Biff_BiffWriter_WriteCodePage_System_UInt16_">WriteCodePage(ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>CODEPAGE</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteContinuedRecord_System_UInt16_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Biff.BiffWriter.WriteContinuedRecord(System.UInt16,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteContinuedRecord.html#Bodu_IO_Biff_BiffWriter_WriteContinuedRecord_System_UInt16_System_ReadOnlySpan_System_Byte__">WriteContinuedRecord(ushort, scoped ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a record whose payload may exceed the maximum record length, splitting the overflow into <code>CONTINUE</code>
+records at the maximum length.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteDateMode_System_Boolean_" data-uid="Bodu.IO.Biff.BiffWriter.WriteDateMode(System.Boolean)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteDateMode.html#Bodu_IO_Biff_BiffWriter_WriteDateMode_System_Boolean_">WriteDateMode(bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>DATEMODE</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteDimensions_Bodu_IO_Biff_BiffDimensionsRecord__" data-uid="Bodu.IO.Biff.BiffWriter.WriteDimensions(Bodu.IO.Biff.BiffDimensionsRecord@)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteDimensions.html#Bodu_IO_Biff_BiffWriter_WriteDimensions_Bodu_IO_Biff_BiffDimensionsRecord__">WriteDimensions(in BiffDimensionsRecord)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>DIMENSIONS</code> record in the layout of the version being emitted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteEof" data-uid="Bodu.IO.Biff.BiffWriter.WriteEof">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteEof.html#Bodu_IO_Biff_BiffWriter_WriteEof">WriteEof()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an <code>EOF</code> record closing the innermost open substream.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteError_System_Int32_System_Int32_System_UInt16_System_Byte_" data-uid="Bodu.IO.Biff.BiffWriter.WriteError(System.Int32,System.Int32,System.UInt16,System.Byte)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteError.html#Bodu_IO_Biff_BiffWriter_WriteError_System_Int32_System_Int32_System_UInt16_System_Byte_">WriteError(int, int, ushort, byte)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>BOOLERR</code> record holding an error code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteFont_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_Byte_System_Byte_System_Byte_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Biff.BiffWriter.WriteFont(System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.Byte,System.Byte,System.Byte,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteFont.html#Bodu_IO_Biff_BiffWriter_WriteFont_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_UInt16_System_Byte_System_Byte_System_Byte_System_ReadOnlySpan_System_Char__">WriteFont(ushort, ushort, ushort, ushort, ushort, byte, byte, byte, scoped ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>FONT</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteFormat_System_UInt16_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Biff.BiffWriter.WriteFormat(System.UInt16,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteFormat.html#Bodu_IO_Biff_BiffWriter_WriteFormat_System_UInt16_System_ReadOnlySpan_System_Char__">WriteFormat(ushort, scoped ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>FORMAT</code> record: a number-format index and its code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteFormula_System_Int32_System_Int32_System_UInt16_Bodu_IO_Biff_BiffCachedResultKind_System_Byte_System_ReadOnlySpan_System_Byte__System_UInt16_" data-uid="Bodu.IO.Biff.BiffWriter.WriteFormula(System.Int32,System.Int32,System.UInt16,Bodu.IO.Biff.BiffCachedResultKind,System.Byte,System.ReadOnlySpan{System.Byte},System.UInt16)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteFormula.html#Bodu_IO_Biff_BiffWriter_WriteFormula_System_Int32_System_Int32_System_UInt16_Bodu_IO_Biff_BiffCachedResultKind_System_Byte_System_ReadOnlySpan_System_Byte__System_UInt16_">WriteFormula(int, int, ushort, BiffCachedResultKind, byte, scoped ReadOnlySpan&lt;byte&gt;, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>FORMULA</code> record whose cached result is a string, boolean, error, or empty marker.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteFormula_System_Int32_System_Int32_System_UInt16_System_Double_System_ReadOnlySpan_System_Byte__System_UInt16_" data-uid="Bodu.IO.Biff.BiffWriter.WriteFormula(System.Int32,System.Int32,System.UInt16,System.Double,System.ReadOnlySpan{System.Byte},System.UInt16)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteFormula.html#Bodu_IO_Biff_BiffWriter_WriteFormula_System_Int32_System_Int32_System_UInt16_System_Double_System_ReadOnlySpan_System_Byte__System_UInt16_">WriteFormula(int, int, ushort, double, scoped ReadOnlySpan&lt;byte&gt;, ushort)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>FORMULA</code> record whose cached result is a number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteLabel_System_Int32_System_Int32_System_UInt16_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Biff.BiffWriter.WriteLabel(System.Int32,System.Int32,System.UInt16,System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteLabel.html#Bodu_IO_Biff_BiffWriter_WriteLabel_System_Int32_System_Int32_System_UInt16_System_ReadOnlySpan_System_Char__">WriteLabel(int, int, ushort, scoped ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>LABEL</code> record: an inline text cell.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteLabelSst_System_Int32_System_Int32_System_UInt16_System_UInt32_" data-uid="Bodu.IO.Biff.BiffWriter.WriteLabelSst(System.Int32,System.Int32,System.UInt16,System.UInt32)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteLabelSst.html#Bodu_IO_Biff_BiffWriter_WriteLabelSst_System_Int32_System_Int32_System_UInt16_System_UInt32_">WriteLabelSst(int, int, ushort, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>LABELSST</code> record: a text cell referencing the shared string table (BIFF8 only).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteMulBlank_System_Int32_System_Int32_System_ReadOnlySpan_System_UInt16__" data-uid="Bodu.IO.Biff.BiffWriter.WriteMulBlank(System.Int32,System.Int32,System.ReadOnlySpan{System.UInt16})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteMulBlank.html#Bodu_IO_Biff_BiffWriter_WriteMulBlank_System_Int32_System_Int32_System_ReadOnlySpan_System_UInt16__">WriteMulBlank(int, int, scoped ReadOnlySpan&lt;ushort&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>MULBLANK</code> record: a run of adjacent blank cells in one row.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteMulRk_System_Int32_System_Int32_System_ReadOnlySpan_Bodu_IO_Biff_BiffRkCell__" data-uid="Bodu.IO.Biff.BiffWriter.WriteMulRk(System.Int32,System.Int32,System.ReadOnlySpan{Bodu.IO.Biff.BiffRkCell})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteMulRk.html#Bodu_IO_Biff_BiffWriter_WriteMulRk_System_Int32_System_Int32_System_ReadOnlySpan_Bodu_IO_Biff_BiffRkCell__">WriteMulRk(int, int, scoped ReadOnlySpan&lt;BiffRkCell&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>MULRK</code> record: a run of adjacent RK-encoded cells in one row.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteNumber_System_Int32_System_Int32_System_UInt16_System_Double_" data-uid="Bodu.IO.Biff.BiffWriter.WriteNumber(System.Int32,System.Int32,System.UInt16,System.Double)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteNumber.html#Bodu_IO_Biff_BiffWriter_WriteNumber_System_Int32_System_Int32_System_UInt16_System_Double_">WriteNumber(int, int, ushort, double)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>NUMBER</code> record: a cell holding a double-precision value.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteRecord_Bodu_IO_Biff_BiffRecordType_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Biff.BiffWriter.WriteRecord(Bodu.IO.Biff.BiffRecordType,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteRecord.html#Bodu_IO_Biff_BiffWriter_WriteRecord_Bodu_IO_Biff_BiffRecordType_System_ReadOnlySpan_System_Byte__">WriteRecord(BiffRecordType, scoped ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a record of a named type from its payload.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteRecord_System_UInt16_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Biff.BiffWriter.WriteRecord(System.UInt16,System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteRecord.html#Bodu_IO_Biff_BiffWriter_WriteRecord_System_UInt16_System_ReadOnlySpan_System_Byte__">WriteRecord(ushort, scoped ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a record from its identifier and payload.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteRk_System_Int32_System_Int32_System_UInt16_System_UInt32_" data-uid="Bodu.IO.Biff.BiffWriter.WriteRk(System.Int32,System.Int32,System.UInt16,System.UInt32)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteRk.html#Bodu_IO_Biff_BiffWriter_WriteRk_System_Int32_System_Int32_System_UInt16_System_UInt32_">WriteRk(int, int, ushort, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an <code>RK</code> record: a cell holding an RK-encoded number.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteRow_Bodu_IO_Biff_BiffRowRecord__" data-uid="Bodu.IO.Biff.BiffWriter.WriteRow(Bodu.IO.Biff.BiffRowRecord@)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteRow.html#Bodu_IO_Biff_BiffWriter_WriteRow_Bodu_IO_Biff_BiffRowRecord__">WriteRow(in BiffRowRecord)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>ROW</code> record.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteSst_System_ReadOnlySpan_System_String__" data-uid="Bodu.IO.Biff.BiffWriter.WriteSst(System.ReadOnlySpan{System.String})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteSst.html#Bodu_IO_Biff_BiffWriter_WriteSst_System_ReadOnlySpan_System_String__">WriteSst(scoped ReadOnlySpan&lt;string&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a shared string table (<code>SST</code>) from the supplied unique strings, splitting it into <code>CONTINUE</code>
+records as the format requires (BIFF8 only).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteSst_System_ReadOnlySpan_System_String__System_UInt32_" data-uid="Bodu.IO.Biff.BiffWriter.WriteSst(System.ReadOnlySpan{System.String},System.UInt32)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteSst.html#Bodu_IO_Biff_BiffWriter_WriteSst_System_ReadOnlySpan_System_String__System_UInt32_">WriteSst(scoped ReadOnlySpan&lt;string&gt;, uint)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a shared string table (<code>SST</code>) from the supplied unique strings and reference count, splitting it
+into <code>CONTINUE</code> records as the format requires (BIFF8 only).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteString_System_ReadOnlySpan_System_Char__" data-uid="Bodu.IO.Biff.BiffWriter.WriteString(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteString.html#Bodu_IO_Biff_BiffWriter_WriteString_System_ReadOnlySpan_System_Char__">WriteString(scoped ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes a <code>STRING</code> record: the cached text result of the preceding formula.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Biff_BiffWriter_WriteXf_Bodu_IO_Biff_BiffXfRecord__" data-uid="Bodu.IO.Biff.BiffWriter.WriteXf(Bodu.IO.Biff.BiffXfRecord@)">
+          <a class="xref" href="Bodu.IO.Biff.BiffWriter.WriteXf.html#Bodu_IO_Biff_BiffWriter_WriteXf_Bodu_IO_Biff_BiffXfRecord__">WriteXf(in BiffXfRecord)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes an <code>XF</code> record carrying the font, format, and type fields; the alignment, border, and fill fields
+that follow are written as zeros.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

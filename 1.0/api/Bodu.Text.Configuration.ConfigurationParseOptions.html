@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ConfigurationParseOptions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ConfigurationParseOptions | BODU ">
+    
+    <meta name="description" content="Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length limits, and the key mapping options.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions">
+
+
+
+  <h1 id="Bodu_Text_Configuration_ConfigurationParseOptions" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions" class="text-break">Class ConfigurationParseOptions</h1>
+  <div class="markdown level0 summary"><p>Controls how a configuration document is parsed: comment handling, duplicate handling, diagnostic routing, length
+limits, and the key mapping options.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ConfigurationParseOptions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Configuration.html">Configuration</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Configuration.dll</h6>
+  <h5 id="Bodu_Text_Configuration_ConfigurationParseOptions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConfigurationParseOptions</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Configuration_ConfigurationParseOptions_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The options bag is a profile-grouped set of <code>init</code>-only properties. Start from a named preset that matches the
+hosting flavour — <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Bodu.html#Bodu_Text_Configuration_ConfigurationParseOptions_Bodu">Bodu</a> for the default Bodu Text Configuration semantics,
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.EditorConfigCompatible.html#Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible">EditorConfigCompatible</a> for strict EditorConfig parity, <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Strict.html#Bodu_Text_Configuration_ConfigurationParseOptions_Strict">Strict</a> for fail-fast behaviour,
+or <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Relaxed.html#Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed">Relaxed</a> for lenient parsing — and override the specific properties that need to differ. Use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.For.html#Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a> when the profile is data-driven (for example, read from configuration).
+</p>
+<p>
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.DiagnosticMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode">DiagnosticMode</a> is the most consequential knob. In <a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Throw">Throw</a>
+the reader raises <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseException.html">ConfigurationParseException</a> on the first recoverable error; in
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html#Bodu_Text_Configuration_ConfigurationDiagnosticMode_Collect">Collect</a> the parser drives through the document and reports every
+recoverable issue via the parse result's <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseResult.Diagnostics.html#Bodu_Text_Configuration_ConfigurationParseResult_Diagnostics">Diagnostics</a> list. Pair the latter
+with <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.ParseWithDiagnostics.html#Bodu_Text_Configuration_ConfigurationDocument_ParseWithDiagnostics_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">ParseWithDiagnostics(string, ConfigurationParseOptions?)</a>.
+</p>
+<p>
+Key shape is delegated to <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions">KeyOptions</a>. Sharing one configured <a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a>
+instance between parse and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a> keeps the parsed model and the resolved view's
+lookups consistent. Instances are safe to cache and share across threads because every property is <code>init</code>-only.
+</p>
+<example>
+<pre><code class="lang-csharp">// Strict structure, but collect every diagnostic instead of failing fast.
+var options = new ConfigurationParseOptions
+{
+    Profile        = ConfigurationProfile.Strict,
+    DiagnosticMode = ConfigurationDiagnosticMode.Collect,
+};
+
+ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
+foreach (ConfigurationDiagnostic d in result.Diagnostics)
+    Console.WriteLine(d);</code></pre>
+</example>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_AllowKeyOnlyProperties" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.AllowKeyOnlyProperties">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.AllowKeyOnlyProperties.html#Bodu_Text_Configuration_ConfigurationParseOptions_AllowKeyOnlyProperties">AllowKeyOnlyProperties</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether key-only properties (lines with no <code>=</code>) are permitted.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Bodu">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Bodu.html#Bodu_Text_Configuration_ConfigurationParseOptions_Bodu">Bodu</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the canonical option set for the default Bodu profile:
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationInlineCommentMode.html#Bodu_Text_Configuration_ConfigurationInlineCommentMode_WhitespaceIntroduced">WhitespaceIntroduced</a> inline comments,
+<a class="xref" href="Bodu.Text.Configuration.DuplicateKeyPolicy.html#Bodu_Text_Configuration_DuplicateKeyPolicy_LastWins">LastWins</a> duplicates, <a class="xref" href="Bodu.Text.Configuration.IniDuplicateSectionBehavior.html#Bodu_Text_Configuration_IniDuplicateSectionBehavior_Preserve">Preserve</a>
+sections, and throw-on-error diagnostics.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_DefaultEncoding" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DefaultEncoding">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.DefaultEncoding.html#Bodu_Text_Configuration_ConfigurationParseOptions_DefaultEncoding">DefaultEncoding</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the encoding to assume when loading a configuration document from a byte stream without a byte order mark.
+The default is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding.utf8">UTF8</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DiagnosticMode">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.DiagnosticMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_DiagnosticMode">DiagnosticMode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the document,
+or are silently ignored.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateKeyMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateKeyMode">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateKeyMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateKeyMode">DuplicateKeyMode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the duplicate key handling mode used by the reader.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateSectionMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateSectionMode">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.DuplicateSectionMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_DuplicateSectionMode">DuplicateSectionMode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the duplicate section handling mode used by the reader.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.EditorConfigCompatible">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.EditorConfigCompatible.html#Bodu_Text_Configuration_ConfigurationParseOptions_EditorConfigCompatible">EditorConfigCompatible</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile: inline comments disabled, duplicates
+last-wins, preserve duplicate sections, and throw-on-error diagnostics.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_InlineCommentMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.InlineCommentMode">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.InlineCommentMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_InlineCommentMode">InlineCommentMode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the inline comment handling mode used by the reader.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.KeyOptions.html#Bodu_Text_Configuration_ConfigurationParseOptions_KeyOptions">KeyOptions</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the key options used to split raw keys into segments and map them to the configuration key shape.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxKeyLength" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxKeyLength">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.MaxKeyLength.html#Bodu_Text_Configuration_ConfigurationParseOptions_MaxKeyLength">MaxKeyLength</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the maximum permitted length of an individual key, in characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_MaxLineLength" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.MaxLineLength">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.MaxLineLength.html#Bodu_Text_Configuration_ConfigurationParseOptions_MaxLineLength">MaxLineLength</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the maximum permitted length of an individual line, in characters.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Profile">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Profile.html#Bodu_Text_Configuration_ConfigurationParseOptions_Profile">Profile</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the behaviour profile this option bag represents. The default is <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_Bodu">Bodu</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Relaxed">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Relaxed.html#Bodu_Text_Configuration_ConfigurationParseOptions_Relaxed">Relaxed</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the canonical option set for permissive parsing of user-authored files: inline comments enabled, duplicates
+last-wins, preserve duplicate sections, and collect-on-error diagnostics.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_SectionHeaderMode" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.SectionHeaderMode">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.SectionHeaderMode.html#Bodu_Text_Configuration_ConfigurationParseOptions_SectionHeaderMode">SectionHeaderMode</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the section-header trailing-content handling mode used by the reader. The default,
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html#Bodu_Text_Configuration_ConfigurationSectionHeaderMode_Lenient">Lenient</a>, accepts trailing words silently and matches the
+historical Bodu profile; the EditorConfig-compatible and strict presets use
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationSectionHeaderMode.html#Bodu_Text_Configuration_ConfigurationSectionHeaderMode_Strict">Strict</a> instead.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_Strict" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.Strict">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.Strict.html#Bodu_Text_Configuration_ConfigurationParseOptions_Strict">Strict</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the canonical option set for strict, deterministic parsing intended for generated files: inline comments
+disabled, duplicate keys rejected, duplicate sections rejected, throw-on-error.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_TrimKeysAndValues" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.TrimKeysAndValues">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.TrimKeysAndValues.html#Bodu_Text_Configuration_ConfigurationParseOptions_TrimKeysAndValues">TrimKeysAndValues</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether keys and values should be trimmed of leading and trailing whitespace.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationParseOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
+          <a class="xref" href="Bodu.Text.Configuration.ConfigurationParseOptions.For.html#Bodu_Text_Configuration_ConfigurationParseOptions_For_Bodu_Text_Configuration_ConfigurationProfile_">For(ConfigurationProfile)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the canonical option set for the specified profile.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class BufferConverter | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class BufferConverter | BODU ">
+    
+    <meta name="description" content="Provides methods for copying and converting between raw byte arrays and arrays of unmanaged types.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.BufferConverter">
+
+
+
+  <h1 id="Bodu_Extensions_BufferConverter" data-uid="Bodu.Extensions.BufferConverter" class="text-break">Class BufferConverter</h1>
+  <div class="markdown level0 summary"><p>Provides methods for copying and converting between raw byte arrays and arrays of unmanaged types.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">BufferConverter</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_BufferConverter_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BufferConverter</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_BufferConverter_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The <a class="xref" href="Bodu.Extensions.BufferConverter.html">BufferConverter</a> class enables efficient reinterpretation of binary data as strongly-typed arrays
+without allocating additional memory or performing per-element conversions. Operations assume platform-native
+endianness.
+</p>
+<p>
+Only types that are <a href="https://learn.microsoft.com/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters#unmanaged-constraint">unmanaged</a> (e.g., primitives, structs without references) are supported.
+</p>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Byte[],System.Int32,``0[],System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_">CopyTo&lt;T&gt;(byte[], int, T[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies a specified number of elements of type <code class="typeparamref">T</code> from a byte array into a target array,
+starting at index zero in the target array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Byte[],System.Int32,``0[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_System_Int32_">CopyTo&lt;T&gt;(byte[], int, T[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies a specified number of elements of type <code class="typeparamref">T</code> from a byte array into a target array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Memory_System_Byte__System_Memory___0__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Memory{System.Byte},System.Memory{``0},System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1_System_Memory_System_Byte__System_Memory___0__System_Int32_">CopyTo&lt;T&gt;(Memory&lt;byte&gt;, Memory&lt;T&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies a specified number of elements of type <code class="typeparamref">T</code> from a memory region of bytes into a
+memory region of <code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_CopyTo__1_System_ReadOnlySpan_System_Byte__System_Span___0__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.ReadOnlySpan{System.Byte},System.Span{``0},System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1_System_ReadOnlySpan_System_Byte__System_Span___0__System_Int32_">CopyTo&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, Span&lt;T&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies a specified number of elements of type <code class="typeparamref">T</code> from a source span into a target span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(``0,System.Byte[],System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">CopyTo&lt;T&gt;(T, byte[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies a single value of type <code class="typeparamref">T</code> into a byte array at the specified index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_Read__1_System_Byte___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.Read``1(System.Byte[],System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.Read.html#Bodu_Extensions_BufferConverter_Read__1_System_Byte___System_Int32_">Read&lt;T&gt;(byte[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads a single element of type <code class="typeparamref">T</code> from a byte array at a specified index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_Read__1_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Extensions.BufferConverter.Read``1(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.Read.html#Bodu_Extensions_BufferConverter_Read__1_System_ReadOnlySpan_System_Byte__">Read&lt;T&gt;(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Reads a single element of type <code class="typeparamref">T</code> from a span of bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_SwapEndian_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.SwapEndian(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.SwapEndian.html#Bodu_Extensions_BufferConverter_SwapEndian_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32_">SwapEndian(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies data from a source span to a destination span, swapping the byte order (endianness) of each element of
+size <code class="paramref">elementSize</code> bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_SwapEndian__1_System_Span___0__" data-uid="Bodu.Extensions.BufferConverter.SwapEndian``1(System.Span{``0})">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.SwapEndian.html#Bodu_Extensions_BufferConverter_SwapEndian__1_System_Span___0__">SwapEndian&lt;T&gt;(Span&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Swaps the byte order (endianness) of each element of type <code class="typeparamref">T</code> in the specified span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_ToArray__1_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Extensions.BufferConverter.ToArray``1(System.Byte[],System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.ToArray.html#Bodu_Extensions_BufferConverter_ToArray__1_System_Byte___System_Int32_System_Int32_">ToArray&lt;T&gt;(byte[], int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a specified number of elements of type <code class="typeparamref">T</code> from a byte array into a new array of
+type <code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_BufferConverter_ToArray__1_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.ToArray``1(System.ReadOnlySpan{System.Byte},System.Int32)">
+          <a class="xref" href="Bodu.Extensions.BufferConverter.ToArray.html#Bodu_Extensions_BufferConverter_ToArray__1_System_ReadOnlySpan_System_Byte__System_Int32_">ToArray&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Converts a specified number of elements of type <code class="typeparamref">T</code> from a span of bytes into a new array
+of type <code class="typeparamref">T</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

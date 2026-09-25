@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class MultiCharCheckDigitAlgorithm | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class MultiCharCheckDigitAlgorithm | BODU ">
+    
+    <meta name="description" content="Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm">
+
+
+
+  <h1 id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm" class="text-break">Class MultiCharCheckDigitAlgorithm</h1>
+  <div class="markdown level0 summary"><p>Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check
+code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a></div>
+    <div class="level2"><span class="xref">MultiCharCheckDigitAlgorithm</span></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Iso7064Mod97_10.html">Iso7064Mod97_10</a></div>
+      <div class="level3"><a class="xref" href="Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.AlgorithmName.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_AlgorithmName">CheckValueAlgorithm.AlgorithmName</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Append.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">CheckValueAlgorithm.Append(ReadOnlySpan&lt;char&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Append.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_Char_">CheckValueAlgorithm.Append(char)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Reset.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">CheckValueAlgorithm.Reset()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.CheckDigits.html">CheckDigits</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class MultiCharCheckDigitAlgorithm : CheckValueAlgorithm</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Parallel in design to <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, this base generalizes the output from a single character
+to a run of <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.CheckLength.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength">CheckLength</a> decimal digits, and broadens the input to whichever subset of ASCII the
+concrete algorithm accepts via <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.InputAlphabet.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_InputAlphabet">InputAlphabet</a>.
+</p>
+<p>
+Like the rest of this family, the type is intentionally separate from the byte-stream oriented
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> and does <b>not</b> derive from it. A
+non-cryptographic hash produces a fixed-length opaque <em>byte</em> digest over arbitrary input; a check code
+performs error detection over a constrained ASCII text alphabet and emits a short run of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a> values.
+The families are kept distinct by design rather than unified under one base type.
+</p>
+<p>
+The streaming surface — <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Append.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Reset.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a>, and the two <code>GetCurrentCheckDigits</code> overloads — will nonetheless feel
+familiar to anyone who has used a hash algorithm: input is accumulated, the computation can be restarted, and
+reading the current check code is non-destructive and idempotent. That resemblance is incidental convenience, not a
+shared contract. Concrete implementations document their empty-body behavior.
+</p>
+<p>
+Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.
+</p>
+<div class="IMPORTANT"><h5>important</h5><p>Check-digit algorithms are error-detection primitives, <b>not</b> cryptographic functions.
+They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
+applications.</p></div>
+</div>
+  <h5 id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Use a concrete derivative through the abstract surface — IBAN emits a two-digit check.
+MultiCharCheckDigitAlgorithm algo = new Iban();
+algo.Append("GBWEST12345698765432");                 // country code + BBAN
+
+Span&lt;char&gt; check = stackalloc char[algo.CheckLength];
+algo.GetCurrentCheckDigits(check);                   // "82"</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.#ctor">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.-ctor.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm__ctor">MultiCharCheckDigitAlgorithm()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a> class.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.CheckLength">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.CheckLength.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_CheckLength">CheckLength</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the fixed number of decimal-digit characters emitted as the trailing check code.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_InputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.InputAlphabet">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.InputAlphabet.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_InputAlphabet">InputAlphabet</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the subset of ASCII from which this algorithm accepts body characters.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits">GetCurrentCheckDigits()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the current check code as a newly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits_System_Span_System_Char__" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits(System.Span{System.Char})">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckDigits.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckDigits_System_Span_System_Char__">GetCurrentCheckDigits(Span&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Writes the current check code into the supplied destination span.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckValue" data-uid="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckValue">
+          <a class="xref" href="Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.GetCurrentCheckValue.html#Bodu_IO_Hashing_CheckDigits_MultiCharCheckDigitAlgorithm_GetCurrentCheckValue">GetCurrentCheckValue()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the check value computed for the body absorbed since the last <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.Reset.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a> (or since
+construction) as a newly allocated string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a></div>
+      <div><a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

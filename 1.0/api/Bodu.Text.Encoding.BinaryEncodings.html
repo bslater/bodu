@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class BinaryEncodings | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class BinaryEncodings | BODU ">
+    
+    <meta name="description" content="Provides ready-made  instances for every variant supported by the library.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.BinaryEncodings">
+
+
+
+  <h1 id="Bodu_Text_Encoding_BinaryEncodings" data-uid="Bodu.Text.Encoding.BinaryEncodings" class="text-break">Class BinaryEncodings</h1>
+  <div class="markdown level0 summary"><p>Provides ready-made <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> instances for every variant supported by the library.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">BinaryEncodings</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_BinaryEncodings_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BinaryEncodings</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_BinaryEncodings_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Each property returns a thread-safe singleton bound to a specific variant. The pattern is analogous to
+<code>System.Text.Encoding.UTF8</code>: a constant instance that can be passed around, stored in configuration, or used
+through <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a> by code that must remain agnostic to the concrete encoding.
+</p>
+<p>
+Code that knows the encoding at compile time should prefer the static methods on <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>,
+<a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base32.html#Bodu_Text_Encoding_BinaryEncodings_Base32">Base32</a>, <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base64.html#Bodu_Text_Encoding_BinaryEncodings_Base64">Base64</a>, <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base58.html#Bodu_Text_Encoding_BinaryEncodings_Base58">Base58</a>, or <a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> — they are slightly
+faster (no virtual dispatch) and surface variant-specific options (line breaks, padding control, alternate variants)
+that the unified interface intentionally hides.
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_BinaryEncodings_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Pre-bound singleton — no allocation per call.
+IBinaryEncoding hex    = BinaryEncodings.Base16Upper;
+IBinaryEncoding jwt    = BinaryEncodings.Base64UrlSafe;
+IBinaryEncoding bitcoin = BinaryEncodings.Base58;
+
+string encoded = jwt.Encode(payload);
+byte[] decoded = jwt.Decode(encoded);
+
+// Look up by name — accepts canonical names and well-known aliases.
+IBinaryEncoding fromConfig = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
+IBinaryEncoding fromAlias  = BinaryEncodings.Get("hex");           // same as Base16Lower</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Ascii85" data-uid="Bodu.Text.Encoding.BinaryEncodings.Ascii85">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Ascii85.html#Bodu_Text_Encoding_BinaryEncodings_Ascii85">Ascii85</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the Adobe Ascii85 encoding (4-byte groups → 5 characters; <code>z</code> shortcut for all-zero groups; partial
+trailing groups permitted).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base16Lower" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base16Lower">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base16Lower.html#Bodu_Text_Encoding_BinaryEncodings_Base16Lower">Base16Lower</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the lower-case hexadecimal (Base16) encoding — the same canonical form
+<a class="xref" href="Bodu.Text.Encoding.Base16.Encode.html#Bodu_Text_Encoding_Base16_Encode_System_Byte___Bodu_Text_Encoding_BaseFormattingOptions_">Encode(byte[], BaseFormattingOptions)</a> produces with default
+options.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base16Upper" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base16Upper">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base16Upper.html#Bodu_Text_Encoding_BinaryEncodings_Base16Upper">Base16Upper</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the upper-case hexadecimal (Base16) encoding — matches RFC 4648 §8 canonical case and
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.convert.tohexstring#system-convert-tohexstring(system-byte())">ToHexString(byte[])</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base32" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base32">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base32.html#Bodu_Text_Encoding_BinaryEncodings_Base32">Base32</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 4648 §6 Standard Base32 encoding (alphabet <code>A-Z 2-7</code>, padded with <code>=</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base32Crockford" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base32Crockford">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base32Crockford.html#Bodu_Text_Encoding_BinaryEncodings_Base32Crockford">Base32Crockford</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the Crockford Base32 encoding (human-friendly alphabet excluding <code>I</code>, <code>L</code>, <code>O</code>, <code>U</code>; no
+padding by default).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base32Hex" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base32Hex">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base32Hex.html#Bodu_Text_Encoding_BinaryEncodings_Base32Hex">Base32Hex</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 4648 §7 base32hex (HexExtended) Base32 encoding (alphabet <code>0-9 A-V</code>, padded with <code>=</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base32ZBase32" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base32ZBase32">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base32ZBase32.html#Bodu_Text_Encoding_BinaryEncodings_Base32ZBase32">Base32ZBase32</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the z-base-32 encoding (human-oriented lowercase alphabet; no padding by default).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base45" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base45">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base45.html#Bodu_Text_Encoding_BinaryEncodings_Base45">Base45</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 9285 Base45 encoding — the compact alphanumeric encoding used to carry binary data inside a QR
+code's Alphanumeric mode (no padding).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base58" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base58">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base58.html#Bodu_Text_Encoding_BinaryEncodings_Base58">Base58</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
+derivative protocols.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base58Ripple" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base58Ripple">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base58Ripple.html#Bodu_Text_Encoding_BinaryEncodings_Base58Ripple">Base58Ripple</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the Ripple Base58 encoding (XRP ledger alphabet, a permutation of Bitcoin/Flickr).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base62" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base62">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base62.html#Bodu_Text_Encoding_BinaryEncodings_Base62">Base62</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the GMP-style Base62 encoding (alphabet <code>0-9 A-Z a-z</code>; leading zero bytes preserved as leading
+<code>0</code> characters).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base64" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base64">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base64.html#Bodu_Text_Encoding_BinaryEncodings_Base64">Base64</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 4648 §4 Standard Base64 encoding (alphabet <code>A-Z a-z 0-9 + /</code>, padded with <code>=</code>).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base64Mime" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base64Mime">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base64Mime.html#Bodu_Text_Encoding_BinaryEncodings_Base64Mime">Base64Mime</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 2045 MIME Base64 encoding (Standard alphabet with mandatory 76-character line wrapping).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base64UrlSafe" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base64UrlSafe">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base64UrlSafe.html#Bodu_Text_Encoding_BinaryEncodings_Base64UrlSafe">Base64UrlSafe</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the RFC 4648 §5 URL- and filename-safe Base64 encoding (alphabet <code>A-Z a-z 0-9 - _</code>; no padding by
+default).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Base85Git" data-uid="Bodu.Text.Encoding.BinaryEncodings.Base85Git">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Base85Git.html#Bodu_Text_Encoding_BinaryEncodings_Base85Git">Base85Git</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the Git-style Base85 encoding (Git binary-patch alphabet with compact, self-delimiting partial groups; no
+<code>z</code> shortcut or Adobe delimiters).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Z85" data-uid="Bodu.Text.Encoding.BinaryEncodings.Z85">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Z85.html#Bodu_Text_Encoding_BinaryEncodings_Z85">Z85</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the ZeroMQ Z85 encoding (RFC 32; shell-safe alphabet; input must be a multiple of four bytes).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_BinaryEncodings_Get_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodings.Get(System.String)">
+          <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.Get.html#Bodu_Text_Encoding_BinaryEncodings_Get_System_String_">Get(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned by
+each instance's <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.Name.html#Bodu_Text_Encoding_IBinaryEncoding_Name">Name</a>: <code>&quot;base16&quot;</code>, <code>&quot;base16-lower&quot;</code>,
+<code>&quot;base16-upper&quot;</code>, <code>&quot;base32&quot;</code>, <code>&quot;base32hex&quot;</code>, <code>&quot;base32-crockford&quot;</code>, <code>&quot;z-base-32&quot;</code>,
+<code>&quot;base45&quot;</code>, <code>&quot;base64&quot;</code>, <code>&quot;base64-urlsafe&quot;</code>, <code>&quot;base64-mime&quot;</code>, <code>&quot;base58&quot;</code>,
+<code>&quot;base58-ripple&quot;</code>, <code>&quot;base62&quot;</code>, <code>&quot;ascii85&quot;</code>, <code>&quot;base85-git&quot;</code>, <code>&quot;z85&quot;</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

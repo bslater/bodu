@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class Hotp | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class Hotp | BODU ">
+    
+    <meta name="description" content="Provides the HMAC-based One-Time Password (HOTP) algorithm defined in RFC 4226, generating and verifying the counter-based codes used for two-factor authentication. This class cannot be instantiated.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.Hotp">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_Hotp" data-uid="Bodu.Security.Cryptography.Hotp" class="text-break">Class Hotp</h1>
+  <div class="markdown level0 summary"><p>Provides the HMAC-based One-Time Password (HOTP) algorithm defined in RFC 4226, generating and verifying the
+counter-based codes used for two-factor authentication. This class cannot be instantiated.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">Hotp</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_Hotp_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Hotp</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_Hotp_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+HOTP derives a short decimal code from a shared secret and a monotonically increasing counter: it computes an HMAC
+of the 8-byte big-endian counter under the secret, applies the RFC 4226 §5.3 dynamic-truncation function to select a
+31-bit value from the MAC, and reduces that value modulo <code>10^digits</code> to produce a zero-padded decimal string.
+The counter is advanced by one on each successful authentication; <a class="xref" href="Bodu.Security.Cryptography.Totp.html">Totp</a> layers a time-derived counter
+on top of the same construction.
+</p>
+<p>
+The shared secret is supplied as raw key bytes. Authenticator applications conventionally exchange the secret as a
+Base32 string inside an <code>otpauth://</code> URI; decode it to bytes before calling these methods (for example with
+<code>Bodu.Text.Encoding.Base32</code>) — this type deliberately takes no dependency on a particular text encoding. RFC
+4226 recommends a secret of at least 128 bits, and 160 bits (the SHA-1 output length) for full strength.
+</p>
+<p>
+Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
+independently audited. Code verification uses
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicoperations.fixedtimeequals">FixedTimeEquals(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a> so that a
+valid-but-wrong code is not distinguishable from an invalid one by comparison timing.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_Hotp_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">byte[] secret = Base32.Decode("JBSWY3DPEHPK3PXP");  // from an otpauth:// URI
+
+string code = Hotp.GenerateCode(secret, counter: 0);          // "996554" (6 digits, SHA-1)
+bool ok = Hotp.VerifyCode(secret, userInput, counter: 0);</code></pre>
+
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Hotp_GenerateCode_System_ReadOnlySpan_System_Byte__System_Int64_System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_" data-uid="Bodu.Security.Cryptography.Hotp.GenerateCode(System.ReadOnlySpan{System.Byte},System.Int64,System.Int32,Bodu.Security.Cryptography.OtpHashAlgorithm)">
+          <a class="xref" href="Bodu.Security.Cryptography.Hotp.GenerateCode.html#Bodu_Security_Cryptography_Hotp_GenerateCode_System_ReadOnlySpan_System_Byte__System_Int64_System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_">GenerateCode(ReadOnlySpan&lt;byte&gt;, long, int, OtpHashAlgorithm)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Generates the RFC 4226 HOTP code for the specified secret and counter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Hotp_VerifyCode_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Char__System_Int64_System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_" data-uid="Bodu.Security.Cryptography.Hotp.VerifyCode(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Char},System.Int64,System.Int32,Bodu.Security.Cryptography.OtpHashAlgorithm)">
+          <a class="xref" href="Bodu.Security.Cryptography.Hotp.VerifyCode.html#Bodu_Security_Cryptography_Hotp_VerifyCode_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Char__System_Int64_System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_">VerifyCode(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;char&gt;, long, int, OtpHashAlgorithm)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies a candidate code against the RFC 4226 HOTP code for the specified secret and counter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_Hotp_VerifyCode_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Char__System_Int64_System_Int32_System_Int64__System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_" data-uid="Bodu.Security.Cryptography.Hotp.VerifyCode(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Char},System.Int64,System.Int32,System.Int64@,System.Int32,Bodu.Security.Cryptography.OtpHashAlgorithm)">
+          <a class="xref" href="Bodu.Security.Cryptography.Hotp.VerifyCode.html#Bodu_Security_Cryptography_Hotp_VerifyCode_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Char__System_Int64_System_Int32_System_Int64__System_Int32_Bodu_Security_Cryptography_OtpHashAlgorithm_">VerifyCode(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;char&gt;, long, int, out long, int, OtpHashAlgorithm)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Verifies a candidate code against a window of counter values, supporting the RFC 4226 §7.4 resynchronization
+strategy, and reports the counter that matched.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

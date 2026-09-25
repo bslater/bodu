@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Security.Cryptography | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Security.Cryptography | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography">
+
+  <h1 id="Bodu_Security_Cryptography" data-uid="Bodu.Security.Cryptography" class="text-break">Namespace Bodu.Security.Cryptography</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-crypto.svg" alt="Bodu.Security.Cryptography"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Security.Cryptography</strong> is a self-contained collection of managed block-cipher, stream-cipher, cipher-mode, padding, AEAD, keyed-hash, cryptographic-hash, Merkle-tree, public-key (Ed25519, X25519, ML-KEM, ML-DSA, HPKE), key-derivation (Argon2, scrypt, HKDF), and one-time-password implementations. The block ciphers, digests, MACs, and public-key schemes plug into the standard .NET cryptography contracts (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a>), plus Bodu's <a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> and <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>; the stream ciphers, AEAD transforms, ASCON XOFs, Merkle trees, KDFs, and OTP helpers use their own shapes.</p>
+<p>Reach for this library when you need a tweakable block cipher that isn't in the BCL (Threefish, wide-block Serpent), a managed implementation of an AES-finalist cipher (Camellia, Twofish, Serpent, Blowfish, Skipjack), a software stream cipher (ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit, HC-128), authenticated-encryption mode transforms for AES (GCM / CCM / OCB / EAX / SIV / GCM-SIV), the ASCON family (Hash256, HashA256, XOF128, CXOF128, AEAD128), a keyed hash for hash-table protection or message authentication (SipHash, Poly1305), a cryptographic digest with a specific design lineage (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), or the RFC 6962 Merkle tree with inclusion and consistency <strong>proofs</strong> for verifiable integrity over chunked input.</p>
+<p>For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, classic string hashes) see the companion <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> package, which is built on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a></strong> — install and minimal samples for ciphers, AEAD, keyed hashes, and digests.</li>
+<li><strong><a href="../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> — encryption basics, cipher modes, padding, composing primitives, stream ciphers, AEAD modes, keyed and cryptographic hashing, the ASCON family.</li>
+<li><strong><a href="../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a></strong> — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<p><strong>Standard block ciphers</strong> (<code>SymmetricAlgorithm</code> lifecycle)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> — 64-bit block, 80-bit key. <strong>Legacy / interoperability use only.</strong></li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> — 64-bit block, 32–448-bit key. Well-studied legacy algorithm with an expensive key schedule.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a> — 128-bit block, 128 / 192 / 256-bit key (RFC 3713; ISO/IEC 18033-3).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Twofish.html">Twofish</a> — 128-bit block, 128 / 192 / 256-bit key (Schneier et al., AES finalist).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> — 128-bit block, 128 / 192 / 256-bit key (Anderson / Biham / Knudsen, AES finalist; highest margin).</li>
+</ul>
+<p><strong>Tweakable block ciphers</strong> (<a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> lifecycle, adds <code>Tweak</code> / <code>GenerateTweak()</code>)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Threefish256.html">Threefish256</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a> — 256 / 512 / 1024-bit blocks and keys, all with a 128-bit tweak. Threefish-512 is the recommended general-purpose variant; Threefish-256 underpins Skein-256.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> — wide-block tweakable Serpent constructions (non-standard).</li>
+</ul>
+<p><strong>Stream ciphers</strong> (<a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> lifecycle — a standalone <code>IDisposable</code> base, not a <code>SymmetricAlgorithm</code>: <code>Key</code>, <code>Nonce</code> / <code>NonceSize</code>, <code>GenerateKey()</code> / <code>GenerateNonce()</code>, <code>CreateTransform()</code>, with <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> as aliases of the same self-inverse transform; no block mode, no padding. <strong>Confidentiality-only — no authentication</strong>)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a> — 256-bit key, 96-bit nonce, 32-bit counter (Bernstein; RFC 8439). The modern default.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a> — 256-bit key, 192-bit nonce; extended-nonce ChaCha20 via an HChaCha20 subkey, so the nonce can be chosen at random.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a> — 128- or 256-bit key, 64-bit nonce, 64-bit counter (Bernstein; eSTREAM).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a> — 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a> — 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a> — 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a> — the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.</li>
+</ul>
+<p><strong>Authenticated stream ciphers</strong> (Poly1305 AEAD over the extended-nonce stream ciphers)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> — abstract base for the stream-cipher AEAD constructions; provides span and <code>byte[]</code> <code>Encrypt</code> / <code>Decrypt</code> with associated data and in-place support.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> — XChaCha20-Poly1305 AEAD with associated data (wire <code>ciphertext ‖ tag</code>).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> — XSalsa20-Poly1305 AEAD (RFC 8439 framing) with associated data.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> — the NaCl / libsodium <code>secretbox</code> construction (no associated data), with <code>ToLibsodiumCombined</code> / <code>FromLibsodiumCombined</code> layout converters.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> — the AEAD and stream-AEAD transform contracts these constructions implement.</li>
+</ul>
+<p><strong>Cipher composition</strong> — block-cipher contracts, mode transforms, padding strategies</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> — block-cipher contract; implemented by every cipher and by <code>AesBlockCipher</code>.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> — an <code>IBlockCipher</code> adapter over the BCL <code>Aes</code> engine — the bridge between AES and the AEAD mode transforms.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipher.html">SerpentBlockCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.ThreefishBlockCipher.html">ThreefishBlockCipher</a> — the raw <code>IBlockCipher</code> engines (and the <a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipherBase.html">SerpentBlockCipherBase</a> base) that back the Serpent and Threefish <code>SymmetricAlgorithm</code> wrappers; use them directly to drive a mode transform without the full algorithm lifecycle.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> — compose any <code>IBlockCipher</code> with a mode and a padding strategy. The factory builds the five classic modes — <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, <code>CTR</code> — and throws <code>NotSupportedException</code> for every other <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> value (<code>CTS</code>, <code>XTS</code>, <code>OCB</code>, <code>EAX</code>, <code>SIV</code>), which are constructed directly as transforms instead.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> — the library's extended block-mode and padding enums (the latter mirrors <code>System.Security.Cryptography.PaddingMode</code> and adds <code>ISO7816_4</code>).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> — per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.</li>
+<li>Classic mode transforms: <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>.</li>
+<li>AEAD mode transforms: <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>.</li>
+<li>Padding: <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> with built-in strategies <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a>, selected via <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>.</li>
+</ul>
+<p><strong>Cryptographic hashes</strong> (<code>HashAlgorithm</code> lifecycle)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> — 128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.CubeHash.html">CubeHash</a> — Bernstein's SHA-3 competition candidate.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a>, <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> — Ralph Merkle's hash (<strong>cryptanalytically broken</strong>; included for research and interoperability).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> — 512-bit digest (ISO/IEC 10118-3) with an AES-derived round function.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> — modern high-throughput digests; BLAKE3 is parallel and tree-structured.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Skein256.html">Skein256</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein512.html">Skein512</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein1024.html">Skein1024</a> — Skein UBI-mode digests built on Threefish.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Shake.html">Shake</a> — Keccak XOF (FIPS 202).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> — the <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1">RFC 6962</a> Merkle Tree Hash over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> the caller supplies as a <code>Func&lt;HashAlgorithm&gt;</code>, as one immutable, stateless instance. Roots come from a list of entries (<code>ComputeRoot</code> / <code>ComputeRootOfLeafHashes</code>), from a stream, memory, or span cut into fixed-size blocks (<code>ComputeBlocked</code> / <code>ComputeRootOfBlocks</code>, with <code>…Async</code> twins), or incrementally through <code>CreateBlockAccumulator</code>. Proofs are <code>AuthenticationPath</code> and <code>ConsistencyProof</code> on the prover side and <code>VerifyInclusion</code>, <code>VerifyInclusionOfLeafHash</code>, <code>VerifyInclusionBound</code>, <code>VerifyBlockInclusion</code>, and <code>VerifyConsistency</code> on the verifier side; every verifier returns <code>false</code> for malformed input rather than throwing. <code>HashLeaf</code>, <code>HashNode</code>, and <code>BindRoot</code> expose the three domain-separated primitives. Parallel leaf hashing (<code>maxDegreeOfParallelism</code>) and a wider, explicitly non-RFC fan-out (<code>fanOut</code>, on which the proof members throw) are constructor options.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a> — the push-style counterpart for a writer: <code>Append</code> the bytes as they arrive, and <code>Finish</code> / <code>FinishBound</code> / <code>FinishComputation</code> produce the same root, length-bound root, or block computation that a single pass over the whole input would.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> — the result of a block-mode pass: the <code>Root</code>, the <code>InputLength</code> and <code>BlockSize</code> it was computed over, and the ordered <code>LeafHashes</code> an authentication path needs.</li>
+<li>The static <code>MerkleTree.BlockCount</code> / <code>BlockOffset</code> / <code>BlockLength</code> members — the block arithmetic as standalone 64-bit helpers for a verifier that holds only the numbers.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> (with its nested <code>Node</code> record) — an optional recorder every root computation accepts and fills with every leaf and internal node the fold produces, re-validated against a fresh <code>HashAlgorithm</code> with <code>Validate</code> and dumped one node per line with <code>WriteTo</code>.</li>
+</ul>
+<p><strong>Keyed hashes / MACs</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> — 64-bit PRF; collision-resistant for hash-table protection.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> — 128-bit SipHash variant for longer-output keyed hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> — one-time authenticator (RFC 8439); pairs with a stream cipher for an AEAD construction.</li>
+</ul>
+<p><strong>ASCON family — NIST SP 800-232</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> — 256-bit sponge digests (12- and 8-round variants), over the shared <a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a> base.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a> — variable-length / customizable XOF.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> — sponge-based authenticated encryption (no separate block cipher required).</li>
+</ul>
+<p><strong>Extensions and helpers</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.html">TweakableSymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> — ergonomic one-shot, async, and verify helpers.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> — <code>byte[]</code>-returning one-shot <code>Encrypt</code> / <code>Decrypt</code> over the stream ciphers and the Poly1305 stream-AEAD transforms.</li>
+<li>Secure-zeroization, padding guards, and cryptographically secure random generation ship as internal infrastructure; consumers reach them through the public surfaces (<code>GenerateKey()</code> / <code>GenerateIV()</code> / <code>GenerateNonce()</code> / <code>GenerateTweak()</code> on the algorithm types, <code>Nonce.Random</code>, <code>HashAlgorithmExtensions.VerifyHash</code>).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a>, <a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a>, <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>, <a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> — helper utilities for <code>HashAlgorithm</code> consumers and factory abstractions used by the keyed constructions.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> — abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).</li>
+</ul>
+<p><strong>Asymmetric — signatures, key agreement, KEM, HPKE</strong> (<code>AsymmetricAlgorithm</code> lifecycle over <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a>)</p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> — RFC 8032 EdDSA signatures; <a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a> — RFC 7748 key agreement. Both carry RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER and RFC 7468 PEM in addition to raw keys.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>) — FIPS 204 post-quantum signatures; <a class="xref" href="Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLKem.html">MLKem</a>) — FIPS 203 post-quantum KEM. Raw FIPS encodings only.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hpke.html">Hpke</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a> (with the <a class="xref" href="Bodu.Security.Cryptography.HpkeKem.html">HpkeKem</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeKdf.html">HpkeKdf</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeAead.html">HpkeAead</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeMode.html">HpkeMode</a> selectors) — RFC 9180 hybrid public-key encryption: one-shot <code>Hpke.Seal</code> / <code>Hpke.Open</code>, or the sender / receiver contexts for multi-message sessions and the exporter interface.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — signature-encoding selector and value type shared by the signature schemes.</li>
+</ul>
+<p><strong>Key derivation and password hashing</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a> (over <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a>, with <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a>) — RFC 9106 memory-hard password hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> (with <a class="xref" href="Bodu.Security.Cryptography.ScryptParameters.html">ScryptParameters</a>) — RFC 7914 memory-hard password hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> — RFC 5869 HMAC extract-and-expand (<code>Extract</code> / <code>Expand</code> / <code>DeriveKey</code>) for high-entropy input.</li>
+</ul>
+<p><strong>One-time passwords</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hotp.html">Hotp</a> (RFC 4226), <a class="xref" href="Bodu.Security.Cryptography.Totp.html">Totp</a> (RFC 6238) — static <code>GenerateCode</code> / <code>VerifyCode</code> helpers; <a class="xref" href="Bodu.Security.Cryptography.OtpHashAlgorithm.html">OtpHashAlgorithm</a> selects SHA-1 / SHA-256 / SHA-512.</li>
+</ul>
+<p><strong>Value types</strong></p>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.HashValue.html">HashValue</a>, <a class="xref" href="Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a>, <a class="xref" href="Bodu.Security.Cryptography.Nonce.html">Nonce</a>, <a class="xref" href="Bodu.Security.Cryptography.Salt.html">Salt</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — immutable <code>readonly struct</code> wrappers for a digest, an AEAD tag, a nonce, a KDF salt, and a signature, with strict hex parsing / formatting and fixed-time equality where it matters.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a> — a disposable holder for sensitive byte material that pins its buffer and zeroes it on disposal.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using System.Text;
+using Bodu.Security.Cryptography;
+
+// Keyed hash for a hash-table protected against collision attacks.
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+byte[] key  = RandomNumberGenerator.GetBytes(16);
+
+using var sip = new SipHash64 { Key = key };
+ulong slot = BitConverter.ToUInt64(sip.ComputeHash(data));
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Security caveats.</strong>
+<ul>
+<li><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> is provided for historical and research purposes. It has an 80-bit key and a 64-bit block; <strong>do not use it for new systems</strong>.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> is well-studied but dated; prefer Threefish, AES, or Camellia / Twofish / Serpent for new designs — its 64-bit block limits the safe encryption volume per key.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> and <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> are cryptanalytically broken — interop / research only.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> is keyed and collision-resistant but short-output; use it for hash-table protection and message authentication over small inputs, not as a drop-in for a MAC like HMAC-SHA256.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> is a classic cryptographic hash. Prefer BCL-provided SHA-2 / SHA-3 for new designs; use Tiger for interoperability with existing Tiger-based systems.</li>
+<li>The stream ciphers (<a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a>, <a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a>) are <strong>raw and unauthenticated</strong>. A <code>(key, nonce)</code> pair must encrypt at most one message — reuse reveals the XOR of the plaintexts — and ciphertext integrity is not protected. Pair them with a MAC (encrypt-then-MAC with <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>) or prefer an AEAD construction. A 64-bit nonce (<code>Salsa20</code>, <code>Rabbit</code>) is too short to choose randomly; use a counter, or an extended-nonce variant (<code>XChaCha20</code> / <code>XSalsa20</code>).</li>
+<li>For error-detection and hash-table distribution (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, and the classic short hashes) use the non-cryptographic types in <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a>.</li>
+</ul>
+</li>
+<li><strong>Thread safety.</strong> Instances of the cipher and hash types follow the standard .NET convention: <strong>not thread-safe</strong> during a single <code>TransformBlock</code> / <code>ComputeHash</code> / encryption session. Create one instance per logical operation, or synchronize externally. AEAD mode transforms (<code>GcmModeTransform</code>, etc.) are <strong>single-use per message</strong> — construct a fresh transform on the encrypt side and another on the decrypt side.</li>
+<li><strong>Allocation discipline.</strong> Hot-path types allocate their working buffers in the constructor and reuse them, and every algorithm zeroes its secret material (keys, nonces, tweaks, sponge state) at disposal time — always <code>using</code> an instance.</li>
+<li><strong>Determinism and portability.</strong> All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.</li>
+<li><strong>See also:</strong> <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> for CRC, Fletcher, Adler, and other non-cryptographic hashes; the <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a>, the <a href="../guides/cryptography/encryption-basics.html">encryption basics guide</a>, the <a href="../guides/cryptography/aead-modes.html">AEAD modes guide</a>, and the <a href="../guides/cryptography/hashing.html">hashing guide</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></h4>
+      <section><p>Exposes the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.aes">Aes</a> algorithm as an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing the single-block primitive
+that the authenticated-mode transforms (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>,
+<a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>) require.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a></h4>
+      <section><p>Implements the ANSI X.923 padding scheme, which appends <code>N - 1</code> bytes of value <code>0x00</code> followed by a
+trailing byte holding the padding length <code>N</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a></h4>
+      <section><p>Provides the shared base for the Argon2 password-hashing and key-derivation functions defined by RFC 9106. The
+concrete variants are <a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a>, and <a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a></h4>
+      <section><p>Specifies the cost and auxiliary inputs for an Argon2 key-derivation or password-hashing operation, as defined by
+RFC 9106.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a></h4>
+      <section><p>Computes the Argon2d password-hashing and key-derivation function (RFC 9106) — the variant that uses data-dependent
+memory addressing, maximizing time-memory trade-off resistance at the cost of exposing memory access patterns to
+side-channel observation. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a></h4>
+      <section><p>Computes the Argon2i password-hashing and key-derivation function (RFC 9106) — the variant that uses
+data-independent memory addressing, making it resistant to side-channel timing attacks. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a></h4>
+      <section><p>Computes the Argon2id password-hashing and key-derivation function (RFC 9106) — the hybrid variant that uses
+data-independent addressing for the first half of the first pass and data-dependent addressing thereafter. This is
+the RECOMMENDED default for password hashing. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a></h4>
+      <section><p>Provides authenticated encryption with associated data (AEAD) using the <code>Ascon-AEAD128</code> algorithm as defined in
+NIST SP 800-232. Accepts a 128-bit key and a 128-bit nonce and produces a 128-bit authentication tag. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></h4>
+      <section><p>Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as
+defined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from
+<a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a></h4>
+      <section><p>Abstract base class for ASCON cryptographic hash algorithms as defined in NIST SP 800-232. Implements the shared
+sponge construction, padding, and Ascon-p permutation used by all fixed-output ASCON hash variants.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></h4>
+      <section><p>Computes a hash using the <code>ASCON-HASH256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces
+a 256-bit (32-byte) digest using the Ascon-p12 permutation over a 320-bit sponge state. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></h4>
+      <section><p>Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces
+a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.
+This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a></h4>
+      <section><p>Computes a variable-length output using the <code>Ascon-XOF128</code> extendable output function (XOF) as defined in NIST
+SP 800-232. Uses the Ascon-p12 permutation for every absorption and squeeze round over a 320-bit sponge state. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AsconXof-1.html">AsconXof&lt;T&gt;</a></h4>
+      <section><p>Abstract base class for ASCON extendable output functions (XOFs) as defined in NIST SP 800-232. Implements the
+shared sponge construction, residual-buffer management, padding, and Ascon-p permutation used by
+<a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> and <a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a></h4>
+      <section><p>AVX-512 vectorised implementation of the BLAKE2b compression function. The 16-element working vector <code>v</code> is
+laid out as four <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> rows (<code>a, b, c, d</code>), so the four parallel <code>G</code> calls in each
+column step collapse into a single SIMD <code>G</code> operation. The diagonal step reuses the same kernel by shifting the
+<code>b, c, d</code> rows by 1/2/3 lanes via <code>VPERMQ</code>, running <code>G</code>, then shifting back — the canonical
+ChaCha-style vectorisation pattern Blake2 was designed around.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a></h4>
+      <section><p>AVX-512 vectorised implementation of the BLAKE2s compression function. The 16-element working vector <code>v</code> is
+laid out as four <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> rows (<code>a, b, c, d</code>), so the four parallel <code>G</code> calls in each
+column step collapse into a single SIMD <code>G</code> operation. The diagonal step reuses the same kernel by shifting the
+<code>b, c, d</code> rows by 1/2/3 lanes via <code>PSHUFD</code>, running <code>G</code>, then shifting back — the canonical
+ChaCha-style vectorisation pattern Blake2 was designed around, mirroring the BLAKE2b path with 32-bit lanes in
+128-bit registers.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a></h4>
+      <section><p>AVX-512 vectorised implementation of the BLAKE3 compression function. The 16-word working state is laid out as four
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> rows (<code>a, b, c, d</code>), so the four parallel <code>G</code> calls in each column step
+collapse into a single SIMD <code>G</code> operation. The diagonal step reuses the same kernel by shifting the
+<code>b, c, d</code> rows by 1/2/3 lanes via <code>PSHUFD</code>, running <code>G</code>, then shifting back — the canonical
+ChaCha-style vectorisation pattern that BLAKE3 inherits from BLAKE2.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> instances that wrap an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> with a standard
+chaining mode.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a></h4>
+      <section><p>Provides a base implementation of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> for block cipher algorithms that combine an
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> engine with an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a> and an
+<a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a></h4>
+      <section><p>Base class for hash algorithms that consume input in fixed-size blocks and pad the final partial block before
+processing it (the Merkle–Damgård shape). Handles block alignment and final-block padding orchestration
+on behalf of derived implementations; the residual buffer, running byte total, and disposal latch are inherited from
+<a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a></h4>
+      <section><p>Provides a managed implementation of the Blowfish symmetric block cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.BlowfishBlockCipher.html">BlowfishBlockCipher</a></h4>
+      <section><p>Provides the core Blowfish block cipher engine, implementing low-level encryption and decryption of individual
+64-bit blocks.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a></h4>
+      <section><p>Provides the shared infrastructure for hash algorithms that consume input in fixed-size blocks. Owns the residual
+buffer, the running total of bytes consumed, the disposal latch, and the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashcore#system-security-cryptography-hashalgorithm-hashcore(system-byte()-system-int32-system-int32)">HashCore(byte[], int, int)</a> to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashcore#system-security-cryptography-hashalgorithm-hashcore(system-readonlyspan((system-byte)))">HashCore(ReadOnlySpan&lt;byte&gt;)</a>
+delegation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a></h4>
+      <section><p>Provides a managed implementation of the Camellia symmetric block cipher, exposing the
+<a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.html">CamelliaBlockCipher</a> engine through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> framework. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CamelliaBlockCipher.html">CamelliaBlockCipher</a></h4>
+      <section><p>Provides the core Camellia block cipher engine, implementing low-level encryption and decryption of individual
+128-bit blocks. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a></h4>
+      <section><p>Applies the Cipher Block Chaining (CBC) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a></h4>
+      <section><p>Applies Counter with CBC-MAC (CCM) mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing authenticated
+encryption with associated data (AEAD) per NIST SP 800-38C.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a></h4>
+      <section><p>Applies the Cipher Feedback (CFB) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, turning it into
+a self-synchronizing stream cipher.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a></h4>
+      <section><p>Provides a managed implementation of the raw ChaCha20 stream cipher defined by RFC 8439. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a></h4>
+      <section><p>Applies Counter (CTR) mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, turning it into a synchronous stream
+cipher. The counter is incremented in big-endian order (rightmost byte first), matching NIST SP 800-38A Section 6.5.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a></h4>
+      <section><p>Applies Ciphertext Stealing (CTS) over CBC mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, allowing encryption of
+inputs whose length is not a multiple of the block size without requiring padding.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CubeHash.html">CubeHash</a></h4>
+      <section><p>Computes a hash using the <code>CubeHash</code> permutation-based hash algorithm designed by Daniel J. Bernstein and
+submitted to the NIST SHA-3 competition. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a></h4>
+      <section><p>Base class for hash algorithms that defer compression of the final full block until
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> so that a finalization flag may be raised on the last compression call (the
+Blake-family shape). Owns the defer-on-full-block buffering loop and the zero-pad-then-finalize orchestration; the
+residual buffer, running byte counter, and disposal latch are inherited from
+<a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a></h4>
+      <section><p>Provides a delegate-based implementation of <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a> for constructing hash algorithm
+instances.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a></h4>
+      <section><p>Applies EAX mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing two-pass authenticated encryption with
+associated data (AEAD) per Bellare, Rogaway and Wagner (FSE 2004).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a></h4>
+      <section><p>Applies the Electronic Codebook (ECB) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, encrypting
+or decrypting each block independently with no chaining.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Ed25519.html">Ed25519</a></h4>
+      <section><p>Provides a managed implementation of the Ed25519 digital signature algorithm (PureEdDSA over edwards25519) as
+defined in RFC 8032, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a></h4>
+      <section><p>Serves as the base class for the library's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> implementations that support the
+extended cipher-mode and padding catalogues (<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) beyond
+the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> enumerations.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a></h4>
+      <section><p>Applies Galois/Counter Mode (GCM) to a 128-bit block cipher, providing single-pass authenticated encryption with
+associated data (AEAD) per NIST SP 800-38D.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a></h4>
+      <section><p>Applies GCM-SIV mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing nonce-misuse resistant authenticated
+encryption per RFC 8452.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a></h4>
+      <section><p>Provides static factory helpers for constructing delegate-based implementations of
+<a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a></h4>
+      <section><p>Provides high-performance utility methods for one-shot hashing using factory-created <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>
+instances.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a></h4>
+      <section><p>Provides a managed implementation of the HC-128 stream cipher specified by Hongjun Wu. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Hkdf.html">Hkdf</a></h4>
+      <section><p>Provides the HMAC-based Extract-and-Expand Key Derivation Function (HKDF) defined in RFC 5869, exposing the
+<code>Extract</code>, <code>Expand</code>, and combined <code>DeriveKey</code> stages over the SHA-1 and SHA-2 family of hash
+algorithms. This class cannot be instantiated.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Hotp.html">Hotp</a></h4>
+      <section><p>Provides the HMAC-based One-Time Password (HOTP) algorithm defined in RFC 4226, generating and verifying the
+counter-based codes used for two-factor authentication. This class cannot be instantiated.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Hpke.html">Hpke</a></h4>
+      <section><p>Provides the single-shot Hybrid Public Key Encryption (HPKE) operations of RFC 9180 §6, encrypting or decrypting one
+message to or from a public key in a single call. This class cannot be instantiated.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a></h4>
+      <section><p>Represents the recipient side of an HPKE exchange (RFC 9180 §5.2): a session that reconstructs the shared secret
+from an encapsulated key and then opens any number of sealed messages and exports any number of secrets under that
+secret. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a></h4>
+      <section><p>Represents the sender side of an HPKE exchange (RFC 9180 §5.2): a session that encapsulates a shared secret to a
+recipient once and then seals any number of messages and exports any number of secrets under that secret. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a></h4>
+      <section><p>Describes a complete HPKE cipher suite — the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation
+Function (KDF), and an Authenticated Encryption with Associated Data (AEAD) function — and exposes the derived
+element lengths defined by RFC 9180. Instances are immutable.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a></h4>
+      <section><p>Implements the ISO 10126 padding scheme, which appends <code>N - 1</code> cryptographically random bytes followed by a
+trailing byte holding the padding length <code>N</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a></h4>
+      <section><p>Implements the ISO/IEC 7816-4 padding scheme (also known as &quot;one-and-zeros&quot; or bit padding). The first pad byte is
+<code>0x80</code> and remaining pad bytes are <code>0x00</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a></h4>
+      <section><p>Represents the abstract base class for hash algorithms that require a secret key and process data in fixed-size
+blocks.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a></h4>
+      <section><p>Represents the abstract base class for hash algorithms that support an optional secret key and defer compression of
+the final block until <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> is called, following the BLAKE-family
+deferred-finalization pattern.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a></h4>
+      <section><p>Provides the family base class for the ML-DSA module-lattice digital signature algorithm standardized by NIST FIPS
+204, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. Use the sealed
+<a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, or <a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> parameter sets.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a></h4>
+      <section><p>Provides the ML-DSA-44 parameter set of NIST FIPS 204 (matrix 4×4, NIST security category 2). This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></h4>
+      <section><p>Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 — the most widely
+recommended general-purpose set). This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a></h4>
+      <section><p>Provides the ML-DSA-87 parameter set of NIST FIPS 204 (matrix 8×7, NIST security category 5). This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLKem.html">MLKem</a></h4>
+      <section><p>Provides the family base class for the ML-KEM module-lattice key-encapsulation mechanism standardized by NIST FIPS
+203, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. Use the sealed
+<a class="xref" href="Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, or <a class="xref" href="Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> parameter sets.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a></h4>
+      <section><p>Provides the ML-KEM-1024 parameter set of NIST FIPS 203 (module rank 4, NIST security category 5, comparable to
+AES-256). This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLKem512.html">MLKem512</a></h4>
+      <section><p>Provides the ML-KEM-512 parameter set of NIST FIPS 203 (module rank 2, NIST security category 1, comparable to
+AES-128). This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a></h4>
+      <section><p>Provides the ML-KEM-768 parameter set of NIST FIPS 203 (module rank 3, NIST security category 3, comparable to
+AES-192) — the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a></h4>
+      <section><p>Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same
+calls that already feed a flat digest — without a second pass over the input.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a></h4>
+      <section><p>Represents the result of one block-mode Merkle computation: the tree's root, the shape of the input it was taken
+over, and the ordered leaf hashes an authentication path is built from.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a></h4>
+      <section><p>The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the
+offset and length of each one.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a></h4>
+      <section><p>Captures the complete node-by-node trace of a Merkle computation, and provides structural inspection and independent
+hash re-validation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.Node.html">MerkleTreeDiagnostics.Node</a></h4>
+      <section><p>Represents a single node captured during a Merkle tree computation, recording the child hashes used as input and
+the hash value produced as output.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a></h4>
+      <section><p>Represents a pass-through padding strategy that adds and removes no bytes, requiring the caller to provide data
+whose length is already a multiple of the cipher block size.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a></h4>
+      <section><p>Applies Offset CodeBook mode version 3 (OCB3) to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing single-pass
+authenticated encryption with associated data per RFC 7253.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a></h4>
+      <section><p>Applies the Output Feedback (OFB) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, turning it into
+a synchronous stream cipher in which encryption and decryption are identical operations.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> instances for the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> values and for the
+extended <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> values.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a></h4>
+      <section><p>Implements the PKCS#7 padding scheme (RFC 5652), which appends <code>N</code> bytes of value <code>N</code> to align the input
+to the cipher block size.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a></h4>
+      <section><p>Computes the message authentication code (MAC) for the input data using the <code>Poly1305</code> algorithm. This
+implementation enforces one-time key usage and produces a fixed 16-byte (128-bit) tag from a 256-bit key, as
+specified in RFC 8439.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a></h4>
+      <section><p>Provides the common <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> implementation shared by the extended-nonce Poly1305 AEAD
+constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
+material. Derived types supply the keystream engine and, when required, an alternative framing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a></h4>
+      <section><p>Provides a managed implementation of the Rabbit stream cipher specified by RFC 4503. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a></h4>
+      <section><p>Serves as the base class for the library's raw-key asymmetric algorithms (X25519, Ed25519, ML-KEM, ML-DSA),
+centralizing the shared key-material lifecycle: ownership of the current <span class="xref">Bodu.Security.Cryptography.AsymmetricKeyMaterial</span>,
+zeroizing replacement, dispose-time clearing, and the disposed-state guard.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a></h4>
+      <section><p>Provides a managed implementation of the Salsa20 stream cipher specified by Daniel J. Bernstein. This class cannot
+be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a></h4>
+      <section><p>Computes the scrypt sequential memory-hard password-hashing and key-derivation function defined by RFC 7914. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.ScryptParameters.html">ScryptParameters</a></h4>
+      <section><p>Specifies the cost parameters for a scrypt key-derivation or password-hashing operation, as defined by RFC 7914.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a></h4>
+      <section><p>Provides a disposable holder for sensitive byte material that pins its buffer and zeroes it on disposal.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent.html">Serpent</a></h4>
+      <section><p>Serves as the abstract base class for the non-standard wide-block tweakable Serpent variants (
+<a class="xref" href="Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, and <a class="xref" href="Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a>).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a></h4>
+      <section><p>Provides a managed implementation of the non-standard wide-block tweakable <code>Serpent-1024</code> symmetric block
+cipher, which operates on 1024-bit (128-byte) blocks using a 1024-bit key and a 128-bit tweak. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent1024Cipher.html">Serpent1024Cipher</a></h4>
+      <section><p>Implements the wide-block tweakable <code>Serpent-1024</code> block cipher variant, which operates on 1024-bit (128-byte)
+blocks using a 1024-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent128.html">Serpent128</a></h4>
+      <section><p>Provides a managed implementation of the canonical <code>Serpent</code> symmetric block cipher, which operates on 128-bit
+(16-byte) blocks using a 128, 192, or 256-bit key. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent128Cipher.html">Serpent128Cipher</a></h4>
+      <section><p>Implements the canonical <code>Serpent</code> block cipher, which operates on 128-bit (16-byte) blocks using a 128, 192,
+or 256-bit key.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent256.html">Serpent256</a></h4>
+      <section><p>Provides a managed implementation of the non-standard wide-block tweakable <code>Serpent-256</code> symmetric block
+cipher, which operates on 256-bit (32-byte) blocks using a 256-bit key and a 128-bit tweak. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent256Cipher.html">Serpent256Cipher</a></h4>
+      <section><p>Implements the wide-block tweakable <code>Serpent-256</code> block cipher variant, which operates on 256-bit (32-byte)
+blocks using a 256-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent512.html">Serpent512</a></h4>
+      <section><p>Provides a managed implementation of the non-standard wide-block tweakable <code>Serpent-512</code> symmetric block
+cipher, which operates on 512-bit (64-byte) blocks using a 512-bit key and a 128-bit tweak. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Serpent512Cipher.html">Serpent512Cipher</a></h4>
+      <section><p>Implements the wide-block tweakable <code>Serpent-512</code> block cipher variant, which operates on 512-bit (64-byte)
+blocks using a 512-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipher.html">SerpentBlockCipher</a></h4>
+      <section><p>Serves as the abstract base class for the non-standard wide-block tweakable Serpent engines (
+<a class="xref" href="Bodu.Security.Cryptography.Serpent256Cipher.html">Serpent256Cipher</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent512Cipher.html">Serpent512Cipher</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent1024Cipher.html">Serpent1024Cipher</a>).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipherBase.html">SerpentBlockCipherBase</a></h4>
+      <section><p>Serves as the abstract base class for managed Serpent block cipher engines, providing the shared S-boxes, bitsliced
+linear transform, prekey recurrence, and resource-disposal plumbing used by the standard <code>Serpent-128</code> variant
+and the non-standard wide-block tweakable variants (<code>Serpent-256</code>, <code>Serpent-512</code>, <code>Serpent-1024</code>).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Shake.html">Shake</a></h4>
+      <section><p>Computes a hash using the <code>SHAKE</code> family of extendable output functions (XOFs) as defined in NIST FIPS 202.
+Supports security levels of 128 and 256 bits with a configurable output size. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a></h4>
+      <section><p>Base class for the <code>SipHash</code> family of keyed pseudorandom functions, a fast keyed hash designed by Aumasson and
+Bernstein for short input messages. See the official <a href="https://131002.net/siphash/">SipHash specification</a>
+for details.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a></h4>
+      <section><p>Computes a 128-bit keyed hash using the <a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> algorithm by Aumasson and Bernstein. Produces a
+16-byte authentication tag from a 128-bit key, offering increased collision resistance over <a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>
+. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a></h4>
+      <section><p>Computes a 64-bit keyed hash using the <a class="xref" href="Bodu.Security.Cryptography.SipHash.html">SipHash</a> algorithm by Aumasson and Bernstein. Produces an
+8-byte authentication tag from a 128-bit key and is intended to protect hash tables against collision-based
+denial-of-service attacks. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a></h4>
+      <section><p>Applies Synthetic Initialization Vector (SIV) mode to two underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instances,
+providing deterministic authenticated encryption per RFC 5297 (AES-SIV).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Skein.html">Skein</a></h4>
+      <section><p>Serves as the abstract base class for managed implementations of the <code>Skein</code> family of cryptographic hash
+functions, built by Bruce Schneier and co-authors on top of the <a class="xref" href="Bodu.Security.Cryptography.ThreefishBlockCipher.html">ThreefishBlockCipher</a> tweakable block
+cipher and submitted as a finalist to the NIST SHA-3 competition.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Skein1024.html">Skein1024</a></h4>
+      <section><p>Computes a hash using the <code>Skein-1024</code> variant of the Skein hash function, built on top of the
+<a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a> tweakable block cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Skein256.html">Skein256</a></h4>
+      <section><p>Computes a hash using the <code>Skein-256</code> variant of the Skein hash function, built on top of the
+<a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a> tweakable block cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Skein512.html">Skein512</a></h4>
+      <section><p>Computes a hash using the <code>Skein-512</code> variant of the Skein hash function, built on top of the
+<a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a> tweakable block cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a></h4>
+      <section><p>Provides a managed implementation of the Skipjack symmetric block cipher, exposing the
+<a class="xref" href="Bodu.Security.Cryptography.SkipjackBlockCipher.html">SkipjackBlockCipher</a> engine through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> framework. This
+class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SkipjackBlockCipher.html">SkipjackBlockCipher</a></h4>
+      <section><p>Provides a managed implementation of the <a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> block cipher engine, operating on 64-bit blocks
+with an 80-bit key over 32 rounds. Skipjack was designed by the United States National Security Agency (NSA) and
+declassified in 1998; the key schedule and Rule A / Rule B alternation are binary-compatible with the NSA reference
+implementation published in FIPS PUB 185 (1994).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Snefru.html">Snefru</a></h4>
+      <section><p>Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
+compression routine using S-box substitutions and word rotations over 512-bit blocks.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a></h4>
+      <section><p>Computes a 128-bit (16-byte) hash using the <code>Snefru</code> hash algorithm by Ralph Merkle. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a></h4>
+      <section><p>Computes a 256-bit (32-byte) hash using the <code>Snefru</code> hash algorithm by Ralph Merkle. This class cannot be
+inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a></h4>
+      <section><p>Provides the common base for the library's additive (symmetric, shared-key) stream ciphers, sharing key and nonce
+storage, validation, generation, transform creation, and disposal.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish.html">Threefish</a></h4>
+      <section><p>Serves as the abstract base class for managed implementations of the Threefish tweakable symmetric block cipher
+family (Threefish-256, Threefish-512, and Threefish-1024).</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a></h4>
+      <section><p>Provides a managed implementation of the <code>Threefish-1024</code> tweakable symmetric block cipher, which operates on
+1024-bit (128-byte) blocks using a 1024-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a></h4>
+      <section><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a>. The sixteen 64-bit state words are split
+across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector512-1">Vector512&lt;T&gt;</a> registers — <code>loVec</code> holds the eight even-position words
+<code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words
+<code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (
+<code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next
+round's MIX pairing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish256.html">Threefish256</a></h4>
+      <section><p>Provides a managed implementation of the <code>Threefish-256</code> tweakable symmetric block cipher, which operates on
+256-bit (32-byte) blocks using a 256-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a></h4>
+      <section><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a>. The four 64-bit state words are split across
+two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers — <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
+the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>
+), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish512.html">Threefish512</a></h4>
+      <section><p>Provides a managed implementation of the <code>Threefish-512</code> tweakable symmetric block cipher, which operates on
+512-bit (64-byte) blocks using a 512-bit key and a 128-bit tweak. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a></h4>
+      <section><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a>. The eight 64-bit state words are split
+across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> registers — <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>
+and <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> — and each round applies a vector add, a per-lane
+variable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next
+round's MIX pairing.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.ThreefishBlockCipher.html">ThreefishBlockCipher</a></h4>
+      <section><p>Serves as the abstract base class for managed Threefish block cipher engines, providing shared key and tweak
+scheduling, resource disposal, and the core MIX/UNMIX primitives used by the <code>Threefish-256</code>,
+<code>Threefish-512</code>, and <code>Threefish-1024</code> variants.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a></h4>
+      <section><p>Computes a hash using the <code>Tiger</code> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996), optimized
+for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
+<a class="xref" href="Bodu.Security.Cryptography.TigerHashingVariant.html#Bodu_Security_Cryptography_TigerHashingVariant_Tiger">Tiger</a> and <a class="xref" href="Bodu.Security.Cryptography.TigerHashingVariant.html#Bodu_Security_Cryptography_TigerHashingVariant_Tiger2">Tiger2</a> padding variants. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Totp.html">Totp</a></h4>
+      <section><p>Provides the Time-based One-Time Password (TOTP) algorithm defined in RFC 6238, generating and verifying the
+time-derived codes used for two-factor authentication. This class cannot be instantiated.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a></h4>
+      <section><p>Serves as the abstract base class for tweakable symmetric algorithms, which accept an additional tweak value in
+addition to the key and initialization vector.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Twofish.html">Twofish</a></h4>
+      <section><p>Provides a managed implementation of the Twofish symmetric block cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.TwofishBlockCipher.html">TwofishBlockCipher</a></h4>
+      <section><p>Provides the core Twofish block cipher engine, implementing low-level encryption and decryption of individual
+128-bit blocks.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a></h4>
+      <section><p>Computes a 512-bit cryptographic hash using the <code>Whirlpool</code> algorithm designed by Paulo S. L. M. Barreto and
+Vincent Rijmen. Supports all three published revisions: <code>Whirlpool-0</code> (2000), <code>Whirlpool-T</code> (2001) and the
+final <code>Whirlpool</code> function standardized by <code>ISO/IEC 10118-3</code> in 2003. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a></h4>
+      <section><p>Provides a managed implementation of the X25519 elliptic-curve Diffie-Hellman key agreement function defined in RFC
+7748, exposed through the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.asymmetricalgorithm">AsymmetricAlgorithm</a> framework. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a></h4>
+      <section><p>Provides a managed implementation of the extended-nonce XChaCha20 stream cipher. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a></h4>
+      <section><p>Provides authenticated encryption with associated data (AEAD) using the extended-nonce <code>XChaCha20-Poly1305</code>
+construction. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class cannot
+be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a></h4>
+      <section><p>Provides a managed implementation of the extended-nonce XSalsa20 stream cipher specified by Daniel J. Bernstein.
+This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a></h4>
+      <section><p>Provides authenticated encryption using the XSalsa20-Poly1305 construction of NaCl / libsodium
+<code>crypto_secretbox</code>, with the Bodu AEAD combined layout <code>ciphertext ‖ tag</code>. Accepts a 256-bit key and a
+192-bit nonce and produces a 128-bit authentication tag. This class cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a></h4>
+      <section><p>Provides authenticated encryption with associated data (AEAD) using the XSalsa20 stream cipher with the RFC 8439
+Poly1305 framing. Accepts a 256-bit key and a 192-bit nonce and produces a 128-bit authentication tag. This class
+cannot be inherited.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a></h4>
+      <section><p>Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying pair of
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.ZeroPadding.html">ZeroPadding</a></h4>
+      <section><p>Implements zero-byte padding, appending <code>0x00</code> bytes until the input aligns with the cipher block size.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a></h4>
+      <section><p>Represents the authentication tag produced by an authenticated-encryption (AEAD) operation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HashValue.html">HashValue</a></h4>
+      <section><p>Represents the immutable output of a hash operation, with strict hexadecimal parsing, common text formattings, and
+explicit fixed-time comparison.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Nonce.html">Nonce</a></h4>
+      <section><p>Represents a number-used-once supplied to an authenticated-encryption or stream-cipher operation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.Salt.html">Salt</a></h4>
+      <section><p>Represents a salt supplied to a key-derivation or password-hashing operation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a></h4>
+      <section><p>Represents a digital-signature value together with its wire encoding.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a></h4>
+      <section><p>Represents an authenticated encryption with associated data (AEAD) block cipher mode transform that encrypts or
+decrypts data and produces or verifies an integrity tag.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></h4>
+      <section><p>Represents an authenticated encryption with associated data (AEAD) transform — the construction-neutral surface
+shared by block-cipher AEAD modes (<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>) and stream-cipher AEADs (
+<a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>). A single call encrypts or decrypts a message together with its associated
+data; associated data is optional and defaults to empty.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a></h4>
+      <section><p>Defines a symmetric block cipher that encrypts and decrypts data one fixed-size block at a time.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a></h4>
+      <section><p>Defines a stateful block cipher mode transformation that applies a chaining strategy (such as ECB, CBC, CFB, OFB, or
+CTR) over a block cipher primitive.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a></h4>
+      <section><p>Defines a factory that produces configured instances of a specific <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> implementation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a></h4>
+      <section><p>Defines methods for applying and removing padding to data blocks in block cipher operations.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></h4>
+      <section><p>Represents a stream-cipher authenticated-encryption (AEAD) transform — an <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> backed by a
+stream cipher and a one-time message-authentication code rather than a block-cipher mode. The extended-nonce
+Poly1305 AEADs (<a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a>, <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a>,
+<a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> ) implement this surface.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a></h4>
+      <section><p>Defines a synchronous, additive stream cipher engine that produces a key- and nonce-dependent keystream in
+fixed-size blocks.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a></h4>
+      <section><p>Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard framework
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> values where this library exposes the same mode, and extends that surface with additional
+modes that are not part of the framework enum.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeAead.html">HpkeAead</a></h4>
+      <section><p>Identifies the Authenticated Encryption with Associated Data (AEAD) function of an HPKE cipher suite, using the
+algorithm identifiers from the IANA &quot;HPKE AEAD Identifiers&quot; registry defined by RFC 9180 §7.3.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeKdf.html">HpkeKdf</a></h4>
+      <section><p>Identifies the Key Derivation Function (KDF) of an HPKE cipher suite, using the algorithm identifiers from the IANA
+&quot;HPKE KDF Identifiers&quot; registry defined by RFC 9180 §7.2.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeKem.html">HpkeKem</a></h4>
+      <section><p>Identifies the Key Encapsulation Mechanism (KEM) of an HPKE cipher suite, using the algorithm identifiers from the
+IANA &quot;HPKE KEM Identifiers&quot; registry defined by RFC 9180 §7.1.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.HpkeMode.html">HpkeMode</a></h4>
+      <section><p>Identifies the HPKE establishment mode, which controls whether a pre-shared key and/or sender authentication
+contribute to the key schedule, per RFC 9180 §5.1.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.OtpHashAlgorithm.html">OtpHashAlgorithm</a></h4>
+      <section><p>Specifies the HMAC hash algorithm used to derive one-time-password codes, as permitted by the HOTP (RFC 4226) and
+TOTP (RFC 6238) specifications.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a></h4>
+      <section><p>Specifies a padding scheme for block-cipher operations. Mirrors the standard framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a>
+values and extends that surface with additional padding schemes that are not part of the framework enum.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a></h4>
+      <section><p>Specifies the wire encoding of a digital-signature value.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.TigerHashingVariant.html">TigerHashingVariant</a></h4>
+      <section><p>Specifies the padding variant used by the <a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> hashing algorithm.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a></h4>
+      <section><p>Defines the direction of a cryptographic transformation.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Security.Cryptography.WhirlpoolVersion.html">WhirlpoolVersion</a></h4>
+      <section><p>Specifies the published revision of the <a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> hash algorithm selected by
+<a class="xref" href="Bodu.Security.Cryptography.Whirlpool.Version.html#Bodu_Security_Cryptography_Whirlpool_Version">Version</a>.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

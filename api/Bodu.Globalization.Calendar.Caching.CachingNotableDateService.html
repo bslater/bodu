@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CachingNotableDateService | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CachingNotableDateService | BODU ">
+    
+    <meta name="description" content="An  decorator that serves notable-date resolutions from an , recomputing and caching a whole civil year on a miss and refreshing on a time-to-live or a resource-version change.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService">
+
+
+
+  <h1 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService" class="text-break">Class CachingNotableDateService</h1>
+  <div class="markdown level0 summary"><p>An <a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> decorator that serves notable-date resolutions from an
+<a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a>, recomputing and caching a whole civil year on a miss and refreshing on a
+time-to-live or a resource-version change.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CachingNotableDateService</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a>.<a class="xref" href="Bodu.Globalization.Calendar.Caching.html">Caching</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Calendar.Caching.dll</h6>
+  <h5 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CachingNotableDateService : INotableDateService, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Every query is answered per civil year: a range is decomposed into the years it spans, each year is served from the
+cache when a fresh, version-matching entry exists or otherwise recomputed for the whole year and written back, and
+the assembled occurrences are clipped to the requested window by their emitted date. Because the notable-date engine
+resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or sub-range query for the
+same year is served without recomputing, and a query for exactly one whole civil year is served as the cached list
+itself with no copying.
+</p>
+<p>
+Output ordering relies on the <a class="xref" href="Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> ordering contract — cached occurrences round-trip in
+the order supplied, which is the wrapped service's date-then-identity ordering, and emitted dates in one civil year
+always precede the next year's — so assembled results are ordered without re-sorting. As a safeguard, the assembled
+result is verified with a linear scan, and only a non-conforming cache backend pays a full sort.
+</p>
+<p>
+The filtered overloads apply the filter after assembling the unfiltered result, exactly as the wrapped service does,
+so a <a class="xref" href="Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> never participates in the cache key. The discovery methods delegate straight
+to the wrapped service.
+</p>
+<p>
+When constructed with an <a class="xref" href="Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a>, the decorator observes the resource currently
+in effect and derives a version token from its identity and a reload generation, so a
+<a class="xref" href="Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.Reload.html#Bodu_Globalization_Calendar_MutableNotableDateResourceProvider_Reload_Bodu_Globalization_Calendar_NotableDateResource_">Reload(NotableDateResource)</a> invalidates every cached year on the
+next query. Without a provider, a fixed version token from the options is used.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService__ctor_Bodu_Globalization_Calendar_INotableDateService_Bodu_Globalization_Calendar_Caching_INotableDateCache_Bodu_Globalization_Calendar_Caching_NotableDateCachingOptions_Bodu_Globalization_Calendar_INotableDateResourceProvider_System_TimeProvider_Microsoft_Extensions_Logging_ILoggerFactory_System_Boolean_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.#ctor(Bodu.Globalization.Calendar.INotableDateService,Bodu.Globalization.Calendar.Caching.INotableDateCache,Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions,Bodu.Globalization.Calendar.INotableDateResourceProvider,System.TimeProvider,Microsoft.Extensions.Logging.ILoggerFactory,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.-ctor.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService__ctor_Bodu_Globalization_Calendar_INotableDateService_Bodu_Globalization_Calendar_Caching_INotableDateCache_Bodu_Globalization_Calendar_Caching_NotableDateCachingOptions_Bodu_Globalization_Calendar_INotableDateResourceProvider_System_TimeProvider_Microsoft_Extensions_Logging_ILoggerFactory_System_Boolean_">CachingNotableDateService(INotableDateService, INotableDateCache, NotableDateCachingOptions, INotableDateResourceProvider?, TimeProvider?, ILoggerFactory?, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> class.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Dispose" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Dispose">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Dispose.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedCalendars" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedCalendars">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedCalendars.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedCalendars">GetSupportedCalendars()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the distinct calendar systems any rule in the resource is expressed in.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedTerritories" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedTerritories">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.GetSupportedTerritories.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_GetSupportedTerritories">GetSupportedTerritories()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the distinct territories any rule in the resource is scoped to.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(Bodu.Globalization.Calendar.DateRange,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_">Resolve(DateRange, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted within an inclusive date range for the requested territory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(Bodu.Globalization.Calendar.DateRange,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_Bodu_Globalization_Calendar_DateRange_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">Resolve(DateRange, string, NotableDateFilter)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted within an inclusive date range for the requested territory,
+restricted to those matching the supplied filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(System.DateOnly,System.String)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_">Resolve(DateOnly, string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted on a single day for the requested territory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve(System.DateOnly,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Resolve.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Resolve_System_DateOnly_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">Resolve(DateOnly, string, NotableDateFilter)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Resolves the notable-date occurrences emitted on a single day for the requested territory, restricted to those
+matching the supplied filter.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Warm_System_Collections_Generic_IEnumerable_System_String__System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Warm(System.Collections.Generic.IEnumerable{System.String},System.Int32,System.Int32)">
+          <a class="xref" href="Bodu.Globalization.Calendar.Caching.CachingNotableDateService.Warm.html#Bodu_Globalization_Calendar_Caching_CachingNotableDateService_Warm_System_Collections_Generic_IEnumerable_System_String__System_Int32_System_Int32_">Warm(IEnumerable&lt;string&gt;, int, int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Warms the cache for a set of territories over an inclusive span of civil years, resolving each territory's whole
+span through the normal read-through path so cold years are computed and cached while already cached years cost
+only a cache read.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceAsyncExtensions.ResolveAsync.html#Bodu_Globalization_Calendar_NotableDateServiceAsyncExtensions_ResolveAsync_Bodu_Globalization_Calendar_INotableDateService_Bodu_Globalization_Calendar_DateRange_System_String_Bodu_Globalization_Calendar_NotableDateFilter_System_Threading_CancellationToken_">NotableDateServiceAsyncExtensions.ResolveAsync(INotableDateService, DateRange, string, NotableDateFilter?, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceExtensions.Resolve.html#Bodu_Globalization_Calendar_NotableDateServiceExtensions_Resolve_Bodu_Globalization_Calendar_INotableDateService_System_Int32_System_String_">NotableDateServiceExtensions.Resolve(INotableDateService, int, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Globalization.Calendar.NotableDateServiceExtensions.Resolve.html#Bodu_Globalization_Calendar_NotableDateServiceExtensions_Resolve_Bodu_Globalization_Calendar_INotableDateService_System_Int32_System_String_Bodu_Globalization_Calendar_NotableDateFilter_">NotableDateServiceExtensions.Resolve(INotableDateService, int, string, NotableDateFilter)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

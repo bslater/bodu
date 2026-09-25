@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class NaturalStringComparer | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class NaturalStringComparer | BODU ">
+    
+    <meta name="description" content="Provides a numeric-aware (&amp;quot;natural&amp;quot;) string comparer that orders embedded runs of ASCII digits by numeric value rather than character by character, so that &amp;quot;file2&amp;quot; sorts before &amp;quot;file10&amp;quot;.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Extensions.NaturalStringComparer">
+
+
+
+  <h1 id="Bodu_Extensions_NaturalStringComparer" data-uid="Bodu.Extensions.NaturalStringComparer" class="text-break">Class NaturalStringComparer</h1>
+  <div class="markdown level0 summary"><p>Provides a numeric-aware (&quot;natural&quot;) string comparer that orders embedded runs of ASCII digits by numeric value
+rather than character by character, so that <code>&quot;file2&quot;</code> sorts before <code>&quot;file10&quot;</code>.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">NaturalStringComparer</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icomparer-1">IComparer</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icomparer">IComparer</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Core.dll</h6>
+  <h5 id="Bodu_Extensions_NaturalStringComparer_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class NaturalStringComparer : IComparer&lt;string?&gt;, IComparer, IEqualityComparer&lt;string?&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Extensions_NaturalStringComparer_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The comparer mirrors the ordering produced by Windows Explorer (<code>StrCmpLogicalW</code>) and Python's <code>natsort</code>
+package: each string is treated as an alternating sequence of digit runs and non-digit segments. Digit runs are
+compared by numeric magnitude — leading zeros are skipped, a longer trimmed run is greater, and equal-length trimmed
+runs are compared digit by digit — so runs of arbitrary length compare correctly without ever being parsed into a
+bounded integer type. Non-digit segments are compared ordinally ( <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Ordinal.html#Bodu_Extensions_NaturalStringComparer_Ordinal">Ordinal</a> /
+<a class="xref" href="Bodu.Extensions.NaturalStringComparer.OrdinalIgnoreCase.html#Bodu_Extensions_NaturalStringComparer_OrdinalIgnoreCase">OrdinalIgnoreCase</a>) or using a culture's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.compareinfo">CompareInfo</a> (<a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCulture.html#Bodu_Extensions_NaturalStringComparer_CurrentCulture">CurrentCulture</a> /
+<a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCultureIgnoreCase.html#Bodu_Extensions_NaturalStringComparer_CurrentCultureIgnoreCase">CurrentCultureIgnoreCase</a> / <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Create.html#Bodu_Extensions_NaturalStringComparer_Create_System_Globalization_CultureInfo_System_Boolean_">Create(CultureInfo, bool)</a>).
+</p>
+<p>
+To keep the order total and deterministic, two digit runs with the same numeric value but different leading-zero
+counts do not compare equal: the first such difference is recorded and, when the strings are otherwise equal, the
+run with fewer leading zeros sorts first (<code>"7"</code> before <code>"07"</code>). A digit run compared against a non-digit
+character at the same position sorts first (numbers sort before text), and a string that ends where the other
+continues sorts first (<code>"file"</code> before <code>"file1"</code>). <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> sorts before any non-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
+string, two <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> references are equal, and the empty string sorts before any non-empty string.
+</p>
+<p>
+Only the ASCII digits <code>'0'</code>–<code>'9'</code> participate in numeric comparison; other Unicode digit classes are
+treated as ordinary text. A leading <code>'-'</code> is an ordinary character (no sign parsing), and decimal points,
+thousands separators, and version-sort dotted-tuple semantics are likewise out of scope — <code>'.'</code> simply
+separates adjacent digit runs.
+</p>
+<p>
+Instances are stateless and thread-safe. The <a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCulture.html#Bodu_Extensions_NaturalStringComparer_CurrentCulture">CurrentCulture</a> and
+<a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCultureIgnoreCase.html#Bodu_Extensions_NaturalStringComparer_CurrentCultureIgnoreCase">CurrentCultureIgnoreCase</a> comparers capture the comparison behaviour, not a culture snapshot: each
+comparison reads <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> at the time it executes, mirroring
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparer.currentculture">CurrentCulture</a>. A comparer returned by <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Create.html#Bodu_Extensions_NaturalStringComparer_Create_System_Globalization_CultureInfo_System_Boolean_">Create(CultureInfo, bool)</a>
+captures the supplied culture instead.
+</p>
+</div>
+  <h5 id="Bodu_Extensions_NaturalStringComparer_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var names = new[] { "file10", "file2", "file1" };
+
+Array.Sort(names, NaturalStringComparer.Ordinal);
+// names is now ["file1", "file2", "file10"] — a plain ordinal sort would yield
+// ["file1", "file10", "file2"].</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_CurrentCulture" data-uid="Bodu.Extensions.NaturalStringComparer.CurrentCulture">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCulture.html#Bodu_Extensions_NaturalStringComparer_CurrentCulture">CurrentCulture</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> that compares non-digit segments using culture-sensitive,
+case-sensitive comparison rules read from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> at comparison time.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_CurrentCultureIgnoreCase" data-uid="Bodu.Extensions.NaturalStringComparer.CurrentCultureIgnoreCase">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.CurrentCultureIgnoreCase.html#Bodu_Extensions_NaturalStringComparer_CurrentCultureIgnoreCase">CurrentCultureIgnoreCase</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> that compares non-digit segments using culture-sensitive comparison
+rules read from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> at comparison time, ignoring case.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_Ordinal" data-uid="Bodu.Extensions.NaturalStringComparer.Ordinal">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Ordinal.html#Bodu_Extensions_NaturalStringComparer_Ordinal">Ordinal</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> that compares non-digit segments using ordinal (binary)
+case-sensitive comparison.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_OrdinalIgnoreCase" data-uid="Bodu.Extensions.NaturalStringComparer.OrdinalIgnoreCase">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.OrdinalIgnoreCase.html#Bodu_Extensions_NaturalStringComparer_OrdinalIgnoreCase">OrdinalIgnoreCase</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a <a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> that compares non-digit segments using ordinal (binary) comparison,
+ignoring case.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_Compare_System_String_System_String_" data-uid="Bodu.Extensions.NaturalStringComparer.Compare(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Compare.html#Bodu_Extensions_NaturalStringComparer_Compare_System_String_System_String_">Compare(string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Compares two strings using natural (numeric-aware) ordering and returns an indication of their relative order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_Create_System_Globalization_CultureInfo_System_Boolean_" data-uid="Bodu.Extensions.NaturalStringComparer.Create(System.Globalization.CultureInfo,System.Boolean)">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Create.html#Bodu_Extensions_NaturalStringComparer_Create_System_Globalization_CultureInfo_System_Boolean_">Create(CultureInfo, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Creates a <a class="xref" href="Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> that compares non-digit segments using the comparison rules of
+the specified culture.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_Equals_System_String_System_String_" data-uid="Bodu.Extensions.NaturalStringComparer.Equals(System.String,System.String)">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Equals.html#Bodu_Extensions_NaturalStringComparer_Equals_System_String_System_String_">Equals(string?, string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether two strings are equal under this comparer's natural ordering.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Extensions_NaturalStringComparer_GetHashCode_System_String_" data-uid="Bodu.Extensions.NaturalStringComparer.GetHashCode(System.String)">
+          <a class="xref" href="Bodu.Extensions.NaturalStringComparer.GetHashCode.html#Bodu_Extensions_NaturalStringComparer_GetHashCode_System_String_">GetHashCode(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code for the specified string that is consistent with <a class="xref" href="Bodu.Extensions.NaturalStringComparer.Equals.html#Bodu_Extensions_NaturalStringComparer_Equals_System_String_System_String_">Equals(string?, string?)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

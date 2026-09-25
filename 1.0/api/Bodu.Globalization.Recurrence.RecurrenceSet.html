@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class RecurrenceSet | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class RecurrenceSet | BODU ">
+    
+    <meta name="description" content="Represents a composed set of recurring instants: one or more  streams anchored at a common start, merged with explicit recurrence dates (RDATE) and with exception dates (EXDATE) removed.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet">
+
+
+
+  <h1 id="Bodu_Globalization_Recurrence_RecurrenceSet" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet" class="text-break">Class RecurrenceSet</h1>
+  <div class="markdown level0 summary"><p>Represents a composed set of recurring instants: one or more <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> streams anchored at a
+common start, merged with explicit recurrence dates (<code>RDATE</code>) and with exception dates (<code>EXDATE</code>) removed.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">RecurrenceSet</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a>&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Globalization</span>.<a class="xref" href="Bodu.Globalization.Recurrence.html">Recurrence</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Globalization.Recurrence.dll</h6>
+  <h5 id="Bodu_Globalization_Recurrence_RecurrenceSet_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RecurrenceSet : IEquatable&lt;RecurrenceSet&gt;, IFormattable, IParsable&lt;RecurrenceSet&gt;</code></pre>
+  </div>
+  <h5 id="Bodu_Globalization_Recurrence_RecurrenceSet_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+The occurrence set is the ascending, duplicate-free union of every rule expansion and every explicit date, less any
+instant that matches an exception date. Each rule is anchored at <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Start.html#Bodu_Globalization_Recurrence_RecurrenceSet_Start">Start</a>, so the start instant is
+emitted when a rule (or an explicit date) produces it — it is not added implicitly.
+</p>
+<p>
+The set can be built programmatically through the constructor, or parsed from an iCalendar property block with
+<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Parse.html#Bodu_Globalization_Recurrence_RecurrenceSet_Parse_System_String_">Parse(string)</a>.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet__ctor_System_DateTime_System_Collections_Generic_IEnumerable_Bodu_Globalization_Recurrence_RecurrenceRule__System_Collections_Generic_IEnumerable_System_DateTime__System_Collections_Generic_IEnumerable_System_DateTime__" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.#ctor(System.DateTime,System.Collections.Generic.IEnumerable{Bodu.Globalization.Recurrence.RecurrenceRule},System.Collections.Generic.IEnumerable{System.DateTime},System.Collections.Generic.IEnumerable{System.DateTime})">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.-ctor.html#Bodu_Globalization_Recurrence_RecurrenceSet__ctor_System_DateTime_System_Collections_Generic_IEnumerable_Bodu_Globalization_Recurrence_RecurrenceRule__System_Collections_Generic_IEnumerable_System_DateTime__System_Collections_Generic_IEnumerable_System_DateTime__">RecurrenceSet(DateTime, IEnumerable&lt;RecurrenceRule&gt;, IEnumerable&lt;DateTime&gt;?, IEnumerable&lt;DateTime&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> class.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Dates" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Dates">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Dates.html#Bodu_Globalization_Recurrence_RecurrenceSet_Dates">Dates</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the explicit recurrence dates added to the occurrence set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_ExceptionDates" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.ExceptionDates">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.ExceptionDates.html#Bodu_Globalization_Recurrence_RecurrenceSet_ExceptionDates">ExceptionDates</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the exception dates removed from the occurrence set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Rules" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Rules">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Rules.html#Bodu_Globalization_Recurrence_RecurrenceSet_Rules">Rules</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the recurrence rules that contribute to the occurrence set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Start" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Start">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Start.html#Bodu_Globalization_Recurrence_RecurrenceSet_Start">Start</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the common start instant the rules are anchored to.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Equals_Bodu_Globalization_Recurrence_RecurrenceSet_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Equals(Bodu.Globalization.Recurrence.RecurrenceSet)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Equals.html#Bodu_Globalization_Recurrence_RecurrenceSet_Equals_Bodu_Globalization_Recurrence_RecurrenceSet_">Equals(RecurrenceSet?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this set is equal to another set by comparing the start, rules, dates, and exception dates.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Equals_System_Object_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Equals(System.Object)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Equals.html#Bodu_Globalization_Recurrence_RecurrenceSet_Equals_System_Object_">Equals(object?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether this set is equal to another object.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetHashCode" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetHashCode">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetHashCode.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetHashCode">GetHashCode()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns a hash code derived from the set's start and component counts.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetNextOccurrence_System_DateTime_System_Boolean_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetNextOccurrence(System.DateTime,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetNextOccurrence.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetNextOccurrence_System_DateTime_System_Boolean_">GetNextOccurrence(DateTime, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the first occurrence of the set that falls after the specified instant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetNextOccurrence_System_DateTimeOffset_System_Boolean_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetNextOccurrence(System.DateTimeOffset,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetNextOccurrence.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetNextOccurrence_System_DateTimeOffset_System_Boolean_">GetNextOccurrence(DateTimeOffset, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the first occurrence of the set that falls after the specified instant, preserving its offset.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetOccurrences" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetOccurrences">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetOccurrences.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetOccurrences">GetOccurrences()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the occurrences of the set in ascending chronological order.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetOccurrences_System_DateTime_System_DateTime_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetOccurrences(System.DateTime,System.DateTime)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetOccurrences.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetOccurrences_System_DateTime_System_DateTime_">GetOccurrences(DateTime, DateTime)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Enumerates the occurrences of the set that fall within an inclusive window.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetPreviousOccurrence_System_DateTime_System_Boolean_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetPreviousOccurrence(System.DateTime,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetPreviousOccurrence.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetPreviousOccurrence_System_DateTime_System_Boolean_">GetPreviousOccurrence(DateTime, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the last occurrence of the set that falls before the specified instant.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_GetPreviousOccurrence_System_DateTimeOffset_System_Boolean_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.GetPreviousOccurrence(System.DateTimeOffset,System.Boolean)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.GetPreviousOccurrence.html#Bodu_Globalization_Recurrence_RecurrenceSet_GetPreviousOccurrence_System_DateTimeOffset_System_Boolean_">GetPreviousOccurrence(DateTimeOffset, bool)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the last occurrence of the set that falls before the specified instant, preserving its offset.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Parse_System_String_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Parse(System.String)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Parse.html#Bodu_Globalization_Recurrence_RecurrenceSet_Parse_System_String_">Parse(string)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an iCalendar property block containing a <code>DTSTART</code> line, one or more <code>RRULE</code> lines, and
+optional <code>RDATE</code> / <code>EXDATE</code> lines.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.Parse(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.Parse.html#Bodu_Globalization_Recurrence_RecurrenceSet_Parse_System_String_System_IFormatProvider_">Parse(string, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Parses an iCalendar property block.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_ToString" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.ToString">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.ToString.html#Bodu_Globalization_Recurrence_RecurrenceSet_ToString">ToString()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the canonical iCalendar property-block text of the set: a <code>DTSTART</code> line, one <code>RRULE</code> line per
+rule, and <code>RDATE</code> / <code>EXDATE</code> lines when explicit or exception dates are present.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_ToString_System_String_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.ToString(System.String)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.ToString.html#Bodu_Globalization_Recurrence_RecurrenceSet_ToString_System_String_">ToString(string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the canonical iCalendar property-block text of the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.ToString(System.String,System.IFormatProvider)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.ToString.html#Bodu_Globalization_Recurrence_RecurrenceSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns the canonical iCalendar property-block text of the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_Bodu_Globalization_Recurrence_RecurrenceSet__" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse(System.String,Bodu.Globalization.Recurrence.RecurrenceSet@)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse.html#Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_Bodu_Globalization_Recurrence_RecurrenceSet__">TryParse(string?, out RecurrenceSet)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an iCalendar property block.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_Bodu_Globalization_Recurrence_RecurrenceSet__System_String__" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse(System.String,Bodu.Globalization.Recurrence.RecurrenceSet@,System.String@)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse.html#Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_Bodu_Globalization_Recurrence_RecurrenceSet__System_String__">TryParse(string?, out RecurrenceSet, out string?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an iCalendar property block, reporting the parse defect on failure.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_System_IFormatProvider_Bodu_Globalization_Recurrence_RecurrenceSet__" data-uid="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse(System.String,System.IFormatProvider,Bodu.Globalization.Recurrence.RecurrenceSet@)">
+          <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.TryParse.html#Bodu_Globalization_Recurrence_RecurrenceSet_TryParse_System_String_System_IFormatProvider_Bodu_Globalization_Recurrence_RecurrenceSet__">TryParse(string?, IFormatProvider?, out RecurrenceSet)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to parse an iCalendar property block.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

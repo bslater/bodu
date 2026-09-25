@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.IO.Hashing — Getting started | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.IO.Hashing — Getting started | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="boduiohashing--getting-started">Bodu.IO.Hashing — Getting started</h1>
+
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.IO.Hashing
+</code></pre>
+<p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> and the BCL <code>System.IO.Hashing</code> package.</p>
+<h2 id="minimal-samples--one-per-subfamily">Minimal samples — one per subfamily</h2>
+<h3 id="checksum--crc-32">Checksum — CRC-32</h3>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing.Checksums;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+crc.Append(data);
+string hex = Convert.ToHexString(crc.GetCurrentHash());
+</code></pre>
+<p><code>CRC32_ISOHDLC</code> is the canonical zlib / PNG / Ethernet CRC-32. Swap it for <code>CRC32_ISCSI</code>, <code>CRC16_MODBUS</code>, <code>CRC64_XZ</code>, or any of the 112 entries in the <a href="../../guides/io-hashing/crc-catalogue.html">CRC catalogue</a>.</p>
+<h3 id="checksum--fletcher-32">Checksum — Fletcher-32</h3>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing.Checksums;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var fletcher = new Fletcher32();
+fletcher.Append(data);
+byte[] checksum = fletcher.GetCurrentHash();
+</code></pre>
+<p>Fletcher's twin-accumulator structure catches transpositions that a simple sum or XOR misses. Choose <code>Fletcher16</code> / <code>Fletcher32</code> / <code>Fletcher64</code> based on your output width.</p>
+<h3 id="fingerprint--fnv-1a-64">Fingerprint — FNV-1a 64</h3>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var fnv = new Fnv1a64();
+fnv.Append(data);
+ulong key = BitConverter.ToUInt64(fnv.GetCurrentHash());
+</code></pre>
+<p>Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in <code>CityHash64</code>. For seeded hashes used in databases or probabilistic data structures, use <code>MurmurHash3_128</code>. For xxHash specifically, prefer <code>System.IO.Hashing.XxHash64</code> from the BCL — Bodu does not duplicate it.</p>
+<h3 id="fingerprint--pearson-with-custom-output-width">Fingerprint — Pearson with custom output width</h3>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+using var hash = new Pearson(hashSizeBits: 256, tableType: Pearson.PearsonTableType.Pearson);
+hash.Append(data);
+byte[] digest = hash.GetCurrentHash(); // 32 bytes
+</code></pre>
+<p><code>Pearson</code> accepts any output width from 8 bits to 2048 bits in 8-bit steps; the nested <code>Pearson.PearsonTableType</code> enum selects one of the four built-in permutation tables, and a third constructor overload takes your own 256-byte permutation.</p>
+<h3 id="check-digit--luhn-credit-card">Check digit — Luhn (credit card)</h3>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
+
+bool valid = Luhn.IsValid(&quot;4539148803436467&quot;);   // payload includes the check digit
+char digit = Luhn.Compute(&quot;453914880343646&quot;);    // payload excludes it — returns the digit to append
+</code></pre>
+<p>Every single-character scheme exposes the same pair: <code>Compute(ReadOnlySpan&lt;char&gt;)</code> returns the <code>char</code> to append to a payload that does <em>not</em> yet carry the check; <code>IsValid(ReadOnlySpan&lt;char&gt;)</code> validates a payload that <em>does</em>. Substitute <code>Damm</code>, <code>Verhoeff</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isin</code>, or <code>AbaRoutingNumber</code> — the contract is identical. The multi-character schemes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a>) return a <code>string</code> from <code>Compute</code> instead.</p>
+<h3 id="check-digit--iban-multi-character">Check digit — IBAN (multi-character)</h3>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
+
+bool valid = Iban.IsValid(&quot;GB82WEST12345698765432&quot;);
+</code></pre>
+<h3 id="one-shot-computation-via-the-extension-methods">One-shot computation via the extension methods</h3>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Extensions;
+
+using var hash = new Fnv1a64();
+byte[] digest   = hash.ComputeHash(data);            // Append + GetCurrentHash + Reset, in one call
+bool   match    = hash.VerifyHash(data, digest);     // recompute and compare against the byte[]
+bool   matchHex = hash.VerifyHash(data, Convert.ToHexString(digest)); // or compare against a stored hex string
+</code></pre>
+<p><code>ComputeHash</code> resets the instance and returns the one-shot digest, so the same instance is immediately reusable. <code>VerifyHash</code> has overloads taking either a <code>byte[]</code> digest or a hex <code>string</code>, and <code>Stream</code>-based forms that hash the stream first. <code>TryVerifyHash</code> returns <code>false</code> instead of throwing when the candidate is malformed (wrong length, non-hex characters) — the safer choice over user-supplied input.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>VerifyHash</code> compares with <code>SequenceEqual</code> and short-circuits on the first mismatching byte — it is <strong>not</strong> constant-time and must not be used to check an authenticator supplied by an untrusted caller. These are error-detection comparisons. For constant-time verification of a keyed digest, use the <code>Bodu.Security.Cryptography</code> <code>VerifyHash</code> overloads, which call <code>CryptographicOperations.FixedTimeEquals</code>.</p>
+</div>
+<h3 id="async-streaming-over-a-stream">Async streaming over a <code>Stream</code></h3>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Extensions;
+
+await using FileStream fs = File.OpenRead(&quot;archive.bin&quot;);
+
+using var hash = new Crc(CrcStandard.CRC32_ISOHDLC);
+byte[] digest = await hash.ComputeHashAsync(fs);     // rents a pooled buffer, appends in chunks
+</code></pre>
+<p><code>AppendDataAsync</code>, <code>ComputeHashAsync</code>, <code>VerifyHashAsync</code>, and <code>TryVerifyHashAsync</code> are the streaming-friendly equivalents; each accepts an optional <code>bufferSize</code> and a <code>CancellationToken</code>. They rent the working buffer from <code>ArrayPool&lt;byte&gt;.Shared</code>, so hashing a large file allocates only the final digest.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="index.html">Bodu.IO.Hashing introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../cryptography/index.html">Bodu.Security.Cryptography</a></strong> — the sibling library, for keyed and cryptographic hashes with a formal adversary model.</li>
+<li><strong><a href="../../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> — per-algorithm walk-throughs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="../../guides/io-hashing/crc-catalogue.html">CRC catalogue</a></strong> — the full RevEng-catalogue table of named CRC standards.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

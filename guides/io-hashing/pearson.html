@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Using Pearson | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Using Pearson | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-pearson">Using Pearson</h1>
+
+<p>Peter Pearson's 1990 hash is a table-driven function with a single simple rule: for each input byte <code>b</code>, set <code>h = T[h XOR b]</code>, where <code>T</code> is a <strong>permutation</strong> of the 256 byte values. The permutation's quality defines the hash's distribution, and because the update is one indexed XOR per byte, it is both very fast and very easy to extend to arbitrary output widths by running several parallel accumulators with shifted starting states.</p>
+<p><img src="../../images/diagrams/pearson-lookup.svg" alt="Pearson hash table-lookup loop: each input byte is XORed with the running state to index a 256-entry permutation table, whose entry becomes the new state"></p>
+<p><strong>Bodu.IO.Hashing</strong> provides a single <a class="xref" href="../../api/Bodu.IO.Hashing.Pearson.html">Pearson</a> type with:</p>
+<ul>
+<li>An output size configurable from <strong>8 bits to 2048 bits</strong> in 8-bit steps.</li>
+<li>A choice of four built-in permutation tables, plus a <strong>user-defined</strong> table.</li>
+</ul>
+<p>The type derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
+<h2 id="pattern-1--the-canonical-8-bit-pearson">Pattern 1 — the canonical 8-bit Pearson</h2>
+<p>The parameterless constructor gives you the classic single-byte Pearson hash with Pearson's original permutation table.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.IO.Hashing;
+
+byte[] data = Encoding.UTF8.GetBytes(&quot;example&quot;);
+
+var pearson = new Pearson();        // 8-bit output, Pearson's canonical table
+pearson.Append(data);
+byte[] digest = pearson.GetCurrentHash();  // 1 byte
+</code></pre>
+<p>An 8-bit hash is only useful as a coarse bucket index — 256 distinct buckets before guaranteed collisions. For anything more interesting, pick a wider width.</p>
+<h2 id="pattern-2--a-wider-output">Pattern 2 — a wider output</h2>
+<p>Any width from 8 to 2048 bits in 8-bit steps is supported. The implementation runs one parallel accumulator per output byte, each seeded with a different offset into the table; their concatenation is the final digest.</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+// 128-bit Pearson with the canonical permutation.
+var pearson = new Pearson(hashSizeBits: 128, tableType: Pearson.PearsonTableType.Pearson);
+pearson.Append(data);
+byte[] digest = pearson.GetCurrentHash();  // 16 bytes
+</code></pre>
+<p><code>hashSizeBits</code> must be a multiple of 8 between <code>Pearson.MinHashSizeBits</code> (8) and <code>Pearson.MaxHashSizeBits</code> (2048).</p>
+<h2 id="pattern-3--pick-a-permutation-table">Pattern 3 — pick a permutation table</h2>
+<p>The table defines the hash. The nested <code>Pearson.PearsonTableType</code> enum names four built-in tables plus the user-defined marker:</p>
+<table>
+<thead>
+<tr>
+<th><code>Pearson.PearsonTableType</code></th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pearson</code></td>
+<td>Pearson's original 1990 table — the historically canonical choice.</td>
+</tr>
+<tr>
+<td><code>AESSBox</code></td>
+<td>The AES S-box, used as a permutation (it already is one).</td>
+</tr>
+<tr>
+<td><code>CRC32HighByte</code></td>
+<td>The high byte of the standard CRC-32 lookup table.</td>
+</tr>
+<tr>
+<td><code>SHA256Constants</code></td>
+<td>A permutation derived from SHA-256's round constants.</td>
+</tr>
+<tr>
+<td><code>UserDefined</code></td>
+<td>A 256-byte permutation you supply.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+var pearson = new Pearson(hashSizeBits: 64, tableType: Pearson.PearsonTableType.AESSBox);
+</code></pre>
+<p>All four built-in tables are <strong>permutations</strong> — every byte 0–255 appears exactly once. This is the property Pearson relies on; it is checked at construction time, so a table with duplicates or missing values is rejected.</p>
+<h2 id="pattern-4--a-user-supplied-table">Pattern 4 — a user-supplied table</h2>
+<p>Pass a 256-byte permutation directly to the constructor:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+byte[] permutation = BuildMyPermutation();   // must be a permutation of 0..255
+
+var pearson = new Pearson(hashSizeBits: 256, permutationTable: permutation);
+</code></pre>
+<p>Constructing <code>Pearson</code> with <code>permutationTable</code>:</p>
+<ul>
+<li>Validates that the array is exactly 256 bytes long and is a valid permutation (every value 0–255 appears exactly once).</li>
+<li>Clones the array, so later mutation of your buffer does not affect the hash.</li>
+<li>Reports <code>TableType == Pearson.PearsonTableType.UserDefined</code>.</li>
+</ul>
+<p>You can read the table back (as a clone) through the <code>Table</code> property — handy for round-tripping the configuration or for diagnostics:</p>
+<pre><code class="lang-csharp">byte[] tableCopy = pearson.Table;
+</code></pre>
+<h2 id="pattern-5--append--getcurrenthash--reset">Pattern 5 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
+<p>Pearson follows the standard <code>NonCryptographicHashAlgorithm</code> lifecycle:</p>
+<pre><code class="lang-csharp">using Bodu.IO.Hashing;
+
+var pearson = new Pearson(hashSizeBits: 64, tableType: Pearson.PearsonTableType.Pearson);
+
+pearson.Append(chunk1);
+pearson.Append(chunk2);
+byte[] partial = pearson.GetCurrentHash();   // snapshot, non-destructive
+pearson.Append(chunk3);
+byte[] full = pearson.GetCurrentHash();
+
+pearson.Reset();                             // back to the initial offsets
+</code></pre>
+<p><code>GetCurrentHash</code> finalizes on a copy, so mid-stream snapshots are cheap and do not disturb in-progress hashing.</p>
+<h2 id="pearson-vs-the-other-non-cryptographic-hashes">Pearson vs the other non-cryptographic hashes</h2>
+<ul>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a></strong> — FNV-1a has better distribution on short inputs and no table memory footprint. Pearson wins when you need a specific output width (e.g. 96 or 160 bits) without stretching a native-width hash.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a></strong> — CityHash is much faster on long inputs and distributes better. Reach for Pearson when you want the table to be a tunable parameter — e.g. in academic work on hash-function quality.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></strong> — CRC is specified for wire formats and has provable burst-error detection. Pearson is a general-purpose fingerprint, not a checksum with error-detection guarantees.</li>
+</ul>
+<p>Pearson is <strong>not cryptographic</strong>. Choosing a different table does not make it adversary-resistant — an attacker who knows the table can construct collisions immediately. For adversarial settings, use <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> — faster, table-free alternatives.</li>
+<li><a href="string-hashes.html">Classic string hashes</a> — Bernstein, BKDR, SDBM, Elf64, and siblings with a similar &quot;one-liner&quot; feel.</li>
+<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> — when Pearson is not enough.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

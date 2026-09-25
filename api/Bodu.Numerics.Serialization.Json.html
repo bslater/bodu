@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Numerics.Serialization.Json | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Numerics.Serialization.Json | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Numerics.Serialization.Json">
+
+  <h1 id="Bodu_Numerics_Serialization_Json" data-uid="Bodu.Numerics.Serialization.Json" class="text-break">Namespace Bodu.Numerics.Serialization.Json</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-numerics-json.svg" alt="Bodu.Numerics.Serialization.Json"></p>
+<h1 id="bodunumericsserializationjson">Bodu.Numerics.Serialization.Json</h1>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Numerics.Serialization.Json</strong> carries the <code>System.Text.Json</code> integration for <a class="xref" href="Bodu.Numerics.html">Bodu.Numerics</a>. It supplies the converters that round-trip <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a>, and <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> to and from JSON, together with a one-call extension that registers them under a chosen policy.</p>
+<p>The core <code>Bodu.Numerics</code> library is serialization-agnostic — its value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code>. Add this package and call <code>AddNumericsJsonConverters</code> to opt into JSON support and select a wire policy across a whole <code>JsonSerializerOptions</code> instance.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/numerics-serialization-json/index.html">Introduction</a></strong> — the converters and factories, the policy model, what is deliberately not covered, and the scenario index.</li>
+<li><strong><a href="../docs/numerics-serialization-json/concepts.html">Core concepts</a></strong> — factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.</li>
+<li><strong><a href="../docs/numerics-serialization-json/getting-started.html">Getting started</a></strong> — install + minimal samples for each policy and each type, including a source-generated context.</li>
+<li><strong><a href="../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — wire formats, the three policies, and registering the converters.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions.html">NumericsJsonSerializerOptionsExtensions</a> — <code>AddNumericsJsonConverters(JsonSerializerOptions, NumericsJsonPolicy)</code> registers the converter factories for every numeric value type on an options instance and returns it for chaining.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> — the wire-format selector: <code>Strict</code> (default), <code>Lenient</code>, and <code>Compact</code>.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html">FractionJsonConverterFactory</a> — converters for <code>Fraction&lt;T&gt;</code>; the factory binds the open-generic converter to the concrete <code>T</code> at run time.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalJsonConverter-1.html">IntervalJsonConverter&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory.html">IntervalJsonConverterFactory</a> — the equivalent converters for <code>Interval&lt;T&gt;</code>, including the unbounded-endpoint markers.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter-1.html">DiscreteIntervalJsonConverter&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter-1.html">IntervalSetJsonConverter&lt;T&gt;</a> (and their factories) — converters for <code>DiscreteInterval&lt;T&gt;</code> (through the interval wire shape) and <code>IntervalSet&lt;T&gt;</code> (a JSON array of pieces).</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a> — the converter for <code>BigDecimal</code>: <code>Strict</code> object shape <code>{ &quot;unscaledValue&quot;: …, &quot;scale&quot;: … }</code> or the compact decimal string. Non-generic, so it registers directly rather than through a factory.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a> — converters for <code>Complex&lt;T&gt;</code>: <code>Strict</code> object shape <code>{ &quot;real&quot;: …, &quot;imaginary&quot;: … }</code> (non-finite components as the strings <code>&quot;NaN&quot;</code> / <code>&quot;Infinity&quot;</code> / <code>&quot;-Infinity&quot;</code>) or the compact <code>&quot;&lt;real; imaginary&gt;&quot;</code> string.</li>
+<li><a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a> — the <code>ToJson()</code> / <code>FromJson&lt;T&gt;(string)</code> convenience helpers.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
+
+var options = new JsonSerializerOptions()
+    .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
+
+string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(8, 15), options);
+Fraction&lt;int&gt; round = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(json, options);
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Registration is required.</strong> The core value types carry no <code>[JsonConverter]</code> attribute, so JSON support is opt-in: call <code>AddNumericsJsonConverters</code> (or add a factory to <code>JsonSerializerOptions.Converters</code>) before serializing.</li>
+<li><strong>Factories bind the generic parameter.</strong> The generic value types are open generics; the converter <em>factories</em> resolve the concrete <code>T</code> per request, which is why registration adds the factory rather than a closed converter. <code>BigDecimal</code> is the one non-generic type and registers as a single converter.</li>
+<li><strong>Pair results are not serializable.</strong> <code>IntervalPair&lt;T&gt;</code> and <code>DiscreteIntervalPair&lt;T&gt;</code> are transient operation results; call <code>ToIntervalSet()</code> and serialize the resulting <code>IntervalSet&lt;T&gt;</code>.</li>
+<li><strong>See also:</strong> the <a href="../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a> and the <a class="xref" href="Bodu.Numerics.html">Bodu.Numerics overview</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a> instances for closed <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> types, applying a
+configurable <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory.html">DiscreteIntervalJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter-1.html">DiscreteIntervalJsonConverter&lt;T&gt;</a> instances for closed <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>
+types, applying a configurable <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter-1.html">DiscreteIntervalJsonConverter&lt;T&gt;</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html">FractionJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a> instances for closed <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> types, applying a
+configurable <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a></h4>
+      <section><p>Converts a <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a></h4>
+      <section><p>Convenience JSON helpers for <a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> that serialize through the <code>Bodu.Numerics</code> converters
+under a chosen <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory.html">IntervalJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalJsonConverter-1.html">IntervalJsonConverter&lt;T&gt;</a> instances for closed <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> types, applying a
+configurable <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalJsonConverter-1.html">IntervalJsonConverter&lt;T&gt;</a></h4>
+      <section><p>Converts an <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalSetJsonConverterFactory.html">IntervalSetJsonConverterFactory</a></h4>
+      <section><p>Creates <a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter-1.html">IntervalSetJsonConverter&lt;T&gt;</a> instances for closed <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> types,
+applying a configurable <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> to every closed converter the factory produces.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter-1.html">IntervalSetJsonConverter&lt;T&gt;</a></h4>
+      <section><p>Converts an <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions.html">NumericsJsonSerializerOptionsExtensions</a></h4>
+      <section><p>Extension methods that register the <code>Bodu.Numerics</code> JSON converters on a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a>,
+picking a coherent shape for every shipped numeric type from a single <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> value.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a></h4>
+      <section><p>Selects the JSON serialization shape and parsing strictness applied by the <a class="xref" href="Bodu.Numerics.html">Bodu.Numerics</a> JSON
+converters.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

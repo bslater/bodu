@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Configuration — Overview | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Configuration — Overview | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuration">Configuration</h1>
+
+<p>The <strong>Configuration</strong> topic covers two packages that together provide layered, EditorConfig-style configuration for .NET applications. <a href="../text-configuration/index.html"><code>Bodu.Text.Configuration</code></a> reads a single text file in the familiar INI / EditorConfig shape — preamble, glob-anchored sections, <code>key = value</code> properties — and projects it into a flattened, target-aware view of colon-delimited configuration keys. <a href="../extensions-configuration-text/index.html"><code>Bodu.Extensions.Configuration.Text</code></a> bridges that view into the <code>Microsoft.Extensions.Configuration</code> world: an <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.configuration.iconfigurationbuilder">IConfigurationBuilder</a> source alongside JSON and environment variables, <code>IOptions&lt;T&gt;</code> binding, and reload-on-change.</p>
+<p>The split is deliberate. The parser, resolver, and typed view carry no dependency on <code>Microsoft.Extensions.Configuration</code>, so console tools, analyzers, and build tasks can consume configuration documents directly. The bridge is a thin host that any <code>Microsoft.Extensions</code>-based application adds on top — its overload set mirrors <code>AddJsonFile</code> / <code>AddJsonStream</code>, so call sites stay familiar.</p>
+<p>A configuration file in this model is <em>not</em> a snapshot of a single object graph — it is a layered description of how properties change as a target path moves through a directory tree. The libraries' job is to collapse those layers down to the right answer for a specific target.</p>
+<h2 id="the-pipeline">The pipeline</h2>
+<p>Configuration flows through five stages; every stage past the parse is opt-in.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Performed by</th>
+<th>Produces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Document model</strong></td>
+<td>The library's own trivia-preserving INI model</td>
+<td>A <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> over the <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model — sections, entries, comments, ordering preserved; entries stay editable through <a class="xref" href="../../api/Bodu.Text.Configuration.IniSection.html">IniSection</a>.</td>
+</tr>
+<tr>
+<td><strong>Profile-validated parse</strong></td>
+<td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> with <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a></td>
+<td>A <code>ConfigurationDocument</code>, optionally paired with diagnostics via <code>ParseWithDiagnostics</code>.</td>
+</tr>
+<tr>
+<td><strong>Layered resolution</strong></td>
+<td><code>Resolve(targetPath)</code> with <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a></td>
+<td>A <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> — preamble plus matching glob-anchored sections, layered last-wins.</td>
+</tr>
+<tr>
+<td><strong>Typed access</strong></td>
+<td>The view's getter family</td>
+<td><code>GetString</code>, <code>GetInt32</code>, <code>GetBoolean</code>, <code>GetEnum&lt;T&gt;</code>, and <code>GetValue&lt;T&gt;</code> for any <code>ISpanParsable&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><strong>Microsoft.Extensions bridge</strong> <em>(optional)</em></td>
+<td><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> / <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationProvider.html">TextConfigurationProvider</a></td>
+<td>Colon-delimited keys in <code>IConfiguration</code>, section binding to <code>IOptions&lt;T&gt;</code>, reload tokens.</td>
+</tr>
+</tbody>
+</table>
+<p>Parse without resolving when you only want the document; resolve without typed accessors when you only need raw strings; skip the bridge entirely when you do not host in <code>Microsoft.Extensions</code>.</p>
+<p>Behaviour at each stage is governed by a <strong>profile</strong> — a named, validated combination of parse, resolve, and write options. Four ship in the box: <code>Bodu</code> (the permissive default), <code>EditorConfigCompatible</code> (strict alignment with EditorConfig 0.17.2), <code>Strict</code> (deterministic parsing for generated files), and <code>Relaxed</code> (collect diagnostics from user-authored files instead of throwing). See <a href="configuration-concepts.html">Configuration concepts</a> for one-line definitions of each.</p>
+<h2 id="one-file-end-to-end">One file, end to end</h2>
+<p>The same source text serves both packages. A file in the EditorConfig shape:</p>
+<pre><code class="lang-ini"># Preamble — properties that apply before any section opens.
+root = true
+service.name = Bodu.Sample
+
+# A section header is a glob pattern matched against the target path.
+[*.cs]
+format.indent.style = space
+format.indent.size  = 4
+
+# Later sections override earlier sections for any path both match.
+[src/**/*.cs]
+format.indent.size = 2
+logging.level.default = Warning
+</code></pre>
+<p>Reading it directly with <code>Bodu.Text.Configuration</code>:</p>
+<pre><code class="lang-csharp">using Bodu.Text.Configuration;
+
+ConfigurationDocument document = ConfigurationDocument.Load(&quot;.boduconfig&quot;);
+ConfigurationView view = document.Resolve(&quot;src/MyApp/Program.cs&quot;);
+
+int indent = view.GetInt32(&quot;format:indent:size&quot;);          // 2 — the src/** section won
+string level = view.GetString(&quot;logging:level:default&quot;);    // &quot;Warning&quot;
+</code></pre>
+<p>Or surfacing it through <code>Microsoft.Extensions.Configuration</code> with the bridge:</p>
+<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+using Microsoft.Extensions.Configuration;
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTextConfigurationFile(&quot;.boduconfig&quot;, targetPath: &quot;src/MyApp/Program.cs&quot;)
+    .Build();
+
+string? level = configuration[&quot;logging:level:default&quot;];    // &quot;Warning&quot;
+</code></pre>
+<p>Dotted keys (<code>logging.level.default</code>) project to the canonical colon-delimited form (<code>logging:level:default</code>) under the default <code>DotToColon</code> key mapping, which is exactly the shape <code>IConfiguration</code> consumes — the bridge adds no translation layer of its own.</p>
+<h2 id="the-packages">The packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>What it provides</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>Stable</td>
+<td>The parser, profiles, layered resolver, typed <code>ConfigurationView</code>, key model, diagnostics, and round-trip <code>Save</code>. Built on its own trivia-preserving INI document model; no format-library or <code>Microsoft.Extensions</code> dependency.</td>
+<td><a href="../text-configuration/index.html">Intro</a> · <a href="../text-configuration/concepts.html">Concepts</a> · <a href="../text-configuration/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Extensions.Configuration.Text</code></td>
+<td>Stable</td>
+<td>The <code>Microsoft.Extensions.Configuration</code> bridge: <code>AddTextConfigurationFile</code> / <code>AddTextConfigurationStream</code>, the conventional <code>.boduconfig</code> → <code>bodu.config</code> probe, reload-on-change, and <code>AddConfigurationOptions&lt;T&gt;</code> binding.</td>
+<td><a href="../extensions-configuration-text/index.html">Intro</a> · <a href="../extensions-configuration-text/concepts.html">Concepts</a> · <a href="../extensions-configuration-text/getting-started.html">Get started</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="boundaries">Boundaries</h3>
+<ul>
+<li><strong>Use <a href="../formats/index.html"><code>Bodu.Text.Ini</code></a> instead</strong> when you just need to read or edit an INI file with no layering, no profiles, and no glob resolution — its comment-preserving mutable DOM and <code>IniSerializer</code> cover plain INI end to end. <code>ConfigurationDocument</code> keeps its own <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model, so the two libraries are independent; promote to the configuration layer when you need its resolution semantics. Note the name collision: <code>Bodu.Text.Configuration.IniDocument</code> is this library's mutable, trivia-preserving document, whereas <code>Bodu.Text.Ini.Document.IniDocument</code> is the line-format package's read-only DOM — the two are unrelated types.</li>
+<li><strong>Skip the bridge when you don't host in <code>Microsoft.Extensions</code>.</strong> <code>Bodu.Text.Configuration</code> is self-sufficient — <code>Parse</code>, <code>Resolve</code>, and the typed getters cover the full read path without an <code>IConfigurationBuilder</code> in sight.</li>
+<li><strong>The bridge is not a general INI provider.</strong> It exists specifically to surface profile-parsed, target-resolved Bodu configuration documents; for plain key-value INI in <code>IConfiguration</code>, the stock <code>Microsoft.Extensions.Configuration.Ini</code> provider may be all you need.</li>
+</ul>
+<h2 id="choosing-an-entry-point">Choosing an entry point</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parse a configuration file and read typed values</td>
+<td><code>ConfigurationDocument.Parse(text)</code> → <code>doc.Resolve(targetPath)</code> → <code>view.GetInt32(...)</code></td>
+<td>The minimal happy path; defaults to the <code>Bodu</code> profile.</td>
+</tr>
+<tr>
+<td>Resolve per-file settings the EditorConfig way</td>
+<td><code>doc.Resolve(&quot;src/Foo.cs&quot;)</code> with <code>ConfigurationParseOptions.EditorConfigCompatible</code></td>
+<td>Section headers are glob patterns matched against the target path; later matches win.</td>
+</tr>
+<tr>
+<td>Surface every problem in a user-authored file at once</td>
+<td><code>ConfigurationDocument.ParseWithDiagnostics(text, ConfigurationParseOptions.Relaxed)</code></td>
+<td>Diagnostics collect instead of throwing; the valid portions of the document remain usable.</td>
+</tr>
+<tr>
+<td>Reject any input the parser cannot prove canonical</td>
+<td><code>ConfigurationParseOptions.Strict</code></td>
+<td>Duplicate keys are disallowed; suited to generated files.</td>
+</tr>
+<tr>
+<td>Round-trip a document through save</td>
+<td><code>ConfigurationDocument.Save(doc, path)</code></td>
+<td>Comments, section ordering, and property ordering are preserved.</td>
+</tr>
+<tr>
+<td>Feed the file into ASP.NET Core / Generic Host configuration</td>
+<td><code>builder.AddTextConfigurationFile(&quot;.boduconfig&quot;)</code></td>
+<td>Keys surface in the colon-delimited form <code>IConfiguration</code> consumes.</td>
+</tr>
+<tr>
+<td>Bind a section to a POCO with <code>IOptions&lt;T&gt;</code></td>
+<td><code>services.AddConfigurationOptions&lt;MyOptions&gt;(configuration, &quot;section&quot;)</code></td>
+<td>A discoverability shim over the standard <code>Configure&lt;T&gt;</code> shape.</td>
+</tr>
+<tr>
+<td>Hot-reload settings when the file changes</td>
+<td><code>AddTextConfigurationFile(..., reloadOnChange: true)</code></td>
+<td>File watcher + standard reload tokens; <code>IOptionsMonitor&lt;T&gt;</code> re-binds automatically.</td>
+</tr>
+<tr>
+<td>Test fixtures or embedded resources</td>
+<td><code>builder.AddTextConfigurationStream(stream)</code></td>
+<td>One-shot; no reload-on-change.</td>
+</tr>
+<tr>
+<td>Plain INI editing with no layering</td>
+<td><a href="../formats/index.html"><code>Bodu.Text.Ini</code></a> — the mutable, comment-preserving <code>IniNode</code> DOM (its <code>IniDocument</code> is the read-only DOM)</td>
+<td>The configuration layer is unnecessary overhead for that case.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Text.Configuration
+dotnet add package Bodu.Extensions.Configuration.Text
+</code></pre>
+<p><code>Bodu.Extensions.Configuration.Text</code> depends on <code>Bodu.Text.Configuration</code>, so applications that host in <code>Microsoft.Extensions</code> need only the second command.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="configuration-concepts.html">Configuration concepts</a></strong> — the cross-package vocabulary: profiles, preamble, glob-anchored sections, layered resolution, views, sources, providers, reload tokens.</li>
+<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration introduction</a></strong> — the parser, resolver, and view model in detail.</li>
+<li><strong><a href="../text-configuration/getting-started.html">Bodu.Text.Configuration getting started</a></strong> — install + minimal samples for parse-resolve-read, profile presets, diagnostics, round-trip save.</li>
+<li><strong><a href="../extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text introduction</a></strong> — the <code>IConfigurationBuilder</code> integration.</li>
+<li><strong><a href="../extensions-configuration-text/getting-started.html">Bodu.Extensions.Configuration.Text getting started</a></strong> — install + minimal samples for the file overload, the stream overload, the conventional probe, and options binding.</li>
+<li><strong><a href="../../guides/topics/configuration.html">Configuration guides</a></strong> — recipe-style walk-throughs across both packages.</li>
+<li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.Text.Configuration.html">Bodu.Text.Configuration</a> · <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

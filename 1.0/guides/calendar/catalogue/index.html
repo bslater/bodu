@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Notable-date catalogue | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Notable-date catalogue | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../../images/favicon.svg">
+      <link rel="stylesheet" href="../../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../../styles/docfx.css">
+      <link rel="stylesheet" href="../../../styles/main.css">
+      <meta property="docfx:navrel" content="../../../toc.html">
+      <meta property="docfx:tocrel" content="../../toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../../index.html">
+                <img id="logo" class="svg" src="../../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="notable-date-catalogue">Notable-date catalogue</h1>
+
+<p>What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the <code>Bodu.Globalization.Calendar</code> XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).</p>
+<p>Concepts are authored once in a <strong>shared catalogue</strong> and a <strong>region pack</strong> imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a <strong>region hub</strong> (<a href="theme-civil-and-christian.html#africa-common"><code>africa-common</code></a>, <a href="theme-civil-and-christian.html#americas-common"><code>americas-common</code></a>, <a href="theme-civil-and-christian.html#europe-common"><code>europe-common</code></a>, <a href="theme-civil-and-christian.html#middleeast-common"><code>middleeast-common</code></a>) that re-exports the shared concepts its packs have in common — and occasionally defines a few of its own — so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.</p>
+<h2 id="how-to-read-these-pages">How to read these pages</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Category</td>
+<td><code>PublicHoliday</code>, <code>Religious</code>, <code>Cultural</code>, <code>Observance</code>, <code>Remembrance</code>, …</td>
+</tr>
+<tr>
+<td>Non-working</td>
+<td><code>Yes</code> = a non-working public holiday for the scope shown; <code>—</code> = a working observance</td>
+</tr>
+<tr>
+<td>Territory scope</td>
+<td><code>National</code>, a subdivision list (e.g. <code>ENG, WLS, NIR</code>), or <code>National + …</code></td>
+</tr>
+<tr>
+<td>Calendar</td>
+<td>shown only when non-Gregorian (<code>Hijri</code>, <code>Hebrew</code>, <code>Persian</code>, <code>ChineseLunisolar</code>, …)</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>inline</code> (defined in the region pack) or <code>← catalogue</code> / <code>← &lt;region&gt;-common</code> (the direct import: a shared catalogue or the bundle's region hub)</td>
+</tr>
+<tr>
+<td>When</td>
+<td>a one-phrase gloss: <code>Fixed 25 Dec</code>, <code>Easter +1</code>, <code>1st Mon May</code>, <code>Algorithm: western-easter</code> — never the recipe</td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-theme">By theme</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Catalogues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="theme-civil-and-christian.html">Civil and Christian catalogues</a></td>
+<td><code>global-core</code>, <code>christian-western</code>, <code>christian-orthodox</code>, <code>christian-oriental-orthodox</code>, <code>catholic</code>, <code>christian-anglican</code>, <code>christian-protestant</code>, <code>default-minimal</code>, <code>americas-common</code>, <code>europe-common</code>, <code>middleeast-common</code>, <code>africa-common</code></td>
+</tr>
+<tr>
+<td><a href="theme-religious-non-gregorian.html">Non-Gregorian religious catalogues</a></td>
+<td><code>global-anchors</code>, <code>global-islamic</code>, <code>global-islamic-umm-al-qura</code>, <code>global-jewish</code>, <code>global-hindu</code>, <code>global-buddhist</code>, <code>global-lunar</code>, <code>global-persian</code>, <code>global-bahai</code>, <code>global-jain</code>, <code>global-sikh</code>, <code>global-zoroastrian</code></td>
+</tr>
+<tr>
+<td><a href="theme-cultural-and-family.html">Cultural, family, and remembrance catalogues</a></td>
+<td><code>global-cultural</code>, <code>global-family</code>, <code>global-family-social</code>, <code>global-remembrance</code></td>
+</tr>
+<tr>
+<td><a href="theme-awareness.html">Awareness and themed observances</a></td>
+<td><code>global-un</code>, <code>global-health</code>, <code>global-environment</code>, <code>global-education</code>, <code>global-science</code>, <code>global-social</code>, <code>global-food</code>, <code>global-animals</code></td>
+</tr>
+<tr>
+<td><a href="theme-aggregates.html">Aggregate and utility catalogues</a></td>
+<td><code>global-all</code>, <code>global-multiday-normalization</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="by-region">By region</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Countries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="region-americas.html">Americas region packs</a></td>
+<td>AR, BR, CA, CL, CO, MX, PE, US</td>
+</tr>
+<tr>
+<td><a href="region-asia-pacific.html">Asia-Pacific region packs</a></td>
+<td>AU, CN, HK, ID, IN, JP, KR, MY, NZ, PH, SG, TH, TW, VN</td>
+</tr>
+<tr>
+<td><a href="region-europe.html">Europe region packs</a></td>
+<td>AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK</td>
+</tr>
+<tr>
+<td><a href="region-middle-east.html">Middle East region packs</a></td>
+<td>AE, IL, JO, QA, SA, TR</td>
+</tr>
+<tr>
+<td><a href="region-africa.html">Africa region packs</a></td>
+<td>EG, ET, GH, KE, MA, NG, ZA</td>
+</tr>
+</tbody>
+</table>
+<p>See also the <a href="comparison-matrix.html">cross-region comparison matrix</a>.</p>
+<h2 id="coverage">Coverage</h2>
+<ul>
+<li><strong>Catalogues:</strong> 38</li>
+<li><strong>Region packs:</strong> 63</li>
+<li><strong>Distinct concepts (catalogues):</strong> 308</li>
+<li><strong>Comparison-matrix rows:</strong> 18</li>
+<li><strong>This page regenerated (UTC):</strong> 2026-09-09T03:00:56Z</li>
+</ul>
+<hr>
+<p><em>Generated from the notable-date XML resources by <code>Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1</code>. Regenerated (UTC): 2026-09-09T03:00:56Z.</em> For the calculation recipes deliberately omitted here, see <a href="../territories.html">Territories and regional composition</a>, <a href="../non-gregorian-calendars.html">Working with non-Gregorian calendars</a>, and <a href="../holiday-patterns.html">Holiday patterns</a>; for the API, the <a class="xref" href="../../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar</a> namespace.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><strong><a href="../../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><strong><a href="../index.html">Bodu.Globalization.Calendar guides</a></strong> — the full guide index for the calendar runtime and its companions.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

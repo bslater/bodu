@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Monetary precision &amp; unit pricing | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Monetary precision &amp; unit pricing | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="monetary-precision--unit-pricing">Monetary precision &amp; unit pricing</h1>
+
+<p>A settled <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> rounds to its currency's registered minor units the moment it
+is constructed — two decimal places for USD, zero for JPY, three for BHD. That default is the right
+one for cash amounts, but some values are legitimately <em>finer</em> than the currency settles at: a share
+price quoted to six decimal places, a per-unit energy tariff in fractions of a cent, an FX-adjusted
+unit cost. This guide covers how the financial stack represents those values, how their precision
+behaves through arithmetic, and how it survives JSON serialization.</p>
+<p>For the general three-tier rounding model (<code>Money&lt;TCurrency&gt;</code> per-step, <code>CalculatedMoney</code> deferred,
+<code>Fraction&lt;BigInteger&gt;</code> exact), see <a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a> — this page focuses
+on the <em>scale-aware</em> surface layered on top of it.</p>
+<h2 id="the-one-line-map">The one-line map</h2>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Type</th>
+<th>Precision behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Settled cash amount</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> / <code>Money&lt;TCurrency&gt;</code></td>
+<td>Rounds to the currency's registered minor units on construction and after every operation</td>
+</tr>
+<tr>
+<td>Unit price at a known scale</td>
+<td><code>Money</code> via <code>FromExplicitScale</code></td>
+<td>Carries an explicit scale (0–28); reports, formats, rounds, and serializes at that scale</td>
+</tr>
+<tr>
+<td>In-flight computed amount</td>
+<td><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a></td>
+<td>Never rounded; full <code>decimal</code> precision until settled once via <code>RoundToMoney</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="constructing-a-unit-price">Constructing a unit price</h2>
+<p>The direct route is <code>Money.FromExplicitScale</code>, which stores the supplied scale with the value:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+
+Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+price.MinorUnits;      // → 6 (not USD's registered 2)
+price.ToString(&quot;R&quot;);   // → &quot;USD 145.678912&quot;
+</code></pre>
+<p>The scale is a first-class part of the value, not a formatting hint:</p>
+<ul>
+<li><code>MinorUnits</code> reports the explicit scale instead of the registry precision.</li>
+<li>Formatting pads to it — a six-place value of <code>12.5m</code> renders as <code>12.500000</code>.</li>
+<li>Arithmetic preserves it: adding two scale-6 values yields a scale-6 sum, and scalar
+multiplication or division rounds the result at six places, not two.</li>
+<li>Allocation splits at the value's own precision.</li>
+</ul>
+<h2 id="scale-semantics">Scale semantics</h2>
+<p>The rules for how scales interact follow the established prior art (<code>decimal</code> itself, Java's
+<code>BigDecimal</code> / Joda-Money's <code>BigMoney</code>, dinero.js, SQL <code>NUMERIC</code>):</p>
+<ul>
+<li><p><strong>Mixed-scale addition and subtraction take the finer (maximum) scale.</strong> A scale-2 settled amount
+plus a scale-6 unit price yields a scale-6 result, in either operand order — lossless, exact, no
+rounding. This mirrors <code>BigDecimal</code> (<code>max(scale₁, scale₂)</code>) and dinero.js's <code>normalizeScale</code>.</p>
+<pre><code class="lang-csharp">Money settled = new Money(1.00m, CurrencyCode.USD);                        // scale 2
+Money price = Money.FromExplicitScale(0.000001m, CurrencyCode.USD, 6);    // scale 6
+
+(settled + price).MinorUnits;   // → 6, amount 1.000001 — both operand orders agree
+</code></pre>
+</li>
+<li><p><strong>Multiplication and division round at the value's own scale</strong>, each step. For chained
+sub-minor-unit math, carry the calculation in <code>CalculatedMoney</code> and settle once.</p>
+</li>
+<li><p><strong>Equality is numeric</strong> (<code>decimal</code> semantics): <code>12.50 USD</code> at scale 2 equals <code>12.500000 USD</code> at
+scale 6; the scale is not part of the identity or hash. Compare <code>MinorUnits</code> explicitly when the
+precision itself matters. (This is the <code>decimal</code> convention, deliberately unlike Java's
+scale-sensitive <code>BigDecimal.equals</code>.)</p>
+</li>
+<li><p><strong>Text round-trip is scale-faithful.</strong> <code>Money.Parse</code> reconstructs a finer-than-registry scale from
+the printed fractional digits, so <code>Money.Parse(value.ToString(&quot;R&quot;))</code> restores the same amount,
+currency, <em>and</em> scale.</p>
+</li>
+<li><p><strong>Changing a value's scale is explicit.</strong> <code>Rescale(minorUnits, rounding)</code> re-expresses a value at
+a new scale — coarser rounds (a one-value settlement), finer pads losslessly — and <code>TrimScale()</code>
+drops trailing-zero precision down to (never below) the registered minor units. These are the
+counterparts of dinero.js's <code>transformScale</code>/<code>trimScale</code> and Joda <code>BigMoney.withScale</code>.</p>
+</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+price.Rescale(2);                                              // USD 145.68  (scale 2)
+Money.FromExplicitScale(12.5m, CurrencyCode.USD, 6).TrimScale(); // USD 12.50 (scale 2, zeros trimmed)
+</code></pre>
+<ul>
+<li><strong><code>MoneyBag</code> and <code>Money&lt;TCurrency&gt;</code> are settlement surfaces.</strong> Amounts entering a bag settle to
+the currency's registered minor units (banker's rounding) on entry — the bag's wire form carries
+no per-balance scale, so rounding on entry keeps memory and wire identical. <code>Money&lt;TCurrency&gt;</code>
+likewise stays at the registered precision by contract. Settle deliberately (via
+<code>CalculatedMoney.RoundToMoney</code>) before crossing either boundary when you need a different
+rounding rule.</li>
+</ul>
+<p>For amounts that are <em>computed</em> rather than quoted, prefer the settlement route: accumulate in
+<a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> (which never rounds) and settle exactly once through a
+<a class="xref" href="../../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a> whose <a class="xref" href="../../api/Bodu.Financial.ScalePolicy.html">ScalePolicy</a> requests a custom
+scale:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var ctx = MonetaryContext.Default with
+{
+    ScalePolicy = ScalePolicy.Custom,
+    CustomScale = 6,
+};
+
+Money price = new CalculatedMoney(145.678912m, CurrencyCode.USD).RoundToMoney(ctx);
+</code></pre>
+<p>Both routes produce the same explicit-scale <code>Money</code>; <code>FromExplicitScale</code> is the one-liner for values
+whose precision is known up front, <code>RoundToMoney</code> is the single-rounding-decision boundary for
+multi-step calculations.</p>
+<h2 id="json-wire-shapes">JSON wire shapes</h2>
+<p>With the <code>Bodu.Financial.Serialization.Json</code> converters registered
+(<code>options.AddFinancialJsonConverters()</code>), all three
+<a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> shapes round-trip the precision.</p>
+<h3 id="strict--lenient--the-scale-property">Strict / Lenient — the <code>scale</code> property</h3>
+<p>Ordinary money keeps the canonical two-field object shape. A value whose precision differs from its
+currency's registered minor units additionally emits a <code>scale</code> property:</p>
+<pre><code class="lang-json">{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
+{ &quot;amount&quot;: 145.678912, &quot;currency&quot;: &quot;USD&quot;, &quot;scale&quot;: 6 }
+</code></pre>
+<p>On read, a payload carrying <code>scale</code> is reconstructed at that scale — including trailing zeros the
+stored decimal cannot carry on its own, so <code>{ &quot;amount&quot;: 12.5, &quot;currency&quot;: &quot;USD&quot;, &quot;scale&quot;: 6 }</code>
+deserializes to a value that formats as <code>12.500000</code>. A payload <em>without</em> <code>scale</code> deserializes at the
+registry precision, so documents written before the property existed remain valid, and writers that
+ignore the property keep producing ordinary money.</p>
+<h3 id="compact--scale-by-printed-digits">Compact — scale by printed digits</h3>
+<p>The compact string form pads the amount to the value's minor units, so the fractional-digit count
+<em>is</em> the scale, and the reader infers it — no separate metadata token:</p>
+<pre><code class="lang-json">&quot;19.99 USD&quot;
+&quot;145.678912 USD&quot;
+</code></pre>
+<p>Reading <code>&quot;145.678912 USD&quot;</code> yields a <code>Money</code> reporting <code>MinorUnits == 6</code>; reading <code>&quot;19.99 USD&quot;</code>
+yields ordinary registry-precision USD. Inference applies only to scales <em>finer</em> than the
+registered precision — a scale coarser than the registry (whole-dollar pricing in a two-decimal
+currency) is preserved by the object shapes' <code>scale</code> property, not by the compact form.</p>
+<h3 id="calculatedmoney--verbatim"><code>CalculatedMoney</code> — verbatim</h3>
+<p>An unrounded <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> serializes its full <code>decimal</code> amount exactly as
+stored — every significant digit and any trailing zeros — with no scale metadata, because the
+decimal itself carries the precision:</p>
+<pre><code class="lang-json">{ &quot;amount&quot;: 0.0325125, &quot;currency&quot;: &quot;USD&quot; }
+{ &quot;amount&quot;: 12.500000, &quot;currency&quot;: &quot;USD&quot; }
+</code></pre>
+<p>Use it as the wire form for prices that have not yet been settled to cash; settle after transport
+with <code>RoundToMoney</code>.</p>
+<h2 id="worked-example--a-price-list">Worked example — a price list</h2>
+<p>A six-decimal-place price inside a POCO round-trips through <code>System.Text.Json</code> like any other
+property:</p>
+<pre><code class="lang-csharp">public sealed record Holding(string Ticker, long Shares, Money UnitPrice);
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters();
+
+var holding = new Holding(&quot;ACME&quot;, 1_250, Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6));
+
+string json = JsonSerializer.Serialize(holding, options);
+// {&quot;Ticker&quot;:&quot;ACME&quot;,&quot;Shares&quot;:1250,&quot;UnitPrice&quot;:{&quot;amount&quot;:145.678912,&quot;currency&quot;:&quot;USD&quot;,&quot;scale&quot;:6}}
+
+Holding restored = JsonSerializer.Deserialize&lt;Holding&gt;(json, options)!;
+restored.UnitPrice.MinorUnits;   // → 6
+
+// Settle the position once, at the currency's precision:
+Money position = (new CalculatedMoney(restored.UnitPrice.Amount, restored.UnitPrice.Code)
+    * restored.Shares).RoundToMoney();   // → USD 182098.64
+</code></pre>
+<h2 id="failure-modes">Failure modes</h2>
+<table>
+<thead>
+<tr>
+<th>Payload</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&quot;scale&quot;</code> outside 0–28</td>
+<td><code>JsonException</code> (<code>Money.FromExplicitScale</code> bounds the scale to <code>decimal</code>'s ceiling)</td>
+</tr>
+<tr>
+<td><code>&quot;scale&quot;</code> non-integer or a string</td>
+<td><code>JsonException</code></td>
+</tr>
+<tr>
+<td>Duplicate <code>&quot;scale&quot;</code> (or <code>&quot;amount&quot;</code> / <code>&quot;currency&quot;</code>)</td>
+<td><code>JsonException</code> — last-write-wins on financial payloads is a data-integrity hazard</td>
+</tr>
+<tr>
+<td>Unknown or malformed ISO code</td>
+<td><code>JsonException</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a> — the three-tier rounding model, allocation,
+formatting, and the base JSON wire shapes.</li>
+<li>The <code>Bodu.Financial.Samples.UnitPricing</code> sample
+(<a href="../../samples/financial.html">samples catalogue</a>) — runs every shape on this page end to end.</li>
+<li>The <code>Bodu.Financial.Samples.JsonSerialization</code> sample — the full converter registration and the
+three policy shapes side by side.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html"><code>CalculatedMoney</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.MonetaryContext.html"><code>MonetaryContext</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.ScalePolicy.html"><code>ScalePolicy</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html"><code>FinancialJsonPolicy</code> API reference</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

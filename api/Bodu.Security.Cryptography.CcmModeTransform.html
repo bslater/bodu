@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class CcmModeTransform | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class CcmModeTransform | BODU ">
+    
+    <meta name="description" content="Applies Counter with CBC-MAC (CCM) mode to an underlying , providing authenticated encryption with associated data (AEAD) per NIST SP 800-38C.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Security.Cryptography.CcmModeTransform">
+
+
+
+  <h1 id="Bodu_Security_Cryptography_CcmModeTransform" data-uid="Bodu.Security.Cryptography.CcmModeTransform" class="text-break">Class CcmModeTransform</h1>
+  <div class="markdown level0 summary"><p>Applies Counter with CBC-MAC (CCM) mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, providing authenticated
+encryption with associated data (AEAD) per NIST SP 800-38C.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">CcmModeTransform</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a></div>
+    <div><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Security.Cryptography.dll</h6>
+  <h5 id="Bodu_Security_Cryptography_CcmModeTransform_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class CcmModeTransform : IAeadBlockCipherModeTransform, IAeadTransform, IDisposable</code></pre>
+  </div>
+  <h5 id="Bodu_Security_Cryptography_CcmModeTransform_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC.">
+</p>
+<p>
+CCM is the <b>CTR + CBC-MAC</b> instantiation of the generic AEAD shape above: the top pipeline is the plain CTR
+keystream generator (panel labeled <em>Keystream Generator (CTR)</em>), and the bottom pipeline is a CBC-MAC chain
+over the formatted nonce, associated data, and ciphertext that produces the tag.
+</p>
+<p>
+Fixed parameters (matching the most common deployment profile):
+<ul><li>Nonce (Nlen): 12 bytes — first 12 bytes of the IV.</li><li>Length field (q): 3 bytes — messages up to 2^24 − 1 bytes.</li><li>Tag (T): 16 bytes.</li></ul>
+
+<p>
+Formatting follows NIST SP 800-38C Section 6.3. Flag byte B0: bit 6 = Adata, bits 5–3 = M' = (T−2)/2 = 7, bits 2–0 =
+L' = q−1 = 2. Counter block A_i: byte 0 = 0x02, bytes 1–12 = nonce, bytes 13–15 = counter (big-endian). AAD length
+is encoded as a 2-byte big-endian prefix (supports up to 65 279 bytes).
+</p>
+<p>
+<strong>When to use CCM.</strong> Pick CCM when interoperability with constrained-environment standards is required
+— IEEE 802.15.4 / Zigbee, Bluetooth Mesh, IPsec ESP, and TLS 1.2 with the AES-CCM cipher suites all use it. CCM is
+two-pass over the message (CBC-MAC then CTR), so it is slower than <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> on commodity
+hardware, but it has no Galois-field arithmetic and is easier to implement correctly on minimal microcontrollers.
+For new general-purpose AEAD on x86/ARM hosts prefer GCM; for nonce-misuse resistance prefer
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> or <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>.
+</p>
+<p>
+<strong>Nonce uniqueness is required.</strong> CCM is not nonce-misuse resistant. Reusing a <code>(key, nonce)</code> pair
+across two messages reuses the CTR keystream and lets an attacker XOR the two ciphertexts to recover
+<code>P1 XOR P2</code>; CBC-MAC chains from the same starting state are also exposed, which weakens authentication.
+Callers must guarantee that every <code>(key, nonce)</code> pair is used at most once — typically via a per-message
+counter or a fresh random 96-bit value drawn from a CSPRNG. If nonce uniqueness cannot be guaranteed prefer
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> or <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>.
+</p>
+</div>
+  <h5 id="Bodu_Security_Cryptography_CcmModeTransform_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+using Bodu.Security.Cryptography.Extensions;
+
+using IBlockCipher cipher = new AesBlockCipher(key);
+byte[] iv = BuildCcmIv(nonce); // 12-byte nonce in the first 12 bytes of the IV
+using IAeadBlockCipherModeTransform ccm = new CcmModeTransform(cipher, iv);
+byte[] sealed_ = ccm.Encrypt(plaintext, associatedData: header);
+using IAeadBlockCipherModeTransform dec = new CcmModeTransform(cipher, iv);
+byte[] recovered = dec.Decrypt(sealed_, associatedData: header);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.CcmModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.-ctor.html#Bodu_Security_Cryptography_CcmModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___">CcmModeTransform(IBlockCipher, byte[])</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a> class. The first 12 bytes of
+<code class="paramref">iv</code> are used as the CCM nonce.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform_TagSize" data-uid="Bodu.Security.Cryptography.CcmModeTransform.TagSize">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.TagSize.html#Bodu_Security_Cryptography_CcmModeTransform_TagSize">TagSize</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the authentication-tag size, in bits.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.CcmModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.Decrypt.html#Bodu_Security_Cryptography_CcmModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decrypts <code class="paramref">ciphertextWithTag</code> and verifies the authentication tag.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.CcmModeTransform.Dispose">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.Dispose.html#Bodu_Security_Cryptography_CcmModeTransform_Dispose">Dispose()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Releases the resources used by this instance and clears retained nonce and associated-data state from memory.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.CcmModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.Encrypt.html#Bodu_Security_Cryptography_CcmModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encrypts <code class="paramref">plaintext</code> and appends the authentication tag to <code class="paramref">output</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Security_Cryptography_CcmModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.CcmModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.ProcessAssociatedData.html#Bodu_Security_Cryptography_CcmModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__">ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
+<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Encrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> or <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.Decrypt.html#Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.DecryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, AuthenticationTag, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached.html#Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadBlockCipherModeTransformExtensions.EncryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Decrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Decrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.Encrypt.html#Bodu_Security_Cryptography_Extensions_AeadTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__">AeadTransformExtensions.Encrypt(IAeadTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)</a>
+  </div>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span><a href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the
+     AEAD-modes guide</a></span></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></div>
+      <div><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a></div>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

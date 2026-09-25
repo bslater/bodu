@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Binary rule packs | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Binary rule packs | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="binary-rule-packs">Binary rule packs</h1>
+
+<p>A binary rule pack (<code>.bcal</code>) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a <strong>validated</strong> <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a>. Packs are written at build/authoring time and loaded at run time without parsing or semantic validation — the trim- and AOT-friendly load path for calendar data.</p>
+<h2 id="when-to-use-a-pack">When to use a pack</h2>
+<ul>
+<li><strong>Trimmed / native-AOT deployments.</strong> Loading a pack touches no XML/JSON machinery and no reflection; every strategy is reconstructed through a closed table of one-byte discriminators. This is the data-driven alternative the plugin loader's <code>[RequiresUnreferencedCode]</code> annotations point at.</li>
+<li><strong>Startup cost.</strong> A pack skips the parse → import-resolution → validation pipeline entirely; only bounds checks and an integrity digest run at load.</li>
+<li><strong>Sealed deployment artifacts.</strong> A pack cannot carry anything the shipped engine does not already implement, and any corruption or tampering fails the payload digest.</li>
+</ul>
+<h2 id="producing-and-loading-packs">Producing and loading packs</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">// Compile: author (or load) a document, then save it as a pack. Build() runs first,
+// so only content that passed the canonical loader's validation is ever encoded.
+NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create(&quot;corp.holidays&quot;)
+    .AddNotableDate(&quot;company-day&quot;, &quot;Company Day&quot;, NotableDateCategory.Observance, d =&gt; d
+        .AddRule(&quot;default&quot;, r =&gt; r.Fixed(3, 14)));
+
+builder.Save(&quot;corp-holidays.bcal&quot;);             // extension selects the binary format
+builder.SaveBinary(&quot;corp-holidays.bcal&quot;);       // or explicitly
+
+// Load: the runtime-side entry point skips parsing and validation.
+using FileStream stream = File.OpenRead(&quot;corp-holidays.bcal&quot;);
+NotableDateResource resource = NotableDateResourceLoader.LoadBinary(stream);
+INotableDateService service = new NotableDateService(resource);
+</code></pre>
+<p>The symmetric low-level surface is <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateBinaryResource.html">NotableDateBinaryResource</a> — <code>Write(resource, stream)</code> / <code>Read(stream)</code> — usable with any already-built resource, including the bundled catalogues.</p>
+<p>A pack is <strong>compiled output, not an authoring source</strong>: <code>NotableDateDocumentBuilder.Load</code> rejects <code>.bcal</code> paths with <code>NotSupportedException</code>. Keep the XML/JSON document as the editable source of truth and recompile.</p>
+<h2 id="guarantees">Guarantees</h2>
+<table>
+<thead>
+<tr>
+<th>Guarantee</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pre-validated content</strong></td>
+<td>The writer only accepts a built <code>NotableDateResource</code>; <code>SaveBinary</code> runs <code>Build()</code> (the canonical loader) first, so an invalid document can never reach a pack.</td>
+</tr>
+<tr>
+<td><strong>Byte stability</strong></td>
+<td>The same resource always encodes to the same bytes — dictionary content is key-sorted and string interning follows deterministic traversal — so build systems can rely on pack outputs for up-to-date checks.</td>
+</tr>
+<tr>
+<td><strong>Integrity</strong></td>
+<td>The header carries a SHA-256 digest of the payload; any corruption or modification fails the load before content is interpreted.</td>
+</tr>
+<tr>
+<td><strong>Sealed</strong></td>
+<td>The reader rejects unknown format versions, unknown discriminators, undefined enum values, out-of-range string references, truncation at any byte, trailing bytes, and values outside a model constructor's domain — always as <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateBinaryFormatException.html">NotableDateBinaryFormatException</a> (a <code>FormatException</code>), never as an unrelated failure.</td>
+</tr>
+<tr>
+<td><strong>Behavioural fidelity</strong></td>
+<td>A round-tripped resource resolves identically to the original; the test suite pins resolved-occurrence parity for every bundled catalogue and a synthetic document covering every strategy, recurrence, and duration type.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="format-layout-version-1">Format layout (version 1)</h2>
+<p>Multi-byte integers are little-endian. <code>varuint</code> is the 7-bit variable-length encoding; signed values use ZigZag over <code>varuint</code>. Strings are referenced by 1-based index into a deduplicating table (index <code>0</code> = null); dates are day numbers.</p>
+<pre><code class="lang-text">header   := &quot;BCAL&quot; version:u16 flags:u16 payload-sha256:32B
+payload  := string-table body
+string-table := count:varuint { length:varuint utf8-bytes }*
+body     := resourceId schemaVersion resolution-policy
+            adjustment-policies:count-prefixed
+            notable-dates:count-prefixed
+</code></pre>
+<p>Rules encode nullable fields as presence bytes and their occurrence source as a marker byte (<code>1</code> = calculation strategy, <code>2</code> = recurrence) followed by a discriminator byte and that type's fields. The discriminator tables enumerate the engine's 13 calculation strategies, 4 recurrence strategies, and 2 duration definitions exhaustively; additions require a new format version, which this reader rejects.</p>
+<h2 id="compiling-packs-from-the-command-line">Compiling packs from the command line</h2>
+<p>The <code>bodu-calendar</code> dotnet tool wraps the same compile pipeline for scripts and CI — it validates a notable-date document with the stable <code>BODU-CAL-*</code> diagnostics and compiles it to a sealed pack without writing any C#:</p>
+<pre><code class="lang-bash"># Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
+
+bodu-calendar lint holidays.xml
+bodu-calendar compile holidays.xml -o holidays.bcal
+bodu-calendar info holidays.bcal
+</code></pre>
+<p><code>lint</code> reports every diagnostic in collect mode, <code>compile</code> refuses to write a pack from a document that fails validation, and <code>info</code> prints a compiled pack's header, counts, and integrity digest.</p>
+<h2 id="compiling-packs-during-build">Compiling packs during build</h2>
+<p>The <code>Bodu.Globalization.Calendar.Build</code> package adds MSBuild integration — a development dependency that compiles <code>NotableDatePack</code> items to <code>.bcal</code> incrementally on every build via the bundled <code>bodu-calendar</code> tool, with no runtime reference added to the consuming project:</p>
+<p>It is <a href="../../docs/package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so reference the project from a clone:</p>
+<pre><code class="lang-xml">&lt;ProjectReference Include=&quot;../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj&quot;
+                  ReferenceOutputAssembly=&quot;false&quot; OutputItemType=&quot;Analyzer&quot; /&gt;
+</code></pre>
+<pre><code class="lang-xml">&lt;ItemGroup&gt;
+  &lt;NotableDatePack Include=&quot;rules\holidays.xml&quot; /&gt;
+  &lt;NotableDatePack Include=&quot;rules\corporate.json&quot; ResolverDir=&quot;rules\shared&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p>Each item compiles to <code>$(NotableDatePackOutputPath)&lt;Filename&gt;.bcal</code> (defaulting under the intermediate output path) and is copied to the project output directory; set <code>NotableDatePackCopyToOutput</code> to <code>false</code> to keep packs out of the output folder.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="round-trip-guarantees.html">Builder round-trip guarantees</a> — the XML/JSON serialization contract the pack compiler builds on.</li>
+<li><a href="notable-date-builder.html">Authoring with the notable-date builder</a> — producing the documents packs are compiled from.</li>
+<li><a href="plugin-trust.html">Calendar plugin trust</a> — why data packs are the AOT-compatible alternative to code plugins.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

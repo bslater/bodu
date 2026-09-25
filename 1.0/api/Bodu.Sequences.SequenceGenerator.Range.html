@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Method Range | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Method Range | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Sequences.SequenceGenerator.Range*">
+
+
+
+<h1 id="Bodu_Sequences_SequenceGenerator_Range_" data-uid="Bodu.Sequences.SequenceGenerator.Range*">Method Range</h1>
+<div class="markdown level0 summary"></div>
+<div class="markdown level0 conceptual"></div>
+
+<a id="Bodu_Sequences_SequenceGenerator_Range_" data-uid="Bodu.Sequences.SequenceGenerator.Range*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int32,System.Int32)">Range(int, int)</h4>
+<div class="markdown level1 summary"><p>Yields consecutive integers from <code class="paramref">start</code> through <code class="paramref">stop</code>, walking in
+whichever direction is implied by the two endpoints.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;int&gt; Range(int start, int stop)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">start</span></td>
+      <td><p>The first value emitted by the sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">stop</span></td>
+      <td><p>The final value emitted by the sequence; this value is included in the output when reached exactly.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</td>
+      <td><p>A lazily evaluated, finite sequence of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values inclusive of both endpoints.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Prefer this overload over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.range">Range(int, int)</a> when the natural way to express
+the range is "from <code>a</code> to <code>b</code>" rather than "<code>n</code> values starting at <code>a</code>", or when a
+descending sequence is required — <code>Enumerable.Range</code> only walks forwards and rejects negative counts.
+</p>
+<p>
+The step direction is chosen automatically: ascending when <code class="paramref">start</code> is less than
+<code class="paramref">stop</code>, descending otherwise. When <code class="paramref">start</code> equals <code class="paramref">stop</code> a
+single-element sequence is returned.
+</p>
+<p>
+Both endpoints are inclusive. The result is deferred — no values are produced until the sequence is enumerated —
+and the underlying iterator allocates only the per-enumeration state object.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">foreach (int n in SequenceGenerator.Range(10, 14))
+    Console.Write($"{n} "); // =&gt; 10 11 12 13 14
+
+foreach (int n in SequenceGenerator.Range(3, -2))
+    Console.Write($"{n} "); // =&gt; 3 2 1 0 -1 -2</code></pre>
+
+<a id="Bodu_Sequences_SequenceGenerator_Range_" data-uid="Bodu.Sequences.SequenceGenerator.Range*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int32,System.Int32,System.Int32)">Range(int, int, int)</h4>
+<div class="markdown level1 summary"><p>Yields integers between <code class="paramref">start</code> and <code class="paramref">stop</code> inclusive, advancing by
+<code class="paramref">step</code> at each iteration.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;int&gt; Range(int start, int stop, int step)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">start</span></td>
+      <td><p>The first value emitted by the sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">stop</span></td>
+      <td><p>The endpoint at which iteration terminates; included in the output when reached exactly.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">step</span></td>
+      <td><p>The signed delta applied between successive values. Positive values produce an ascending sequence, negative
+values produce a descending sequence, and zero produces an unbounded sequence that yields
+<code class="paramref">start</code> forever.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</td>
+      <td><p>A lazily evaluated sequence of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a> values; finite when <code class="paramref">step</code> is non-zero,
+otherwise infinite.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Use this overload when the caller needs explicit control over the stride, including descending ranges and
+non-unit steps that <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.range">Range(int, int)</a> cannot express. The two-argument
+<a class="xref" href="Bodu.Sequences.SequenceGenerator.Range.html#Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_">Range(int, int)</a> is more convenient when a step of <code>+1</code> or <code>-1</code> is sufficient.
+</p>
+<p>
+Iteration is bounded by <code class="paramref">stop</code>: the inclusive endpoint is yielded only when
+<code class="paramref">step</code> divides the interval evenly. If the next value would overflow
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.minvalue">MinValue</a> the sequence terminates cleanly rather than throwing.
+</p>
+<p>
+When <code class="paramref">step</code> is <code>0</code> the method returns an infinite sequence — callers must compose it with
+an operator such as <code>Take</code> or <code>TakeWhile</code> to bound enumeration.
+</p>
+<p>
+The result is deferred and allocation-light; no array or list is materialized.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int32_System_Int32_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">foreach (int n in SequenceGenerator.Range(0, 20, 5))
+    Console.Write($"{n} "); // =&gt; 0 5 10 15 20
+
+foreach (int n in SequenceGenerator.Range(10, 1, -3))
+    Console.Write($"{n} "); // =&gt; 10 7 4 1
+
+// Step of zero yields an unbounded sequence — bound it with Take.
+var heartbeat = SequenceGenerator.Range(42, 0, 0).Take(3); // =&gt; 42, 42, 42</code></pre>
+
+<a id="Bodu_Sequences_SequenceGenerator_Range_" data-uid="Bodu.Sequences.SequenceGenerator.Range*"></a>
+<h4 id="Bodu_Sequences_SequenceGenerator_Range_System_Int64_System_Int32_" data-uid="Bodu.Sequences.SequenceGenerator.Range(System.Int64,System.Int32)">Range(long, int)</h4>
+<div class="markdown level1 summary"><p>Yields a fixed number of consecutive 64-bit integers beginning at <code class="paramref">start</code>.</p>
+</div>
+<div class="markdown level1 conceptual"></div>
+<h5 class="declaration">Declaration</h5>
+<div class="codewrapper">
+  <pre><code class="lang-csharp hljs">public static IEnumerable&lt;long&gt; Range(long start, int count)</code></pre>
+</div>
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></td>
+      <td><span class="parametername">start</span></td>
+      <td><p>The first value emitted by the sequence.</p>
+</td>
+    </tr>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+      <td><span class="parametername">count</span></td>
+      <td><p>The number of values to produce. Must be non-negative.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a>&gt;</td>
+      <td><p>A lazily evaluated, finite sequence of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a> values containing exactly <code class="paramref">count</code>
+elements.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int64_System_Int32__remarks">Remarks</h5>
+<div class="markdown level1 remarks"><p>
+Prefer this overload when the desired output is a count-bounded run of contiguous values, particularly for
+ranges that exceed the addressable region of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.linq.enumerable.range">Range(int, int)</a> (which is
+restricted to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>).
+</p>
+<p>
+A <code class="paramref">count</code> of <code>0</code> produces an empty sequence. The endpoint is exclusive in the sense that
+the final value emitted is <code><code class="paramref">start</code> + <code class="paramref">count</code> - 1</code>.
+</p>
+<p>
+Overflow is rejected up-front by the argument validation, so the iterator never throws mid-enumeration.
+Iteration is deferred, deterministic, and allocation-free apart from the iterator state.
+</p>
+</div>
+<h5 id="Bodu_Sequences_SequenceGenerator_Range_System_Int64_System_Int32__examples">Examples</h5>
+<pre><code class="lang-csharp">foreach (long n in SequenceGenerator.Range(1_000_000_000_000L, 4))
+    Console.Write($"{n} "); // =&gt; 1000000000000 1000000000001 1000000000002 1000000000003
+
+var empty = SequenceGenerator.Range(0L, 0).ToArray(); // =&gt; empty.Length == 0</code></pre>
+
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></td>
+      <td><p>Thrown when <code class="paramref">count</code> is negative, or when the inclusive range
+<code>[<code class="paramref">start</code>, <code class="paramref">start</code> + <code class="paramref">count</code> - 1]</code> would overflow
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64.maxvalue">MaxValue</a>.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

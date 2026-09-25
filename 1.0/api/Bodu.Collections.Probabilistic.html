@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Collections.Probabilistic | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Collections.Probabilistic | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Probabilistic">
+
+  <h1 id="Bodu_Collections_Probabilistic" data-uid="Bodu.Collections.Probabilistic" class="text-break">Namespace Bodu.Collections.Probabilistic</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-collections.svg" alt="Bodu.Collections.Probabilistic"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Collections.Probabilistic</strong> holds the approximate &quot;sketch&quot; data structures of the <code>Bodu.Collections</code> package: <a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> (approximate set membership), <a class="xref" href="Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a> (approximate per-element frequencies), and <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> (approximate distinct-element counts). Each is sized once from its constructor arguments, never grows, and answers queries over arbitrarily long streams in O(1) space — trading exactness for a fixed, small memory footprint.</p>
+<p>The error each sketch carries is one-sided and quantified, which makes the types usable as contracts rather than heuristics: a Bloom filter never produces a false negative, a count-min sketch never underestimates, and a HyperLogLog estimate comes with a known standard error. When the answer must be exact, reach for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet&lt;T&gt;</a>, <a class="xref" href="Bodu.Collections.Generic.Multiset-1.html">Multiset&lt;T&gt;</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> instead — the sketches are for the regime where the exact structure no longer fits in memory.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../guides/core/probabilistic-collections.html">Probabilistic collections (sketches)</a></strong> — the three usage patterns, the accuracy contracts, sizing guidance, and the when-to-use-which table.</li>
+<li><strong><a href="../docs/collections/index.html">Introduction</a></strong> — where the sketches sit among the exact-semantics collections.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> — approximate set membership with <strong>no false negatives</strong>: an added element is always reported as present; only never-added elements can be misreported. Sized from <code>expectedItems</code> (n) and <code>falsePositiveRate</code> (p) via the standard Bloom formulas; <code>EstimatedFalsePositiveRate</code> tracks the rate implied by the current fill, which rises above the design rate once the filter is filled past <code>ExpectedItems</code>. <code>UnionWith</code> ORs a compatible filter's bits into this one.</li>
+<li><a class="xref" href="Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a> — approximate frequency counting that <strong>never underestimates</strong>: <code>EstimateCount</code> returns at least the element's true count, and with probability at least <code>1 − δ</code> returns at most the true count plus <code>ε · TotalCount</code>. The <code>epsilon</code> / <code>delta</code> constructor arguments size the sketch (<code>w = ⌈e/ε⌉</code> counters per row, <code>d = ⌈ln(1/δ)⌉</code> rows). Negative updates are rejected by design — a removal could break the never-underestimate guarantee. <code>MergeWith</code> adds a compatible sketch's counters cell-wise.</li>
+<li><a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> — approximate distinct counting with a relative standard error of about <code>1.04/√m</code>, where <code>m = 2^precision</code> one-byte registers (<code>StandardError</code> exposes the figure). Each extra bit of precision doubles the footprint and improves the error by √2. <code>MergeWith</code> takes the register-wise maximum of a compatible sketch and is lossless and idempotent — shared elements are not double-counted.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu.Collections.Probabilistic;
+
+// Track ~1,000,000 previously crawled URLs in ~1.14 MiB with a 1% false-positive budget.
+var crawled = new BloomFilter&lt;string&gt;(expectedItems: 1_000_000, falsePositiveRate: 0.01);
+
+crawled.Add(&quot;https://example.com/&quot;);
+
+if (!crawled.MightContain(candidateUrl))
+{
+    // Definitely not crawled yet — no false negatives, ever.
+    Enqueue(candidateUrl);
+    crawled.Add(candidateUrl);
+}
+
+// Approximate frequencies and distinct counts over the same stream.
+var hits = new CountMinSketch&lt;string&gt;(epsilon: 0.01, delta: 0.01);
+hits.Add(&quot;GET /search&quot;, 41);
+var estimate = hits.EstimateCount(&quot;GET /search&quot;); // &gt;= 41, usually exactly 41
+
+var visitors = new HyperLogLog&lt;int&gt;(precision: 14); // 16 KiB, ~0.81% standard error
+visitors.Add(visitorId);
+var distinct = visitors.EstimateCardinality();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Approximate by design.</strong> A <code>BloomFilter&lt;T&gt;</code> can report a never-added element as present (a false positive); a <code>CountMinSketch&lt;T&gt;</code> can report a count higher than the truth (an overestimate); a <code>HyperLogLog&lt;T&gt;</code> estimate is a statistical figure with a known standard error, not a tally. The error is one-sided in each case — the direction it cannot err in is the contract.</li>
+<li><strong>All entropy comes from the comparer's 32-bit hash.</strong> Each type hashes through the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> (or the default comparer), expanding the 32-bit <code>GetHashCode</code> through a deterministic SplitMix64-style avalanche into the 64-bit values the sketch consumes. The expansion cannot manufacture entropy the comparer did not supply, so the achievable accuracy floor is bounded by the collision rate of that 32-bit hash — two elements with equal comparer hashes are indistinguishable to a sketch.</li>
+<li><strong>Randomized string hashes make exports process-local.</strong> The expansion is platform-stable, but <code>string.GetHashCode()</code> is randomized per process — exported state for <code>string</code> elements (or any type with a randomized hash) under the default comparer is only meaningful when re-imported within the same process. Supply a custom comparer with a stable hash when exports must cross process boundaries.</li>
+<li><strong>Merges require compatible instances.</strong> <code>UnionWith</code> / <code>MergeWith</code> demand identical geometry (bit count and hash count; width and depth; precision) and the same or an equal comparer — in practice, instances constructed with the same parameters.</li>
+<li><strong>Export is an opaque, version-checked snapshot, not a wire contract.</strong> <code>TryExport</code> / <code>Export</code> / <code>GetExportByteCount</code> and the static <code>Import</code> round-trip a sketch's state as bytes, but the layout may change between library versions with a corresponding version-byte bump. The comparer is not part of the exported state — <code>Import</code> requires the caller to re-supply it.</li>
+<li><strong>None of the sketches is thread-safe.</strong> Concurrent reads and writes require external synchronization.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a></h4>
+      <section><p>Represents a space-efficient probabilistic set that tests whether an element <em>might</em> be a member. Membership
+queries can produce false positives but never false negatives: an element that was added is always reported as
+present, while an element that was never added is occasionally misreported as present.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a></h4>
+      <section><p>Represents a space-efficient probabilistic frequency sketch that estimates how many times an element has been added.
+Estimates can overestimate but never underestimate: <a class="xref" href="Bodu.Collections.Probabilistic.CountMinSketch-1.EstimateCount.html#Bodu_Collections_Probabilistic_CountMinSketch_1_EstimateCount__0_">EstimateCount(T)</a> always returns at least the true
+count of the queried element, and with probability at least <code>1 − δ</code> returns at most the true count plus
+<code>ε · TotalCount</code>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a></h4>
+      <section><p>Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The
+estimate is approximate: it carries a relative standard error of about <code>1.04/√m</code>, where <code>m</code> is
+<a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.RegisterCount.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a>, but the sketch itself occupies only one byte per register regardless of how many
+elements are observed.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

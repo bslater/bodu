@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Articles | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Articles | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="articles">Articles</h1>
+
+<p>Narrative documentation and library overviews complement the auto-generated <a class="xref" href="../api/Bodu.html">API reference</a>.</p>
+<p>If you are new to Bodu, start with the <a href="../docs/introduction.html">project introduction</a> and the <a href="../docs/getting-started.html">cross-library getting-started page</a>. The <a href="../docs/io-hashing/index.html">Bodu.IO.Hashing</a> and <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography</a> introductions map the hashing and cryptography type hierarchy and explain how to choose between types that sound similar.</p>
+<h2 id="api-namespace-landing-pages">API namespace landing pages</h2>
+<p>Each top-level namespace has a landing page that introduces its purpose, lists its key types, and shows a minimal usage example before handing off to the auto-generated reference.</p>
+<ul>
+<li><p><strong><a class="xref" href="../api/Bodu.html">Bodu — Bodu.Core foundations</a></strong>
+The <code>WeekPattern</code> value type, pooled buffers, the <code>Bodu.Threading</code> async coordination primitives, the <code>Bodu.Functional</code> railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code> / <code>Either&lt;TLeft,TRight&gt;</code>), the date / numeric / span extensions, and the centralized <code>ThrowHelper</code> argument validation every other package builds on.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic — the Bodu.Collections catalogue</a></strong>
+Fixed-capacity circular buffers, the <code>Deque&lt;T&gt;</code>, the <code>EvictingDictionary&lt;TKey, TValue&gt;</code> with six eviction policies, the <code>SequencedDictionary&lt;TKey, TValue&gt;</code> (Java <code>LinkedHashMap</code> shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, navigable sets, interval trees, graphs, tries, and the probabilistic sketches — shipped in the <code>Bodu.Collections</code> package, with the lock-free and lock-striped variants in <code>Bodu.Collections.Concurrent</code>.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing — fingerprints, checksums, and check digits</a></strong>
+Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (widths 1–64 bits), the Fletcher 16 / 32 / 64 family, Adler-32 / 32C / 64, FNV-1 / 1a, CityHash, MurmurHash3, Pearson, classic string hashes — plus single- and multi-character check digits (Luhn, Damm, Verhoeff, EAN, GTIN, IBAN, ISBN, SEDOL, CUSIP, LEI).</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography — ciphers, hashes, AEAD, and streaming tree digests</a></strong>
+Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an <code>AesBlockCipher</code> adapter over the BCL AES engine paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle-tree hashing, and full ASCON-AEAD support.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar — notable-date resolution</a></strong>
+Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources, an observance-adjustment pipeline, and a trust-policy-driven plugin host.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Text.Filtering.html">Bodu.Text.Filtering — include/exclude text filtering</a></strong>
+A high-performance filtering engine for lists of text values: glob (wildcard, character-class, <code>{a,b}</code> alternation) and regex patterns compiled once into a cost-tiered <code>TextFilter</code> that runs the cheapest strategies first. Ant / MSBuild-style <code>AnyMatch</code> sets or gitignore-style <code>LastMatchWins</code> ordered rules with <code>!</code> re-inclusion, gitignore-convention line parsing, and built-in telemetry — decision counters, per-pattern hit counts, and a per-decision observer hook.</p>
+</li>
+<li><p><strong><a href="../docs/formats/index.html">Bodu.Text.Formats — line-oriented text document formats</a></strong>
+An umbrella over three <code>System.Text.Json</code>-shaped sibling packages — <strong>Delimited</strong> (RFC 4180 CSV / TSV), <strong>DotEnv</strong> (<code>.env</code> key/value), and <strong>INI</strong> (comment-preserving) — each exposing the same shape: a forward-only <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, a <code>…Serializer</code> POCO mapper (with streaming and reflection-free factory overloads), a mutable <code>…Node</code> DOM and a read-only <code>…Document</code> DOM, dialect policies for dirty input, and strict invariant enforcement.</p>
+</li>
+<li><p><strong><a href="../docs/serialization/index.html">Bodu.Text.Bencode, Bodu.Text.Toml &amp; Bodu.Text.Yaml — object-mapping serializers</a></strong>
+Three libraries that map your own types to and from a format — Bencode (BitTorrent BEP 3), TOML (v1.0.0 / v1.1.0), and YAML (1.2 core schema). Deliberate siblings over the shared <code>Bodu.Text.Serialization</code> engine, each shipping a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> ref-struct pair, and the full converter / attribute / callback / naming-policy surface.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Text.html">Bodu.Text — encoding detection and text/byte conversion helpers</a></strong>
+BOM-based <code>EncodingDetection</code> plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> — span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation on top of <code>System.Text.Encoding</code>, shipped in the <code>Bodu.Core</code> package. For binary-to-text codecs (Base16/32/58/64/85), see <code>Bodu.Text.Encoding</code>.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Numerics.html">Bodu.Numerics — exact rational arithmetic and bounded intervals</a></strong>
+<code>Fraction&lt;T&gt;</code> for canonical rational arithmetic over any <code>IBinaryInteger&lt;T&gt;</code> backing type, with <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation. <code>Interval&lt;T&gt;</code> for closed / open / half-open intervals with intersection, union, and adjacency.</p>
+</li>
+<li><p><strong><a class="xref" href="../api/Bodu.Financial.html">Bodu.Financial — type-safe monetary primitives</a></strong>
+<code>Money&lt;TCurrency&gt;</code> where the currency is encoded as the type parameter so cross-currency arithmetic fails the build; <code>Money</code> for runtime-tagged scenarios; <code>MoneyBag</code> for multi-currency portfolios; a shipped catalogue of 184 ISO 4217 currencies (active + historic with demonetisation metadata); an audit-grade <code>IDatedRateProvider</code> stack; fair allocation; cash rounding; <code>Fraction&lt;BigInteger&gt;</code> interop for sub-minor-unit-precise chains; and three JSON wire shapes (strict / lenient / compact).</p>
+</li>
+</ul>
+<h2 id="guides">Guides</h2>
+<ul>
+<li><strong><a href="../guides/core/index.html">Core Foundations guides</a></strong> — circular buffer, deque, evicting dictionary, week pattern.</li>
+<li><strong><a href="../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.</li>
+<li><strong><a href="../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.</li>
+<li><strong><a href="../guides/calendar/index.html">Bodu.Globalization.Calendar guides</a></strong> — <code>NotableDateService</code>, built-in date-calculation algorithms, rule authoring (XML / JSON / <a href="../guides/calendar/notable-date-builder.html">fluent builder</a>), working-day arithmetic, and <a href="../guides/calendar/data-packs.html">data packs</a>.</li>
+<li><strong><a href="../guides/formats/index.html">Bodu.Text.Formats guides</a></strong> — the <a href="../guides/formats/delimited.html">Delimited</a> (CSV / TSV), <a href="../guides/formats/dotenv.html">DotEnv</a>, and <a href="../guides/formats/ini.html">INI</a> codecs, and <a href="../guides/formats/streaming.html">streaming</a> support.</li>
+<li><strong><a href="../guides/serialization/index.html">Bodu serializer guides</a></strong> — <a href="../guides/serialization/toml/using.html">Using TOML</a>, <a href="../guides/serialization/bencode/using.html">Using Bencode</a>, <a href="../guides/serialization/yaml/using.html">Using YAML</a>, and writing converters.</li>
+<li><strong><a href="../guides/numerics/index.html">Bodu.Numerics guides</a></strong> — <a href="../guides/numerics/fraction.html"><code>Fraction&lt;T&gt;</code></a>, <a href="../guides/numerics/interval.html"><code>Interval&lt;T&gt;</code></a>.</li>
+<li><strong><a href="../guides/financial/index.html">Bodu.Financial guides</a></strong> — <a href="../guides/financial/money.html"><code>Money&lt;TCurrency&gt;</code></a>.</li>
+<li><strong><a href="../guides/topics/binary-formats.html">Binary Formats &amp; I/O guides</a></strong> — <a href="../guides/io-compound/index.html">Bodu.IO.Compound</a> (reading, editing, and authoring CFB containers, property sets), <a href="../guides/excel/index.html">Bodu.Formats.Excel.Binary</a> (BIFF8 <code>.xls</code> workbooks, cells, and dates), and <a href="../guides/outlook/index.html">Bodu.Formats.Outlook</a> (<code>.msg</code> messages, MAPI properties, and named properties).</li>
+</ul>
+<h2 id="project-documentation">Project documentation</h2>
+<ul>
+<li><a href="../docs/introduction.html">Introduction</a> — project overview, design principles, and the per-library map.</li>
+<li><a href="../docs/getting-started.html">Getting started</a> — prerequisites, install commands, and one-minute samples per library.</li>
+<li>Per-library introductions: <a href="../docs/core/index.html">Bodu.Core</a> · <a href="../docs/io-hashing/index.html">Bodu.IO.Hashing</a> · <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography</a> · <a href="../docs/calendar/index.html">Bodu.Globalization.Calendar</a> · <a href="../docs/formats/index.html">Bodu.Text.Formats</a> · <a href="../docs/text/index.html">Bodu.Text</a> · <a href="../docs/numerics/index.html">Bodu.Numerics</a> · <a href="../docs/financial/index.html">Bodu.Financial</a> · <a href="../docs/io-compound/index.html">Bodu.IO.Compound</a> · <a href="../docs/excel/index.html">Bodu.Formats.Excel.Binary</a> · <a href="../docs/io-pst/index.html">Bodu.IO.Pst</a>.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Enum CrcStandards | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Enum CrcStandards | BODU ">
+    
+    <meta name="description" content="Identifies a CRC parameter set defined in the CRC RevEng catalogue. Pass to  to materialise the corresponding  on demand.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.IO.Hashing.Checksums.CrcStandards">
+
+
+
+
+  <h1 id="Bodu_IO_Hashing_Checksums_CrcStandards" data-uid="Bodu.IO.Hashing.Checksums.CrcStandards" class="text-break">Enum CrcStandards</h1>
+  <div class="markdown level0 summary"><p>Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
+Pass to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.Get.html#Bodu_IO_Hashing_Checksums_CrcStandard_Get_Bodu_IO_Hashing_Checksums_CrcStandards_">Get(CrcStandards)</a> to materialise the corresponding <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> on demand.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">IO</span>.<a class="xref" href="Bodu.IO.Hashing.html">Hashing</a>.<a class="xref" href="Bodu.IO.Hashing.Checksums.html">Checksums</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.IO.Hashing.dll</h6>
+  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandards_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public enum CrcStandards</code></pre>
+  </div>
+  <h5 id="Bodu_IO_Hashing_Checksums_CrcStandards_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>The enum covers only canonical names. Published aliases (for example <code>CRC-32</code> or <code>PKZIP</code>) are not separate
+values — they resolve to their canonical instance through <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.FromName.html#Bodu_IO_Hashing_Checksums_CrcStandard_FromName_System_String_">FromName(string)</a>. Standards whose width
+exceeds 64 bits (currently only <code>CRC-82/DARC</code>) are omitted because they cannot be represented in a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a>.</p>
+</div>
+  <h3 id="fields">Fields
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    <thead>
+    </thead></thead><tbody>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_GSM">CRC3_GSM</td>
+        <td><p>Represents the <code>CRC-3/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC3_ROHC">CRC3_ROHC</td>
+        <td><p>Represents the <code>CRC-3/ROHC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_G704">CRC4_G704</td>
+        <td><p>Represents the <code>CRC-4/G-704</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC4_INTERLAKEN">CRC4_INTERLAKEN</td>
+        <td><p>Represents the <code>CRC-4/INTERLAKEN</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_EPCC1G2">CRC5_EPCC1G2</td>
+        <td><p>Represents the <code>CRC-5/EPC-C1G2</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_G704">CRC5_G704</td>
+        <td><p>Represents the <code>CRC-5/G-704</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC5_USB">CRC5_USB</td>
+        <td><p>Represents the <code>CRC-5/USB</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000A">CRC6_CDMA2000A</td>
+        <td><p>Represents the <code>CRC-6/CDMA2000-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_CDMA2000B">CRC6_CDMA2000B</td>
+        <td><p>Represents the <code>CRC-6/CDMA2000-B</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_DARC">CRC6_DARC</td>
+        <td><p>Represents the <code>CRC-6/DARC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_G704">CRC6_G704</td>
+        <td><p>Represents the <code>CRC-6/G-704</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC6_GSM">CRC6_GSM</td>
+        <td><p>Represents the <code>CRC-6/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_MMC">CRC7_MMC</td>
+        <td><p>Represents the <code>CRC-7/MMC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_ROHC">CRC7_ROHC</td>
+        <td><p>Represents the <code>CRC-7/ROHC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC7_UMTS">CRC7_UMTS</td>
+        <td><p>Represents the <code>CRC-7/UMTS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_AUTOSAR">CRC8_AUTOSAR</td>
+        <td><p>Represents the <code>CRC-8/AUTOSAR</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_BLUETOOTH">CRC8_BLUETOOTH</td>
+        <td><p>Represents the <code>CRC-8/BLUETOOTH</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_CDMA2000">CRC8_CDMA2000</td>
+        <td><p>Represents the <code>CRC-8/CDMA2000</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DARC">CRC8_DARC</td>
+        <td><p>Represents the <code>CRC-8/DARC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_DVBS2">CRC8_DVBS2</td>
+        <td><p>Represents the <code>CRC-8/DVB-S2</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMA">CRC8_GSMA</td>
+        <td><p>Represents the <code>CRC-8/GSM-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_GSMB">CRC8_GSMB</td>
+        <td><p>Represents the <code>CRC-8/GSM-B</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_HITAG">CRC8_HITAG</td>
+        <td><p>Represents the <code>CRC-8/HITAG</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_I4321">CRC8_I4321</td>
+        <td><p>Represents the <code>CRC-8/I-432-1</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ICODE">CRC8_ICODE</td>
+        <td><p>Represents the <code>CRC-8/I-CODE</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_LTE">CRC8_LTE</td>
+        <td><p>Represents the <code>CRC-8/LTE</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MAXIMDOW">CRC8_MAXIMDOW</td>
+        <td><p>Represents the <code>CRC-8/MAXIM-DOW</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_MIFAREMAD">CRC8_MIFAREMAD</td>
+        <td><p>Represents the <code>CRC-8/MIFARE-MAD</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_NRSC5">CRC8_NRSC5</td>
+        <td><p>Represents the <code>CRC-8/NRSC-5</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_OPENSAFETY">CRC8_OPENSAFETY</td>
+        <td><p>Represents the <code>CRC-8/OPENSAFETY</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_ROHC">CRC8_ROHC</td>
+        <td><p>Represents the <code>CRC-8/ROHC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SAEJ1850">CRC8_SAEJ1850</td>
+        <td><p>Represents the <code>CRC-8/SAE-J1850</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_SMBUS">CRC8_SMBUS</td>
+        <td><p>Represents the <code>CRC-8/SMBUS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_TECH3250">CRC8_TECH3250</td>
+        <td><p>Represents the <code>CRC-8/TECH-3250</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC8_WCDMA">CRC8_WCDMA</td>
+        <td><p>Represents the <code>CRC-8/WCDMA</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_ATM">CRC10_ATM</td>
+        <td><p>Represents the <code>CRC-10/ATM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_CDMA2000">CRC10_CDMA2000</td>
+        <td><p>Represents the <code>CRC-10/CDMA2000</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC10_GSM">CRC10_GSM</td>
+        <td><p>Represents the <code>CRC-10/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_FLEXRAY">CRC11_FLEXRAY</td>
+        <td><p>Represents the <code>CRC-11/FLEXRAY</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC11_UMTS">CRC11_UMTS</td>
+        <td><p>Represents the <code>CRC-11/UMTS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_CDMA2000">CRC12_CDMA2000</td>
+        <td><p>Represents the <code>CRC-12/CDMA2000</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_DECT">CRC12_DECT</td>
+        <td><p>Represents the <code>CRC-12/DECT</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_GSM">CRC12_GSM</td>
+        <td><p>Represents the <code>CRC-12/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC12_UMTS">CRC12_UMTS</td>
+        <td><p>Represents the <code>CRC-12/UMTS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC13_BBC">CRC13_BBC</td>
+        <td><p>Represents the <code>CRC-13/BBC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_DARC">CRC14_DARC</td>
+        <td><p>Represents the <code>CRC-14/DARC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC14_GSM">CRC14_GSM</td>
+        <td><p>Represents the <code>CRC-14/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_CAN">CRC15_CAN</td>
+        <td><p>Represents the <code>CRC-15/CAN</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC15_MPT1327">CRC15_MPT1327</td>
+        <td><p>Represents the <code>CRC-15/MPT1327</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ARC">CRC16_ARC</td>
+        <td><p>Represents the <code>CRC-16/ARC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CDMA2000">CRC16_CDMA2000</td>
+        <td><p>Represents the <code>CRC-16/CDMA2000</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_CMS">CRC16_CMS</td>
+        <td><p>Represents the <code>CRC-16/CMS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DDS110">CRC16_DDS110</td>
+        <td><p>Represents the <code>CRC-16/DDS-110</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTR">CRC16_DECTR</td>
+        <td><p>Represents the <code>CRC-16/DECT-R</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DECTX">CRC16_DECTX</td>
+        <td><p>Represents the <code>CRC-16/DECT-X</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_DNP">CRC16_DNP</td>
+        <td><p>Represents the <code>CRC-16/DNP</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_EN13757">CRC16_EN13757</td>
+        <td><p>Represents the <code>CRC-16/EN-13757</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GENIBUS">CRC16_GENIBUS</td>
+        <td><p>Represents the <code>CRC-16/GENIBUS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_GSM">CRC16_GSM</td>
+        <td><p>Represents the <code>CRC-16/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBM3740">CRC16_IBM3740</td>
+        <td><p>Represents the <code>CRC-16/IBM-3740</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_IBMSDLC">CRC16_IBMSDLC</td>
+        <td><p>Represents the <code>CRC-16/IBM-SDLC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_ISOIEC144433A">CRC16_ISOIEC144433A</td>
+        <td><p>Represents the <code>CRC-16/ISO-IEC-14443-3-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_KERMIT">CRC16_KERMIT</td>
+        <td><p>Represents the <code>CRC-16/KERMIT</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_LJ1200">CRC16_LJ1200</td>
+        <td><p>Represents the <code>CRC-16/LJ1200</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_M17">CRC16_M17</td>
+        <td><p>Represents the <code>CRC-16/M17</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MAXIMDOW">CRC16_MAXIMDOW</td>
+        <td><p>Represents the <code>CRC-16/MAXIM-DOW</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MCRF4XX">CRC16_MCRF4XX</td>
+        <td><p>Represents the <code>CRC-16/MCRF4XX</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_MODBUS">CRC16_MODBUS</td>
+        <td><p>Represents the <code>CRC-16/MODBUS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_NRSC5">CRC16_NRSC5</td>
+        <td><p>Represents the <code>CRC-16/NRSC-5</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYA">CRC16_OPENSAFETYA</td>
+        <td><p>Represents the <code>CRC-16/OPENSAFETY-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_OPENSAFETYB">CRC16_OPENSAFETYB</td>
+        <td><p>Represents the <code>CRC-16/OPENSAFETY-B</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_PROFIBUS">CRC16_PROFIBUS</td>
+        <td><p>Represents the <code>CRC-16/PROFIBUS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_RIELLO">CRC16_RIELLO</td>
+        <td><p>Represents the <code>CRC-16/RIELLO</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_SPIFUJITSU">CRC16_SPIFUJITSU</td>
+        <td><p>Represents the <code>CRC-16/SPI-FUJITSU</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_T10DIF">CRC16_T10DIF</td>
+        <td><p>Represents the <code>CRC-16/T10-DIF</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TELEDISK">CRC16_TELEDISK</td>
+        <td><p>Represents the <code>CRC-16/TELEDISK</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_TMS37157">CRC16_TMS37157</td>
+        <td><p>Represents the <code>CRC-16/TMS37157</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_UMTS">CRC16_UMTS</td>
+        <td><p>Represents the <code>CRC-16/UMTS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_USB">CRC16_USB</td>
+        <td><p>Represents the <code>CRC-16/USB</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC16_XMODEM">CRC16_XMODEM</td>
+        <td><p>Represents the <code>CRC-16/XMODEM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC17_CANFD">CRC17_CANFD</td>
+        <td><p>Represents the <code>CRC-17/CAN-FD</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC21_CANFD">CRC21_CANFD</td>
+        <td><p>Represents the <code>CRC-21/CAN-FD</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_BLE">CRC24_BLE</td>
+        <td><p>Represents the <code>CRC-24/BLE</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYA">CRC24_FLEXRAYA</td>
+        <td><p>Represents the <code>CRC-24/FLEXRAY-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_FLEXRAYB">CRC24_FLEXRAYB</td>
+        <td><p>Represents the <code>CRC-24/FLEXRAY-B</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_INTERLAKEN">CRC24_INTERLAKEN</td>
+        <td><p>Represents the <code>CRC-24/INTERLAKEN</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEA">CRC24_LTEA</td>
+        <td><p>Represents the <code>CRC-24/LTE-A</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_LTEB">CRC24_LTEB</td>
+        <td><p>Represents the <code>CRC-24/LTE-B</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OPENPGP">CRC24_OPENPGP</td>
+        <td><p>Represents the <code>CRC-24/OPENPGP</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC24_OS9">CRC24_OS9</td>
+        <td><p>Represents the <code>CRC-24/OS-9</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC30_CDMA">CRC30_CDMA</td>
+        <td><p>Represents the <code>CRC-30/CDMA</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC31_PHILIPS">CRC31_PHILIPS</td>
+        <td><p>Represents the <code>CRC-31/PHILIPS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AIXM">CRC32_AIXM</td>
+        <td><p>Represents the <code>CRC-32/AIXM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_AUTOSAR">CRC32_AUTOSAR</td>
+        <td><p>Represents the <code>CRC-32/AUTOSAR</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BASE91D">CRC32_BASE91D</td>
+        <td><p>Represents the <code>CRC-32/BASE91-D</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_BZIP2">CRC32_BZIP2</td>
+        <td><p>Represents the <code>CRC-32/BZIP2</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CDROMEDC">CRC32_CDROMEDC</td>
+        <td><p>Represents the <code>CRC-32/CD-ROM-EDC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_CKSUM">CRC32_CKSUM</td>
+        <td><p>Represents the <code>CRC-32/CKSUM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISCSI">CRC32_ISCSI</td>
+        <td><p>Represents the <code>CRC-32/ISCSI</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_ISOHDLC">CRC32_ISOHDLC</td>
+        <td><p>Represents the <code>CRC-32/ISO-HDLC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_JAMCRC">CRC32_JAMCRC</td>
+        <td><p>Represents the <code>CRC-32/JAMCRC</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MEF">CRC32_MEF</td>
+        <td><p>Represents the <code>CRC-32/MEF</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_MPEG2">CRC32_MPEG2</td>
+        <td><p>Represents the <code>CRC-32/MPEG-2</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC32_XFER">CRC32_XFER</td>
+        <td><p>Represents the <code>CRC-32/XFER</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC40_GSM">CRC40_GSM</td>
+        <td><p>Represents the <code>CRC-40/GSM</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_ECMA182">CRC64_ECMA182</td>
+        <td><p>Represents the <code>CRC-64/ECMA-182</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_GOISO">CRC64_GOISO</td>
+        <td><p>Represents the <code>CRC-64/GO-ISO</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_MS">CRC64_MS</td>
+        <td><p>Represents the <code>CRC-64/MS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_NVME">CRC64_NVME</td>
+        <td><p>Represents the <code>CRC-64/NVME</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_REDIS">CRC64_REDIS</td>
+        <td><p>Represents the <code>CRC-64/REDIS</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_WE">CRC64_WE</td>
+        <td><p>Represents the <code>CRC-64/WE</code> CRC standard.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_IO_Hashing_Checksums_CrcStandards_CRC64_XZ">CRC64_XZ</td>
+        <td><p>Represents the <code>CRC-64/XZ</code> CRC standard.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.BufferConverter.CopyTo.html#Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_">BufferConverter.CopyTo&lt;CrcStandards&gt;(CrcStandards, byte[], int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Clamp.html#Bodu_Extensions_ComparableExtensions_Clamp__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.Clamp&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsBetween.html#Bodu_Extensions_ComparableExtensions_IsBetween__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsBetween&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsGreaterThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThanOrEqual&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsGreaterThan.html#Bodu_Extensions_ComparableExtensions_IsGreaterThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsGreaterThan&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThanOrEqual.html#Bodu_Extensions_ComparableExtensions_IsLessThanOrEqual__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThanOrEqual&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsLessThan.html#Bodu_Extensions_ComparableExtensions_IsLessThan__1___0_System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsLessThan&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsOutside.html#Bodu_Extensions_ComparableExtensions_IsOutside__1___0_System_Nullable___0__System_Nullable___0__System_Collections_Generic_IComparer___0__">ComparableExtensions.IsOutside&lt;CrcStandards&gt;(CrcStandards, CrcStandards?, CrcStandards?, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;CrcStandards&gt;(CrcStandards, CrcStandards, IComparer&lt;CrcStandards&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ClearFlag.html#Bodu_Extensions_EnumExtensions_ClearFlag__1___0___0_">EnumExtensions.ClearFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDescription.html#Bodu_Extensions_EnumExtensions_GetDescription__1___0_">EnumExtensions.GetDescription&lt;CrcStandards&gt;(CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.GetDisplayName.html#Bodu_Extensions_EnumExtensions_GetDisplayName__1___0_">EnumExtensions.GetDisplayName&lt;CrcStandards&gt;(CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAllFlags.html#Bodu_Extensions_EnumExtensions_HasAllFlags__1___0___0_">EnumExtensions.HasAllFlags&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.HasAnyFlag.html#Bodu_Extensions_EnumExtensions_HasAnyFlag__1___0___0_">EnumExtensions.HasAnyFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.SetFlag.html#Bodu_Extensions_EnumExtensions_SetFlag__1___0___0_">EnumExtensions.SetFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.ToggleFlag.html#Bodu_Extensions_EnumExtensions_ToggleFlag__1___0___0_">EnumExtensions.ToggleFlag&lt;CrcStandards&gt;(CrcStandards, CrcStandards)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.EnumExtensions.TryGetDescription.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;CrcStandards&gt;(CrcStandards, out string)</a>
+  </div>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

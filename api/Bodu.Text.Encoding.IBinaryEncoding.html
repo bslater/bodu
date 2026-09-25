@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Interface IBinaryEncoding | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Interface IBinaryEncoding | BODU ">
+    
+    <meta name="description" content="Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant pre-bound, so that callers can pick or inject an encoding at runtime instead of dispatching through static classes.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Text.Encoding.IBinaryEncoding">
+
+
+
+  <h1 id="Bodu_Text_Encoding_IBinaryEncoding" data-uid="Bodu.Text.Encoding.IBinaryEncoding" class="text-break">Interface IBinaryEncoding</h1>
+  <div class="markdown level0 summary"><p>Represents a binary-to-text encoding scheme (Base16, Base32, Base64, Base58, Base85, …) with the variant pre-bound,
+so that callers can pick or inject an encoding at runtime instead of dispatching through static classes.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Text.html">Text</a>.<a class="xref" href="Bodu.Text.Encoding.html">Encoding</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Text.Encoding.dll</h6>
+  <h5 id="Bodu_Text_Encoding_IBinaryEncoding_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IBinaryEncoding</code></pre>
+  </div>
+  <h5 id="Bodu_Text_Encoding_IBinaryEncoding_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+Instances are obtained from <a class="xref" href="Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a> — each property there returns a singleton implementation
+bound to a specific variant. The pattern mirrors <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a>, but for radix encoding rather
+than character-set transcoding.
+</p>
+<p>
+Implementations are stateless and thread-safe. The static convenience methods on <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>,
+<a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>, <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a>, <a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a>, and <a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> remain the
+recommended entry points when the encoding is known at compile time; the interface is intended for code that must
+choose between encodings at runtime (configuration-driven serializers, plugin pipelines, generic utilities).
+</p>
+</div>
+  <h5 id="Bodu_Text_Encoding_IBinaryEncoding_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">// Pick an encoding at runtime from configuration.
+string             configured = appConfig["encoding"];                     // e.g. "base64-urlsafe"
+IBinaryEncoding    encoding   = BinaryEncodings.Get(configured);
+
+// Use the same call shape regardless of which variant was chosen.
+string encoded = encoding.Encode(payload);
+byte[] decoded = encoding.Decode(encoded);
+
+Console.WriteLine($"{encoding.Name}: {encoding.Description}");</code></pre>
+
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_Description" data-uid="Bodu.Text.Encoding.IBinaryEncoding.Description">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.Description.html#Bodu_Text_Encoding_IBinaryEncoding_Description">Description</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a human-readable description of the encoding and its origin (specification clause, RFC, etc.).</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_Name" data-uid="Bodu.Text.Encoding.IBinaryEncoding.Name">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.Name.html#Bodu_Text_Encoding_IBinaryEncoding_Name">Name</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a short stable name identifying the encoding and variant — for example, <code>&quot;base16-lower&quot;</code>,
+<code>&quot;base32&quot;</code>, <code>&quot;base64-urlsafe&quot;</code>. Suitable as a key in configuration and for diagnostic output.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_Decode_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.IBinaryEncoding.Decode(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.Decode.html#Bodu_Text_Encoding_IBinaryEncoding_Decode_System_ReadOnlySpan_System_Char__">Decode(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Decodes <code class="paramref">chars</code> into a newly allocated byte array using the variant's strict parsing rules.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_Encode_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.IBinaryEncoding.Encode(System.ReadOnlySpan{System.Byte})">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.Encode.html#Bodu_Text_Encoding_IBinaryEncoding_Encode_System_ReadOnlySpan_System_Byte__">Encode(ReadOnlySpan&lt;byte&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a newly allocated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> using the variant's canonical
+formatting.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.IBinaryEncoding.GetMaxDecodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.GetMaxDecodedLength.html#Bodu_Text_Encoding_IBinaryEncoding_GetMaxDecodedLength_System_Int32_">GetMaxDecodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the number of bytes that decoding <code class="paramref">charCount</code> characters could
+produce.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.IBinaryEncoding.GetMaxEncodedLength(System.Int32)">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.GetMaxEncodedLength.html#Bodu_Text_Encoding_IBinaryEncoding_GetMaxEncodedLength_System_Int32_">GetMaxEncodedLength(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an upper bound on the number of characters required to encode <code class="paramref">byteCount</code> bytes.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_IsValid_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.IBinaryEncoding.IsValid(System.ReadOnlySpan{System.Char})">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.IsValid.html#Bodu_Text_Encoding_IBinaryEncoding_IsValid_System_ReadOnlySpan_System_Char__">IsValid(ReadOnlySpan&lt;char&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Indicates whether <code class="paramref">source</code> is a valid encoded input under this encoding's variant rules.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.IBinaryEncoding.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.TryDecode.html#Bodu_Text_Encoding_IBinaryEncoding_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__">TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to decode <code class="paramref">source</code> into <code class="paramref">destination</code> without allocation.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Text_Encoding_IBinaryEncoding_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.IBinaryEncoding.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+          <a class="xref" href="Bodu.Text.Encoding.IBinaryEncoding.TryEncode.html#Bodu_Text_Encoding_IBinaryEncoding_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__">TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> into <code class="paramref">destination</code> without allocation.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

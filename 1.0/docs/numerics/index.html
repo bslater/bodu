@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Bodu.Numerics — Introduction | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Bodu.Numerics — Introduction | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="bodunumerics">Bodu.Numerics</h1>
+
+<p><img src="../../images/hero-numerics.svg" alt="Bodu.Numerics"></p>
+<p><strong>Bodu.Numerics</strong> is the numeric-primitives package of the Bodu suite. It centers on four value types — <code>Fraction&lt;T&gt;</code> for exact rational arithmetic, <code>Interval&lt;T&gt;</code> for intervals over ordered numeric coordinates, <code>BigDecimal</code> for arbitrary-precision decimals beyond <code>System.Decimal</code>'s range, and <code>Complex&lt;T&gt;</code> for complex numbers over any IEEE 754 component type — all built on the generic-math interfaces (<code>INumberBase&lt;T&gt;</code>, <code>INumber&lt;T&gt;</code>, <code>ISignedNumber&lt;T&gt;</code>) so they compose with anything that targets the .NET 7+ numeric abstractions. Around <code>Interval&lt;T&gt;</code> sit its set-algebra companions: the integer-domain <code>DiscreteInterval&lt;T&gt;</code>, the binary-result <code>IntervalPair&lt;T&gt;</code> / <code>DiscreteIntervalPair&lt;T&gt;</code>, and the N-ary <code>IntervalSet&lt;T&gt;</code>. Alongside them sit the single-pass statistics aggregates — <code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, and <code>MovingMinMax&lt;T&gt;</code>. Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic.</p>
+<p><code>Bodu.Numerics</code> is the dependency that <code>Bodu.Financial</code> reaches for when an accounting workflow needs sub-minor-unit precision: <code>Money&lt;TCurrency&gt;.ToFraction()</code> round-trips through <code>Fraction&lt;BigInteger&gt;</code> for compound interest, percentage-of-percentage, and other chains where deferred rounding matters.</p>
+<p><img src="../../images/diagrams/numerics-type-map.svg" alt="Bodu.Numerics type map — the headline value types over the generic-math abstractions"></p>
+<h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
+<h3 id="bodunumerics-1"><code>Bodu.Numerics</code></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></td>
+<td>Immutable canonical rational over any <code>IBinaryInteger&lt;T&gt;</code> backing type. Auto-reduces to GCD-normalised form on construction, raises overflow to <code>BigInteger</code> precision internally, and implements the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a></td>
+<td>Immutable continuous interval over any <code>INumber&lt;T&gt;</code> endpoint type. Endpoint inclusivity is independent on each side (closed-closed, open-open, closed-open, open-closed), each side may be unbounded (<code>All</code> / <code>AtLeast</code> / <code>AtMost</code> …), and the full set algebra — <code>Intersect</code>, <code>TryUnion</code>, <code>Difference</code>, <code>SymmetricDifference</code>, <code>&amp;</code> / <code>|</code> — is provided.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Interval.html">Interval</a></td>
+<td>Non-generic helper class with factory methods (<code>Closed</code>, <code>Open</code>, <code>ClosedOpen</code>, <code>OpenClosed</code>, <code>AtLeast</code>, <code>AtMost</code>, …) that infer the endpoint type from the arguments.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a></td>
+<td>Immutable integer-domain interval over any <code>IBinaryInteger&lt;T&gt;</code> type. Canonicalizes every shape to closed integer bounds, so an open interval over consecutive integers is empty and successor-adjacent runs merge — the discrete counterpart to <code>Interval&lt;T&gt;</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval.html">DiscreteInterval</a></td>
+<td>Non-generic helper class mirroring the <code>DiscreteInterval&lt;T&gt;</code> factories with type inference.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a></td>
+<td>Allocation-free results of a binary <code>Difference</code> / <code>SymmetricDifference</code> — zero, one, or two disjoint pieces, indexable and enumerable.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a></td>
+<td>Immutable normalized union of disjoint, non-adjacent intervals — the N-ary home for <code>Union</code> / <code>Intersect</code> / <code>Except</code> / <code>Complement</code> when a result can be a disconnected range.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a></td>
+<td>Immutable arbitrary-precision decimal — a <code>BigInteger</code> unscaled value paired with an <code>int</code> scale. Unbounded (no overflow), with exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full <code>INumber&lt;BigDecimal&gt;</code> / <code>ISignedNumber&lt;BigDecimal&gt;</code> surface.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a></td>
+<td>Immutable complex number over any <code>IFloatingPointIeee754&lt;T&gt;</code> component type (<code>float</code>, <code>double</code>, <code>Half</code>) — the generic counterpart of the <code>double</code>-only <code>System.Numerics.Complex</code>. Arithmetic, <code>Conjugate</code> / <code>Reciprocal</code>, the elementary functions (<code>Sqrt</code>, <code>Exp</code>, <code>Log</code>, <code>Pow</code>, trigonometric and hyperbolic), parsing / formatting, and the <code>INumberBase&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.RunningQuantile-1.html">RunningQuantile&lt;T&gt;</a></td>
+<td>Single-pass, constant-space stream accumulators: Welford count / min / max / mean / variance with a parallel <code>Combine</code> merge, and a P² streaming quantile estimator.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a></td>
+<td>Rolling-window companions reporting the sum / mean and min / max of the most recent N samples in amortized O(1).</td>
+</tr>
+</tbody>
+</table>
+<p>The core value types are serialization-agnostic — they carry no <code>[JsonConverter]</code> attribute. JSON support ships in the companion <strong><code>Bodu.Numerics.Serialization.Json</code></strong> package (below), which you register with <code>options.AddNumericsJsonConverters()</code>.</p>
+<h3 id="bodunumericsserializationjson"><code>Bodu.Numerics.Serialization.Json</code></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions.html">NumericsJsonSerializerOptionsExtensions</a></td>
+<td><code>AddNumericsJsonConverters(this JsonSerializerOptions, NumericsJsonPolicy)</code> — registers a coherent converter set for every numeric value type from one policy value.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a></td>
+<td>Selects the wire shape and read strictness — <code>Strict</code> (canonical object), <code>Lenient</code> (object + import aliases), or <code>Compact</code> (single string).</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html">FractionJsonConverter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html">FractionJsonConverterFactory</a></td>
+<td>Converters for <code>Fraction&lt;T&gt;</code> — <code>Strict</code> object shape <code>{ &quot;numerator&quot;: …, &quot;denominator&quot;: … }</code> or the compact <code>&quot;numerator/denominator&quot;</code> string.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalJsonConverter-1.html">IntervalJsonConverter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory.html">IntervalJsonConverterFactory</a></td>
+<td>Converters for <code>Interval&lt;T&gt;</code>, including the <code>lowerUnbounded</code> / <code>upperUnbounded</code> markers for infinite sides.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter-1.html">DiscreteIntervalJsonConverter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter-1.html">IntervalSetJsonConverter&lt;T&gt;</a></td>
+<td>Converters for <code>DiscreteInterval&lt;T&gt;</code> (through the interval wire shape) and <code>IntervalSet&lt;T&gt;</code> (a JSON array of pieces), each with a matching factory.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a></td>
+<td>Converter for <code>BigDecimal</code> — <code>Strict</code> object shape <code>{ &quot;unscaledValue&quot;: …, &quot;scale&quot;: … }</code> or the compact decimal string <code>&quot;12.340&quot;</code>. Non-generic, so it registers directly without a factory.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverter-1.html">ComplexJsonConverter&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory.html">ComplexJsonConverterFactory</a></td>
+<td>Converters for <code>Complex&lt;T&gt;</code> — <code>Strict</code> object shape <code>{ &quot;real&quot;: …, &quot;imaginary&quot;: … }</code> (non-finite components written as the strings <code>&quot;NaN&quot;</code> / <code>&quot;Infinity&quot;</code> / <code>&quot;-Infinity&quot;</code>) or the compact <code>&quot;&lt;real; imaginary&gt;&quot;</code> string.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a></td>
+<td><code>ToJson()</code> / <code>FromJson&lt;T&gt;(string)</code> convenience helpers over the registered converters.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="interface-surface">Interface surface</h3>
+<p>The value types are <code>readonly struct</code>s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters. The four headline types compare as follows (the interval companions follow <code>Interval&lt;T&gt;</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th style="text-align: center;"><code>Fraction&lt;T&gt;</code></th>
+<th style="text-align: center;"><code>BigDecimal</code></th>
+<th style="text-align: center;"><code>Complex&lt;T&gt;</code></th>
+<th style="text-align: center;"><code>Interval&lt;T&gt;</code></th>
+<th>What it unlocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">— (<code>INumberBase&lt;T&gt;</code> only — complex numbers do not order)</td>
+<td style="text-align: center;">—</td>
+<td>First-class number — <code>Sum</code>, <code>Aggregate</code>, any <code>INumber</code>-constrained algorithm.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.isignednumber-1">ISignedNumber&lt;TSelf&gt;</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td><code>NegativeOne</code>, signed-only generic constraints.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable&lt;T&gt;</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td>Structural value equality; safe hash-set / dictionary keys.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable">IComparable</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td>Ordering, <code>OrderBy</code>, <code>SortedSet</code>. (<code>Interval&lt;T&gt;</code> is a set, not a scalar — it does not order.)</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable&lt;TSelf&gt;</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td><code>Parse</code> / <code>TryParse</code> over <code>string</code> and <code>ReadOnlySpan&lt;char&gt;</code>.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable&lt;TSelf&gt;</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td><code>Parse</code> directly from a UTF-8 byte span.</td>
+</tr>
+<tr>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td><code>ToString(format, provider)</code> plus allocation-free <code>TryFormat</code> into char and UTF-8 buffers.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="formatting-and-parsing">Formatting and parsing</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> ships four text forms behind standard format specifiers, and every output form is also an accepted input form — any <code>ToString</code> result feeds back through <code>Parse</code> to the same value:</p>
+<table>
+<thead>
+<tr>
+<th>Specifier</th>
+<th>Output</th>
+<th>Example (<code>7/3</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>G</code> (default)</td>
+<td>improper ratio</td>
+<td><code>7/3</code></td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>mixed number</td>
+<td><code>2 1/3</code></td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>Unicode vulgar fraction, mixed-number fallback</td>
+<td><code>2⅓</code></td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>percentage</td>
+<td><code>700/3%</code></td>
+</tr>
+</tbody>
+</table>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The <code>P</code> specifier scales the value by 100 and re-reduces, then renders the result as a <em>ratio</em> <code>numerator/denominator%</code> (or a bare <code>numerator%</code> when the scaled value is whole) — it does <strong>not</strong> switch to mixed-number form. So <code>7/3</code> formats as <code>700/3%</code>, <code>7/4</code> as <code>175%</code>, and <code>3/4</code> as <code>75%</code>. Specifiers are case-insensitive; any specifier other than <code>G</code>/<code>M</code>/<code>U</code>/<code>P</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+</div>
+<p>The <code>&quot;U&quot;</code> specifier emits one of the 18 Unicode &quot;Number Forms&quot; vulgar-fraction glyphs (<code>½</code>, <code>⅓</code>, <code>⅗</code>, <code>¾</code>, …) when one exists for the proper-fraction part, falling back to the mixed-number form otherwise. The parser accepts whole integers, ratios, mixed numbers, the glyph forms (including whole + glyph, <code>&quot;2⅜&quot;</code>), and percentage syntax:</p>
+<pre><code class="lang-csharp">var x = Fraction&lt;int&gt;.Create(7, 3);
+
+x.ToString();         // &quot;7/3&quot;
+x.ToString(&quot;M&quot;);      // &quot;2 1/3&quot;
+x.ToString(&quot;U&quot;);      // &quot;2⅓&quot;
+
+Fraction&lt;int&gt;.Parse(&quot;2 1/3&quot;);   // 7/3
+Fraction&lt;int&gt;.Parse(&quot;⅗&quot;);       // 3/5
+Fraction&lt;int&gt;.Parse(&quot;75%&quot;);     // 3/4
+</code></pre>
+<p>Culture handling is deliberately narrow: the structural characters — the <code>/</code>, the mixed-number space, the glyph codepoints, the trailing <code>%</code> — are invariant, while the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a> is forwarded to the <code>BigInteger</code> component formatting and parsing so culture-specific digit shapes are respected. Both value types also implement the span and UTF-8 formatting / parsing interfaces (<code>ISpanFormattable</code>, <code>IUtf8SpanFormattable</code>, <code>ISpanParsable&lt;T&gt;</code>, <code>IUtf8SpanParsable&lt;T&gt;</code>) for low-allocation pipelines, and <code>Interval&lt;T&gt;</code> formats and parses ISO 31-11 bracket notation (<code>&quot;[0, 100)&quot;</code>, <code>&quot;∅&quot;</code> for empty). See <a href="../../guides/numerics/formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a> for the full grammar and glyph table.</p>
+<h2 id="approximation-and-continued-fractions">Approximation and continued fractions</h2>
+<p><code>Fraction&lt;T&gt;.Approximate(value, maxDenominator)</code> returns the <strong>best rational approximation</strong> to a value within a denominator bound — no rational with a smaller denominator, and none with the same denominator, gets closer. Overloads accept <code>double</code>, <code>decimal</code>, and string input. The search walks the <strong>convergents</strong> of the value's continued-fraction expansion, the sequence of progressively better rational approximations produced by truncating the expansion at successive coefficients:</p>
+<pre><code class="lang-csharp">Fraction&lt;int&gt; piApprox = Fraction&lt;int&gt;.Approximate(Math.PI, maxDenominator: 1000);
+// 355/113 — the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
+
+int[] coeffs = Fraction&lt;int&gt;.Create(610, 377).ToContinuedFraction();
+// [1, 1, 1, 1, …] — golden-ratio convergent
+
+Fraction&lt;int&gt; reconstructed = Fraction&lt;int&gt;.FromContinuedFraction(coeffs);
+</code></pre>
+<p><code>Fraction&lt;T&gt;.LimitDenominator(maxDenominator)</code> re-approximates an existing fraction within a tighter denominator bound, and <code>ToContinuedFraction()</code> / <code>FromContinuedFraction(coeffs)</code> expose the coefficient list <code>[a0; a1, a2, …]</code> directly — the leading coefficient carries the sign, every following coefficient is strictly positive.</p>
+<p>Approximation complements the exact converters: <code>FromDouble</code> is exact in the IEEE 754 sense and may produce a fraction with a very large denominator for values that look &quot;nice&quot; in base 10 (<code>FromDouble(0.1)</code> is not <code>1/10</code>). Reach for <code>Approximate</code> when you want the <em>intended</em> rational rather than the bit-exact one. See <a href="../../guides/numerics/fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> for the full walkthrough.</p>
+<h2 id="json-serialization">JSON serialization</h2>
+<p>The core value types are serialization-agnostic; JSON support ships in the companion <strong><code>Bodu.Numerics.Serialization.Json</code></strong> package. Register the converters with <code>AddNumericsJsonConverters</code>, then serialize as normal. The default <code>Strict</code> policy emits the canonical object shape; each component is written as a <em>raw</em> JSON number under the invariant culture, so a <code>Fraction&lt;BigInteger&gt;</code> survives at any magnitude and payloads remain stable regardless of the ambient culture:</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Numerics.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddNumericsJsonConverters();
+
+string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), options);
+// {&quot;numerator&quot;:3,&quot;denominator&quot;:4}
+
+Fraction&lt;int&gt; roundTrip = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(json, options);
+</code></pre>
+<p>Select a different wire shape by passing a <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a> — <code>Strict</code> (explicit object shape), <code>Lenient</code> (<code>Strict</code> plus import-friendly aliases and defaulted inclusivity), or <code>Compact</code> (string forms: <code>&quot;3/4&quot;</code> for fractions, ISO 31-11 bracket notation <code>&quot;[1, 5)&quot;</code> for intervals). <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, <code>BigDecimal</code>, and <code>Complex&lt;T&gt;</code> are covered by the same call. See <a href="../../guides/numerics/json-serialization.html">JSON serialization</a> for the policy table and worked examples.</p>
+<h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact rational arithmetic across arbitrary backing integer types</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Arbitrary-precision rational arithmetic (no overflow)</td>
+<td><code>Fraction&lt;BigInteger&gt;</code></td>
+</tr>
+<tr>
+<td>Best rational approximation to a <code>double</code> or <code>decimal</code> within a denominator bound</td>
+<td><code>Fraction&lt;T&gt;.Approximate(value, maxDenominator)</code></td>
+</tr>
+<tr>
+<td>Continued-fraction expansion and reconstruction</td>
+<td><code>Fraction&lt;T&gt;.ToContinuedFraction()</code> / <code>FromContinuedFraction(coeffs)</code></td>
+</tr>
+<tr>
+<td>Closed / open / half-open numeric intervals</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Unbounded or half-bounded ranges (<code>(-∞, 5]</code>, <code>[0, +∞)</code>, the whole line)</td>
+<td><code>Interval&lt;T&gt;.All</code> / <code>AtLeast</code> / <code>GreaterThan</code> / <code>AtMost</code> / <code>LessThan</code></td>
+</tr>
+<tr>
+<td>Membership tests, intersection, union, adjacency over numeric intervals</td>
+<td><code>Interval&lt;T&gt;.Contains</code>, <code>Intersect</code>, <code>TryUnion</code>, <code>Overlaps</code></td>
+</tr>
+<tr>
+<td>Difference and symmetric difference of two intervals (≤ 2 pieces)</td>
+<td><code>Interval&lt;T&gt;.Difference</code> / <code>SymmetricDifference</code> → <a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Discrete integer intervals — successor-aware emptiness and adjacency</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>An arbitrary union of disjoint ranges, with complement over the line</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> (<code>Union</code> / <code>Intersect</code> / <code>Except</code> / <code>Complement</code>)</td>
+</tr>
+<tr>
+<td>Mixed-number and Unicode-vulgar-fraction formatting</td>
+<td><code>Fraction&lt;T&gt;.ToString(&quot;M&quot;)</code> / <code>.ToString(&quot;U&quot;)</code></td>
+</tr>
+<tr>
+<td>Round-trippable text for intervals (ISO 31-11 bracket notation)</td>
+<td><code>Interval&lt;T&gt;.ToString()</code> / <code>Parse</code></td>
+</tr>
+<tr>
+<td>Generic-math algorithms (<code>Sum</code>, <code>Aggregate</code>, linear algebra) over exact rationals</td>
+<td><code>Fraction&lt;T&gt;</code> as <code>INumber&lt;Fraction&lt;T&gt;&gt;</code></td>
+</tr>
+<tr>
+<td>Exact decimals beyond <code>System.Decimal</code>'s precision or exponent range</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a></td>
+</tr>
+<tr>
+<td>Complex arithmetic and elementary functions over <code>float</code> / <code>double</code> / <code>Half</code></td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Single-pass mean / variance / quantile summaries and rolling-window sums or extremes</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.RunningQuantile-1.html">RunningQuantile&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a></td>
+</tr>
+<tr>
+<td>Selecting a JSON wire shape (object, import-lenient, compact string)</td>
+<td><code>AddNumericsJsonConverters(NumericsJsonPolicy.…)</code></td>
+</tr>
+<tr>
+<td>Sub-minor-unit-precise monetary calculations</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> via <a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;.ToFraction()</code></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-choices">Design choices</h2>
+<ul>
+<li><strong>Canonical form on construction.</strong> Every <code>Fraction&lt;T&gt;</code> is GCD-reduced with the sign on the numerator and the denominator strictly positive. There is no unreduced form, and <code>2/4</code> and <code>1/2</code> are indistinguishable after construction. The benefit is that equality, comparison, and hashing are all structural — <code>Equals</code> compares the stored components directly, <code>GetHashCode</code> combines them, and there is no separate &quot;normalise then compare&quot; step.</li>
+<li><strong><code>BigInteger</code> intermediates.</strong> Arithmetic operations promote operands to <code>BigInteger</code>, evaluate exactly, reduce, then narrow back to <code>T</code>. The intermediate magnitude can exceed <code>T</code>'s range freely; only the final canonical components must fit. Overflow on narrowing raises <code>OverflowException</code> — never a silent wrap, saturation, or truncation. <code>Fraction&lt;BigInteger&gt;</code> eliminates the narrowing step entirely.</li>
+<li><strong>No NaN, no infinity.</strong> <code>Fraction&lt;T&gt;</code> models only the rationals: division by zero throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a>, non-finite <code>double</code> input to <code>FromDouble</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>, and the <code>INumber</code> predicates report this honestly — <code>IsNaN</code> and the <code>IsInfinity</code> family are always <code>false</code>, <code>IsFinite</code> and <code>IsRealNumber</code> always <code>true</code>. If you need IEEE 754 propagation semantics, stay with <code>double</code>.</li>
+<li><strong>One empty interval.</strong> <code>Interval&lt;T&gt;</code> honours the mathematical fact that there is one empty set: any inverted-bounds or equal-bounds-with-open-endpoint interval compares equal to <code>Interval&lt;T&gt;.Empty</code>, shares its hash code (zero), and reads identically through every set operation. <code>default(Interval&lt;T&gt;)</code> is therefore the empty interval, not a malformed value — a struct field that was never assigned is well-formed.</li>
+<li><strong>Generic-math first.</strong> Both types implement the relevant <code>INumber</code>-style interfaces so they slot into algorithms written against the generic-math abstractions without bespoke wrappers.</li>
+</ul>
+<h2 id="cost-and-allocation-model">Cost and allocation model</h2>
+<ul>
+<li><strong><code>Fraction&lt;T&gt;</code> is a wide <code>readonly struct</code></strong> holding two <code>T</code> components (the numerator and the canonical denominator). For a fixed-width <code>T</code> (<code>int</code>, <code>long</code>, <code>Int128</code>) the value lives entirely on the stack and copies by value — no heap traffic. <code>Fraction&lt;BigInteger&gt;</code> carries two <code>BigInteger</code>s, each of which heap-allocates for magnitudes beyond a machine word.</li>
+<li><strong>Every arithmetic operation promotes to <code>BigInteger</code></strong> to evaluate exactly, so even <code>Fraction&lt;int&gt;</code> arithmetic allocates the transient <code>BigInteger</code> operands. Construction additionally runs one <code>BigInteger.GreatestCommonDivisor</code> (Euclidean, <code>O(log min(|n|, |d|))</code> divisions). This is the price of exactness; for hot inner loops over bounded <code>int</code> values where rounding is acceptable, plain <code>int</code> arithmetic is faster.</li>
+<li><strong><code>Interval&lt;T&gt;</code> stores two <code>T</code> endpoints plus a one-byte inclusivity flag.</strong> Its operations — <code>Contains</code>, <code>Overlaps</code>, <code>Intersect</code>, <code>TryUnion</code> — are a handful of <code>T</code> comparisons and allocate nothing; the whole type is allocation-free over a fixed-width endpoint type.</li>
+<li><strong>Formatting allocates a <code>string</code>; <code>TryFormat</code> does not.</strong> The <code>ISpanFormattable</code> / <code>IUtf8SpanFormattable</code> surfaces let both types render into a caller-supplied <code>Span&lt;char&gt;</code> / <code>Span&lt;byte&gt;</code> without an intermediate <code>string</code>, and the span/UTF-8 parse surfaces read without allocating one.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="concepts.html">Core concepts</a></strong> — glossary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run minimal samples for <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code>.</li>
+<li><strong><a href="../../guides/numerics/fraction.html">Working with <code>Fraction&lt;T&gt;</code></a></strong> — construction, arithmetic, parsing, formatting, continued fractions, rational approximation.</li>
+<li><strong><a href="../../guides/numerics/interval.html">Working with <code>Interval&lt;T&gt;</code></a></strong> — endpoint inclusivity, membership, intersection, union, adjacency.</li>
+<li><strong><a href="../../guides/numerics/bigdecimal.html">Working with <code>BigDecimal</code></a></strong> — the unscaled-value / scale model, exact arithmetic, division precision, rounding, generic-math composition.</li>
+<li><strong><a href="../../guides/numerics/complex.html">Working with <code>Complex&lt;T&gt;</code></a></strong> — construction and polar form, arithmetic, magnitude / phase / conjugate / reciprocal, the elementary functions pinned against <code>System.Numerics.Complex</code>, the <code>&lt;real; imaginary&gt;</code> text form, and the JSON wire shape.</li>
+<li><strong><a href="../../guides/numerics/running-statistics.html">Running statistics and moving windows</a></strong> — the single-pass accumulators and rolling-window companions.</li>
+<li><strong><a href="../../guides/numerics/interval-algebra.html">Interval algebra</a></strong> — unbounded endpoints, difference / symmetric difference, the <code>&amp;</code> / <code>|</code> operators, and the N-ary <code>IntervalSet&lt;T&gt;</code>.</li>
+<li><strong><a href="../../guides/numerics/discrete-intervals.html">Discrete integer intervals</a></strong> — the integer-domain <code>DiscreteInterval&lt;T&gt;</code> and how it differs from the continuous type.</li>
+<li><strong><a href="../../guides/numerics/formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a></strong> — specifiers, the parsing grammar, culture handling, span / UTF-8 surfaces.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">JSON serialization</a></strong> — the converter factories and the <code>NumericsJsonPolicy</code> wire shapes.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a></strong> — how this package and <code>Bodu.Financial</code> fit together.</li>
+<li><strong><a href="../../guides/topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — the guides landing page for both libraries.</li>
+<li><strong><a href="../financial/index.html">Bodu.Financial introduction</a></strong> — the monetary library that uses <code>Fraction&lt;BigInteger&gt;</code> as its precision escape hatch.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.html">Bodu.Numerics API reference</a></strong> — full type-by-type docs.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

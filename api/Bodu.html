@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu">
+
+  <h1 id="Bodu" data-uid="Bodu" class="text-break">Namespace Bodu</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
+<h2 id="purpose">Purpose</h2>
+<p>The root <strong>Bodu</strong> namespace holds the cross-cutting primitives that the rest of <code>Bodu.Core</code> — and the wider solution — build on: a day-of-week bitmask value type, the centralized argument-validation helper, and a small pluggable random-number abstraction. These types are namespace-root on purpose: they are used everywhere and carry no sub-domain of their own.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> — namespaces, headline types, scenarios.</li>
+<li><strong><a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a></strong> — composing, parsing, and enumerating day-of-week sets.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> — an immutable bitmask value type for sets of days of the week. Built from <code>DayOfWeek</code> values (<code>new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)</code>, <code>With</code> / <code>Without</code>) or taken from the named presets (<code>Weekdays</code>, <code>Weekend</code>, <code>AllDays</code>, <code>Empty</code>, and the regional working weeks such as <code>SundayToThursday</code>); supports bitwise composition (<code>WeekPattern.Weekdays | WeekPattern.Weekend</code>), parsing, formatting, and enumeration. See the <a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a>.</li>
+<li><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> — a <code>[Flags]</code> enum naming the conventional working-day sets used by the date and calendar extensions.</li>
+<li><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> — a minimal abstraction over a random source, so algorithms (shuffles, sampling) can be tested deterministically or swapped between PRNG implementations.</li>
+<li><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a> — a fast xorshift PRNG that derives from <code>System.Random</code>; seedable for reproducible sequences. Drop-in where <code>Random</code> is expected, faster where throughput matters and cryptographic strength is <em>not</em> required.</li>
+<li><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a> — the centralized argument-validation surface (<code>ThrowIfNull</code>, <code>ThrowIfLessThan</code>, <code>ThrowIfGreaterThan</code>, span/array offset checks, enum-defined checks, …). Public APIs across the solution validate their parameters through these <code>ThrowIf…</code> members rather than hand-rolled checks.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="lang-csharp">using Bodu;
+
+// Compose and test a day-of-week set.
+WeekPattern weekdays = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                                       DayOfWeek.Thursday, DayOfWeek.Friday);   // same set as WeekPattern.Weekdays
+WeekPattern fourDay  = weekdays.Without(DayOfWeek.Friday);
+bool worksSaturday   = weekdays.Contains(DayOfWeek.Saturday);   // false
+
+// Deterministic randomness for reproducible tests.
+IRandomGenerator rng = new XorShiftRandom(seed: 12345);
+int roll = rng.Next(6) + 1;   // Next(maxValue) yields [0, maxValue) — here a die roll of 1–6
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong><code>XorShiftRandom</code> is not cryptographically secure.</strong> Use <code>System.Security.Cryptography.RandomNumberGenerator</code> for security-sensitive randomness.</li>
+<li><strong>Validate through <code>ThrowHelper</code>.</strong> When contributing public APIs, prefer an existing <code>ThrowIf…</code> helper over a hand-written check; add a new helper only when the rule is general-purpose.</li>
+<li><strong>See also:</strong> the <a href="../guides/core/week-pattern.html"><code>WeekPattern</code> guide</a> and the <a class="xref" href="Bodu.Collections.Generic.html">Bodu.Collections.Generic overview</a>.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a></h4>
+      <section><p>Provides centralized guard clause methods for argument validation, offering consistent and concise exception
+throwing across the library.</p>
+</section>
+      <h4><a class="xref" href="Bodu.XorShiftRandom.html">XorShiftRandom</a></h4>
+      <section><p>Represents a high-performance, non-cryptographic pseudo-random number generator based on Marsaglia's xorshift128
+algorithm.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></h4>
+      <section><p>Represents an immutable set of selected days in a standard seven-day week.</p>
+</section>
+      <h4><a class="xref" href="Bodu.WeekPattern.Enumerator.html">WeekPattern.Enumerator</a></h4>
+      <section><p>Enumerates the selected days of a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> in Sunday-first order without allocating.</p>
+</section>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+      <h4><a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a></h4>
+      <section><p>Defines the minimal contract for a pluggable, non-cryptographic random-integer source used by shuffle, sampling, and
+randomized-collection helpers throughout the library.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></h4>
+      <section><p>Represents a named pattern of working days within a seven-day week.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

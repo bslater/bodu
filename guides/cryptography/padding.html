@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Padding | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Padding | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="padding">Padding</h1>
+
+<p>Block ciphers encrypt fixed-size blocks. When a plaintext is not a whole number of blocks long, the last block has to be <em>padded</em> — and the receiver has to know how to <em>unpad</em> it. This page covers the padding schemes supported by the library and shows when each one is appropriate.</p>
+<p>The five framework modes come from the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> enum. Set them via the algorithm's <code>Padding</code> property, or construct a strategy directly through <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>. An extended <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> enum mirrors those values and adds ISO/IEC 7816-4 bit padding for scenarios where the framework enum is not expressive enough.</p>
+<p><img src="../../images/diagrams/padding-schemes.svg" alt="Block-cipher padding schemes compared — PKCS7, ANSI X.923, ISO 10126, Zeros, and ISO/IEC 7816-4 bit padding"></p>
+<p>Every scheme is one <a class="xref" href="../../api/Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> implementation: <code>Pad(plaintext, blockSize)</code> extends the input to a block boundary, and <code>Unpad(padded, blockSize)</code> reverses it. <code>PaddingFactory.Create</code> has two overloads — one keyed on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a>, one on <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> (the only way to reach <code>ISO7816_4</code>). The <code>SymmetricAlgorithm</code> wrappers construct the matching strategy for you from whichever of <code>Padding</code> / <code>BlockPadding</code> you set — see <a href="encryption-basics.html">Encryption basics</a> for how those two properties stay in sync.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><strong>Self-describing schemes always grow.</strong> PKCS7, ANSI X.923, and ISO/IEC 7816-4 each append a <em>full extra block</em> when the plaintext is already block-aligned. That is deliberate: it guarantees the final byte (or the rightmost <code>0x80</code>) unambiguously marks the padding, so <code>Unpad</code> can never mistake real data for filler. Only <code>Zeros</code> and <code>None</code> leave block-aligned input untouched — and those two cannot self-describe, so the caller must already know the true length.</p>
+</div>
+<h2 id="pkcs7--the-safe-default">PKCS7 — the safe default</h2>
+<p><strong>Use for:</strong> any block-oriented mode (CBC, ECB) where the plaintext is arbitrary binary or text.</p>
+<p>PKCS7 appends <em>N</em> bytes, each with the value <em>N</em>, where <em>N</em> is chosen to bring the plaintext to the next block boundary. When the plaintext is already block-aligned, an entire extra block of <em>block_size</em> bytes is appended, each carrying the value <em>block_size</em>. That sounds wasteful but it's what makes unpadding unambiguous: the last byte always tells you how many pad bytes to strip.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.PKCS7,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] plaintext  = new byte[100];      // not a multiple of 32
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+
+Debug.Assert(plaintext.SequenceEqual(recovered));
+</code></pre>
+<p>PKCS7 round-trips cleanly for any plaintext length, including zero.</p>
+<p><strong>Note on padding oracles.</strong> PKCS7 unpadding validates the trailing bytes and rejects a ciphertext whose last block is not well-formed. Historically this has been the source of &quot;padding oracle&quot; attacks against CBC when an attacker can distinguish a padding failure from a MAC failure via timing or error messages. The library validates in constant time inside <code>Pkcs7Padding.Unpad</code>, but you should still pair CBC-with-PKCS7 encryption with a MAC over the ciphertext (encrypt-then-MAC) when the ciphertext travels across a trust boundary.</p>
+<h2 id="zeros--for-application-framed-messages">Zeros — for application-framed messages</h2>
+<p><strong>Use for:</strong> plaintexts that already carry their own length (a length prefix, a terminator, or a framed binary record) and are produced with a deterministic shape.</p>
+<p>Zero padding appends <code>0x00</code> bytes until the plaintext reaches a block boundary. It does nothing when the plaintext is already block-aligned. The problem with unpadding is that <code>0x00</code> is a perfectly valid plaintext byte — <code>Unpad</code> strips trailing zeros, and it cannot tell whether those zeros were padding or part of the real message.</p>
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.Zeros,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+// Plaintext has a length prefix, so trailing zeros are unambiguous.
+byte[] plaintext = BuildMessageWithLengthPrefix(body: new byte[97]);
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+
+// Recovered may end in extra 0x00 bytes; consult the length prefix to strip them.
+</code></pre>
+<p>Zero padding is appropriate when <strong>the application layer already knows the real length</strong>. If it doesn't, prefer PKCS7.</p>
+<h2 id="ansi-x923--length-byte-zero-filled-interior">ANSI X.923 — length byte, zero-filled interior</h2>
+<p><strong>Use for:</strong> interoperability with legacy systems or specifications that mandate ANSI X.923.</p>
+<p>ANSI X.923 appends <code>N - 1</code> bytes of value <code>0x00</code> followed by a trailing byte holding the padding length <code>N</code>. When the plaintext is already block-aligned, a full extra block of padding is appended so unpadding remains unambiguous. <code>Unpad</code> validates in constant time that all interior pad bytes are <code>0x00</code> and that the trailing length byte is in range.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.ANSIX923,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] plaintext  = new byte[100];
+byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p>The same padding-oracle caution as PKCS7 applies: pair with a MAC when the ciphertext crosses a trust boundary.</p>
+<h2 id="iso-10126--length-byte-random-interior">ISO 10126 — length byte, random interior</h2>
+<p><strong>Use for:</strong> interoperability with existing ISO 10126 ciphertexts. The scheme was withdrawn by ISO in 2007 and is not recommended for new designs — prefer PKCS7.</p>
+<p>ISO 10126 is shaped like ANSI X.923 except the interior pad bytes are cryptographically random instead of <code>0x00</code>. Because the random bytes cannot be reconstructed during decryption, <code>Unpad</code> only validates the trailing length byte.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CBC,
+    Padding   = PaddingMode.ISO10126,
+};
+</code></pre>
+<h2 id="isoiec-7816-4--bit-padding-one-and-zeros">ISO/IEC 7816-4 — bit padding (one-and-zeros)</h2>
+<p><strong>Use for:</strong> smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC, SHA-3/Keccak). Access this mode through the extended <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> enum, which is not part of the framework <code>PaddingMode</code> surface.</p>
+<p>ISO/IEC 7816-4 appends a single <code>0x80</code> byte followed by <code>0x00</code> bytes out to the next block boundary. When the plaintext is already block-aligned, a full extra block of padding is appended. <code>Unpad</code> scans the final block in constant time for the rightmost <code>0x80</code>: everything after it must be <code>0x00</code>, and the byte itself marks the end of the plaintext.</p>
+<pre><code class="lang-csharp">IPaddingStrategy bitPadding = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
+
+byte[] padded   = bitPadding.Pad(plaintext, blockSize: 256);    // block size in bits — 256 for Threefish-256
+byte[] unpadded = bitPadding.Unpad(padded, blockSize: 256);
+</code></pre>
+<h2 id="none--only-for-block-aligned-or-stream-modes">None — only for block-aligned or stream modes</h2>
+<p><strong>Use for:</strong> stream-shaped modes (CTR, CFB, OFB) that don't need padding, or when you have already padded the plaintext in your own code and want the cipher to leave it alone.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">// Stream-shaped mode: ciphertext length == plaintext length.
+using var alg = new Threefish256
+{
+    BlockMode = CipherModeKind.CTR,
+    Padding   = PaddingMode.None,
+};
+alg.GenerateKey();
+alg.GenerateIV();
+alg.GenerateTweak();
+
+byte[] plaintext  = new byte[100];     // any length is fine
+byte[] ciphertext = alg.Encrypt(plaintext);    // 100 bytes out
+byte[] recovered  = alg.Decrypt(ciphertext);
+</code></pre>
+<p><code>PaddingMode.None</code> combined with a block-oriented mode (CBC, ECB) and a plaintext that isn't a multiple of the block size will throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> during encryption. Don't use the two together unless you know your plaintext is block-aligned.</p>
+<h2 id="choosing--quick-guide">Choosing — quick guide</h2>
+<table>
+<thead>
+<tr>
+<th>If your plaintext is…</th>
+<th>and your mode is…</th>
+<th>Use</th>
+<th>Ciphertext length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arbitrary bytes</td>
+<td>CBC, ECB</td>
+<td><strong>PKCS7</strong></td>
+<td>Plaintext + 1–block bytes</td>
+</tr>
+<tr>
+<td>Framed (length-prefixed / terminated)</td>
+<td>CBC, ECB</td>
+<td><strong>Zeros</strong> or <strong>PKCS7</strong></td>
+<td>≥ plaintext, to next block boundary</td>
+</tr>
+<tr>
+<td>Any length</td>
+<td>CTR, CFB, OFB</td>
+<td><strong>None</strong></td>
+<td>Exactly plaintext length</td>
+</tr>
+<tr>
+<td>Already block-aligned</td>
+<td>CBC, ECB</td>
+<td><strong>None</strong> (if sure)</td>
+<td>Exactly plaintext length</td>
+</tr>
+<tr>
+<td>Interop with ANSI X.923 spec</td>
+<td>CBC, ECB</td>
+<td><strong>ANSIX923</strong></td>
+<td>Plaintext + 1–block bytes</td>
+</tr>
+<tr>
+<td>Interop with legacy ISO 10126 ciphertext</td>
+<td>CBC, ECB</td>
+<td><strong>ISO10126</strong></td>
+<td>Plaintext + 1–block bytes</td>
+</tr>
+<tr>
+<td>Smart-card / CMAC / bit-oriented protocols</td>
+<td>CBC, ECB</td>
+<td><strong>ISO7816_4</strong> (via <code>PaddingModeKind</code>)</td>
+<td>Plaintext + 1–block bytes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="using-the-strategy-directly">Using the strategy directly</h2>
+<p>For advanced scenarios you can obtain an <a class="xref" href="../../api/Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> directly and apply it to a byte span:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+using System.Security.Cryptography;
+
+IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
+
+byte[] padded   = pkcs7.Pad(plaintext, blockSize: 256);         // block size in bits — 256 for Threefish-256
+byte[] unpadded = pkcs7.Unpad(padded, blockSize: 256);
+</code></pre>
+<p><code>IPaddingStrategy.Pad</code> / <code>Unpad</code> take the block size in <strong>bits</strong> (the same unit as <code>IBlockCipher.BlockSize</code>), so pass <code>256</code> for Threefish-256, <code>128</code> for AES, Camellia, Twofish, or Serpent-128, and <code>64</code> for Blowfish or Skipjack. This is primarily useful if you're composing a custom encryption pipeline against <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>.</p>
+<h2 id="padding-oracles--the-one-caveat-that-spans-schemes">Padding oracles — the one caveat that spans schemes</h2>
+<p>The length-describing schemes (PKCS7, ANSI X.923, ISO 10126, ISO/IEC 7816-4) must <em>validate</em> their trailing bytes during <code>Unpad</code>, and a ciphertext whose final block is malformed is rejected. Historically that rejection became an oracle: when an attacker can tell a <em>padding</em> failure apart from a downstream <em>MAC</em> failure — via a distinct exception, error code, or response time — they can decrypt CBC ciphertext byte by byte without the key.</p>
+<p>This library closes the timing half of that gap: the validations in <code>Pkcs7Padding.Unpad</code>, <code>Ansix923Padding.Unpad</code>, and the ISO/IEC 7816-4 strategy scan the final block in <strong>constant time</strong>. But constant-time unpadding alone does not make CBC safe across a trust boundary — an attacker can still observe <em>whether</em> unpadding threw. The durable fix is to authenticate the ciphertext:</p>
+<ul>
+<li><strong>Encrypt-then-MAC</strong> — compute a MAC (for example <a href="siphash.html">SipHash</a> or HMAC) over <code>IV ‖ ciphertext</code>, verify it in constant time <em>before</em> decrypting, and abort on mismatch so the padding step never runs on attacker-modified data; or</li>
+<li><strong>Use an <a href="aead-modes.html">AEAD mode</a></strong> — GCM / OCB / EAX / SIV verify the tag before releasing any plaintext, removing the padding-oracle surface entirely. AEAD is the recommended default.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="cipher-modes.html">Cipher block modes</a> — which padding pairs with which mode.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> — the full Key/IV/Tweak/Padding lifecycle.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

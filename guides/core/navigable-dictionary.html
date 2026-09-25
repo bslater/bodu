@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Navigable dictionary | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Navigable dictionary | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="navigable-dictionary">Navigable dictionary</h1>
+
+<p><code>NavigableDictionary&lt;TKey,TValue&gt;</code> is the key-value counterpart of <a href="navigable-set.html"><code>NavigableSet&lt;T&gt;</code></a> — a key-sorted <code>IDictionary&lt;TKey,TValue&gt;</code> backed by the same order-statistic red-black tree, with the navigation surface transposed to keys. Every positional query is O(log n): nearest-neighbour lookups (<code>TryGetFloorEntry</code> / <code>TryGetCeilingEntry</code> / <code>TryGetHigherEntry</code> / <code>TryGetLowerEntry</code>, plus the key-only <code>TryGetFloorKey</code> family), rank and select (<code>IndexOfKey</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> entry views.</p>
+<p>It fits problems where a sorted map's <em>position</em> matters as much as its lookups: time-series stores (the sample at or before a timestamp), tiered pricing and tax brackets (the bracket whose threshold floors the amount), versioned configuration (the newest entry at or below a version), and windowed aggregation (how many readings between two keys) without iterating the window.</p>
+<p>The BCL's <code>SortedDictionary&lt;TKey,TValue&gt;</code> sorts by key but answers none of this — no floor/ceiling/higher/lower, no rank/select, no O(log n) range count; <code>SortedList&lt;TKey,TValue&gt;</code> gives positional access but pays O(n) per insert and remove.</p>
+<p>Contract points worth keeping in mind:</p>
+<ul>
+<li><strong>Dictionary semantics.</strong> <code>Add</code> throws <code>ArgumentException</code> on a comparer-equal duplicate key (the strict <code>Dictionary&lt;TKey,TValue&gt;.Add</code> contract); <code>TryAdd</code> returns <code>false</code> instead; the indexer upserts. The bulk-load constructor also rejects duplicate keys in the source, matching the <code>Dictionary</code> collection-constructor contract.</li>
+<li><strong>Null keys are rejected</strong> with <code>ArgumentNullException</code>, consistent with the rest of the Bodu collection family. <strong>Null values are allowed</strong> — values are unconstrained, and <code>ContainsValue(null)</code> finds a stored <code>null</code>.</li>
+<li><code>ContainsValue</code> is an honest <strong>O(n)</strong> walk — values are not indexed; <code>ContainsKey</code> is the O(log n) lookup.</li>
+<li><strong>Views are live and fail-fast.</strong> <code>Ascending()</code>, <code>Descending()</code>, and <code>Range(low, high)</code> re-resolve against the current tree each time they are iterated; mutating the dictionary <em>during</em> an iteration throws <code>InvalidOperationException</code> on the next advance. <code>Keys</code> and <code>Values</code> are live, read-only, key-sorted views with the same fail-fast behaviour.</li>
+<li><strong>Overwriting a value is not a structural mutation.</strong> Assigning an existing key through the indexer does not invalidate in-flight enumerators; adds and removes do.</li>
+<li><code>Range</code> bounds are <strong>inclusive on both ends</strong>, need not be present, and the walk costs O(log n + k).</li>
+<li><code>MinEntry</code> / <code>MaxEntry</code> throw <code>InvalidOperationException</code> on an empty dictionary; <code>TryGetMinEntry</code> / <code>TryGetMaxEntry</code> are the non-throwing forms.</li>
+<li>Not thread-safe.</li>
+</ul>
+<p>The backing structure is the key-value adaptation of the set's node machinery; the decision record — including the anticipated dictionary follow-on — lives in the design note at <code>Bodu.Collections/docs/navigable-collections-design.md</code>.</p>
+<h2 id="pattern-1--nearest-entry-at-or-before-a-key">Pattern 1 — nearest entry at or before a key</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var samples = new NavigableDictionary&lt;DateTime, double&gt;();
+samples.Add(new DateTime(2026, 7, 5, 9, 0, 0), 21.4);
+samples.Add(new DateTime(2026, 7, 5, 9, 5, 0), 21.9);
+samples.Add(new DateTime(2026, 7, 5, 9, 10, 0), 22.3);
+
+// The reading in effect at 09:07 — greatest key &lt;= the probe.
+if (samples.TryGetFloorEntry(new DateTime(2026, 7, 5, 9, 7, 0), out var reading))
+    Console.WriteLine($&quot;{reading.Key:HH:mm} -&gt; {reading.Value}&quot;);   // 09:05 -&gt; 21.9
+
+// Key-only variants skip materializing the pair.
+samples.TryGetHigherKey(reading.Key, out DateTime nextSample);      // 09:10
+</code></pre>
+<h2 id="pattern-2--rank-select-and-range-counting-over-keys">Pattern 2 — rank, select, and range counting over keys</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var scores = new NavigableDictionary&lt;int, string&gt;(new[]
+{
+    KeyValuePair.Create(2210, &quot;dana&quot;), KeyValuePair.Create(1830, &quot;alex&quot;),
+    KeyValuePair.Create(2475, &quot;sam&quot;),  KeyValuePair.Create(1990, &quot;kim&quot;),
+});
+
+int rank = scores.IndexOfKey(2210);                 // 2 — two lower scores
+var median = scores.GetAt(scores.Count / 2);        // entry with the k-th smallest key
+int inBand = scores.CountInRange(1900, 2300);       // 2 — O(log n), no iteration
+</code></pre>
+<h2 id="pattern-3--directional-and-range-entry-views">Pattern 3 — directional and range entry views</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic;
+
+var brackets = new NavigableDictionary&lt;decimal, decimal&gt;();   // threshold -&gt; rate
+brackets.Add(0m, 0.00m);
+brackets.Add(18_200m, 0.19m);
+brackets.Add(45_000m, 0.30m);
+brackets.Add(135_000m, 0.37m);
+
+// Highest-first walk without materializing.
+foreach (var bracket in brackets.Descending())
+    Console.WriteLine($&quot;{bracket.Key} -&gt; {bracket.Value}&quot;);
+
+// Inclusive-bounds sub-range; the bounds need not be stored keys.
+foreach (var bracket in brackets.Range(10_000m, 100_000m))
+    Console.WriteLine(bracket.Key);                  // 18200, 45000
+
+// The rate that applies to an income is a floor query, not a scan.
+brackets.TryGetFloorEntry(52_000m, out var applicable);   // (45000, 0.30)
+</code></pre>
+<h2 id="choosing-against-the-alternatives">Choosing against the alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sorted key-value only, no positional queries</td>
+<td><code>SortedDictionary&lt;TKey,TValue&gt;</code> (BCL)</td>
+</tr>
+<tr>
+<td>Sorted key-value + floor/ceiling/rank/select/range-count</td>
+<td><code>NavigableDictionary&lt;TKey,TValue&gt;</code></td>
+</tr>
+<tr>
+<td>Sorted unique elements with the same query family</td>
+<td><a href="navigable-set.html"><code>NavigableSet&lt;T&gt;</code></a></td>
+</tr>
+<tr>
+<td>Sorted key-value with positional access, rare writes</td>
+<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) — accepts O(n) inserts</td>
+</tr>
+<tr>
+<td>Range-keyed lookup (a key maps a whole interval)</td>
+<td><a href="range-dictionary.html"><code>RangeDictionary&lt;TKey,TValue&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="navigable-set.html">Navigable set</a> — the element-only counterpart over the same tree machinery.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

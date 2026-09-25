@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Whirlpool hashing | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Whirlpool hashing | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whirlpool-hashing">Whirlpool hashing</h1>
+
+<p><code>Whirlpool</code> is the ISO/IEC 10118-3 standardised hash designed by Vincent Rijmen and Paulo Barreto. It is a Merkle–Damgård construction wrapping an internal 512-bit block cipher (W) with Rijndael-inspired wide-trail design — large S-boxes (8 × 8 over GF(2⁸)), an MDS-based diffusion layer, 10 rounds.</p>
+<p>The hash has had three formal revisions, all of which are supported by <code>Bodu.Security.Cryptography</code> through the <code>WhirlpoolVersion</code> enum. It is a <em>plain digest</em> — a fixed 512-bit output, the widest fixed digest in the package — and a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so the standard <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle and the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> helpers apply unchanged. The 512-bit width gives ≈ 512-bit pre-image resistance and ≈ 256-bit collision resistance.</p>
+<p>For the broader &quot;which hash do I pick?&quot; framing, see <a href="hashing.html">Hashing</a>.</p>
+<h2 id="at-a-glance">At a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Output size</td>
+<td>512 bits (64 bytes), fixed</td>
+</tr>
+<tr>
+<td>Block size</td>
+<td>64 bytes (512 bits)</td>
+</tr>
+<tr>
+<td>Message-length trailer</td>
+<td>256 bits, big-endian, appended after <code>0x80</code> padding</td>
+</tr>
+<tr>
+<td>Standardisation</td>
+<td>ISO/IEC 10118-3</td>
+</tr>
+<tr>
+<td>Rounds</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="construction">Construction</h2>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+// Default — ISO/IEC 10118-3 (2003) Whirlpool.
+using var hasher = new Whirlpool();
+byte[] hash = hasher.ComputeHash(payload);   // 64 bytes
+</code></pre>
+<p>The output is always 512 bits — the algorithm does not support truncation or an alternative output size.</p>
+<h2 id="whirlpool-revisions">Whirlpool revisions</h2>
+<p><code>WhirlpoolVersion</code> selects the algorithm revision. The three revisions differ subtly in the S-box and diffusion matrix; the wire-format is identical, but a given message produces a different digest under each revision:</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Year</th>
+<th>Symbolic name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WhirlpoolInfo1</code></td>
+<td>2000</td>
+<td>Whirlpool-0</td>
+<td>Original publication. Superseded; do not use for new designs.</td>
+</tr>
+<tr>
+<td><code>WhirlpoolInfo2</code></td>
+<td>2001</td>
+<td>Whirlpool-T</td>
+<td>First revision (transition). Used by some early adopters.</td>
+</tr>
+<tr>
+<td><code>WhirlpoolInfo3</code></td>
+<td>2003</td>
+<td>Whirlpool <em>(default)</em></td>
+<td>The current ISO/IEC 10118-3 algorithm. <strong>Default and the right choice for new designs.</strong></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var legacy = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo1 };
+byte[] hash = legacy.ComputeHash(payload);
+
+Console.WriteLine(legacy.AlgorithmName);   // &quot;Whirlpool-0&quot;
+</code></pre>
+<p><code>Version</code> is mutable before hashing starts; once <code>TransformBlock</code> / <code>ComputeHash</code> has been called, attempting to change it throws <code>CryptographicUnexpectedOperationException</code>.</p>
+<p>The default <code>Whirlpool()</code> constructor selects <code>WhirlpoolInfo3</code>. Use the older variants only for compatibility with deployed systems that committed to a specific revision.</p>
+<h2 id="streaming">Streaming</h2>
+<pre><code class="lang-csharp">using var hasher = new Whirlpool();
+
+hasher.TransformBlock(buffer1, 0, n1, null, 0);
+hasher.TransformBlock(buffer2, 0, n2, null, 0);
+hasher.TransformFinalBlock(buffer3, 0, n3);
+
+byte[] hash = hasher.Hash!;
+</code></pre>
+<p><code>CanReuseTransform</code> and <code>CanTransformMultipleBlocks</code> are both <code>true</code>. The standard <code>HashAlgorithm</code> streaming pattern works without modification.</p>
+<h2 id="security-caveats">Security caveats</h2>
+<ul>
+<li><strong>Status.</strong> Whirlpool is unbroken — no practical pre-image, second-pre-image, or collision attack on the standardised 2003 revision is known. Theoretical attacks reduce the security margin on reduced-round variants but do not threaten the full algorithm.</li>
+<li><strong>Use the 2003 revision.</strong> Whirlpool-0 (2000) was withdrawn because of a flaw in the diffusion matrix; Whirlpool-T (2001) was the corrected interim version. Only <code>WhirlpoolInfo3</code> (2003) is the current ISO/IEC standard. The earlier versions are exposed for compatibility with archived data, not for new designs.</li>
+<li><strong>Merkle–Damgård length extension.</strong> Whirlpool inherits the length-extension property of Merkle–Damgård hashes — if you use it for a MAC, use HMAC-Whirlpool, not &quot;key ‖ message&quot;. For native MAC modes, prefer Skein or BLAKE2 / 3.</li>
+</ul>
+<h2 id="when-not-to-use-whirlpool">When <em>not</em> to use Whirlpool</h2>
+<ul>
+<li><strong>You need a faster modern hash.</strong> SHA-512 (BCL), BLAKE2b, BLAKE3, and Skein-512 are all faster than Whirlpool in software.</li>
+<li><strong>You need a built-in MAC mode.</strong> Whirlpool does not have a native MAC mode — reach for <a href="blake.html">BLAKE2b</a> (BLAKE2b-MAC) or <a href="skein.html">Skein-512</a> (Skein-MAC) instead. Use HMAC-Whirlpool only if interoperability requires it.</li>
+<li><strong>You need an XOF or variable-length output.</strong> Reach for <a href="shake.html">SHAKE</a>.</li>
+<li><strong>You need a non-cryptographic fingerprint.</strong> Reach for <a class="xref" href="../../api/Bodu.IO.Hashing.html"><code>Bodu.IO.Hashing</code></a>.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="hashing.html">Hashing overview</a> — the framework's overall hash story.</li>
+<li><a href="blake.html">BLAKE</a>, <a href="tiger.html">Tiger</a>, <a href="skein.html">Skein</a>, <a href="shake.html">SHAKE</a> — other cryptographic digests in the package.</li>
+<li><a href="composing-primitives.html">Composing primitives</a> — encrypt-then-MAC, HMAC, KDFs.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html"><code>Bodu.Security.Cryptography.Whirlpool</code> API reference</a></li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.WhirlpoolVersion.html"><code>Bodu.Security.Cryptography.WhirlpoolVersion</code> API reference</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

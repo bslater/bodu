@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>N-ary tree | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="N-ary tree | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="n-ary-tree">N-ary tree</h1>
+
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Tree-1.html">Tree&lt;T&gt;</a> is a mutable <strong>n-ary tree node</strong>: every instance carries a <code>Value</code>, an optional <code>Parent</code>, and an ordered list of <code>Children</code>, and is at the same time the root of the subtree beneath it. There is no separate &quot;tree&quot; container — a root is simply a node whose <code>Parent</code> is <code>null</code> — so the same type models an org chart, a file system, a parsed outline, or a scene graph.</p>
+<p>The type lives in <code>Bodu.Collections.Generic.Trees</code> alongside the trie family, but it is not a trie: it has no keys, no lookup, and no ordering constraint. Use it when the <em>shape</em> of the hierarchy is the data. For keyed prefix structures see <a href="trie.html">Tries and text search</a>; for flattening an existing object graph without building nodes, see <code>RecursiveSelect</code> in <a href="sequence-operators.html#pattern-7--recursiveselect-and-recursiveselectcontrol">Sequence operators and generators</a>.</p>
+<p>All examples below were run; the comments show the actual results.</p>
+<h2 id="pattern-1--build-a-tree">Pattern 1 — build a tree</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var company = new Tree&lt;string&gt;(&quot;Company&quot;);
+Tree&lt;string&gt; engineering = company.AddChild(&quot;Engineering&quot;);   // AddChild(T) returns the new node
+Tree&lt;string&gt; sales = company.AddChild(&quot;Sales&quot;);
+engineering.AddChild(&quot;Platform&quot;);
+engineering.AddChild(&quot;Apps&quot;);
+sales.AddChild(&quot;EMEA&quot;);
+
+var support = new Tree&lt;string&gt;(&quot;Support&quot;, new[] { &quot;Tier 1&quot;, &quot;Tier 2&quot; });   // a root seeded with child values
+company.AddChild(support);                                                  // attach a detached subtree
+
+int direct   = company.ChildCount;              // 3
+bool isRoot  = company.IsRoot;                  // true
+bool wasRoot = support.IsRoot;                  // false — attached now
+int depth    = engineering.Depth;               // 1 — edges from the root
+int height   = company.Height;                  // 2 — edges on the longest downward path
+string owner = support.Parent?.Value ?? &quot;&quot;;     // &quot;Company&quot;
+</code></pre>
+<p><code>AddChild(T value)</code> creates and appends a child and returns it, so a tree can be built fluently from the top down. <code>AddChild(Tree&lt;T&gt; child)</code> attaches an existing <strong>detached</strong> node (one whose <code>Parent</code> is <code>null</code>) with its whole subtree; the node must not already have a parent and must not be an ancestor of the target, or <code>InvalidOperationException</code> is thrown. <code>Children</code> is a live read-only view — it reflects later adds and removes but cannot be mutated directly, which is how the parent and acyclicity invariants stay intact.</p>
+<h2 id="pattern-2--traversals">Pattern 2 — traversals</h2>
+<p>Six enumerations are available on every node and apply to the subtree rooted at that node:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var root = new Tree&lt;int&gt;(1);
+var two = root.AddChild(2);
+var three = root.AddChild(3);
+two.AddChild(4);
+two.AddChild(5);
+three.AddChild(6);
+
+var pre    = root.PreOrder().Select(n =&gt; n.Value);      // 1 2 4 5 3 6
+var post   = root.PostOrder().Select(n =&gt; n.Value);     // 4 5 2 6 3 1
+var level  = root.LevelOrder().Select(n =&gt; n.Value);    // 1 2 3 4 5 6
+var desc   = root.Descendants().Select(n =&gt; n.Value);   // 2 4 5 3 6  — pre-order minus the node itself
+var leaves = root.Leaves().Select(n =&gt; n.Value);        // 4 5 6
+var anc    = two.Children[1].Ancestors().Select(n =&gt; n.Value);   // 2 1 — parent first, root last
+var sub    = two.PreOrder().Select(n =&gt; n.Value);       // 2 4 5 — traversals are per subtree
+Tree&lt;int&gt; top = two.Children[1].Root();                 // the node holding 1
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Order</th>
+<th>Includes the receiver?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PreOrder()</code></td>
+<td>node, then each child's subtree left to right</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>PostOrder()</code></td>
+<td>each child's subtree left to right, then the node</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>LevelOrder()</code></td>
+<td>breadth-first, left to right within a level</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Descendants()</code></td>
+<td>pre-order</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Leaves()</code></td>
+<td>pre-order, nodes with <code>IsLeaf == true</code> only</td>
+<td>yes, if it is itself a leaf</td>
+</tr>
+<tr>
+<td><code>Ancestors()</code></td>
+<td>parent, grandparent, …, root</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>Root()</code></td>
+<td>—</td>
+<td>returns the topmost ancestor (the node itself when it is a root)</td>
+</tr>
+</tbody>
+</table>
+<p>Every traversal is <strong>lazy</strong> (<code>yield</code>-based) and <strong>iterative</strong> — an explicit stack or queue rather than recursion — so arbitrarily deep trees can be walked without a stack overflow:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var root = new Tree&lt;int&gt;(0);
+var cursor = root;
+for (int i = 1; i &lt;= 200_000; i++)
+    cursor = cursor.AddChild(i);            // a 200 000-deep chain
+
+int nodes  = root.PostOrder().Count();      // 200001
+int height = root.Height;                   // 200000
+int depth  = cursor.Depth;                  // 200000
+</code></pre>
+<p><code>Depth</code> and <code>Height</code> are computed on demand — <code>Depth</code> walks up to the root (O(depth)), <code>Height</code> walks the subtree (O(subtree size)) — so cache them if you need them in a hot loop.</p>
+<h2 id="pattern-3--mutate-detach-re-attach-replace-values-clear">Pattern 3 — mutate: detach, re-attach, replace values, clear</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var root = new Tree&lt;string&gt;(&quot;root&quot;);
+var a = root.AddChild(&quot;a&quot;);
+var b = root.AddChild(&quot;b&quot;);
+var a1 = a.AddChild(&quot;a1&quot;);
+
+bool removed = root.RemoveChild(b);        // true — b is now a detached root with its own subtree intact
+bool bIsRoot = b.IsRoot;                   // true
+bool first   = a1.Remove();                // true  — detaches a1 from a
+bool second  = a1.Remove();                // false — already a root
+a.AddChild(a1);                            // re-attach the detached node
+string parent = a1.Parent!.Value;          // &quot;a&quot;
+
+a1.Value = &quot;A1&quot;;                           // Value is a settable property; the structure is untouched
+var walk = root.PreOrder().Select(n =&gt; n.Value);   // root a A1
+
+try { root.AddChild(a1); }                 // a1 already has a parent
+catch (InvalidOperationException) { /* &quot;already has a parent&quot; */ }
+
+try { a1.AddChild(root); }                 // root is an ancestor of a1
+catch (InvalidOperationException) { /* &quot;would create a cycle&quot; */ }
+
+root.Clear();                              // detaches every child; each becomes a root
+bool empty = root.IsLeaf;                  // true
+bool aRoot = a.IsRoot;                     // true
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Effect</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddChild(T value)</code></td>
+<td>Appends a new child.</td>
+<td>the new node</td>
+</tr>
+<tr>
+<td><code>AddChild(Tree&lt;T&gt; child)</code></td>
+<td>Appends a detached subtree. Throws <code>ArgumentNullException</code> for <code>null</code>, <code>InvalidOperationException</code> if <code>child</code> has a parent or is an ancestor of this node.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RemoveChild(Tree&lt;T&gt; child)</code></td>
+<td>Detaches a direct child (subtree preserved).</td>
+<td><code>true</code> if found</td>
+</tr>
+<tr>
+<td><code>Remove()</code></td>
+<td>Detaches this node from its parent.</td>
+<td><code>true</code> if it had one</td>
+</tr>
+<tr>
+<td><code>Clear()</code></td>
+<td>Detaches every child.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Value</code> (get/set)</td>
+<td>The payload.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Removal never destroys a subtree — a removed node keeps its children and can be re-attached anywhere, including under a different root.</p>
+<h2 id="pattern-4--mutation-during-traversal">Pattern 4 — mutation during traversal</h2>
+<p>Traversals do <strong>not</strong> carry a version counter, so there is no fail-fast exception: mutating the tree while one of its enumerations is live produces <em>undefined results</em> (skipped or repeated nodes are possible). Snapshot first, then mutate:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Collections.Generic.Trees;
+
+var root = new Tree&lt;int&gt;(0);
+root.AddChild(1);
+root.AddChild(2);
+
+foreach (var node in root.Descendants().ToList())   // materialize before touching the structure
+    if (node.Value == 1) node.Remove();
+
+int remaining = root.ChildCount;                    // 1
+</code></pre>
+<p><code>Tree&lt;T&gt;</code> is not thread-safe for concurrent mutation either; readers on other threads must be excluded while a writer is active. Reading a fully built tree from several threads is safe, because traversals allocate their own stack state.</p>
+<h2 id="when-to-use-treet-versus-the-alternatives">When to use <code>Tree&lt;T&gt;</code> versus the alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>You have</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A hierarchy whose <em>shape</em> is the data, edited over time (outline, org chart, scene graph)</td>
+<td><code>Tree&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td>An existing object graph with a child collection you only need to <em>walk</em></td>
+<td><code>RecursiveSelect</code> (no node allocation) — see <a href="sequence-operators.html">Sequence operators</a></td>
+</tr>
+<tr>
+<td>String keys with prefix lookup or autocomplete</td>
+<td><code>Trie</code> / <code>Trie&lt;TValue&gt;</code> / <code>RadixTrie</code> — see <a href="trie.html">Tries and text search</a></td>
+</tr>
+<tr>
+<td>Arbitrary edges (cycles, multiple parents, weights)</td>
+<td><code>Graph&lt;T&gt;</code> — see <a href="graphs.html">Graphs and graph algorithms</a></td>
+</tr>
+<tr>
+<td>Disjoint groups merged over time</td>
+<td><code>DisjointSet&lt;T&gt;</code> — see <a href="graphs.html">Graphs and graph algorithms</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tree(T value)</code> / <code>Tree(T value, IEnumerable&lt;T&gt; childValues)</code></td>
+<td>Creates a root, optionally with one child per value.</td>
+</tr>
+<tr>
+<td><code>Value</code></td>
+<td>The payload; settable.</td>
+</tr>
+<tr>
+<td><code>Parent</code></td>
+<td>The parent node, or <code>null</code> for a root.</td>
+</tr>
+<tr>
+<td><code>Children</code></td>
+<td>Live, read-only, ordered view of the direct children.</td>
+</tr>
+<tr>
+<td><code>ChildCount</code>, <code>IsRoot</code>, <code>IsLeaf</code></td>
+<td>Structural facts, O(1).</td>
+</tr>
+<tr>
+<td><code>Depth</code>, <code>Height</code></td>
+<td>Edges to the root / to the deepest descendant leaf; computed on demand.</td>
+</tr>
+<tr>
+<td><code>AddChild(T)</code>, <code>AddChild(Tree&lt;T&gt;)</code>, <code>RemoveChild(Tree&lt;T&gt;)</code>, <code>Remove()</code>, <code>Clear()</code></td>
+<td>Structural mutation; the parent and acyclicity invariants are enforced.</td>
+</tr>
+<tr>
+<td><code>PreOrder()</code>, <code>PostOrder()</code>, <code>LevelOrder()</code>, <code>Descendants()</code>, <code>Leaves()</code>, <code>Ancestors()</code>, <code>Root()</code></td>
+<td>Lazy, iterative traversals of the subtree (or the ancestor chain).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="trie.html">Tries and text search</a> — the keyed structures that share this namespace.</li>
+<li><a href="sequence-operators.html">Sequence operators and generators</a> — <code>RecursiveSelect</code> for walking hierarchies you do not own.</li>
+<li><a href="graphs.html">Graphs and graph algorithms</a> — when the structure is not a tree.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.html"><code>Bodu.Collections.Generic.Trees</code> API reference</a> — full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

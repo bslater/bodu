@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Streams and token-level I/O | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Streams and token-level I/O | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="streams-and-token-level-io">Streams and token-level I/O</h1>
+
+<p>For inputs too large (or too hot) to materialize, each format exposes its forward-only <code>Utf8*Reader</code> / <code>Utf8*Writer</code> pair, and Delimited adds a typed record-streaming surface on its serializer.</p>
+<h2 id="the-token-surface">The token surface</h2>
+<p>The readers are <code>ref struct</code> cursors over <code>ReadOnlySpan&lt;byte&gt;</code>: <code>Read()</code> advances, <code>TokenType</code> reports the token, <code>GetString()</code> decodes it, and <code>LineNumber</code> / <code>BytesConsumed</code> locate it. The writers emit UTF-8 to an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code> (call <code>Flush()</code> to commit in stream mode).</p>
+<h2 id="pattern-1--walk-delimited-records-one-at-a-time">Pattern 1 — walk delimited records one at a time</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Delimited;
+using Bodu.Text.Delimited.Reader;
+
+var reader = new Utf8DelimitedReader(csvBytes);
+var fields = new List&lt;string&gt;();
+
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case DelimitedTokenType.StartObject:   // StartArray in NoHeader mode
+            fields.Clear();
+            break;
+        case DelimitedTokenType.String:
+            fields.Add(reader.GetString());
+            break;
+        case DelimitedTokenType.EndObject:
+            ProcessRow(fields);                // one record in memory at a time
+            break;
+    }
+}
+</code></pre>
+<p><code>reader.Headers</code> exposes the header row once it has been read.</p>
+<h2 id="pattern-2--stream-typed-records">Pattern 2 — stream typed records</h2>
+<p>For typed rows, skip the token loop:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync&lt;Trade&gt;(stream))
+{
+    Process(trade);
+}
+
+await DelimitedSerializer.SerializeAsync(output, ProduceTradesAsync());  // IAsyncEnumerable&lt;Trade&gt; in
+</code></pre>
+<h2 id="pattern-3--scan-a-dotenv-source">Pattern 3 — scan a DotEnv source</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.DotEnv;
+using Bodu.Text.DotEnv.Reader;
+
+var reader = new Utf8DotEnvReader(envBytes);
+string? key = null;
+
+while (reader.Read())
+{
+    if (reader.TokenType == DotEnvTokenType.PropertyName)
+        key = reader.GetString();
+    else if (reader.TokenType == DotEnvTokenType.String)
+        Inspect(key!, reader.GetString(), reader.LineNumber);
+}
+</code></pre>
+<h2 id="pattern-4--stream-ini-tokens-as-authored">Pattern 4 — stream INI tokens as authored</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Text.Ini;
+using Bodu.Text.Ini.Reader;
+
+var reader = new Utf8IniReader(iniBytes);
+
+while (reader.Read())
+{
+    switch (reader.TokenType)
+    {
+        case IniTokenType.SectionHeader: EnterSection(reader.GetString()); break;
+        case IniTokenType.PropertyName:  currentKey = reader.GetString(); break;
+        case IniTokenType.String:        OnEntry(currentKey, reader.GetString()); break;
+        case IniTokenType.Comment:       /* trivia */ break;
+    }
+}
+</code></pre>
+<p>Use the normalized <code>IniDocumentReader</code> when you want the logical object shape (globals hoisted, duplicate sections merged) instead of the physical file order — note it parses the whole document in its constructor, because merge is out-of-order.</p>
+<h2 id="pattern-5--write-tokens-progressively">Pattern 5 — write tokens progressively</h2>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Text.Delimited.Writer;
+
+var buffer = new ArrayBufferWriter&lt;byte&gt;();
+var writer = new Utf8DelimitedWriter(buffer);
+writer.WriteStartArray();
+foreach (var row in rows)
+{
+    writer.WriteStartObject();
+    writer.WritePropertyName(&quot;symbol&quot;); writer.WriteString(row.Symbol);
+    writer.WriteEndObject();
+}
+writer.WriteEndArray();
+writer.Flush();
+</code></pre>
+<p>The DotEnv and INI writers are line-oriented (<code>WritePropertyName</code> + <code>WriteString</code> per entry; <code>WriteSectionHeader</code> / <code>WriteComment</code> for INI), so output is emitted as you go.</p>
+<h2 id="async-facades">Async facades</h2>
+<p>The <code>*Serializer</code> stream overloads (<code>SerializeAsync</code> / <code>DeserializeAsync</code>) buffer the document in full — only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: <code>DeserializeAsyncEnumerableAsync</code> reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document — a record split across segments, even inside a quoted field, is retried as more data arrives), and the <code>IAsyncEnumerable</code> <code>SerializeAsync</code> overload encodes each record as it is produced and flushes to the destination in bounded batches.</p>
+<h2 id="mid-stream-errors">Mid-stream errors</h2>
+<p>Readers throw their <code>*FormatException</code> at the offending token with <code>LineNumber</code> / byte offset attached; everything already consumed remains valid. The ref-struct readers hold no unmanaged resources — abandoning one is safe.</p>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="../../docs/formats/parser-policies.html">Parser policies</a></li>
+<li>The per-format guides: <a href="delimited.html">Delimited</a> · <a href="dotenv.html">DotEnv</a> · <a href="ini.html">INI</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

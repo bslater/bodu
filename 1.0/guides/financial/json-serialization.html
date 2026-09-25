@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>JSON serialization | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="JSON serialization | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="json-serialization">JSON serialization</h1>
+
+<p><code>Bodu.Financial.Serialization.Json</code> is the companion package that round-trips the <code>Bodu.Financial</code> value types through <code>System.Text.Json</code>. It covers <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a>, <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>.</p>
+<p>The core <code>Bodu.Financial</code> library is deliberately <strong>serialization-agnostic</strong> — the value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code>. JSON support is opt-in through this package, so a consumer of just <code>Money&lt;TCurrency&gt;</code> pays nothing for the serializer. Install it alongside the core package:</p>
+<pre><code class="lang-shell">dotnet add package Bodu.Financial.Serialization.Json
+</code></pre>
+<p>This guide consolidates the JSON material that was previously spread across the <a href="money.html#json-wire-shape">money</a>, <a href="monetary-precision.html#json-wire-shapes">monetary precision</a>, <a href="dependency-injection.html#consuming-the-financial-json-options">dependency injection</a>, and package landing pages; those sections remain as short pointers.</p>
+<h2 id="registration">Registration</h2>
+<p>Register the converters once per <code>JsonSerializerOptions</code> with <code>AddFinancialJsonConverters</code>, then serialize as normal:</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.Serialization.Json;
+
+var options = new JsonSerializerOptions().AddFinancialJsonConverters();
+
+string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);
+// → {&quot;amount&quot;:19.99,&quot;currency&quot;:&quot;USD&quot;}
+
+Money&lt;USD&gt; value = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(json, options);
+// → USD 19.99
+</code></pre>
+<p><code>AddFinancialJsonConverters</code> registers a coherent converter set for all six types from one policy value and returns the same options instance for chaining. Without it, <code>JsonSerializer</code> silently falls back to reflection-shaped output for these types — it does not throw — so register before the first use of an options instance.</p>
+<h2 id="choosing-a-policy">Choosing a policy</h2>
+<p>Pass a <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> to select the wire shape:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var compact = new JsonSerializerOptions()
+    .AddFinancialJsonConverters(FinancialJsonPolicy.Compact);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Money shape</th>
+<th>Bag shape</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Strict</code> (default)</td>
+<td>object <code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code></td>
+<td>wrapped <code>{ &quot;balances&quot;: { &quot;USD&quot;: 100.00 } }</code></td>
+<td>Canonical persistence, ledgers, audit.</td>
+</tr>
+<tr>
+<td><code>Lenient</code></td>
+<td>as <code>Strict</code>; reads also accept lowercase and padded ISO codes</td>
+<td>as <code>Strict</code></td>
+<td>Spreadsheet / external-feed ingest.</td>
+</tr>
+<tr>
+<td><code>Compact</code></td>
+<td>string <code>&quot;19.99 USD&quot;</code></td>
+<td>flat <code>{ &quot;USD&quot;: 100.00 }</code></td>
+<td>Compact payloads and readable log lines.</td>
+</tr>
+</tbody>
+</table>
+<p>Under <code>Strict</code> and <code>Lenient</code>, property names compare case-insensitively, duplicate properties are rejected, and unknown properties are ignored. <code>Lenient</code> writes the same shape as <code>Strict</code> — it only differs on <em>read</em>, where it normalizes lowercase ISO codes to uppercase and trims surrounding whitespace before validation; it is an <em>import</em> convenience, so persist with <code>Strict</code> or <code>Compact</code>. Compact reads accept either the <code>&quot;19.99 USD&quot;</code> or the <code>&quot;USD 19.99&quot;</code> arrangement and reuse each type's <code>TryParse</code> path under the invariant culture, so payloads are stable regardless of the ambient culture.</p>
+<h2 id="wire-shapes-by-converter">Wire shapes by converter</h2>
+<h3 id="moneytcurrency"><code>Money&lt;TCurrency&gt;</code></h3>
+<pre><code class="lang-csharp">JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);   // → {&quot;amount&quot;:19.99,&quot;currency&quot;:&quot;USD&quot;}
+JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), compact);   // → &quot;19.99 USD&quot;
+</code></pre>
+<p>The reader verifies that <code>currency</code> matches <code>TCurrency.IsoCode</code> and throws <code>JsonException</code> on a mismatch — drift between the persisted currency and the code's expectation surfaces as an error rather than a silent re-interpretation. The amount is written as a JSON number and read as either a number or a numeric string. <code>Money&lt;TCurrency&gt;</code> never carries a <code>scale</code> property; its precision is fixed by the currency tag.</p>
+<h3 id="money"><code>Money</code></h3>
+<pre><code class="lang-csharp">JsonSerializer.Serialize(new Money(2500m, CurrencyCode.JPY), options);   // → {&quot;amount&quot;:2500,&quot;currency&quot;:&quot;JPY&quot;}
+JsonSerializer.Serialize(new Money(2500m, CurrencyCode.JPY), compact);   // → &quot;2500 JPY&quot;
+</code></pre>
+<p><code>Money</code> accepts any code the shipped <code>CurrencyCode</code> catalogue defines, rounding to that currency's registered minor units, and rejects one it does not — an unknown or custom code in the payload throws rather than deserializing. A value carrying an explicit scale additionally emits <code>scale</code>; see <a href="#scale-and-precision">Scale and precision</a>.</p>
+<h3 id="calculatedmoney"><code>CalculatedMoney</code></h3>
+<pre><code class="lang-csharp">CalculatedMoney running = new CalculatedMoney(12.500000m, CurrencyCode.USD);   // trailing zeros are significant here
+
+JsonSerializer.Serialize(running, options);   // → {&quot;amount&quot;:12.500000,&quot;currency&quot;:&quot;USD&quot;}
+JsonSerializer.Serialize(running, compact);   // → &quot;12.500000 USD&quot;
+</code></pre>
+<p>The unrounded tier is written <strong>verbatim</strong> — every significant digit and any trailing zeros the stored <code>decimal</code> carries — and read back unchanged, with no scale metadata, because the decimal itself carries the precision. Settle after transport with <code>RoundToMoney()</code>.</p>
+<h3 id="moneybag"><code>MoneyBag</code></h3>
+<pre><code class="lang-csharp">MoneyBag wallet = MoneyBag.Empty.Add(new Money&lt;USD&gt;(100m)).Add(new Money&lt;EUR&gt;(50m));
+
+JsonSerializer.Serialize(wallet, options);   // → {&quot;balances&quot;:{&quot;EUR&quot;:50.00,&quot;USD&quot;:100.00}}
+JsonSerializer.Serialize(wallet, compact);   // → {&quot;EUR&quot;:50.00,&quot;USD&quot;:100.00}
+</code></pre>
+<p>Balances are written in lexicographic ISO order and read as numbers or numeric strings. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.</p>
+<h3 id="exchangerate"><code>ExchangeRate</code></h3>
+<pre><code class="lang-csharp">var observation = new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD, new DateOnly(2024, 1, 3), 1.0956m, &quot;ECB&quot;);
+
+JsonSerializer.Serialize(observation, options);
+// → {&quot;from&quot;:&quot;EUR&quot;,&quot;to&quot;:&quot;USD&quot;,&quot;date&quot;:&quot;2024-01-03&quot;,&quot;rate&quot;:1.0956,&quot;provider&quot;:&quot;ECB&quot;,&quot;isInverted&quot;:false}
+
+JsonSerializer.Serialize(observation, compact);
+// → {&quot;pair&quot;:&quot;EUR/USD&quot;,&quot;date&quot;:&quot;2024-01-03&quot;,&quot;rate&quot;:1.0956,&quot;provider&quot;:&quot;ECB&quot;}
+</code></pre>
+<p>The canonical object writes <code>from</code>, <code>to</code>, <code>date</code> (ISO <code>yyyy-MM-dd</code>), <code>rate</code>, <code>provider</code>, and <code>isInverted</code> in that order. Two members are conditional under every policy: <code>observedRate</code> (the natively quoted rate) is written only when <code>isInverted</code> is <code>true</code>, and <code>fetchedAtUtc</code> (round-trip <code>O</code> format) only when the observation records a fetch instant. <code>Compact</code> folds the currencies into a single <code>&quot;pair&quot;: &quot;FROM/TO&quot;</code> property and omits <code>isInverted</code> when it is <code>false</code>. The reader accepts <strong>both</strong> shapes regardless of policy — the presence of <code>pair</code> versus <code>from</code> / <code>to</code> selects the parse — so a <code>Compact</code> writer and a <code>Strict</code> reader interoperate.</p>
+<h3 id="currencypair"><code>CurrencyPair</code></h3>
+<pre><code class="lang-csharp">JsonSerializer.Serialize(new CurrencyPair(CurrencyCode.USD, CurrencyCode.JPY), options);   // → {&quot;from&quot;:&quot;USD&quot;,&quot;to&quot;:&quot;JPY&quot;}
+JsonSerializer.Serialize(new CurrencyPair(CurrencyCode.USD, CurrencyCode.JPY), compact);   // → &quot;USD/JPY&quot;
+</code></pre>
+<p><code>Lenient</code> applies the same uppercase-and-trim normalization to both codes. The compact string must contain exactly one slash with a code on each side.</p>
+<h2 id="scale-and-precision">Scale and precision</h2>
+<p>All three policies round-trip the precision of a <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> that carries an <strong>explicit minor-unit scale</strong> — a unit price finer than its currency's registered precision, created with <code>Money.FromExplicitScale(amount, code, minorUnits)</code>:</p>
+<pre><code class="lang-csharp">Money unitPrice = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
+
+JsonSerializer.Serialize(unitPrice, options);   // → {&quot;amount&quot;:145.678912,&quot;currency&quot;:&quot;USD&quot;,&quot;scale&quot;:6}
+JsonSerializer.Serialize(unitPrice, compact);   // → &quot;145.678912 USD&quot;
+</code></pre>
+<ul>
+<li><strong>Object shapes (<code>Strict</code> / <code>Lenient</code>).</strong> Ordinary money keeps the two-field object. A value whose precision differs from the registry additionally emits <code>scale</code>, and the reader reconstructs the value at that scale — including trailing zeros, so <code>{ &quot;amount&quot;: 12.5, &quot;currency&quot;: &quot;USD&quot;, &quot;scale&quot;: 6 }</code> deserializes to a value that formats as <code>12.500000</code>. A payload <em>without</em> <code>scale</code> deserializes at the registry precision, so documents written before the property existed remain valid and writers that ignore it keep producing ordinary money. <code>scale</code> must be an integer between 0 and 28 (<code>decimal</code>'s ceiling).</li>
+<li><strong>Compact.</strong> The string form pads the amount to the value's minor units, so the fractional-digit count <em>is</em> the scale and the reader infers it: <code>&quot;145.678912 USD&quot;</code> yields a <code>Money</code> reporting <code>MinorUnits == 6</code>; <code>&quot;19.99 USD&quot;</code> yields ordinary registry-precision USD. Inference applies only to scales <em>finer</em> than the registry — a coarser scale (whole-dollar pricing in a two-decimal currency) is preserved by the object shapes' <code>scale</code> property, not by the compact form.</li>
+<li><strong><code>CalculatedMoney</code>.</strong> No scale metadata at all — the verbatim decimal carries it.</li>
+</ul>
+<p>See <a href="monetary-precision.html">Monetary precision &amp; unit pricing</a> for the three-tier model these shapes serve.</p>
+<h2 id="registration-surfaces">Registration surfaces</h2>
+<p>Three surfaces exist; pick the narrowest one that covers your need:</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Scope</th>
+<th>Policy selection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>options.AddFinancialJsonConverters(policy)</code></td>
+<td>Everything serialized with that <code>JsonSerializerOptions</code></td>
+<td>Any policy; registers all six converters coherently.</td>
+</tr>
+<tr>
+<td><code>services.AddFinancialJson(policy)</code></td>
+<td>A keyed <code>JsonSerializerOptions</code> singleton in the container</td>
+<td>Any policy; see <a href="#dependency-injection">Dependency injection</a>.</td>
+</tr>
+<tr>
+<td>Manual <code>options.Converters.Add(...)</code> of a converter or the factory</td>
+<td>Whatever you add — e.g. only pairs, or only one <code>TCurrency</code></td>
+<td>Any policy, per instance: <code>new MoneyOfTCurrencyJsonConverterFactory(FinancialJsonPolicy.Compact)</code> covers every <code>Money&lt;TCurrency&gt;</code>; <code>new MoneyOfTCurrencyJsonConverter&lt;USD&gt;(FinancialJsonPolicy.Compact)</code> covers <code>Money&lt;USD&gt;</code> only. A converter constructed without a policy defaults to <code>Strict</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><code>AddFinancialJsonConverters</code> throws <code>ArgumentNullException</code> for a null options instance, <code>ArgumentOutOfRangeException</code> for an undefined policy value, and <code>InvalidOperationException</code> when the options instance has already been used for (de)serialization and its <code>Converters</code> collection has become read-only — configure options before first use. Mixing policies across types on one options instance is not supported.</p>
+<h2 id="dependency-injection">Dependency injection</h2>
+<p><code>services.AddFinancialJson(policy)</code> registers a configured <code>JsonSerializerOptions</code> as a <strong>keyed singleton</strong> under <code>FinancialJsonServiceCollectionExtensions.JsonOptionsKey</code> (<code>&quot;Financial&quot;</code>). Keying keeps the financial converters out of the application's default JSON options (an ASP.NET Core response pipeline, for example):</p>
+<pre><code class="lang-csharp">using System.Text.Json;
+using Bodu.Financial.Serialization.Json;
+using Microsoft.Extensions.DependencyInjection;
+
+services.AddFinancialJson(FinancialJsonPolicy.Strict);
+
+JsonSerializerOptions financialJson =
+    provider.GetRequiredKeyedService&lt;JsonSerializerOptions&gt;(
+        FinancialJsonServiceCollectionExtensions.JsonOptionsKey);
+
+string payload = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), financialJson);
+</code></pre>
+<p>Inject it into a service with <code>[FromKeyedServices(FinancialJsonServiceCollectionExtensions.JsonOptionsKey)] JsonSerializerOptions options</code>. The registration is a plain <code>IServiceCollection</code> extension and does not require <code>AddFinancialService</code> from <code>Bodu.Financial.DependencyInjection</code>; the two compose freely.</p>
+<h2 id="failure-modes">Failure modes</h2>
+<p>Malformed payloads surface as <code>JsonException</code> on read; the converters never silently coerce:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Policy</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Token is not an object (e.g. a bare string)</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> — object form expected.</td>
+</tr>
+<tr>
+<td>Token is not a string (money, <code>CalculatedMoney</code>, <code>CurrencyPair</code>)</td>
+<td><code>Compact</code></td>
+<td><code>JsonException</code> — compact string expected.</td>
+</tr>
+<tr>
+<td>Missing <code>&quot;amount&quot;</code> or <code>&quot;currency&quot;</code>; missing required <code>ExchangeRate</code> property</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> naming the missing property.</td>
+</tr>
+<tr>
+<td>Duplicate <code>&quot;amount&quot;</code>, <code>&quot;currency&quot;</code>, <code>&quot;scale&quot;</code>, or any <code>ExchangeRate</code> property</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> — duplicates are rejected, never last-wins.</td>
+</tr>
+<tr>
+<td><code>&quot;currency&quot;</code> that does not match <code>TCurrency.IsoCode</code> (<code>Money&lt;TCurrency&gt;</code>)</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> — currency mismatch.</td>
+</tr>
+<tr>
+<td>Code that is not three uppercase letters, or is outside the shipped catalogue (<code>Money</code>, <code>CalculatedMoney</code>, <code>MoneyBag</code>)</td>
+<td>all</td>
+<td><code>JsonException</code> — unknown currency rejected.</td>
+</tr>
+<tr>
+<td><code>&quot;amount&quot;</code> that is neither a number nor a numeric string; <code>&quot;currency&quot;</code> that is not a string</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> reporting the type mismatch.</td>
+</tr>
+<tr>
+<td><code>&quot;scale&quot;</code> non-integer, or outside 0–28</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code>.</td>
+</tr>
+<tr>
+<td><code>&quot;rate&quot;</code> not a number, <code>&quot;date&quot;</code> not <code>yyyy-MM-dd</code>, <code>&quot;isInverted&quot;</code> not a boolean</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> naming the property.</td>
+</tr>
+<tr>
+<td>Compact string <code>TryParse</code> rejects (e.g. <code>&quot;19.99&quot;</code>, <code>&quot;USD/&quot;</code>, <code>&quot;USD/JPY/EUR&quot;</code>)</td>
+<td><code>Compact</code></td>
+<td><code>JsonException</code> carrying the offending text.</td>
+</tr>
+<tr>
+<td><code>&quot;balances&quot;</code> not an object; a balance neither a number nor a numeric string</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code>.</td>
+</tr>
+<tr>
+<td>Truncated document</td>
+<td>all</td>
+<td><code>JsonException</code> — unexpected end.</td>
+</tr>
+</tbody>
+</table>
+<p>Unknown properties are <em>ignored</em> (skipped), matching the BCL convention for forward compatibility.</p>
+<h2 id="migration-notes">Migration notes</h2>
+<ul>
+<li><strong>The converters live in the companion package.</strong> Code that serialized <code>Money&lt;TCurrency&gt;</code> through <code>System.Text.Json</code> needs a reference to <code>Bodu.Financial.Serialization.Json</code> and a <code>using Bodu.Financial.Serialization.Json;</code>; the core package exposes no JSON surface.</li>
+<li><strong>JSON registration is not part of <code>AddFinancialService</code>.</strong> The container registration is <code>services.AddFinancialJson(policy)</code> in this package, not a member of the <code>Bodu.Financial.DependencyInjection</code> builder; the financial DI package deliberately carries no <code>System.Text.Json</code> dependency.</li>
+<li><strong><code>CalculatedMoney</code> is covered.</strong> <code>AddFinancialJsonConverters</code> registers the <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter.html">CalculatedMoneyJsonConverter</a> alongside the other five; older material that lists five converters predates it.</li>
+<li><strong><code>scale</code> is additive.</strong> Documents written before the <code>scale</code> property existed deserialize unchanged at the registry precision; a reader that predates it ignores the property (unknown properties are skipped) and settles the amount at the registry precision — acceptable for ordinary money, lossy for unit prices, so upgrade readers before writers when unit prices are in play.</li>
+<li><strong><code>ExchangeRate</code> readers accept both shapes.</strong> Switching a writer from <code>Strict</code> to <code>Compact</code> (or back) does not require coordinating readers; <code>isInverted</code>, <code>observedRate</code>, and <code>fetchedAtUtc</code> are read whenever present.</li>
+<li><strong><code>Lenient</code> writes <code>Strict</code>.</strong> Selecting <code>Lenient</code> for an import pipeline does not change what that pipeline writes back out.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a> — the value types being serialized.</li>
+<li><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a> — explicit scale and the <code>CalculatedMoney</code> tier.</li>
+<li><a href="dependency-injection.html">Financial dependency injection</a> — the rest of the container surface the keyed options compose with.</li>
+<li><a href="../../docs/financial-serialization-json/index.html">Bodu.Financial.Serialization.Json introduction</a> · <a href="../../docs/financial-serialization-json/concepts.html">concepts</a> · <a href="../../docs/financial-serialization-json/getting-started.html">getting started</a> — the package landing pages.</li>
+<li><a href="../numerics/json-serialization.html">Numerics JSON serialization</a> — the sibling companion package with the same policy model.</li>
+<li><a href="index.html">Bodu.Financial guides</a> — the member overview for this package.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html"><code>FinancialJsonPolicy</code></a> · <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonSerializerOptionsExtensions.html"><code>FinancialJsonSerializerOptionsExtensions</code></a> · <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonServiceCollectionExtensions.html"><code>FinancialJsonServiceCollectionExtensions</code></a></li>
+<li><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Bodu.Financial.Serialization.Json API reference</a> — full namespace overview.</li>
+<li>The <code>Bodu.Financial.Samples.JsonSerialization</code> and <code>Bodu.Financial.Samples.UnitPricing</code> samples (<a href="../../samples/financial.html">samples catalogue</a>).</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

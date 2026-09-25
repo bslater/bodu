@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>ASCON extendable output — AsconXof128 and AsconCxof128 | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="ASCON extendable output — AsconXof128 and AsconCxof128 | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="ascon-extendable-output--asconxof128-and-asconcxof128">ASCON extendable output — AsconXof128 and AsconCxof128</h1>
+
+<p>An <strong>extendable output function (XOF)</strong> is a hash with no fixed output length. You absorb any
+amount of input, then squeeze out as many bytes as you need — 32, 64, or a million. ASCON-XOF128
+and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST SP 800-232.</p>
+<p><strong>Bodu.Security.Cryptography</strong> provides two concrete types, both inheriting from the abstract
+<code>AsconXof&lt;T&gt;</code> base:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Algorithm name</th>
+<th>Customization</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a></td>
+<td><code>ASCON-XOF128</code></td>
+<td>None</td>
+<td>General-purpose variable-length output, key derivation, stream seed.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></td>
+<td><code>ASCON-CXOF128</code></td>
+<td>Optional customization string</td>
+<td>Multiple independent output functions from the same primitive.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fixed-parameters">Fixed parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>State size</td>
+<td>320 bits (40 bytes)</td>
+<td>Shared across the full ASCON family.</td>
+</tr>
+<tr>
+<td>Rate (absorption and squeeze block)</td>
+<td>64 bits (8 bytes)</td>
+<td>Eight bytes processed per permutation call.</td>
+</tr>
+<tr>
+<td>Absorption rounds</td>
+<td>8 (Ascon-p8)</td>
+<td>Applied after each absorbed block.</td>
+</tr>
+<tr>
+<td>Transition permutation</td>
+<td>12 (Ascon-p12)</td>
+<td>Always applied once when switching from absorb to squeeze.</td>
+</tr>
+<tr>
+<td>Squeeze permutation</td>
+<td>8 (Ascon-p8)</td>
+<td>Applied between successive squeeze blocks.</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Variable</td>
+<td>Any positive multiple of 8 bits.</td>
+</tr>
+<tr>
+<td>Security level</td>
+<td>128 bits</td>
+<td>For outputs of at least 32 bytes. Shorter outputs cap collision resistance at half the output length, as with any XOF.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-absorb-then-squeeze-lifecycle">The absorb-then-squeeze lifecycle</h2>
+<p>Both types follow the same three-phase lifecycle:</p>
+<ol>
+<li><strong>Absorb</strong> — call <code>Absorb(ReadOnlySpan&lt;byte&gt;)</code> zero or more times to feed input data.</li>
+<li><strong>Squeeze</strong> — call <code>Squeeze(Span&lt;byte&gt;)</code> one or more times to read output bytes.</li>
+<li><strong>Reset</strong> — call <code>Initialize()</code> to discard all state and start a fresh message.</li>
+</ol>
+<p><code>Absorb</code> after <code>Squeeze</code> has started throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to
+reset. For <code>AsconCxof128</code>, there is a fourth phase before absorption: an optional call to
+<code>Customize</code>.</p>
+<h2 id="pattern-1--producing-output-of-a-fixed-length">Pattern 1 — producing output of a fixed length</h2>
+<p>The simplest path: absorb a message, squeeze an exact number of bytes.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+using var xof  = new AsconXof128();
+xof.Absorb(message);
+byte[] output  = xof.GetHash(64);    // squeeze exactly 64 bytes
+</code></pre>
+<p><code>GetHash(int length)</code> is a convenience wrapper around <code>Squeeze</code> that allocates and returns a new
+array. The instance transitions to the squeezing phase on the first call; subsequent calls to
+<code>Squeeze</code> continue from where the last call left off.</p>
+<h2 id="pattern-2--one-shot-static-method">Pattern 2 — one-shot static method</h2>
+<p>For a single-pass operation that does not need a reusable instance, use the static <code>HashData</code>
+method:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+byte[] output  = AsconXof128.HashData(message, outputLength: 32);
+</code></pre>
+<p><code>HashData</code> constructs a temporary instance internally, absorbs the source, squeezes the
+requested number of bytes, and returns them. It is equivalent to the three-step instance API in
+a single call.</p>
+<h2 id="pattern-3--deriving-multiple-keys-from-one-input">Pattern 3 — deriving multiple keys from one input</h2>
+<p>Because squeezing is incremental, a single absorbed input can produce non-overlapping byte
+streams for different purposes without rehashing.</p>
+<pre><code class="lang-csharp">using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+// Derive per-session key material from a shared secret and a session ID.
+byte[] sharedSecret = LoadSharedSecret();
+byte[] sessionId    = GetSessionId();
+
+using var xof = new AsconXof128();
+xof.Absorb(sharedSecret);
+xof.Absorb(sessionId);      // absorb can be called multiple times
+
+byte[] encKey = new byte[32];   // 256-bit encryption key
+byte[] macKey = new byte[32];   // 256-bit MAC key
+byte[] iv     = new byte[16];   // 128-bit IV
+
+xof.Squeeze(encKey);    // first 32 bytes of XOF output
+xof.Squeeze(macKey);    // next 32 bytes — independent of encKey
+xof.Squeeze(iv);        // next 16 bytes
+</code></pre>
+<p>The three slices are deterministic and non-overlapping for the same inputs. This is the XOF
+alternative to HKDF-Expand: a single absorbed PRK produces an unlimited number of output bytes,
+each region serving a separate purpose.</p>
+<h2 id="pattern-4--incremental-absorption">Pattern 4 — incremental absorption</h2>
+<p>Call <code>Absorb</code> as many times as needed. The sponge buffers partial blocks internally, so calls do
+not need to align to the 8-byte rate.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var xof = new AsconXof128();
+
+foreach (byte[] chunk in GetMessageChunks())
+    xof.Absorb(chunk);
+
+byte[] digest = xof.GetHash(32);
+</code></pre>
+<p>The result is identical to absorbing all chunks concatenated in a single call.</p>
+<h2 id="pattern-5--incremental-squeezing">Pattern 5 — incremental squeezing</h2>
+<p>Squeeze as many or as few bytes per call as you like. Each call continues from where the last
+left off.</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var xof = new AsconXof128();
+xof.Absorb(seed);
+
+byte[] block = new byte[8];
+for (int i = 0; i &lt; 1024; i++)
+{
+    xof.Squeeze(block);
+    ProcessBlock(block, i);
+}
+</code></pre>
+<p>This is useful for generating large amounts of deterministic pseudo-random material from a fixed
+seed — effectively a stream cipher output.</p>
+<h2 id="pattern-6--cxof128-with-a-customization-string">Pattern 6 — CXOF128 with a customization string</h2>
+<p><code>AsconCxof128</code> extends the XOF lifecycle with an optional customization step before absorption.
+Two instances with different customization strings produce completely independent outputs for the
+same absorbed input.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Security.Cryptography;
+
+byte[] message = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
+
+// Derive an encryption key — customization string identifies the context.
+using var encXof = new AsconCxof128();
+encXof.Customize(Encoding.UTF8.GetBytes(&quot;enc-key-v1&quot;));
+encXof.Absorb(message);
+byte[] encKey = encXof.GetHash(32);
+
+// Derive a MAC key — different customization string, independent output.
+using var macXof = new AsconCxof128();
+macXof.Customize(Encoding.UTF8.GetBytes(&quot;mac-key-v1&quot;));
+macXof.Absorb(message);
+byte[] macKey = macXof.GetHash(32);
+
+// encKey != macKey, even though message is identical.
+</code></pre>
+<p>Call <code>Customize</code> <strong>before</strong> any call to <code>Absorb</code>. Calling it afterwards, or calling it a second
+time on the same instance, throws <code>InvalidOperationException</code>. Call <code>Initialize()</code> to reset and
+allow a fresh <code>Customize</code>.</p>
+<h3 id="customization-string-semantics">Customization string semantics</h3>
+<p>The customization string is absorbed into the sponge using the standard Ascon padding rule, and
+then a domain-separation constant (XOR of 1 into state word S₄) is injected before the message
+absorption phase begins. This ensures:</p>
+<ul>
+<li>Two instances with different customization strings produce unrelated output.</li>
+<li>An instance with an empty customization string produces output that differs from
+<code>AsconXof128</code> for the same message (because the domain-separation constant is always applied).</li>
+<li>The customization string may be public — it is not a secret.</li>
+</ul>
+<h2 id="pattern-7--empty-customization-string-not-the-same-as-no-customization">Pattern 7 — empty customization string (not the same as no customization)</h2>
+<p>Calling <code>Customize(ReadOnlySpan&lt;byte&gt;.Empty)</code> still applies the ASCON-CXOF128 domain separation.
+The output differs from <code>AsconXof128</code> even with no customization bytes:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+byte[] message = [0x01, 0x02, 0x03, 0x04];
+
+using AsconCxof128 cxof = new AsconCxof128();
+cxof.Customize(ReadOnlySpan&lt;byte&gt;.Empty);   // empty string — domain separation still applied
+cxof.Absorb(message);
+byte[] cxofOutput = cxof.GetHash(32);
+
+byte[] xofOutput = AsconXof128.HashData(message, 32);
+
+// cxofOutput != xofOutput
+</code></pre>
+<p>If <code>Customize</code> is not called at all, <code>AsconCxof128</code> operates without the customization domain
+separation — identically to a plain <code>AsconXof128</code> for the same absorbed input. The
+customization step is optional by design.</p>
+<h2 id="pattern-8--reusing-an-instance">Pattern 8 — reusing an instance</h2>
+<p>Call <code>Initialize()</code> to reset the sponge and reuse the instance for a new message:</p>
+<pre><code class="lang-csharp">using Bodu.Security.Cryptography;
+
+using var xof = new AsconXof128();
+
+for (int i = 0; i &lt; messages.Length; i++)
+{
+    xof.Initialize();
+    xof.Absorb(messages[i]);
+    digests[i] = xof.GetHash(32);
+}
+</code></pre>
+<p>For <code>AsconCxof128</code>, <code>Initialize()</code> also clears the customization state, so <code>Customize</code> can be
+called again on the reset instance.</p>
+<h2 id="algorithm-selection">Algorithm selection</h2>
+<table>
+<thead>
+<tr>
+<th>If you need…</th>
+<th>Reach for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable-length output from a single input</td>
+<td><code>AsconXof128</code></td>
+</tr>
+<tr>
+<td>Multiple independent output streams for different application domains</td>
+<td><code>AsconCxof128</code> with distinct customization strings</td>
+</tr>
+<tr>
+<td>A fixed 256-bit digest</td>
+<td><code>AsconHash256</code> or <code>AsconHashA256</code></td>
+</tr>
+<tr>
+<td>Output derived from multiple pieces of context</td>
+<td>Call <code>Absorb</code> multiple times on one <code>AsconXof128</code> instance</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="ascon.html">ASCON overview</a> — the full family and which algorithm to choose.</li>
+<li><a href="ascon-hashing.html">ASCON hashing</a> — fixed-length 256-bit digest patterns.</li>
+<li><a href="ascon-aead.html">ASCON AEAD</a> — authenticated encryption with <code>AsconAead128</code>.</li>
+<li>API reference: <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> · <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

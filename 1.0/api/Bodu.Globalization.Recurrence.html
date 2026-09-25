@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Namespace Bodu.Globalization.Recurrence | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Namespace Bodu.Globalization.Recurrence | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Globalization.Recurrence">
+
+  <h1 id="Bodu_Globalization_Recurrence" data-uid="Bodu.Globalization.Recurrence" class="text-break">Namespace Bodu.Globalization.Recurrence</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual">
+<p><img src="../images/hero-recurrence.svg" alt="Bodu.Globalization.Recurrence"></p>
+<h2 id="purpose">Purpose</h2>
+<p><strong>Bodu.Globalization.Recurrence</strong> models recurring schedules in industry-standard textual grammars: RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every surface parses, formats, and enumerates occurrences without any calendar-data dependency — the package depends only on <code>Bodu.Core</code> — and every answer is a pure function of the arguments: no API reads the wall clock or consults the machine time zone.</p>
+<p>Reach for this library when you need to answer &quot;when does this schedule fire next?&quot;, &quot;when was the previous occurrence?&quot; (the due-ness comparison), or &quot;which instants does this rule produce inside this window?&quot; for schedules expressed as <code>RRULE</code> text, composed rule sets with extra and exception dates, cron expressions, or fixed intervals anchored to an instant such as a last completed run.</p>
+<h2 id="static-documentation">Static documentation</h2>
+<ul>
+<li><strong><a href="../docs/recurrence/index.html">Introduction</a></strong> — the four schedule forms side by side, the common next / previous contract, purity, and the &quot;which form&quot; table.</li>
+<li><strong><a href="../docs/recurrence/concepts.html">Core concepts</a></strong> — occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts and <code>BYSETPOS</code>, cron field semantics and the search horizon, the duration grammar, offsets and daylight saving, value equality.</li>
+<li><strong><a href="../docs/recurrence/getting-started.html">Getting started</a></strong> — install and a parse → next / previous → enumerate sample for each form, the builder, a set round trip, and defect-naming <code>TryParse</code>.</li>
+<li><strong><a href="../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> — the due-ness recipe, calendar-aware filtering by composition, bounded searches, and conformance.</li>
+</ul>
+<h2 id="key-types">Key types</h2>
+<ul>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> — an immutable RFC 5545 recurrence rule (<code>RRULE</code>): a base frequency refined by an interval, an optional bound (<code>COUNT</code> or <code>UNTIL</code>), and the <code>BY</code> rule parts, with parse/format round-tripping and occurrence enumeration relative to a start date.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> — fluent construction of a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> as an alternative to parsing its textual form.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a> — a composed set of recurring instants: one or more rule streams anchored at a common start, merged with explicit recurrence dates (<code>RDATE</code>) and with exception dates (<code>EXDATE</code>) removed.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a> — a parsed Vixie-style cron expression with next/previous occurrence computation, under a <a class="xref" href="Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a> selecting the five- or six-field grammar.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a> — a recurrence whose occurrences repeat at a fixed interval from a caller-supplied anchor instant (&quot;every 4 hours after the last completed run&quot;), with the RFC 5545 §3.3.6 duration grammar (<code>PT4H</code>, <code>P1DT2H30M</code>) as its canonical text.</li>
+<li><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a> and <a class="xref" href="Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a> — the frequency scale (secondly through yearly) and the ordinal-qualified weekday (<code>BYDAY</code>) building block.</li>
+</ul>
+<h2 id="samples">Samples</h2>
+<p>Five runnable sample projects live under <code>samples/Globalization.Recurrence/</code> — one per schedule form
+(<code>RecurrenceRules</code>, <code>CronExpressions</code>, <code>AnchoredIntervals</code>, <code>RecurrenceSets</code>) plus <code>SchedulingHost</code>,
+which puts all four behind a single adapter and shows configuration validation and missed-run
+catch-up. See the <a href="../samples/recurrence.html">samples catalogue</a>.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><strong>Preview.</strong> The package is published for early evaluation; the public API surface is still taking shape and may change between releases without a major-version bump.</li>
+<li><strong>An independent sibling of the calendar engine.</strong> <code>Bodu.Globalization.Calendar</code> and this package share no dependency in either direction: the calendar's <code>&lt;Recurrence&gt;</code> sources (<code>&lt;DailyInterval&gt;</code>, <code>&lt;Weekly&gt;</code>, <code>&lt;MonthlyDay&gt;</code>, <code>&lt;MonthlyWeekday&gt;</code>) are its own <code>IDateRecurrenceStrategy</code> types, while this package is the standalone, data-free scheduling grammar for RFC 5545 rules, cron, and anchored intervals. Calendar-aware filtering of a recurrence stream is composition from outside — see the <a href="../guides/recurrence/index.html">recurrence guide</a> — and the <a href="../docs/package-matrix.html">package matrix</a> shows how the globalization family fits together.</li>
+</ul>
+</div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">
+Classes
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.AnchoredInterval.html">AnchoredInterval</a></h4>
+      <section><p>Represents a recurrence whose occurrences repeat at a fixed <a class="xref" href="Bodu.Globalization.Recurrence.AnchoredInterval.Interval.html#Bodu_Globalization_Recurrence_AnchoredInterval_Interval">Interval</a> from a caller-supplied anchor
+instant, rather than being aligned to the calendar.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a></h4>
+      <section><p>Represents a parsed Vixie-style cron expression and computes the occurrences that satisfy it.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a></h4>
+      <section><p>Represents an immutable RFC 5545 recurrence rule (<code>RRULE</code>): a base <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.Frequency.html#Bodu_Globalization_Recurrence_RecurrenceRule_Frequency">Frequency</a> refined by an
+interval, an optional bound (<a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.Count.html#Bodu_Globalization_Recurrence_RecurrenceRule_Count">Count</a> or <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.Until.html#Bodu_Globalization_Recurrence_RecurrenceRule_Until">Until</a>), and the <code>BY</code> rule parts, from which
+the set of recurring instants relative to a start date is derived.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a></h4>
+      <section><p>Builds a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> fluently, as an alternative to parsing its textual form.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceSet.html">RecurrenceSet</a></h4>
+      <section><p>Represents a composed set of recurring instants: one or more <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> streams anchored at a
+common start, merged with explicit recurrence dates (<code>RDATE</code>) and with exception dates (<code>EXDATE</code>) removed.</p>
+</section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a></h4>
+      <section><p>Represents a single entry in an RFC 5545 <code>BYDAY</code> rule part: a day of the week with an optional ordinal that
+selects a specific occurrence of that weekday within the frequency period.</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a></h4>
+      <section><p>Identifies the field layout of a <a class="xref" href="Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a>.</p>
+</section>
+      <h4><a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a></h4>
+      <section><p>Identifies the base period at which a <a class="xref" href="Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a> repeats, corresponding to the RFC 5545
+<code>FREQ</code> rule part.</p>
+</section>
+
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

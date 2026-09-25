@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Numerics &amp; Financial — Overview | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Numerics &amp; Financial — Overview | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="numerics--financial">Numerics &amp; Financial</h1>
+
+<p>The <strong>Numerics &amp; Financial</strong> topic covers the <code>Bodu.Numerics</code> and <code>Bodu.Financial</code> package families, built around one idea: <strong>exact arithmetic</strong>. <a href="../numerics/index.html"><code>Bodu.Numerics</code></a> ships <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> for rational arithmetic with no binary-floating-point drift and <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> for generic-math ranges with independent endpoint inclusivity, unbounded endpoints, and full set algebra — including the binary-result <a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>, the N-ary <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, and the integer-domain <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>. <a href="../financial/index.html"><code>Bodu.Financial</code></a> builds the monetary layer on top — typed and runtime-tagged money, the ISO 4217 currency catalogue, fair allocation, and an exchange-rate provider stack with audit-grade provenance. <a href="../../guides/financial/dependency-injection.html"><code>Bodu.Financial.DependencyInjection</code></a> registers that stack in a <code>Microsoft.Extensions.DependencyInjection</code> container, <code>Bodu.Numerics.Serialization.Json</code> and <code>Bodu.Financial.Serialization.Json</code> add the <code>System.Text.Json</code> converters (both core libraries are serialization-agnostic), and the <code>Bodu.Financial.ExchangeRates</code> package family supplies the live web feeds and the caching / aggregation layer in front of them.</p>
+<p>The dependency runs one way: <code>Bodu.Financial</code> references <code>Bodu.Numerics</code> so that <a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a> can hand off to <code>Fraction&lt;BigInteger&gt;</code> for sub-minor-unit-precise intermediate calculations. <code>Money&lt;TCurrency&gt;</code> itself is settlement-grade — every operation rounds to the currency's minor units — but calculation chains where each step's rounding would compound (interest accumulation, percentage-of-percentage, unit-rate products) escape to exact rationals via <code>ToFraction()</code>, evaluate without loss, and snap back to settlement precision in a single rounding event via <code>FromFraction(...)</code> or the one-step <code>MultiplyExact(...)</code>. Consumers of <code>Fraction&lt;T&gt;</code> who never touch money are not penalised: the split keeps the 184-currency catalogue and the FX provider stack out of purely numeric workloads.</p>
+<p>Both value-type libraries are <strong>generic-math first</strong>. <code>Fraction&lt;T&gt;</code> accepts any <code>IBinaryInteger&lt;T&gt;</code> backing (from <code>sbyte</code> through <code>Int128</code> to <code>BigInteger</code>) and implements <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code>; <code>Interval&lt;T&gt;</code> accepts any <code>INumber&lt;T&gt;</code> endpoint type. Code written against the .NET generic-math abstractions composes with them without bespoke wrappers.</p>
+<h2 id="the-packages">The packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>What it provides</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Numerics</code></td>
+<td>Stable</td>
+<td><code>Fraction&lt;T&gt;</code> — canonical, GCD-reduced rational arithmetic with <code>BigInteger</code> intermediates, mixed-number and Unicode-vulgar-fraction formatting, continued fractions, best rational approximation. <code>Interval&lt;T&gt;</code> — closed / open / half-open / unbounded intervals with membership, intersection, union, adjacency, difference, and the <code>&amp;</code> / <code>|</code> operators; plus the integer-domain <code>DiscreteInterval&lt;T&gt;</code>, the binary-result <code>IntervalPair&lt;T&gt;</code> / <code>DiscreteIntervalPair&lt;T&gt;</code>, and the N-ary <code>IntervalSet&lt;T&gt;</code>. Also <code>BigDecimal</code> (arbitrary-precision decimal), <code>Complex&lt;T&gt;</code> (generic complex numbers), and the streaming statistics aggregates <code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, <code>MovingMinMax&lt;T&gt;</code>. Serialization-agnostic.</td>
+<td><a href="../numerics/index.html">Intro</a> · <a href="../numerics/concepts.html">Concepts</a> · <a href="../numerics/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Numerics.Serialization.Json</code></td>
+<td>Preview</td>
+<td><code>System.Text.Json</code> companion: <code>options.AddNumericsJsonConverters(...)</code> registers the converters and factories for <code>Fraction&lt;T&gt;</code>, <code>BigDecimal</code>, <code>Complex&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, and <code>IntervalSet&lt;T&gt;</code> under a <code>NumericsJsonPolicy</code>.</td>
+<td><a href="../../guides/numerics/json-serialization.html">Guide</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial</code></td>
+<td>Stable</td>
+<td><code>Money&lt;TCurrency&gt;</code> (compile-time currency) and <code>Money</code> (runtime-tagged), <code>MoneyBag</code> multi-currency portfolios, the ISO 4217 catalogue of 184 currency tags, fair allocation, cash rounding, and the exchange-rate core — timeless and dated provider contracts with provenance, series and in-memory tables. Serialization-agnostic; no HTTP machinery.</td>
+<td><a href="../financial/index.html">Intro</a> · <a href="../financial/concepts.html">Concepts</a> · <a href="../financial/getting-started.html">Get started</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.Serialization.Json</code></td>
+<td>Stable</td>
+<td><code>System.Text.Json</code> companion: <code>options.AddFinancialJsonConverters(policy)</code> registers the six converters (<code>Money&lt;TCurrency&gt;</code>, <code>Money</code>, <code>CalculatedMoney</code>, <code>MoneyBag</code>, <code>ExchangeRate</code>, <code>CurrencyPair</code>) under one of three <code>FinancialJsonPolicy</code> wire shapes (<code>Strict</code>, <code>Lenient</code>, <code>Compact</code>); <code>services.AddFinancialJson(policy)</code> registers a keyed <code>JsonSerializerOptions</code>.</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Serialization.Json.html">Reference</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>Preview</td>
+<td>The web-provider machinery every live feed builds on: the abstract <code>WebRateProvider</code> / <code>PairWebRateProvider&lt;TSeries&gt;</code> bases, <code>WebRateProviderOptions</code>, single-flight fetch coalescing, and the on-disk raw-response cache base.</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.html">Reference</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code></td>
+<td>Stable</td>
+<td>Eleven per-source live-feed packages over that machinery — <code>Boe</code>, <code>Ecb</code>, <code>Rba</code>, <code>Yahoo</code>, <code>Ofx</code>, <code>Xe</code>, <code>Oanda</code>, <code>Fixer</code>, <code>ExchangeRateHost</code>, <code>Fred</code>, <code>Imf</code> — each shipping its own <code>Add&lt;Source&gt;ExchangeRates</code> DI registration.</td>
+<td><a href="../../guides/financial/exchange-rate-providers.html">Providers guide</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code> (+ <code>.Sqlite</code>, <code>.Distributed</code>)</td>
+<td>Stable</td>
+<td>Provider-agnostic read-through caching (<code>CachingRateProvider</code> over in-memory / TOML / JSON / SQLite / <code>IDistributedCache</code> backends) and multi-source grouping (<code>AggregatingRateProvider</code> — priority fallback, averaging, per-pair routing).</td>
+<td><a href="../../guides/financial/exchange-rate-caching.html">Caching guide</a></td>
+</tr>
+<tr>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td>Stable</td>
+<td><code>IServiceCollection</code> extensions: <code>AddFinancialService(...)</code>, the fluent <code>IFinancialServiceBuilder</code>, named monetary contexts, FX provider registration, and <code>FinancialOptions</code> binding. (JSON registration is <code>AddFinancialJson</code> in <code>Bodu.Financial.Serialization.Json</code>.)</td>
+<td><a href="../../guides/financial/dependency-injection.html">Guide</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="why-exact-arithmetic">Why exact arithmetic</h2>
+<p><code>double</code> cannot represent one third, and <code>0.1 + 0.2 != 0.3</code> under binary floating point. <code>decimal</code> fares better for money but still rounds on every division — split <code>$1.00</code> three ways with naive division and a cent disappears. The types in this topic attack the problem from two directions:</p>
+<ul>
+<li><strong>Compute exactly, round once.</strong> <code>Fraction&lt;T&gt;</code> holds the true rational value through an entire calculation chain; the only rounding event is the explicit one at the boundary. Arithmetic promotes to <code>BigInteger</code> internally, so intermediate magnitudes never truncate.</li>
+<li><strong>Make the rounding rules first-class.</strong> <code>Money&lt;TCurrency&gt;</code> rounds to the currency's minor units on construction using banker's rounding by default, exposes <code>Allocate(...)</code> so splits never lose a penny, and snaps to coarse coin denominations via <code>RoundToCash()</code> only when a total becomes a physical cash payment.</li>
+</ul>
+<p>And because the currency rides in the type parameter, <code>Money&lt;USD&gt; + Money&lt;JPY&gt;</code> fails the build, not the nightly batch:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+
+Money&lt;USD&gt; dinner = new(54.30m);
+Money&lt;USD&gt; tip    = dinner * 0.18m;
+Money&lt;USD&gt; total  = dinner + tip;       // OK — same currency
+
+Money&lt;JPY&gt; sushi  = new(2500m);
+var oops = dinner + sushi;              // CS0019 — fails the build
+</code></pre>
+<p>When the currency genuinely is data — a deserialised payload, a configuration-driven ledger — the runtime-tagged <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a> is the escape hatch, converting to typed money with <code>As&lt;T&gt;()</code> at the boundary where the currency becomes known.</p>
+<h2 id="ranges-as-first-class-values">Ranges as first-class values</h2>
+<p><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is the topic's second numeric primitive: lower endpoint, upper endpoint, and the inclusivity of each side, packed into one immutable <code>readonly struct</code>. Reach for it whenever the range itself is the data — a validation predicate exposed by an API, a scheduling window persisted to a database, a reservation that must detect overlap with others:</p>
+<pre><code class="lang-csharp">using Bodu.Numerics;
+
+var valid = Interval&lt;int&gt;.Closed(0, 100);          // [0, 100]
+valid.Contains(100);                               // True — closed upper endpoint
+
+var q1 = Interval&lt;int&gt;.ClosedOpen(0, 90);          // [0, 90)
+var q2 = Interval&lt;int&gt;.ClosedOpen(90, 181);        // [90, 181)
+q1.Overlaps(q2);                                   // False — half-open buckets partition cleanly
+q1.TryUnion(q2, out var half);                     // half = [0, 181)
+</code></pre>
+<p>Endpoint inclusivity is independent on each side, so closed, open, and both half-open shapes are all expressible — see <a href="numerics-and-financial-concepts.html">Numerics &amp; Financial concepts</a> for when each shape fits.</p>
+<h2 id="choosing-a-type">Choosing a type</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Reach for</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact thirds, percentages, or ratios with no drift</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></td>
+<td>Canonical form on construction; <code>2/4</code> and <code>1/2</code> are indistinguishable.</td>
+</tr>
+<tr>
+<td>Long calculation chains where overflow is possible</td>
+<td><code>Fraction&lt;BigInteger&gt;</code></td>
+<td>Eliminates the narrowing step entirely; no <code>OverflowException</code>.</td>
+</tr>
+<tr>
+<td>Best rational approximation to a <code>double</code> or <code>decimal</code></td>
+<td><code>Fraction&lt;T&gt;.Approximate(value, maxDenominator)</code></td>
+<td>Walks continued-fraction convergents.</td>
+</tr>
+<tr>
+<td>Range membership, overlap, or set algebra over numbers</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a></td>
+<td>Independent endpoint inclusivity; <code>Contains</code>, <code>Intersect</code>, <code>TryUnion</code>, <code>Overlaps</code>.</td>
+</tr>
+<tr>
+<td>Unbounded or half-bounded ranges (<code>(-∞, 5]</code>, <code>[0, +∞)</code>)</td>
+<td><code>Interval&lt;T&gt;.All</code> / <code>AtLeast</code> / <code>AtMost</code> / …</td>
+<td>Explicit endpoint metadata, not float infinities; works for <code>int</code> / <code>decimal</code> / <code>BigInteger</code>.</td>
+</tr>
+<tr>
+<td>Difference or symmetric difference of two intervals</td>
+<td><code>Interval&lt;T&gt;.Difference</code> / <code>SymmetricDifference</code></td>
+<td>Returns <a class="xref" href="../../api/Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> — at most two disjoint pieces.</td>
+</tr>
+<tr>
+<td>Discrete integer ranges (indices, IDs, pages)</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a></td>
+<td>Successor-aware emptiness and adjacency; <code>Open(1, 2)</code> is empty.</td>
+</tr>
+<tr>
+<td>An arbitrary union of disjoint ranges, with complement</td>
+<td><a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a></td>
+<td>Normalized N-ary <code>Union</code> / <code>Intersect</code> / <code>Except</code> / <code>Complement</code>.</td>
+</tr>
+<tr>
+<td>An amount in a known currency with safe arithmetic</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Money-1.html">Money&lt;TCurrency&gt;</a></td>
+<td>Cross-currency arithmetic fails the build.</td>
+</tr>
+<tr>
+<td>Currency known only at runtime (deserialisation, generic invoicing)</td>
+<td><a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a></td>
+<td>Runtime ISO tag; convert to typed money at the boundary with <code>As&lt;T&gt;()</code>.</td>
+</tr>
+<tr>
+<td>Multi-currency totals with aggregate-then-convert</td>
+<td><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a></td>
+<td>Zero balances pruned; one FX lookup per source currency.</td>
+</tr>
+<tr>
+<td>Splitting an amount across N shares without remainder loss</td>
+<td><code>Money&lt;T&gt;.Allocate(parts)</code> / <code>Allocate(ratios)</code></td>
+<td>Largest-remainder distribution; the shares always sum to the original.</td>
+</tr>
+<tr>
+<td>Sub-minor-unit-precise interest or percentage chains</td>
+<td><code>Money&lt;T&gt;.ToFraction()</code> / <code>FromFraction()</code> / <code>MultiplyExact()</code></td>
+<td>The bridge between the two libraries.</td>
+</tr>
+<tr>
+<td>FX conversion with dated rates and audit provenance</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> + <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a></td>
+<td>Provider name, actual date used, offset days, resolution policy.</td>
+</tr>
+<tr>
+<td>Prioritised fallback (or averaging) across multiple FX sources</td>
+<td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider.html"><code>AggregatingRateProvider</code></a></td>
+<td>In the <code>Bodu.Financial.ExchangeRates.Caching</code> package; deterministic first-available (PriorityFallback) or mean (Average) via a pluggable strategy.</td>
+</tr>
+<tr>
+<td>Registering the financial stack in a DI container</td>
+<td><code>AddFinancialService(...)</code></td>
+<td>Currency lookup, monetary contexts, providers; add <code>AddFinancialJson(...)</code> from <code>Bodu.Financial.Serialization.Json</code> for the keyed JSON options.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-the-pieces-compose">How the pieces compose</h2>
+<p>A representative end-to-end flow — accumulate exactly, settle once:</p>
+<pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Numerics;
+using System.Numerics;
+
+Money&lt;USD&gt; principal = new(10_000m);
+
+// Escape to exact rationals for the compound-interest chain.
+Fraction&lt;BigInteger&gt; exact = principal.ToFraction();
+Fraction&lt;BigInteger&gt; monthlyRate = Fraction&lt;BigInteger&gt;.Create(425, 120_000); // 4.25% / 12
+
+for (int month = 0; month &lt; 360; month++)
+{
+    exact += exact * monthlyRate;          // no rounding, no drift
+}
+
+// One rounding event, at the boundary, back to settlement precision.
+Money&lt;USD&gt; settled = Money&lt;USD&gt;.FromFraction(exact);
+</code></pre>
+<p>Each loop iteration is exact; the only place a cent can be gained or lost is the single, explicit <code>FromFraction</code> call — which is also the place an auditor looks.</p>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">dotnet add package Bodu.Numerics
+dotnet add package Bodu.Numerics.Serialization.Json     # JSON converters for the numeric types
+dotnet add package Bodu.Financial
+dotnet add package Bodu.Financial.Serialization.Json    # JSON converters for the financial types
+dotnet add package Bodu.Financial.DependencyInjection
+dotnet add package Bodu.Financial.ExchangeRates.Ecb     # or any other per-source provider package
+dotnet add package Bodu.Financial.ExchangeRates.Caching
+</code></pre>
+<p><code>Bodu.Financial</code> depends on <code>Bodu.Numerics</code>, and <code>Bodu.Financial.DependencyInjection</code> depends on <code>Bodu.Financial</code> — install only the topmost package your application consumes. The two <code>Serialization.Json</code> companions are opt-in: neither core library references <code>System.Text.Json</code>, so add a companion only where you serialize. Each per-source provider package pulls in <code>Bodu.Financial.ExchangeRates</code>; add <code>Bodu.Financial.ExchangeRates.Caching</code> (and its <code>.Sqlite</code> / <code>.Distributed</code> backends) only when you want caching or aggregation in front of a feed.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="numerics-and-financial-concepts.html">Numerics &amp; Financial concepts</a></strong> — the cross-package vocabulary: canonical form, deferred rounding, <code>BigInteger</code> promotion, endpoint inclusivity, minor units, allocation, dated FX lookup.</li>
+<li><strong><a href="../numerics/index.html">Bodu.Numerics introduction</a></strong> — <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code> in detail.</li>
+<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — install + minimal samples for both value types.</li>
+<li><strong><a href="../financial/index.html">Bodu.Financial introduction</a></strong> — money, currencies, FX, and serialization.</li>
+<li><strong><a href="../financial/getting-started.html">Bodu.Financial getting started</a></strong> — install + minimal samples for <code>Money&lt;TCurrency&gt;</code>, <code>Money</code>, <code>MoneyBag</code>, the provider stack, and the JSON policies.</li>
+<li><strong><a href="../../guides/topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — recipe-style walk-throughs across the topic.</li>
+<li><strong>API reference:</strong> <a class="xref" href="../../api/Bodu.Numerics.html">Bodu.Numerics</a> · <a class="xref" href="../../api/Bodu.Financial.html">Bodu.Financial</a></li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

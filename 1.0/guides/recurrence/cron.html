@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Cron expressions | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Cron expressions | BODU ">
+    
+    
+      <link rel="shortcut icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../../styles/docfx.css">
+      <link rel="stylesheet" href="../../styles/main.css">
+      <meta property="docfx:navrel" content="../../toc.html">
+      <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="cron-expressions">Cron expressions</h1>
+
+<p><a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronExpression.html">CronExpression</a> is a parsed Vixie-style cron expression. It is a <strong>predicate over instants</strong> — an instant matches when its minute, hour, day-of-month, month, and day-of-week (and second, in the six-field layout) are each members of the corresponding field set — so, unlike a recurrence rule, it has no series start: <code>GetNextOccurrence(after)</code> and <code>GetPreviousOccurrence(before)</code> take only the boundary instant. It parses from text, renders back to canonical text, compares by value, and never reads the wall clock.</p>
+<p>For the &quot;which form&quot; decision and the shared due-ness recipe, start at the <a href="index.html">recurrence overview</a>.</p>
+<h2 id="pattern-1--parse-and-query">Pattern 1 — parse and query</h2>
+<p><code>Parse(string)</code> infers the layout from the field count: five fields is <a class="xref" href="../../api/Bodu.Globalization.Recurrence.CronFormat.html">CronFormat</a><code>.Standard</code> (minute, hour, day-of-month, month, day-of-week) and six is <code>CronFormat.WithSeconds</code> (a leading seconds field). The <code>Format</code> property reports which one was chosen.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression nightly = CronExpression.Parse(&quot;0 2 * * *&quot;);           // Standard: 02:00 every day
+CronExpression quarterHourly = CronExpression.Parse(&quot;0 */15 * * * *&quot;); // WithSeconds (six fields)
+
+CronFormat layout = quarterHourly.Format;                             // WithSeconds
+
+var now = new DateTime(2026, 3, 10, 14, 32, 0);
+DateTime? next = nightly.GetNextOccurrence(now);                      // 2026-03-11 02:00
+DateTime? previous = nightly.GetPreviousOccurrence(now);              // 2026-03-10 02:00
+</code></pre>
+<p>Answers preserve the <code>Kind</code> of the argument and carry zero seconds in the five-field layout (an <code>after</code> of <code>01:59:30</code> still answers <code>02:00:00</code>). Both boundary flags work as on every other form: <code>inclusive: true</code> lets an occurrence exactly equal to the boundary be returned.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression nightly = CronExpression.Parse(&quot;0 2 * * *&quot;);
+var exactly = new DateTime(2026, 3, 10, 2, 0, 0);
+
+DateTime? excl = nightly.GetNextOccurrence(exactly);                    // 2026-03-11 02:00
+DateTime? incl = nightly.GetNextOccurrence(exactly, inclusive: true);   // 2026-03-10 02:00
+</code></pre>
+<p>Pass the layout explicitly with <code>Parse(string, CronFormat)</code> when the field count must not be inferred — a six-field string parsed as <code>Standard</code>, or a five-field string parsed as <code>WithSeconds</code>, fails with &quot;A cron expression must contain the number of fields required by the specified format.&quot;</p>
+<h2 id="pattern-2--validate-user-input-with-tryparse">Pattern 2 — validate user input with <code>TryParse</code></h2>
+<p>Five <code>TryParse</code> overloads cover the same choices without exceptions. The two that add <code>out string? failureMessage</code> name the defect, which is the right shape for configuration validation:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+string[] candidates = [&quot;0 2 * *&quot;, &quot;60 * * * *&quot;, &quot;0 0 ? * *&quot;, &quot;0 2 * * FOO&quot;];
+
+foreach (string text in candidates)
+{
+    if (!CronExpression.TryParse(text, out CronExpression? expression, out string? failureMessage))
+        Console.WriteLine($&quot;'{text}': {failureMessage}&quot;);
+}
+// '0 2 * *':     A cron expression must contain the number of fields required by the specified format.
+// '60 * * * *':  The cron field '60' is not valid.
+// '0 0 ? * *':   The cron token '?' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
+// '0 2 * * FOO': The cron field 'FOO' is not valid.
+
+// Layout-pinned variant, and the boolean-only overloads:
+bool six = CronExpression.TryParse(&quot;0 */5 * * * *&quot;, CronFormat.WithSeconds, out CronExpression? withSeconds, out string? why);
+bool ok  = CronExpression.TryParse(&quot;@daily&quot;, out CronExpression? daily);
+bool ok2 = CronExpression.TryParse(&quot;@daily&quot;, CronFormat.Standard, out CronExpression? daily2);
+</code></pre>
+<p><code>Parse</code> raises the same messages as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> for a Quartz token (<code>?</code>, <code>L</code>, <code>W</code>, <code>#</code>). A seven-field Quartz string with a trailing year is rejected on field count.</p>
+<h2 id="field-syntax">Field syntax</h2>
+<p>Every field accepts <code>*</code>, a single value, a range <code>a-b</code>, a step <code>*/n</code> or <code>a-b/n</code>, and comma-separated lists of those. Months take <code>JAN</code>–<code>DEC</code> and weekdays <code>SUN</code>–<code>SAT</code>, case-insensitively; weekday <code>7</code> is an alias for Sunday (<code>0</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>second <em>(six-field only)</em></td>
+<td>0–59</td>
+<td></td>
+</tr>
+<tr>
+<td>minute</td>
+<td>0–59</td>
+<td></td>
+</tr>
+<tr>
+<td>hour</td>
+<td>0–23</td>
+<td></td>
+</tr>
+<tr>
+<td>day-of-month</td>
+<td>1–31</td>
+<td></td>
+</tr>
+<tr>
+<td>month</td>
+<td>1–12 or <code>JAN</code>–<code>DEC</code></td>
+<td></td>
+</tr>
+<tr>
+<td>day-of-week</td>
+<td>0–7 or <code>SUN</code>–<code>SAT</code></td>
+<td><code>0</code> and <code>7</code> are both Sunday</td>
+</tr>
+</tbody>
+</table>
+<p>Two behaviours are worth stating because libraries disagree on them:</p>
+<ul>
+<li><strong>A step wider than its range selects the range start</strong> rather than being rejected: <code>*/60</code> and <code>*/90</code> in the minute field both mean minute <code>0</code> (cronie warns about this; some libraries throw). A step of <code>0</code> is rejected (&quot;The cron field '1-5/0' is not valid.&quot;).</li>
+<li><strong>Day-of-month and day-of-week combine by union only when both are restricted.</strong> Following Vixie cron, an instant matches when it satisfies <em>either</em> field if both are restricted, and <em>both</em> fields otherwise — and &quot;restricted&quot; is decided by the field's leading character, so <code>*/2</code> (leading <code>*</code>) is unrestricted while <code>1-31/2</code> is restricted even though the two select the same days:</li>
+</ul>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+var now = new DateTime(2026, 3, 10, 14, 32, 0);
+
+// Both restricted → union: the 13th of any month OR any Friday.
+DateTime? unionNext = CronExpression.Parse(&quot;0 0 13 * FRI&quot;).GetNextOccurrence(now);   // 2026-03-13 (a Friday)
+
+// Day-of-month starts with '*' → not restricted → intersection: odd days that are Mondays.
+DateTime? starStep = CronExpression.Parse(&quot;0 0 */2 * MON&quot;).GetNextOccurrence(now);    // 2026-03-23 Mon
+// Same days written as a restricted range → union: odd days OR Mondays.
+DateTime? rangeStep = CronExpression.Parse(&quot;0 0 1-31/2 * MON&quot;).GetNextOccurrence(now); // 2026-03-11 Wed
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Because the combination is chosen by the leading character rather than by the days a field selects, it is part of the expression's meaning. <code>ToString()</code> preserves it — <code>0 0 */2 * MON</code> renders as <code>0 0 */2 * 1</code>, keeping the star — so the canonical text always re-parses to the same schedule, and <code>Equals</code> treats the intersection and union readings as different values. Where the plain rendering cannot change the combination, it is used unchanged: <code>* * */10 * *</code> still renders as <code>* * 1,11,21,31 * *</code>, because the day-of-week <code>*</code> keeps that expression on the intersection branch either way.</p>
+</div>
+<h2 id="the--macros">The <code>@</code> macros</h2>
+<p>Exactly seven macros are recognised, each expanding to a five-field expression. <code>@reboot</code> and Go-style <code>@every</code> are <strong>not</strong> supported and fail parsing with &quot;The cron macro '@reboot' is not recognized, or a macro was supplied where the six-field layout was required.&quot;</p>
+<table>
+<thead>
+<tr>
+<th>Macro</th>
+<th>Equivalent</th>
+<th>Canonical <code>ToString()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@yearly</code>, <code>@annually</code></td>
+<td>00:00 on 1 January</td>
+<td><code>0 0 1 1 *</code></td>
+</tr>
+<tr>
+<td><code>@monthly</code></td>
+<td>00:00 on the 1st</td>
+<td><code>0 0 1 * *</code></td>
+</tr>
+<tr>
+<td><code>@weekly</code></td>
+<td>00:00 every Sunday</td>
+<td><code>0 0 * * 0</code></td>
+</tr>
+<tr>
+<td><code>@daily</code>, <code>@midnight</code></td>
+<td>00:00 every day</td>
+<td><code>0 0 * * *</code></td>
+</tr>
+<tr>
+<td><code>@hourly</code></td>
+<td>minute 0 of every hour</td>
+<td><code>0 * * * *</code></td>
+</tr>
+</tbody>
+</table>
+<p>A macro always yields <code>CronFormat.Standard</code>; parsing one with <code>CronFormat.WithSeconds</code> fails.</p>
+<h2 id="pattern-3--business-hours-polling">Pattern 3 — business-hours polling</h2>
+<p><code>*/15 9-17 * * MON-FRI</code> fires every quarter hour from 09:00 through 17:45 on weekdays. Because the hour field is a <em>set</em>, the last slot of the day is 17:45 and the next after that is 09:00 on the next weekday:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression polling = CronExpression.Parse(&quot;*/15 9-17 * * MON-FRI&quot;);
+
+DateTime? next = polling.GetNextOccurrence(new DateTime(2026, 3, 13, 17, 50, 0));       // Fri 17:50 → 2026-03-16 Mon 09:00
+DateTime? last = polling.GetPreviousOccurrence(new DateTime(2026, 3, 14, 10, 0, 0));    // Sat 10:00 → 2026-03-13 Fri 17:45
+
+string canonical = polling.ToString();
+// &quot;0,15,30,45 9,10,11,12,13,14,15,16,17 * * 1,2,3,4,5&quot;
+</code></pre>
+<p>To stop at 17:00 rather than 17:45, list the fields explicitly: <code>*/15 9-16 * * MON-FRI</code> plus <code>0 17 * * MON-FRI</code> as a second expression, or a <code>RecurrenceRule</code> with <code>BYHOUR</code>/<code>BYMINUTE</code>.</p>
+<h2 id="pattern-4--last-day-of-the-month-via-next-then-previous">Pattern 4 — last day of the month via next-then-previous</h2>
+<p>Vixie cron has no &quot;last day&quot; token (<code>L</code> is a Quartz extension the parser rejects). Derive it from the first of next month:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression firstOfMonth = CronExpression.Parse(&quot;0 0 1 * *&quot;);
+var now = new DateTime(2026, 3, 10, 14, 32, 0);
+
+DateTime nextFirst = firstOfMonth.GetNextOccurrence(now)!.Value;      // 2026-04-01 00:00
+DateTime lastDay   = nextFirst.AddDays(-1);                           // 2026-03-31 00:00
+
+// For a job &quot;at 23:00 on the last day of the month&quot;:
+DateTime lastDayAtEleven = lastDay.AddHours(23);
+</code></pre>
+<p>Equivalently, <code>GetPreviousOccurrence</code> on <code>0 0 1 * *</code> from a point in the <em>next</em> month gives the same boundary. For a calendar-aligned &quot;last Friday&quot; or &quot;last working day&quot;, use a <code>RecurrenceRule</code> with <code>BYSETPOS=-1</code> — see <a href="rrule.html#pattern-6--last-working-day-of-the-month">RFC 5545 recurrence rules</a>.</p>
+<h2 id="the-search-horizon">The search horizon</h2>
+<p>Every search scans <strong>twelve years</strong> in the requested direction and answers <code>null</code> past it. Twelve covers the largest gap between two consecutive occurrences of any satisfiable expression — a 29 February schedule crossing a non-leap century year (2096 → 2104, eight years) — with margin, while still bounding the search for an expression that can never match:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+DateTime? leapDay = CronExpression.Parse(&quot;0 0 29 2 *&quot;).GetNextOccurrence(new DateTime(2096, 3, 1));   // 2104-02-29
+DateTime? never   = CronExpression.Parse(&quot;0 0 30 2 *&quot;).GetNextOccurrence(new DateTime(2026, 3, 10)); // null
+DateTime? neverBack = CronExpression.Parse(&quot;0 0 30 2 *&quot;).GetPreviousOccurrence(new DateTime(2026, 3, 10)); // null
+</code></pre>
+<p><code>null</code> therefore means &quot;no occurrence within twelve years&quot;, which for any real schedule means &quot;never&quot;.</p>
+<h2 id="datetimeoffset-handling"><code>DateTimeOffset</code> handling</h2>
+<p>The <code>DateTimeOffset</code> overloads interpret the argument's wall-clock time in its own offset and return an occurrence carrying that offset — no conversion, no time-zone lookup. <code>0 9 * * *</code> queried at <code>2026-03-10 14:32 +10:00</code> answers <code>2026-03-11 09:00 +10:00</code>; queried at <code>14:32 +00:00</code> it answers <code>09:00 +00:00</code>. A host that wants &quot;09:00 local&quot; across a daylight-saving change re-derives the offset on every evaluation; see <a href="scheduling-host.html#pattern-4--daylight-saving-and-time-zones-at-the-boundary">Hosting schedules</a>.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
+
+CronExpression nine = CronExpression.Parse(&quot;0 9 * * *&quot;);
+var sydney = new DateTimeOffset(2026, 3, 10, 14, 32, 0, TimeSpan.FromHours(10));
+
+DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10:00
+</code></pre>
+<h2 id="canonical-text-and-equality">Canonical text and equality</h2>
+<p><code>ToString()</code> renders a field as <code>*</code> when every value is selected and otherwise as an ascending comma-separated numeric list — names, ranges, and steps are expanded, and <code>7</code> becomes <code>0</code>. The two day fields are the exception: where the plain rendering would flip the union / intersection combination, the field keeps a spelling that preserves it (<code>*/2</code> stays <code>*/2</code>, a restricted but complete field stays <code>1-31</code>), so the canonical text always re-parses to an equal expression. <code>Equals</code> compares the six field sets, the layout, and that combination, so <code>0 9-17 * * MON-FRI</code> equals <code>0 9,10,11,12,13,14,15,16,17 * * 1-5</code> while <code>0 0 */2 * MON</code> does <strong>not</strong> equal <code>0 0 1-31/2 * MON</code> — the two select instants two weeks apart. A single restricted day field is not observable on its own, so <code>* * * * *</code> and <code>* * 1-31 * *</code> remain equal. Only the <code>&quot;G&quot;</code> / <code>null</code> format specifier is defined on <code>ToString(string?, IFormatProvider?)</code>; anything else throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Parse(string)</code> / <code>Parse(string, IFormatProvider?)</code></td>
+<td>Parse, inferring the layout from the field count.</td>
+</tr>
+<tr>
+<td><code>Parse(string, CronFormat)</code></td>
+<td>Parse with a required layout.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result)</code> / <code>TryParse(string?, IFormatProvider?, out result)</code> / <code>TryParse(string?, CronFormat, out result)</code></td>
+<td>Boolean parse.</td>
+</tr>
+<tr>
+<td><code>TryParse(string?, out result, out failureMessage)</code> / <code>TryParse(string?, CronFormat, out result, out failureMessage)</code></td>
+<td>Boolean parse that names the defect.</td>
+</tr>
+<tr>
+<td><code>Format</code></td>
+<td>The layout the expression was parsed as.</td>
+</tr>
+<tr>
+<td><code>GetNextOccurrence(after, inclusive = false)</code></td>
+<td>Next matching instant within twelve years, or <code>null</code>; <code>DateTime</code> and <code>DateTimeOffset</code>.</td>
+</tr>
+<tr>
+<td><code>GetPreviousOccurrence(before, inclusive = false)</code></td>
+<td>Previous matching instant within twelve years, or <code>null</code>.</td>
+</tr>
+<tr>
+<td><code>ToString()</code> / <code>ToString(string?, IFormatProvider?)</code></td>
+<td>Canonical numeric-list text.</td>
+</tr>
+<tr>
+<td><code>Equals</code> / <code>GetHashCode</code></td>
+<td>Field-set equality.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="rrule.html">RFC 5545 recurrence rules</a></strong> — the richer grammar for <code>BYSETPOS</code>, <code>COUNT</code>, and iCalendar interoperability.</li>
+<li><strong><a href="anchored-intervals.html">Anchored intervals</a></strong> — exact elapsed-time schedules that are immune to calendar and daylight-saving effects.</li>
+<li><strong><a href="scheduling-host.html">Hosting schedules</a></strong> — one adapter over every form, catch-up, persistence, and time zones.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — <code>Bodu.Globalization.Recurrence.Samples.CronExpressions</code>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> — <code>CronExpression</code>, <code>CronFormat</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+</ul>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

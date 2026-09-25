@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class ConcurrentHashSet&lt;T&gt; | BODU </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class ConcurrentHashSet&lt;T&gt; | BODU ">
+    
+    <meta name="description" content="Provides a thread-safe, unordered set of unique elements.">
+      <link rel="shortcut icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo.svg" alt="BODU">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <div class="toc-toggle">
+            <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          </div>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1">
+
+
+
+  <h1 id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1" class="text-break">Class ConcurrentHashSet&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Provides a thread-safe, unordered set of unique elements.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">ConcurrentHashSet&lt;T&gt;</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.icollection">ICollection</a></div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;T&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet</a>&lt;T&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.icollection-1">ICollection</a>&lt;T&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;T&gt;</div>
+    <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Collections</span>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a>.<a class="xref" href="Bodu.Collections.Generic.Concurrent.html">Concurrent</a></h6>
+  <h6><strong>Assembly</strong>: Bodu.Collections.Concurrent.dll</h6>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ConcurrentHashSet&lt;T&gt; : ICollection, IReadOnlyCollection&lt;T&gt;, ISet&lt;T&gt;, ICollection&lt;T&gt;, IEnumerable&lt;T&gt;, IEnumerable where T : notnull</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of elements in the set (constraint: <code>where T : notnull</code>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> is a <b>lock-free</b> hash set built on a split-ordered list (Shalev &amp;
+Shavit): every element lives in a single Harris–Michael lock-free ordered linked list, sorted by the bit-reversed
+hash code of the element. The hash-table part is only an array of lazily initialized <i>shortcut</i> pointers into
+that list — one sentinel node per bucket. Doubling the table copies shortcut pointers but never rehashes or moves a
+node, so growth is itself lock-free and readers are never invalidated by a resize.
+</p>
+<p>
+No operation on this type ever takes a lock or blocks another thread. <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Add__0_">Add(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Remove__0_">Remove(T)</a>,
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Contains.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Contains__0_">Contains(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Clear.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Clear">Clear()</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Count">Count</a>, and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ToArray">ToArray()</a> are all lock-free: a
+suspended or preempted thread can never prevent other threads from completing their operations. Mutations are
+applied with single-reference compare-and-swap operations; deletion uses the standard two-phase Harris scheme
+(logical marking, then cooperative physical unlinking).
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Add__0_">Add(T)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Remove__0_">Remove(T)</a>, and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Contains.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Contains__0_">Contains(T)</a> are each individually atomic (linearizable)
+and safe to call concurrently from any number of threads. <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Count">Count</a> and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsEmpty.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsEmpty">IsEmpty</a> read a
+counter maintained with interlocked operations — exact whenever no mutation is in flight, and never off by more than
+the operations currently executing. <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Clear.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Clear">Clear()</a> atomically replaces the entire backing structure in one
+compare-and-swap; operations that began against the previous structure complete against it and are ordered before
+the clear.
+</p>
+<p>
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ToArray">ToArray()</a> and enumeration are <b>weakly consistent</b> rather than point-in-time snapshots: the
+traversal observes every element that is present for the entire duration of the call and never throws, but elements
+added or removed while the traversal is in progress may or may not be observed, and the result is not guaranteed to
+correspond to the set's state at any single instant. The no-duplicate guarantee holds across distinct hash keys; an
+element that is concurrently removed and re-added may, in rare interleavings where another element shares its full
+hash key, be yielded twice. Consumers that require exact-once semantics should snapshot while the set is quiescent.
+</p>
+<p>
+Performance characteristics differ from lock-based designs: progress is guaranteed without blocking, but every
+successful <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Add__0_">Add(T)</a> allocates one list node and every successful <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Remove__0_">Remove(T)</a> allocates one
+short-lived marker (reclaimed by the garbage collector once unlinked). <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Contains.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Contains__0_">Contains(T)</a> is allocation-free.
+Elements that share a hash code form a single linearly scanned run, so — as with any hash set — a comparer with poor
+hash distribution degrades lookups toward linear time.
+</p>
+<p>
+The set implements the full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet&lt;T&gt;</a> contract. The bulk set-algebra operations it adds (
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.UnionWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_UnionWith_System_Collections_Generic_IEnumerable__0__">UnionWith(IEnumerable&lt;T&gt;)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IntersectWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IntersectWith_System_Collections_Generic_IEnumerable__0__">IntersectWith(IEnumerable&lt;T&gt;)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.ExceptWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ExceptWith_System_Collections_Generic_IEnumerable__0__">ExceptWith(IEnumerable&lt;T&gt;)</a>,
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.SymmetricExceptWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_SymmetricExceptWith_System_Collections_Generic_IEnumerable__0__">SymmetricExceptWith(IEnumerable&lt;T&gt;)</a> and the subset/superset predicates) are <b>not</b> atomic: they are evaluated as
+a sequence of individual atomic operations over a weakly consistent snapshot, so a concurrent mutation may
+interleave and the result can reflect a state the set never occupied at any single instant. See each member's
+remarks for details.
+</p>
+<p>
+The element type is constrained to <code>notnull</code>: both reference types and value types are supported, and
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> is never a valid element. Element equality and hashing use the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> supplied at construction, or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a> when
+none is supplied.
+</p>
+</div>
+  <h5 id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_examples"><strong>Examples</strong></h5>
+  <pre><code class="lang-csharp">var seen = new ConcurrentHashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+
+Parallel.ForEach(urls, url =&gt;
+{
+    if (seen.Add(url))
+        Process(url); // runs once per distinct URL, even under concurrency
+});
+
+Console.WriteLine(seen.Count);</code></pre>
+
+  <h3 id="constructors">Constructors
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor">ConcurrentHashSet()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class that is empty and uses the default
+equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEnumerable__0__">ConcurrentHashSet(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class containing the distinct elements
+copied from <code class="paramref">collection</code>, using the default equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEnumerable__0__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEnumerable__0__System_Collections_Generic_IEqualityComparer__0__">ConcurrentHashSet(IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class containing the distinct elements
+copied from <code class="paramref">collection</code>, using the specified equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Collections_Generic_IEqualityComparer__0__">ConcurrentHashSet(IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class that is empty and uses the specified
+equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor(System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Int32_">ConcurrentHashSet(int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class that is empty and sized for the
+specified expected number of elements using the default equality comparer.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.-ctor.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__">ConcurrentHashSet(int, IEqualityComparer&lt;T&gt;?)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a> class that is empty, sized for the
+specified expected number of elements, and uses the specified equality comparer.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Comparer" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Comparer">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Comparer.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Comparer">Comparer</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the equality comparer used to hash and compare elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Count" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Count">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Count.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Count">Count</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets the number of elements currently contained in the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsEmpty" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsEmpty">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsEmpty.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsEmpty">IsEmpty</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the set is empty.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsReadOnly" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsReadOnly">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsReadOnly.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsReadOnly">IsReadOnly</a>
+        </td>
+        <td class="markdown level1 summary"><p>Gets a value indicating whether the set is read-only.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Add__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Add(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Add.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Add__0_">Add(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Adds the specified element to the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Clear" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Clear">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Clear.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Clear">Clear()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes all elements from the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Contains__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Contains(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Contains.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Contains__0_">Contains(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set contains the specified element.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_CopyTo__0___System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.CopyTo(`0[],System.Int32)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.CopyTo.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_CopyTo__0___System_Int32_">CopyTo(T[], int)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the elements of the set to the specified array, starting at the specified index.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ExceptWith_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.ExceptWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ExceptWith_System_Collections_Generic_IEnumerable__0__">ExceptWith(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Modifies the set so that it contains only elements that are not present in <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_GetEnumerator" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.GetEnumerator">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.GetEnumerator.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_GetEnumerator">GetEnumerator()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Returns an enumerator that iterates over a weakly consistent snapshot of the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IntersectWith_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IntersectWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IntersectWith_System_Collections_Generic_IEnumerable__0__">IntersectWith(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Modifies the set so that it contains only elements that are also present in <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsProperSubsetOf_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsProperSubsetOf.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsProperSubsetOf_System_Collections_Generic_IEnumerable__0__">IsProperSubsetOf(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set is a proper (strict) subset of <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsProperSupersetOf_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsProperSupersetOf.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsProperSupersetOf_System_Collections_Generic_IEnumerable__0__">IsProperSupersetOf(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set is a proper (strict) superset of <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsSubsetOf_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsSubsetOf.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsSubsetOf_System_Collections_Generic_IEnumerable__0__">IsSubsetOf(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set is a subset of <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsSupersetOf_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.IsSupersetOf.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_IsSupersetOf_System_Collections_Generic_IEnumerable__0__">IsSupersetOf(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set is a superset of <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Overlaps_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Overlaps.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Overlaps_System_Collections_Generic_IEnumerable__0__">Overlaps(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set and <code class="paramref">other</code> share any elements.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Remove__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.Remove(`0)">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.Remove.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_Remove__0_">Remove(T)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Removes the specified element from the set.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_SetEquals_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.SetEquals.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_SetEquals_System_Collections_Generic_IEnumerable__0__">SetEquals(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Determines whether the set contains exactly the same elements as <code class="paramref">other</code>.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_SymmetricExceptWith_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.SymmetricExceptWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_SymmetricExceptWith_System_Collections_Generic_IEnumerable__0__">SymmetricExceptWith(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Modifies the set so that it contains only elements that are present either in the set or in
+<code class="paramref">other</code>, but not in both.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ToArray" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.ToArray">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.ToArray.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_ToArray">ToArray()</a>
+        </td>
+        <td class="markdown level1 summary"><p>Copies the elements of the set into a new array.</p>
+</td>
+      </tr>
+      <tr>
+        <td id="Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_UnionWith_System_Collections_Generic_IEnumerable__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+          <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.UnionWith.html#Bodu_Collections_Generic_Concurrent_ConcurrentHashSet_1_UnionWith_System_Collections_Generic_IEnumerable__0__">UnionWith(IEnumerable&lt;T&gt;)</a>
+        </td>
+        <td class="markdown level1 summary"><p>Modifies the set so that it contains every element that is present in either the set or
+<code class="paramref">other</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtLeast.html#Bodu_Extensions_ComparableExtensions_AtLeast__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtLeast&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.AtMost.html#Bodu_Extensions_ComparableExtensions_AtMost__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.AtMost&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.IsEqualTo.html#Bodu_Extensions_ComparableExtensions_IsEqualTo__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.IsEqualTo&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Max.html#Bodu_Extensions_ComparableExtensions_Max__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Max&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Extensions.ComparableExtensions.Min.html#Bodu_Extensions_ComparableExtensions_Min__1___0___0_System_Collections_Generic_IComparer___0__">ComparableExtensions.Min&lt;T&gt;(T, T, IComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0_System_Int32___1__System_Func___1___2__">IEnumerableExtensions.Aggregate&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, int, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2_System_Func___1___0___1__System_Func___2___0___2__System_Func___1___2___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T1, T2, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__4_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0_System_Int32___1__System_Func___2___0_System_Int32___2__System_Func___3___0_System_Int32___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, int, T1&gt;, Func&lt;T2, TSource, int, T2&gt;, Func&lt;T3, TSource, int, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Aggregate.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Aggregate__5_System_Collections_Generic_IEnumerable___0____1___2___3_System_Func___1___0___1__System_Func___2___0___2__System_Func___3___0___3__System_Func___1___2___3___4__">IEnumerableExtensions.Aggregate&lt;TSource, T1, T2, T3, TResult&gt;(IEnumerable&lt;TSource&gt;, T1, T2, T3, Func&lt;T1, TSource, T1&gt;, Func&lt;T2, TSource, T2&gt;, Func&lt;T3, TSource, T3&gt;, Func&lt;T1, T2, T3, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.BatchPooled&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.BatchPooled.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_BatchPooled__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.BatchPooled&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0_System_Int32___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Batch.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Batch__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func___0___1__">IEnumerableExtensions.Batch&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Cache.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Cache__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Cache&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.CartesianProduct.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_CartesianProduct__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__">IEnumerableExtensions.CartesianProduct&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ChunkBy.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ChunkBy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Collections_Generic_IEqualityComparer___1__">IEnumerableExtensions.ChunkBy&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, IEqualityComparer&lt;TKey&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Combinations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Combinations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Combinations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAll.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAll__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAll&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ContainsAny.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ForEach.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__">IEnumerableExtensions.ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Action&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Index__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Index&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Interleave.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Interleave__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0____">IEnumerableExtensions.Interleave&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, params IEnumerable&lt;TSource&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.IsNullOrEmpty.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Pairwise&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Pairwise.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Pairwise__2_System_Collections_Generic_IEnumerable___0__System_Func___0___0___1__">IEnumerableExtensions.Pairwise&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Permutations.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Permutations__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Permutations&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Randomize.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Randomize__1_System_Collections_Generic_IEnumerable___0__Bodu_Collections_Generic_Extensions_RandomizationMode_Bodu_IRandomGenerator_System_Nullable_System_Int32__">IEnumerableExtensions.Randomize&lt;T&gt;(IEnumerable&lt;T&gt;, RandomizationMode, IRandomGenerator, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___">IEnumerableExtensions.RecursiveSelect&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32_System_Int32___1__System_Func___0_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, int, TResult&gt;, Func&lt;TSource, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0_System_Int32___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, int, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RecursiveSelect__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Func___0___1__">IEnumerableExtensions.RecursiveSelect&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, IEnumerable&lt;TSource&gt;&gt;, Func&lt;TSource, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.RunLengthEncode.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_RunLengthEncode__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">IEnumerableExtensions.RunLengthEncode&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;?)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Scan.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Scan__3_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__System_Func___1___2__">IEnumerableExtensions.Scan&lt;TSource, TAccumulate, TResult&gt;(IEnumerable&lt;TSource&gt;, TAccumulate, Func&lt;TAccumulate, TSource, TAccumulate&gt;, Func&lt;TAccumulate, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.SplitWhen.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_SplitWhen__1_System_Collections_Generic_IEnumerable___0__System_Func___0___0_System_Boolean__">IEnumerableExtensions.SplitWhen&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__1_System_Collections_Generic_IEnumerable___0__System_Int32_">IEnumerableExtensions.Windowed&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Windowed.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_Windowed__2_System_Collections_Generic_IEnumerable___0__System_Int32_System_Func_System_Collections_Generic_IReadOnlyList___0____1__">IEnumerableExtensions.Windowed&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, int, Func&lt;IReadOnlyList&lt;TSource&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__2_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Generic.Extensions.IEnumerableExtensions.ZipLongest.html#Bodu_Collections_Generic_Extensions_IEnumerableExtensions_ZipLongest__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____0___1_System_Func___0___1___2__">IEnumerableExtensions.ZipLongest&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, TFirst, TSecond, Func&lt;TFirst, TSecond, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.CountOrDefault.html#Bodu_Collections_Extensions_IEnumerableExtensions_CountOrDefault_System_Collections_IEnumerable_">IEnumerableExtensions.CountOrDefault(IEnumerable)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Int32_System_Object__System_Func_System_Object_Bodu_Collections_Extensions_RecursiveSelectControl__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, int, object&gt;, Func&lt;object, RecursiveSelectControl&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Int32_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, int, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_Generic_IEnumerable_System_Object___System_Func_System_Object_System_Object__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&lt;object&gt;&gt;, Func&lt;object, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Bodu.Collections.Extensions.IEnumerableExtensions.RecursiveSelect.html#Bodu_Collections_Extensions_IEnumerableExtensions_RecursiveSelect_System_Collections_IEnumerable_System_Func_System_Object_System_Collections_IEnumerable__">IEnumerableExtensions.RecursiveSelect(IEnumerable, Func&lt;object, IEnumerable&gt;)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="toggle-mode">
+                <div class="icon">
+                  <i aria-hidden="true">☀</i>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="switch-style">
+                  <span class="slider round"></span>
+                </label>
+                <div class="icon">
+                  <i aria-hidden="true">☾</i>
+                </div>
+                <script type="text/javascript" src="../styles/toggle-theme.js"></script>
+              </div>
+
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c69a5a2 · Built: 2026-09-25 (UTC)</span>
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
