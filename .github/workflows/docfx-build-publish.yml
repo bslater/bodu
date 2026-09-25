@@ -13,22 +13,21 @@ on:
       publish_slot:
         description: >-
           Publish this run into a specific gh-pages slot ("1.0", "dev"). Leave empty to derive it
-          from the ref, as a push does. Use it once to seed the root and /<series>/ before the
-          Pages cutover, since those stay empty until the first release tag after the branch exists.
+          from the ref, as a push does. Use it to seed or repair a slot out of band — a series
+          whose tag predates this workflow, or a root that needs rebuilding before the next tag.
         required: false
         default: ''
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# The site is served from the gh-pages branch, so the only permission this workflow needs is the
+# one that lets it push there. pages: write and id-token: write went with the deploy-pages job, and
+# actions: read was part of the same boilerplate — nothing here reads the Actions API.
 permissions:
-  # contents: write is for the gh-pages branch the versioned site is published to; nothing else
-  # in this workflow writes to the repository.
   contents: write
-  actions: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Serialises publishing. This guarded the Pages deployment when one existed; it now guards the
+# branch push, which needs it just as much — two runs racing to push gh-pages would leave one
+# rejected as a non-fast-forward. In-progress runs are never cancelled, so a publish always
+# finishes rather than leaving the branch half-written.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -252,27 +251,18 @@ jobs:
         if [ $missing -ne 0 ]; then exit 1; fi
         echo "All primary-library namespace API pages present."
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        # Upload entire repository
-        path: 'docs/_site'
-
     - name: Publish to the versioned gh-pages branch
       # Writes the built site into the branch layout bld/stage-docs-site.sh documents: the latest
       # release at the root and under /<series>/, master under /dev/.
       #
-      # This runs ALONGSIDE the deploy-pages job below, which still serves the live site. Until the
-      # repository's Pages source is switched to "Deploy from a branch: gh-pages", this branch is
-      # built and can be inspected but serves nothing — so landing this cannot take the site down,
-      # in either order. Switching the setting is the cutover; the deploy-docs job is removed then.
+      # This step IS the publication now: the repository serves Pages from the gh-pages branch, so
+      # what this pushes is what the world reads. There is no longer a deploy-pages job beside it.
       #
-      # A manual run may publish into a slot of its own choosing (publish_slot). That exists for one
-      # job: seeding the root and /<series>/ before the cutover. Dispatching the release TAG cannot
-      # do it - workflow_dispatch runs the workflow as defined at the dispatched ref, and the tag
-      # predates this step entirely - and it is not what you want anyway: the tag's own docs fail the
-      # publication check this branch adds. Master carries no source change since v1.0.0, only the
-      # docs corrections, so its build is the same API reference with the errors taken out.
+      # A manual run may publish into a slot of its own choosing (publish_slot), to seed or repair
+      # one out of band. Dispatching a release TAG cannot do that - workflow_dispatch runs the
+      # workflow as defined at the dispatched ref, so a tag cut before this step existed does not
+      # have it - and an old tag's docs may not even build, since the guard rails above have
+      # tightened since. Dispatch from master with publish_slot instead.
       if: >-
         (github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')))
         || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
@@ -334,18 +324,3 @@ jobs:
         git -C "$WORK" commit -m "Publish docs for ${GITHUB_REF_NAME} into /${SLOT}/ (${GITHUB_SHA})"
         git -C "$WORK" push "$REMOTE" gh-pages
         echo "Published slot '${SLOT}' to gh-pages."
-
-  # Serves the live site from the Actions artifact, which is what the repository's Pages source is
-  # still set to. Remove this job at the cutover, once Pages is serving the gh-pages branch — until
-  # then it is what keeps the site up, and the branch above is staged but unserved.
-  deploy-docs:
-    needs: build-docs
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
