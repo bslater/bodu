@@ -24,7 +24,7 @@ Legend: `—` = not part of this collection · `n/a` = excluded by design (see [
 | `Bodu.Financial.ExchangeRates.Fixer` | Preview | 96.7% | 75% | 147 / 152 |
 | `Bodu.Financial.ExchangeRates.Fred` | Preview | 99.3% | 93.5% | 135 / 136 |
 | `Bodu.Financial.ExchangeRates.Imf` | Preview | 90.9% | 88.5% | 289 / 318 |
-| `Bodu.Financial.ExchangeRates.Oanda` | Stable | 97% | 89.2% | 164 / 169 |
+| `Bodu.Financial.ExchangeRates.Oanda` | Preview | 97% | 89.2% | 164 / 169 |
 | `Bodu.Financial.ExchangeRates.Ofx` | Stable | 97.6% | 88.9% | 124 / 127 |
 | `Bodu.Financial.ExchangeRates.Rba` | Stable | 94.4% | 89.5% | 303 / 321 |
 | `Bodu.Financial.ExchangeRates.Xe` | Experimental | 95.4% | 86.6% | 228 / 239 |

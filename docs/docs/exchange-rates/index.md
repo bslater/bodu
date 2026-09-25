@@ -93,7 +93,7 @@ Each per-source package ships its provider, its options type, and its own `Add<S
 | `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Stable | `AddYahooExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Stable | `AddOfxExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental | `AddXeExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Stable | `AddOandaExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview | `AddOandaExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFixerExchangeRates` |
 | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | exchangerate.host time-series / single-date JSON | Any pair | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddExchangeRateHostExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fred` | St. Louis Fed FRED `series/observations` JSON | Mapped pairs via `SeriesMap` | `api_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFredExchangeRates` |

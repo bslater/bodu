@@ -1,5 +1,13 @@
 # Bodu.Globalization.Calendar.Tool
 
+
+> **API stability — Preview.** The command-line surface — the verbs, their options, and the
+> `BODU-CAL-*` diagnostic ids — is largely settled but is still being finalized ahead of the 1.0
+> release and may change; breaking changes can land in a minor version until then.
+>
+> This package is **not published to nuget.org** — see the
+> [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Build it from a clone.
+
 `bodu-calendar` — the command-line compiler and lint for Bodu notable-date rule packs.
 
 ```bash

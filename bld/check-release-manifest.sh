@@ -86,6 +86,47 @@ version_gt() {
     if [ "$(printf '%s\n%s\n' "$a" "$b" | sort -V | head -1)" = "$a" ]; then printf '0'; else printf '1'; fi
 }
 
+# Checks a package's README tier banner and that its version stream agrees with that tier
+# (manifest checks 5, 6 and 8). Shared by the manifest loop and the withheld sweep below: a
+# withheld package packs exactly like a shipping one, so the day it is released it must already
+# carry the right tier and the right stream. Reads and increments the caller's $violations
+# through fail(), so it must not be run in a subshell.
+check_tier_and_stream() {
+    local id="$1" project_root="$2" project="$3"
+    local readme tier override
+
+    readme="$project_root/README.md"
+    tier=""
+    if [ ! -f "$readme" ]; then
+        fail "$id: no README.md at $(realpath --relative-to="$repo_root" "$project_root") (bld/RELEASING.md precondition 4)"
+    else
+        tier="$(head -c 2000 "$readme" \
+            | grep -oE 'API stability[[:space:]]*[—-]+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)' \
+            | grep -oE '(Stable|Preview|Experimental)' | head -1)"
+        if [ -z "$tier" ]; then
+            fail "$id: README.md carries no API-stability tier banner (Stable / Preview / Experimental)"
+        fi
+    fi
+
+    override="$(sed -n 's:.*<BoduPackageVersionOverride>\(.*\)</BoduPackageVersionOverride>.*:\1:p' "$project" | head -1)"
+    case "$tier" in
+        Stable)
+            if [ -n "$override" ]; then
+                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>$override</BoduPackageVersionOverride>, so it would ship on the preview stream instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
+            fi
+            ;;
+        Preview|Experimental)
+            if [ -z "$override" ]; then
+                fail "$id: tiered $tier but sets no <BoduPackageVersionOverride>, so it would ship at BoduBaseVersion $base_version alongside the Stable packages. Add <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride> to its csproj."
+            elif [ "$override" != '$(BoduPreviewVersion)' ]; then
+                # A literal is rejected even when it currently equals BoduPreviewVersion: it agrees by
+                # coincidence, and stops agreeing silently the next time the preview stream moves.
+                fail "$id: tiered $tier but pins its version override to the literal '$override' rather than \$(BoduPreviewVersion) (currently $preview_version). Reference the property so the preview stream moves in one edit and cannot drift."
+            fi
+            ;;
+    esac
+}
+
 entries=0
 seen_ids=" "
 
@@ -130,38 +171,8 @@ while IFS= read -r raw; do
         fail "$id: first-shipped version $version is ahead of BoduBaseVersion $base_version — it would never receive a package-validation baseline"
     fi
 
-    # 5/6. README and its tier banner.
-    readme="$project_root/README.md"
-    tier=""
-    if [ ! -f "$readme" ]; then
-        fail "$id: no README.md at $(realpath --relative-to="$repo_root" "$project_root") (bld/RELEASING.md precondition 4)"
-    else
-        tier="$(head -c 2000 "$readme" \
-            | grep -oE 'API stability[[:space:]]*[—-]+[[:space:]]*\*{0,2}(Stable|Preview|Experimental)' \
-            | grep -oE '(Stable|Preview|Experimental)' | head -1)"
-        if [ -z "$tier" ]; then
-            fail "$id: README.md carries no API-stability tier banner (Stable / Preview / Experimental)"
-        fi
-    fi
-
-    # 8. Version stream agrees with the tier.
-    override="$(sed -n 's:.*<BoduPackageVersionOverride>\(.*\)</BoduPackageVersionOverride>.*:\1:p' "$project" | head -1)"
-    case "$tier" in
-        Stable)
-            if [ -n "$override" ]; then
-                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>$override</BoduPackageVersionOverride>, so it would ship on the preview stream instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
-            fi
-            ;;
-        Preview|Experimental)
-            if [ -z "$override" ]; then
-                fail "$id: tiered $tier but sets no <BoduPackageVersionOverride>, so it would ship at BoduBaseVersion $base_version alongside the Stable packages. Add <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride> to its csproj."
-            elif [ "$override" != '$(BoduPreviewVersion)' ]; then
-                # A literal is rejected even when it currently equals BoduPreviewVersion: it agrees by
-                # coincidence, and stops agreeing silently the next time the preview stream moves.
-                fail "$id: tiered $tier but pins its version override to the literal '$override' rather than \$(BoduPreviewVersion) (currently $preview_version). Reference the property so the preview stream moves in one edit and cannot drift."
-            fi
-            ;;
-    esac
+    # 5/6/8. README, its tier banner, and the version stream that tier implies.
+    check_tier_and_stream "$id" "$project_root" "$project"
 
     # 7. Icon.
     if [ ! -f "$repo_root/bld/icons/$id.png" ]; then
@@ -169,8 +180,44 @@ while IFS= read -r raw; do
     fi
 done < "$manifest"
 
+# The withheld sweep.
+#
+# The manifest also records the packages deliberately kept off nuget.org, as comment lines that are
+# nothing but a package id followed by the reasoning. Those packages pack with everything else, so
+# they can drift from their declared tier exactly as a shipping one can — and nothing noticed,
+# because every check above iterates manifest DATA lines only. The day one of them is released is
+# the day nobody re-reads its csproj, so it is checked now instead.
+#
+# Only the tier and stream are checked. A first-shipped version and a NuGet icon are release
+# artifacts a withheld package has no reason to carry yet.
+#
+# The grammar is the one .github/workflows/release.yml and bld/check-docs.py already parse: inside
+# the comment block, a line that is only a Bodu package id opens an entry.
+withheld=0
+while IFS= read -r raw; do
+    case "$raw" in
+        '#'*) ;;
+        *) continue ;;
+    esac
+
+    stripped="$(printf '%s' "$raw" | tr -d '\r' | sed 's/^[[:space:]]*#[[:space:]]*//; s/[[:space:]]*$//')"
+    printf '%s' "$stripped" | grep -qE '^Bodu\.[A-Za-z0-9.]+$' || continue
+
+    withheld=$((withheld + 1))
+    id="$stripped"
+
+    project="$(find "$repo_root" -name "$id.csproj" -path '*/src/*' -not -path '*/obj/*' -not -path '*/bin/*' 2>/dev/null | head -1)"
+    if [ -z "$project" ]; then
+        fail "$id: recorded as withheld but no $id.csproj exists under any src/ directory — is the id spelled correctly?"
+        continue
+    fi
+
+    check_tier_and_stream "$id" "$(dirname "$(dirname "$project")")" "$project"
+done < "$manifest"
+
 printf -- '----------------------\n'
 printf 'Manifest entries checked: %d\n' "$entries"
+printf 'Withheld packages checked: %d\n' "$withheld"
 
 if [ "$entries" -eq 0 ]; then
     printf '::error file=bld/release-manifest.txt::The manifest has no entries — a release would publish nothing\n'

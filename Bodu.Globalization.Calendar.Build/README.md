@@ -1,5 +1,14 @@
 # Bodu.Globalization.Calendar.Build
 
+
+> **API stability — Preview.** The MSBuild surface — the `NotableDatePack` item and the
+> properties that configure it — is largely settled but is still being finalized ahead of the 1.0
+> release and may change; breaking changes can land in a minor version until then.
+>
+> This package is **not published to nuget.org** — see the
+> [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Reference the project
+> from a clone.
+
 MSBuild integration for Bodu notable-date rule packs: `NotableDatePack` items compile XML/JSON
 documents to sealed `.bcal` binary packs during build, incrementally, via the `bodu-calendar` tool.
 

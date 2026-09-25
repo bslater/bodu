@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <RootNamespace>Bodu.Globalization.Calendar.Build</RootNamespace>
     <Description>MSBuild integration for Bodu notable-date rule packs: the CompileNotableDatePack task and NotableDatePack items compile XML/JSON documents to sealed .bcal binary packs during build, incrementally, via the bodu-calendar tool.</Description>
 
