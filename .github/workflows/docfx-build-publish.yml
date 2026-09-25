@@ -38,15 +38,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Dotnet Setup
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
           8.x
           10.x
 
-    - run: dotnet tool update -g docfx
+    # Pinned. An unpinned `tool update` means a docfx release can change the generated output or
+    # trip --warningsAsErrors below, turning master red with no commit of ours; everything else
+    # here is pinned on purpose (global.json, Directory.Packages.props, the manifest versions).
+    # 2.81.0 is what the unpinned command resolved to, so this preserves current behaviour.
+    - run: dotnet tool update -g docfx --version 2.81.0
 
     - name: Stamp build metadata into the docs footer
       # The versions matter as much as the commit. The site is rebuilt from master on every merge,

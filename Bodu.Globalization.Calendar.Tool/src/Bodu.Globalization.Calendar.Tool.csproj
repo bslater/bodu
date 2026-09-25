@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
     <OutputType>Exe</OutputType>
     <RootNamespace>Bodu.Globalization.Calendar.Tool</RootNamespace>
     <PackAsTool>true</PackAsTool>
